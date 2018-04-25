@@ -16,7 +16,6 @@
 import {IComponentOptions, IFilterService} from 'angular';
 import {IStateService} from 'angular-ui-router';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
-import BerechnungsManager from '../../gesuch/service/berechnungsManager';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -24,7 +23,6 @@ import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
-import IQService = angular.IQService;
 import SearchRS from '../../gesuch/service/searchRS.rest';
 let template = require('./faelleListView.html');
 require('./faelleListView.less');

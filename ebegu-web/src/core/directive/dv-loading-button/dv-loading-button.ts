@@ -32,7 +32,6 @@ export class DVLoadingButton implements IDirective {
     transclude = true;
     restrict = 'E';
     require: any = {dvLoadingButtonCtrl: 'dvLoadingButton', formCtrl: '^?form'};
-    replace = true;
     scope = {};
     template = template;
     controller = DVLoadingButtonController;
