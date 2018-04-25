@@ -27,13 +27,13 @@ let template = require('./dv-verantwortlicherselect.html');
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
     require: any = {};
-    scope = {
+    scope = {};
+    controller = VerantwortlicherselectController;
+    controllerAs = 'vm';
+    bindToController = {
         schulamt: '<',
         antragList: '<'
     };
-    controller = VerantwortlicherselectController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     static factory(): IDirectiveFactory {

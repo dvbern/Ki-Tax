@@ -40,7 +40,10 @@ let style = require('./dv-navigation.less');
  */
 export class DVNavigation implements IDirective {
     restrict = 'E';
-    scope = {
+    scope = {};
+    controller = NavigatorController;
+    controllerAs = 'vm';
+    bindToController = {
         dvPrevious: '&?',
         dvNext: '&?',
         dvCancel: '&?',
@@ -51,9 +54,6 @@ export class DVNavigation implements IDirective {
         dvTranslateNext: '@',
         dvTranslatePrevious: '@'
     };
-    controller = NavigatorController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     static factory(): IDirectiveFactory {
