@@ -13,21 +13,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {Inject, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
+import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthenticaton';
+import {applicationPropertyRSProvider, authServiceRSProvider, authServiceRSServiceFactory} from '../hybridTools/ajs-upgraded-providers';
+import appModule from '../app.module';
 
 @NgModule({
-  imports: [
-      BrowserModule,
-      UpgradeModule,
-  ],
+    imports: [
+        BrowserModule,
+        UpgradeModule,
+    ],
+    declarations: [
+        DummyAuthenticationListViewComponent,
+    ],
+    entryComponents: [
+        DummyAuthenticationListViewComponent,
+    ],
+    providers: [
+        authServiceRSProvider,
+        applicationPropertyRSProvider,
+    ],
 })
 
 export class AppModule {
-    constructor(/*private upgrade: UpgradeModule*/) {
+
+    constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {
         console.log('Angular called********!!!!');
     }
+
     ngDoBootstrap() {
         // it should be possible to inject UpgradeModule and then in the entrz point bootstrp.ts call
         // platformBrowserDynamic().bootstrapModule(AppModule);
@@ -36,6 +51,9 @@ export class AppModule {
         // So I decided to bootstrap the whole thing directly in AngularJS. AngularJS calls this
         // Angular-Module and on Promise response it botstraps the application
 
-        // this.upgrade.bootstrap(document.body, ['ebeguWeb'], { strictDi: true });
+        // EDIT -> Both versions are here. the uncommented version seems to be the newest one.
+        // I am not sure.....
+
+        this.upgrade.bootstrap(document.body, [appModule.name], { strictDi: true });
     }
 }

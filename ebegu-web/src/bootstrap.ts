@@ -22,12 +22,12 @@ import {AppModule} from './app/app.module';
 angular.element(document).ready(function () {
     // platformBrowserDynamic().bootstrapModule(AppModule);
 
-    platformBrowserDynamic().bootstrapModule(AppModule)
-        .then(platformRef => {
-            console.log('BOOTSTRAPING AngularJS');
-            const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;
-            upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
-        });
+    platformBrowserDynamic().bootstrapModule(AppModule);
+        // .then(platformRef => {
+        //     console.log('BOOTSTRAPING AngularJS');
+        //     const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;
+        //     upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
+        // });
 });
 
 
