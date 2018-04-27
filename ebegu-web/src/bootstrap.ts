@@ -14,10 +14,21 @@
  */
 
 require('./vendor');
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import {UpgradeModule} from '@angular/upgrade/static';
 import appModule from './app.module';
+import {AppModule} from './app/app.module';
 
 angular.element(document).ready(function () {
-    angular.bootstrap(document, [appModule.name], {
-        strictDi: true
-    });
+    // platformBrowserDynamic().bootstrapModule(AppModule);
+
+    platformBrowserDynamic().bootstrapModule(AppModule)
+        .then(platformRef => {
+            console.log('BOOTSTRAPING AngularJS');
+            const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;
+            upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
+        });
 });
+
+
+

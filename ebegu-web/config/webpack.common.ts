@@ -92,7 +92,10 @@ export default (env: string): webpack.Configuration => {
             rules: rules()
         },
         resolve: {
-            extensions: ['.ts', '.js']
+            extensions: ['.ts', '.js'],
+            alias: {
+                "@angular/upgrade/static": "@angular/upgrade/bundles/upgrade-static.umd.js"
+            }
         },
 
         plugins: [
@@ -128,6 +131,18 @@ export default (env: string): webpack.Configuration => {
 
             // Moment: include only DE and FR locales
             new ContextReplacementPlugin(/moment[\\/]locale$/, /^\.\/(de)$/),
+
+            // problem angular -> https://github.com/angular/angular/issues/20357
+            new ContextReplacementPlugin(
+                // The (\\|\/) piece accounts for path separators in *nix and Windows
+
+                // For Angular 5, see also https://github.com/angular/angular/issues/20357#issuecomment-343683491
+                /\@angular(\\|\/)core(\\|\/)esm5/,
+                root('src'), // location of your src
+                {
+                    // your Angular Async Route paths relative to this root directory
+                }
+            ),
 
             // Bundle webpack code into a prefixed chunk
             new CommonsChunkPlugin({
