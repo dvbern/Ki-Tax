@@ -16,14 +16,11 @@
 import {Component, Inject} from '@angular/core';
 import TSUser from '../models/TSUser';
 import {TSRole} from '../models/enums/TSRole';
-import {IStateService} from 'angular-ui-router';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import {TSMandant} from '../models/TSMandant';
 import TSInstitution from '../models/TSInstitution';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import AuthenticationUtil from '../utils/AuthenticationUtil';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
-import ITimeoutService = angular.ITimeoutService;
 
 require('./dummyAuthentication.less');
 
@@ -36,11 +33,11 @@ export class DummyAuthenticationListViewComponent {
 
     public usersList: Array<TSUser>;
     public superadmin: TSUser;
-    private mandant: TSMandant;
-    private institution: TSInstitution;
-    private traegerschaftStadtBern: TSTraegerschaft;
-    private traegerschaftLeoLea: TSTraegerschaft;
-    private traegerschaftSGF: TSTraegerschaft;
+    private readonly mandant: TSMandant;
+    private readonly institution: TSInstitution;
+    private readonly traegerschaftStadtBern: TSTraegerschaft;
+    private readonly traegerschaftLeoLea: TSTraegerschaft;
+    private readonly traegerschaftSGF: TSTraegerschaft;
     private traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
 

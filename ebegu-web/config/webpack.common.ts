@@ -93,9 +93,6 @@ export default (env: string): webpack.Configuration => {
         },
         resolve: {
             extensions: ['.ts', '.js'],
-            alias: {
-                "@angular/upgrade/static": "@angular/upgrade/bundles/upgrade-static.umd.js"
-            }
         },
 
         plugins: [

@@ -17,7 +17,7 @@ import {Inject, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthenticaton';
-import {applicationPropertyRSProvider, authServiceRSProvider, authServiceRSServiceFactory} from '../hybridTools/ajs-upgraded-providers';
+import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
 import appModule from '../app.module';
 
 @NgModule({
@@ -52,7 +52,7 @@ export class AppModule {
         // Angular-Module and on Promise response it botstraps the application
 
         // EDIT -> Both versions are here. the uncommented version seems to be the newest one.
-        // I am not sure.....
+        // I am not sure which one is better but I don't see any problem with the selected one
 
         this.upgrade.bootstrap(document.body, [appModule.name], { strictDi: true });
     }

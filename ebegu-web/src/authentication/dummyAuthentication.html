@@ -19,11 +19,11 @@
     </h3>
     <div class="col-md-5 col-md-offset-3">
 
-        <div class="first-row panel panel-default mark-hover panel-body" (click)="logIn(superadmin)" ng-hide="!devMode"
+        <div class="first-row panel panel-default mark-hover panel-body" (click)="logIn(superadmin)" [hide]="!devMode"
              [textContent]="superadmin.vorname + ' ' + superadmin.nachname + ', ' + superadmin.email + ', ' + 'Rolle '
              + ' '"></div>
              <!--+ (superadmin.getRoleKey() | translate) -->
-
+<!-- todo add translation-->
         <div class="first-row panel panel-default" *ngFor="let user of usersList">
             <div class="mark-hover panel-body" (click)="logIn(user)"
                  [textContent]="user.vorname + ' ' + user.nachname + ', ' + user.email + ', '

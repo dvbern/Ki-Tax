@@ -13,6 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+//
+// // RxJS
+import 'rxjs';
+import 'angular-in-memory-web-api';
+import 'zone.js/dist/zone';
+
+// AngularJS
 import 'angular';
 import 'angular-utf8-base64';
 import 'angular-i18n/angular-locale_de-ch';
@@ -33,16 +40,13 @@ import 'angular-hotkeys';
 import 'ng-file-upload';
 
 // Angular
-import '@angular/platform-browser';
-import '@angular/platform-browser-dynamic';
-import '@angular/core';
-import '@angular/common';
-import '@angular/compiler';
-import '@angular/http';
-import '@angular/router';
-import '@angular/forms';
-//
-// // RxJS
-import 'rxjs';
-import 'angular-in-memory-web-api';
-import 'zone.js/dist/zone';
+// should not be imported here but directly in the classes where they are used
+// import '@angular/platform-browser';
+// import '@angular/platform-browser-dynamic';
+// import '@angular/core';
+// import '@angular/common';
+// import '@angular/compiler';
+// import '@angular/http';
+// import '@angular/router';
+// import '@angular/forms';
+
