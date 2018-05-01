@@ -35,6 +35,9 @@ export class EbeguMitteilungenStateState implements Ng1StateDeclaration {
     name = 'mitteilungen';
     template = '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">';
     url = '/mitteilungen/:fallId/:betreuungId';
+    params = {
+        betreuungId: '',
+    };
 }
 
 // PARAMS

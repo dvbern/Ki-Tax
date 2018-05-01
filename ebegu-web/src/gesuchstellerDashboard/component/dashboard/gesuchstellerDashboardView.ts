@@ -150,7 +150,7 @@ export class GesuchstellerDashboardListViewController {
                 this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
-                this.$state.go('gesuch.dokumente', {createNew: false, gesuchId: antrag.antragId});
+                this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
             } else {
                 // Im Else-Fall ist das Gesuch nicht mehr ueber den Button verfuegbar
                 // Es kann nur noch eine Mutation gemacht werden
@@ -239,7 +239,7 @@ export class GesuchstellerDashboardListViewController {
     public editAntrag(antrag: TSAntragDTO): void {
         if (antrag) {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
-                this.$state.go('gesuch.verfuegen', {createNew: false, gesuchId: antrag.antragId});
+                this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
                 this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId});
             }

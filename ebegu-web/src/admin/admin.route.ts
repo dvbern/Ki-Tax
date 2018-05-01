@@ -71,6 +71,9 @@ function getStates(): Ng1StateDeclaration[] {
             + ' traegerschaften="$resolve.traegerschaften"'
             + ' mandant="$resolve.mandant"></dv-institution-view>',
             url: '/institutionen/institution/:institutionId',
+            params: {
+                institutionId: '',
+            },
 
             resolve: {
                 traegerschaften: getTraegerschaften,
@@ -81,6 +84,9 @@ function getStates(): Ng1StateDeclaration[] {
             name: 'institutionstammdaten',
             template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
             url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
+            params: {
+                institutionStammdatenId: '',
+            },
         },
         {
             name: 'parameter',
@@ -92,6 +98,9 @@ function getStates(): Ng1StateDeclaration[] {
             template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
             + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
             url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
+            params: {
+                gesuchsperiodeId: '',
+            },
 
             resolve: {
                 traegerschaften: getTraegerschaften,

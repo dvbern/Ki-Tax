@@ -164,6 +164,9 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
 export class EbeguStammdatenState implements Ng1StateDeclaration {
     name = 'gesuch.stammdaten';
     url = '/stammdaten/:gesuchId/:gesuchstellerNumber';
+    params = {
+        gesuchstellerNumber: '1',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -219,6 +222,9 @@ export class EbeguKinderListState implements Ng1StateDeclaration {
 export class EbeguKindState implements Ng1StateDeclaration {
     name = 'gesuch.kind';
     url = '/kinder/kind/:gesuchId/:kindNumber';
+    params = {
+        kindNumber: '',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -255,6 +261,10 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
 export class EbeguBetreuungState implements Ng1StateDeclaration {
     name = 'gesuch.betreuung';
     url = '/betreuungen/betreuung/:gesuchId/:kindNumber/:betreuungNumber/:betreuungsangebotTyp';
+    params = {
+        betreuungsangebotTyp: '',
+        betreuungNumber: '',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -309,6 +319,9 @@ export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
 export class EbeguErwerbspensumState implements Ng1StateDeclaration {
     name = 'gesuch.erwerbsPensum';
     url = '/erwerbspensen/erwerbspensum/:gesuchId/:gesuchstellerNumber/:erwerbspensumNum';
+    params = {
+        erwerbspensumNum: '',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -327,6 +340,9 @@ export class EbeguErwerbspensumState implements Ng1StateDeclaration {
 export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
     name = 'gesuch.finanzielleSituation';
     url = '/finanzielleSituation/:gesuchId/:gesuchstellerNumber';
+    params = {
+        gesuchstellerNumber: '1',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -454,6 +470,10 @@ export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDecl
 export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration {
     name = 'gesuch.einkommensverschlechterung';
     url = '/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
+    params = {
+        gesuchstellerNumber: '1',
+        basisjahrPlus: '1',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -472,6 +492,9 @@ export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration
 export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDeclaration {
     name = 'gesuch.einkommensverschlechterungResultate';
     url = '/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
+    params = {
+        basisjahrPlus: '1',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -490,6 +513,9 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
 export class EbeguDokumenteState implements Ng1StateDeclaration {
     name = 'gesuch.dokumente';
     url = '/dokumente/:gesuchId/:gesuchstellerNumber';
+    params = {
+        gesuchstellerNumber: '1',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -526,6 +552,9 @@ export class EbeguFreigabeState implements Ng1StateDeclaration {
 export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     name = 'gesuch.mitteilung';
     url = '/mitteilung/:fallId/:gesuchId/:betreuungId/:mitteilungId';
+    params = {
+        mitteilungId: '',
+    };
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
