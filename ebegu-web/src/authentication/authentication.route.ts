@@ -14,12 +14,12 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
-import IStateParamsService = angular.ui.IStateParamsService;
 import IQService = angular.IQService;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
+import {StateService} from '@uirouter/core';
 
 authenticationRun.$inject = ['RouterHelper'];
 
@@ -28,7 +28,7 @@ export function authenticationRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguLoginState(),
         new EbeguLocalLoginState(),
@@ -39,14 +39,14 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguLoginState implements IState {
+export class EbeguLoginState implements Ng1StateDeclaration {
     name = 'login';
     template = '<authentication-view>';
     //HINWEIS: Soweit ich sehen kann koennen url navigationen mit mehr als einem einzigen slash am Anfang nicht manuell in der Adressbar aufgerufen werden?
     url = '/login?type&relayPath';
 }
 
-export class EbeguLocalLoginState implements IState {
+export class EbeguLocalLoginState implements Ng1StateDeclaration {
     name = 'locallogin';
     template = '<dummy-authentication-view flex="auto" class="overflow-scroll">';
     url = '/locallogin';
@@ -55,7 +55,7 @@ export class EbeguLocalLoginState implements IState {
     };
 }
 
-export class EbeguSchulungState implements IState {
+export class EbeguSchulungState implements Ng1StateDeclaration {
     name = 'schulung';
     template = '<schulung-view flex="auto" class="overflow-scroll">';
     url = '/schulung';
@@ -64,13 +64,13 @@ export class EbeguSchulungState implements IState {
     };
 }
 
-export class EbeguStartState implements IState {
+export class EbeguStartState implements Ng1StateDeclaration {
     name = 'start';
     template = '<start-view>';
     url = '/start';
 }
 
-export class IAuthenticationStateParams implements IStateParamsService {
+export class IAuthenticationStateParams {
     relayPath: string;
     type: string;
 }
@@ -78,7 +78,7 @@ export class IAuthenticationStateParams implements IStateParamsService {
 readDummyLoginEnabled.$inject = ['ApplicationPropertyRS', '$state', '$q', '$log'];
 
 /* @ngInject */
-export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: IStateService, $q: IQService,
+export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService, $q: IQService,
                                       $log: ILogService): IPromise<boolean> {
     return applicationPropertyRS.isDummyMode()
         .then((response: boolean) => {

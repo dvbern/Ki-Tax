@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 mitteilungenRun.$inject = ['RouterHelper'];
 
@@ -23,7 +23,7 @@ export function mitteilungenRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguMitteilungenStateState()
     ];
@@ -31,7 +31,7 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguMitteilungenStateState implements IState {
+export class EbeguMitteilungenStateState implements Ng1StateDeclaration {
     name = 'mitteilungen';
     template = '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">';
     url = '/mitteilungen/:fallId/:betreuungId';
@@ -39,7 +39,7 @@ export class EbeguMitteilungenStateState implements IState {
 
 // PARAMS
 
-export class IMitteilungenStateParams implements IStateParamsService {
+export class IMitteilungenStateParams {
     fallId: string;
     betreuungId: string;
     mitteilungId: string;

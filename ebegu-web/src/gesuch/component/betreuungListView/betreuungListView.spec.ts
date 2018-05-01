@@ -22,12 +22,13 @@ import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungListViewController} from './betreuungListView';
+import {StateService} from '@uirouter/core';
 
 describe('betreuungListViewTest', function () {
 
     let betreuungListView: BetreuungListViewController;
     let gesuchModelManager: GesuchModelManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguWebGesuch.name));

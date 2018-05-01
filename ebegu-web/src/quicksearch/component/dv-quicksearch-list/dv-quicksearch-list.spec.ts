@@ -25,6 +25,7 @@ import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSGesuch from '../../../models/TSGesuch';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
+import {StateService} from '@uirouter/core';
 
 describe('DVQuicksearchList', function () {
 
@@ -37,7 +38,7 @@ describe('DVQuicksearchList', function () {
     let $scope: angular.IScope;
     let $filter: angular.IFilterService;
     let $httpBackend: angular.IHttpBackendService;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let CONSTANTS: any;
     let wizardStepManager: WizardStepManager;
 

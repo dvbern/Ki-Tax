@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {GesuchRouteController} from './gesuch';
 import GesuchModelManager from './service/gesuchModelManager';
 import TSGesuch from '../models/TSGesuch';
@@ -41,7 +41,7 @@ export function gesuchRun(routerHelper: RouterHelper) {
 }
 
 //array mit allen States
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguGesuchState(),
         new EbeguFamiliensituationState(),
@@ -74,7 +74,7 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguGesuchState implements IState {
+export class EbeguGesuchState implements Ng1StateDeclaration {
     name = 'gesuch';
     template = gesuchTpl;
     url = '/gesuch';
@@ -83,11 +83,17 @@ export class EbeguGesuchState implements IState {
     controllerAs = 'vm';
 }
 
-export class EbeguNewFallState implements IState {
+export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
     url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    params = {
+        eingangsart: '',
+        gesuchsperiodeId: '',
+        gesuchId: '',
+        fallId: '',
+    };
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<fall-creation-view>'
         },
@@ -101,11 +107,11 @@ export class EbeguNewFallState implements IState {
     };
 }
 
-export class EbeguMutationState implements IState {
+export class EbeguMutationState implements Ng1StateDeclaration {
     name = 'gesuch.mutation';
     url = '/mutation/:createMutation/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<fall-creation-view>'
         },
@@ -119,11 +125,11 @@ export class EbeguMutationState implements IState {
     };
 }
 
-export class EbeguErneuerungsgesuchState implements IState {
+export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     name = 'gesuch.erneuerung';
     url = '/erneuerung/:createErneuerung/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<fall-creation-view>'
         },
@@ -137,11 +143,11 @@ export class EbeguErneuerungsgesuchState implements IState {
     };
 }
 
-export class EbeguFamiliensituationState implements IState {
+export class EbeguFamiliensituationState implements Ng1StateDeclaration {
     name = 'gesuch.familiensituation';
     url = '/familiensituation/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<familiensituation-view>'
         },
@@ -155,11 +161,11 @@ export class EbeguFamiliensituationState implements IState {
     };
 }
 
-export class EbeguStammdatenState implements IState {
+export class EbeguStammdatenState implements Ng1StateDeclaration {
     name = 'gesuch.stammdaten';
     url = '/stammdaten/:gesuchId/:gesuchstellerNumber';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<stammdaten-view>'
         },
@@ -173,11 +179,11 @@ export class EbeguStammdatenState implements IState {
     };
 }
 
-export class EbeguUmzugState implements IState {
+export class EbeguUmzugState implements Ng1StateDeclaration {
     name = 'gesuch.umzug';
     url = '/umzug/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<umzug-view>'
         },
@@ -191,11 +197,11 @@ export class EbeguUmzugState implements IState {
     };
 }
 
-export class EbeguKinderListState implements IState {
+export class EbeguKinderListState implements Ng1StateDeclaration {
     name = 'gesuch.kinder';
     url = '/kinder/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<kinder-list-view kinder-dubletten="$resolve.kinderDubletten">'
         },
@@ -210,11 +216,11 @@ export class EbeguKinderListState implements IState {
     };
 }
 
-export class EbeguKindState implements IState {
+export class EbeguKindState implements Ng1StateDeclaration {
     name = 'gesuch.kind';
     url = '/kinder/kind/:gesuchId/:kindNumber';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<kind-view>'
         },
@@ -228,11 +234,11 @@ export class EbeguKindState implements IState {
     };
 }
 
-export class EbeguBetreuungListState implements IState {
+export class EbeguBetreuungListState implements Ng1StateDeclaration {
     name = 'gesuch.betreuungen';
     url = '/betreuungen/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<betreuung-list-view>'
         },
@@ -246,11 +252,11 @@ export class EbeguBetreuungListState implements IState {
     };
 }
 
-export class EbeguBetreuungState implements IState {
+export class EbeguBetreuungState implements Ng1StateDeclaration {
     name = 'gesuch.betreuung';
     url = '/betreuungen/betreuung/:gesuchId/:kindNumber/:betreuungNumber/:betreuungsangebotTyp';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<betreuung-view>'
         },
@@ -264,11 +270,11 @@ export class EbeguBetreuungState implements IState {
     };
 }
 
-export class EbeguAbwesenheitState implements IState {
+export class EbeguAbwesenheitState implements Ng1StateDeclaration {
     name = 'gesuch.abwesenheit';
     url = '/abwesenheit/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<abwesenheit-view>'
         },
@@ -282,11 +288,11 @@ export class EbeguAbwesenheitState implements IState {
     };
 }
 
-export class EbeguErwerbspensenListState implements IState {
+export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
     name = 'gesuch.erwerbsPensen';
     url = '/erwerbspensen/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<erwerbspensum-list-view>'
         },
@@ -300,11 +306,11 @@ export class EbeguErwerbspensenListState implements IState {
     };
 }
 
-export class EbeguErwerbspensumState implements IState {
+export class EbeguErwerbspensumState implements Ng1StateDeclaration {
     name = 'gesuch.erwerbsPensum';
     url = '/erwerbspensen/erwerbspensum/:gesuchId/:gesuchstellerNumber/:erwerbspensumNum';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<erwerbspensum-view>'
         },
@@ -318,11 +324,11 @@ export class EbeguErwerbspensumState implements IState {
     };
 }
 
-export class EbeguFinanzielleSituationState implements IState {
+export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
     name = 'gesuch.finanzielleSituation';
     url = '/finanzielleSituation/:gesuchId/:gesuchstellerNumber';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<finanzielle-situation-view>'
         },
@@ -336,11 +342,11 @@ export class EbeguFinanzielleSituationState implements IState {
     };
 }
 
-export class EbeguFinanzielleSituationStartState implements IState {
+export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration {
     name = 'gesuch.finanzielleSituationStart';
     url = '/finanzielleSituationStart/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<finanzielle-situation-start-view>'
         },
@@ -354,11 +360,11 @@ export class EbeguFinanzielleSituationStartState implements IState {
     };
 }
 
-export class EbeguFinanzielleSituationResultateState implements IState {
+export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclaration {
     name = 'gesuch.finanzielleSituationResultate';
     url = '/finanzielleSituationResultate/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<finanzielle-situation-resultate-view>'
         },
@@ -372,11 +378,11 @@ export class EbeguFinanzielleSituationResultateState implements IState {
     };
 }
 
-export class EbeguVerfuegenListState implements IState {
+export class EbeguVerfuegenListState implements Ng1StateDeclaration {
     name = 'gesuch.verfuegen';
     url = '/verfuegen/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<verfuegen-list-view mahnung-list="$resolve.mahnungList">'
         },
@@ -391,11 +397,11 @@ export class EbeguVerfuegenListState implements IState {
     };
 }
 
-export class EbeguVerfuegenState implements IState {
+export class EbeguVerfuegenState implements Ng1StateDeclaration {
     name = 'gesuch.verfuegenView';
     url = '/verfuegenView/:gesuchId/:betreuungNumber/:kindNumber';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<verfuegen-view>'
         },
@@ -409,11 +415,11 @@ export class EbeguVerfuegenState implements IState {
     };
 }
 
-export class EbeguEinkommensverschlechterungInfoState implements IState {
+export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclaration {
     name = 'gesuch.einkommensverschlechterungInfo';
     url = '/einkommensverschlechterungInfo/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<einkommensverschlechterung-info-view>'
         },
@@ -427,11 +433,11 @@ export class EbeguEinkommensverschlechterungInfoState implements IState {
     };
 }
 
-export class EbeguEinkommensverschlechterungSteuernState implements IState {
+export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDeclaration {
     name = 'gesuch.einkommensverschlechterungSteuern';
     url = '/einkommensverschlechterungSteuern/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<einkommensverschlechterung-steuern-view>'
         },
@@ -445,11 +451,11 @@ export class EbeguEinkommensverschlechterungSteuernState implements IState {
     };
 }
 
-export class EbeguEinkommensverschlechterungState implements IState {
+export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration {
     name = 'gesuch.einkommensverschlechterung';
     url = '/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<einkommensverschlechterung-view>'
         },
@@ -463,11 +469,11 @@ export class EbeguEinkommensverschlechterungState implements IState {
     };
 }
 
-export class EbeguEinkommensverschlechterungResultateState implements IState {
+export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDeclaration {
     name = 'gesuch.einkommensverschlechterungResultate';
     url = '/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<einkommensverschlechterung-resultate-view>'
         },
@@ -481,11 +487,11 @@ export class EbeguEinkommensverschlechterungResultateState implements IState {
     };
 }
 
-export class EbeguDokumenteState implements IState {
+export class EbeguDokumenteState implements Ng1StateDeclaration {
     name = 'gesuch.dokumente';
     url = '/dokumente/:gesuchId/:gesuchstellerNumber';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<dokumente-view>'
         },
@@ -499,11 +505,11 @@ export class EbeguDokumenteState implements IState {
     };
 }
 
-export class EbeguFreigabeState implements IState {
+export class EbeguFreigabeState implements Ng1StateDeclaration {
     name = 'gesuch.freigabe';
     url = '/freigabe/:gesuchId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<freigabe-view>'
         },
@@ -517,11 +523,11 @@ export class EbeguFreigabeState implements IState {
     };
 }
 
-export class EbeguBetreuungMitteilungState implements IState {
+export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     name = 'gesuch.mitteilung';
     url = '/mitteilung/:fallId/:gesuchId/:betreuungId/:mitteilungId';
 
-    views: { [name: string]: IState } = {
+    views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
             template: '<betreuung-mitteilung-view>'
         },
@@ -537,25 +543,25 @@ export class EbeguBetreuungMitteilungState implements IState {
 
 //PARAMS
 
-export class IGesuchStateParams implements IStateParamsService {
+export class IGesuchStateParams {
     gesuchId: string;
 }
 
-export class IStammdatenStateParams implements IStateParamsService {
+export class IStammdatenStateParams {
     gesuchstellerNumber: string;
 }
 
-export class IKindStateParams implements IStateParamsService {
+export class IKindStateParams {
     kindNumber: string;
 }
 
-export class IBetreuungStateParams implements IStateParamsService {
+export class IBetreuungStateParams {
     betreuungNumber: string;
     kindNumber: string;
     betreuungsangebotTyp: string;
 }
 
-export class INewFallStateParams implements IStateParamsService {
+export class INewFallStateParams {
     createNew: string;
     createMutation: string;
     eingangsart: TSEingangsart;
@@ -564,17 +570,17 @@ export class INewFallStateParams implements IStateParamsService {
     fallId: string;
 }
 
-export class IErwerbspensumStateParams implements IStateParamsService {
+export class IErwerbspensumStateParams {
     gesuchstellerNumber: string;
     erwerbspensumNum: string;
 }
 
-export class IEinkommensverschlechterungStateParams implements IStateParamsService {
+export class IEinkommensverschlechterungStateParams {
     gesuchstellerNumber: string;
     basisjahrPlus: string;
 }
 
-export class IEinkommensverschlechterungResultateStateParams implements IStateParamsService {
+export class IEinkommensverschlechterungResultateStateParams {
     basisjahrPlus: string;
 }
 

@@ -27,6 +27,7 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import SearchRS from '../../gesuch/service/searchRS.rest';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
+import {StateService} from '@uirouter/core';
 
 describe('faelleListView', function () {
 
@@ -39,7 +40,7 @@ describe('faelleListView', function () {
     let $filter: angular.IFilterService;
     let $httpBackend: angular.IHttpBackendService;
     let gesuchModelManager: GesuchModelManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $log: angular.ILogService;
     let wizardStepManager: WizardStepManager;
     let mockAntrag: TSAntragDTO;

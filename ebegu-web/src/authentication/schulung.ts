@@ -16,7 +16,7 @@
 import {IComponentOptions} from 'angular';
 import TSUser from '../models/TSUser';
 import {TSRole} from '../models/enums/TSRole';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import {TSMandant} from '../models/TSMandant';
 import TSInstitution from '../models/TSInstitution';
@@ -47,7 +47,7 @@ export class SchulungViewController {
 
     static $inject: string[] = ['$state', 'AuthServiceRS', '$timeout', 'TestFaelleRS'];
 
-    constructor(private $state: IStateService, private authServiceRS: AuthServiceRS,
+    constructor(private $state: StateService, private authServiceRS: AuthServiceRS,
                 private $timeout: ITimeoutService,
                 private testFaelleRS: TestFaelleRS) {
 

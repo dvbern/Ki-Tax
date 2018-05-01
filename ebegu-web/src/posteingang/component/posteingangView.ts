@@ -22,7 +22,7 @@ import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 let template = require('./posteingangView.html');
 require('./posteingangView.less');
 
@@ -50,7 +50,7 @@ export class PosteingangViewController {
 
     static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
 
-    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: IStateService,
+    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: StateService,
                 private authServiceRS: AuthServiceRS, private $log: ILogService) {
     }
 

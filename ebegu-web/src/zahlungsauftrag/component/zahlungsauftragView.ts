@@ -29,7 +29,7 @@ import TSDownloadFile from '../../models/TSDownloadFile';
 import TSZahlungsauftrag from '../../models/TSZahlungsauftrag';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 import Moment = moment.Moment;
 import ITranslateService = angular.translate.ITranslateService;
@@ -62,7 +62,7 @@ export class ZahlungsauftragViewController {
         'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
 
     constructor(private zahlungRS: ZahlungRS, private CONSTANTS: any,
-                private $state: IStateService, private downloadRS: DownloadRS,
+                private $state: StateService, private downloadRS: DownloadRS,
                 private applicationPropertyRS: ApplicationPropertyRS,
                 private reportRS: ReportRS, private authServiceRS: AuthServiceRS, private ebeguUtil: EbeguUtil,
                 private dvDialog: DvDialog, private $translate: ITranslateService) {

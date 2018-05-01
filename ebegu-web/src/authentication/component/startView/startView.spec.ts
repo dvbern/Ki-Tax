@@ -20,6 +20,7 @@ import TSUser from '../../../models/TSUser';
 import {EbeguAuthentication} from '../../authentication.module';
 import AuthServiceRS from '../../service/AuthServiceRS.rest';
 import {StartViewController} from './startView';
+import {StateService} from '@uirouter/core';
 
 describe('startView', function () {
 
@@ -33,7 +34,7 @@ describe('startView', function () {
     let startViewController: StartViewController;
     let authService: AuthServiceRS;
     let mockPrincipal: TSUser;
-    let state: angular.ui.IStateService;
+    let state: StateService;
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         $componentController = $injector.get('$componentController');

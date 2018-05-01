@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'angular-ui-router';
 import RouterHelperProvider from './route-helper-provider';
+import { UrlService } from '@uirouter/core';
 
 export default angular.module('dvbAngular.router', [
-    'ui.router'
-]).provider('RouterHelper', RouterHelperProvider);
+    'ui.router', 'ui.router.upgrade'
+]).provider('RouterHelper', RouterHelperProvider)
+    // Tell UI-Router that it should wait until all bootstrapping is complete before doing the initial URL synchronization.
+    .config([ '$urlServiceProvider', ($urlService: UrlService) => $urlService.deferIntercept() ]);

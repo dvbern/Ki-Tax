@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {InstitutionRS} from '../core/service/institutionRS.rest';
 import {MandantRS} from '../core/service/mandantRS.rest';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
@@ -27,20 +27,20 @@ export function adminRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates());
 }
 
-export class IGesuchsperiodeStateParams implements IStateParamsService {
+export class IGesuchsperiodeStateParams {
     gesuchsperiodeId: string;
 }
 
-export class IInstitutionStateParams implements IStateParamsService {
+export class IInstitutionStateParams {
     institutionId: string;
 }
 
-export class IInstitutionStammdatenStateParams implements IStateParamsService {
+export class IInstitutionStammdatenStateParams {
     institutionStammdatenId: string;
     institutionId: string;
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         {
             name: 'admin',

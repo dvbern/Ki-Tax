@@ -13,7 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IState, IStateService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {StateService} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
@@ -42,7 +43,7 @@ appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'Mand
 /* @ngInject */
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
                        mandantRS: MandantRS, $injector: IInjectorService, $rootScope: IRootScopeService, hotkeys: any, $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS, $state: IStateService, $location: ILocationService, $window: ng.IWindowService,
+                       authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
                        $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService) {
     // navigationLogger.toggle();
@@ -139,7 +140,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         /* Add New States Above */
     ];

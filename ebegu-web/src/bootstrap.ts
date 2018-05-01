@@ -14,20 +14,31 @@
  */
 
 require('./vendor');
+import {NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {UpgradeModule} from '@angular/upgrade/static';
-import appModule from './app.module';
 import {AppModule} from './app/app.module';
+import { UrlService } from '@uirouter/core';
 
 angular.element(document).ready(function () {
     // platformBrowserDynamic().bootstrapModule(AppModule);
 
-    platformBrowserDynamic().bootstrapModule(AppModule);
-        // .then(platformRef => {
-        //     console.log('BOOTSTRAPING AngularJS');
-        //     const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;
-        //     upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
-        // });
+    platformBrowserDynamic().bootstrapModule(AppModule)
+        .then(platformRef => {
+            // console.log('BOOTSTRAPING AngularJS');
+            // const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;
+            // upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
+
+            const url: UrlService = platformRef.injector.get(UrlService);
+
+            // Instruct UIRouter to listen to URL changes
+            function startUIRouter() {
+                url.listen();
+                url.sync();
+            }
+
+            const ngZone: NgZone = platformRef.injector.get(NgZone);
+            ngZone.run(startUIRouter);
+        });
 });
 
 

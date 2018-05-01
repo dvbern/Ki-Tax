@@ -13,24 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IState, IStateProvider, IUrlRouterProvider} from 'angular-ui-router';
+import {StateProvider, UrlRouterProvider, Ng1StateDeclaration} from '@uirouter/angularjs';
 import {ILocationProvider, IServiceProvider} from 'angular';
 
 export class RouterHelper {
     static $inject = ['$stateProvider', '$urlRouterProvider'];
 
     hasOtherwise: boolean;
-    stateProvider: IStateProvider;
-    urlRouterProvider: IUrlRouterProvider;
+    stateProvider: StateProvider;
+    urlRouterProvider: UrlRouterProvider;
 
     /* @ngInject */
-    constructor($stateProvider: IStateProvider, $urlRouterProvider: IUrlRouterProvider) {
+    constructor($stateProvider: StateProvider, $urlRouterProvider: UrlRouterProvider) {
         this.hasOtherwise = false;
         this.stateProvider = $stateProvider;
         this.urlRouterProvider = $urlRouterProvider;
     }
 
-    public configureStates(states: IState[], otherwisePath?: string): void {
+    public configureStates(states: Ng1StateDeclaration[], otherwisePath?: string): void {
         states.forEach((state) => {
             this.stateProvider.state(state);
         });
@@ -40,9 +40,9 @@ export class RouterHelper {
         }
     }
 
-    public getStates(): IState[] {
-        return this.stateProvider.$get();
-    }
+    // public getStates(): Ng1StateDeclaration[] {
+    //     return []; //this.stateProvider.$get();
+    // }
 }
 
 export default class RouterHelperProvider implements IServiceProvider {
@@ -51,7 +51,7 @@ export default class RouterHelperProvider implements IServiceProvider {
     private routerHelper: RouterHelper;
 
     /* @ngInject */
-    constructor($locationProvider: ILocationProvider, $stateProvider: IStateProvider, $urlRouterProvider: IUrlRouterProvider) {
+    constructor($locationProvider: ILocationProvider, $stateProvider: StateProvider, $urlRouterProvider: UrlRouterProvider) {
         $locationProvider.html5Mode(false);
         this.routerHelper = new RouterHelper($stateProvider, $urlRouterProvider);
     }

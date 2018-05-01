@@ -26,6 +26,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {GesuchToolbarController} from './gesuchToolbar';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {StateService} from '@uirouter/core';
 
 describe('gesuchToolbar', function () {
 
@@ -35,7 +36,7 @@ describe('gesuchToolbar', function () {
     let ebeguUtil: EbeguUtil;
     let gesuchRS: GesuchRS;
     let berechnungsManager: BerechnungsManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $stateParams: IGesuchStateParams;
     let $scope: angular.IScope;
     let $rootScope: angular.IRootScopeService;

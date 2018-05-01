@@ -17,7 +17,7 @@ import IComponentOptions = angular.IComponentOptions;
 import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -40,7 +40,7 @@ export class PendenzenSteueramtListViewController {
 
     static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
-    constructor(private gesuchModelManager: GesuchModelManager, private $state: IStateService, private $log: ILogService,
+    constructor(private gesuchModelManager: GesuchModelManager, private $state: StateService, private $log: ILogService,
                 private searchRS: SearchRS) {
         this.TSRoleUtil = TSRoleUtil;
     }

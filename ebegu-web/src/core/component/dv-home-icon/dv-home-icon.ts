@@ -15,7 +15,7 @@
 
 import {IComponentOptions} from 'angular';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 
 let template = require('./dv-home-icon.html');
 
@@ -33,7 +33,7 @@ export class DvHomeIconController {
 
     static $inject: any[] = ['$state'];
 
-    constructor(private $state: IStateService) {
+    constructor(private $state: StateService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

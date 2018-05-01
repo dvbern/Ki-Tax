@@ -16,6 +16,7 @@
 import {Inject, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthenticaton';
 import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
 import appModule from '../app.module';
@@ -24,6 +25,7 @@ import appModule from '../app.module';
     imports: [
         BrowserModule,
         UpgradeModule,
+        UIRouterUpgradeModule,
     ],
     declarations: [
         DummyAuthenticationListViewComponent,

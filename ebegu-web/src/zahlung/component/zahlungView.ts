@@ -24,7 +24,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 let template = require('./zahlungView.html');
 require('./zahlungView.less');
 
@@ -45,7 +45,7 @@ export class ZahlungViewController {
         'AuthServiceRS', 'EbeguUtil'];
 
     constructor(private zahlungRS: ZahlungRS, private CONSTANTS: any,
-                private $stateParams: IZahlungsauftragStateParams, private $state: IStateService,
+                private $stateParams: IZahlungsauftragStateParams, private $state: StateService,
                 private downloadRS: DownloadRS, private reportRS: ReportRS, private authServiceRS: AuthServiceRS,
                 private ebeguUtil: EbeguUtil) {
         this.initViewModel();

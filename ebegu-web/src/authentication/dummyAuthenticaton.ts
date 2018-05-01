@@ -44,7 +44,6 @@ export class DummyAuthenticationListViewComponent {
 
     constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
                 @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS) {
-                // private readonly $state: IStateService) {
 
         this.usersList = [];
         this.mandant = this.getMandant();

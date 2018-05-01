@@ -14,7 +14,7 @@
  */
 
 import {IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
@@ -84,7 +84,7 @@ export class NavigatorController {
     static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
 
     /* @ngInject */
-    constructor(private wizardStepManager: WizardStepManager, private state: IStateService, private gesuchModelManager: GesuchModelManager,
+    constructor(private wizardStepManager: WizardStepManager, private state: StateService, private gesuchModelManager: GesuchModelManager,
         private $translate: ITranslateService, private errorService: ErrorService, private $q: IQService, private $timeout: ITimeoutService) {
     }
 

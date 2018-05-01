@@ -35,7 +35,7 @@ import GesuchstellerRS from '../../../core/service/gesuchstellerRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import ITranslateService = angular.translate.ITranslateService;
@@ -68,7 +68,7 @@ export class KommentarViewController {
                 private dokumenteRS: DokumenteRS, private downloadRS: DownloadRS, private $q: IQService,
                 private uploadRS: UploadRS, private wizardStepManager: WizardStepManager, private globalCacheService: GlobalCacheService,
                 private dvDialog: DvDialog, private $translate: ITranslateService, private $window: ng.IWindowService, private gesuchstellerRS: GesuchstellerRS,
-                private $rootScope: IRootScopeService, private $state: IStateService, private $mdSidenav: ng.material.ISidenavService) {
+                private $rootScope: IRootScopeService, private $state: StateService, private $mdSidenav: ng.material.ISidenavService) {
 
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();

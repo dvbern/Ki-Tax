@@ -30,7 +30,7 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IInstitutionStateParams} from '../../admin.route';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 
 let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
@@ -67,7 +67,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
     constructor(private institutionRS: InstitutionRS, private institutionStammdatenRS: InstitutionStammdatenRS,
                 private errorService: ErrorService, private dvDialog: DvDialog, private ebeguUtil: EbeguUtil,
                 authServiceRS: AuthServiceRS, private $stateParams: IInstitutionStateParams,
-                private $state: IStateService) {
+                private $state: StateService) {
         super(authServiceRS);
     }
 

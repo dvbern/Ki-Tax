@@ -32,7 +32,6 @@ import 'angular-cookies';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
-import 'angular-ui-router';
 import 'angular-smart-table';
 import 'angular-moment';
 import 'angular-unsavedchanges';

@@ -15,7 +15,7 @@
 
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import ITimeoutService = angular.ITimeoutService;
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import TSFall from '../../../models/TSFall';
@@ -43,7 +43,7 @@ export class MitteilungenViewController {
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, private $stateParams: IMitteilungenStateParams,
+    constructor(private $state: StateService, private $stateParams: IMitteilungenStateParams,
                 private authServiceRS: AuthServiceRS, private $timeout: ITimeoutService) {
     }
 

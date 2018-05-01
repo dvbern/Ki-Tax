@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions, IIntervalService} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import TSStatistikParameter from '../../../models/TSStatistikParameter';
 import {TSStatistikParameterType} from '../../../models/enums/TSStatistikParameterType';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -61,7 +61,7 @@ export class StatistikViewController {
     static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS', 'BatchJobRS',
         'ErrorService', '$translate', '$interval'];
 
-    constructor(private $state: IStateService, private gesuchsperiodeRS: GesuchsperiodeRS, private $log: ILogService,
+    constructor(private $state: StateService, private gesuchsperiodeRS: GesuchsperiodeRS, private $log: ILogService,
         private reportAsyncRS: ReportAsyncRS, private downloadRS: DownloadRS, private bachJobRS: BatchJobRS, private errorService: ErrorService,
         private $translate: ITranslateService, private $interval: IIntervalService) {
     }
