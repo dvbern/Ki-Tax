@@ -16,11 +16,13 @@
 import {Component, Inject} from '@angular/core';
 import TSUser from '../models/TSUser';
 import {TSRole} from '../models/enums/TSRole';
+import AuthenticationUtil from '../utils/AuthenticationUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import {TSMandant} from '../models/TSMandant';
 import TSInstitution from '../models/TSInstitution';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
+import {UIRouter} from '@uirouter/core';
 
 require('./dummyAuthentication.less');
 
@@ -43,7 +45,8 @@ export class DummyAuthenticationListViewComponent {
 
 
     constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
-                @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS) {
+                @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
+                @Inject(UIRouter) private readonly uiRouter: UIRouter) {
 
         this.usersList = [];
         this.mandant = this.getMandant();
@@ -161,7 +164,7 @@ export class DummyAuthenticationListViewComponent {
 
     public logIn(user: TSUser): void {
         this.authServiceRS.loginRequest(user).then(() => {
-            // AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
+            AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
         });
     }
 }
