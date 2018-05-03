@@ -81,7 +81,9 @@ export default (env: string): webpack.Configuration => {
 
     return {
         entry: {
-            'main': root('src', 'bootstrap.ts')
+            'polyfills': root('src', 'polyfills.ts'),
+            'vendor': root('src', 'vendor.ts'),
+            'main': root('src', 'bootstrap.ts'),
         },
         output: {
             path: path.join(process.cwd(), 'dist'),
@@ -129,7 +131,7 @@ export default (env: string): webpack.Configuration => {
             // Moment: include only DE and FR locales
             new ContextReplacementPlugin(/moment[\\/]locale$/, /^\.\/(de)$/),
 
-            // problem angular -> https://github.com/angular/angular/issues/20357
+            // Loesung fuer eien Bug in angular -> https://github.com/angular/angular/issues/20357
             new ContextReplacementPlugin(
                 // The (\\|\/) piece accounts for path separators in *nix and Windows
 

@@ -16,8 +16,7 @@
 //
 // // RxJS
 import 'rxjs';
-import 'angular-in-memory-web-api';
-import 'zone.js/dist/zone';
+// import 'zone.js/dist/zone';  <-- loaded in polyfills
 
 // AngularJS
 import 'angular';
@@ -37,6 +36,7 @@ import 'angular-moment';
 import 'angular-unsavedchanges';
 import 'angular-hotkeys';
 import 'ng-file-upload';
+import '@uirouter/angular-hybrid';
 
 // Angular
 // should not be imported here but directly in the classes where they are used

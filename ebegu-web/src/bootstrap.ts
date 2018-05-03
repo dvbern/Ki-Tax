@@ -16,13 +16,13 @@
 require('./vendor');
 import {NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {AppModule} from './app/app.module';
+import {NgAppModule} from './ngApp/ngApp.module';
 import { UrlService } from '@uirouter/core';
 
 angular.element(document).ready(function () {
     // platformBrowserDynamic().bootstrapModule(AppModule);
 
-    platformBrowserDynamic().bootstrapModule(AppModule)
+    platformBrowserDynamic().bootstrapModule(NgAppModule)
         .then(platformRef => {
             // console.log('BOOTSTRAPING AngularJS');
             // const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;

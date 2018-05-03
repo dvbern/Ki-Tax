@@ -14,7 +14,7 @@
  */
 
 import * as webpack from 'webpack';
-import {ProvidePlugin} from 'webpack';
+import {ContextReplacementPlugin, ProvidePlugin} from 'webpack';
 import * as merge from 'webpack-merge';
 import {root} from './helpers';
 import commonConfig, {mainChunk, vendorChunk} from './webpack.common';
@@ -139,6 +139,18 @@ export default (env: string): webpack.Configuration => merge.smartStrategy({
 
         // Bundle main chunk
         new CommonsChunkPlugin(mainChunk),
+
+        // Loesung fuer einen Bug in angular -> https://github.com/angular/angular/issues/20357
+        new ContextReplacementPlugin(
+            // The (\\|\/) piece accounts for path separators in *nix and Windows
+
+            // For Angular 5, see also https://github.com/angular/angular/issues/20357#issuecomment-343683491
+            /\@angular(\\|\/)core(\\|\/)esm5/,
+            root('src'), // location of your src
+            {
+                // your Angular Async Route paths relative to this root directory
+            }
+        ),
     ],
 
     // Include polyfills or mocks for various node stuff

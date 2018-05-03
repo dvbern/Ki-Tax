@@ -39,7 +39,7 @@ import appModule from '../app.module';
     ],
 })
 
-export class AppModule {
+export class NgAppModule {
 
     constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {
         console.log('Angular called********!!!!');
