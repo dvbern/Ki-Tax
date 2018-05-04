@@ -17,15 +17,32 @@ import {Inject, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {HttpClient} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthenticaton';
 import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
 import appModule from '../app.module';
+import {TranslateModule, TranslateLoader, TranslateService} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
+
+export function createTranslateLoader(http: HttpClient) {
+    return new TranslateHttpLoader(http, '../assets/translations/translations_', '.json');
+}
 
 @NgModule({
     imports: [
         BrowserModule,
         UpgradeModule,
         UIRouterUpgradeModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (createTranslateLoader),
+                deps: [HttpClient]
+            }
+        }),
     ],
     declarations: [
         DummyAuthenticationListViewComponent,
@@ -41,8 +58,8 @@ import appModule from '../app.module';
 
 export class NgAppModule {
 
-    constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule) {
-        console.log('Angular called********!!!!');
+    constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule, translate: TranslateService) {
+        this.initTranslateService(translate);
     }
 
     ngDoBootstrap() {
@@ -57,5 +74,12 @@ export class NgAppModule {
         // I am not sure which one is better but I don't see any problem with the selected one
 
         this.upgrade.bootstrap(document.body, [appModule.name], { strictDi: true });
+    }
+
+    private initTranslateService(translate: TranslateService) {
+        // this language will be used as a fallback when a translation isn't found in the current language
+        translate.setDefaultLang('de');
+        // the lang to use, if the lang isn't available, it will use the current loader to get them
+        translate.use('de');
     }
 }

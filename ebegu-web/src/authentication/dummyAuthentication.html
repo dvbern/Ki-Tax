@@ -21,14 +21,14 @@
 
         <div class="first-row panel panel-default mark-hover panel-body" (click)="logIn(superadmin)" [hidden]="!devMode"
              [textContent]="superadmin.vorname + ' ' + superadmin.nachname + ', ' + superadmin.email + ', ' + 'Rolle '
-             + ' '"></div>
-             <!--+ (superadmin.getRoleKey() | translate) -->
-<!-- todo add translation-->
+             + ' ' + (superadmin.getRoleKey() | translate)"></div>
+
         <div class="first-row panel panel-default" *ngFor="let user of usersList">
             <div class="mark-hover panel-body" (click)="logIn(user)"
                  [textContent]="user.vorname + ' ' + user.nachname + ', ' + user.email + ', '
-                 + user.institution?.name + user.traegerschaft?.name"></div>
-                 <!--+ 'Rolle ' + (user.getRoleKey() | translate) + ' ' + user.institution?.name + user.traegerschaft?.name"></div>-->
+                 + 'Rolle ' + (user.getRoleKey() | translate) + ', '
+                 + (user.institution?.name ? user.institution.name : '')
+                 + (user.traegerschaft?.name ? user.traegerschaft.name : '')"></div>
         </div>
 
     </div>
