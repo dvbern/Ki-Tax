@@ -15,6 +15,7 @@
 
 import 'angular';
 import 'angular-smart-table';
+import {downgradeComponent} from '@angular/upgrade/static';
 import {EbeguWebCore} from '../core/core.module';
 import {InstitutionRS} from '../core/service/institutionRS.rest';
 import './admin.module.less';
@@ -24,7 +25,7 @@ import {InstitutionenListViewComponentConfig} from './component/institutionenLis
 import {InstitutionStammdatenViewComponentConfig} from './component/institutionStammdatenView/institutionStammdatenView';
 import {InstitutionViewComponentConfig} from './component/institutionView/institutionView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
-import {TraegerschaftViewComponentConfig} from './component/traegerschaftView/traegerschaftView';
+import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
 import {EbeguParameterRS} from './service/ebeguParameterRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
@@ -51,7 +52,10 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .component('dvInstitutionStammdatenView', new InstitutionStammdatenViewComponentConfig())
     .component('dvParameterView', new ParameterViewComponentConfig())
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
-    .component('dvTraegerschaftView', new TraegerschaftViewComponentConfig())
+    .directive(
+        'dvTraegerschaftView',
+        downgradeComponent({component: TraegerschaftViewComponent}) as angular.IDirectiveFactory
+    )
     .component('dvTestdatenView', new TestdatenViewComponentConfig())
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .run(adminRun);

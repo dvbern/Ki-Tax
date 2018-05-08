@@ -130,7 +130,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                 this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
             }
         }
-        this.ebeguUtil.handleSmarttablesUpdateBug(dokumente);
+        EbeguUtil.handleSmarttablesUpdateBug(dokumente);
     }
 
     removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]) {
@@ -169,7 +169,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id);
         });
 
-        this.ebeguUtil.handleSmarttablesUpdateBug(dokumente);
+        EbeguUtil.handleSmarttablesUpdateBug(dokumente);
     }
 
     public showDokumenteGeprueftButton(): boolean {

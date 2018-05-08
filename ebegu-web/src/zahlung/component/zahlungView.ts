@@ -99,7 +99,7 @@ export class ZahlungViewController {
             if (index > -1) {
                 this.zahlungen[index] = response;
             }
-            this.ebeguUtil.handleSmarttablesUpdateBug(this.zahlungen);
+            EbeguUtil.handleSmarttablesUpdateBug(this.zahlungen);
         });
     }
 

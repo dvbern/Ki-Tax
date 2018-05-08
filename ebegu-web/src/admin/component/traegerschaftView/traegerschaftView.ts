@@ -13,8 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import './traegerschaftView.less';
+import {NgForm} from '@angular/forms';
+import {MatSort, MatSortable, MatTableDataSource} from '@angular/material';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
@@ -23,43 +25,54 @@ import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import AbstractAdminViewController from '../../abstractAdminView';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import IFormController = angular.IFormController;
+import AbstractAdminViewController from '../../abstractAdminView';
 
-let template = require('./traegerschaftView.html');
 let style = require('./traegerschaftView.less');
 let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
-export class TraegerschaftViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
-        traegerschaften: '<'
-    };
-    template: string = template;
-    controller: any = TraegerschaftViewController;
-    controllerAs: string = 'vm';
-}
 
-export class TraegerschaftViewController extends AbstractAdminViewController {
+@Component({
+    selector: 'dv-traegerschaft-view',
+    template: require('./traegerschaftView.html'),
+})
+export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit {
 
-    form: IFormController;
-    traegerschaftRS: TraegerschaftRS;
-    traegerschaften: TSTraegerschaft[];
+    @Input() traegerschaften: TSTraegerschaft[];
+
+    displayedColumns: string[] = ['name', 'remove'];
     traegerschaft: TSTraegerschaft = undefined;
+    dataSource: MatTableDataSource<TSTraegerschaft>;
+    form: NgForm;
 
-    static $inject = ['TraegerschaftRS', 'ErrorService', 'DvDialog', 'AuthServiceRS', 'EbeguUtil'];
-    /* @ngInject */
-    constructor(TraegerschaftRS: TraegerschaftRS, private errorService: ErrorService, private dvDialog: DvDialog,
-                authServiceRS: AuthServiceRS, private ebeguUtil: EbeguUtil) {
+    @ViewChild(MatSort) sort: MatSort;
+
+
+    constructor(private traegerschaftRS: TraegerschaftRS, private errorService: ErrorService, private dvDialog: DvDialog,
+                authServiceRS: AuthServiceRS) {
         super(authServiceRS);
-        this.traegerschaftRS = TraegerschaftRS;
     }
 
-    getTraegerschaftenList(): TSTraegerschaft[] {
-        return this.traegerschaften;
+    public ngOnInit(): void {
+        this.dataSource = new MatTableDataSource(this.traegerschaften);
+        this.sortTable();
+    }
+
+    /**
+     * It sorts the table by default using the variable sort.
+     */
+    private sortTable() {
+        this.sort.sort(<MatSortable>{
+                id: 'name',
+                start: 'asc'
+            }
+        );
+    }
+
+    public ngAfterViewInit(): void {
+        this.dataSource.sort = this.sort;
     }
 
     removeTraegerschaft(traegerschaft: any): void {
@@ -86,7 +99,7 @@ export class TraegerschaftViewController extends AbstractAdminViewController {
     }
 
     saveTraegerschaft(): void {
-        if (this.form.$valid) {
+        if (this.form.valid) {
             this.errorService.clearAll();
             let newTraegerschaft: boolean = this.traegerschaft.isNew();
             this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
@@ -96,7 +109,7 @@ export class TraegerschaftViewController extends AbstractAdminViewController {
                     let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
                     if (index > -1) {
                         this.traegerschaften[index] = traegerschaft;
-                        this.ebeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);
+                        EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);
                     }
                 }
                 this.traegerschaft = undefined;
@@ -124,5 +137,9 @@ export class TraegerschaftViewController extends AbstractAdminViewController {
                 title: returnString
             });
         });
+    }
+
+    public showNoContentMessage(): boolean {
+        return !this.dataSource || this.dataSource.data.length === 0;
     }
 }

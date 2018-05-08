@@ -147,11 +147,14 @@
     "npm": "~5.4.2"
   },
   "dependencies": {
+    "@angular/animations": "~5.2.10",
+    "@angular/cdk": "~5.2.5",
     "@angular/common": "~5.2.10",
     "@angular/compiler": "~5.2.10",
     "@angular/core": "~5.2.10",
     "@angular/forms": "~5.2.10",
     "@angular/http": "~5.2.10",
+    "@angular/material": "~5.2.5",
     "@angular/platform-browser": "~5.2.10",
     "@angular/platform-browser-dynamic": "~5.2.10",
     "@angular/router": "~5.2.10",

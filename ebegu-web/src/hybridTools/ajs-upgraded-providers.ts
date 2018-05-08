@@ -15,6 +15,9 @@
 
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
+import {DvDialog} from '../core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../core/errors/service/ErrorService';
+import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
 
 // AuthServiceRS
 export function authServiceRSServiceFactory(i: any) {
@@ -38,3 +41,35 @@ export const applicationPropertyRSProvider = {
     deps: ['$injector']
 };
 
+// TraegerschaftRS
+export function traegerschaftRSProviderServiceFactory(i: any) {
+    return i.get('TraegerschaftRS');
+}
+
+export const traegerschaftRSProvider = {
+    provide: TraegerschaftRS,
+    useFactory: traegerschaftRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// ErrorService
+export function errorServiceProviderServiceFactory(i: any) {
+    return i.get('ErrorService');
+}
+
+export const errorServiceProvider = {
+    provide: ErrorService,
+    useFactory: errorServiceProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// DvDialog
+export function dvDialogProviderServiceFactory(i: any) {
+    return i.get('DvDialog');
+}
+
+export const dvDialogProvider = {
+    provide: DvDialog,
+    useFactory: dvDialogProviderServiceFactory,
+    deps: ['$injector']
+};

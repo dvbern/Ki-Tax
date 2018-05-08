@@ -1096,7 +1096,7 @@ export default class GesuchModelManager {
 
             this.errorService.addMesageAsError(msg);
         }
-        this.ebeguUtil.handleSmarttablesUpdateBug(this.gesuch.kindContainers);
+        EbeguUtil.handleSmarttablesUpdateBug(this.gesuch.kindContainers);
 
     }
 

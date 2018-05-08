@@ -166,7 +166,7 @@ export class ZahlungsauftragViewController {
                 if (index > -1) {
                     this.zahlungsauftragen[index] = response;
                 }
-                this.ebeguUtil.handleSmarttablesUpdateBug(this.zahlungsauftragen);
+                EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsauftragen);
             });
         });
     }

@@ -13,18 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {Inject, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
+import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {HttpClient} from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
+import {NgAdminModule} from '../admin/ng-admin.module';
+import appModule from '../app.module';
 import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthenticaton';
 import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
-import appModule from '../app.module';
-import {TranslateModule, TranslateLoader, TranslateService} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, '../assets/translations/translations_', '.json');
@@ -43,6 +42,8 @@ export function createTranslateLoader(http: HttpClient) {
                 deps: [HttpClient]
             }
         }),
+
+        NgAdminModule,
     ],
     declarations: [
         DummyAuthenticationListViewComponent,

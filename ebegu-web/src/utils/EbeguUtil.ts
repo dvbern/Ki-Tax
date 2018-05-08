@@ -164,7 +164,7 @@ export default class EbeguUtil {
         return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3]);
     }
 
-    public handleSmarttablesUpdateBug(aList: any[]) {
+    public static handleSmarttablesUpdateBug(aList: any[]) {
         // Ugly Fix:
         // Because of a bug in smarttables, the table will only be refreshed if the reverence or the first element
         // changes in table. To resolve this bug, we overwrite the first element by a copy of itself.
@@ -275,7 +275,7 @@ export default class EbeguUtil {
             let index = EbeguUtil.getIndexOfElementwithID(element, list);
             if (index > -1) {
                 list[index] = element;
-                this.handleSmarttablesUpdateBug(list);
+                EbeguUtil.handleSmarttablesUpdateBug(list);
             }
         }
     }

@@ -30,7 +30,6 @@ export const EbeguAuthentication: angular.IModule =
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
         .component('startView', new StartComponentConfig())
-        // .component('dummyAuthenticationView', new DummyAuthenticationComponentConfig())
         .directive(
             'dummyAuthenticationView',
             downgradeComponent({component: DummyAuthenticationListViewComponent}) as angular.IDirectiveFactory
