@@ -20,6 +20,7 @@ import {MatSortModule} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
 import {dvDialogProvider, errorServiceProvider, traegerschaftRSProvider} from '../hybridTools/ajs-upgraded-providers';
+import {NgSharedModule} from '../shared/ng-shared.module';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 import {MatTableModule} from '@angular/material/table';
@@ -34,6 +35,7 @@ import {MatTableModule} from '@angular/material/table';
         MatTableModule,
         MatSortModule,
         NoopAnimationsModule, // we don't want material animations in the project yet
+        NgSharedModule,
     ],
     declarations: [
         TraegerschaftViewComponent,

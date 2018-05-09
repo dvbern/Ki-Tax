@@ -16,7 +16,7 @@
 require('./vendor');
 import {NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {NgAppModule} from './ngApp/ngApp.module';
+import {NgAppModule} from './ngApp/ng-app.module';
 import { UrlService } from '@uirouter/core';
 
 angular.element(document).ready(function () {
