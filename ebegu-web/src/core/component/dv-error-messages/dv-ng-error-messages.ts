@@ -32,16 +32,13 @@ export class DvNgErrorMessages implements OnInit, OnChanges {
 
     ngOnInit() {
         this.getErrors();
-        console.log('errorsList', this.errorsList);
     }
 
     public getErrors() {
         this.errorsList = []; // always start with an empty list
         if (this.errorObject && this.errorObject.currentValue) {
-            let parsedObject = this.parseValue(this.errorObject.currentValue);
-            console.log('errorObjectPARSED', parsedObject);
-            Object.keys(parsedObject)
-                .filter(key => parsedObject[key] === true)
+            Object.keys(this.errorObject.currentValue)
+                .filter(key => this.errorObject.currentValue[key] === true)
                 .forEach(key => {
                         this.errorsList.push(key);
                     }
@@ -50,21 +47,10 @@ export class DvNgErrorMessages implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        console.log('changed', changes);
         // when the errors change we need to update our errorsList
         if (changes && changes.errorObject) {
             this.errorObject = changes.errorObject;
             this.getErrors();
         }
-    }
-
-    /**
-     * This is needed for the component to work with AngularJS, because with AngularJS we recieve the object as a JSON
-     */
-    private parseValue(value: any): any {
-        if (typeof value === 'string') {
-            return JSON.parse(value);
-        }
-        return value;
     }
 }
