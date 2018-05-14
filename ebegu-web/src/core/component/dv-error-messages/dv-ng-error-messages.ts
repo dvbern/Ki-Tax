@@ -24,6 +24,7 @@ require('./dv-error-messages.less');
 export class DvNgErrorMessages implements OnInit, OnChanges {
 
     @Input() errorObject: any;
+    @Input() domObject: any;
     @Input() inputid: string;
 
     public errorsList: string[] = [];
@@ -36,7 +37,7 @@ export class DvNgErrorMessages implements OnInit, OnChanges {
 
     public getErrors() {
         this.errorsList = []; // always start with an empty list
-        if (this.errorObject && this.errorObject.currentValue) {
+        if (this.isTouched() && this.errorObject && this.errorObject.currentValue) {
             Object.keys(this.errorObject.currentValue)
                 .filter(key => this.errorObject.currentValue[key] === true)
                 .forEach(key => {
@@ -44,6 +45,10 @@ export class DvNgErrorMessages implements OnInit, OnChanges {
                     }
                 );
         }
+    }
+
+    private isTouched(): boolean {
+        return this.domObject && this.domObject.touched;
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
