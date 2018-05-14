@@ -66,15 +66,16 @@
                                             <label class="md-no-float" [textContent]="'NAME' | translate" for="name_ID"></label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input id="name_ID" type="text" name="name"
+                                            <input id="name_ID" type="text" name="name" #name="ngModel"
                                                    [(ngModel)]="traegerschaft.name"
                                                    dv-max-length class="form-control" required>
-											   <!--<dv-error-messages for="form.name.$error"-->
-																  <!--class="error"></dv-error-messages>-->
+											   <dv-ng-error-messages [errorObject]="form.controls.name?.errors"
+                                                                  [inputid]="'name'"
+																  class="error"></dv-ng-error-messages>
                                         </div>
                                     </div>
-                                    <div class="row">
 
+                                    <div class="row">
                                     </div>
 
                                     <div class="row">
@@ -82,10 +83,12 @@
                                             <label class="md-no-float" [textContent]="'EMAIL' | translate" for="mail_ID"></label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input id="mail_ID" type="text" name="mail"
+                                            <input id="mail_ID" type="email" name="mail" #mail="ngModel" email
                                                    [(ngModel)]="traegerschaft.mail"
                                                    dv-max-length class="form-control" required>
-                                            <!--<dv-error-messages for="form.mail.$error" class="error"></dv-error-messages>-->
+                                            <dv-ng-error-messages [errorObject]="form.controls.mail?.errors"
+                                                               [inputid]="'mail'"
+                                                               class="error"></dv-ng-error-messages>
                                         </div>
                                     </div>
                                     <div class="row">

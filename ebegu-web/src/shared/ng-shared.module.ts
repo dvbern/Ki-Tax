@@ -13,15 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {TranslateModule} from '@ngx-translate/core';
+import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
 import {DvDebounceClickDirective} from '../debounceClick/dv-debounce-click.directive';
 
 @NgModule({
+    imports: [
+        TranslateModule,
+        CommonModule,
+    ],
     declarations: [
         DvDebounceClickDirective,
+        DvNgErrorMessages,
+    ],
+    entryComponents: [
+        DvNgErrorMessages,
     ],
     exports: [
         DvDebounceClickDirective,
+        DvNgErrorMessages,
     ],
 })
 export class NgSharedModule {
