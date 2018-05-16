@@ -6,8 +6,9 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "lib": [
+            "dom",
             "es2017",
-            "dom"
+            "es2018.promise"
         ],
         "sourceMap": true,
         "noImplicitAny": true,

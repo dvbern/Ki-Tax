@@ -134,7 +134,7 @@
     "ts-node": "~3.3.0",
     "tslint": "~5.7.0",
     "tslint-eslint-rules": "~4.1.1",
-    "typescript": "~2.5.3",
+    "typescript": "~2.8.3",
     "url-loader": "~0.6.2",
     "webpack": "~3.8.1",
     "webpack-bundle-analyzer": "~2.9.0",
@@ -160,10 +160,10 @@
     "@angular/router": "~5.2.10",
     "@angular/upgrade": "~5.2.10",
     "@ngx-translate/core": "~9.1.1",
-    "@ngx-translate/http-loader": "~3.0.1",
+    "@ngx-translate/http-loader": "~2.0.1",
     "@uirouter/angular-hybrid": "~4.0.0",
     "core-js": "~2.5.5",
-    "rxjs": "~5.6.0-forward-compat.4",
+    "rxjs": "~5.5.10",
     "zone.js": "~0.8.26"
   }
 }
