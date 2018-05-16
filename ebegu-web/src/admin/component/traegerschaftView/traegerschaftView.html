@@ -69,7 +69,7 @@
                                             <input id="name_ID" type="text" name="name" #name="ngModel"
                                                    [(ngModel)]="traegerschaft.name"
                                                    ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                                                   dv-max-length class="form-control" required>
+                                                   [maxlength]="255" class="form-control" required>
 											   <dv-ng-error-messages [errorObject]="form.controls.name?.errors"
                                                                   [inputid]="'name'"
                                                                   [domObject]="form.controls.name"
@@ -88,7 +88,7 @@
                                             <input id="mail_ID" type="email" name="mail" #mail="ngModel" email
                                                    [(ngModel)]="traegerschaft.mail"
                                                    ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                                                   dv-max-length class="form-control" required>
+                                                   [maxlength]="255"  class="form-control" required>
                                             <dv-ng-error-messages [errorObject]="form.controls.mail?.errors"
                                                                [inputid]="'mail'"
                                                                [domObject]="form.controls.mail"
