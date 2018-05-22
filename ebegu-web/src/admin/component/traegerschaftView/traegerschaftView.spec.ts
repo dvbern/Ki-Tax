@@ -13,29 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebAdmin} from '../../admin.module';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-describe('adminView', function () {
+import {TraegerschaftViewComponent} from './traegerschaftView';
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+describe('traegerschaftView', function () {
 
-    let component: any;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let component: TraegerschaftViewComponent;
+    let fixture: ComponentFixture<TraegerschaftViewComponent>;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
-        $componentController = $injector.get('$componentController');
-        let $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [TraegerschaftViewComponent]
+        })
+            .compileComponents();
     }));
 
-    it('should be defined', function () {
-        /*
-         To initialise your component controller you have to setup your (mock) bindings and
-         pass them to $componentController.
-         */
-        let bindings = {};
-        component = $componentController('dvTraegerschaftView', {$scope: scope}, bindings);
-        expect(component).toBeDefined();
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TraegerschaftViewComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 });
