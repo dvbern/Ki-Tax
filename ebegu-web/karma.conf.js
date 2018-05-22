@@ -48,6 +48,7 @@ module.exports = function (config) {
             'src/app.module.ts',
 
             // Tests
+            'test.ts',
             'config/spec-bundle.ts'
             // alterntavie zum spec bundle. Dauert aber zu lange, da für jedes spec file 1 Webpack bundle erstellt wird
             // 'src/**/*.spec.ts'
@@ -60,6 +61,7 @@ module.exports = function (config) {
             'src/polyfills.ts': ['webpack'],
             'src/app.module.ts': ['webpack', 'sourcemap'],
             'config/spec-bundle.ts': ['webpack'],
+            'test.ts': ['webpack'],
             // 'src/**/*.spec.ts': ['webpack']
         },
 
