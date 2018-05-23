@@ -45,8 +45,8 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     displayedColumns: string[] = ['name', 'remove'];
     traegerschaft: TSTraegerschaft = undefined;
     dataSource: MatTableDataSource<TSTraegerschaft>;
-    form: NgForm;
 
+    @ViewChild(NgForm) form: NgForm;
     @ViewChild(MatSort) sort: MatSort;
 
 
@@ -88,6 +88,7 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                     let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
                     if (index > -1) {
                         this.traegerschaften.splice(index, 1);
+                        this.refreshTraegerschaftenList();
                     }
                 });
             });
@@ -112,6 +113,7 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                         EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);
                     }
                 }
+                this.refreshTraegerschaftenList();
                 this.traegerschaft = undefined;
                 if (!traegerschaft.synchronizedWithOpenIdm) {
                     this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
@@ -120,6 +122,13 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                 }
             });
         }
+    }
+
+    /**
+     * To refresh the traegerschaftenlist we need to refresh the MatTableDataSource with the new list of Traegerschaften.
+     */
+    private refreshTraegerschaftenList() {
+        this.dataSource.data = this.traegerschaften;
     }
 
     cancelTraegerschaft(): void {

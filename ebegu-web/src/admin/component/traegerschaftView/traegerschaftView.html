@@ -58,65 +58,63 @@
                         </tr>
 
 
-                        <div *ngIf="traegerschaft">
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label class="md-no-float" [textContent]="'NAME' | translate" for="name_ID"></label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <input id="name_ID" type="text" name="name" #name="ngModel"
-                                                   [(ngModel)]="traegerschaft.name"
-                                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                                                   [maxlength]="255" class="form-control" required>
-											   <dv-ng-error-messages [errorObject]="form.controls.name?.errors"
-                                                                  [inputid]="'name'"
-                                                                  [domObject]="form.controls.name"
-																  class="error"></dv-ng-error-messages>
-                                        </div>
+                        <div class="row" *ngIf="traegerschaft">
+                            <div class="col-md-6 form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="md-no-float" [textContent]="'NAME' | translate" for="name_ID"></label>
                                     </div>
-
-                                    <div class="row">
+                                    <div class="col-md-8">
+                                        <input id="name_ID" type="text" name="name" #name="ngModel"
+                                               [(ngModel)]="traegerschaft.name"
+                                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                                               [maxlength]="255" class="form-control" required>
+                                           <dv-ng-error-messages [errorObject]="form.controls.name?.errors"
+                                                              [inputid]="'name'"
+                                                              [domObject]="form.controls.name"
+                                                              class="error"></dv-ng-error-messages>
                                     </div>
+                                </div>
 
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label class="md-no-float" [textContent]="'EMAIL' | translate" for="mail_ID"></label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <input id="mail_ID" type="email" name="mail" #mail="ngModel" email
-                                                   [(ngModel)]="traegerschaft.mail"
-                                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                                                   [maxlength]="255"  class="form-control" required>
-                                            <dv-ng-error-messages [errorObject]="form.controls.mail?.errors"
-                                                               [inputid]="'mail'"
-                                                               [domObject]="form.controls.mail"
-                                                               class="error"></dv-ng-error-messages>
-                                        </div>
+                                <div class="row">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="md-no-float" [textContent]="'EMAIL' | translate" for="mail_ID"></label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-8 col-md-offset-4">
-
-                                        </div>
+                                    <div class="col-md-8">
+                                        <input id="mail_ID" type="email" name="mail" #mail="ngModel" email
+                                               [(ngModel)]="traegerschaft.mail"
+                                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                                               [maxlength]="255"  class="form-control" required>
+                                        <dv-ng-error-messages [errorObject]="form.controls.mail?.errors"
+                                                           [inputid]="'mail'"
+                                                           [domObject]="form.controls.mail"
+                                                           class="error"></dv-ng-error-messages>
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-4">
 
-                                    <!-- Buttons -->
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <button dvDebounceClick
-                                                    (debounceClick)="saveTraegerschaft()"
-                                                    class="color-success"
-                                                    [disabled]="isReadonly()">
-                                                <span [textContent]="'SAVE' | translate"></span>
-                                            </button>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <a href="#" id="cancelLink" class="dv-btn" unsaved-warning-clear
-                                               (click)="cancelTraegerschaft(); form.reset(); $event.preventDefault();">
-                                                <span [textContent]="'CANCEL' | translate"></span>
-                                            </a>
-                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <button dvDebounceClick
+                                                (debounceClick)="saveTraegerschaft()"
+                                                class="color-success"
+                                                [disabled]="isReadonly()">
+                                            <span [textContent]="'SAVE' | translate"></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="#" id="cancelLink" class="dv-btn" unsaved-warning-clear
+                                           (click)="cancelTraegerschaft(); $event.preventDefault();">
+                                            <span [textContent]="'CANCEL' | translate"></span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
