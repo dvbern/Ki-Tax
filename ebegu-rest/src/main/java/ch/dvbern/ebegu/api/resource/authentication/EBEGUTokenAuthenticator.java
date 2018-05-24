@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.util.MonitoringUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.NotImplementedException;
 import org.infinispan.Cache;
-import org.infinispan.manager.CacheContainer;
 import org.omnifaces.security.jaspic.user.TokenAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,25 +50,23 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 	private static final Logger LOG = LoggerFactory.getLogger(EBEGUTokenAuthenticator.class);
 	private static final long serialVersionUID = 55599436567329056L;
 
-	@Resource(lookup = "java:jboss/infinispan/container/ebeguCache")
-	private CacheContainer cacheContainer;
-
 	private AuthorisierterBenutzer user;
 
 	@Inject
 	private AuthService authService;
 
+	@Resource(lookup = "java:jboss/infinispan/cache/ebeguCache/ebeguAuthorizationCache")
 	private Cache<String, AuthorisierterBenutzer> cache;
+
 	private long expirationLifespan;
 
 	@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH", justification = "should be injected")
 	@PostConstruct
 	void init() {
-		if (cacheContainer == null) {
+		if (cache == null) {
 			LOG.warn("ACHTUNG: Cache konnte nicht initialisiert werden. " +
 				"Ist die Infinispan Cache konfiguration im Standalone.xml korrekt und ist der Dependencies Eintrag im MANIFEST.MF gesetzt?");
 		}
-		this.cache = cacheContainer.getCache();
 		expirationLifespan = cache.getCacheConfiguration().expiration().lifespan() == -1 ?
 			Long.MAX_VALUE : cache.getCacheConfiguration().expiration().lifespan();
 		logCacheInfo();
