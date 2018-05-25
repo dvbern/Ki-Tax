@@ -93,7 +93,6 @@
     "file-loader": "~1.1.5",
     "font-awesome": "~4.7.0",
     "fork-ts-checker-webpack-plugin": "~0.2.8",
-    "generator-dvb-angular": "git+http://git/repos/dvbern/yo/generator-angular.git#ed8fe498c8bd6d317f802fa7022c620963966f00",
     "grunt": "~1.0.1",
     "html-loader": "~0.5.1",
     "html-webpack-plugin": "~2.30.1",

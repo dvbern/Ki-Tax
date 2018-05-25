@@ -48,8 +48,8 @@ module.exports = function (config) {
             'src/app.module.ts',
 
             // Tests
-            'test.ts',
-            'config/spec-bundle.ts'
+            'test.ts',    //ng2 tests
+            'config/spec-bundle.ts' //ng1  tests
             // alterntavie zum spec bundle. Dauert aber zu lange, da für jedes spec file 1 Webpack bundle erstellt wird
             // 'src/**/*.spec.ts'
         ],

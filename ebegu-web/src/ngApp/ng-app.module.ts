@@ -64,7 +64,7 @@ export class NgAppModule {
     }
 
     ngDoBootstrap() {
-        // it should be possible to inject UpgradeModule and then in the entrz point bootstrp.ts call
+        // it should be possible to inject UpgradeModule and then in the entry point bootstrp.ts call
         // platformBrowserDynamic().bootstrapModule(AppModule);
         // so that we launch Angular from AngularJS and Angular launches the AngularJS-Module
         // but this is not working for me. I get an error 'Can't resolve all parameters for AppModule'
@@ -74,7 +74,7 @@ export class NgAppModule {
         // EDIT -> Both versions are here. the uncommented version seems to be the newest one.
         // I am not sure which one is better but I don't see any problem with the selected one
 
-        this.upgrade.bootstrap(document.body, [appModule.name], { strictDi: true });
+        this.upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
     }
 
     private initTranslateService(translate: TranslateService) {
