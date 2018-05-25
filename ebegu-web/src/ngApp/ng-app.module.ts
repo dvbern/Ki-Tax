@@ -26,7 +26,7 @@ import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthe
 import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, '../assets/translations/translations_', '.json');
+    return new TranslateHttpLoader(http, '../src/assets/translations/translations_', '.json');
 }
 
 @NgModule({
