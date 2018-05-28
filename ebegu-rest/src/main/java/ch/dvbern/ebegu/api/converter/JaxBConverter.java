@@ -53,6 +53,8 @@ import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
+import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
@@ -87,6 +89,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
@@ -118,6 +121,8 @@ import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -151,6 +156,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -1168,6 +1174,10 @@ public class JaxBConverter {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(persistedInstStammdaten
 				.getInstitutionStammdatenTagesschule()));
 		}
+		if (persistedInstStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+			jaxInstStammdaten.setInstitutionStammdatenFerieninsel(institutionStammdatenFerieninselToJAX(persistedInstStammdaten
+				.getInstitutionStammdatenFerieninsel()));
+		}
 		jaxInstStammdaten.setInstitution(institutionToJAX(persistedInstStammdaten.getInstitution()));
 		jaxInstStammdaten.setAdresse(adresseToJAX(persistedInstStammdaten.getAdresse()));
 		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
@@ -1202,6 +1212,15 @@ public class JaxBConverter {
 					.getInstitutionStammdatenTagesschule(), new InstitutionStammdatenTagesschule()));
 			}
 		}
+		if (institutionStammdatenJAXP.getInstitutionStammdatenFerieninsel() != null) {
+			if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+				institutionStammdaten.setInstitutionStammdatenFerieninsel(institutionStammdatenFerieninselToEntity(institutionStammdatenJAXP
+					.getInstitutionStammdatenFerieninsel(), institutionStammdaten.getInstitutionStammdatenFerieninsel()));
+			} else {
+				institutionStammdaten.setInstitutionStammdatenFerieninsel(institutionStammdatenFerieninselToEntity(institutionStammdatenJAXP
+					.getInstitutionStammdatenFerieninsel(), new InstitutionStammdatenFerieninsel()));
+			}
+		}
 		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
 			if (institutionStammdaten.getAdresseKontoinhaber() != null) {
@@ -1225,6 +1244,32 @@ public class JaxBConverter {
 
 		return institutionStammdaten;
 
+	}
+
+	public JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninselToJAX(@Nonnull final InstitutionStammdatenFerieninsel
+		persistedInstStammdatenFerieninsel) {
+		final JaxInstitutionStammdatenFerieninsel jaxInstStammdatenFerieninsel = new JaxInstitutionStammdatenFerieninsel();
+		convertAbstractFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
+		jaxInstStammdatenFerieninsel.setAusweichstandortFruehlingsferien(persistedInstStammdatenFerieninsel.getAusweichstandortFruehlingsferien());
+		jaxInstStammdatenFerieninsel.setAusweichstandortHerbstferien(persistedInstStammdatenFerieninsel.getAusweichstandortHerbstferien());
+		jaxInstStammdatenFerieninsel.setAusweichstandortSommerferien(persistedInstStammdatenFerieninsel.getAusweichstandortSommerferien());
+		jaxInstStammdatenFerieninsel.setAusweichstandortSportferien(persistedInstStammdatenFerieninsel.getAusweichstandortSportferien());
+		return jaxInstStammdatenFerieninsel;
+	}
+
+	@Nullable
+	public InstitutionStammdatenFerieninsel institutionStammdatenFerieninselToEntity(final JaxInstitutionStammdatenFerieninsel
+		institutionStammdatenFerieninselJAXP, final InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
+		Validate.notNull(institutionStammdatenFerieninselJAXP);
+		Validate.notNull(institutionStammdatenFerieninsel);
+		convertAbstractFieldsToEntity(institutionStammdatenFerieninselJAXP, institutionStammdatenFerieninsel);
+
+		institutionStammdatenFerieninsel.setAusweichstandortFruehlingsferien(institutionStammdatenFerieninselJAXP.getAusweichstandortFruehlingsferien());
+		institutionStammdatenFerieninsel.setAusweichstandortHerbstferien(institutionStammdatenFerieninselJAXP.getAusweichstandortHerbstferien());
+		institutionStammdatenFerieninsel.setAusweichstandortSommerferien(institutionStammdatenFerieninselJAXP.getAusweichstandortSommerferien());
+		institutionStammdatenFerieninsel.setAusweichstandortSportferien(institutionStammdatenFerieninselJAXP.getAusweichstandortSportferien());
+
+		return institutionStammdatenFerieninsel;
 	}
 
 	public JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschuleToJAX(@Nonnull final InstitutionStammdatenTagesschule
@@ -1266,8 +1311,9 @@ public class JaxBConverter {
 		if (moduleOfInstitution != null && jaxModuleTagesschule != null) {
 			final Set<ModulTagesschule> transformedModule = new TreeSet<>();
 			for (final JaxModulTagesschule jaxModulTagesschule : jaxModuleTagesschule) {
-				final ModulTagesschule modulTagesschuleToMergeWith = moduleOfInstitution.stream().filter(existingModul -> existingModul.getId()
-					.equalsIgnoreCase(jaxModulTagesschule.getId()))
+				final ModulTagesschule modulTagesschuleToMergeWith = moduleOfInstitution
+					.stream()
+					.filter(existingModul -> existingModul.getId().equalsIgnoreCase(jaxModulTagesschule.getId()))
 					.reduce(StreamsUtil.toOnlyElement())
 					.orElse(new ModulTagesschule());
 				final ModulTagesschule modulTagesschuleToAdd = modulTagesschuleToEntity(jaxModulTagesschule, modulTagesschuleToMergeWith);
@@ -2266,8 +2312,7 @@ public class JaxBConverter {
 		benutzer.setEmail(jaxLoginElement.getEmail());
 		benutzer.setNachname(jaxLoginElement.getNachname());
 		benutzer.setVorname(jaxLoginElement.getVorname());
-		benutzer.setRole(jaxLoginElement.getRole());
-
+		benutzer.setGesperrt(jaxLoginElement.isGesperrt());
 		if (jaxLoginElement.getMandant() != null && jaxLoginElement.getMandant().getId() != null) {
 			final Optional<Mandant> mandantFromDB = mandantService.findMandant(jaxLoginElement.getMandant().getId());
 			if (mandantFromDB.isPresent()) {
@@ -2280,35 +2325,35 @@ public class JaxBConverter {
 		} else {
 			throw new EbeguEntityNotFoundException("authLoginElementToBenutzer -> mandant", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-
-
-		// wir muessen Traegerschaft und Institution auch updaten wenn sie null sind. Es koennte auch so aus dem IAM kommen
-		if (jaxLoginElement.getInstitution() != null && jaxLoginElement.getInstitution().getId() != null) {
-			final Optional<Institution> institutionFromDB = institutionService.findInstitution(jaxLoginElement.getInstitution().getId());
-			if (institutionFromDB.isPresent()) {
-				// Institution darf nicht vom Client ueberschrieben werden
-				benutzer.setInstitution(institutionFromDB.get());
-			} else {
-				throw new EbeguEntityNotFoundException("authLoginElementToBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxLoginElement
-					.getInstitution().getId());
-			}
-		} else {
-			benutzer.setInstitution(null);
-		}
-
-		if (jaxLoginElement.getTraegerschaft() != null && jaxLoginElement.getTraegerschaft().getId() != null) {
-			final Optional<Traegerschaft> traegerschaftFromDB = traegerschaftService.findTraegerschaft(jaxLoginElement.getTraegerschaft().getId());
-			if (traegerschaftFromDB.isPresent()) {
-				// Traegerschaft darf nicht vom Client ueberschrieben werden
-				benutzer.setTraegerschaft(traegerschaftFromDB.get());
-			} else {
-				throw new EbeguEntityNotFoundException("authLoginElementToBenutzer -> traegerschaft", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxLoginElement
-					.getTraegerschaft().getId());
-			}
-		} else {
-			benutzer.setTraegerschaft(null);
-		}
+		// Berechtigungen
+		final Set<Berechtigung> convertedBerechtigungen = berechtigungenListToEntity(jaxLoginElement.getBerechtigungen(), benutzer.getBerechtigungen(),
+			benutzer);
+		//change the existing collection to reflect changes
+		// Already tested: All existing module of the list remain as they were, that means their data are updated
+		// and the objects are not created again. ID and InsertTimeStamp are the same as before
+		benutzer.getBerechtigungen().clear();
+		benutzer.getBerechtigungen().addAll(convertedBerechtigungen);
 		return benutzer;
+	}
+
+	private Set<Berechtigung> berechtigungenListToEntity(@Nonnull Set<JaxBerechtigung> jaxBerechtigungenList,
+			@Nonnull Set<Berechtigung> berechtigungenList, @Nonnull Benutzer benutzer) {
+
+		final Set<Berechtigung> convertedBerechtigungen = new TreeSet<>();
+		for (final JaxBerechtigung jaxBerechtigung : jaxBerechtigungenList) {
+			final Berechtigung berechtigungToMergeWith = berechtigungenList
+				.stream()
+				.filter(existingBerechtigung -> existingBerechtigung.getId().equals(jaxBerechtigung.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElse(new Berechtigung());
+			final Berechtigung berechtigungToAdd = berechtigungToEntity(jaxBerechtigung, berechtigungToMergeWith);
+			berechtigungToAdd.setBenutzer(benutzer);
+			final boolean added = convertedBerechtigungen.add(berechtigungToAdd);
+			if (!added) {
+				LOGGER.warn("dropped duplicate berechtigung {}", berechtigungToAdd);
+			}
+		}
+		return convertedBerechtigungen;
 	}
 
 	public JaxAuthLoginElement benutzerToAuthLoginElement(Benutzer benutzer) {
@@ -2319,16 +2364,80 @@ public class JaxBConverter {
 		if (benutzer.getMandant() != null) {
 			jaxLoginElement.setMandant(mandantToJAX(benutzer.getMandant()));
 		}
-		if (benutzer.getInstitution() != null) {
-			jaxLoginElement.setInstitution(institutionToJAX(benutzer.getInstitution()));
-		}
-		if (benutzer.getTraegerschaft() != null) {
-			jaxLoginElement.setTraegerschaft(traegerschaftToJAX(benutzer.getTraegerschaft()));
-		}
 		jaxLoginElement.setUsername(benutzer.getUsername());
-		jaxLoginElement.setRole(benutzer.getRole());
-		jaxLoginElement.setAmt(benutzer.getRole().getAmt());
+		jaxLoginElement.setGesperrt(benutzer.getGesperrt());
+		jaxLoginElement.setCurrentBerechtigung(berechtigungToJax(benutzer.getCurrentBerechtigung()));
+		// Berechtigungen
+		final Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
+		if (benutzer.getBerechtigungen() != null) {
+			jaxBerechtigungen.addAll(benutzer.getBerechtigungen().stream().map(this::berechtigungToJax).collect(Collectors.toList()));
+		}
+		jaxLoginElement.setBerechtigungen(jaxBerechtigungen);
 		return jaxLoginElement;
+	}
+
+	public Berechtigung berechtigungToEntity(JaxBerechtigung jaxBerechtigung, Berechtigung berechtigung) {
+		convertAbstractDateRangedFieldsToEntity(jaxBerechtigung, berechtigung);
+		berechtigung.setRole(jaxBerechtigung.getRole());
+
+		// wir muessen Traegerschaft und Institution auch updaten wenn sie null sind. Es koennte auch so aus dem IAM kommen
+		if (jaxBerechtigung.getInstitution() != null && jaxBerechtigung.getInstitution().getId() != null) {
+			final Optional<Institution> institutionFromDB = institutionService.findInstitution(jaxBerechtigung.getInstitution().getId());
+			if (institutionFromDB.isPresent()) {
+				// Institution darf nicht vom Client ueberschrieben werden
+				berechtigung.setInstitution(institutionFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException("berechtigungToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxBerechtigung
+					.getInstitution().getId());
+			}
+		} else {
+			berechtigung.setInstitution(null);
+		}
+
+		if (jaxBerechtigung.getTraegerschaft() != null && jaxBerechtigung.getTraegerschaft().getId() != null) {
+			final Optional<Traegerschaft> traegerschaftFromDB = traegerschaftService.findTraegerschaft(jaxBerechtigung.getTraegerschaft().getId());
+			if (traegerschaftFromDB.isPresent()) {
+				// Traegerschaft darf nicht vom Client ueberschrieben werden
+				berechtigung.setTraegerschaft(traegerschaftFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException("berechtigungToEntity -> traegerschaft", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxBerechtigung
+					.getTraegerschaft().getId());
+			}
+		} else {
+			berechtigung.setTraegerschaft(null);
+		}
+		return berechtigung;
+	}
+
+	public JaxBerechtigung berechtigungToJax(Berechtigung berechtigung) {
+		JaxBerechtigung jaxBerechtigung = new JaxBerechtigung();
+		convertAbstractDateRangedFieldsToJAX(berechtigung, jaxBerechtigung);
+		jaxBerechtigung.setRole(berechtigung.getRole());
+		if (berechtigung.getInstitution() != null) {
+			jaxBerechtigung.setInstitution(institutionToJAX(berechtigung.getInstitution()));
+		}
+		if (berechtigung.getTraegerschaft() != null) {
+			jaxBerechtigung.setTraegerschaft(traegerschaftToJAX(berechtigung.getTraegerschaft()));
+		}
+		return jaxBerechtigung;
+	}
+
+	public JaxBerechtigungHistory berechtigungHistoryToJax(BerechtigungHistory history) {
+		JaxBerechtigungHistory jaxHistory = new JaxBerechtigungHistory();
+		convertAbstractDateRangedFieldsToJAX(history, jaxHistory);
+		Validate.notNull(history.getUserErstellt());
+		jaxHistory.setUserErstellt(history.getUserErstellt());
+		jaxHistory.setUsername(history.getUsername());
+		jaxHistory.setRole(history.getRole());
+		if (history.getInstitution() != null) {
+			jaxHistory.setInstitution(institutionToJAX(history.getInstitution()));
+		}
+		if (history.getTraegerschaft() != null) {
+			jaxHistory.setTraegerschaft(traegerschaftToJAX(history.getTraegerschaft()));
+		}
+		jaxHistory.setGesperrt(history.getGesperrt());
+		jaxHistory.setGeloescht(history.getGeloescht());
+		return jaxHistory;
 	}
 
 	public JaxDokumente dokumentGruendeToJAX(Set<DokumentGrund> dokumentGrunds) {

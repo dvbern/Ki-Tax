@@ -297,6 +297,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.Institution"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdaten"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule"/>
+	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel"/>
 	<entity class="ch.dvbern.ebegu.entities.Betreuung"/>
 	<entity class="ch.dvbern.ebegu.entities.Betreuungspensum"/>
 	<entity class="ch.dvbern.ebegu.entities.BetreuungspensumContainer"/>
@@ -337,5 +338,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.BelegungFerieninselTag"/>
 	<entity class="ch.dvbern.ebegu.entities.Workjob"/>
 	<entity class="ch.dvbern.ebegu.entities.GesuchDeletionLog"/>
+	<entity class="ch.dvbern.ebegu.entities.Berechtigung"/>
+	<entity class="ch.dvbern.ebegu.entities.BerechtigungHistory"/>
 
 </entity-mappings>

@@ -20,9 +20,6 @@ import {MatSort, MatSortable, MatTableDataSource} from '@angular/material';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
-import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -115,11 +112,6 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                 }
                 this.refreshTraegerschaftenList();
                 this.traegerschaft = undefined;
-                if (!traegerschaft.synchronizedWithOpenIdm) {
-                    this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
-                        title: 'TRAEGERSCHAFT_CREATE_SYNCHRONIZE'
-                    });
-                }
             });
         }
     }
@@ -137,15 +129,6 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
 
     setSelectedTraegerschaft(selected: TSTraegerschaft): void {
         this.traegerschaft = angular.copy(selected);
-    }
-
-    private syncWithOpenIdm(): void {
-        this.traegerschaftRS.synchronizeTraegerschaften().then((respone) => {
-            let returnString = respone.data.replace(/(?:\r\n|\r|\n)/g, '<br />');
-            return this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: returnString
-            });
-        });
     }
 
     public showNoContentMessage(): boolean {
