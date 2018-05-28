@@ -17,6 +17,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import './traegerschaftView.less';
 import {NgForm} from '@angular/forms';
 import {MatSort, MatSortable, MatTableDataSource} from '@angular/material';
+import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';

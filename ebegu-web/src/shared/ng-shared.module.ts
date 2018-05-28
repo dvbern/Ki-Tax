@@ -17,7 +17,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
-import {DvDebounceClickDirective} from '../debounceClick/dv-debounce-click.directive';
+import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 
 @NgModule({
     imports: [
@@ -25,14 +25,14 @@ import {DvDebounceClickDirective} from '../debounceClick/dv-debounce-click.direc
         CommonModule,
     ],
     declarations: [
-        DvDebounceClickDirective,
+        DvNgDebounceClickDirective,
         DvNgErrorMessages,
     ],
     entryComponents: [
         DvNgErrorMessages,
     ],
     exports: [
-        DvDebounceClickDirective,
+        DvNgDebounceClickDirective,
         DvNgErrorMessages,
     ],
 })

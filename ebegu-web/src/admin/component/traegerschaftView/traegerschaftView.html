@@ -41,7 +41,7 @@
                             <ng-container matColumnDef="remove">
                                 <mat-header-cell *matHeaderCellDef></mat-header-cell>
                                 <mat-cell *matCellDef="let traegerschaft">
-                                    <button dvDebounceClick
+                                    <button dvNgDebounceClick
                                             (debounceClick)="removeTraegerschaft(traegerschaft)"
                                             class="btn-sm"
                                             [disabled]="isReadonly()">
@@ -103,7 +103,7 @@
                                 <!-- Buttons -->
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <button dvDebounceClick
+                                        <button dvNgDebounceClick
                                                 (debounceClick)="saveTraegerschaft()"
                                                 class="color-success"
                                                 [disabled]="isReadonly()">
@@ -126,7 +126,7 @@
                                     <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Traegerschaft-->
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <button dvDebounceClick
+                                            <button dvNgDebounceClick
                                                     (debounceClick)="createTraegerschaft(); form.reset();"
                                                     class="dv-btn-sm color-success"
                                                     [disabled]="traegerschaft">

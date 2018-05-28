@@ -14,12 +14,12 @@
  */
 
 import {ElementRef} from '@angular/core';
-import {DvDebounceClickDirective} from './dv-debounce-click.directive';
+import {DvNgDebounceClickDirective} from './dv-ng-debounce-click.directive';
 
-describe('DebounceClikDirective', () => {
+describe('DebounceClickDirective', () => {
     it('should create an instance', () => {
         let domElement = new ElementRef(undefined);
-        const directive = new DvDebounceClickDirective(domElement);
+        const directive = new DvNgDebounceClickDirective(domElement);
         expect(directive).toBeTruthy();
     });
 });

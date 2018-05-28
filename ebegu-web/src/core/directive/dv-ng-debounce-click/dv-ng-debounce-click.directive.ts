@@ -31,9 +31,9 @@ import {Subscription} from 'rxjs/Subscription';
  * //https://coryrylan.com/blog/creating-a-custom-debounce-click-directive-in-angular
  */
 @Directive({
-    selector: '[dvDebounceClick]'
+    selector: '[dvNgDebounceClick]'
 })
-export class DvDebounceClickDirective implements OnInit, OnDestroy {
+export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
 
     @Input() delay = 1000;
     @Output() debounceClick = new EventEmitter();
