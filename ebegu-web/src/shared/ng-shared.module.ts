@@ -17,6 +17,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
+import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 
 @NgModule({
@@ -27,6 +28,7 @@ import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click
     declarations: [
         DvNgDebounceClickDirective,
         DvNgErrorMessages,
+        DvNgShowElementDirective,
     ],
     entryComponents: [
         DvNgErrorMessages,
@@ -34,6 +36,7 @@ import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click
     exports: [
         DvNgDebounceClickDirective,
         DvNgErrorMessages,
+        DvNgShowElementDirective,
     ],
 })
 export class NgSharedModule {
