@@ -176,7 +176,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(gesuch.isPresent());
 		Assert.assertEquals(insertedGesuch.getFall().getId(), gesuch.get().getFall().getId());
 
-		gesuch.get().setFall(persistence.persist(TestDataUtil.createDefaultFall()));
+		gesuch.get().setDossier(persistence.persist(TestDataUtil.createDefaultDossier()));
 		final Gesuch updated = gesuchService.updateGesuch(gesuch.get(), false, null);
 		Assert.assertEquals(updated.getFall().getId(), gesuch.get().getFall().getId());
 
@@ -658,7 +658,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Institution institutionToSet = gesuch.extractAllBetreuungen().get(0).getInstitutionStammdaten().getInstitution();
 		final Benutzer saInst = loginAsSachbearbeiterInst("sainst", institutionToSet);
 
-		Betreuungsmitteilung mitteilung = TestDataUtil.createBetreuungmitteilung(mutation.getFall(),
+		Betreuungsmitteilung mitteilung = TestDataUtil.createBetreuungmitteilung(mutation.getDossier(),
 			userGS, MitteilungTeilnehmerTyp.JUGENDAMT, saInst, MitteilungTeilnehmerTyp.INSTITUTION);
 		final Betreuung betreuungMutation = mutation.extractAllBetreuungen().get(0);
 		mitteilung.setBetreuung(betreuungMutation);
@@ -853,7 +853,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		gesuch.setEingangsart(eingangsart);
 		gesuch.setStatus(status);
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setFall(persistence.persist(gesuch.getFall()));
+		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
 		gesuchService.createGesuch(gesuch);
 		return gesuch;
 	}
@@ -879,7 +879,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	private Gesuch persistEinkommensverschlechterungEntity() {
 		final Gesuch gesuch = TestDataUtil.createDefaultEinkommensverschlechterungsGesuch();
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setFall(persistence.persist(gesuch.getFall()));
+		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
 		gesuchService.createGesuch(gesuch);
 		return gesuch;
 	}

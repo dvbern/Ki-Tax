@@ -23,7 +23,7 @@ import java.util.HashSet;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -124,9 +124,9 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 	private Gesuch createGesuch() {
 		Gesuch gesuch = new Gesuch();
-		final Fall fall = TestDataUtil.createDefaultFall();
-		fall.setFallNummer(2);
-		gesuch.setFall(fall);
+		final Dossier dossier = TestDataUtil.createDefaultDossier();
+		dossier.getFall().setFallNummer(2);
+		gesuch.setDossier(dossier);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.initFamiliensituationContainer();

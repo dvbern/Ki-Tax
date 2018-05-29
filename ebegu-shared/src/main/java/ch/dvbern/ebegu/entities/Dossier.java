@@ -33,6 +33,8 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 @Entity
 public class Dossier extends AbstractEntity {
 
+	private static final long serialVersionUID = -2511152887055775241L;
+
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_fall_id"))

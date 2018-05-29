@@ -267,7 +267,7 @@ public final class TestDataUtil {
 	public static Gesuch createDefaultGesuch(AntragStatus status) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(createDefaultGesuchsperiode());
-		gesuch.setFall(createDefaultFall());
+		gesuch.setDossier(createDefaultDossier());
 		gesuch.setEingangsdatum(LocalDate.now());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
 		gesuch.setStatus(status);
@@ -903,6 +903,7 @@ public final class TestDataUtil {
 		testfall.createFall(verantwortlicher);
 		testfall.createGesuch(eingangsdatum);
 		persistence.persist(testfall.getGesuch().getFall());
+		persistence.persist(testfall.getGesuch().getDossier());
 		persistence.persist(testfall.getGesuch().getGesuchsperiode());
 		persistence.persist(testfall.getGesuch());
 		Gesuch gesuch = testfall.fillInGesuch();
@@ -944,6 +945,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		persistence.persist(gesuch.getFall());
+		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
 		return gesuch;
@@ -952,6 +954,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence, AntragStatus status) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		persistence.persist(gesuch.getFall());
+		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
 		return gesuch;
@@ -1144,17 +1147,18 @@ public final class TestDataUtil {
 
 	public static Gesuch createGesuch(Fall fall, Gesuchsperiode periodeToUpdate, AntragStatus status) {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setFall(fall);
+		gesuch.setDossier(new Dossier());
+		gesuch.getDossier().setFall(fall);
 		gesuch.setGesuchsperiode(periodeToUpdate);
 		gesuch.setStatus(status);
 		return gesuch;
 	}
 
 	@SuppressWarnings("MagicNumber")
-	public static Betreuungsmitteilung createBetreuungmitteilung(Fall fall, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
+	public static Betreuungsmitteilung createBetreuungmitteilung(Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
 		Benutzer sender, MitteilungTeilnehmerTyp senderTyp) {
 		final Betreuungsmitteilung mitteilung = new Betreuungsmitteilung();
-		fillOutMitteilung(fall, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
+		fillOutMitteilung(dossier, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
 
 		Set<BetreuungsmitteilungPensum> betPensen = new HashSet<>();
 
@@ -1169,15 +1173,16 @@ public final class TestDataUtil {
 		return mitteilung;
 	}
 
-	public static Mitteilung createMitteilung(Fall fall, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
+	public static Mitteilung createMitteilung(Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
 		Benutzer sender, MitteilungTeilnehmerTyp senderTyp) {
 		Mitteilung mitteilung = new Mitteilung();
-		fillOutMitteilung(fall, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
+		fillOutMitteilung(dossier, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
 		return mitteilung;
 	}
 
-	private static void fillOutMitteilung(Fall fall, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp, Benutzer sender, MitteilungTeilnehmerTyp senderTyp, Mitteilung mitteilung) {
-		mitteilung.setFall(fall);
+	private static void fillOutMitteilung(Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp, Benutzer sender, MitteilungTeilnehmerTyp
+		senderTyp, Mitteilung mitteilung) {
+		mitteilung.setDossier(dossier);
 		mitteilung.setEmpfaenger(empfaenger);
 		mitteilung.setSender(sender);
 		mitteilung.setMitteilungStatus(MitteilungStatus.ENTWURF);
@@ -1236,7 +1241,7 @@ public final class TestDataUtil {
 		gesuch.setEingangsart(Eingangsart.PAPIER);
 		gesuch.setStatus(status);
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setFall(persistence.persist(gesuch.getFall()));
+		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());

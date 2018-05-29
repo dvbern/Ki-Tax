@@ -101,7 +101,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		kind.getKindJA().setPensumFachstelle(pensumFachstelle2);
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setFall(persistence.persist(gesuch.getFall()));
+		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
 		kind.setGesuch(persistence.persist(gesuch));
 		betreuung.setKind(persistence.persist(kind));
 		betreuung.setInstitutionStammdaten(instStammdaten);

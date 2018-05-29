@@ -117,7 +117,20 @@ public abstract class AbstractTestfall {
 	}
 
 	public Fall createFall() {
-		return new Fall();
+		fall = new Fall()
+		return fall;
+	}
+
+	public Dossier createDossier(Benutzer verantwortlicher) {
+		dossier = new Dossier();
+		dossier.setVerantwortlicherBG(verantwortlicher);
+		dossier.setTimestampErstellt(LocalDateTime.now().minusDays(7));
+		return dossier;
+	}
+
+	public Dossier createDossier() {
+		dossier = new Dossier();
+		return dossier;
 	}
 
 	public void createGesuch(@Nullable LocalDate eingangsdatum, AntragStatus status) {
@@ -141,7 +154,7 @@ public abstract class AbstractTestfall {
 			gesuch.setId(fixId);
 		}
 		gesuch.setGesuchsperiode(gesuchsperiode);
-		gesuch.setFall(fall);
+		gesuch.setDossier(dossier);
 		gesuch.setEingangsdatum(eingangsdatum);
 		if (eingangsdatum != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -379,6 +392,14 @@ public abstract class AbstractTestfall {
 
 	public void setFall(Fall fall) {
 		this.fall = fall;
+	}
+
+	public Dossier getDossier() {
+		return dossier;
+	}
+
+	public void setDossier(Dossier dossier) {
+		this.dossier = dossier;
 	}
 
 	public Gesuch getGesuch() {

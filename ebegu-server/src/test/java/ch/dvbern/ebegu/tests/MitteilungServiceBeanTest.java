@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -88,6 +89,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Traegerschaft traegerschaft;
 	private Mandant mandant;
 	private Fall fall;
+	private Dossier dossier;
 	private Benutzer empfaengerJA;
 	private Benutzer empfaengerSCH;
 	private Benutzer empfaengerINST;
@@ -101,7 +103,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		empfaengerSCH = TestDataUtil.createBenutzer(UserRole.SCHULAMT, "scju", null, null, mandant);
 		persistence.persist(empfaengerSCH);
 
-		fall = TestDataUtil.createDefaultFall();
+		dossier = TestDataUtil.createDefaultDossier();
+		fall = dossier.getFall();
 		fall.setMandant(mandant);
 		fall.setVerantwortlicher(empfaengerJA);
 		fall.setVerantwortlicherSCH(empfaengerSCH);
@@ -119,7 +122,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testCreateMitteilung() {
 		prepareDependentObjects("gesuchst");
-		Mitteilung mitteilung = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		final Mitteilung persistedMitteilung = mitteilungService.sendMitteilung(mitteilung);
 
@@ -135,7 +138,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test(expected = EJBAccessException.class)
 	public void testSendMitteilungAsDifferentGS() {
 		prepareDependentObjects("gesuchst2");
-		Mitteilung mitteilung = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		loginAsGesuchsteller("gesuchst"); // send as GS a different user gesuchst. (The GS used for the mitteilung is "gsst")
 		final Mitteilung persistedMitteilung = mitteilungService.sendMitteilung(mitteilung);
@@ -144,7 +147,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSetMitteilungGelesen() {
 		prepareDependentObjects("gesuchst");
-		Mitteilung mitteilung = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
 		final Mitteilung persistedMitteilung = mitteilungService.sendMitteilung(mitteilung);
@@ -164,7 +167,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSetMitteilungErledigt() {
 		prepareDependentObjects("gesuchst");
-		Mitteilung mitteilung = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
 		final Mitteilung persistedMitteilung = mitteilungService.sendMitteilung(mitteilung);
@@ -186,12 +189,12 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testGetMitteilungenForCurrentRole() throws LoginException {
 		prepareDependentObjects("gesuchst");
 		loginAsGesuchsteller("gesuchst");
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilungService.sendMitteilung(mitteilung1);
 
 		loginAsSachbearbeiterTraegerschaft("satraeg", traegerschaft);
-		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(fall, empfaengerINST, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerINST, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.INSTITUTION);
 		mitteilungService.sendMitteilung(mitteilung2);
 
@@ -206,13 +209,13 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testGetNewMitteilungenForCurrentRolle() throws LoginException {
 		prepareDependentObjects("gesuchst");
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung1.setMessage("Neue Mitteilung");
 		persistence.persist(mitteilung1);
 
-		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung2.setMitteilungStatus(MitteilungStatus.GELESEN);
 		persistence.persist(mitteilung2);
@@ -231,11 +234,11 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testGetMitteilungenForPosteingang() throws LoginException {
 		prepareDependentObjects("gesuchst");
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
 
-		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(fall, null, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, null, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung2 = mitteilungService.sendMitteilung(mitteilung2);
 
@@ -255,16 +258,16 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		fall.setBesitzer(sender);
 		fall = persistence.merge(fall);
 
-		Mitteilung entwurf = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung entwurf = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		final Mitteilung persistedEntwurf = mitteilungService.saveEntwurf(entwurf);
 
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1.setMitteilungStatus(MitteilungStatus.NEU);
 		final Mitteilung mitFromGSToJA = persistence.persist(mitteilung1);
 
-		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(fall, sender, MitteilungTeilnehmerTyp.GESUCHSTELLER,
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, sender, MitteilungTeilnehmerTyp.GESUCHSTELLER,
 			empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT);
 		mitteilung2.setMitteilungStatus(MitteilungStatus.NEU);
 		final Mitteilung mitFromJAToGS = persistence.persist(mitteilung2);
@@ -330,7 +333,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchService.updateGesuch(gesuch1, true, null);
 		final Optional<Gesuch> mutationOpt = gesuchService.antragMutieren(gesuch1.getId(), LocalDate.now());
 		final Gesuch mutation = gesuchService.createGesuch(mutationOpt.get());
-		final Betreuungsmitteilung mitteilung = TestDataUtil.createBetreuungmitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		final Betreuungsmitteilung mitteilung = TestDataUtil.createBetreuungmitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.INSTITUTION);
 
 		final Set<BetreuungsmitteilungPensum> betPensen = new HashSet<>();
@@ -377,14 +380,14 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsSachbearbeiterInst("sainst", betreuung.getInstitutionStammdaten().getInstitution());
 
 		//create a first mitteilung
-		final Betreuungsmitteilung oldMitteilung = TestDataUtil.createBetreuungmitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		final Betreuungsmitteilung oldMitteilung = TestDataUtil.createBetreuungmitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.INSTITUTION);
 		oldMitteilung.setBetreuung(betreuung);
 		final Betreuungsmitteilung persistedFirstMitteilung = mitteilungService.sendBetreuungsmitteilung(oldMitteilung);
 		final LocalDateTime oldSentDatum = persistedFirstMitteilung.getSentDatum();
 
 		//create a second mitteilung, which will be the newest
-		final Betreuungsmitteilung newMitteilung = TestDataUtil.createBetreuungmitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		final Betreuungsmitteilung newMitteilung = TestDataUtil.createBetreuungmitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.INSTITUTION);
 		newMitteilung.setBetreuung(betreuung);
 		final Betreuungsmitteilung persistedSecondMitteilung = mitteilungService.sendBetreuungsmitteilung(newMitteilung);
@@ -405,7 +408,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Als GS einloggen und eine Meldung schreiben
 		prepareDependentObjects("gesuchst");
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
 		Benutzer empfaengerUrspruenglich = mitteilung1.getEmpfaenger();
@@ -424,7 +427,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Als GS einloggen und eine Meldung schreiben
 		prepareDependentObjects("gesuchst");
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
 
@@ -442,7 +445,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		fall.setVerantwortlicher(null);
 		persistence.merge(fall);
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
 		Benutzer empfaengerUrspruenglich = mitteilung1.getEmpfaenger();
@@ -461,7 +464,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Als GS einloggen und eine Meldung schreiben
 		prepareDependentObjects("gesuchst");
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(fall, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
 

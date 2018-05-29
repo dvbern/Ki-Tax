@@ -192,7 +192,7 @@ public class FamilienabzugAbschnittRuleTest {
 	@Test
 	public void testCalculateFamiliengroesseNoGesuchsteller() {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setFall(TestDataUtil.createDefaultFall());
+		gesuch.setDossier(TestDataUtil.createDefaultDossier());
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
 		Assert.assertEquals(0, familiengroesse, DELTA);

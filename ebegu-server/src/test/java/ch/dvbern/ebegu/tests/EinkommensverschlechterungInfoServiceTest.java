@@ -52,7 +52,7 @@ public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLogi
 	@Test
 	public void createEinkommensverschlechterungInfoTest() {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		gesuch.setFall(persistence.persist(TestDataUtil.createDefaultFall()));
+		gesuch.setDossier(persistence.persist(TestDataUtil.createDefaultDossier()));
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
 		gesuch = persistence.persist(gesuch);
 
@@ -70,7 +70,7 @@ public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLogi
 
 	private EinkommensverschlechterungInfoContainer persistAndGetEinkommensverschlechterungInfoOnGesuch() {
 		Gesuch gesuch = TestDataUtil.createDefaultEinkommensverschlechterungsGesuch();
-		gesuch.setFall(persistence.persist(TestDataUtil.createDefaultFall()));
+		gesuch.setDossier(persistence.persist(TestDataUtil.createDefaultDossier()));
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
 		gesuch = persistence.persist(gesuch);
 
