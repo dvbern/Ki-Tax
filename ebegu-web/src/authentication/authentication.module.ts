@@ -13,9 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {downgradeComponent} from '@angular/upgrade/static';
 import HttpAuthInterceptor from './service/HttpAuthInterceptor';
-import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
 import {authenticationRun} from './authentication.route';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import HttpBuffer from './service/HttpBuffer';
@@ -30,9 +28,5 @@ export const EbeguAuthentication: angular.IModule =
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
         .component('startView', new StartComponentConfig())
-        .directive(
-            'dummyAuthenticationView',
-            downgradeComponent({component: DummyAuthenticationListViewComponent}) as angular.IDirectiveFactory
-        )
         .component('schulungView', new SchulungComponentConfig())
         .component('authenticationView', new AuthenticationComponentConfig());
