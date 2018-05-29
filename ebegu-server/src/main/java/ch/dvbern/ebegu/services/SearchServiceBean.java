@@ -46,6 +46,8 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -155,7 +157,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		@SuppressWarnings("unchecked") // Je nach Abfrage ist das Query String oder Long
 		Root<Gesuch> root = query.from(Gesuch.class);
 		// Join all the relevant relations (except gesuchsteller join, which is only done when needed)
-		Join<Gesuch, Fall> fall = root.join(Gesuch_.fall, JoinType.INNER);
+		Join<Gesuch, Dossier> dossier = root.join(Gesuch_.dossier, JoinType.INNER);
+		Join<Dossier, Fall> fall = dossier.join(Dossier_.fall);
+
 		Join<Fall, Benutzer> verantwortlicher = fall.join(Fall_.verantwortlicher, JoinType.LEFT);
 		Join<Fall, Benutzer> verantwortlicherSCH = fall.join(Fall_.verantwortlicherSCH, JoinType.LEFT);
 		Join<Gesuch, Gesuchsperiode> gesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);
@@ -348,7 +352,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * nur VerantwortlicherJA ist gesetzt  -> JA-Gesuche
 	 * nur VerantwortlicherSCH ist gesetzt -> SCH-Gesuche
 	 */
-	private Predicate createPredicateJAOrMischGesuche(CriteriaBuilder cb, Join<Gesuch, Fall> fall) {
+	private Predicate createPredicateJAOrMischGesuche(CriteriaBuilder cb, Join<Dossier, Fall> fall) {
 		final Predicate predicateIsVerantwortlicherJA = cb.isNotNull(fall.get(Fall_.verantwortlicher));
 		final Predicate predicateIsVerantwortlicherSCH = cb.isNotNull(fall.get(Fall_.verantwortlicherSCH));
 
@@ -364,7 +368,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * nur VerantwortlicherJA ist gesetzt  -> JA-Gesuche
 	 * nur VerantwortlicherSCH ist gesetzt -> SCH-Gesuche
 	 */
-	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Fall> fall) {
+	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Dossier, Fall> fall) {
 		final Predicate predicateIsVerantwortlicherJA = cb.isNotNull(fall.get(Fall_.verantwortlicher));
 		final Predicate predicateIsVerantwortlicherSCH = cb.isNotNull(fall.get(Fall_.verantwortlicherSCH));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
@@ -436,7 +440,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		if (antragTableFilterDto.getSort() != null && antragTableFilterDto.getSort().getPredicate() != null) {
 			switch (antragTableFilterDto.getSort().getPredicate()) {
 			case "fallNummer":
-				expression = root.get(Gesuch_.fall).get(Fall_.fallNummer);
+				expression = root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer);
 				break;
 			case "familienName":
 				expression = root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA).get(Gesuchsteller_.nachname);
@@ -482,7 +486,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				}
 				break;
 			case "verantwortlicher":
-				expression = root.get(Gesuch_.fall).get(Fall_.verantwortlicher).get(Benutzer_.nachname);
+				expression = root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.verantwortlicher).get(Benutzer_.nachname);
 				break;
 			case "kinder":
 				expression = kinder.get(Kind_.vorname);
@@ -493,7 +497,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			default:
 				LOG.warn("Using default sort by FallNummer because there is no specific clause for predicate {}",
 					antragTableFilterDto.getSort().getPredicate());
-				expression = root.get(Gesuch_.fall).get(Fall_.fallNummer);
+				expression = root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer);
 				break;
 			}
 			query.orderBy(antragTableFilterDto.getSort().getReverse() ? cb.asc(expression) : cb.desc(expression));

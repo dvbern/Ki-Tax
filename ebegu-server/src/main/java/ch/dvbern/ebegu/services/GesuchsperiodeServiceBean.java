@@ -36,6 +36,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -234,7 +235,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 			Root<Gesuch> root = query.from(Gesuch.class);
-			Predicate fallPredicate = cb.equal(root.get(Gesuch_.fall), fall);
+			Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 			Predicate gesuchsperiodePredicate = root.get(Gesuch_.gesuchsperiode).in(gesuchsperiodenImStatus);
 			// Es interessieren nur die Gesuche, die entweder Papier oder Online und freigegeben sind, also keine, die in Bearbeitung GS sind.
 

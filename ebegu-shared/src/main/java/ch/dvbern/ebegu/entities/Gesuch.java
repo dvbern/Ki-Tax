@@ -77,7 +77,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @EntityListeners({ GesuchStatusListener.class , GesuchGueltigListener.class})
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
+	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )
 public class Gesuch extends AbstractEntity implements Searchable {
@@ -86,9 +86,9 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuch_fall_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuch_dossier_id"))
 	@IndexedEmbedded
-	private Fall fall;
+	private Dossier dossier;
 
 	@NotNull
 	@ManyToOne(optional = false)
@@ -328,11 +328,15 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public Fall getFall() {
-		return fall;
+		return dossier.getFall();
 	}
 
-	public final void setFall(Fall fall) {
-		this.fall = fall;
+	public Dossier getDossier() {
+		return dossier;
+	}
+
+	public void setDossier(Dossier dossier) {
+		this.dossier = dossier;
 	}
 
 	public Gesuchsperiode getGesuchsperiode() {
@@ -692,7 +696,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public Gesuch copyForMutation(@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsart) {
 		super.copyForMutation(mutation);
 		mutation.setEingangsart(eingangsart);
-		mutation.setFall(this.getFall());
+		mutation.setDossier(this.getDossier());
 		mutation.setGesuchsperiode(this.getGesuchsperiode());
 		mutation.setEingangsdatum(null);
 		mutation.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
@@ -738,7 +742,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public Gesuch copyForErneuerung(@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
 		super.copyForErneuerung(folgegesuch);
 		folgegesuch.setEingangsart(eingangsart);
-		folgegesuch.setFall(this.getFall());
+		folgegesuch.setDossier(this.getDossier());
 		folgegesuch.setGesuchsperiode(gesuchsperiode);
 		folgegesuch.setEingangsdatum(null);
 		folgegesuch.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);

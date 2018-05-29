@@ -46,6 +46,8 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -210,7 +212,8 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<Gesuch> root = query.from(Gesuch.class);
 		ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
-		Join<Gesuch, Fall> fallJoin = root.join(Gesuch_.fall, JoinType.LEFT);
+		Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
 		Join<Gesuch, GesuchstellerContainer> gesuchstellerJoin = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
 		Join<GesuchstellerContainer, Gesuchsteller> gesDataJoin = gesuchstellerJoin.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
 		Predicate gesuchOfFall = cb.equal(fallJoin.get(Fall_.id), fallIdParam);

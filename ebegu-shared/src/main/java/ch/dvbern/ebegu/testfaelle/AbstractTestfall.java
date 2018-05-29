@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
@@ -91,6 +92,7 @@ public abstract class AbstractTestfall {
 
 	protected String fixId = null;
 	protected Fall fall = null;
+	protected Dossier dossier = null;
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
 
@@ -127,6 +129,11 @@ public abstract class AbstractTestfall {
 		// Fall
 		if (fall == null) {
 			fall = createFall(null);
+		}
+		// Dossier
+		if (dossier == null) {
+			dossier = new Dossier();
+			dossier.setFall(fall);
 		}
 		// Gesuch
 		gesuch = new Gesuch();

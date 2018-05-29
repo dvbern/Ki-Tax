@@ -67,6 +67,8 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -486,10 +488,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN })
 	public void removeAllMitteilungenForFall(@Nonnull Fall fall) {
-		Collection<Mitteilung> mitteilungen = criteriaQueryHelper.getEntitiesByAttribute(Mitteilung.class, fall, Mitteilung_.fall);
-		for (Mitteilung mitteilung : mitteilungen) {
-			authorizer.checkWriteAuthorizationMitteilung(mitteilung);
-			persistence.remove(Mitteilung.class, mitteilung.getId());
+		// Alle Mitteilungen aller Dossiers dieses Falls
+		Collection<Dossier> dossiersOfFall = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
+		for (Dossier dossier : dossiersOfFall) {
+			Collection<Mitteilung> mitteilungen = criteriaQueryHelper.getEntitiesByAttribute(Mitteilung.class, dossier, Mitteilung_.dossier);
+			for (Mitteilung mitteilung : mitteilungen) {
+				authorizer.checkWriteAuthorizationMitteilung(mitteilung);
+				persistence.remove(Mitteilung.class, mitteilung.getId());
+			}
 		}
 	}
 
@@ -542,7 +548,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 		List<Predicate> predicates = new ArrayList<>();
 
-		Predicate predicateFall = cb.equal(root.get(Mitteilung_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Mitteilung_.dossier).get(Dossier_.fall), fall);
 		predicates.add(predicateFall);
 
 		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
@@ -746,7 +752,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 
 		// Join all the relevant relations
-		Join<Mitteilung, Fall> joinFall = root.join(Mitteilung_.fall, JoinType.INNER);
+		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
+
 		Join<Fall, Benutzer> joinBesitzer = joinFall.join(Fall_.besitzer, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinSender = root.join(Mitteilung_.sender, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinEmpfaenger = root.join(Mitteilung_.empfaenger, JoinType.LEFT);
@@ -882,7 +890,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@SuppressWarnings("ReuseOfLocalVariable")
 	private void constructOrderByClause(@Nonnull MitteilungTableFilterDTO tableFilterDTO, CriteriaBuilder cb, CriteriaQuery query,
-		Root<Mitteilung> root, Join<Mitteilung, Fall> joinFall, Join<Fall, Benutzer> joinBesitzer,
+		Root<Mitteilung> root, Join<Dossier, Fall> joinFall, Join<Fall, Benutzer> joinBesitzer,
 		Join<Mitteilung, Benutzer> joinSender, Join<Mitteilung, Benutzer> joinEmpfaenger, SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen) {
 		Expression<?> expression = null;
 		if (tableFilterDTO.getSort() != null && tableFilterDTO.getSort().getPredicate() != null) {

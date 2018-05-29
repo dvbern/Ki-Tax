@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EbeguParameter;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
@@ -275,6 +276,12 @@ public final class TestDataUtil {
 
 	public static Fall createDefaultFall() {
 		return new Fall();
+	}
+
+	public static Dossier createDefaultDossier() {
+		Dossier dossier = new Dossier();
+		dossier.setFall(createDefaultFall());
+		return dossier;
 	}
 
 	public static Mandant createDefaultMandant() {

@@ -35,6 +35,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -181,7 +182,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 		query.multiselect(
 			joinGesuch.get(Gesuch_.id),
-			joinGesuch.get(Gesuch_.fall).get(Fall_.fallNummer),
+			joinGesuch.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer),
 			cb.literal(kindContainer.getKindNummer()),
 			root.get(KindContainer_.kindNummer),
 			joinGesuch.get(Gesuch_.timestampErstellt)
@@ -192,7 +193,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		Predicate predicateVorname = cb.equal(joinKind.get(Kind_.vorname), kindContainer.getKindJA().getVorname());
 		Predicate predicateGeburtsdatum = cb.equal(joinKind.get(Kind_.geburtsdatum), kindContainer.getKindJA().getGeburtsdatum());
 		// Aber nicht vom selben Fall
-		Predicate predicateOtherFall = cb.notEqual(joinGesuch.get(Gesuch_.fall), kindContainer.getGesuch().getFall());
+		Predicate predicateOtherFall = cb.notEqual(joinGesuch.get(Gesuch_.dossier).get(Dossier_.fall), kindContainer.getGesuch().getFall());
 		// Nur das zuletzt gueltige Gesuch
 		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.FOR_KIND_DUBLETTEN);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.timestampErstellt)));

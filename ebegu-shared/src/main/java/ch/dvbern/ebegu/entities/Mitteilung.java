@@ -53,8 +53,8 @@ public class Mitteilung extends AbstractEntity {
 
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_fall_id"))
-	private Fall fall;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_dossier_id"))
+	private Dossier dossier;
 
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_betreuung_id"))
@@ -101,11 +101,15 @@ public class Mitteilung extends AbstractEntity {
 
 	@NotNull
 	public Fall getFall() {
-		return fall;
+		return dossier.getFall();
 	}
 
-	public void setFall(@NotNull Fall fall) {
-		this.fall = fall;
+	public Dossier getDossier() {
+		return dossier;
+	}
+
+	public void setDossier(Dossier dossier) {
+		this.dossier = dossier;
 	}
 
 	public Betreuung getBetreuung() {

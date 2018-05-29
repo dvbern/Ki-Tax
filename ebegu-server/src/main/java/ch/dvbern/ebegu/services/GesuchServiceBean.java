@@ -65,6 +65,8 @@ import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -293,7 +295,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Predicate predicateId = root.get(Gesuch_.id).in(gesuchIds);
 		query.where(predicateId);
-		query.orderBy(cb.asc(root.get(Gesuch_.fall).get(Fall_.id)));
+		query.orderBy(cb.asc(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.id)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query);
 		return criteriaResults.stream()
 			.filter(gesuch -> this.booleanAuthorizer.hasReadAuthorization(gesuch))
@@ -321,12 +323,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
-		Predicate predicateVerantwortlicher = cb.equal(root.get(Gesuch_.fall).get(Fall_.verantwortlicher), benutzer);
+		Predicate predicateVerantwortlicher = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.verantwortlicher), benutzer);
 		// Gesuchsperiode darf nicht geschlossen sein
 		Predicate predicateGesuchsperiode = root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.status).in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
 
 		query.where(predicateStatus, predicateVerantwortlicher, predicateGesuchsperiode);
-		query.orderBy(cb.asc(root.get(Gesuch_.fall).get(Fall_.fallNummer)));
+		query.orderBy(cb.asc(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -408,7 +410,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			Root<Gesuch> root = query.from(Gesuch.class);
 			// Fall
-			Predicate predicate = cb.equal(root.get(Gesuch_.fall), fallOptional.get());
+			Predicate predicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fallOptional.get());
 			// Keine Papier-Antraege, die noch nicht verfuegt sind
 			Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER);
 			Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
@@ -465,7 +467,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				institutionstammdatenJoin = betreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
 				institutionJoin = institutionstammdatenJoin.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 			}
-			Join<Gesuch, Fall> fallJoin = root.join(Gesuch_.fall);
+			Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier);
+			Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
+
 			Join<Fall, Benutzer> besitzerJoin = fallJoin.join(Fall_.besitzer, JoinType.LEFT);
 
 			query.multiselect(
@@ -484,7 +488,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
 
 			List<Predicate> predicatesToUse = new ArrayList<>();
-			Predicate fallPredicate = cb.equal(root.get(Gesuch_.fall).get(AbstractEntity_.id), fallIdParam);
+			Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallIdParam);
 			predicatesToUse.add(fallPredicate);
 
 			// Alle AUSSER Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
@@ -541,7 +545,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
 
-		Predicate fallPredicate = cb.equal(root.get(Gesuch_.fall).get(AbstractEntity_.id), fallIdParam);
+		Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallIdParam);
 		query.where(fallPredicate);
 		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
 		TypedQuery<String> q = persistence.getEntityManager().createQuery(query);
@@ -561,7 +565,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
-		Predicate fallPredicate = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
 		query.where(fallPredicate, gesuchsperiodePredicate);
@@ -822,7 +826,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateMutation = root.get(Gesuch_.typ).in(AntragTyp.MUTATION);
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 
 		query.where(predicateMutation, predicateStatus, predicateGesuchsperiode, predicateFall);
 		query.select(root);
@@ -838,7 +842,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateMutation = root.get(Gesuch_.typ).in(AntragTyp.ERNEUERUNGSGESUCH);
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getInBearbeitungGSStates());
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 
 		query.where(predicateMutation, predicateStatus, predicateGesuchsperiode, predicateFall);
 		query.select(root);
@@ -910,7 +914,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiodeParam);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall), fallParam);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fallParam);
 		Predicate predicateGueltig = cb.equal(root.get(Gesuch_.gueltig), Boolean.TRUE);
 
 		query.where(predicateStatus, predicateGesuchsperiode, predicateGueltig, predicateFall);
@@ -968,7 +972,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Root<Gesuch> root = query.from(Gesuch.class);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 
 		query.where(predicateGesuchsperiode, predicateFall);
 		query.select(root);
@@ -993,7 +997,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Root<Gesuch> root = query.from(Gesuch.class);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFallNummer = cb.equal(root.get(Gesuch_.fall).get(Fall_.fallNummer), fallnummer);
+		Predicate predicateFallNummer = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer), fallnummer);
 		Predicate predicateFinSit = root.get(Gesuch_.finSitStatus).isNotNull();
 
 		query.where(predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
@@ -1015,7 +1019,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 
 		query.where(predicateFall);
 		query.select(root);
@@ -1042,7 +1046,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 		Predicate predicateAntragStatus = join.get(AntragStatusHistory_.status).in(AntragStatus.FIRST_STATUS_OF_VERFUEGT);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 
 		query.where(predicateStatus, predicateGesuchsperiode, predicateAntragStatus, predicateFall);
 		query.select(root.get(Gesuch_.id));
@@ -1490,7 +1494,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
-		Predicate fallPredicate = cb.equal(root.get(Gesuch_.fall), fall);
+		Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
 		query.where(fallPredicate, gesuchsperiodePredicate);

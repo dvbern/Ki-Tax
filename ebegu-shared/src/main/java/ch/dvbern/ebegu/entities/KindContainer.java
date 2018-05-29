@@ -91,7 +91,7 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	@Column(nullable = false)
 	private Integer nextNumberBetreuung = 1;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "kind")
@@ -144,11 +144,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		this.nextNumberBetreuung = nextNumberBetreuung;
 	}
 
+	@Nonnull
 	public Set<Betreuung> getBetreuungen() {
 		return betreuungen;
 	}
 
-	public void setBetreuungen(Set<Betreuung> betreuungen) {
+	public void setBetreuungen(@Nonnull Set<Betreuung> betreuungen) {
 		this.betreuungen = betreuungen;
 	}
 
@@ -174,11 +175,9 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		super.copyForMutation(mutation);
 		mutation.setKindJA(this.getKindJA().copyForMutation(new Kind()));
 		mutation.setNextNumberBetreuung(this.getNextNumberBetreuung());
-		if (this.getBetreuungen() != null) {
-			mutation.setBetreuungen(new TreeSet<>());
-			for (Betreuung betreuung : this.getBetreuungen()) {
-				mutation.getBetreuungen().add(betreuung.copyForMutation(new Betreuung(), mutation, eingangsart));
-			}
+		mutation.setBetreuungen(new TreeSet<>());
+		for (Betreuung betreuung : this.getBetreuungen()) {
+			mutation.getBetreuungen().add(betreuung.copyForMutation(new Betreuung(), mutation, eingangsart));
 		}
 		return copyForMutationOrErneuerung(mutation, gesuchMutation);
 	}
