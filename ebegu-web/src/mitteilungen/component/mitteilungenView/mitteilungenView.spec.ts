@@ -75,7 +75,7 @@ describe('mitteilungenView', function () {
 
     let assertMitteilungContent = function () {
         expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
-        expect(controller.getCurrentMitteilung().fall).toBe(fall);
+        expect(controller.getCurrentMitteilung().dossier.fall).toBe(fall);
         // diese Parameter muessen im Server gesetzt werden
         expect(controller.getCurrentMitteilung().empfaenger).toBeUndefined();
         expect(controller.getCurrentMitteilung().senderTyp).toBeUndefined();
@@ -176,7 +176,7 @@ describe('mitteilungenView', function () {
 
     function compareCommonAttributes(currentUser: TSUser): void {
         expect(controller.getCurrentMitteilung()).toBeDefined();
-        expect(controller.getCurrentMitteilung().fall).toBe(fall);
+        expect(controller.getCurrentMitteilung().dossier.fall).toBe(fall);
         expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
         expect(controller.getCurrentMitteilung().sender).toBe(currentUser);
         expect(controller.getCurrentMitteilung().subject).toBeUndefined();

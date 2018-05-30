@@ -15,6 +15,7 @@
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGesuch from '../../../models/TSGesuch';
 import TSUser from '../../../models/TSUser';
@@ -55,8 +56,8 @@ describe('dvVerantwortlicherSelect', function () {
         it('returns the fullname of the verantwortlicher', () => {
             let verantwortlicher: TSUser = new TSUser('Emiliano', 'Camacho');
             let gesuch: TSGesuch = new TSGesuch();
-            gesuch.fall = new TSFall();
-            gesuch.fall.verantwortlicher = verantwortlicher;
+            gesuch.dossier = new TSDossier();
+            gesuch.dossier.verantwortlicherBG = verantwortlicher;
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
             expect(verantwortlicherselectController.getVerantwortlicherFullName()).toEqual('Emiliano Camacho');
         });
@@ -68,7 +69,7 @@ describe('dvVerantwortlicherSelect', function () {
             spyOn(gesuchModelManager, 'updateFall');
 
             verantwortlicherselectController.setVerantwortlicher(undefined);
-            expect(gesuchModelManager.getGesuch().fall.verantwortlicher).toBe(user);
+            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
         });
         it('sets the user as the verantwortlicher of the current fall', () => {
             createGesuch();
@@ -77,15 +78,15 @@ describe('dvVerantwortlicherSelect', function () {
 
             let newUser: TSUser = new TSUser('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
-            expect(gesuchModelManager.getGesuch().fall.verantwortlicher).toBe(newUser);
+            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
         });
     });
 
     function createGesuch() {
         let gesuch: TSGesuch = new TSGesuch();
-        let fall: TSFall = new TSFall();
-        fall.verantwortlicher = user;
-        gesuch.fall = fall;
+        let dossier: TSDossier = new TSDossier();
+        dossier.verantwortlicherBG = user;
+        gesuch.dossier = dossier;
         gesuchModelManager.setGesuch(gesuch);
     }
 

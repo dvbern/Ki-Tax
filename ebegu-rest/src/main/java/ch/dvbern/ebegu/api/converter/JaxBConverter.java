@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxDokumente;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguParameter;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
@@ -130,6 +131,7 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.EbeguParameter;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
@@ -181,6 +183,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
@@ -238,6 +241,8 @@ public class JaxBConverter {
 	private ErwerbspensumService erwerbspensumService;
 	@Inject
 	private FallService fallService;
+	@Inject
+	private DossierService dossierService;
 	@Inject
 	private FamiliensituationService familiensituationService;
 	@Inject
@@ -791,6 +796,9 @@ public class JaxBConverter {
 		if (fallJAXP.getNextNumberKind() != null) {
 			fall.setNextNumberKind(fallJAXP.getNextNumberKind());
 		}
+		if (fallJAXP.getNextNumberDossier() != null) {
+			fall.setNextNumberDossier(fallJAXP.getNextNumberDossier());
+		}
 		if (fallJAXP.getBesitzer() != null) {
 			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
 			if (besitzer.isPresent()) {
@@ -813,26 +821,86 @@ public class JaxBConverter {
 			jaxFall.setVerantwortlicherSCH(benutzerToAuthLoginElement(persistedFall.getVerantwortlicherSCH()));
 		}
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
+		jaxFall.setNextNumberDossier(persistedFall.getNextNumberDossier());
 		if (persistedFall.getBesitzer() != null) {
 			jaxFall.setBesitzer(benutzerToAuthLoginElement(persistedFall.getBesitzer()));
 		}
 		return jaxFall;
 	}
 
+	public Dossier dossierToEntity(@Nonnull final JaxDossier dossierJAX, @Nonnull final Dossier dossier) {
+		Validate.notNull(dossier);
+		Validate.notNull(dossierJAX);
+		Validate.notNull(dossierJAX.getFall());
+		Validate.notNull(dossierJAX.getFall().getId());
+		convertAbstractFieldsToEntity(dossierJAX, dossier);
+		// Fall darf nicht überschrieben werden
+		final Optional<Fall> fallFromDB = fallService.findFall(dossierJAX.getFall().getId());
+		if (fallFromDB.isPresent()) {
+			dossier.setFall(this.fallToEntity(dossierJAX.getFall(), fallFromDB.get()));
+		} else {
+			throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
+		}
+		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
+		// TODO (KIBON-6) eigentlich: Wenn der VerantwortlicheBG die Berechtigung "Gemeinde" hat, muss er auf dem Entity als VerantwortlicherGMDE gesetzt werden
+		if (dossierJAX.getVerantwortlicherBG() != null) {
+			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
+			if (verantwortlicher.isPresent()) {
+				dossier.setVerantwortlicherBG(verantwortlicher.get()); // because the user doesn't come from the client but from the server
+			} else {
+				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
+			}
+		} else {
+			dossier.setVerantwortlicherBG(null);
+		}
+		if (dossierJAX.getVerantwortlicherTS() != null) {
+			Optional<Benutzer> verantwortlicherSCH = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername());
+			if (verantwortlicherSCH.isPresent()) {
+				dossier.setVerantwortlicherTS(verantwortlicherSCH.get()); // because the user doesn't come from the client but from the server
+			} else {
+				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherTS());
+			}
+		} else {
+			dossier.setVerantwortlicherTS(null);
+		}
+		return dossier;
+	}
+
+	public JaxDossier dossierToJAX(@Nonnull final Dossier persistedDossier) {
+		final JaxDossier jaxDossier = new JaxDossier();
+		convertAbstractFieldsToJAX(persistedDossier, jaxDossier);
+		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
+		jaxDossier.setDossierNummer(persistedDossier.getDossierNummer());
+		if (persistedDossier.getVerantwortlicherGMDE() != null) {
+			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherGMDE()));
+			jaxDossier.setVerantwortlicherTS(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherGMDE()));
+		} else {
+			if (persistedDossier.getVerantwortlicherBG() != null) {
+				jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherBG()));
+			}
+			if (persistedDossier.getVerantwortlicherTS() != null) {
+				jaxDossier.setVerantwortlicherTS(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherTS()));
+			}
+		}
+		return jaxDossier;
+	}
+
 	@SuppressWarnings("PMD.NcssMethodCount")
 	public Gesuch gesuchToEntity(@Nonnull final JaxGesuch antragJAXP, @Nonnull final Gesuch antrag) {
 		Validate.notNull(antrag);
 		Validate.notNull(antragJAXP);
+		Validate.notNull(antragJAXP.getDossier());
+		Validate.notNull(antragJAXP.getDossier().getId());
 
 		convertAbstractFieldsToEntity(antragJAXP, antrag);
 		final String exceptionString = "gesuchToEntity";
-		final Optional<Fall> fallFromDB = fallService.findFall(antragJAXP.getFall().getId());
-		if (fallFromDB.isPresent()) {
-			antrag.setFall(this.fallToEntity(antragJAXP.getFall(), fallFromDB.get()));
-		} else {
-			throw new EbeguEntityNotFoundException(exceptionString, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragJAXP.getFall());
-		}
 
+		Optional<Dossier> dossierOptional = dossierService.findDossier(antragJAXP.getDossier().getId());
+		if (dossierOptional.isPresent()) {
+			antrag.setDossier(this.dossierToEntity(antragJAXP.getDossier(), dossierOptional.get()));
+		} else {
+			throw new EbeguEntityNotFoundException(exceptionString, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragJAXP.getDossier());
+		}
 		if (antragJAXP.getGesuchsperiode() != null && antragJAXP.getGesuchsperiode().getId() != null) {
 			final Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(antragJAXP.getGesuchsperiode().getId());
 			if (gesuchsperiode.isPresent()) {
@@ -1013,7 +1081,7 @@ public class JaxBConverter {
 	public JaxGesuch gesuchToJAX(@Nonnull final Gesuch persistedGesuch) {
 		final JaxGesuch jaxGesuch = new JaxGesuch();
 		convertAbstractFieldsToJAX(persistedGesuch, jaxGesuch);
-		jaxGesuch.setFall(this.fallToJAX(persistedGesuch.getFall()));
+		jaxGesuch.setDossier(this.dossierToJAX(persistedGesuch.getDossier()));
 		if (persistedGesuch.getGesuchsperiode() != null) {
 			jaxGesuch.setGesuchsperiode(gesuchsperiodeToJAX(persistedGesuch.getGesuchsperiode()));
 		}
@@ -2283,6 +2351,7 @@ public class JaxBConverter {
 		return null;
 	}
 
+	@Nonnull
 	private JaxBetreuungspensum betreuungspensumToJax(final Betreuungspensum betreuungspensum) {
 		final JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
@@ -2290,6 +2359,7 @@ public class JaxBConverter {
 		return jaxBetreuungspensum;
 	}
 
+	@Nonnull
 	public JaxGesuchsperiode gesuchsperiodeToJAX(final Gesuchsperiode persistedGesuchsperiode) {
 		final JaxGesuchsperiode jaxGesuchsperiode = new JaxGesuchsperiode();
 		convertAbstractDateRangedFieldsToJAX(persistedGesuchsperiode, jaxGesuchsperiode);
@@ -2862,8 +2932,11 @@ public class JaxBConverter {
 	}
 
 	public Mitteilung mitteilungToEntity(JaxMitteilung mitteilungJAXP, Mitteilung mitteilung) {
-		Validate.notNull(mitteilungJAXP);
 		Validate.notNull(mitteilung);
+		Validate.notNull(mitteilungJAXP);
+		Validate.notNull(mitteilungJAXP.getDossier());
+		Validate.notNull(mitteilungJAXP.getDossier().getId());
+		Validate.notNull(mitteilungJAXP.getEmpfaengerTyp());
 
 		convertAbstractFieldsToEntity(mitteilungJAXP, mitteilung);
 
@@ -2877,10 +2950,11 @@ public class JaxBConverter {
 		}
 
 		mitteilung.setEmpfaengerTyp(mitteilungJAXP.getEmpfaengerTyp());
-		if (mitteilungJAXP.getFall() != null) {
-			mitteilung.setFall(fallToEntity(mitteilungJAXP.getFall(), new Fall()));
+		Optional<Dossier> dossierOptional = dossierService.findDossier(mitteilungJAXP.getDossier().getId());
+		if (dossierOptional.isPresent()) {
+			mitteilung.setDossier(this.dossierToEntity(mitteilungJAXP.getDossier(), dossierOptional.get()));
 		} else {
-			throw new EbeguEntityNotFoundException("mitteilungToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mitteilungJAXP.getFall());
+			throw new EbeguEntityNotFoundException("mitteilungToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mitteilungJAXP.getDossier());
 		}
 		if (mitteilungJAXP.getBetreuung() != null) {
 			mitteilung.setBetreuung(betreuungToEntity(mitteilungJAXP.getBetreuung(), new Betreuung()));
@@ -2910,9 +2984,7 @@ public class JaxBConverter {
 			jaxMitteilung.setEmpfaenger(benutzerToAuthLoginElement(persistedMitteilung.getEmpfaenger()));
 		}
 		jaxMitteilung.setEmpfaengerTyp(persistedMitteilung.getEmpfaengerTyp());
-		if (persistedMitteilung.getFall() != null) {
-			jaxMitteilung.setFall(fallToJAX(persistedMitteilung.getFall()));
-		}
+		jaxMitteilung.setDossier(this.dossierToJAX(persistedMitteilung.getDossier()));
 		if (persistedMitteilung.getBetreuung() != null) {
 			jaxMitteilung.setBetreuung(betreuungToJAX(persistedMitteilung.getBetreuung()));
 		}

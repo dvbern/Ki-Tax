@@ -502,19 +502,19 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			fall.setBesitzer(besitzer);
 		}
 
-		Dossier dossier = null; //TODO (team) hier muss auch das Dossier gesucht werden
-		if (currentBenutzer.isPresent()) {
-			dossier = fromTestfall.createDossier(currentBenutzer.get());
-		} else {
-			dossier = fromTestfall.createDossier();
-		}
+//		Dossier dossier = null; //TODO (KIBON-6) hier muss auch das Dossier gesucht werden
+//		if (currentBenutzer.isPresent()) {
+//			dossier = fromTestfall.createDossier(currentBenutzer.get());
+//		} else {
+//			dossier = fromTestfall.createDossier();
+//		}
 		fall.setNextNumberDossier(1);
 
 
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 
-		//TODO (team) Das Dossier speichern
+		//TODO (KIBON-6) Das Dossier speichern
 
 		fromTestfall.createGesuch(LocalDate.of(2016, Month.FEBRUARY, 15));
 		gesuchService.createGesuch(fromTestfall.getGesuch());

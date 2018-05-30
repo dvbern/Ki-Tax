@@ -19,6 +19,8 @@ import java.io.File;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.resource.GesuchsperiodeResource;
@@ -35,6 +37,8 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.as.arquillian.api.ServerSetup;
+import org.jboss.resteasy.core.ResteasyHttpServletResponseWrapper;
+import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -42,6 +46,8 @@ import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Diese Klasse implementiert die Methode "Deployment" fuer die Arquillian Tests und muss
@@ -57,10 +63,15 @@ public abstract class AbstractEbeguRestTest {
 	@Inject
 	private GesuchsperiodeResource gesuchsperiodeResource;
 
+	public static HttpServletResponse DUMMY_RESPONSE;
+	public static UriInfo DUMMY_URIINFO;
+
 	@Deployment
 	@OverProtocol("Servlet 3.0")
 	public static Archive<?> createTestArchive() {
-
+		//noinspection ConstantConditions
+		DUMMY_RESPONSE = new ResteasyHttpServletResponseWrapper(null, null) {};
+		DUMMY_URIINFO = new ResteasyUriInfo("test", "test", "test");
 		return createTestArchive(null);
 	}
 
@@ -107,33 +118,39 @@ public abstract class AbstractEbeguRestTest {
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusEntwurf(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusAktiv(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusInaktiv(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.INAKTIV);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusGesperrt(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.INAKTIV);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.GESCHLOSSEN);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 }

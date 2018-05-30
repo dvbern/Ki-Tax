@@ -230,7 +230,8 @@ export class GesuchToolbarController implements IDVFocusableController {
     public updateAntragDTOList(): void {
         this.updateFall();
         if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-            this.gesuchRS.getAllAntragDTOForFall(this.getGesuch().fall.id).then((response) => {
+            //TODO (KIBON-6) Toolbar pro Dossier?
+            this.gesuchRS.getAllAntragDTOForFall(this.getGesuch().dossier.fall.id).then((response) => {
                 this.antragList = angular.copy(response);
                 this.updateGesuchperiodeList();
                 this.updateGesuchNavigationList();
@@ -464,9 +465,10 @@ export class GesuchToolbarController implements IDVFocusableController {
             eingangsart = TSEingangsart.PAPIER;
         }
         this.$state.go('gesuch.mutation', {
+            //TODO (KIBON-6) Mutieren pro Dossier
             createMutation: true,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
-            fallId: this.getGesuch().fall.id,
+            fallId: this.getGesuch().dossier.fall.id,
             eingangsart: eingangsart,
             gesuchsperiodeId: this.getGesuch().gesuchsperiode.id
         });

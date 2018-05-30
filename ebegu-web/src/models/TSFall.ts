@@ -21,16 +21,19 @@ export default class TSFall extends TSAbstractEntity {
 
     private _fallNummer: number;
     private _nextNumberKind: number;
+    private _nextNumberDossier: number;
     private _verantwortlicher: TSUser;
     private _verantwortlicherSCH: TSUser;
     private _besitzer: TSUser;
 
-    constructor(fallNummer?: number, verantwortlicher?: TSUser, verantwortlicherSCH?: TSUser, nextNumberKind?: number, besitzer?: TSUser) {
+    constructor(fallNummer?: number, verantwortlicher?: TSUser, verantwortlicherSCH?: TSUser, nextNumberKind?: number, nextNumberDossier?: number,
+                besitzer?: TSUser) {
         super();
         this._fallNummer = fallNummer;
         this._verantwortlicher = verantwortlicher;
         this._verantwortlicherSCH = verantwortlicherSCH;
         this._nextNumberKind = nextNumberKind;
+        this._nextNumberDossier = nextNumberDossier;
         this._besitzer = besitzer;
     }
 
@@ -40,6 +43,14 @@ export default class TSFall extends TSAbstractEntity {
 
     set fallNummer(value: number) {
         this._fallNummer = value;
+    }
+
+    get nextNumberDossier(): number {
+        return this._nextNumberDossier;
+    }
+
+    set nextNumberDossier(value: number) {
+        this._nextNumberDossier = value;
     }
 
     get verantwortlicher(): TSUser {

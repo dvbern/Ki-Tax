@@ -166,7 +166,7 @@ export class DVMitteilungListController {
 
         //common attributes
         this.currentMitteilung = new TSMitteilung();
-        this.currentMitteilung.fall = this.fall;
+        this.currentMitteilung.dossier.fall = this.fall;
         if (this.betreuung) {
             this.currentMitteilung.betreuung = this.betreuung;
         }
@@ -325,7 +325,7 @@ export class DVMitteilungListController {
     public betreuungAsString(mitteilung: TSMitteilung): string {
         let betreuungAsString: string;
         if (mitteilung.betreuung) {
-            let bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.fall,
+            let bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall,
                 mitteilung.betreuung.kindNummer, mitteilung.betreuung.betreuungNummer);
             betreuungAsString = mitteilung.betreuung.kindFullname + ', ' + bgNummer;
         }

@@ -97,12 +97,12 @@ export class VerantwortlicherselectController {
     }
 
     public getVerantwortlicherFullName(): string {
-        if (this.getGesuch() && this.getGesuch().fall) {
-            if (this.schulamt && this.getGesuch().fall.verantwortlicherSCH) {
-                return this.getGesuch().fall.verantwortlicherSCH.getFullName();
+        if (this.getGesuch() && this.getGesuch().dossier) {
+            if (this.schulamt && this.getGesuch().dossier.verantwortlicherTS) {
+                return this.getGesuch().dossier.verantwortlicherTS.getFullName();
             }
-            if (!this.schulamt && this.getGesuch().fall.verantwortlicher) {
-                return this.getGesuch().fall.verantwortlicher.getFullName();
+            if (!this.schulamt && this.getGesuch().dossier.verantwortlicherBG) {
+                return this.getGesuch().dossier.verantwortlicherBG.getFullName();
             }
         }
         return this.$translate.instant('NO_VERANTWORTLICHER_SELECTED');
@@ -126,11 +126,11 @@ export class VerantwortlicherselectController {
     }
 
     public setUserAsFallVerantwortlicherLocal(user: TSUser) {
-        if (user && this.getGesuch() && this.getGesuch().fall) {
+        if (user && this.getGesuch() && this.getGesuch().dossier) {
             if (this.schulamt) {
-                this.getGesuch().fall.verantwortlicherSCH = user;
+                this.getGesuch().dossier.verantwortlicherTS = user;
             } else {
-                this.getGesuch().fall.verantwortlicher = user;
+                this.getGesuch().dossier.verantwortlicherBG = user;
             }
         }
     }

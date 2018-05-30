@@ -64,7 +64,7 @@ public class FachstelleResource {
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Saves a Fachstelle in the database", response = JaxFachstelle.class)
-	@Nullable
+	@Nonnull
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

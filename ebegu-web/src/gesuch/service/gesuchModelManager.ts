@@ -273,15 +273,16 @@ export default class GesuchModelManager {
         if (this.gesuch && this.gesuch.timestampErstellt) { //update
             return this.updateGesuch();
         } else { //create
-            if (this.gesuch.fall && this.gesuch.fall.timestampErstellt) {
+            //TODO (KIBON-6) Dossier speichern!
+            if (this.gesuch.dossier.fall && this.gesuch.dossier.fall.timestampErstellt) {
                 // Fall ist schon vorhanden
                 return this.gesuchRS.createGesuch(this.gesuch).then((gesuchResponse: any) => {
                     this.gesuch = gesuchResponse;
                     return this.gesuch;
                 });
             } else {
-                return this.fallRS.createFall(this.gesuch.fall).then((fallResponse: TSFall) => {
-                    this.gesuch.fall = angular.copy(fallResponse);
+                return this.fallRS.createFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
+                    this.gesuch.dossier.fall = angular.copy(fallResponse);
                     return this.gesuchRS.createGesuch(this.gesuch).then((gesuchResponse: any) => {
                         this.gesuch = gesuchResponse;
                         return this.gesuch;
@@ -326,10 +327,10 @@ export default class GesuchModelManager {
      * @returns {IPromise<TSFall>}
      */
     public updateFall(): IPromise<TSFall> {
-        if (this.gesuch && this.gesuch.fall) {
-            return this.fallRS.updateFall(this.gesuch.fall).then((fallResponse: any) => {
-                let parsedFall = this.ebeguRestUtil.parseFall(this.gesuch.fall, fallResponse);
-                return this.gesuch.fall = angular.copy(parsedFall);
+        if (this.gesuch && this.gesuch.dossier.fall) {
+            return this.fallRS.updateFall(this.gesuch.dossier.fall).then((fallResponse: any) => {
+                let parsedFall = this.ebeguRestUtil.parseFall(this.gesuch.dossier.fall, fallResponse);
+                return this.gesuch.dossier.fall = angular.copy(parsedFall);
             });
         } else {
             this.log.warn('Es wurde versucht einen undefined Fall zu speichern');
@@ -481,9 +482,11 @@ export default class GesuchModelManager {
 
     public setStammdatenToWorkWith(gesuchsteller: TSGesuchstellerContainer): TSGesuchstellerContainer {
         if (this.gesuchstellerNumber === 1) {
-            return this.gesuch.gesuchsteller1 = gesuchsteller;
+            this.gesuch.gesuchsteller1 = gesuchsteller;
+            return this.gesuch.gesuchsteller1;
         } else {
-            return this.gesuch.gesuchsteller2 = gesuchsteller;
+            this.gesuch.gesuchsteller2 = gesuchsteller;
+            return this.gesuch.gesuchsteller2;
         }
     }
 
@@ -544,7 +547,7 @@ export default class GesuchModelManager {
         let setFallProm: angular.IPromise<void>;
         if (fallId) {
             setFallProm = this.fallRS.findFall(fallId).then(foundFall => {
-                this.gesuch.fall = foundFall;
+                this.gesuch.dossier.fall = foundFall;
             });
         }
 
@@ -597,7 +600,7 @@ export default class GesuchModelManager {
         });
         this.initAntrag(antragTyp, eingangsart);
         this.fallRS.findFall(fallId).then(foundFall => {
-            this.gesuch.fall = foundFall;
+            this.gesuch.dossier.fall = foundFall;
         });
         this.gesuch.id = gesuchID; //setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
         if (TSEingangsart.ONLINE === eingangsart) {
@@ -610,7 +613,7 @@ export default class GesuchModelManager {
 
     private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart): void {
         this.gesuch = new TSGesuch();
-        this.gesuch.fall = new TSFall();
+        this.gesuch.dossier.fall = new TSFall();
         this.gesuch.typ = antragTyp; // by default ist es ein Erstgesuch
         this.gesuch.eingangsart = eingangsart;
         this.setHiddenSteps();
@@ -810,8 +813,9 @@ export default class GesuchModelManager {
      * @returns {IPromise<void>}
      */
     private getFallFromServer(): IPromise<TSFall> {
-        return this.fallRS.findFall(this.gesuch.fall.id).then((fallResponse) => {
-            return this.gesuch.fall = fallResponse;
+        return this.fallRS.findFall(this.gesuch.dossier.fall.id).then((fallResponse) => {
+            this.gesuch.dossier.fall = fallResponse;
+            return this.gesuch.dossier.fall;
         });
     }
 
@@ -827,7 +831,7 @@ export default class GesuchModelManager {
     /**
      * Sucht im ausgewaehlten Kind (kindIndex) nach der aktuellen Betreuung. Deshalb muessen sowohl
      * kindIndex als auch betreuungNumber bereits gesetzt sein.
-     * @returns {any}
+     * @returns {TSBetreuung}
      */
     public getBetreuungToWorkWith(): TSBetreuung {
         if (this.getKindToWorkWith() && this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
@@ -845,7 +849,8 @@ export default class GesuchModelManager {
      * @returns {TSKindContainer}
      */
     public setKindToWorkWith(kind: TSKindContainer): TSKindContainer {
-        return this.gesuch.kindContainers[this.kindIndex] = kind;
+        this.gesuch.kindContainers[this.kindIndex] = kind;
+        return this.gesuch.kindContainers[this.kindIndex];
     }
 
     /**
@@ -855,7 +860,8 @@ export default class GesuchModelManager {
      * @returns {TSBetreuung}
      */
     public setBetreuungToWorkWith(betreuung: TSBetreuung): TSBetreuung {
-        return this.getKindToWorkWith().betreuungen[this.betreuungIndex] = betreuung;
+        this.getKindToWorkWith().betreuungen[this.betreuungIndex] = betreuung;
+        return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
     }
 
     /**
@@ -1042,41 +1048,45 @@ export default class GesuchModelManager {
     }
 
     public setUserAsFallVerantwortlicherSCH(user: TSUser, saveInDB: boolean = true) {
-        if (this.gesuch && this.gesuch.fall) {
+        if (this.gesuch && this.gesuch.dossier) {
             if (saveInDB) {
-                this.fallRS.setVerantwortlicherSCH(this.gesuch.fall.id, user ? user.username : null)
+                //TODO (KIBON-6) verantwortlicher auf dem dossier setzen
+                this.fallRS.setVerantwortlicherSCH(this.gesuch.dossier.fall.id, user ? user.username : null)
                     .then(() => {
-                        this.gesuch.fall.verantwortlicherSCH = user;
+                        this.gesuch.dossier.fall.verantwortlicherSCH = user;
                     });
             } else {
-                this.gesuch.fall.verantwortlicherSCH = user;
+                this.gesuch.dossier.fall.verantwortlicherSCH = user;
             }
         }
     }
 
     public setUserAsFallVerantwortlicher(user: TSUser, saveInDB: boolean = true) {
-        if (this.gesuch && this.gesuch.fall) {
+        if (this.gesuch && this.gesuch.dossier.fall) {
+            //TODO (KIBON-6) verantwortlicher auf dem dossier setzen
             if (saveInDB) {
-                this.fallRS.setVerantwortlicherJA(this.gesuch.fall.id, user ? user.username : null)
+                this.fallRS.setVerantwortlicherJA(this.gesuch.dossier.fall.id, user ? user.username : null)
                     .then(() => {
-                        this.gesuch.fall.verantwortlicher = user;
+                        this.gesuch.dossier.fall.verantwortlicher = user;
                     });
             } else {
-                this.gesuch.fall.verantwortlicher = user;
+                this.gesuch.dossier.fall.verantwortlicher = user;
             }
         }
     }
 
     public getFallVerantwortlicher(): TSUser {
-        if (this.gesuch && this.gesuch.fall) {
-            return this.gesuch.fall.verantwortlicher;
+        //TODO (KIBON-6) Verantwortlicher vom Dossier
+        if (this.gesuch && this.gesuch.dossier.fall) {
+            return this.gesuch.dossier.fall.verantwortlicher;
         }
         return undefined;
     }
 
     public getFallVerantwortlicherSCH(): TSUser {
-        if (this.gesuch && this.gesuch.fall) {
-            return this.gesuch.fall.verantwortlicherSCH;
+        //TODO (KIBON-6) Verantwortlicher vom Dossier
+        if (this.gesuch && this.gesuch.dossier.fall) {
+            return this.gesuch.dossier.fall.verantwortlicherSCH;
         }
         return undefined;
     }

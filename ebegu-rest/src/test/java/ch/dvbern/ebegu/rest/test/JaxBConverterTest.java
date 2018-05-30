@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -54,7 +53,6 @@ import ch.dvbern.ebegu.util.testdata.TestdataSetupConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
-import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,8 +102,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	private JaxBConverter converter = new JaxBConverter();
-	private UriInfo uri = new ResteasyUriInfo("test", "test", "test");
+	private final JaxBConverter converter = new JaxBConverter();
 
 	@Before
 	public void init() {
@@ -120,24 +117,24 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void gesuchSpeichernDarfGesuchsperiodeNichtUpdaten() throws Exception {
+	public void gesuchSpeichernDarfGesuchsperiodeNichtUpdaten() {
 		Gesuchsperiode gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
 		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, gesuchsperiode.getStatus());
 
 		Gesuch gesuch = testdataCreationService.createErstgesuch(ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now()));
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
-		jaxGesuch.setFall(converter.fallToJAX(gesuch.getFall()));
+		jaxGesuch.setDossier(converter.dossierToJAX(gesuch.getDossier()));
 		jaxGesuch.setGesuchsperiode(converter.gesuchsperiodeToJAX(gesuchsperiode));
 		jaxGesuch.getGesuchsperiode().setStatus(GesuchsperiodeStatus.INAKTIV);
-		gesuchResource.create(jaxGesuch, uri, null);
+		gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
 		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, gesuchsperiode.getStatus());
 	}
 
 	@Test
-	public void institutionSpeichernDarfMandantUndTraegerschaftNichtUpdaten() throws Exception {
+	public void institutionSpeichernDarfMandantUndTraegerschaftNichtUpdaten() {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
 		traegerschaft = persistence.persist(traegerschaft);
@@ -150,7 +147,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitution jaxInstitution = converter.institutionToJAX(institution);
 		jaxInstitution.getTraegerschaft().setName("ChangedTraegerschaft");
 		jaxInstitution.getMandant().setName("ChangedMandant");
-		institutionResource.createInstitution(jaxInstitution, uri, null);
+		institutionResource.createInstitution(jaxInstitution, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		traegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
@@ -172,7 +169,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitutionStammdaten jaxStammdaten = TestJaxDataUtil.createTestJaxInstitutionsStammdaten();
 		jaxStammdaten.setInstitution(converter.institutionToJAX(institution));
 		jaxStammdaten.getInstitution().setName("ChangedInstitution");
-		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource.saveInstitutionStammdaten(jaxStammdaten, uri, null);
+		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(updatedInstitution);
 		Assert.assertEquals("Institution1", updatedInstitution.getInstitution().getName());
@@ -190,7 +187,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
 		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenToJAX(kitaBruennen));
 		jaxBetreuung.getInstitutionStammdaten().setGueltigAb(LocalDate.now());
-		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, uri, null);
+		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		kitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
 		Assert.assertEquals(Constants.START_OF_TIME, kitaBruennen.getGueltigkeit().getGueltigAb());
@@ -206,13 +203,15 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		Gesuch gesuch = testdataCreationService.createErstgesuch(ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now()));
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
-		kindContainer.getKindJA().setPensumFachstelle(new PensumFachstelle());
-		kindContainer.getKindJA().getPensumFachstelle().setFachstelle(fachstelle);
-		kindContainer.getKindJA().getPensumFachstelle().setPensum(50);
+		PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		pensumFachstelle.setFachstelle(fachstelle);
+		pensumFachstelle.setPensum(50);
+		kindContainer.getKindJA().setPensumFachstelle(pensumFachstelle);
 		kindContainer = persistence.merge(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);
+		Assert.assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
 		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName("FachstelleChanged");
-		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, uri, null);
+		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		fachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
 		Assert.assertEquals("Fachstelle1", fachstelle.getName());

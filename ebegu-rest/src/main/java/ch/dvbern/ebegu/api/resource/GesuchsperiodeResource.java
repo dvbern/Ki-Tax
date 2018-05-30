@@ -67,7 +67,7 @@ public class GesuchsperiodeResource {
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Erstellt eine neue Gesuchsperiode in der Datenbank", response = JaxGesuchsperiode.class)
-	@Nullable
+	@Nonnull
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

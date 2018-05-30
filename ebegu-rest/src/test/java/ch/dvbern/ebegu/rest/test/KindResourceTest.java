@@ -76,31 +76,35 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 		UriInfo uri = new ResteasyUriInfo("test", "test", "test");
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
-		jaxGesuch.getFall().getVerantwortlicher().setMandant(converter.mandantToJAX(persistedMandant));
-		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getFall().getVerantwortlicher(), new Benutzer()));
-		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getFall(), uri, null);
+		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
+		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
+		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
+		Assert.assertNotNull(returnedFall);
 		JaxGesuchsperiode returnedGesuchsperiode = saveGesuchsperiodeInStatusAktiv(jaxGesuch.getGesuchsperiode());
-		jaxGesuch.setFall(returnedFall);
+		jaxGesuch.getDossier().setFall(returnedFall);
 		jaxGesuch.setGesuchsperiode(returnedGesuchsperiode);
-		JaxGesuch returnedGesuch = (JaxGesuch) gesuchResource.create(jaxGesuch, uri, null).getEntity();
+		JaxGesuch returnedGesuch = (JaxGesuch) gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 
 		JaxKindContainer testJaxKindContainer = TestJaxDataUtil.createTestJaxKindContainer();
 		JaxPensumFachstelle jaxPensumFachstelle = testJaxKindContainer.getKindGS().getPensumFachstelle();
-		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(jaxPensumFachstelle.getFachstelle(), null, null));
+		Assert.assertNotNull(jaxPensumFachstelle);
+		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(jaxPensumFachstelle.getFachstelle(), DUMMY_URIINFO, DUMMY_RESPONSE));
 		PensumFachstelle returnedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
 		testJaxKindContainer.getKindGS().setPensumFachstelle(convertedPensumFachstelle);
 		testJaxKindContainer.getKindJA().setPensumFachstelle(convertedPensumFachstelle);
 
-		JaxKindContainer jaxKindContainer = kindResource.saveKind(converter.toJaxId(returnedGesuch), testJaxKindContainer, null, null);
+		JaxKindContainer jaxKindContainer = kindResource.saveKind(converter.toJaxId(returnedGesuch), testJaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(jaxKindContainer);
 		Assert.assertEquals(Integer.valueOf(1), jaxKindContainer.getKindNummer());
 		Assert.assertEquals(Integer.valueOf(1), jaxKindContainer.getNextNumberBetreuung());
+		Assert.assertNotNull(jaxKindContainer.getKindGS().getPensumFachstelle());
 
 		JaxGesuch updatedGesuch = gesuchResource.findGesuch(converter.toJaxId(returnedGesuch));
-		Assert.assertEquals(Integer.valueOf(2), updatedGesuch.getFall().getNextNumberKind());
+		Assert.assertNotNull(updatedGesuch);
+		Assert.assertEquals(Integer.valueOf(2), updatedGesuch.getDossier().getFall().getNextNumberKind());
 		Assert.assertEquals(1, updatedGesuch.getKindContainers().size());
 		Assert.assertEquals(testJaxKindContainer.getKindGS().getPensumFachstelle().getPensum(), jaxKindContainer.getKindGS().getPensumFachstelle().getPensum());
 	}

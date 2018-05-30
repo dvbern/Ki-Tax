@@ -383,7 +383,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Fall fall) {
 		Objects.requireNonNull(fall, "fall muss gesetzt sein");
 		authorizer.checkReadAuthorizationFall(fall);
-		return getMitteilungenForCurrentRolle(Mitteilung_.fall, fall);
+//		return getMitteilungenForCurrentRolle(Mitteilung_.fall, fall);
+		return new ArrayList<>();
 	}
 
 	@Nonnull
@@ -426,7 +427,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		ADMINISTRATOR_SCHULAMT })
 	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Fall fall) {
 		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-		return getEntwurfForCurrentRolle(Mitteilung_.fall, fall);
+//		return getEntwurfForCurrentRolle(Mitteilung_.fall, fall);
+		return null;
 	}
 
 	@Override

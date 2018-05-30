@@ -113,7 +113,7 @@ public class GesuchResource {
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
-	@Nullable
+	@Nonnull
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

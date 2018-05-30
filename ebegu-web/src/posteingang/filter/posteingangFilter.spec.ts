@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehmerTyp';
+import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSUser from '../../models/TSUser';
@@ -50,6 +51,8 @@ describe('posteingangFilter', function () {
         let fall1 = new TSFall();
         fall1.fallNummer = 112;
         fall1.besitzer = gesuchsteller1;
+        let dossier1 = new TSDossier();
+        dossier1.fall = fall1;
 
         let gesuchsteller2 = new TSUser();
         gesuchsteller2.nachname = 'Gerber';
@@ -57,30 +60,34 @@ describe('posteingangFilter', function () {
         let fall2 = new TSFall();
         fall2.fallNummer = 108;
         fall2.besitzer = gesuchsteller2;
+        let dossier2 = new TSDossier();
+        dossier2.fall = fall2;
 
         let fallNoBesitzer = new TSFall();
         fallNoBesitzer.fallNummer = 1010;
         fallNoBesitzer.besitzer = undefined;
+        let dossierNoBesitzer = new TSDossier();
+        dossierNoBesitzer.fall = fallNoBesitzer;
 
         mitteilungArray = [];
 
-        mitteilung1 = new TSMitteilung(fall1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
+        mitteilung1 = new TSMitteilung(dossier1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
             ja1, 'Frage zum IAM', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, moment('2016-01-01'));
         mitteilungArray.push(mitteilung1);
 
-        mitteilung2 = new TSMitteilung(fall1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
+        mitteilung2 = new TSMitteilung(dossier1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
             ja1, 'Adressänderung', 'Unsere neue Adresse lautet...', TSMitteilungStatus.NEU, moment('2016-02-02'));
         mitteilungArray.push(mitteilung2);
 
-        mitteilung3 = new TSMitteilung(fall2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
+        mitteilung3 = new TSMitteilung(dossier2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
             ja2, 'Frage zu Dokumentupload', 'Welche Dokumente kann ich...', TSMitteilungStatus.NEU, moment('2016-03-03'));
         mitteilungArray.push(mitteilung3);
 
-        mitteilung4 = new TSMitteilung(fall2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
+        mitteilung4 = new TSMitteilung(dossier2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
             ja2, 'Gesuch freigegeben', 'Was nun?', TSMitteilungStatus.NEU, moment('2016-02-02'));
         mitteilungArray.push(mitteilung4);
 
-        mitteilung5 = new TSMitteilung(fallNoBesitzer, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
+        mitteilung5 = new TSMitteilung(dossierNoBesitzer, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
             ja2, 'Gesuch freigegeben', 'Was nun?', TSMitteilungStatus.NEU, moment('2016-02-02'));
         mitteilungArray.push(mitteilung5);
 

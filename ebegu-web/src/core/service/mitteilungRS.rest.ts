@@ -206,7 +206,8 @@ export default class MitteilungRS {
 
     private createBetreuungsmitteilung(fall: TSFall, betreuung: TSBetreuung): TSBetreuungsmitteilung {
         let mutationsmeldung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
-        mutationsmeldung.fall = fall;
+        //TODO (KIBON-6) mitteilung muss pro Dossier sein
+        mutationsmeldung.dossier.fall = fall;
         mutationsmeldung.betreuung = betreuung;
         mutationsmeldung.senderTyp = TSMitteilungTeilnehmerTyp.INSTITUTION;
         mutationsmeldung.empfaengerTyp = TSMitteilungTeilnehmerTyp.JUGENDAMT;

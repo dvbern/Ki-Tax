@@ -68,7 +68,7 @@ public class FallResource {
 
 	@ApiOperation(value = "Creates a new Fall in the database. The transfer object also has a relation to Gesuch " +
 		"which is stored in the database as well.", response = JaxFall.class)
-	@Nullable
+	@Nonnull
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

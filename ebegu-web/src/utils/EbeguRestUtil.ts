@@ -43,6 +43,7 @@ import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
 import TSDokument from '../models/TSDokument';
 import TSDokumentGrund from '../models/TSDokumentGrund';
+import TSDossier from '../models/TSDossier';
 import TSDownloadFile from '../models/TSDownloadFile';
 import TSEbeguParameter from '../models/TSEbeguParameter';
 import TSEbeguVorlage from '../models/TSEbeguVorlage';
@@ -295,7 +296,7 @@ export default class EbeguRestUtil {
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity) {
         this.abstractEntityToRestObject(restObj, antragEntity);
-        restObj.fall = this.fallToRestObject({}, antragEntity.fall);
+        restObj.dossier = this.dossierToRestObject({}, antragEntity.dossier);
         restObj.gesuchsperiode = this.gesuchsperiodeToRestObject({}, antragEntity.gesuchsperiode);
         restObj.eingangsdatum = DateUtil.momentToLocalDate(antragEntity.eingangsdatum);
         restObj.freigabeDatum = DateUtil.momentToLocalDate(antragEntity.freigabeDatum);
@@ -306,7 +307,7 @@ export default class EbeguRestUtil {
 
     private parseAbstractAntragEntity(antragTS: TSAbstractAntragEntity, antragFromServer: any) {
         this.parseAbstractEntity(antragTS, antragFromServer);
-        antragTS.fall = this.parseFall(new TSFall(), antragFromServer.fall);
+        antragTS.dossier = this.parseDossier(new TSDossier(), antragFromServer.dossier);
         antragTS.gesuchsperiode = this.parseGesuchsperiode(new TSGesuchsperiode(), antragFromServer.gesuchsperiode);
         antragTS.eingangsdatum = DateUtil.localDateToMoment(antragFromServer.eingangsdatum);
         antragTS.freigabeDatum = DateUtil.localDateToMoment(antragFromServer.freigabeDatum);
@@ -621,6 +622,7 @@ export default class EbeguRestUtil {
             restFall.verantwortlicher = this.userToRestObject({}, fall.verantwortlicher);
             restFall.verantwortlicherSCH = this.userToRestObject({}, fall.verantwortlicherSCH);
             restFall.nextNumberKind = fall.nextNumberKind;
+            restFall.nextNumberDossier = fall.nextNumberDossier;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
             return restFall;
         }
@@ -635,8 +637,33 @@ export default class EbeguRestUtil {
             fallTS.verantwortlicher = this.parseUser(new TSUser(), fallFromServer.verantwortlicher);
             fallTS.verantwortlicherSCH = this.parseUser(new TSUser(), fallFromServer.verantwortlicherSCH);
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
+            fallTS.nextNumberDossier = fallFromServer.nextNumberDossier;
             fallTS.besitzer = this.parseUser(new TSUser(), fallFromServer.besitzer);
             return fallTS;
+        }
+        return undefined;
+    }
+
+    public dossierToRestObject(restDossier: any, dossier: TSDossier): TSDossier {
+        if (dossier) {
+            this.abstractEntityToRestObject(restDossier, dossier);
+            restDossier.fall = this.fallToRestObject({}, dossier.fall);
+            restDossier.dossierNummer = dossier.dossierNummer;
+            restDossier.verantwortlicherBG = this.userToRestObject({}, dossier.verantwortlicherBG);
+            restDossier.verantwortlicherTS = this.userToRestObject({}, dossier.verantwortlicherTS);
+            return restDossier;
+        }
+        return undefined;
+    }
+
+    public parseDossier(dossierTS: TSDossier, dossierFromServer: any): TSDossier {
+        if (dossierFromServer) {
+            this.parseAbstractEntity(dossierTS, dossierFromServer);
+            dossierTS.fall = this.parseFall(new TSFall(), dossierFromServer.fall);
+            dossierTS.dossierNummer = dossierFromServer.dossierNummer;
+            dossierTS.verantwortlicherBG = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherBG);
+            dossierTS.verantwortlicherTS = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherTS);
+            return dossierTS;
         }
         return undefined;
     }
@@ -2243,7 +2270,7 @@ export default class EbeguRestUtil {
     public parseMitteilung(tsMitteilung: TSMitteilung, mitteilungFromServer: any): TSMitteilung {
         if (mitteilungFromServer) {
             this.parseAbstractEntity(tsMitteilung, mitteilungFromServer);
-            tsMitteilung.fall = this.parseFall(new TSFall(), mitteilungFromServer.fall);
+            tsMitteilung.dossier = this.parseDossier(new TSDossier(), mitteilungFromServer.dossier);
             if (mitteilungFromServer.betreuung) {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
             }
@@ -2263,7 +2290,7 @@ export default class EbeguRestUtil {
     public mitteilungToRestObject(restMitteilung: any, tsMitteilung: TSMitteilung): any {
         if (tsMitteilung) {
             this.abstractEntityToRestObject(restMitteilung, tsMitteilung);
-            restMitteilung.fall = this.fallToRestObject({}, tsMitteilung.fall);
+            restMitteilung.dossier = this.dossierToRestObject({}, tsMitteilung.dossier);
             if (tsMitteilung.betreuung) {
                 restMitteilung.betreuung = this.betreuungToRestObject({}, tsMitteilung.betreuung);
             }

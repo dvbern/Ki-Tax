@@ -194,8 +194,8 @@ export default class EbeguUtil {
     public getGesuchNameFromGesuch(gesuch: TSGesuch): string {
         let text = '';
         if (gesuch) {
-            if (gesuch.fall) {
-                text = this.addZerosToNumber(gesuch.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+            if (gesuch.dossier.fall) {
+                text = this.addZerosToNumber(gesuch.dossier.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
             }
             if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.extractNachname()) {
                 text = text + ' ' + gesuch.gesuchsteller1.extractNachname();

@@ -148,8 +148,8 @@ describe('gesuchModelManager', function () {
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
 
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(gesuchModelManager.getGesuch().fall).toBeDefined();
-                expect(gesuchModelManager.getGesuch().fall.verantwortlicher).toBe(undefined);
+                expect(gesuchModelManager.getGesuch().dossier.fall).toBeDefined();
+                expect(gesuchModelManager.getGesuch().dossier.fall.verantwortlicher).toBe(undefined);
             });
             it('links the fall with the current user', () => {
                 let currentUser: TSUser = new TSUser('Test', 'User', 'username');
@@ -160,8 +160,8 @@ describe('gesuchModelManager', function () {
 
                 scope.$apply();
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(gesuchModelManager.getGesuch().fall).toBeDefined();
-                expect(gesuchModelManager.getGesuch().fall.verantwortlicher).toBe(currentUser);
+                expect(gesuchModelManager.getGesuch().dossier.fall).toBeDefined();
+                expect(gesuchModelManager.getGesuch().dossier.fall.verantwortlicher).toBe(currentUser);
             });
             it('does not link the fall with the current user because is not the required role', () => {
                 let currentUser: TSUser = new TSUser('Test', 'User', 'username');
@@ -170,8 +170,8 @@ describe('gesuchModelManager', function () {
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
 
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(gesuchModelManager.getGesuch().fall).toBeDefined();
-                expect(gesuchModelManager.getGesuch().fall.verantwortlicher).toBeUndefined();
+                expect(gesuchModelManager.getGesuch().dossier.fall).toBeDefined();
+                expect(gesuchModelManager.getGesuch().dossier.fall.verantwortlicher).toBeUndefined();
             });
             it('does not force to create a new fall and gesuch', () => {
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
@@ -208,7 +208,7 @@ describe('gesuchModelManager', function () {
                 let user: TSUser = new TSUser('Emiliano', 'Camacho');
                 gesuchModelManager.setUserAsFallVerantwortlicher(user);
                 scope.$apply();
-                expect(gesuchModelManager.getGesuch().fall.verantwortlicher).toBe(user);
+                expect(gesuchModelManager.getGesuch().dossier.fall.verantwortlicher).toBe(user);
             });
         });
         describe('exist at least one Betreuung among all kinder', function () {

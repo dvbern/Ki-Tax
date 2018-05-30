@@ -60,8 +60,9 @@ export class VerlaufViewController {
                 if (this.gesuch === undefined) {
                     this.cancel();
                 }
-                this.fall = this.gesuch.fall;
-                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.gesuch.fall, this.gesuch.gesuchsperiode).then((response) => {
+                //TODO (KIBON-6) Verlauf pro Dossier!
+                this.fall = this.gesuch.dossier.fall;
+                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.gesuch.dossier.fall, this.gesuch.gesuchsperiode).then((response) => {
                     this.verlauf = response;
                 });
                 this.gesuchRS.getAllAntragDTOForFall(this.fall.id).then((response) => {

@@ -33,6 +33,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -161,6 +162,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
+	@Override
+	public void checkReadAuthorizationDossier(@Nullable Dossier dossier) {
+		boolean allowed = isReadAuthorizedDossier(dossier);
+		if (!allowed) {
+			throwViolation(dossier);
+		}
+	}
+
 	private boolean isReadAuthorizedFall(@Nullable final Fall fall) {
 		if (fall == null) {
 			return true;
@@ -175,6 +184,26 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		//Gesuchstellereigentuemer pruefen
 		if (this.isGSOwner(() -> fall, principalBean.getPrincipal().getName())) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isReadAuthorizedDossier(@Nullable final Dossier dossier) {
+		if (dossier == null) {
+			return true;
+		}
+
+		validateMandantMatches(dossier.getFall());
+		//berechtigte Rollen pruefen
+		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA,
+			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT, JURIST, REVISOR };
+		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
+			return true;
+		}
+		//TODO (team) hier muss dann spaeter die Rolle genauer geprüft werden!
+		//Gesuchstellereigentuemer pruefen
+		if (this.isGSOwner(() -> dossier.getFall(), principalBean.getPrincipal().getName())) {
 			return true;
 		}
 		return false;

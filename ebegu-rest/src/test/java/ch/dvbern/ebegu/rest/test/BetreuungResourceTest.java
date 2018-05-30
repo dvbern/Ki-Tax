@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -57,7 +56,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,13 +63,12 @@ import org.junit.runner.RunWith;
 /**
  * Testet BetreuungResource
  */
+@SuppressWarnings("JUnit3StyleTestMethodInJUnit4Class")
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 //@ServerSetup(InstallPicketLinkFileBasedSetupTask.class)
 public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
-
-	private static final UriInfo RESTEASY_URI_INFO = new ResteasyUriInfo("test", "test", "test");
 
 	@Inject
 	private BetreuungService betreuungService;
@@ -96,12 +93,12 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void createBetreuung() throws EbeguException {
-		KindContainer returnedKind = persistKindAndDependingObjects(RESTEASY_URI_INFO);
+		KindContainer returnedKind = persistKindAndDependingObjects();
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
 		JaxBetreuung testJaxBetreuung = converter.betreuungToJAX(testBetreuung);
 
-		JaxBetreuung jaxBetreuung = betreuungResource.saveBetreuung(converter.toJaxId(returnedKind), testJaxBetreuung, false, RESTEASY_URI_INFO, null);
+		JaxBetreuung jaxBetreuung = betreuungResource.saveBetreuung(converter.toJaxId(returnedKind), testJaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 		Assert.assertEquals(Integer.valueOf(1), jaxBetreuung.getBetreuungNummer());
 		Assert.assertNotNull(jaxBetreuung);
 	}
@@ -126,7 +123,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		JaxBetreuungspensumContainer containerToAdd = TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().getYear());
 
 		betreuung.getBetreuungspensumContainers().add(containerToAdd);
-		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()), betreuung, false, RESTEASY_URI_INFO, null);
+		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()), betreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 		Assert.assertEquals(1, updatedBetr.getBetreuungspensumContainers().size());
 		Assert.assertEquals(Integer.valueOf(1), updatedBetr.getBetreuungNummer());
 		checkNextNumberBetreuung(converter.toJaxId(initialBetr.getKind()), 2);
@@ -139,14 +136,16 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	public void updateShouldRemoveBetreuungspensumContainerTest() throws EbeguException {
 		Betreuung initialBetr = this.storeInitialBetreung();
 		//im moment haben wir kein find fuer einen einzelnen Container
-		Set<JaxBetreuung> betreuungenBeforeUpdate = kindResource.findKind(converter.toJaxId(initialBetr.getKind())).getBetreuungen();
+		JaxKindContainer jaxKindContainer = kindResource.findKind(converter.toJaxId(initialBetr.getKind()));
+		Assert.assertNotNull(jaxKindContainer);
+		Set<JaxBetreuung> betreuungenBeforeUpdate = jaxKindContainer.getBetreuungen();
 		Assert.assertEquals(1, betreuungenBeforeUpdate.size());
 		JaxBetreuung betreuung = betreuungenBeforeUpdate.iterator().next();
 
 		betreuung.getBetreuungspensumContainers().add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().minusYears(1).getYear()));
 		betreuung.getBetreuungspensumContainers().add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().getYear()));
 		betreuung.getBetreuungspensumContainers().add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().plusYears(1).getYear()));
-		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()), betreuung, false, RESTEASY_URI_INFO, null);
+		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()), betreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(updatedBetr.getBetreuungspensumContainers());
 		Assert.assertEquals(3, updatedBetr.getBetreuungspensumContainers().size());
@@ -156,7 +155,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		updatedBetr.getBetreuungspensumContainers().clear(); //alle bestehenden entfernen
 		updatedBetr.getBetreuungspensumContainers().add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().plusYears(2).getYear())); //einen neuen einfuegen
 
-		updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()), updatedBetr, false, RESTEASY_URI_INFO, null);
+		updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()), updatedBetr, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 		Assert.assertEquals(1, updatedBetr.getBetreuungspensumContainers().size());
 		Assert.assertEquals(Integer.valueOf(1), updatedBetr.getBetreuungNummer());
 		checkNextNumberBetreuung(converter.toJaxId(initialBetr.getKind()), 2);
@@ -165,33 +164,34 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	// HELP
 
-	private KindContainer persistKindAndDependingObjects(UriInfo uri) throws EbeguException {
+	private KindContainer persistKindAndDependingObjects() throws EbeguException {
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
-		jaxGesuch.getFall().getVerantwortlicher().setMandant(converter.mandantToJAX(persistedMandant));
-		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getFall().getVerantwortlicher(), new Benutzer()));
-		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getFall(), uri, null);
+		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
+		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
+		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.setGesuchsperiode(saveGesuchsperiodeInStatusAktiv(jaxGesuch.getGesuchsperiode()));
-		jaxGesuch.setFall(returnedFall);
-		JaxGesuch returnedGesuch = (JaxGesuch) gesuchResource.create(jaxGesuch, uri, null).getEntity();
+		jaxGesuch.getDossier().setFall(returnedFall);
+		JaxGesuch returnedGesuch = (JaxGesuch) gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 
 		KindContainer returnedKind = TestDataUtil.createDefaultKindContainer();
 		returnedKind.setKindNummer(1);
 		returnedKind.setGesuch(converter.gesuchToEntity(returnedGesuch, new Gesuch()));
 		JaxKindContainer jaxKind = converter.kindContainerToJAX(returnedKind);
 		JaxPensumFachstelle jaxPensumFachstelle = jaxKind.getKindGS().getPensumFachstelle();
-		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(jaxPensumFachstelle.getFachstelle(), null, null));
+		Assert.assertNotNull(jaxPensumFachstelle);
+		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(jaxPensumFachstelle.getFachstelle(), DUMMY_URIINFO, DUMMY_RESPONSE));
 		PensumFachstelle returnedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
 		jaxKind.getKindGS().setPensumFachstelle(convertedPensumFachstelle);
 		jaxKind.getKindJA().setPensumFachstelle(convertedPensumFachstelle);
-		kindResource.saveKind(converter.toJaxId(returnedGesuch), jaxKind, uri, null);
+		kindResource.saveKind(converter.toJaxId(returnedGesuch), jaxKind, DUMMY_URIINFO, DUMMY_RESPONSE);
 		return returnedKind;
 	}
 
 	private Betreuung storeInitialBetreung() throws EbeguException {
-		KindContainer returnedKind = persistKindAndDependingObjects(RESTEASY_URI_INFO);
+		KindContainer returnedKind = persistKindAndDependingObjects();
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
 		testBetreuung.setKind(returnedKind);
@@ -200,13 +200,15 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		return betreuung;
 	}
 
-	private void checkNextNumberBetreuung(JaxId kindId, Integer number) throws EbeguException {
+	@SuppressWarnings("SameParameterValue")
+	private void checkNextNumberBetreuung(JaxId kindId, Integer number) {
 		final JaxKindContainer updatedKind = kindResource.findKind(kindId);
+		Assert.assertNotNull(updatedKind);
 		Assert.assertEquals(number, updatedKind.getNextNumberBetreuung());
 	}
 
 	@Test
-	public void testNewBetreuungIsDuplicate() throws EbeguException {
+	public void testNewBetreuungIsDuplicate() {
 
 		Betreuung existingBetreuung1 = TestDataUtil.createDefaultBetreuung();
 		Betreuung existingBetreuung2 = TestDataUtil.createDefaultBetreuung();
@@ -218,14 +220,11 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuungen.add(existingBetreuung2);
 
 		JaxBetreuung jaxNewBetreuung= converter.betreuungToJAX(newBetreuung);
-
 		Assert.assertTrue(betreuungResource.hasDuplicate(jaxNewBetreuung, betreuungen));
-
 	}
 
-
 	@Test
-	public void testNewBetreuungIsNotDuplicate() throws EbeguException {
+	public void testNewBetreuungIsNotDuplicate() {
 
 		Betreuung existingBetreuung1 = TestDataUtil.createDefaultBetreuung();
 		Betreuung existingBetreuung2 = TestDataUtil.createDefaultBetreuung();
@@ -236,13 +235,11 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuungen.add(existingBetreuung2);
 
 		JaxBetreuung jaxNewBetreuung= converter.betreuungToJAX(newBetreuung);
-
 		Assert.assertFalse(betreuungResource.hasDuplicate(jaxNewBetreuung, betreuungen));
-
 	}
 
 	@Test
-	public void testNewBetreuungIsDuplicateFerieninsel() throws EbeguException {
+	public void testNewBetreuungIsDuplicateFerieninsel() {
 
 		Betreuung existingBetreuung1 = TestDataUtil.createDefaultBetreuung();
 		Betreuung existingBetreuung2 = TestDataUtil.createDefaultBetreuung();
@@ -260,13 +257,11 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuungen.add(existingBetreuung2);
 
 		JaxBetreuung jaxNewBetreuung= converter.betreuungToJAX(newBetreuung);
-
 		Assert.assertTrue(betreuungResource.hasDuplicate(jaxNewBetreuung, betreuungen));
-
 	}
 
 	@Test
-	public void testNewBetreuungIsNotDuplicateFerieninsel() throws EbeguException {
+	public void testNewBetreuungIsNotDuplicateFerieninsel() {
 
 		Betreuung existingBetreuung1 = TestDataUtil.createDefaultBetreuung();
 		Betreuung existingBetreuung2 = TestDataUtil.createDefaultBetreuung();
@@ -283,16 +278,15 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuungen.add(existingBetreuung1);
 		betreuungen.add(existingBetreuung2);
 
-		JaxBetreuung jaxNewBetreuung= converter.betreuungToJAX(newBetreuung);
+		JaxBetreuung jaxNewBetreuung = converter.betreuungToJAX(newBetreuung);
+		Assert.assertNotNull(jaxNewBetreuung.getBelegungFerieninsel());
 		jaxNewBetreuung.getBelegungFerieninsel().setFerienname(Ferienname.SOMMERFERIEN);
 
-
 		Assert.assertFalse(betreuungResource.hasDuplicate(jaxNewBetreuung, betreuungen));
-
 	}
 
 	@Test
-	public void testNewBetreuungIsDuplicateFerieninselButStorniert() throws EbeguException {
+	public void testNewBetreuungIsDuplicateFerieninselButStorniert() {
 
 		Betreuung existingBetreuung1 = TestDataUtil.createDefaultBetreuung();
 		Betreuung existingBetreuung2 = TestDataUtil.createDefaultBetreuung();
@@ -313,8 +307,5 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		existingBetreuung1.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
 
 		Assert.assertFalse(betreuungResource.hasDuplicate(jaxNewBetreuung, betreuungen));
-
 	}
-
-
 }

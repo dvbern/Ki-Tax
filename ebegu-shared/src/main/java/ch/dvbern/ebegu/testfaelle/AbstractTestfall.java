@@ -117,7 +117,7 @@ public abstract class AbstractTestfall {
 	}
 
 	public Fall createFall() {
-		fall = new Fall()
+		fall = new Fall();
 		return fall;
 	}
 

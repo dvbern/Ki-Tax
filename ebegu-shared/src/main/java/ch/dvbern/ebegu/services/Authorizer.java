@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
@@ -67,6 +68,11 @@ public interface Authorizer {
 	 * prueft ob der aktuell eingeloggte benutzer fuer ALLE uebergebnen faelle berechtigt ist
 	 */
 	void checkReadAuthorizationFaelle(@Nullable Collection<Fall> faelle);
+
+	/**
+	 * prueft, ob der aktuell eingeloggte Benutzer das uebergebene Dossier lesen darf
+	 */
+	void checkReadAuthorizationDossier(@Nullable Dossier dossier);
 
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer die betreuung lesen darf
