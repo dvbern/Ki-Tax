@@ -16,11 +16,12 @@
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../core.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
+import {StateService} from '@uirouter/core';
 
 describe('DvPulldownUserMenuController', function () {
 
     let authServiceRS: AuthServiceRS;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let controller: DvPulldownUserMenuController;
     let $q: angular.IQService;
     let scope: angular.IScope;

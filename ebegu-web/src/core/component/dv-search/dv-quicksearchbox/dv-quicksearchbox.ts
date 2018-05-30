@@ -16,7 +16,7 @@
 import {IComponentOptions, IFilterService, ILogService, IPromise, IQService} from 'angular';
 import TSSearchResultEntry from '../../../../models/dto/TSSearchResultEntry';
 import TSQuickSearchResult from '../../../../models/dto/TSQuickSearchResult';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {isAnyStatusOfVerfuegt} from '../../../../models/enums/TSAntragStatus';
@@ -55,7 +55,7 @@ export class DvQuicksearchboxController {
     constructor(private ebeguUtil: EbeguUtil, private $timeout: IFilterService, private $log: ILogService,
                 private $q: IQService, private searchIndexRS: SearchIndexRS, private CONSTANTS: any,
                 private $filter: IFilterService, private $translate: ITranslateService,
-                private $state: IStateService, private authServiceRS: AuthServiceRS, private $injector: IInjectorService) {
+                private $state: StateService, private authServiceRS: AuthServiceRS, private $injector: IInjectorService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

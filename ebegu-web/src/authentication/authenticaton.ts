@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import {IAuthenticationStateParams} from './authentication.route';
 import IWindowService = angular.IWindowService;
@@ -45,7 +45,7 @@ export class AuthenticationListViewController {
     private redirecting: boolean;
     private countdown: number = 0;
 
-    constructor(private $state: IStateService, private $stateParams: IAuthenticationStateParams,
+    constructor(private $state: StateService, private $stateParams: IAuthenticationStateParams,
                 private $window: IWindowService, private $httpParamSerializer: IHttpParamSerializer,
                 private $timeout: ITimeoutService, private authService: AuthServiceRS, private $location: ILocationService) {
         //wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren

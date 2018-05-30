@@ -14,7 +14,7 @@
  */
 import {EbeguWebAdmin} from '../../admin.module';
 
-describe('adminView', function () {
+describe('institutionenListView', function () {
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
 

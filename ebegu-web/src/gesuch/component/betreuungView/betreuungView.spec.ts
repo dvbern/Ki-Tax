@@ -32,12 +32,13 @@ import {IBetreuungStateParams} from '../../gesuch.route';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from './betreuungView';
+import {StateService} from '@uirouter/core';
 
 describe('betreuungView', function () {
 
     let betreuungView: BetreuungViewController;
     let gesuchModelManager: GesuchModelManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let ebeguUtil: EbeguUtil;
     let $q: angular.IQService;
     let betreuung: TSBetreuung;

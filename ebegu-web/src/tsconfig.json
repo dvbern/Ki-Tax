@@ -5,6 +5,11 @@
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "lib": [
+            "dom",
+            "es2017",
+            "es2018.promise"
+        ],
         "sourceMap": true,
         "noImplicitAny": true,
         "removeComments": false,

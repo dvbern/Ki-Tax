@@ -13,6 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+//
+// // RxJS
+import 'rxjs';
+// import 'zone.js/dist/zone';  <-- loaded in polyfills
+
+// AngularJS
 import 'angular';
 import 'angular-utf8-base64';
 import 'angular-i18n/angular-locale_de-ch';
@@ -25,9 +31,21 @@ import 'angular-cookies';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
-import 'angular-ui-router';
 import 'angular-smart-table';
 import 'angular-moment';
 import 'angular-unsavedchanges';
 import 'angular-hotkeys';
 import 'ng-file-upload';
+import '@uirouter/angular-hybrid';
+
+// Angular
+// should not be imported here but directly in the classes where they are used
+// import '@angular/platform-browser';
+// import '@angular/platform-browser-dynamic';
+// import '@angular/core';
+// import '@angular/common';
+// import '@angular/compiler';
+// import '@angular/http';
+// import '@angular/router';
+// import '@angular/forms';
+

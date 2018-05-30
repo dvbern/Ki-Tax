@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 posteingangRun.$inject = ['RouterHelper'];
 
@@ -23,14 +23,14 @@ export function posteingangRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguPosteingangState()
     ];
 }
 
 //STATES
-export class EbeguPosteingangState implements IState {
+export class EbeguPosteingangState implements Ng1StateDeclaration {
     name = 'posteingang';
     template = '<posteingang-view flex="auto" class="overflow-scroll">';
     url = '/posteingang';

@@ -25,12 +25,13 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import {EbeguWebCore} from '../../core.module';
 import {NavigatorController} from './dv-navigation';
+import {StateService} from '@uirouter/core';
 
 describe('dvNavigation', function () {
 
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $q: angular.IQService;
     let $rootScope: angular.IScope;
     let gesuchModelManager: GesuchModelManager;

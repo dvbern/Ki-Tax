@@ -15,7 +15,7 @@
 
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import TSFall from '../../../models/TSFall';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -48,7 +48,7 @@ export class VerlaufViewController {
 
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS', 'EbeguUtil'];
     /* @ngInject */
-    constructor(private $state: IStateService, private $stateParams: IVerlaufStateParams,
+    constructor(private $state: StateService, private $stateParams: IVerlaufStateParams,
                 private authServiceRS: AuthServiceRS, private gesuchRS: GesuchRS,
                 private antragStatusHistoryRS: AntragStatusHistoryRS, private ebeguUtil: EbeguUtil) {
     }

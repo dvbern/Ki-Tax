@@ -14,9 +14,8 @@
  */
 
 import {IComponentOptions, IFilterService} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
-import BerechnungsManager from '../../gesuch/service/berechnungsManager';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -24,7 +23,6 @@ import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
-import IQService = angular.IQService;
 import SearchRS from '../../gesuch/service/searchRS.rest';
 let template = require('./faelleListView.html');
 require('./faelleListView.less');
@@ -45,7 +43,7 @@ export class FaelleListViewController {
     static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
     constructor(private $filter: IFilterService, private gesuchModelManager: GesuchModelManager,
-                private $state: IStateService, private $log: ILogService,
+                private $state: StateService, private $log: ILogService,
                 private authServiceRS: AuthServiceRS, private searchRS: SearchRS) {
         this.initViewModel();
     }

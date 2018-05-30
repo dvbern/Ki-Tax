@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import FallRS from '../../../gesuch/service/fallRS.rest';
@@ -80,7 +80,7 @@ export class DVMitteilungListController {
                 private authServiceRS: AuthServiceRS,
                 private fallRS: FallRS, private betreuungRS: BetreuungRS, private $q: IQService,
                 private $window: IWindowService,
-                private $rootScope: IRootScopeService, private $state: IStateService, ebeguUtil: EbeguUtil,
+                private $rootScope: IRootScopeService, private $state: StateService, ebeguUtil: EbeguUtil,
                 private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager, private $scope: IScope,
                 private $timeout: ITimeoutService) {

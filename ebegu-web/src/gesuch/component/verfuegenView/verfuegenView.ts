@@ -16,7 +16,7 @@
 import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -63,7 +63,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private sameVerrechneteVerguenstigung: boolean;
 
     /* @ngInject */
-    constructor(private $state: IStateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private ebeguUtil: EbeguUtil, $scope: IScope, wizardStepManager: WizardStepManager,
                 private DvDialog: DvDialog, private downloadRS: DownloadRS, private $log: ILogService, $stateParams: IBetreuungStateParams,
                 private $window: ng.IWindowService, private exportRS: ExportRS, private applicationPropertyRS: ApplicationPropertyRS,

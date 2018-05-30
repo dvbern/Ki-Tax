@@ -16,7 +16,7 @@
 import {IComponentOptions} from 'angular';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import {ShowTooltipController} from '../../../gesuch/dialog/ShowTooltipController';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
@@ -38,7 +38,7 @@ export class DvSkiplinksController implements IDVFocusableController {
 
     static $inject: any[] = ['$state', 'DvDialog', 'EbeguUtil'];
 
-    constructor(private $state: IStateService, private DvDialog: DvDialog, private ebeguUtil: EbeguUtil) {
+    constructor(private $state: StateService, private DvDialog: DvDialog, private ebeguUtil: EbeguUtil) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

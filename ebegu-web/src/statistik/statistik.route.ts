@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 statistikRun.$inject = ['RouterHelper'];
 
@@ -23,7 +23,7 @@ export function statistikRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguStatistikState()
     ];
@@ -31,7 +31,7 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguStatistikState implements IState {
+export class EbeguStatistikState implements Ng1StateDeclaration {
     name = 'statistik';
     template = '<statistik-view flex="auto" class="overflow-scroll">';
     url = '/statistik';

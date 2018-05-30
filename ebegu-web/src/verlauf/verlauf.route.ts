@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 verlaufRun.$inject = ['RouterHelper'];
 
@@ -23,7 +23,7 @@ export function verlaufRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguVerlaufState()
     ];
@@ -31,7 +31,7 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguVerlaufState implements IState {
+export class EbeguVerlaufState implements Ng1StateDeclaration {
     name = 'verlauf';
     template = '<verlauf-view flex="auto" class="overflow-hidden" layout="column">';
     url = '/verlauf/:gesuchId';
@@ -39,6 +39,6 @@ export class EbeguVerlaufState implements IState {
 
 // PARAMS
 
-export class IVerlaufStateParams implements IStateParamsService {
+export class IVerlaufStateParams {
     gesuchId: string;
 }

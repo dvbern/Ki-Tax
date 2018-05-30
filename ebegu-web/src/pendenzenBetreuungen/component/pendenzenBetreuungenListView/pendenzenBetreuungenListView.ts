@@ -21,7 +21,7 @@ import TSInstitution from '../../../models/TSInstitution';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
 import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
@@ -56,7 +56,7 @@ export class PendenzenBetreuungenListViewController {
     constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS, private ebeguUtil: EbeguUtil, private institutionRS: InstitutionRS,
                 private institutionStammdatenRS: InstitutionStammdatenRS, private gesuchsperiodeRS: GesuchsperiodeRS,
                 private gesuchModelManager: GesuchModelManager, private berechnungsManager: BerechnungsManager,
-                private $state: IStateService) {
+                private $state: StateService) {
     }
 
     $onInit() {

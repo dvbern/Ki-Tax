@@ -20,12 +20,13 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {FallCreationViewController} from './fallCreationView';
+import {StateService} from '@uirouter/core';
 
 describe('fallCreationView', function () {
 
     let fallCreationview: FallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $q: angular.IQService;
     let $rootScope: angular.IScope;
     let form: any;

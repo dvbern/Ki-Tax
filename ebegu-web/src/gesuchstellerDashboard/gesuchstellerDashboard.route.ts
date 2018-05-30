@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
 import TSGesuch from '../models/TSGesuch';
 import IQService = angular.IQService;
@@ -28,7 +28,7 @@ export function gesuchstellerDashboardRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguGesuchstellerDashboardState(),
         new EbeguCreateAngebotState()
@@ -37,7 +37,7 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguGesuchstellerDashboardState implements IState {
+export class EbeguGesuchstellerDashboardState implements Ng1StateDeclaration {
     name = 'gesuchstellerDashboard';
     template = '<gesuchsteller-dashboard-view class="layout-column flex-100">';
     url = '/gesuchstellerDashboard';
@@ -46,7 +46,7 @@ export class EbeguGesuchstellerDashboardState implements IState {
     };
 }
 
-export class EbeguCreateAngebotState implements IState {
+export class EbeguCreateAngebotState implements Ng1StateDeclaration {
     name = 'createAngebot';
     template = '<create-angebot-view class="layout-column flex-100">';
     url = '/createAngebotView/:type/:gesuchId';
@@ -56,12 +56,12 @@ export class EbeguCreateAngebotState implements IState {
     };
 }
 
-export class IAngebotStateParams implements IStateParamsService {
+export class IAngebotStateParams {
     gesuchId: string;
     type: string;
 }
 
-export class IGesuchstellerDashboardStateParams implements IStateParamsService {
+export class IGesuchstellerDashboardStateParams {
     infoMessage: string;
 }
 

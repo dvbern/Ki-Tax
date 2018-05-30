@@ -26,7 +26,10 @@ let template = require('./dv-timepicker.html');
 export class DVTimepicker implements IDirective {
     restrict = 'E';
     require: any = {ngModelCtrl: 'ngModel'};
-    scope = {
+    scope = {};
+    controller = TimepickerController;
+    controllerAs = 'vm';
+    bindToController = {
         ngModel: '=',
         inputId: '@',
         ngRequired: '<',
@@ -37,9 +40,6 @@ export class DVTimepicker implements IDirective {
         dvMinDateTime: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvMaxDateTime: '<?'  // Kann als String im Format allowedFormats oder als Moment angegeben werden
     };
-    controller = TimepickerController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     /* constructor() { this.link = this.unboundLink.bind(this); }*/

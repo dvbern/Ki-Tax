@@ -23,7 +23,7 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 import ITimeoutService = angular.ITimeoutService;
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 
 let template = require('./parameterView.html');
 let style = require('./parameterView.less');
@@ -53,7 +53,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     /* @ngInject */
     constructor(ebeguParameterRS: EbeguParameterRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $translate: ITranslateService, private $log: ILogService, private $state: IStateService,
+                private $translate: ITranslateService, private $log: ILogService, private $state: StateService,
                 private $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.ebeguParameterRS = ebeguParameterRS;

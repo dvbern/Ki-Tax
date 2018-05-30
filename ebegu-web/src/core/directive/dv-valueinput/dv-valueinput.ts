@@ -22,7 +22,10 @@ let template = require('./dv-valueinput.html');
 export class DVValueinput implements IDirective {
     restrict = 'E';
     require: any = {ngModelCtrl: 'ngModel', dvValueInputCtrl: 'dvValueinput'};
-    scope = {
+    scope = {};
+    controller = ValueinputController;
+    controllerAs = 'vm';
+    bindToController = {
         ngModel: '=',
         inputId: '@',
         ngRequired: '<',
@@ -33,9 +36,6 @@ export class DVValueinput implements IDirective {
         dvOnBlur: '&?',
         inputName: '@?',
     };
-    controller = ValueinputController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
     link: IDirectiveLinkFn;
 

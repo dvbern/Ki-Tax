@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import AuthenticationUtil from '../../../utils/AuthenticationUtil';
 import TSUser from '../../../models/TSUser';
@@ -35,7 +35,7 @@ export class StartViewController {
 
     static $inject: string[] = ['$state', '$rootScope', 'AuthServiceRS'];
 
-    constructor(private $state: IStateService, private $rootScope: IRootScopeService, private authService: AuthServiceRS) {
+    constructor(private $state: StateService, private $rootScope: IRootScopeService, private authService: AuthServiceRS) {
 
 
     }

@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
@@ -56,7 +56,7 @@ export class GesuchstellerDashboardListViewController {
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
         'FallRS', '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
 
-    constructor(private $state: IStateService, private $log: ILogService,
+    constructor(private $state: StateService, private $log: ILogService,
                 private authServiceRS: AuthServiceRS, private searchRS: SearchRS, private ebeguUtil: EbeguUtil,
                 private gesuchsperiodeRS: GesuchsperiodeRS, private fallRS: FallRS, private $translate: ITranslateService,
                 private mitteilungRS: MitteilungRS, private gesuchRS: GesuchRS, private errorService: ErrorService) {
@@ -150,15 +150,15 @@ export class GesuchstellerDashboardListViewController {
                 this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
-                this.$state.go('gesuch.dokumente', {createNew: false, gesuchId: antrag.antragId});
+                this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
             } else {
                 // Im Else-Fall ist das Gesuch nicht mehr ueber den Button verfuegbar
                 // Es kann nur noch eine Mutation gemacht werden
                 this.$state.go('gesuch.mutation', {
                     createMutation: true,
                     eingangsart: TSEingangsart.ONLINE,
-                    gesuchId: antrag.antragId,
                     gesuchsperiodeId: periode.id,
+                    gesuchId: antrag.antragId,
                     fallId: this.fallId
                 });
             }
@@ -168,9 +168,9 @@ export class GesuchstellerDashboardListViewController {
                 // Aber schon mindestens einer für eine frühere Periode
                 this.$state.go('gesuch.erneuerung', {
                     createErneuerung: true,
-                    gesuchId: this.antragList[0].antragId,
-                    eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
+                    eingangsart: TSEingangsart.ONLINE,
+                    gesuchId: this.antragList[0].antragId,
                     fallId: this.fallId
                 });
             } else {
@@ -239,7 +239,7 @@ export class GesuchstellerDashboardListViewController {
     public editAntrag(antrag: TSAntragDTO): void {
         if (antrag) {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
-                this.$state.go('gesuch.verfuegen', {createNew: false, gesuchId: antrag.antragId});
+                this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
                 this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId});
             }

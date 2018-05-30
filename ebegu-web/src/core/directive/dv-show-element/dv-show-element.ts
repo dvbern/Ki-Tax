@@ -36,8 +36,6 @@ export class DVShowElement implements IDirective {
 
     transclude: any;
     priority: number;
-    terminal: boolean;
-    replace = true;
     ngIf: any;
 
     static $inject: string[] = ['ngIfDirective'];
@@ -47,7 +45,6 @@ export class DVShowElement implements IDirective {
         this.ngIf = ngIfDirective[0];
         this.transclude = this.ngIf.transclude;
         this.priority = this.ngIf.priority;
-        this.terminal = this.ngIf.terminal;
     }
 
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {

@@ -15,7 +15,7 @@
 
 import {IComponentOptions, IIntervalService} from 'angular';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
@@ -44,7 +44,7 @@ export class DvCountdownController {
 
     static $inject: any[] = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
 
-    constructor(private authServiceRS: AuthServiceRS, private $state: IStateService, private $interval: IIntervalService, private $rootScope: IRootScopeService, private DvDialog: DvDialog,
+    constructor(private authServiceRS: AuthServiceRS, private $state: StateService, private $interval: IIntervalService, private $rootScope: IRootScopeService, private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager) {
     }
 

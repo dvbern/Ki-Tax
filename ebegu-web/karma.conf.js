@@ -33,6 +33,7 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         // we are building the test environment in ./spec-bundle.ts
         files: [
+            'src/polyfills.ts',
             // Required (scoped) vendor modules
             'src/vendor.ts',
 
@@ -47,7 +48,8 @@ module.exports = function (config) {
             'src/app.module.ts',
 
             // Tests
-            'config/spec-bundle.ts'
+            'test.ts',    //ng2 tests
+            'config/spec-bundle.ts' //ng1  tests
             // alterntavie zum spec bundle. Dauert aber zu lange, da für jedes spec file 1 Webpack bundle erstellt wird
             // 'src/**/*.spec.ts'
         ],
@@ -56,9 +58,16 @@ module.exports = function (config) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             'src/vendor.ts': ['webpack'],
+            'src/polyfills.ts': ['webpack'],
             'src/app.module.ts': ['webpack', 'sourcemap'],
-            'config/spec-bundle.ts': ['webpack']
+            'config/spec-bundle.ts': ['webpack'],
+            'test.ts': ['webpack'],
             // 'src/**/*.spec.ts': ['webpack']
+        },
+
+        // needed for Chrome
+        mime: {
+            'text/x-typescript': ['ts','tsx']
         },
 
         // Webpack Config at ./webpack.test.ts

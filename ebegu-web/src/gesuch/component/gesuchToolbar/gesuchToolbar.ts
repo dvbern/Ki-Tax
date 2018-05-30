@@ -19,7 +19,7 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSGesuch from '../../../models/TSGesuch';
 import GesuchRS from '../../service/gesuchRS.rest';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
@@ -102,7 +102,7 @@ export class GesuchToolbarController implements IDVFocusableController {
 
     constructor(private ebeguUtil: EbeguUtil,
                 private gesuchRS: GesuchRS,
-                private $state: IStateService, private $scope: IScope,
+                private $state: StateService, private $scope: IScope,
                 private gesuchModelManager: GesuchModelManager,
                 private authServiceRS: AuthServiceRS,
                 private $mdSidenav: ng.material.ISidenavService,
@@ -465,10 +465,10 @@ export class GesuchToolbarController implements IDVFocusableController {
         }
         this.$state.go('gesuch.mutation', {
             createMutation: true,
+            eingangsart: eingangsart,
+            gesuchsperiodeId: this.getGesuch().gesuchsperiode.id,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
             fallId: this.getGesuch().fall.id,
-            eingangsart: eingangsart,
-            gesuchsperiodeId: this.getGesuch().gesuchsperiode.id
         });
     }
 
@@ -508,9 +508,9 @@ export class GesuchToolbarController implements IDVFocusableController {
         }
         this.$state.go('gesuch.erneuerung', {
             createErneuerung: true,
-            gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
             eingangsart: eingangsart,
             gesuchsperiodeId: this.neuesteGesuchsperiode.id,
+            gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
             fallId: this.fallid
         });
     }

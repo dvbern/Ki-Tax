@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {InstitutionRS} from '../core/service/institutionRS.rest';
 import {MandantRS} from '../core/service/mandantRS.rest';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
@@ -27,24 +27,24 @@ export function adminRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates());
 }
 
-export class IGesuchsperiodeStateParams implements IStateParamsService {
+export class IGesuchsperiodeStateParams {
     gesuchsperiodeId: string;
 }
 
-export class IInstitutionStateParams implements IStateParamsService {
+export class IInstitutionStateParams {
     institutionId: string;
 }
 
-export class IInstitutionStammdatenStateParams implements IStateParamsService {
+export class IInstitutionStammdatenStateParams {
     institutionStammdatenId: string;
     institutionId: string;
 }
 
-export class IBenutzerStateParams implements IStateParamsService {
+export class IBenutzerStateParams {
     benutzerId: string;
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         {
             name: 'admin',
@@ -85,6 +85,9 @@ function getStates(): IState[] {
             + ' traegerschaften="$resolve.traegerschaften"'
             + ' mandant="$resolve.mandant"></dv-institution-view>',
             url: '/institutionen/institution/:institutionId',
+            params: {
+                institutionId: '',
+            },
 
             resolve: {
                 traegerschaften: getTraegerschaften,
@@ -95,6 +98,9 @@ function getStates(): IState[] {
             name: 'institutionstammdaten',
             template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
             url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
+            params: {
+                institutionStammdatenId: '',
+            },
         },
         {
             name: 'parameter',
@@ -106,6 +112,9 @@ function getStates(): IState[] {
             template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
             + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
             url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
+            params: {
+                gesuchsperiodeId: '',
+            },
 
             resolve: {
                 traegerschaften: getTraegerschaften,
@@ -117,14 +126,6 @@ function getStates(): IState[] {
             template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
             url: '/ferieninsel',
         },
-        {
-            name: 'traegerschaft',
-            template: '<dv-traegerschaft-view flex="auto" class="overflow-scroll" traegerschaften="$resolve.traegerschaften" ></dv-traegerschaft-view>',
-            url: '/traegerschaft',
-            resolve: {
-                traegerschaften: getTraegerschaften,
-            }
-        }
     ];
 }
 

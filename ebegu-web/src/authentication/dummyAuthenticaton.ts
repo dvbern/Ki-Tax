@@ -13,44 +13,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {Component, Inject} from '@angular/core';
 import TSUser from '../models/TSUser';
 import {TSRole} from '../models/enums/TSRole';
-import {IStateService} from 'angular-ui-router';
+import AuthenticationUtil from '../utils/AuthenticationUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import {TSMandant} from '../models/TSMandant';
 import TSInstitution from '../models/TSInstitution';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import AuthenticationUtil from '../utils/AuthenticationUtil';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
-import ITimeoutService = angular.ITimeoutService;
+import {UIRouter} from '@uirouter/core';
 
-let template = require('./dummyAuthentication.html');
 require('./dummyAuthentication.less');
 
-export class DummyAuthenticationComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = template;
-    controller = DummyAuthenticationListViewController;
-    controllerAs = 'vm';
-}
 
-export class DummyAuthenticationListViewController {
+@Component({
+    selector: 'dummy-authentication-view',
+    template: require('./dummyAuthentication.html'),
+})
+export class DummyAuthenticationListViewComponent {
 
     public usersList: Array<TSUser>;
     public superadmin: TSUser;
-    private mandant: TSMandant;
-    private institution: TSInstitution;
-    private traegerschaftStadtBern: TSTraegerschaft;
-    private traegerschaftLeoLea: TSTraegerschaft;
-    private traegerschaftSGF: TSTraegerschaft;
+    private readonly mandant: TSMandant;
+    private readonly institution: TSInstitution;
+    private readonly traegerschaftStadtBern: TSTraegerschaft;
+    private readonly traegerschaftLeoLea: TSTraegerschaft;
+    private readonly traegerschaftSGF: TSTraegerschaft;
     private traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
 
-    static $inject: string[] = ['$state', 'AuthServiceRS', '$timeout', 'ApplicationPropertyRS'];
 
-    constructor(private $state: IStateService, private authServiceRS: AuthServiceRS,
-                private $timeout: ITimeoutService, private applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
+                @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
+                @Inject(UIRouter) private readonly uiRouter: UIRouter) {
+
         this.usersList = [];
         this.mandant = this.getMandant();
         this.traegerschaftStadtBern = this.getTraegerschaftStadtBern();
@@ -58,7 +55,7 @@ export class DummyAuthenticationListViewController {
         this.traegerschaftSGF = this.getTraegerschaftSGF();
         this.traegerschaftFamex = this.getTraegerschaftFamex();
         this.institution = this.getInsitution();
-        applicationPropertyRS.isDevMode().then((response) => {
+        this.applicationPropertyRS.isDevMode().then((response) => {
             this.devMode = response;
         });
         this.usersList.push(new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
@@ -167,8 +164,7 @@ export class DummyAuthenticationListViewController {
 
     public logIn(user: TSUser): void {
         this.authServiceRS.loginRequest(user).then(() => {
-            AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
-
+            AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
         });
     }
 }
