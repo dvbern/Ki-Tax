@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -248,20 +249,20 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetPendenzenForSteueramtUser() {
-		final Fall fall = fallService.saveFall(TestDataUtil.createDefaultFall());
+		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
 		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
 
-		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuchVerfuegt);
 
-		Gesuch gesuchSTV = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.PRUEFUNG_STV);
+		Gesuch gesuchSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.PRUEFUNG_STV);
 		persistence.persist(gesuchSTV);
 
-		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
+		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
 		persistence.persist(gesuchGeprueftSTV);
 
-		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
+		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
 		persistence.persist(gesuchBearbeitungSTV);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();

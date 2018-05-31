@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,6 +26,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
@@ -47,11 +53,18 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMINISTRATOR_SCHULAMT, SCHULAMT })
 public class DossierServiceBean extends AbstractBaseService implements DossierService {
 
+
 	@Inject
 	private Persistence persistence;
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private FallService fallService;
 
 	@Nonnull
 	@Override
@@ -62,5 +75,23 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			authorizer.checkReadAuthorizationDossier(dossier);
 		}
 		return Optional.ofNullable(dossier);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Dossier> findDossiersByFall(@Nonnull String fallId) {
+		final Fall fall = fallService.findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("findDossiersByFall",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
+
+		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
+		return dossiers;
+	}
+
+	@Nonnull
+	@Override
+	public Dossier saveDossier(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier);
+		authorizer.checkWriteAuthorizationDossier(dossier);
+		return persistence.merge(dossier);
 	}
 }

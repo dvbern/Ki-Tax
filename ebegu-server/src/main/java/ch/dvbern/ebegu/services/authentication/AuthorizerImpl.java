@@ -226,10 +226,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkWriteAuthorization(@Nullable Fall fall) {
 		if (fall != null) {
-
 			boolean allowed = isReadAuthorizedFall(fall);
 			if (!allowed) {
 				throwViolation(fall);
+			}
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationDossier(@Nullable Dossier dossier) {
+		if (dossier != null) {
+			//TODO (KIBON-6): Wie muss die Berechtigung funktionieren?
+			boolean allowed = isReadAuthorizedDossier(dossier);
+			if (!allowed) {
+				throwViolation(dossier);
 			}
 		}
 	}

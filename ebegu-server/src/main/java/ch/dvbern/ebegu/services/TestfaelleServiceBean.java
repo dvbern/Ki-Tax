@@ -135,6 +135,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private VerfuegungService verfuegungService;
 	@Inject
 	private GeneratedDokumentService genDokServiceBean;
+	@Inject
+	private DossierService dossierService;
 
 	@Override
 	@Nonnull
@@ -488,33 +490,43 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		final Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 		Optional<Fall> fallByBesitzer = fallService.findFallByBesitzer(besitzer); //fall kann schon existieren
 		Fall fall;
+		Dossier dossier = null;
 		if (!fallByBesitzer.isPresent()) {
 			if (currentBenutzer.isPresent()) {
 				fall = fromTestfall.createFall(currentBenutzer.get());
+				dossier = fromTestfall.createDossier(currentBenutzer.get());
 			} else {
 				fall = fromTestfall.createFall();
+				dossier = fromTestfall.createDossier();
 			}
 		} else {
+			// Fall ist schon vorhanden
 			fall = fallByBesitzer.get();
 			fall.setNextNumberKind(1); //reset
+			// Dossier ist möglicherweise auch schon vorhanden
+			Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
+			if (dossiersByFall.isEmpty()) {
+				dossier = new Dossier();
+				dossier.setFall(fall);
+			} else if (dossiersByFall.size() == 1) {
+				dossier = dossiersByFall.iterator().next();
+			} else {
+				//TODO (KIBON-6) Behandlung von mehreren Dossiers pro Fall
+				throw new IllegalStateException("Fall hat mehrere Dossiers. Dieser Zustand sollte aktuell nicht auftreten!");
+			}
 		}
 		if (besitzer != null) {
 			fall.setBesitzer(besitzer);
 		}
 
-//		Dossier dossier = null; //TODO (KIBON-6) hier muss auch das Dossier gesucht werden
-//		if (currentBenutzer.isPresent()) {
-//			dossier = fromTestfall.createDossier(currentBenutzer.get());
-//		} else {
-//			dossier = fromTestfall.createDossier();
-//		}
 		fall.setNextNumberDossier(1);
 
 
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 
-		//TODO (KIBON-6) Das Dossier speichern
+		final Dossier persistedDossier = dossierService.saveDossier(dossier);
+		fromTestfall.setDossier(persistedDossier);;
 
 		fromTestfall.createGesuch(LocalDate.of(2016, Month.FEBRUARY, 15));
 		gesuchService.createGesuch(fromTestfall.getGesuch());

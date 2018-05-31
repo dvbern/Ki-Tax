@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
@@ -76,6 +77,7 @@ import ch.dvbern.ebegu.services.AntragStatusHistoryService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -129,6 +131,8 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Inject
 	private FallService fallService;
 	@Inject
+	private DossierService dossierService;
+	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
 	private MitteilungService mitteilungService;
@@ -176,7 +180,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(gesuch.isPresent());
 		Assert.assertEquals(insertedGesuch.getFall().getId(), gesuch.get().getFall().getId());
 
-		gesuch.get().setDossier(persistence.persist(TestDataUtil.createDefaultDossier()));
+		gesuch.get().setDossier(TestDataUtil.createAndPersistDossierAndFall(persistence));
 		final Gesuch updated = gesuchService.updateGesuch(gesuch.get(), false, null);
 		Assert.assertEquals(updated.getFall().getId(), gesuch.get().getFall().getId());
 
@@ -403,7 +407,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_VERFUEGT() {
 		//wenn das Gesuch nicht im Status PRUEFUNG_STV ist, wird nichts gemacht
-		Gesuch gesuch = persistNewEntity(AntragStatus.VERFUEGT, Eingangsart.ONLINE);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.VERFUEGT, Eingangsart.ONLINE, persistence, gesuchService);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.VERFUEGT, gesuch.getStatus());
 		loginAsSteueramt();
@@ -419,7 +423,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_PRUEFUNGSTV() {
 		//Wenn das Gesuch im Status PRUEFUNG_STV ist, wechselt der Status beim Ablesen auf IN_BEARBEITUNG_STV
-		Gesuch gesuch = persistNewEntity(AntragStatus.PRUEFUNG_STV, Eingangsart.ONLINE);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.PRUEFUNG_STV, Eingangsart.ONLINE, persistence, gesuchService);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.PRUEFUNG_STV, gesuch.getStatus());
 		loginAsSteueramt();
@@ -432,7 +436,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungJAIFFreigegeben() {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
-		Gesuch gesuch = persistNewEntity(AntragStatus.FREIGEGEBEN, Eingangsart.ONLINE);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGEGEBEN, Eingangsart.ONLINE, persistence, gesuchService);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGEGEBEN, gesuch.getStatus());
 		loginAsSachbearbeiterJA();
@@ -479,18 +483,18 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetAllGesucheForFallAndPeriod() {
-		final Fall fall = fallService.saveFall(TestDataUtil.createDefaultFall());
+		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
 		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
 
 		final Gesuchsperiode otherPeriod = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCustomGesuchsperiode(2014, 2015));
 
-		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_JA);
+		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_JA);
 		persistence.persist(gesuch1516_2);
-		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(fall, otherPeriod, AntragStatus.IN_BEARBEITUNG_JA);
+		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.IN_BEARBEITUNG_JA);
 		persistence.persist(gesuch1415_1);
 
 		final List<Gesuch> allGesuche_1 = gesuchService.getAllGesucheForFallAndPeriod(gesuch1516_1.getFall(), gesuch1516_1.getGesuchsperiode());
@@ -502,18 +506,18 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testSetBeschwerdeHaengigForPeriode() {
-		final Fall fall = fallService.saveFall(TestDataUtil.createDefaultFall());
+		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
 		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
 
 		final Gesuchsperiode otherPeriod = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCustomGesuchsperiode(2014, 2015));
 
-		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_2);
-		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(fall, otherPeriod, AntragStatus.VERFUEGT);
+		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1415_1);
 
 		gesuchService.setBeschwerdeHaengigForPeriode(gesuch1516_1);
@@ -541,18 +545,18 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testRemoveBeschwerdeHaengigForPeriode() {
-		final Fall fall = fallService.saveFall(TestDataUtil.createDefaultFall());
+		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
 		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
 
 		final Gesuchsperiode otherPeriod = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCustomGesuchsperiode(2014, 2015));
 
-		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_1 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_1);
-		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuch1516_2 = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1516_2);
-		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(fall, otherPeriod, AntragStatus.VERFUEGT);
+		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.VERFUEGT);
 		persistence.persist(gesuch1415_1);
 
 		gesuch1516_1.setStatus(AntragStatus.VERFUEGT);
@@ -846,16 +850,6 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 			return true;
 		}
 		return false;
-	}
-
-	private Gesuch persistNewEntity(AntragStatus status, Eingangsart eingangsart) {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		gesuch.setEingangsart(eingangsart);
-		gesuch.setStatus(status);
-		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		gesuchService.createGesuch(gesuch);
-		return gesuch;
 	}
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {

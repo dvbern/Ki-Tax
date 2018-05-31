@@ -109,7 +109,7 @@ public abstract class AbstractTestfall {
 
 	public abstract String getVorname();
 
-	public Fall createFall(Benutzer verantwortlicher) {
+	public Fall createFall(@Nullable Benutzer verantwortlicher) {
 		fall = new Fall();
 		fall.setVerantwortlicher(verantwortlicher);
 		fall.setTimestampErstellt(LocalDateTime.now().minusDays(7));

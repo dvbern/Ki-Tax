@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -31,5 +32,17 @@ public interface DossierService {
 	 */
 	@Nonnull
 	Optional<Dossier> findDossier(@Nonnull String id);
+
+	/**
+	 * Gibt eine Liste aller Dossiers des uebergebenen Falls zurück.
+	 */
+	@Nonnull
+	Collection<Dossier> findDossiersByFall(@Nonnull String fallId);
+
+	/**
+	 * Speichert ein Dossier bzw. erstellt es wenn es noch nicht existiert.
+	 */
+	@Nonnull
+	Dossier saveDossier(@Nonnull Dossier dossier);
 
 }

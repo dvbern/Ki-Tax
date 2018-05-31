@@ -60,6 +60,11 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nullable Fall fall);
 
 	/**
+	 * prueft ob der aktuell eingeloggte benutzer das Dossier schreibend bearbeiten darf
+	 */
+	void checkWriteAuthorizationDossier(@Nullable Dossier dossier);
+
+	/**
 	 * prueft ob der aktuell eingeloggte benutzer den fall lesen darf
 	 */
 	void checkReadAuthorizationFall(@Nullable Fall fall);

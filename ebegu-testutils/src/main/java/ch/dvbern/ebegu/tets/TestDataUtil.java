@@ -126,6 +126,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ANZAHL_TAGE_KANTON;
@@ -743,7 +744,9 @@ public final class TestDataUtil {
 	}
 
 	public static void setFinanzielleSituation(Gesuch gesuch, BigDecimal einkommen) {
+		Validate.notNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		Validate.notNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(einkommen);
 	}
@@ -754,23 +757,28 @@ public final class TestDataUtil {
 		}
 		if (gesuch.extractEinkommensverschlechterungInfo() == null) {
 			gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
-			gesuch.extractEinkommensverschlechterungInfo().setEinkommensverschlechterung(true);
-			gesuch.extractEinkommensverschlechterungInfo().setEkvFuerBasisJahrPlus1(false);
-			gesuch.extractEinkommensverschlechterungInfo().setEkvFuerBasisJahrPlus2(false);
+			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+			Validate.notNull(einkommensverschlechterungInfo);
+			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
+			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(false);
+			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		}
 		if (basisJahrPlus1) {
 			gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
 			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnAug(einkommen);
-			gesuch.extractEinkommensverschlechterungInfo().setEkvFuerBasisJahrPlus1(true);
-			;
-			gesuch.extractEinkommensverschlechterungInfo().setStichtagFuerBasisJahrPlus1(STICHTAG_EKV_1);
-			gesuch.extractEinkommensverschlechterungInfo().setEinkommensverschlechterung(true);
+			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+			Validate.notNull(einkommensverschlechterungInfo);
+			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
+			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(STICHTAG_EKV_1);
+			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		} else {
 			gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(new Einkommensverschlechterung());
 			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohnAug(einkommen);
-			gesuch.extractEinkommensverschlechterungInfo().setEkvFuerBasisJahrPlus2(true);
-			gesuch.extractEinkommensverschlechterungInfo().setStichtagFuerBasisJahrPlus2(STICHTAG_EKV_2);
-			gesuch.extractEinkommensverschlechterungInfo().setEinkommensverschlechterung(true);
+			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+			Validate.notNull(einkommensverschlechterungInfo);
+			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(true);
+			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus2(STICHTAG_EKV_2);
+			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		}
 	}
 
@@ -882,6 +890,7 @@ public final class TestDataUtil {
 		testfall.createFall(verantwortlicher);
 		testfall.createGesuch(eingangsdatum, status);
 		persistence.persist(testfall.getGesuch().getFall());
+		persistence.persist(testfall.getGesuch().getDossier());
 		persistence.persist(testfall.getGesuch().getGesuchsperiode());
 		persistence.persist(testfall.getGesuch());
 		Gesuch gesuch = testfall.fillInGesuch();
@@ -958,6 +967,14 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
 		return gesuch;
+	}
+
+	public static Dossier createAndPersistDossierAndFall(Persistence persistence) {
+		final Fall fall = persistence.persist(TestDataUtil.createDefaultFall());
+		Dossier dossier = new Dossier();
+		dossier.setFall(fall);
+		dossier = persistence.persist(dossier);
+		return dossier;
 	}
 
 	public static WizardStep createWizardStepObject(Gesuch gesuch, WizardStepName wizardStepName, WizardStepStatus stepStatus) {
@@ -1145,10 +1162,9 @@ public final class TestDataUtil {
 		return abwesenheit;
 	}
 
-	public static Gesuch createGesuch(Fall fall, Gesuchsperiode periodeToUpdate, AntragStatus status) {
+	public static Gesuch createGesuch(Dossier dossier, Gesuchsperiode periodeToUpdate, AntragStatus status) {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setDossier(new Dossier());
-		gesuch.getDossier().setFall(fall);
+		gesuch.setDossier(dossier);
 		gesuch.setGesuchsperiode(periodeToUpdate);
 		gesuch.setStatus(status);
 		return gesuch;
@@ -1210,6 +1226,8 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
 		persistence.persist(betreuung.getInstitutionStammdaten());
+		Validate.notNull(betreuung.getKind().getKindGS().getPensumFachstelle());
+		Validate.notNull(betreuung.getKind().getKindJA().getPensumFachstelle());
 		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
@@ -1237,13 +1255,23 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Persistence persistence, @Nonnull GesuchService gesuchService) {
+		return persistNewGesuchInStatus(status, Eingangsart.ONLINE, persistence, gesuchService);
+	}
+
+	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
+			@Nonnull GesuchService gesuchService) {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.setEingangsart(Eingangsart.PAPIER);
 		gesuch.setStatus(status);
+		gesuch.setEingangsart(eingangsart);
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
+		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		gesuch.setGesuchsteller1(gesuchsteller1);
+		Validate.notNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
+		Validate.notNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
 		gesuchService.createGesuch(gesuch);
 		return gesuch;
