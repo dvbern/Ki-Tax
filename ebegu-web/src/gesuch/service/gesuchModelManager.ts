@@ -14,12 +14,14 @@
  */
 
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsteller from '../../models/TSGesuchsteller';
 import TSAdresse from '../../models/TSAdresse';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import TSFamiliensituation from '../../models/TSFamiliensituation';
+import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
 import GesuchRS from './gesuchRS.rest';
 import GesuchstellerRS from '../../core/service/gesuchstellerRS.rest';
@@ -100,7 +102,7 @@ export default class GesuchModelManager {
     static $inject = ['FamiliensituationRS', 'FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', 'GesuchsperiodeRS', 'EbeguRestUtil', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'EinkommensverschlechterungInfoRS',
-        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', '$rootScope', 'EwkRS', 'GlobalCacheService'];
+        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', '$rootScope', 'EwkRS', 'GlobalCacheService', 'DossierRS'];
     /* @ngInject */
     constructor(private familiensituationRS: FamiliensituationRS, private fallRS: FallRS, private gesuchRS: GesuchRS, private gesuchstellerRS: GesuchstellerRS,
                 private finanzielleSituationRS: FinanzielleSituationRS, private kindRS: KindRS, private fachstelleRS: FachstelleRS, private erwerbspensumRS: ErwerbspensumRS,
@@ -110,7 +112,7 @@ export default class GesuchModelManager {
                 private wizardStepManager: WizardStepManager, private einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
                 private antragStatusHistoryRS: AntragStatusHistoryRS, private ebeguUtil: EbeguUtil, private errorService: ErrorService,
                 private adresseRS: AdresseRS, private $q: IQService, private CONSTANTS: any, private $rootScope: IRootScopeService, private ewkRS: EwkRS,
-                private globalCacheService: GlobalCacheService) {
+                private globalCacheService: GlobalCacheService, private dossierRS: DossierRS) {
 
 
         $rootScope.$on(TSAuthEvent[TSAuthEvent.LOGOUT_SUCCESS], () => {
@@ -270,26 +272,39 @@ export default class GesuchModelManager {
      * @returns {IPromise<TSGesuch>}
      */
     public saveGesuchAndFall(): IPromise<TSGesuch> {
-        if (this.gesuch && this.gesuch.timestampErstellt) { //update
+        if (this.gesuch && this.gesuch.timestampErstellt) {
+            // Gesuch schon vorhanden
             return this.updateGesuch();
-        } else { //create
-            //TODO (KIBON-6) Dossier speichern!
-            if (this.gesuch.dossier.fall && this.gesuch.dossier.fall.timestampErstellt) {
-                // Fall ist schon vorhanden
-                return this.gesuchRS.createGesuch(this.gesuch).then((gesuchResponse: any) => {
-                    this.gesuch = gesuchResponse;
-                    return this.gesuch;
-                });
+        } else {
+            // Gesuch noch nicht vorhanden
+            if (this.gesuch.dossier && !this.gesuch.dossier.isNew()) {
+                // Dossier schon vorhaden -> Wir koennen davon ausgehen, dass auch der Fall vorhanden ist
+                return this.createGesuch(this.gesuch);
             } else {
-                return this.fallRS.createFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
-                    this.gesuch.dossier.fall = angular.copy(fallResponse);
-                    return this.gesuchRS.createGesuch(this.gesuch).then((gesuchResponse: any) => {
-                        this.gesuch = gesuchResponse;
-                        return this.gesuch;
+                if (this.gesuch.dossier.fall && this.gesuch.dossier.fall.timestampErstellt) {
+                    // Fall ist schon vorhanden
+                    return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
+                        this.gesuch.dossier = angular.copy(dossierResponse);
+                        return this.createGesuch(this.gesuch);
                     });
-                });
+                } else {
+                    return this.fallRS.createFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
+                        this.gesuch.dossier.fall = angular.copy(fallResponse);
+                        return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
+                            this.gesuch.dossier = angular.copy(dossierResponse);
+                            return this.createGesuch(this.gesuch);
+                        });
+                    });
+                }
             }
         }
+    }
+
+    private createGesuch(gesuch: TSGesuch): IPromise<TSGesuch> {
+        return this.gesuchRS.createGesuch(gesuch).then((gesuchResponse: any) => {
+            this.gesuch = gesuchResponse;
+            return this.gesuch;
+        });
     }
 
     public reloadGesuch(): IPromise<TSGesuch> {
@@ -613,6 +628,7 @@ export default class GesuchModelManager {
 
     private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart): void {
         this.gesuch = new TSGesuch();
+        this.gesuch.dossier = new TSDossier();
         this.gesuch.dossier.fall = new TSFall();
         this.gesuch.typ = antragTyp; // by default ist es ein Erstgesuch
         this.gesuch.eingangsart = eingangsart;

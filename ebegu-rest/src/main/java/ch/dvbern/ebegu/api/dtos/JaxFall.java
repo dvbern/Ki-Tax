@@ -38,7 +38,8 @@ public class JaxFall extends JaxAbstractDTO {
 	@Min(1)
 	private Integer nextNumberKind = 1;
 
-	private Integer nextNumberDossier = 0;
+	@Min(1)
+	private Integer nextNumberDossier = 1;
 
 	private JaxAuthLoginElement besitzer; //
 

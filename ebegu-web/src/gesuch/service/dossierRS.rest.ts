@@ -29,7 +29,7 @@ export default class DossierRS implements IEntityRS {
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
                 private wizardStepManager: WizardStepManager, private $rootScope: IRootScopeService) {
-        this.serviceURL = REST_API + 'gesuche';
+        this.serviceURL = REST_API + 'dossier';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
     }
@@ -43,10 +43,7 @@ export default class DossierRS implements IEntityRS {
             }
         }).then((response: any) => {
             this.$log.debug('PARSING dossier REST object ', response.data);
-            let convertedDossier: TSDossier = this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
-            return this.wizardStepManager.updateFirstWizardStep(convertedDossier.id).then(() => {
-                return convertedDossier;
-            });
+            return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
         });
     }
 }
