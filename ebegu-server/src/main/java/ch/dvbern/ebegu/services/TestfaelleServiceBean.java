@@ -525,6 +525,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 
+		dossier.setFall(persistedFall);
 		final Dossier persistedDossier = dossierService.saveDossier(dossier);
 		fromTestfall.setDossier(persistedDossier);;
 

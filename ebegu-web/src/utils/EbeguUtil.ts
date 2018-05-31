@@ -193,7 +193,7 @@ export default class EbeguUtil {
      */
     public getGesuchNameFromGesuch(gesuch: TSGesuch): string {
         let text = '';
-        if (gesuch) {
+        if (gesuch && gesuch.dossier) {
             if (gesuch.dossier.fall) {
                 text = this.addZerosToNumber(gesuch.dossier.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
             }
