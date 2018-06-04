@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -106,6 +108,17 @@ public class Dossier extends AbstractEntity {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof Dossier)) {
+			return false;
+		}
+		if (!super.equals(other)) {
+			return false;
+		}
+		Dossier dossier = (Dossier) other;
+		return dossierNummer == dossier.dossierNummer &&
+			Objects.equals(fall, dossier.fall);
 	}
 }
