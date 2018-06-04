@@ -43,6 +43,11 @@ public class Dossier extends AbstractEntity {
 	@IndexedEmbedded
 	private Fall fall;
 
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_gemeinde_id"))
+	private Gemeinde gemeinde = null;
+
 	@NotNull
 	@Column(nullable = false)
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
@@ -69,6 +74,15 @@ public class Dossier extends AbstractEntity {
 
 	public void setFall(Fall fall) {
 		this.fall = fall;
+	}
+
+	@Nullable
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nullable Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	public long getDossierNummer() {
@@ -119,6 +133,7 @@ public class Dossier extends AbstractEntity {
 		}
 		Dossier dossier = (Dossier) other;
 		return dossierNummer == dossier.dossierNummer &&
-			Objects.equals(fall, dossier.fall);
+			Objects.equals(fall, dossier.fall) &&
+			Objects.equals(gemeinde, dossier.gemeinde);
 	}
 }

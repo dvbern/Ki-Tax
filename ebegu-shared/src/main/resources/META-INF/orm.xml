@@ -341,5 +341,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.Berechtigung"/>
 	<entity class="ch.dvbern.ebegu.entities.BerechtigungHistory"/>
 	<entity class="ch.dvbern.ebegu.entities.Dossier"/>
+	<entity class="ch.dvbern.ebegu.entities.Gemeinde"/>
 
 </entity-mappings>

@@ -25,14 +25,13 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Dossier_;
-import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -47,58 +46,39 @@ import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
- * Service fuer Dossier
+ * Service fuer Gemeinden
  */
 @Stateless
-@Local(DossierService.class)
+@Local(GemeindeService.class)
 @RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMINISTRATOR_SCHULAMT, SCHULAMT })
-public class DossierServiceBean extends AbstractBaseService implements DossierService {
+public class GemeindeServiceBean extends AbstractBaseService implements GemeindeService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(GemeindeServiceBean.class);
 
 	@Inject
 	private Persistence persistence;
 
 	@Inject
-	private Authorizer authorizer;
-
-	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
-	@Inject
-	private FallService fallService;
-
-	@Inject
-	private GemeindeService gemeindeService;
 
 	@Nonnull
 	@Override
-	public Optional<Dossier> findDossier(@Nonnull String id) {
+	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
-		Dossier dossier = persistence.find(Dossier.class, id);
-		if (dossier != null) {
-			authorizer.checkReadAuthorizationDossier(dossier);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
+		return Optional.ofNullable(gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	public Gemeinde getFirst() {
+		Collection<Gemeinde> gemeinden = criteriaQueryHelper.getAll(Gemeinde.class);
+		if (gemeinden != null && !gemeinden.isEmpty()) {
+			return gemeinden.iterator().next();
+		} else {
+			LOG.error("Wir erwarten, dass mindestens eine Gemeinde bereits in der DB existiert");
+			throw new EbeguRuntimeException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		return Optional.ofNullable(dossier);
-	}
-
-	@Nonnull
-	@Override
-	public Collection<Dossier> findDossiersByFall(@Nonnull String fallId) {
-		final Fall fall = fallService.findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("findDossiersByFall",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
-
-		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
-		return dossiers;
-	}
-
-	@Nonnull
-	@Override
-	public Dossier saveDossier(@Nonnull Dossier dossier) {
-		Objects.requireNonNull(dossier);
-		//TODO (KIBON-6) Wir setzen im Moment fix die Gemeinde Bern
-		Gemeinde bern = gemeindeService.getFirst();
-		dossier.setGemeinde(bern);
-		authorizer.checkWriteAuthorizationDossier(dossier);
-		return persistence.merge(dossier);
 	}
 }
