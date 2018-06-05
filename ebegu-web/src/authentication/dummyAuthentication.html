@@ -27,8 +27,8 @@
             <div class="mark-hover panel-body" (click)="logIn(user)"
                  [textContent]="user.vorname + ' ' + user.nachname + ', ' + user.email + ', '
                  + 'Rolle ' + (user.getRoleKey() | translate) + ', '
-                 + (user.institution?.name ? user.institution.name : '')
-                 + (user.traegerschaft?.name ? user.traegerschaft.name : '')"></div>
+                 + (user.currentBerechtigung.institution?.name ? user.currentBerechtigung.institution.name : '')
+                 + (user.currentBerechtigung.traegerschaft?.name ? user.currentBerechtigung.traegerschaft.name : '')"></div>
         </div>
 
     </div>

@@ -31,7 +31,6 @@ export function authenticationRun(routerHelper: RouterHelper) {
 function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguLoginState(),
-        new EbeguLocalLoginState(),
         new EbeguSchulungState(),
         new EbeguStartState()
     ];
@@ -44,15 +43,6 @@ export class EbeguLoginState implements Ng1StateDeclaration {
     template = '<authentication-view>';
     //HINWEIS: Soweit ich sehen kann koennen url navigationen mit mehr als einem einzigen slash am Anfang nicht manuell in der Adressbar aufgerufen werden?
     url = '/login?type&relayPath';
-}
-
-export class EbeguLocalLoginState implements Ng1StateDeclaration {
-    name = 'locallogin';
-    template = '<dummy-authentication-view flex="auto" class="overflow-scroll">';
-    url = '/locallogin';
-    resolve = {
-        dummyLoginEnabled: readDummyLoginEnabled
-    };
 }
 
 export class EbeguSchulungState implements Ng1StateDeclaration {

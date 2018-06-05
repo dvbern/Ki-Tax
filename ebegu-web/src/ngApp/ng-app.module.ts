@@ -22,11 +22,11 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {NgAdminModule} from '../admin/ng-admin.module';
 import appModule from '../app.module';
-import {DummyAuthenticationListViewComponent} from '../authentication/dummyAuthenticaton';
-import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
+import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
+import {applicationPropertyRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, '../src/assets/translations/translations_', '.json');
+    return new TranslateHttpLoader(http, './src/assets/translations/translations_', '.json');
 }
 
 @NgModule({
@@ -44,15 +44,12 @@ export function createTranslateLoader(http: HttpClient) {
         }),
 
         NgAdminModule,
+        NgAuthenticationModule,
     ],
-    declarations: [
-        DummyAuthenticationListViewComponent,
-    ],
-    entryComponents: [
-        DummyAuthenticationListViewComponent,
+    exports: [
+        TranslateModule,
     ],
     providers: [
-        authServiceRSProvider,
         applicationPropertyRSProvider,
     ],
 })
