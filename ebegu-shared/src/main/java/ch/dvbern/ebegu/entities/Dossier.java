@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,10 +44,10 @@ public class Dossier extends AbstractEntity {
 	@IndexedEmbedded
 	private Fall fall;
 
-	@Nullable
-	@ManyToOne(optional = true)
+	@NotNull
+	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_gemeinde_id"))
-	private Gemeinde gemeinde = null;
+	private Gemeinde gemeinde;
 
 	@NotNull
 	@Column(nullable = false)
@@ -68,20 +69,21 @@ public class Dossier extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_verantwortlicher_gmde_id"))
 	private Benutzer verantwortlicherGMDE = null; // Mitarbeiter der Gemeinde
 
+	@Nonnull
 	public Fall getFall() {
 		return fall;
 	}
 
-	public void setFall(Fall fall) {
+	public void setFall(@Nonnull Fall fall) {
 		this.fall = fall;
 	}
 
-	@Nullable
+	@Nonnull
 	public Gemeinde getGemeinde() {
 		return gemeinde;
 	}
 
-	public void setGemeinde(@Nullable Gemeinde gemeinde) {
+	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
 	}
 
