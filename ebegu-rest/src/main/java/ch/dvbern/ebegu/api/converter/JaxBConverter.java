@@ -83,6 +83,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
+import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -150,6 +151,7 @@ import ch.dvbern.ebegu.entities.FerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -191,6 +193,7 @@ import ch.dvbern.ebegu.services.FachstelleService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.GesuchstellerAdresseService;
@@ -261,6 +264,8 @@ public class JaxBConverter {
 	private InstitutionStammdatenService institutionStammdatenService;
 	@Inject
 	private BetreuungService betreuungService;
+	@Inject
+	private GemeindeService gemeindeService;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 
@@ -828,6 +833,23 @@ public class JaxBConverter {
 		return jaxFall;
 	}
 
+	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde gemeindeJax, @Nonnull final Gemeinde gemeinde) {
+		Validate.notNull(gemeinde);
+		Validate.notNull(gemeindeJax);
+		convertAbstractFieldsToEntity(gemeindeJax, gemeinde);
+		gemeinde.setName(gemeindeJax.getName());
+		gemeinde.setEnabled(gemeindeJax.isEnabled());
+		return gemeinde;
+	}
+
+	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
+		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
+		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
+		jaxGemeinde.setName(persistedGemeinde.getName());
+		jaxGemeinde.setEnabled(persistedGemeinde.isEnabled());
+		return jaxGemeinde;
+	}
+
 	public Dossier dossierToEntity(@Nonnull final JaxDossier dossierJAX, @Nonnull final Dossier dossier) {
 		Validate.notNull(dossier);
 		Validate.notNull(dossierJAX);
@@ -837,9 +859,18 @@ public class JaxBConverter {
 		// Fall darf nicht überschrieben werden
 		final Optional<Fall> fallFromDB = fallService.findFall(dossierJAX.getFall().getId());
 		if (fallFromDB.isPresent()) {
-			dossier.setFall(this.fallToEntity(dossierJAX.getFall(), fallFromDB.get()));
+			dossier.setFall(fallFromDB.get());
 		} else {
 			throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
+		}
+		// Gemeinde darf nicht ueberschrieben werden
+		if (dossierJAX.getGemeinde() != null) {
+			Optional<Gemeinde> gemeindeFromDB = gemeindeService.findGemeinde(dossierJAX.getGemeinde().getId());
+			if (gemeindeFromDB.isPresent()) {
+				dossier.setGemeinde(gemeindeFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
+			}
 		}
 		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
 		// TODO (KIBON-6) eigentlich: Wenn der VerantwortlicheBG die Berechtigung "Gemeinde" hat, muss er auf dem Entity als VerantwortlicherGMDE gesetzt werden
@@ -870,6 +901,7 @@ public class JaxBConverter {
 		final JaxDossier jaxDossier = new JaxDossier();
 		convertAbstractFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
+		jaxDossier.setGemeinde(this.gemeindeToJAX(persistedDossier.getGemeinde()));
 		jaxDossier.setDossierNummer(persistedDossier.getDossierNummer());
 		if (persistedDossier.getVerantwortlicherGMDE() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherGMDE()));

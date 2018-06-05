@@ -69,6 +69,7 @@ import TSFile from '../models/TSFile';
 import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../models/TSFinanzModel';
+import TSGemeinde from '../models/TSGemeinde';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
@@ -644,10 +645,31 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
+        if (gemeinde) {
+            this.abstractEntityToRestObject(restGemeinde, gemeinde);
+            restGemeinde.name = gemeinde.name;
+            restGemeinde.enabled = gemeinde.enabled;
+            return restGemeinde;
+        }
+        return undefined;
+    }
+
+    public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
+        if (gemeindeFromServer) {
+            this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
+            gemeindeTS.name = gemeindeFromServer.name;
+            gemeindeTS.enabled = gemeindeFromServer.enabled;
+            return gemeindeTS;
+        }
+        return undefined;
+    }
+
     public dossierToRestObject(restDossier: any, dossier: TSDossier): TSDossier {
         if (dossier) {
             this.abstractEntityToRestObject(restDossier, dossier);
             restDossier.fall = this.fallToRestObject({}, dossier.fall);
+            restDossier.gemeinde = this.gemeindeToRestObject({}, dossier.gemeinde);
             restDossier.dossierNummer = dossier.dossierNummer;
             restDossier.verantwortlicherBG = this.userToRestObject({}, dossier.verantwortlicherBG);
             restDossier.verantwortlicherTS = this.userToRestObject({}, dossier.verantwortlicherTS);
@@ -660,6 +682,7 @@ export default class EbeguRestUtil {
         if (dossierFromServer) {
             this.parseAbstractEntity(dossierTS, dossierFromServer);
             dossierTS.fall = this.parseFall(new TSFall(), dossierFromServer.fall);
+            dossierTS.gemeinde = this.parseGemeinde(new TSGemeinde(), dossierFromServer.gemeinde);
             dossierTS.dossierNummer = dossierFromServer.dossierNummer;
             dossierTS.verantwortlicherBG = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherBG);
             dossierTS.verantwortlicherTS = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherTS);

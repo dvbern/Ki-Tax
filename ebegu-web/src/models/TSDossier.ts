@@ -15,12 +15,13 @@
 
 import TSAbstractEntity from './TSAbstractEntity';
 import TSFall from './TSFall';
+import TSGemeinde from './TSGemeinde';
 import TSUser from './TSUser';
-import EbeguUtil from '../utils/EbeguUtil';
 
 export default class TSDossier extends TSAbstractEntity {
 
     private _fall: TSFall;
+    private _gemeinde: TSGemeinde;
     private _dossierNummer: number;
     private _verantwortlicherBG: TSUser;
     private _verantwortlicherTS: TSUser;
@@ -32,6 +33,14 @@ export default class TSDossier extends TSAbstractEntity {
 
     public set fall(value: TSFall) {
         this._fall = value;
+    }
+
+    public get gemeinde(): TSGemeinde {
+        return this._gemeinde;
+    }
+
+    public set gemeinde(value: TSGemeinde) {
+        this._gemeinde = value;
     }
 
     public get dossierNummer(): number {

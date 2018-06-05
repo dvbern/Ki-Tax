@@ -30,13 +30,14 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	private JaxFall fall;
 
+	private JaxGemeinde gemeinde;
+
 	private long dossierNummer;
 
 	private JaxAuthLoginElement verantwortlicherBG;
 
 	private JaxAuthLoginElement verantwortlicherTS;
 
-//	private JaxAuthLoginElement verantwortlicherGMDE;
 
 	public JaxFall getFall() {
 		return fall;
@@ -44,6 +45,14 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	public void setFall(JaxFall fall) {
 		this.fall = fall;
+	}
+
+	public JaxGemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(JaxGemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	public long getDossierNummer() {
@@ -69,12 +78,4 @@ public class JaxDossier extends JaxAbstractDTO {
 	public void setVerantwortlicherTS(JaxAuthLoginElement verantwortlicherTS) {
 		this.verantwortlicherTS = verantwortlicherTS;
 	}
-//
-//	public JaxAuthLoginElement getVerantwortlicherGMDE() {
-//		return verantwortlicherGMDE;
-//	}
-//
-//	public void setVerantwortlicherGMDE(JaxAuthLoginElement verantwortlicherGMDE) {
-//		this.verantwortlicherGMDE = verantwortlicherGMDE;
-//	}
 }
