@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -66,8 +65,6 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	private SearchService searchService;
 	@Inject
 	private InstitutionService institutionService;
-	@Inject
-	private FallService fallService;
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject

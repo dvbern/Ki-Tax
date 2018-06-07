@@ -210,6 +210,13 @@ export default class GesuchModelManager {
         return this.gesuch;
     }
 
+    public getFall(): TSFall {
+        if (this.gesuch && this.gesuch.dossier) {
+            return this.gesuch.dossier.fall;
+        }
+        return undefined;
+    }
+
     /**
      * Prueft ob der 2. Gesuchtsteller eingetragen werden muss je nach dem was in Familiensituation ausgewaehlt wurde. Wenn es sich
      * um eine Mutation handelt wird nur geschaut ob der 2GS bereits existiert. Wenn ja, dann wird er benoetigt, da bei Mutationen darf
