@@ -24,6 +24,8 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
@@ -34,6 +36,9 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 
 @Audited
 @Entity
+@Table(
+	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gemeinde_id" }, name = "UK_dossier_fall_gemeinde")
+)
 public class Dossier extends AbstractEntity {
 
 	private static final long serialVersionUID = -2511152887055775241L;
@@ -124,6 +129,7 @@ public class Dossier extends AbstractEntity {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
+		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}

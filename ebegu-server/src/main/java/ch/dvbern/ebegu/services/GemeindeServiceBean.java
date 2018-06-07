@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,24 +33,12 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 /**
  * Service fuer Gemeinden
  */
 @Stateless
 @Local(GemeindeService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMINISTRATOR_SCHULAMT, SCHULAMT })
+@PermitAll
 public class GemeindeServiceBean extends AbstractBaseService implements GemeindeService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeServiceBean.class);
@@ -74,11 +62,11 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public Gemeinde getFirst() {
 		Collection<Gemeinde> gemeinden = criteriaQueryHelper.getAll(Gemeinde.class);
-		if (gemeinden != null && !gemeinden.isEmpty()) {
-			return gemeinden.iterator().next();
-		} else {
+		if (gemeinden == null || gemeinden.isEmpty()) {
 			LOG.error("Wir erwarten, dass mindestens eine Gemeinde bereits in der DB existiert");
 			throw new EbeguRuntimeException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
+
+		return gemeinden.iterator().next();
 	}
 }
