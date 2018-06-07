@@ -166,6 +166,7 @@ export class DVMitteilungListController {
 
         //common attributes
         this.currentMitteilung = new TSMitteilung();
+        // todo KIBON-6 dossier is undefined!!
         this.currentMitteilung.dossier.fall = this.fall;
         if (this.betreuung) {
             this.currentMitteilung.betreuung = this.betreuung;

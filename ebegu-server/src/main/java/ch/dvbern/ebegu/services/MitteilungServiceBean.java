@@ -384,6 +384,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Objects.requireNonNull(fall, "fall muss gesetzt sein");
 		authorizer.checkReadAuthorizationFall(fall);
 //		return getMitteilungenForCurrentRolle(Mitteilung_.fall, fall);
+		// todo KIBON-6 returns empty array
 		return new ArrayList<>();
 	}
 
@@ -428,6 +429,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Fall fall) {
 		Objects.requireNonNull(fall, "fall muss gesetzt sein");
 //		return getEntwurfForCurrentRolle(Mitteilung_.fall, fall);
+		// todo KIBON-6 returns null
 		return null;
 	}
 
