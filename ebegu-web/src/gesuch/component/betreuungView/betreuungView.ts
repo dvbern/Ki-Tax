@@ -389,7 +389,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getGesuch().dossier.fall, this.getBetreuungModel());
+        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(), this.getBetreuungModel());
         let $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
@@ -691,7 +691,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 elementID: undefined
             }).then(() => {   //User confirmed removal
                 //TODO (KIBON-6) mitteilung pro Dossier
-                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getGesuch().dossier.fall,
+                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getFall(),
                     this.mutationsmeldungModel).then((response) => {
 
                     this.form.$setUntouched();
@@ -732,7 +732,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public openExistingBetreuungsmitteilung(): void {
         this.$state.go('gesuch.mitteilung', {
-            fallId: this.gesuchModelManager.getGesuch().dossier.fall.id,
+            fallId: this.gesuchModelManager.getFall().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
             mitteilungId: this.existingMutationsMeldung.id

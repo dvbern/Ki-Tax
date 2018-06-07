@@ -15,26 +15,43 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.envers.Audited;
 
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+
 @Audited
 @Entity
+@Table(
+	uniqueConstraints = @UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name")
+)
 public class Gemeinde extends AbstractEntity {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
-	private String name;
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = false)
+	@NotNull
+	private String name; // todo wenn ja dann SQL anpassen
 
+	@Column(nullable = false)
+	@NotNull
 	private boolean enabled;
 
 
+	@Nonnull
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(@Nonnull String name) {
 		this.name = name;
 	}
 
@@ -48,6 +65,17 @@ public class Gemeinde extends AbstractEntity {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof Gemeinde)) {
+			return false;
+		}
+		if (!super.equals(other)) {
+			return false;
+		}
+		Gemeinde gemeinde = (Gemeinde) other;
+		return name == gemeinde.getName();
 	}
 }

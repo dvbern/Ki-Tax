@@ -77,8 +77,6 @@ import ch.dvbern.ebegu.services.AntragStatusHistoryService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
-import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -128,10 +126,6 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	private DokumentGrundService dokumentGrundService;
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
-	@Inject
-	private FallService fallService;
-	@Inject
-	private DossierService dossierService;
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject

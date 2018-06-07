@@ -17,18 +17,15 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import {IEntityRS} from '../../core/service/iEntityRS.rest';
 import TSDossier from '../../models/TSDossier';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import WizardStepManager from './wizardStepManager';
-import IRootScopeService = angular.IRootScopeService;
 
 export default class DossierRS implements IEntityRS {
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', '$rootScope'];
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
-                private wizardStepManager: WizardStepManager, private $rootScope: IRootScopeService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
         this.serviceURL = REST_API + 'dossier';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
