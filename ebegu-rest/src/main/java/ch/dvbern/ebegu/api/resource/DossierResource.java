@@ -16,15 +16,19 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -33,10 +37,12 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.services.DossierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Dossier
@@ -73,5 +79,23 @@ public class DossierResource {
 
 		JaxDossier jaxDossier = converter.dossierToJAX(persistedDossier);
 		return Response.created(uri).entity(jaxDossier).build();
+	}
+
+	@ApiOperation(value = "Returns the Dossier with the given Id.", response = JaxDossier.class)
+	@Nullable
+	@GET
+	@Path("/id/{dossierId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxDossier findDossier(
+		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
+		Validate.notNull(dossierJAXPId.getId());
+		String dossierId = converter.toEntityId(dossierJAXPId);
+		Optional<Dossier> dossierOptional = dossierService.findDossier(dossierId);
+
+		if (!dossierOptional.isPresent()) {
+			return null;
+		}
+		return converter.dossierToJAX(dossierOptional.get());
 	}
 }
