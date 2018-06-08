@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,7 +30,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 7980499854206395920L;
 
-	@Nonnull
+	@NotNull
 	private String name;
 
 	private boolean enabled;
