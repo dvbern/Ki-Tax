@@ -125,7 +125,7 @@ export class DvQuicksearchboxController {
                 }
             } else if (this.selectedItem.entity === 'FALL') {
                 //open mitteilung
-                this.$state.go('mitteilungen', {fallId: this.selectedItem.fallID});
+                this.$state.go('mitteilungen', {dossierId: this.selectedItem.dossierId});
             } else {
 
                 this.$state.go('search', {searchString: this.searchString});

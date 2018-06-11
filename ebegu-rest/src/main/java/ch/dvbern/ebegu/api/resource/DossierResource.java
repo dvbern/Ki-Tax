@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -27,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -69,7 +71,19 @@ public class DossierResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Dossier convertedDossier = converter.dossierToEntity(dossierJax, new Dossier());
+		Dossier dossierToMerge = new Dossier();
+		if (dossierJax.getTimestampErstellt() != null) {
+			Objects.requireNonNull(dossierJax.getGemeinde());
+			Objects.requireNonNull(dossierJax.getGemeinde().getId());
+			Objects.requireNonNull(dossierJax.getFall());
+			Objects.requireNonNull(dossierJax.getFall().getId());
+			Optional<Dossier> dossierByGemeindeAndFall = dossierService.findDossierByGemeindeAndFall(
+				dossierJax.getGemeinde().getId(), dossierJax.getFall().getId());
+			if (dossierByGemeindeAndFall.isPresent()) {
+				dossierToMerge = dossierByGemeindeAndFall.get();
+			}
+		}
+		Dossier convertedDossier = converter.dossierToEntity(dossierJax, dossierToMerge);
 		Dossier persistedDossier = this.dossierService.saveDossier(convertedDossier);
 
 		URI uri = uriInfo.getBaseUriBuilder()
@@ -97,5 +111,45 @@ public class DossierResource {
 			return null;
 		}
 		return converter.dossierToJAX(dossierOptional.get());
+	}
+
+	@ApiOperation(value = "Returns the Dossier of the given Fall for the given Gemeinde.", response = JaxDossier.class)
+	@Nullable
+	@GET
+	@Path("/gemeinde/{gemeindeId}/fall/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxDossier getDossierForFallAndGemeinde(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJaxId,
+		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
+
+		Validate.notNull(gemeindeJaxId.getId());
+		Validate.notNull(fallJaxId.getId());
+
+		String gemeindeId = converter.toEntityId(gemeindeJaxId);
+		String fallId = converter.toEntityId(fallJaxId);
+		Optional<Dossier> dossierOptional = dossierService.findDossierByGemeindeAndFall(gemeindeId, fallId);
+		if (!dossierOptional.isPresent()) {
+			return null;
+		}
+		return converter.dossierToJAX(dossierOptional.get());
+	}
+
+	@ApiOperation(value = "Creates a new Dossier in the database if it doesnt exist with the current user as owner.", response = JaxDossier.class)
+	@Nullable
+	@PUT
+	@Path("/createforcurrentbenutzer/{gemeindeId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxDossier getOrCreateDossierAndFallForCurrentUserAsBesitzer(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Validate.notNull(gemeindeJaxId.getId());
+		String gemeindeId = converter.toEntityId(gemeindeJaxId);
+
+		Dossier dossier = dossierService.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
+		return converter.dossierToJAX(dossier);
 	}
 }

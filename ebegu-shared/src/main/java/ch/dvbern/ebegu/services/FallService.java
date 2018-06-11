@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
@@ -86,6 +85,7 @@ public interface FallService {
 	 * - Nur wenn der aktuellen Benutzer ein GESUCHSTELLER ist und noch keinen Fall zugeordnet hat
 	 * - In allen anderen Fällen ein Optional.empty() wird zurueckgegeben
 	 */
+	@Nonnull
 	Optional<Fall> createFallForCurrentGesuchstellerAsBesitzer();
 
 	/**
@@ -93,11 +93,6 @@ public interface FallService {
 	 * die E-Mail zurueckgegeben die beim Besitzer des Falls eingegeben wurde (aus IAM importiert)
 	 */
 	Optional<String> getCurrentEmailAddress(String fallID);
-
-	/**
-	 * Checks whether the given Fall has at least one Mitteilung or not. Will throw an exception if the fall is not found.
-	 */
-	boolean hasFallAnyMitteilung(@NotNull String fallID);
 
 	/**
 	 * Logik fuer die Ermittlung des Hauptverantwortlichen:

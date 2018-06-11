@@ -874,16 +874,16 @@ public class JaxBConverter {
 		}
 		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
 		// TODO (KIBON-6) eigentlich: Wenn der VerantwortlicheBG die Berechtigung "Gemeinde" hat, muss er auf dem Entity als VerantwortlicherGMDE gesetzt werden
-		if (dossierJAX.getVerantwortlicherBG() != null) {
-			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
-			if (verantwortlicher.isPresent()) {
-				dossier.setVerantwortlicherBG(verantwortlicher.get()); // because the user doesn't come from the client but from the server
-			} else {
-				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
-			}
-		} else {
-			dossier.setVerantwortlicherBG(null);
-		}
+//		if (dossierJAX.getVerantwortlicherBG() != null) {
+//			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
+//			if (verantwortlicher.isPresent()) {
+//				dossier.setVerantwortlicherBG(verantwortlicher.get()); // because the user doesn't come from the client but from the server
+//			} else {
+//				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
+//			}
+//		} else {
+//			dossier.setVerantwortlicherBG(null);
+//		}
 		if (dossierJAX.getVerantwortlicherTS() != null) {
 			Optional<Benutzer> verantwortlicherSCH = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername());
 			if (verantwortlicherSCH.isPresent()) {
@@ -2968,7 +2968,6 @@ public class JaxBConverter {
 		Validate.notNull(mitteilungJAXP);
 		Validate.notNull(mitteilungJAXP.getDossier());
 		Validate.notNull(mitteilungJAXP.getDossier().getId());
-		Validate.notNull(mitteilungJAXP.getEmpfaengerTyp());
 
 		convertAbstractFieldsToEntity(mitteilungJAXP, mitteilung);
 

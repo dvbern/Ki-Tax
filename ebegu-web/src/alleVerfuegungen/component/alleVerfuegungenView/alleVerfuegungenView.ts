@@ -17,6 +17,8 @@ import IComponentOptions = angular.IComponentOptions;
 import IStateService = angular.ui.IStateService;
 import ITimeoutService = angular.ITimeoutService;
 import ILogService = angular.ILogService;
+import DossierRS from '../../../gesuch/service/dossierRS.rest';
+import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -43,25 +45,28 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
 
 export class AlleVerfuegungenViewController {
 
-    fall: TSFall;
+    fall: TSFall; //TODO (KIBON-6) Hier das Dossier als Param uebergeben. Fall entfernen
+    dossier: TSDossier;
     alleVerfuegungen: Array<any> = [];
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
 
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'FallRS', 'EbeguUtil', 'BetreuungRS',
-        'GesuchModelManager', 'DownloadRS', '$log', '$timeout'];
+        'GesuchModelManager', 'DownloadRS', '$log', '$timeout', 'DossierRS'];
 
     /* @ngInject */
     constructor(private $state: IStateService, private $stateParams: IAlleVerfuegungenStateParams,
                 private authServiceRS: AuthServiceRS, private fallRS: FallRS, private ebeguUtil: EbeguUtil,
                 private betreuungRS: BetreuungRS, private gesuchModelManager: GesuchModelManager,
-                private downloadRS: DownloadRS, private $log: ILogService, private $timeout: ITimeoutService) {
+                private downloadRS: DownloadRS, private $log: ILogService, private $timeout: ITimeoutService,
+                private dossierRS: DossierRS) {
     }
 
     $onInit() {
-        if (this.$stateParams.fallId) {
-            this.fallRS.findFall(this.$stateParams.fallId).then((response) => {
-                this.fall = response;
+        if (this.$stateParams.dossierId) {
+            this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
+                this.dossier = response;
+                this.fall = response.fall;
                 if (this.fall === undefined) {
                     this.cancel();
                 }

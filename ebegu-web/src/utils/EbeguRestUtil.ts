@@ -1620,6 +1620,7 @@ export default class EbeguRestUtil {
         entry.resultId = dataFromServer.resultId;
         entry.text = dataFromServer.text;
         entry.entity = dataFromServer.entity;
+        entry.dossierId = dataFromServer.dossierId;
         if (dataFromServer.antragDTO) {
             //dataFromServer.antragDTO.typ === TSAntragDTO
             if (this.isFallAntragDTO(dataFromServer.antragDTO)) {

@@ -380,12 +380,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
 		ADMINISTRATOR_SCHULAMT, SCHULAMT })
-	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-		authorizer.checkReadAuthorizationFall(fall);
-//		return getMitteilungenForCurrentRolle(Mitteilung_.fall, fall);
-		// todo KIBON-6 returns empty array
-		return new ArrayList<>();
+	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
+		authorizer.checkReadAuthorizationDossier(dossier);
+		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier);
 	}
 
 	@Nonnull
@@ -422,15 +420,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return mitteilungen;
 	}
 
-	@Override
 	@Nullable
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
 		ADMINISTRATOR_SCHULAMT })
-	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-//		return getEntwurfForCurrentRolle(Mitteilung_.fall, fall);
-		// todo KIBON-6 returns null
-		return null;
+	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
+		authorizer.checkReadAuthorizationDossier(dossier);
+		return getEntwurfForCurrentRolle(Mitteilung_.dossier, dossier);
 	}
 
 	@Override
@@ -525,12 +522,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
 		ADMINISTRATOR_SCHULAMT })
-	public Collection<Mitteilung> setAllNewMitteilungenOfFallGelesen(@Nonnull Fall fall) {
-		Collection<Mitteilung> mitteilungen = getMitteilungenForCurrentRolle(fall);
+	public Collection<Mitteilung> setAllNewMitteilungenOfDossierGelesen(@Nonnull Dossier dossier) {
+		Collection<Mitteilung> mitteilungen = getMitteilungenForCurrentRolle(dossier);
 		for (Mitteilung mitteilung : mitteilungen) {
 			if (MitteilungStatus.NEU == mitteilung.getMitteilungStatus()) {
 				setMitteilungsStatusIfBerechtigt(mitteilung, MitteilungStatus.GELESEN, MitteilungStatus.NEU);
@@ -539,20 +536,20 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return mitteilungen;
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
 		ADMINISTRATOR_SCHULAMT, SCHULAMT })
-	public Collection<Mitteilung> getNewMitteilungenForCurrentRolleAndFall(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-		authorizer.checkReadAuthorizationFall(fall);
+	public Collection<Mitteilung> getNewMitteilungenOfDossierForCurrentRolle(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
+		authorizer.checkReadAuthorizationDossier(dossier);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 		List<Predicate> predicates = new ArrayList<>();
 
-		Predicate predicateFall = cb.equal(root.get(Mitteilung_.dossier).get(Dossier_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Mitteilung_.dossier), dossier);
 		predicates.add(predicateFall);
 
 		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);

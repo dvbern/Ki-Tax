@@ -5,9 +5,9 @@ CREATE TABLE gemeinde (
 	user_erstellt      VARCHAR(36) NOT NULL,
 	user_mutiert       VARCHAR(36) NOT NULL,
 	version            BIGINT      NOT NULL,
-	vorgaenger_id      VARCHAR(36) NOT NULL,
+	vorgaenger_id      VARCHAR(36),
 	enabled            BIT         NOT NULL,
-	name               VARCHAR(255),
+	name               VARCHAR(255) NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -33,17 +33,17 @@ ALTER TABLE gemeinde_aud
 FOREIGN KEY (rev)
 REFERENCES revinfo (rev);
 
-alter table dossier
-	add constraint UK_dossier_fall_gemeinde unique (fall_id, gemeinde_id);
-
-alter table gemeinde
-	add constraint UK_gemeinde_name unique (name);
-
 ALTER TABLE dossier
 	ADD gemeinde_id VARCHAR(36);
 
 ALTER TABLE dossier_aud
 	ADD gemeinde_id VARCHAR(36);
+
+alter table dossier
+	add constraint UK_dossier_fall_gemeinde unique (fall_id, gemeinde_id);
+
+alter table gemeinde
+	add constraint UK_gemeinde_name unique (name);
 
 UPDATE dossier
 SET gemeinde_id = (

@@ -34,11 +34,11 @@ function getStates(): IState[] {
 export class EbeguAlleVerfuegungenState implements IState {
     name = 'alleVerfuegungen';
     template = '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/alleVerfuegungen/:fallId';
+    url = '/alleVerfuegungen/:dossierId';
 }
 
 // PARAMS
 
 export class IAlleVerfuegungenStateParams implements IStateParamsService {
-    fallId: string;
+    dossierId: string;
 }

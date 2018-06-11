@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Dossier;
 
@@ -40,9 +41,27 @@ public interface DossierService {
 	Collection<Dossier> findDossiersByFall(@Nonnull String fallId);
 
 	/**
+	 * Gibt das Dossier (falls vorhanden) fuer die uebergebene Gemeinde und den uebergebenen Fall zurueck
+	 */
+	@Nonnull
+	Optional<Dossier> findDossierByGemeindeAndFall(@Nonnull String gemeindeId, @Nonnull String fallId);
+
+	/**
 	 * Speichert ein Dossier bzw. erstellt es wenn es noch nicht existiert.
 	 */
 	@Nonnull
 	Dossier saveDossier(@Nonnull Dossier dossier);
+
+	/**
+	 * Erstellt ein Dossier und einen Fall (beides, falls noch nicht vorhanden) fuer den eingeloggten
+	 * Benutzer als GS (Besitzer) fuer die uebergebene Gemeinde
+	 */
+	@Nonnull
+	Dossier getOrCreateDossierAndFallForCurrentUserAsBesitzer(@Nonnull String gemeindeId);
+
+	/**
+	 * Checks whether the given Dossier has at least one Mitteilung or not. Will throw an exception if the dossier is not found.
+	 */
+	boolean hasDossierAnyMitteilung(@NotNull String dossierId);
 
 }

@@ -288,7 +288,7 @@ export default class GesuchModelManager {
                 // Dossier schon vorhaden -> Wir koennen davon ausgehen, dass auch der Fall vorhanden ist
                 return this.createGesuch(this.gesuch);
             } else {
-                if (this.gesuch.dossier.fall && this.gesuch.dossier.fall.timestampErstellt) {
+                if (this.gesuch.dossier.fall && !this.gesuch.dossier.fall.isNew()) {
                     // Fall ist schon vorhanden
                     return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
                         this.gesuch.dossier = angular.copy(dossierResponse);

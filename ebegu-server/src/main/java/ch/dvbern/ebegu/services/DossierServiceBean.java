@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -59,6 +60,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Inject
 	private GemeindeService gemeindeService;
 
+	@Inject
+	private MitteilungService mitteilungService;
+
 	@Nonnull
 	@Override
 	public Optional<Dossier> findDossier(@Nonnull String id) {
@@ -82,12 +86,57 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
+	public Optional<Dossier> findDossierByGemeindeAndFall(@Nonnull String gemeindeId, @Nonnull String fallId) {
+		//TODO (KIBON-6) Aktuell wissen wir beim Aufruf dieser Methode die GemeindeId noch nicht. Wir geben immer das erste / einzige Dossier zurueck
+		Collection<Dossier> dossiersByFall = findDossiersByFall(fallId);
+		if (!dossiersByFall.isEmpty()) {
+			return Optional.of(dossiersByFall.iterator().next());
+		}
+		return Optional.empty();
+	}
+
+	@Nonnull
+	@Override
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
-		//TODO (KIBON-6) Wir setzen im Moment fix die Gemeinde Bern
 		Gemeinde bern = gemeindeService.getFirst();
+		if (dossier.isNew()) {
+			Optional<Dossier> dossierByGemeindeAndFall = findDossierByGemeindeAndFall(bern.getId(), dossier.getFall().getId());
+			if (dossierByGemeindeAndFall.isPresent()) {
+				dossier = dossierByGemeindeAndFall.get();
+			}
+		}
+		//TODO (KIBON-6) Wir setzen im Moment fix die Gemeinde Bern
 		dossier.setGemeinde(bern);
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
+	}
+
+	@Nonnull
+	@Override
+	public Dossier getOrCreateDossierAndFallForCurrentUserAsBesitzer(@Nonnull String gemeindeId) {
+		Optional<Fall> fallOptional = fallService.findFallByCurrentBenutzerAsBesitzer();
+		if (!fallOptional.isPresent()) {
+			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
+		}
+		//noinspection ConstantConditions
+		Objects.requireNonNull(fallOptional.get());
+		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall("TODO", fallOptional.get().getId());
+		if (dossierOptional.isPresent()) {
+			return dossierOptional.get();
+		}
+		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen
+		Dossier dossier = new Dossier();
+		dossier.setFall(fallOptional.get());
+		return saveDossier(dossier);
+	}
+
+	@Override
+	public boolean hasDossierAnyMitteilung(@Nonnull String dossierId) {
+		final Optional<Dossier> dossierOptional = findDossier(dossierId);
+		final Dossier dossier = dossierOptional.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(dossier);
+		return !mitteilungenForCurrentRolle.isEmpty();
 	}
 }

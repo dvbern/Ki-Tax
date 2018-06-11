@@ -15,9 +15,11 @@
 
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import TSDossier from '../../../models/TSDossier';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSGesuch from '../../../models/TSGesuch';
+import DossierRS from '../../service/dossierRS.rest';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {IStateService} from 'angular-ui-router';
 import TSAntragDTO from '../../../models/TSAntragDTO';
@@ -51,7 +53,7 @@ export class GesuchToolbarComponentConfig implements IComponentOptions {
     transclude = false;
     bindings: any = {
         gesuchid: '@',
-        fallid: '@',
+        dossierId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
@@ -66,7 +68,7 @@ export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOpti
     transclude = false;
     bindings: any = {
         gesuchid: '@',
-        fallid: '@',
+        dossierId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
@@ -81,12 +83,12 @@ export class GesuchToolbarController implements IDVFocusableController {
 
     antragList: Array<TSAntragDTO>;
     gesuchid: string;
-    fallid: string;
     isDashboardScreen: boolean;
     hideActionButtons: boolean;
     TSRoleUtil: any;
     forceLoadingFromFall: boolean;
-    fall: TSFall;
+    dossierId: string;
+    dossier: TSDossier;
 
     gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
     gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den Namen der Antraege
@@ -98,7 +100,7 @@ export class GesuchToolbarController implements IDVFocusableController {
 
     static $inject = ['EbeguUtil', 'GesuchRS', '$state',
         '$scope', 'GesuchModelManager', 'AuthServiceRS', '$mdSidenav', '$log', 'GesuchsperiodeRS',
-        'FallRS', 'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS'];
+        'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS'];
 
     constructor(private ebeguUtil: EbeguUtil,
                 private gesuchRS: GesuchRS,
@@ -108,10 +110,10 @@ export class GesuchToolbarController implements IDVFocusableController {
                 private $mdSidenav: ng.material.ISidenavService,
                 private $log: ILogService,
                 private gesuchsperiodeRS: GesuchsperiodeRS,
-                private fallRS: FallRS,
                 private dvDialog: DvDialog,
                 private unsavedWarningSharedService: any,
-                private mitteilungRS: MitteilungRS) {
+                private mitteilungRS: MitteilungRS,
+                private dossierRS: DossierRS) {
 
     }
 
@@ -126,14 +128,13 @@ export class GesuchToolbarController implements IDVFocusableController {
         });
     }
 
-    private updateAmountNewMitteilungenGS(fallid: string): void {
-        this.mitteilungRS.getAmountNewMitteilungenForCurrentRolle(fallid).then((response: number) => {
+    private updateAmountNewMitteilungenGS(): void {
+        this.mitteilungRS.getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossierId).then((response: number) => {
             this.amountNewMitteilungenGS = response;
         });
     }
 
     public getAmountNewMitteilungenGS(): string {
-
         return '(' + this.amountNewMitteilungenGS + ')';
     }
 
@@ -181,15 +182,15 @@ export class GesuchToolbarController implements IDVFocusableController {
             }
             //watcher fuer fall id change
             $scope.$watch(() => {
-                return this.fallid;
+                return this.dossierId;
             }, (newValue, oldValue) => {
                 if (newValue !== oldValue) {
-                    if (this.fallid) {
+                    if (this.dossierId) {
                         this.updateAntragDTOList();
-                        this.updateAmountNewMitteilungenGS(this.fallid);
+                        this.updateAmountNewMitteilungenGS();
                     } else {
                         // Fall-ID hat auf undefined gewechselt -> Fall zuruecksetzen
-                        this.fall = undefined;
+                        this.dossierId = undefined;
                         this.antragTypList = {};
                         this.gesuchNavigationList = {};
                         this.gesuchsperiodeList = {};
@@ -228,46 +229,51 @@ export class GesuchToolbarController implements IDVFocusableController {
     }
 
     public updateAntragDTOList(): void {
-        this.updateFall();
-        if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-            //TODO (KIBON-6) Toolbar pro Dossier?
-            this.gesuchRS.getAllAntragDTOForFall(this.getGesuch().dossier.fall.id).then((response) => {
-                this.antragList = angular.copy(response);
-                this.updateGesuchperiodeList();
-                this.updateGesuchNavigationList();
-                this.updateAntragTypList();
-                this.antragMutierenPossible();
-                this.antragErneuernPossible();
-            });
-        } else if (this.fallid) {
-            this.gesuchRS.getAllAntragDTOForFall(this.fallid).then((response) => {
-                this.antragList = angular.copy(response);
-                if (response && response.length > 0) {
-                    let newest = this.getNewest(this.antragList);
-                    this.gesuchRS.findGesuch(newest.antragId).then((response) => {
-                        if (!response) {
-                            this.$log.warn('Could not find gesuch for id ' + newest.antragId);
-                        }
-                        this.gesuchModelManager.setGesuch(angular.copy(response));
-                        this.updateGesuchperiodeList();
-                        this.updateGesuchNavigationList();
-                        this.updateAntragTypList();
-                        this.antragMutierenPossible();
-                        this.antragErneuernPossible();
-                    });
-                } else {
-                    // Wenn das Gesuch noch neu ist, sind wir noch ungespeichert auf der FallCreation-Seite
-                    // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
-                    if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.getGesuch().isNew()) {
-                        // in this case there is no Gesuch for this fall, so we remove all content
-                        this.gesuchModelManager.setGesuch(new TSGesuch());
+        if (this.dossierId) {
+            this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
+                if (response) {
+                    this.dossier = response;
+                    if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
+                        this.gesuchRS.getAllAntragDTOForFall(this.getGesuch().dossier.fall.id).then((response) => {
+                            this.antragList = angular.copy(response);
+                            this.updateGesuchperiodeList();
+                            this.updateGesuchNavigationList();
+                            this.updateAntragTypList();
+                            this.antragMutierenPossible();
+                            this.antragErneuernPossible();
+                        });
+                    } else if (this.dossier) {
+                        this.gesuchRS.getAllAntragDTOForFall(this.dossier.fall.id).then((response) => {
+                            this.antragList = angular.copy(response);
+                            if (response && response.length > 0) {
+                                let newest = this.getNewest(this.antragList);
+                                this.gesuchRS.findGesuch(newest.antragId).then((response) => {
+                                    if (!response) {
+                                        this.$log.warn('Could not find gesuch for id ' + newest.antragId);
+                                    }
+                                    this.gesuchModelManager.setGesuch(angular.copy(response));
+                                    this.updateGesuchperiodeList();
+                                    this.updateGesuchNavigationList();
+                                    this.updateAntragTypList();
+                                    this.antragMutierenPossible();
+                                    this.antragErneuernPossible();
+                                });
+                            } else {
+                                // Wenn das Gesuch noch neu ist, sind wir noch ungespeichert auf der FallCreation-Seite
+                                // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
+                                if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.getGesuch().isNew()) {
+                                    // in this case there is no Gesuch for this fall, so we remove all content
+                                    this.gesuchModelManager.setGesuch(new TSGesuch());
+                                    this.resetNavigationParameters();
+                                }
+                            }
+                        });
+                        this.updateAmountNewMitteilungenGS();
+                    } else {
                         this.resetNavigationParameters();
                     }
                 }
             });
-            this.updateAmountNewMitteilungenGS(this.fallid);
-        } else {
-            this.resetNavigationParameters();
         }
         this.forceLoadingFromFall = false; // reset it because it's not needed any more
     }
@@ -335,7 +341,7 @@ export class GesuchToolbarController implements IDVFocusableController {
     public getGesuchName(): string {
         let gesuchName = this.gesuchModelManager.getGesuchName();
         if (!gesuchName || gesuchName.length <= 0) {
-            gesuchName = this.ebeguUtil.getGesuchNameFromFall(this.fall);
+            gesuchName = this.ebeguUtil.getGesuchNameFromDossier(this.dossier);
         }
         return gesuchName;
     }
@@ -513,7 +519,7 @@ export class GesuchToolbarController implements IDVFocusableController {
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
             eingangsart: eingangsart,
             gesuchsperiodeId: this.neuesteGesuchsperiode.id,
-            fallId: this.fallid
+            fallId: this.dossier.fall.id //TODO (KIBON-6) Erneuern pro Dossier
         });
     }
 
@@ -532,19 +538,22 @@ export class GesuchToolbarController implements IDVFocusableController {
     }
 
     private hasBesitzer(): boolean {
-        return this.fall && this.fall.besitzer !== null && this.fall.besitzer !== undefined;
+        return this.dossier
+            && this.dossier.fall
+            && this.dossier.fall.besitzer !== null
+            && this.dossier.fall.besitzer !== undefined;
     }
 
     private getBesitzer(): string {
-        if (this.fall) {
-            return this.fall.besitzer.getFullName();
+        if (this.hasBesitzer()) {
+            return this.dossier.fall.besitzer.getFullName();
         }
         return '';
     }
 
     public openMitteilungen(): void {
         this.$state.go('mitteilungen', {
-            fallId: this.fallid
+            dossierId: this.dossier.id
         });
     }
 
@@ -617,23 +626,13 @@ export class GesuchToolbarController implements IDVFocusableController {
 
     public openAlleVerfuegungen(): void {
         this.$state.go('alleVerfuegungen', {
-            fallId: this.fallid
+            dossierId: this.dossier.id
         });
-    }
-
-    private updateFall(): void {
-        if (this.fallid) {
-            this.fallRS.findFall(this.fallid).then((response: TSFall) => {
-                if (response) {
-                    this.fall = response;
-                }
-            });
-        }
     }
 
     public showKontakt(): void {
         let text: string;
-        if (this.fall.isHauptverantwortlicherSchulamt()) {
+        if (this.dossier.isHauptverantwortlicherSchulamt()) {
             text = this.ebeguUtil.getKontaktSchulamt();
         } else {
             text = this.ebeguUtil.getKontaktJugendamt();

@@ -17,6 +17,7 @@ import {IComponentOptions, IPromise} from 'angular';
 import {IStateService} from 'angular-ui-router';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import FallRS from '../../../gesuch/service/fallRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
@@ -27,7 +28,7 @@ import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeiln
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
-import TSFall from '../../../models/TSFall';
+import TSDossier from '../../../models/TSDossier';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -39,8 +40,8 @@ import IFormController = angular.IFormController;
 import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
 import IScope = angular.IScope;
-import IWindowService = angular.IWindowService;
 import ITimeoutService = angular.ITimeoutService;
+import IWindowService = angular.IWindowService;
 
 let template = require('./dv-mitteilung-list.html');
 require('./dv-mitteilung-list.less');
@@ -50,7 +51,7 @@ export class DVMitteilungListConfig implements IComponentOptions {
     transclude = false;
 
     bindings: any = {
-        fall: '<',
+        dossier: '<',
         betreuung: '<',
         form: '<',
     };
@@ -62,7 +63,7 @@ export class DVMitteilungListConfig implements IComponentOptions {
 
 export class DVMitteilungListController {
 
-    fall: TSFall;
+    dossier: TSDossier;
     betreuung: TSBetreuung;
     form: IFormController;
 
@@ -73,17 +74,20 @@ export class DVMitteilungListController {
     TSRoleUtil: any;
     ebeguUtil: EbeguUtil;
 
-    static $inject: any[] = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'FallRS', 'BetreuungRS',
-        '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout'];
+    static $inject: any[] = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
+        '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
+        'DossierRS'];
     /* @ngInject */
     constructor(private $stateParams: IMitteilungenStateParams, private mitteilungRS: MitteilungRS,
                 private authServiceRS: AuthServiceRS,
-                private fallRS: FallRS, private betreuungRS: BetreuungRS, private $q: IQService,
+                private betreuungRS: BetreuungRS, private $q: IQService,
                 private $window: IWindowService,
                 private $rootScope: IRootScopeService, private $state: IStateService, ebeguUtil: EbeguUtil,
                 private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager, private $scope: IScope,
-                private $timeout: ITimeoutService) {
+                private $timeout: ITimeoutService,
+                private dossierRS: DossierRS
+    ) {
         this.TSRole = TSRole;
         this.TSRoleUtil = TSRoleUtil;
         this.ebeguUtil = ebeguUtil;
@@ -94,9 +98,9 @@ export class DVMitteilungListController {
             // wenn man eine bestimmte Mitteilung oeffnen will, kann man ihr ID als parameter geben
             this.paramSelectedMitteilungId = this.$stateParams.mitteilungId;
         }
-        if (this.$stateParams.fallId) {
-            this.fallRS.findFall(this.$stateParams.fallId).then((response) => {
-                this.fall = response;
+        if (this.$stateParams.dossierId) {
+            this.dossierRS.findDossier(this.$stateParams.dossierId).then((response) => {
+                this.dossier = response;
                 if (this.$stateParams.betreuungId) {
                     this.betreuungRS.findBetreuung(this.$stateParams.betreuungId).then((response) => {
                         this.betreuung = response;
@@ -138,7 +142,7 @@ export class DVMitteilungListController {
         // Wenn der Fall keinen Besitzer hat, darf auch keine Nachricht geschrieben werden
         // Ausser wir sind Institutionsbenutzer
         let isGesuchsteller: boolean = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        let isJugendamtOrSchulamtAndFallHasBesitzer: boolean = this.fall.besitzer && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+        let isJugendamtOrSchulamtAndFallHasBesitzer: boolean = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
         let isInstitutionsUser: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
         if (isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser) {
             if (this.betreuung) {
@@ -150,7 +154,7 @@ export class DVMitteilungListController {
                     }
                 });
             } else {
-                this.mitteilungRS.getEntwurfForCurrentRolleForFall(this.fall.id).then((entwurf: TSMitteilung) => {
+                this.mitteilungRS.getEntwurfOfDossierForCurrentRolle(this.dossier.id).then((entwurf: TSMitteilung) => {
                     if (entwurf) {
                         this.currentMitteilung = entwurf;
                     } else {
@@ -166,8 +170,7 @@ export class DVMitteilungListController {
 
         //common attributes
         this.currentMitteilung = new TSMitteilung();
-        // todo KIBON-6 dossier is undefined!!
-        this.currentMitteilung.dossier.fall = this.fall;
+        this.currentMitteilung.dossier = this.dossier;
         if (this.betreuung) {
             this.currentMitteilung.betreuung = this.betreuung;
         }
@@ -237,7 +240,7 @@ export class DVMitteilungListController {
                 this.allMitteilungen = response;
             });
         } else {
-            this.mitteilungRS.getMitteilungenForCurrentRolleForFall(this.fall.id).then((response) => {
+            this.mitteilungRS.getMitteilungenOfDossierForCurrentRolle(this.dossier.id).then((response) => {
                 this.allMitteilungen = response;
             });
         }
@@ -293,7 +296,7 @@ export class DVMitteilungListController {
     }
 
     private setAllMitteilungenGelesen(): IPromise<Array<TSMitteilung>> {
-        return this.mitteilungRS.setAllNewMitteilungenOfFallGelesen(this.fall.id);
+        return this.mitteilungRS.setAllNewMitteilungenOfDossierGelesen(this.dossier.id);
     }
 
     /**
@@ -318,7 +321,7 @@ export class DVMitteilungListController {
     public getBgNummer(): string {
         let bgNummer: string = '';
         if (this.betreuung) {
-            bgNummer = this.ebeguUtil.calculateBetreuungsId(this.betreuung.gesuchsperiode, this.fall, this.betreuung.kindNummer, this.betreuung.betreuungNummer);
+            bgNummer = this.ebeguUtil.calculateBetreuungsId(this.betreuung.gesuchsperiode, this.dossier.fall, this.betreuung.kindNummer, this.betreuung.betreuungNummer);
         }
         return bgNummer;
     }

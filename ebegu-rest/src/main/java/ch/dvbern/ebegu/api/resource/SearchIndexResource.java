@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
@@ -82,6 +84,9 @@ public class SearchIndexResource {
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private DossierService dossierService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -189,8 +194,9 @@ public class SearchIndexResource {
 			//we remeber the results that we only found in the fall index and that had a mitteilung
 			QuickSearchResultDTO result = new QuickSearchResultDTO();
 			for (SearchResultEntryDTO searchResult : quickSearch.getResultEntities()) {
+				Objects.requireNonNull(searchResult.getDossierId());
 				if (SearchEntityType.FALL == searchResult.getEntity() && searchResult.getGesuchID() == null
-					&& searchResult.getFallID() != null && fallService.hasFallAnyMitteilung(searchResult.getFallID())) {
+					&& searchResult.getFallID() != null && dossierService.hasDossierAnyMitteilung(searchResult.getDossierId())) {
 					result.addResult(searchResult);
 				}
 			}
@@ -255,6 +261,6 @@ public class SearchIndexResource {
 
 	private boolean isCurrentUserInstitutionOrTraegerschaft() {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
-		return UserRole.SACHBEARBEITER_INSTITUTION.equals(userRole) || UserRole.SACHBEARBEITER_TRAEGERSCHAFT.equals(userRole);
+		return UserRole.SACHBEARBEITER_INSTITUTION == userRole || UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole;
 	}
 }

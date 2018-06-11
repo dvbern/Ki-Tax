@@ -44,6 +44,8 @@ public class SearchResultEntryDTO implements Serializable {
 	private String gesuchID;
 	@Nullable
 	private String fallID;
+	@Nullable
+	private String dossierId; //TODO (KIBON-6) Hier nur noch Dossier? oder beides?
 
 	@Nullable
 	private JaxAbstractAntragDTO antragDTO; //dto mit detailinfos
@@ -102,6 +104,15 @@ public class SearchResultEntryDTO implements Serializable {
 
 	public void setFallID(@Nullable String fallID) {
 		this.fallID = fallID;
+	}
+
+	@Nullable
+	public String getDossierId() {
+		return dossierId;
+	}
+
+	public void setDossierId(@Nullable String dossierId) {
+		this.dossierId = dossierId;
 	}
 
 	public static List<SearchResultEntryDTO> convertSearchResult(SearchFilter filter, List<Searchable> results) {

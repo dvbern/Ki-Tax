@@ -97,8 +97,8 @@ export default class MitteilungRS {
         });
     }
 
-    public getEntwurfForCurrentRolleForFall(fallId: string): IPromise<TSMitteilung> {
-        return this.http.get(this.serviceURL + '/entwurf/fall/' + fallId).then((response: any) => {
+    public getEntwurfOfDossierForCurrentRolle(dossierId: string): IPromise<TSMitteilung> {
+        return this.http.get(this.serviceURL + '/entwurf/dossier/' + dossierId).then((response: any) => {
             this.$log.debug('PARSING mitteilung REST object ', response.data);
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
         });
@@ -111,8 +111,8 @@ export default class MitteilungRS {
         });
     }
 
-    public getMitteilungenForCurrentRolleForFall(fallId: string): IPromise<Array<TSMitteilung>> {
-        return this.http.get(this.serviceURL + '/forrole/fall/' + fallId).then((response: any) => {
+    public getMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<Array<TSMitteilung>> {
+        return this.http.get(this.serviceURL + '/forrole/dossier/' + dossierId).then((response: any) => {
             this.$log.debug('PARSING mitteilung REST object ', response.data);
             return this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungen); // The response is a wrapper
         });
@@ -138,15 +138,15 @@ export default class MitteilungRS {
             });
     }
 
-    public setAllNewMitteilungenOfFallGelesen(fallId: string): IPromise<Array<TSMitteilung>> {
-        return this.http.put(this.serviceURL + '/setallgelesen/' + fallId, null).then((response: any) => {
+    public setAllNewMitteilungenOfDossierGelesen(dossierId: string): IPromise<Array<TSMitteilung>> {
+        return this.http.put(this.serviceURL + '/setallgelesen/' + dossierId, null).then((response: any) => {
             this.$log.debug('PARSING mitteilungen REST objects ', response.data);
             return this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungen); // The response is a wrapper
         });
     }
 
-    public getAmountNewMitteilungenForCurrentRolle(fallId: string): IPromise<number> {
-        return this.http.get(this.serviceURL + '/amountnew/' + fallId).then((response: any) => {
+    public getAmountNewMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<number> {
+        return this.http.get(this.serviceURL + '/amountnew/dossier/' + dossierId).then((response: any) => {
             return response.data;
         });
     }

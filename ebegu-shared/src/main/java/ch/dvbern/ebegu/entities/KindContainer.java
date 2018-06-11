@@ -230,6 +230,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		return getGesuch().getFall().getId();
 	}
 
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return getGesuch().getDossier().getId();
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

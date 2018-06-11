@@ -34,13 +34,13 @@ function getStates(): IState[] {
 export class EbeguMitteilungenStateState implements IState {
     name = 'mitteilungen';
     template = '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/mitteilungen/:fallId/:betreuungId';
+    url = '/mitteilungen/:dossierId/:betreuungId';
 }
 
 // PARAMS
 
 export class IMitteilungenStateParams implements IStateParamsService {
-    fallId: string;
+    dossierId: string;
     betreuungId: string;
     mitteilungId: string;
 }

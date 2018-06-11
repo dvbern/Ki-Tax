@@ -803,6 +803,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		return getFall().getId();
 	}
 
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return getDossier().getId();
+	}
+
 	@Nonnull
 	public Optional<Betreuung> extractBetreuungsFromBetreuungNummer(@NotNull Integer kindNummer, @NotNull Integer betreuungNummer) {
 		final List<Betreuung> allBetreuungen = extractAllBetreuungen();

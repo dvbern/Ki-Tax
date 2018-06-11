@@ -44,7 +44,7 @@ export class PosteingangViewController {
     numberOfPages: number = 1;
     selectedAmt: string;
     selectedMitteilungsstatus: TSMitteilungStatus;
-    includeClosed: boolean;
+    includeClosed: boolean = false;
 
 
 
@@ -59,9 +59,8 @@ export class PosteingangViewController {
     }
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
-        //TODO (KIBON-6) Mitteilungen pro Dossier
         this.$state.go('mitteilungen', {
-            fallId: mitteilung.dossier.fall.id
+            dossierId: mitteilung.dossier.id
         });
     }
 

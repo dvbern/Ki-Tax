@@ -41,7 +41,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -56,7 +55,6 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Gesuchsteller_;
-import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -113,6 +111,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private DossierService dossierService;
 
 	@Nonnull
 	@Override
@@ -189,10 +190,16 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 				.ifPresent((gesuch) ->
 					superAdminService.removeGesuch(gesuch.getId()))
 			);
+		// Die (jetzt leeren) Dossiers ebenfalls loeschen
+		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
+		for (Dossier dossier : dossiersByFall) {
+			persistence.remove(dossier);
+		}
 		//Finally remove the Fall when all other objects are really removed
 		persistence.remove(loadedFall);
 	}
 
+	@Nonnull
 	@Override
 	public Optional<Fall> createFallForCurrentGesuchstellerAsBesitzer() {
 		UserRole role = principalBean.discoverMostPrivilegedRole();
@@ -240,14 +247,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		}
 		return Optional.ofNullable(emailToReturn);
 
-	}
-
-	@Override
-	public boolean hasFallAnyMitteilung(@NotNull String fallID) {
-		final Optional<Fall> fallOpt = findFall(fallID);
-		final Fall fall = fallOpt.orElseThrow(() -> new EbeguEntityNotFoundException("hasFallAnyMitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallID));
-		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(fall);
-		return !mitteilungenForCurrentRolle.isEmpty();
 	}
 
 	@Override

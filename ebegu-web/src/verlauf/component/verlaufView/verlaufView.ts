@@ -16,6 +16,7 @@
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import IStateService = angular.ui.IStateService;
+import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -39,7 +40,8 @@ export class VerlaufViewComponentConfig implements IComponentOptions {
 export class VerlaufViewController {
 
     form: IFormController;
-    fall: TSFall;
+    fall: TSFall; //TODO (KIBON-6) entfernen, nur das Dossier ist relevant
+    dossier: TSDossier;
     gesuch: TSGesuch;
     gesuche: {[gesuchId: string]: string} = {};
     itemsByPage: number = 20;
@@ -62,6 +64,7 @@ export class VerlaufViewController {
                 }
                 //TODO (KIBON-6) Verlauf pro Dossier!
                 this.fall = this.gesuch.dossier.fall;
+                this.dossier = this.gesuch.dossier;
                 this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.gesuch.dossier.fall, this.gesuch.gesuchsperiode).then((response) => {
                     this.verlauf = response;
                 });

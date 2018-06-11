@@ -199,7 +199,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		mitteilungService.sendMitteilung(mitteilung2);
 
 		//AS Traegerschaft
-		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(mitteilung1.getFall());
+		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(mitteilung1.getDossier());
 
 		Assert.assertNotNull(mitteilungenForCurrentRolle);
 		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
@@ -220,7 +220,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		mitteilung2.setMitteilungStatus(MitteilungStatus.GELESEN);
 		persistence.persist(mitteilung2);
 
-		final Collection<Mitteilung> newMitteilungenCurrentRolle = mitteilungService.getNewMitteilungenForCurrentRolleAndFall(mitteilung1.getFall());
+		final Collection<Mitteilung> newMitteilungenCurrentRolle = mitteilungService.getNewMitteilungenOfDossierForCurrentRolle(mitteilung1.getDossier());
 
 		//AS SUPERADMIN
 		Assert.assertNotNull(newMitteilungenCurrentRolle);
@@ -255,8 +255,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSetAllNewMitteilungenOfFallGelesen() {
 		prepareDependentObjects("gesuchst");
-		fall.setBesitzer(sender);
-		fall = persistence.merge(fall);
+		dossier.getFall().setBesitzer(sender);
+		dossier = persistence.merge(dossier);
 
 		Mitteilung entwurf = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
@@ -278,7 +278,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Set Gelesen as JA
 		loginAsSachbearbeiterJA();
-		mitteilungService.setAllNewMitteilungenOfFallGelesen(fall);
+		mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier);
 
 		final Optional<Mitteilung> entwurfUpdated1 = mitteilungService.findMitteilung(persistedEntwurf.getId());
 		Assert.assertTrue(entwurfUpdated1.isPresent());
@@ -292,7 +292,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Set Gelesen as GS
 		loginAsGesuchsteller("gesuchst");
-		mitteilungService.setAllNewMitteilungenOfFallGelesen(fall);
+		mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier);
 
 		final Optional<Mitteilung> entwurfUpdated2 = mitteilungService.findMitteilung(persistedEntwurf.getId());
 		Assert.assertTrue(entwurfUpdated2.isPresent());
