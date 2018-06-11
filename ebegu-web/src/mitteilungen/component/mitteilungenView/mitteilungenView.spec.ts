@@ -17,10 +17,12 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import FallRS from '../../../gesuch/service/fallRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSUser from '../../../models/TSUser';
@@ -35,8 +37,10 @@ describe('mitteilungenView', function () {
     let authServiceRS: AuthServiceRS;
     let stateParams: IMitteilungenStateParams;
     let fallRS: FallRS;
+    let dossierRS: DossierRS;
     let betreuungRS: BetreuungRS;
     let fall: TSFall;
+    let dossier: TSDossier;
     let $rootScope: angular.IRootScopeService;
     let $q: angular.IQService;
     let controller: DVMitteilungListController;
@@ -60,22 +64,27 @@ describe('mitteilungenView', function () {
         scope = $rootScope.$new();
 
         // prepare fall
-        stateParams.fallId = '123';
+        stateParams.dossierId = '123';
         fall = new TSFall();
-        fall.id = stateParams.fallId;
+        fall.id = stateParams.dossierId;
+        dossier = new TSDossier();
+        dossier.id = stateParams.dossierId;
+        dossier.fall = fall;
         besitzer = new TSUser();
         besitzer.nachname = 'Romualdo Besitzer';
         fall.besitzer = besitzer;
+        dossier.fall.besitzer = besitzer;
         verantwortlicher = new TSUser();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
         fall.verantwortlicher = verantwortlicher;
+        dossier.verantwortlicherBG = verantwortlicher;
 
-        spyOn(mitteilungRS, 'getEntwurfForCurrentRolleForFall').and.returnValue($q.when(undefined));
+        spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
     }));
 
     let assertMitteilungContent = function () {
         expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
-        expect(controller.getCurrentMitteilung().dossier.fall).toBe(fall);
+        expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
         // diese Parameter muessen im Server gesetzt werden
         expect(controller.getCurrentMitteilung().empfaenger).toBeUndefined();
         expect(controller.getCurrentMitteilung().senderTyp).toBeUndefined();
@@ -176,7 +185,7 @@ describe('mitteilungenView', function () {
 
     function compareCommonAttributes(currentUser: TSUser): void {
         expect(controller.getCurrentMitteilung()).toBeDefined();
-        expect(controller.getCurrentMitteilung().dossier.fall).toBe(fall);
+        expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
         expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
         expect(controller.getCurrentMitteilung().sender).toBe(currentUser);
         expect(controller.getCurrentMitteilung().subject).toBeUndefined();
@@ -185,11 +194,11 @@ describe('mitteilungenView', function () {
 
     function createMitteilungForUser(user: TSUser): void {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
-        spyOn(fallRS, 'findFall').and.returnValue($q.when(fall));
-        spyOn(mitteilungRS, 'getMitteilungenForCurrentRolleForFall').and.returnValue($q.when([{}]));
-        spyOn(mitteilungRS, 'setAllNewMitteilungenOfFallGelesen').and.returnValue($q.when([{}]));
-        controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, fallRS, betreuungRS, $q, null,
-            $rootScope, undefined, undefined, undefined, undefined, scope, $timeout);
+        spyOn(fallRS, 'findFall').and.returnValue($q.when(dossier.fall));
+        spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.when([{}]));
+        spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.when([{}]));
+        controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
+            $rootScope, undefined, undefined, undefined, undefined, scope, $timeout, dossierRS);
         controller.$onInit();   // hack, muesste wohl eher so gehen
                                 // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();

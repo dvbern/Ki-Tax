@@ -47,8 +47,8 @@ export default class BetreuungRS {
             });
     }
 
-    public findAllBetreuungenWithVerfuegungFromFall(fallId: string): IPromise<TSBetreuung[]> {
-        return this.http.get(this.serviceURL + '/alleBetreuungen/' + encodeURIComponent(fallId))
+    public findAllBetreuungenWithVerfuegungForDossier(dossierId: string): IPromise<TSBetreuung[]> {
+        return this.http.get(this.serviceURL + '/alleBetreuungen/' + encodeURIComponent(dossierId))
             .then((response: any) => {
                 this.log.debug('PARSING Betreuung REST object ', response.data);
                 return this.ebeguRestUtil.parseBetreuungList(response.data);

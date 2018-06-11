@@ -133,7 +133,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Inject
 	private PrincipalBean principalBean;
 
-	private final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
 	@Override
 	@Nonnull
@@ -497,8 +497,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
 		ADMINISTRATOR_SCHULAMT, SCHULAMT })
-	public List<Betreuung> findAllBetreuungenWithVerfuegungFromFall(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
+	public List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -506,7 +506,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Root<Betreuung> root = query.from(Betreuung.class);
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
-		Predicate fallPredicate = cb.equal(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.dossier).get(Dossier_.fall), fall);
+		Predicate fallPredicate = cb.equal(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.dossier), dossier);
 		predicatesToUse.add(fallPredicate);
 
 		Predicate predicateBetreuung = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.hasVerfuegung);

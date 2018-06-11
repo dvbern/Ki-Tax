@@ -47,17 +47,16 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
@@ -79,7 +78,7 @@ public class BetreuungResource {
 	@Inject
 	private KindService kindService;
 	@Inject
-	private FallService fallService;
+	private DossierService dossierService;
 	@Inject
 	private JaxBConverter converter;
 	@Inject
@@ -134,8 +133,9 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		if (!betreuungenJAXP.isEmpty() && betreuungenJAXP.get(0).getGesuchId() != null) {
-			final Optional<Gesuch> gesuch = gesuchService.findGesuch(betreuungenJAXP.get(0).getGesuchId());
+		String gesuchId = betreuungenJAXP.get(0).getGesuchId();
+		if (!betreuungenJAXP.isEmpty() && gesuchId != null) {
+			final Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId);
 			gesuch.ifPresent(gesuch1 -> resourceHelper.assertGesuchStatusForBenutzerRole(gesuch1));
 		}
 
@@ -318,8 +318,8 @@ public class BetreuungResource {
 		return converter.betreuungToJAX(betreuungToReturn);
 	}
 
-	@ApiOperation(value = "Löscht die Betreuung mit der übergebenen Id in der Datenbank. Dabei wird geprüft, ob der " +
-		"eingeloggte Benutzer für die gesuchte Betreuung berechtigt ist", response = Void.class)
+	@ApiOperation("Löscht die Betreuung mit der übergebenen Id in der Datenbank. Dabei wird geprüft, ob der " +
+		"eingeloggte Benutzer für die gesuchte Betreuung berechtigt ist")
 	@Nullable
 	@DELETE
 	@Path("/{betreuungId}")
@@ -341,27 +341,26 @@ public class BetreuungResource {
 		throw new EbeguEntityNotFoundException("removeBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID invalid: " + betreuungJAXPId.getId());
 	}
 
-	@ApiOperation(value = "Sucht alle verfügten Betreuungen aus allen Gesuchsperioden, welche zum übergebenen Fall " +
+	@ApiOperation(value = "Sucht alle verfügten Betreuungen aus allen Gesuchsperioden, welche zum übergebenen Dossier " +
 		"vorhanden sind. Es werden nur diejenigen Betreuungen zurückgegeben, für welche der eingeloggte Benutzer " +
 		"berechtigt ist.", responseContainer = "Collection", response = JaxBetreuung.class)
 	@Nullable
 	@GET
-	@Path("/alleBetreuungen/{fallId}")
+	@Path("/alleBetreuungen/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response findAllBetreuungenWithVerfuegungFromFall(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallId,
+		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Optional<Fall> fallOptional = fallService.findFall(converter.toEntityId(fallId));
-
-		if (!fallOptional.isPresent()) {
+		Optional<Dossier> dossierOptional = dossierService.findDossier(converter.toEntityId(jaxDossierId));
+		if (!dossierOptional.isPresent()) {
 			return null;
 		}
-		Fall fall = fallOptional.get();
+		Dossier dossier = dossierOptional.get();
 
-		Collection<Betreuung> betreuungCollection = betreuungService.findAllBetreuungenWithVerfuegungFromFall(fall);
+		Collection<Betreuung> betreuungCollection = betreuungService.findAllBetreuungenWithVerfuegungForDossier(dossier);
 		Collection<JaxBetreuung> jaxBetreuungList = converter.betreuungListToJax(betreuungCollection);
 
 		return Response.ok(jaxBetreuungList).build();
@@ -410,11 +409,10 @@ public class BetreuungResource {
 					if (!Objects.equals(betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp(), BetreuungsangebotTyp.FERIENINSEL)) {
 						return !betreuung.getBetreuungsstatus().isStorniert() &&
 							isSameInstitution(betreuungJAXP, betreuung);
-					} else {
-						return !betreuung.getBetreuungsstatus().isStorniert() &&
-							isSameInstitution(betreuungJAXP, betreuung) &&
-							isSameFerien(betreuungJAXP, betreuung);
 					}
+					return !betreuung.getBetreuungsstatus().isStorniert() &&
+						isSameInstitution(betreuungJAXP, betreuung) &&
+						isSameFerien(betreuungJAXP, betreuung);
 				}
 				return false;
 			});
@@ -423,6 +421,8 @@ public class BetreuungResource {
 	}
 
 	private boolean isSameFerien(JaxBetreuung betreuungJAXP, Betreuung betreuung) {
+		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
+		Objects.requireNonNull(betreuungJAXP.getBelegungFerieninsel());
 		return Objects.equals(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp(), BetreuungsangebotTyp.FERIENINSEL) &&
 			Objects.equals(betreuung.getBelegungFerieninsel().getFerienname(), betreuungJAXP.getBelegungFerieninsel().getFerienname());
 	}

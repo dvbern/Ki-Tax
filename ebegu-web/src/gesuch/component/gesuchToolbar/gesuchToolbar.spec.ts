@@ -43,7 +43,6 @@ describe('gesuchToolbar', function () {
     let user: TSUser;
     let $mdSidenav: angular.material.ISidenavService;
     let gesuchsperiodeRS: GesuchsperiodeRS;
-    let fallRS: FallRS;
     let dossierRS: DossierRS;
     let dvDialog: DvDialog;
     let mitteilungRS: MitteilungRS;
@@ -65,14 +64,13 @@ describe('gesuchToolbar', function () {
         user = new TSUser('Emiliano', 'Camacho');
         $stateParams.gesuchId = '123456789';
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
-        fallRS = $injector.get('FallRS');
         dossierRS = $injector.get('DossierRS');
         dvDialog = $injector.get('DvDialog');
         mitteilungRS = $injector.get('MitteilungRS');
 
         gesuchToolbarController = new GesuchToolbarController(ebeguUtil,
             gesuchRS, $state, $scope, gesuchModelManager,
-            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, fallRS, dvDialog, mitteilungRS, undefined, dossierRS);
+            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, mitteilungRS, undefined, dossierRS);
     }));
 
 });

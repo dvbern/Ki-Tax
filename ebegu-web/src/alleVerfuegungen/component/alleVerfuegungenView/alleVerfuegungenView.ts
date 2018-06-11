@@ -45,33 +45,28 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
 
 export class AlleVerfuegungenViewController {
 
-    fall: TSFall; //TODO (KIBON-6) Hier das Dossier als Param uebergeben. Fall entfernen
     dossier: TSDossier;
     alleVerfuegungen: Array<any> = [];
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'FallRS', 'EbeguUtil', 'BetreuungRS',
-        'GesuchModelManager', 'DownloadRS', '$log', '$timeout', 'DossierRS'];
+    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
+        'DownloadRS', '$log', '$timeout', 'DossierRS'];
 
     /* @ngInject */
     constructor(private $state: IStateService, private $stateParams: IAlleVerfuegungenStateParams,
-                private authServiceRS: AuthServiceRS, private fallRS: FallRS, private ebeguUtil: EbeguUtil,
-                private betreuungRS: BetreuungRS, private gesuchModelManager: GesuchModelManager,
-                private downloadRS: DownloadRS, private $log: ILogService, private $timeout: ITimeoutService,
-                private dossierRS: DossierRS) {
+                private authServiceRS: AuthServiceRS, private betreuungRS: BetreuungRS, private downloadRS: DownloadRS,
+                private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS) {
     }
 
     $onInit() {
         if (this.$stateParams.dossierId) {
             this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
                 this.dossier = response;
-                this.fall = response.fall;
-                if (this.fall === undefined) {
+                if (this.dossier === undefined) {
                     this.cancel();
                 }
-
-                this.betreuungRS.findAllBetreuungenWithVerfuegungFromFall(this.fall.id).then((response) => {
+                this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then((response) => {
                     response.forEach((item) => {
                         this.alleVerfuegungen.push(item);
                     });
