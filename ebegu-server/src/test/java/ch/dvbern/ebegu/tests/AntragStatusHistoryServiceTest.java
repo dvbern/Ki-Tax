@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -121,10 +121,10 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testFindAllAntragStatusHistoryByGPFall_NoFall() {
-		Fall fall = TestDataUtil.createDefaultFall();
+		Dossier dossier = TestDataUtil.createDefaultDossier();
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 
-		final Collection<AntragStatusHistory> allStatus = statusHistoryService.findAllAntragStatusHistoryByGPFall(gesuchsperiode, fall);
+		final Collection<AntragStatusHistory> allStatus = statusHistoryService.findAllAntragStatusHistoryByGPForDossier(gesuchsperiode, dossier);
 
 		Assert.assertNotNull(allStatus);
 		Assert.assertEquals(0, allStatus.size());
@@ -134,7 +134,7 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 	public void testFindAllAntragStatusHistoryByGPFall_NoChanges() {
 		gesuch = TestDataUtil.createAndPersistGesuch(persistence);
 
-		final Collection<AntragStatusHistory> allStatus = statusHistoryService.findAllAntragStatusHistoryByGPFall(gesuch.getGesuchsperiode(), gesuch.getFall());
+		final Collection<AntragStatusHistory> allStatus = statusHistoryService.findAllAntragStatusHistoryByGPForDossier(gesuch.getGesuchsperiode(), gesuch.getDossier());
 
 		Assert.assertNotNull(allStatus);
 		Assert.assertEquals(0, allStatus.size());
@@ -146,7 +146,7 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 		gesuch.setStatus(AntragStatus.VERFUEGT);
 		gesuchService.updateGesuch(gesuch, true, null);
 
-		final Collection<AntragStatusHistory> allStatus = statusHistoryService.findAllAntragStatusHistoryByGPFall(gesuch.getGesuchsperiode(), gesuch.getFall());
+		final Collection<AntragStatusHistory> allStatus = statusHistoryService.findAllAntragStatusHistoryByGPForDossier(gesuch.getGesuchsperiode(), gesuch.getDossier());
 
 		Assert.assertNotNull(allStatus);
 		Assert.assertEquals(1, allStatus.size());
@@ -167,7 +167,7 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 		gesuchService.updateGesuch(mutation.get(), true, null);
 
 		final Collection<AntragStatusHistory> allStatus = statusHistoryService
-			.findAllAntragStatusHistoryByGPFall(mutation.get().getGesuchsperiode(), mutation.get().getFall());
+			.findAllAntragStatusHistoryByGPForDossier(mutation.get().getGesuchsperiode(), mutation.get().getDossier());
 
 		Assert.assertNotNull(allStatus);
 		Assert.assertEquals(2, allStatus.size());

@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 
@@ -57,12 +57,11 @@ public interface AntragStatusHistoryService {
 	Collection<AntragStatusHistory> findAllAntragStatusHistoryByGesuch(@Nonnull Gesuch gesuch);
 
 	/**
-	 * Gibt eine Collection aller StatusHistory Objekte fuer den uebergebenen Fall in der uebergebenen
+	 * Gibt eine Collection aller StatusHistory Objekte fuer den uebergebenen Dossier in der uebergebenen
 	 * Gesuchsperiode zurueck.
 	 */
 	@Nonnull
-	Collection<AntragStatusHistory> findAllAntragStatusHistoryByGPFall(@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Fall fall);
+	Collection<AntragStatusHistory> findAllAntragStatusHistoryByGPForDossier(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier);
 
 	/**
 	 * Prueft dass die letzte Statusaenderung auf BESCHWERDE_HAENGIG war und dann gibt die vorletzte Statusaenderung zurueck.

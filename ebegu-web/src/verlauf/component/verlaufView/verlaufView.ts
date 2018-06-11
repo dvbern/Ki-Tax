@@ -16,16 +16,16 @@
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import IStateService = angular.ui.IStateService;
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import TSGesuch from '../../../models/TSGesuch';
-import {IVerlaufStateParams} from '../../verlauf.route';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.rest';
+import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
+import TSDossier from '../../../models/TSDossier';
+import TSGesuch from '../../../models/TSGesuch';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IVerlaufStateParams} from '../../verlauf.route';
 
 let template = require('./verlaufView.html');
 require('./verlaufView.less');
@@ -40,9 +40,7 @@ export class VerlaufViewComponentConfig implements IComponentOptions {
 export class VerlaufViewController {
 
     form: IFormController;
-    fall: TSFall; //TODO (KIBON-6) entfernen, nur das Dossier ist relevant
     dossier: TSDossier;
-    gesuch: TSGesuch;
     gesuche: {[gesuchId: string]: string} = {};
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
@@ -57,18 +55,16 @@ export class VerlaufViewController {
 
     $onInit() {
         if (this.$stateParams.gesuchId) {
-            this.gesuchRS.findGesuch(this.$stateParams.gesuchId).then((response) => {
-                this.gesuch = response;
-                if (this.gesuch === undefined) {
+            this.gesuchRS.findGesuch(this.$stateParams.gesuchId).then((gesuchResponse: TSGesuch) => {
+                this.dossier = gesuchResponse.dossier;
+                let gesuchsperiode: TSGesuchsperiode = gesuchResponse.gesuchsperiode;
+                if (this.dossier === undefined) {
                     this.cancel();
                 }
-                //TODO (KIBON-6) Verlauf pro Dossier!
-                this.fall = this.gesuch.dossier.fall;
-                this.dossier = this.gesuch.dossier;
-                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.gesuch.dossier.fall, this.gesuch.gesuchsperiode).then((response) => {
+                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode).then((response: TSAntragStatusHistory[]) => {
                     this.verlauf = response;
                 });
-                this.gesuchRS.getAllAntragDTOForFall(this.fall.id).then((response) => {
+                this.gesuchRS.getAllAntragDTOForFall(this.dossier.fall.id).then((response) => {
                     response.forEach((item) => {
                         this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(item.antragTyp, item.eingangsdatum, item.laufnummer);
                     });
