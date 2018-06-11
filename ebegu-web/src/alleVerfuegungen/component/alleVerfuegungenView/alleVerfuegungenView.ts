@@ -14,24 +14,21 @@
  */
 
 import IComponentOptions = angular.IComponentOptions;
-import IStateService = angular.ui.IStateService;
-import ITimeoutService = angular.ITimeoutService;
 import ILogService = angular.ILogService;
-import DossierRS from '../../../gesuch/service/dossierRS.rest';
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
+import ITimeoutService = angular.ITimeoutService;
+import IStateService = angular.ui.IStateService;
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
-import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
-import FallRS from '../../../gesuch/service/fallRS.rest';
-import TSBetreuung from '../../../models/TSBetreuung';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import TSDownloadFile from '../../../models/TSDownloadFile';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import DossierRS from '../../../gesuch/service/dossierRS.rest';
+import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
+import TSBetreuung from '../../../models/TSBetreuung';
+import TSDossier from '../../../models/TSDossier';
+import TSDownloadFile from '../../../models/TSDownloadFile';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
 let template = require('./alleVerfuegungenView.html');
 require('./alleVerfuegungenView.less');
