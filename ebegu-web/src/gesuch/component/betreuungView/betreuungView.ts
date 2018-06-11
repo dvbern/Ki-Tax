@@ -690,8 +690,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 parentController: undefined,
                 elementID: undefined
             }).then(() => {   //User confirmed removal
-                //TODO (KIBON-6) mitteilung pro Dossier
-                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getFall(),
+                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getGesuch().dossier,
                     this.mutationsmeldungModel).then((response) => {
 
                     this.form.$setUntouched();
