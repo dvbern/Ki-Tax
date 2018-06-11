@@ -13,13 +13,13 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<gesuch-toolbar flex="nogrow" fallid="{{vm.fallId}}" dossier-id="{{vm.dossierId}}"
+<gesuch-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
                 hide-action-buttons="{{true}}"
                 force-loading-from-fall="{{true}}"
                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </gesuch-toolbar>
 
-<gesuch-toolbar-gesuchsteller flex="nogrow" class="gesuch-toolbar-gesuchsteller" fallid="{{vm.fallId}}" dossier-id="{{vm.dossierId}}"
+<gesuch-toolbar-gesuchsteller flex="nogrow" class="gesuch-toolbar-gesuchsteller" dossier-id="{{vm.dossierId}}"
                               hide-action-buttons="{{true}}"
                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
 </gesuch-toolbar-gesuchsteller>
