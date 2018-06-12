@@ -16,6 +16,7 @@
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import TSBetreuung from '../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../models/TSBetreuungsmitteilung';
+import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSKindContainer from '../../models/TSKindContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -33,7 +34,7 @@ describe('MitteilungRS', function () {
     let $q: angular.IQService;
     let wizardStepManager: WizardStepManager;
     let $rootScope: angular.IRootScopeService;
-    let fall: TSFall;
+    let dossier: TSDossier;
     let betreuung: TSBetreuung;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
@@ -45,7 +46,8 @@ describe('MitteilungRS', function () {
         wizardStepManager = $injector.get('WizardStepManager');
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
-        fall = new TSFall();
+        dossier = new TSDossier();
+        dossier.fall = new TSFall();
         betreuung = new TSBetreuung();
         betreuung.betreuungNummer = 123;
     }));
@@ -67,7 +69,7 @@ describe('MitteilungRS', function () {
             spyOn(ebeguRestUtil, 'parseBetreuungsmitteilung').and.returnValue(bm);
             $httpBackend.expectPUT(mitteilungRS.serviceURL + '/sendbetreuungsmitteilung', restMitteilung).respond($q.when(restMitteilung));
 
-            let result: angular.IPromise<TSBetreuungsmitteilung> = mitteilungRS.sendbetreuungsmitteilung(fall, betreuung);
+            let result: angular.IPromise<TSBetreuungsmitteilung> = mitteilungRS.sendbetreuungsmitteilung(dossier, betreuung);
             $httpBackend.flush();
             $rootScope.$apply();
 

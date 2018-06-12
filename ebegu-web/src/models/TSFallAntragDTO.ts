@@ -18,7 +18,7 @@ import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 export default class TSFallAntragDTO extends TSAbstractAntragDTO {
 
     private _fallID: string;
-    private _dossierId: string; //TODo (KIBON-6) wie kommt das hier rein?
+    private _dossierId: string;
 
     public static readonly serverClassName = 'JaxFallAntragDTO';
 

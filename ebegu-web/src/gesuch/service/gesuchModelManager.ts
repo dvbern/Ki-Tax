@@ -1099,17 +1099,15 @@ export default class GesuchModelManager {
     }
 
     public getFallVerantwortlicher(): TSUser {
-        //TODO (KIBON-6) Verantwortlicher vom Dossier
-        if (this.gesuch && this.gesuch.dossier.fall) {
-            return this.gesuch.dossier.fall.verantwortlicher;
+        if (this.gesuch && this.gesuch.dossier) {
+            return this.gesuch.dossier.getHauptverantwortlicher();
         }
         return undefined;
     }
 
     public getFallVerantwortlicherSCH(): TSUser {
-        //TODO (KIBON-6) Verantwortlicher vom Dossier
-        if (this.gesuch && this.gesuch.dossier.fall) {
-            return this.gesuch.dossier.fall.verantwortlicherSCH;
+        if (this.gesuch && this.gesuch.dossier) {
+            return this.gesuch.dossier.verantwortlicherTS;
         }
         return undefined;
     }

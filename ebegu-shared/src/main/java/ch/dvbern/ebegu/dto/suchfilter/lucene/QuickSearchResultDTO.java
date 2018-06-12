@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.JaxAbstractAntragDTO;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.JaxFallAntragDTO;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import com.google.common.collect.ArrayListMultimap;
 
 /**
@@ -70,25 +70,26 @@ public class QuickSearchResultDTO implements Serializable {
 	}
 
 	/**
-	 * It adds the given fall to the existing resultlist, but only if the fallID is not already present in an existing result
+	 * It adds the given dossier to the existing resultlist, but only if the fallID is not already present in an existing result
 	 */
-	public void addSubResultFall(SearchResultEntryDTO resultFall, @NotNull Fall fall) {
-		if (!fallAlreadyInResultEntities(fall.getId())) {
-			addResult(createFakeAntragDTO(resultFall, fall));
+	public void addSubResultDossier(SearchResultEntryDTO resultFall, @NotNull Dossier dossier) {
+		if (!fallAlreadyInResultEntities(dossier.getId())) {
+			addResult(createFakeAntragDTO(resultFall, dossier));
 		}
 	}
 
 	/**
 	 * Since for some results we do not really have a visible Antrag yet we create a fake one that compriese essentially
-	 * the fall id and besitzer name
+	 * the dossier id and besitzer name
 	 */
-	private SearchResultEntryDTO createFakeAntragDTO(@NotNull SearchResultEntryDTO searchResultEntryDTO, @NotNull Fall fall) {
+	private SearchResultEntryDTO createFakeAntragDTO(@NotNull SearchResultEntryDTO searchResultEntryDTO, @NotNull Dossier dossier) {
 		if (searchResultEntryDTO.getAntragDTO() == null) {
 			final JaxFallAntragDTO antragDTO = new JaxFallAntragDTO();
-			antragDTO.setFallID(fall.getId());
-			antragDTO.setFallNummer(fall.getFallNummer());
-			if (fall.getBesitzer() != null) {
-				antragDTO.setFamilienName(fall.getBesitzer().getFullName());
+			antragDTO.setFallID(dossier.getId());
+			antragDTO.setDossierId(dossier.getId());
+			antragDTO.setFallNummer(dossier.getFall().getFallNummer());
+			if (dossier.getFall().getBesitzer() != null) {
+				antragDTO.setFamilienName(dossier.getFall().getBesitzer().getFullName());
 			}
 			searchResultEntryDTO.setAntragDTO(antragDTO);
 		}
@@ -138,8 +139,6 @@ public class QuickSearchResultDTO implements Serializable {
 	 */
 	private boolean fallAlreadyInResultEntities(@NotNull String fallID) {
 		return resultEntities.stream()
-			.filter(searchResultEntryDTO -> fallID.equalsIgnoreCase(searchResultEntryDTO.getFallID()))
-			.findAny()
-			.isPresent();
+			.anyMatch(searchResultEntryDTO -> fallID.equalsIgnoreCase(searchResultEntryDTO.getFallID()));
 	}
 }

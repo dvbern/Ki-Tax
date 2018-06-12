@@ -69,8 +69,7 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
-//TODO (KIBON-6) Ist der Fall ueberhaupt noch ein "Searchable"?
-public class Fall extends AbstractEntity implements HasMandant, Searchable {
+public class Fall extends AbstractEntity implements HasMandant {
 
 	private static final long serialVersionUID = -9154456879261811678L;
 
@@ -194,42 +193,6 @@ public class Fall extends AbstractEntity implements HasMandant, Searchable {
 	@Transient
 	public String getPaddedFallnummer() {
 		return StringUtils.leftPad(String.valueOf(this.getFallNummer()), Constants.FALLNUMMER_LENGTH, '0');
-	}
-
-	@Nonnull
-	@Override
-	public String getSearchResultId() {
-		return getId();
-	}
-
-	@Nonnull
-	@Override
-	public String getSearchResultSummary() {
-		return getPaddedFallnummer();
-	}
-
-	@Nullable
-	@Override
-	public String getSearchResultAdditionalInformation() {
-		return toString();
-	}
-
-	@Nullable
-	@Override
-	public String getOwningGesuchId() {
-		//haben wir hier nicht da der Fall nicht zu einem Gesuch gehoert
-		return null;
-	}
-
-	@Override
-	public String getOwningFallId() {
-		return getId();
-	}
-
-	@Nullable
-	@Override
-	public String getOwningDossierId() {
-		return null;
 	}
 
 	/**

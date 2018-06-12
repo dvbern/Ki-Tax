@@ -23,7 +23,7 @@ export default class TSSearchResultEntry {
     private _resultId: string;
     private _gesuchID: string;
     private _fallID: string;
-    private _dossierId: string; //TODO (KIBON-6) wie kkommt das Dossier hier rein?
+    private _dossierId: string;
     private _text: string;
 
     constructor() {

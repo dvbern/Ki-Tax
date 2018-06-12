@@ -28,18 +28,24 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
+import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.bridge.builtin.LongBridge;
 
 @Audited
 @Entity
+@Indexed
+@Analyzer(impl = EBEGUGermanAnalyzer.class)
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gemeinde_id" }, name = "UK_dossier_fall_gemeinde")
 )
-public class Dossier extends AbstractEntity {
+public class Dossier extends AbstractEntity implements Searchable {
 
 	private static final long serialVersionUID = -2511152887055775241L;
 
@@ -143,5 +149,42 @@ public class Dossier extends AbstractEntity {
 		return dossierNummer == dossier.dossierNummer &&
 			Objects.equals(fall, dossier.fall) &&
 			Objects.equals(gemeinde, dossier.gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	public String getSearchResultId() {
+		return getId();
+	}
+
+	@Nonnull
+	@Override
+	public String getSearchResultSummary() {
+		return getFall().getPaddedFallnummer();
+	}
+
+	@Nullable
+	@Override
+	public String getSearchResultAdditionalInformation() {
+		return getFall().toString();
+	}
+
+	@Nullable
+	@Override
+	public String getOwningGesuchId() {
+		//haben wir hier nicht da das Dossier nicht zu einem Gesuch gehoert
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public String getOwningFallId() {
+		return getFall().getId();
+	}
+
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return getId();
 	}
 }

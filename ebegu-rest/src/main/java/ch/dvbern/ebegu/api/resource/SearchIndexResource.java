@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -46,7 +44,7 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.QuickSearchResultDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchEntityType;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchFilter;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchResultEntryDTO;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -170,11 +168,11 @@ public class SearchIndexResource {
 
 		faelleWithMitteilungResults.getResultEntities()
 			.forEach(searchResultEntryDTO -> {
-				if (searchResultEntryDTO.getEntity() == SearchEntityType.FALL && searchResultEntryDTO.getFallID() != null) {
-					final Optional<Fall> fallOpt = fallService.findFall(searchResultEntryDTO.getFallID());
-					final Fall fall = fallOpt.orElseThrow(() -> new EbeguEntityNotFoundException
-						("convertQuicksearchResultToDTO", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, searchResultEntryDTO.getFallID()));
-					quickSearchResultDTO.addSubResultFall(searchResultEntryDTO, fall);
+				String dossierId = searchResultEntryDTO.getDossierId();
+				if (searchResultEntryDTO.getEntity() == SearchEntityType.DOSSIER && dossierId != null) {
+					Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(()
+						-> new EbeguEntityNotFoundException("convertQuicksearchResultToDTO", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+					quickSearchResultDTO.addSubResultDossier(searchResultEntryDTO, dossier);
 				}
 			});
 
@@ -194,9 +192,8 @@ public class SearchIndexResource {
 			//we remeber the results that we only found in the fall index and that had a mitteilung
 			QuickSearchResultDTO result = new QuickSearchResultDTO();
 			for (SearchResultEntryDTO searchResult : quickSearch.getResultEntities()) {
-				Objects.requireNonNull(searchResult.getDossierId());
-				if (SearchEntityType.FALL == searchResult.getEntity() && searchResult.getGesuchID() == null
-					&& searchResult.getFallID() != null && dossierService.hasDossierAnyMitteilung(searchResult.getDossierId())) {
+				if (SearchEntityType.DOSSIER == searchResult.getEntity() && searchResult.getGesuchID() == null
+					&& searchResult.getDossierId() != null && dossierService.hasDossierAnyMitteilung(searchResult.getDossierId())) {
 					result.addResult(searchResult);
 				}
 			}

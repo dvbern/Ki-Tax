@@ -123,11 +123,10 @@ export class DvQuicksearchboxController {
                 } else {
                     this.openGesuch(this.selectedItem.gesuchID, 'gesuch.fallcreation');
                 }
-            } else if (this.selectedItem.entity === 'FALL') {
+            } else if (this.selectedItem.entity === 'DOSSIER') {
                 //open mitteilung
                 this.$state.go('mitteilungen', {dossierId: this.selectedItem.dossierId});
             } else {
-
                 this.$state.go('search', {searchString: this.searchString});
             }
         }

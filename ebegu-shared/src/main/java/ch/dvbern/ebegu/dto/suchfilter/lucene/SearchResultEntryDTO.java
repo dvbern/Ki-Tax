@@ -45,7 +45,7 @@ public class SearchResultEntryDTO implements Serializable {
 	@Nullable
 	private String fallID;
 	@Nullable
-	private String dossierId; //TODO (KIBON-6) Hier nur noch Dossier? oder beides?
+	private String dossierId;
 
 	@Nullable
 	private JaxAbstractAntragDTO antragDTO; //dto mit detailinfos
@@ -56,7 +56,8 @@ public class SearchResultEntryDTO implements Serializable {
 		@Nonnull String text,
 		@Nullable String additionalInformation,
 		@Nullable String gesuchID,
-		@Nullable String fallID) {
+		@Nullable String fallID,
+		@Nullable String dossierID) {
 
 		this.entity = entity;
 		this.resultId = resultId;
@@ -64,6 +65,7 @@ public class SearchResultEntryDTO implements Serializable {
 		this.additionalInformation = additionalInformation;
 		this.gesuchID = gesuchID;
 		this.fallID = fallID;
+		this.dossierId = dossierID;
 	}
 
 	@Nonnull
@@ -122,9 +124,9 @@ public class SearchResultEntryDTO implements Serializable {
 			result.getSearchResultSummary(),
 			result.getSearchResultAdditionalInformation(),
 			result.getOwningGesuchId(),
-			result.getOwningFallId())
-		)
-			.collect(Collectors.toList());
+			result.getOwningFallId(),
+			result.getOwningDossierId())
+		).collect(Collectors.toList());
 	}
 
 	@Nullable
