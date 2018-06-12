@@ -1056,56 +1056,54 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Takes current user and sets him as the verantwortlicher of Fall. Depending on the role it sets him as
-     * verantwortlicher or verantworlicherSCH
+     * Takes current user and sets him as the verantwortlicherBG of Fall. Depending on the role it sets him as
+     * verantwortlicherBG or verantworlicherSCH
      *
      * @param {boolean} saveInDB when true it saves the verantwortliche in the database. If falls it only sets it in the client object
      */
     private setCurrentUserAsFallVerantwortlicher(saveInDB: boolean) {
         if (this.authServiceRS && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole())) {
-            this.setUserAsFallVerantwortlicher(this.authServiceRS.getPrincipal(), saveInDB);
+            this.setUserAsFallVerantwortlicherBG(this.authServiceRS.getPrincipal(), saveInDB);
         }
         if (this.authServiceRS && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
-            this.setUserAsFallVerantwortlicherSCH(this.authServiceRS.getPrincipal(), saveInDB);
+            this.setUserAsFallVerantwortlicherTS(this.authServiceRS.getPrincipal(), saveInDB);
         }
     }
 
-    public setUserAsFallVerantwortlicherSCH(user: TSUser, saveInDB: boolean = true) {
+    public setUserAsFallVerantwortlicherTS(user: TSUser, saveInDB: boolean = true) {
         if (this.gesuch && this.gesuch.dossier) {
             if (saveInDB) {
-                //TODO (KIBON-6) verantwortlicher auf dem dossier setzen
-                this.fallRS.setVerantwortlicherSCH(this.gesuch.dossier.fall.id, user ? user.username : null)
+                this.dossierRS.setVerantwortlicherTS(this.gesuch.dossier.id, user ? user.username : null)
                     .then(() => {
-                        this.gesuch.dossier.fall.verantwortlicherSCH = user;
+                        this.gesuch.dossier.verantwortlicherTS = user;
                     });
             } else {
-                this.gesuch.dossier.fall.verantwortlicherSCH = user;
+                this.gesuch.dossier.verantwortlicherTS = user;
             }
         }
     }
 
-    public setUserAsFallVerantwortlicher(user: TSUser, saveInDB: boolean = true) {
-        if (this.gesuch && this.gesuch.dossier.fall) {
-            //TODO (KIBON-6) verantwortlicher auf dem dossier setzen
+    public setUserAsFallVerantwortlicherBG(user: TSUser, saveInDB: boolean = true) {
+        if (this.gesuch && this.gesuch.dossier) {
             if (saveInDB) {
-                this.fallRS.setVerantwortlicherJA(this.gesuch.dossier.fall.id, user ? user.username : null)
+                this.dossierRS.setVerantwortlicherBG(this.gesuch.dossier.id, user ? user.username : null)
                     .then(() => {
-                        this.gesuch.dossier.fall.verantwortlicher = user;
+                        this.gesuch.dossier.verantwortlicherBG = user;
                     });
             } else {
-                this.gesuch.dossier.fall.verantwortlicher = user;
+                this.gesuch.dossier.verantwortlicherBG = user;
             }
         }
     }
 
-    public getFallVerantwortlicher(): TSUser {
+    public getFallVerantwortlicherBG(): TSUser {
         if (this.gesuch && this.gesuch.dossier) {
             return this.gesuch.dossier.getHauptverantwortlicher();
         }
         return undefined;
     }
 
-    public getFallVerantwortlicherSCH(): TSUser {
+    public getFallVerantwortlicherTS(): TSUser {
         if (this.gesuch && this.gesuch.dossier) {
             return this.gesuch.dossier.verantwortlicherTS;
         }

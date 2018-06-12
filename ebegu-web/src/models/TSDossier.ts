@@ -74,7 +74,7 @@ export default class TSDossier extends TSAbstractEntity {
         return this.verantwortlicherTS;
     }
 
-    public isHauptverantwortlicherSchulamt(): boolean {
+    public isHauptverantwortlicherTS(): boolean {
         return this.getHauptverantwortlicher() && this.getHauptverantwortlicher() === this.verantwortlicherTS;
     }
 }

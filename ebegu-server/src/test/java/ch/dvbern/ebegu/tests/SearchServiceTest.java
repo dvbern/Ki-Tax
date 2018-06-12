@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -221,13 +220,13 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(Long.valueOf(2), secondResult.getLeft());
 		Assert.assertEquals(2, secondResult.getRight().size());
 
-		gesuch.getFall().setVerantwortlicher(null);
+		gesuch.getDossier().setVerantwortlicherBG(null);
 		persistence.merge(gesuch);
 		//traegerschaftbenutzer setzten
 		Traegerschaft traegerschaft = institutionToSet.getTraegerschaft();
 		Assert.assertNotNull("Unser testaufbau sieht vor, dass die institution zu einer traegerschaft gehoert", traegerschaft);
 		Benutzer verantwortlicherUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "anonymous", traegerschaft, null, TestDataUtil.createDefaultMandant());
-		gesDagmar.getFall().setVerantwortlicher(verantwortlicherUser);
+		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren
 		Pair<Long, List<Gesuch>> thirdResult = searchService.searchAllAntraege(filterDTO);
@@ -300,7 +299,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchPendenzenMischgesuchFlagFinSit() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		addVerantwortlicherSCHToFall(gesuch.getFall());
+		addVerantwortlicherTSToDossier(gesuch.getDossier());
 
 		loginAsAdminSchulamt();
 
@@ -346,18 +345,18 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	private void convertToSCHGesuch(Gesuch gesuch) {
-		final Fall fall = addVerantwortlicherSCHToFall(gesuch.getFall());
-		fall.setVerantwortlicher(null);
-		persistence.merge(fall);
+		final Dossier dossier = addVerantwortlicherTSToDossier(gesuch.getDossier());
+		dossier.setVerantwortlicherBG(null);
+		persistence.merge(dossier);
 	}
 
-	private Fall addVerantwortlicherSCHToFall(@Nonnull Fall fall) {
+	private Dossier addVerantwortlicherTSToDossier(@Nonnull Dossier dossier) {
 		// mit 2 Verantwortlichen wird zu Mischgesuch
 		Benutzer verantSCH = TestDataUtil.createBenutzerSCH();
 		persistence.persist(verantSCH.getMandant());
 		persistence.persist(verantSCH);
-		fall.setVerantwortlicherSCH(verantSCH);
-		return persistence.merge(fall);
+		dossier.setVerantwortlicherTS(verantSCH);
+		return persistence.merge(dossier);
 	}
 
 }

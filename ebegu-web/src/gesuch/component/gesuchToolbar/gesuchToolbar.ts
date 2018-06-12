@@ -632,7 +632,7 @@ export class GesuchToolbarController implements IDVFocusableController {
 
     public showKontakt(): void {
         let text: string;
-        if (this.dossier.isHauptverantwortlicherSchulamt()) {
+        if (this.dossier.isHauptverantwortlicherTS()) {
             text = this.ebeguUtil.getKontaktSchulamt();
         } else {
             text = this.ebeguUtil.getKontaktJugendamt();

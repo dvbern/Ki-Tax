@@ -29,7 +29,7 @@ import ch.dvbern.ebegu.enums.UserRole;
  * Diese Klasse enthaelt Methoden, um den AntragStatus von DB in DTO umzuwandeln.
  */
 @SuppressWarnings("OverlyComplexMethod")
-public class AntragStatusConverterUtil {
+public final class AntragStatusConverterUtil {
 
 	private AntragStatusConverterUtil() {
 		// Util-Methode soll nicht instanziert werden
@@ -42,6 +42,7 @@ public class AntragStatusConverterUtil {
 	 * @param status Der AntragStatus vom Entity
 	 * @return Der AntragStatusDTO, der zum Client geschickt wird
 	 */
+	@Nonnull
 	public static AntragStatusDTO convertStatusToDTO(Gesuch antrag, AntragStatus status) {
 		switch (status) {
 		case IN_BEARBEITUNG_GS:

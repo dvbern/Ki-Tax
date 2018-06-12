@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.tests;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +25,10 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
@@ -50,6 +53,9 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 	private FallService fallService;
 
 	@Inject
+	private DossierService dossierService;
+
+	@Inject
 	private Persistence persistence;
 
 	@Inject
@@ -71,7 +77,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 		//Wir erwarten das die Fallnummern 1 und 2 (bzw in PSQL 0 und 1 ) vergeben wurden
 		List<Fall> moreFaelle = new ArrayList<>(fallService.getAllFalle(false).stream()
-			.sorted((o1, o2) -> Long.valueOf(o1.getFallNummer()).compareTo(Long.valueOf(o2.getFallNummer())))
+			.sorted(Comparator.comparingLong(Fall::getFallNummer))
 			.collect(Collectors.toList()));
 		Assert.assertEquals(2, moreFaelle.size());
 		for (int i = 0; i < moreFaelle.size(); i++) {
@@ -82,20 +88,20 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void changeVerantwortlicherOfFallTest() {
-		Fall fall = TestDataUtil.createDefaultFall();
-		Fall savedFall = fallService.saveFall(fall);
+		Dossier dossier = TestDataUtil.createDefaultDossier();
+		Dossier savedDossier = dossierService.saveDossier(dossier);
 
-		Optional<Fall> loadedFallOpt = fallService.findFall(savedFall.getId());
-		Assert.assertTrue(loadedFallOpt.isPresent());
-		Fall loadedFall = loadedFallOpt.get();
-		Assert.assertNull(loadedFall.getVerantwortlicher());
+		Optional<Dossier> loadedDossierOptional = dossierService.findDossier(savedDossier.getId());
+		Assert.assertTrue(loadedDossierOptional.isPresent());
+		Dossier loadedDossier = loadedDossierOptional.get();
+		Assert.assertNull(loadedDossier.getVerantwortlicherBG());
 		Benutzer benutzerToSet = getDummySuperadmin();
 		Benutzer storedBenutzer = persistence.find(Benutzer.class, benutzerToSet.getId());
-		loadedFall.setVerantwortlicher(storedBenutzer);
+		loadedDossier.setVerantwortlicherBG(storedBenutzer);
 
-		Fall updatedFall = fallService.saveFall(loadedFall);
-		Assert.assertNotNull(loadedFall.getVerantwortlicher());
-		Assert.assertEquals(benutzerToSet.getId(), updatedFall.getVerantwortlicher().getId());
+		Dossier updatedDossier = dossierService.saveDossier(loadedDossier);
+		Assert.assertNotNull(loadedDossier.getVerantwortlicherBG());
+		Assert.assertEquals(benutzerToSet.getId(), updatedDossier.getVerantwortlicherBG());
 
 	}
 

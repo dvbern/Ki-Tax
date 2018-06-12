@@ -31,17 +31,13 @@ public class JaxFall extends JaxAbstractDTO {
 
 	private long fallNummer;
 
-	private JaxAuthLoginElement verantwortlicher;
-
-	private JaxAuthLoginElement verantwortlicherSCH;
-
 	@Min(1)
 	private Integer nextNumberKind = 1;
 
 	@Min(1)
 	private Integer nextNumberDossier = 1;
 
-	private JaxAuthLoginElement besitzer; //
+	private JaxAuthLoginElement besitzer;
 
 	public long getFallNummer() {
 		return fallNummer;
@@ -49,22 +45,6 @@ public class JaxFall extends JaxAbstractDTO {
 
 	public void setFallNummer(long fallNummer) {
 		this.fallNummer = fallNummer;
-	}
-
-	public JaxAuthLoginElement getVerantwortlicher() {
-		return verantwortlicher;
-	}
-
-	public void setVerantwortlicher(JaxAuthLoginElement verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
-	}
-
-	public JaxAuthLoginElement getVerantwortlicherSCH() {
-		return verantwortlicherSCH;
-	}
-
-	public void setVerantwortlicherSCH(JaxAuthLoginElement verantwortlicherSCH) {
-		this.verantwortlicherSCH = verantwortlicherSCH;
 	}
 
 	public Integer getNextNumberKind() {

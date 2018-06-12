@@ -36,6 +36,7 @@ import TSUser from '../../models/TSUser';
 import TSVerfuegung from '../../models/TSVerfuegung';
 import DateUtil from '../../utils/DateUtil';
 import TestDataUtil from '../../utils/TestDataUtil';
+import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
 import GesuchModelManager from './gesuchModelManager';
 import GesuchRS from './gesuchRS.rest';
@@ -46,6 +47,7 @@ describe('gesuchModelManager', function () {
     let gesuchModelManager: GesuchModelManager;
     let betreuungRS: BetreuungRS;
     let fallRS: FallRS;
+    let dossierRS: DossierRS;
     let gesuchRS: GesuchRS;
     let kindRS: KindRS;
     let scope: angular.IScope;
@@ -63,6 +65,7 @@ describe('gesuchModelManager', function () {
         $httpBackend = $injector.get('$httpBackend');
         betreuungRS = $injector.get('BetreuungRS');
         fallRS = $injector.get('FallRS');
+        dossierRS = $injector.get('DossierRS');
         gesuchRS = $injector.get('GesuchRS');
         kindRS = $injector.get('KindRS');
         scope = $injector.get('$rootScope');
@@ -149,19 +152,19 @@ describe('gesuchModelManager', function () {
 
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
                 expect(gesuchModelManager.getFall()).toBeDefined();
-                expect(gesuchModelManager.getFall().verantwortlicher).toBe(undefined);
+                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(undefined);
             });
             it('links the fall with the current user', () => {
                 let currentUser: TSUser = new TSUser('Test', 'User', 'username');
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(currentUser);
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                spyOn(fallRS, 'setVerantwortlicherJA').and.returnValue($q.when({}));
+                spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
 
                 scope.$apply();
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
                 expect(gesuchModelManager.getFall()).toBeDefined();
-                expect(gesuchModelManager.getFall().verantwortlicher).toBe(currentUser);
+                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(currentUser);
             });
             it('does not link the fall with the current user because is not the required role', () => {
                 let currentUser: TSUser = new TSUser('Test', 'User', 'username');
@@ -171,7 +174,7 @@ describe('gesuchModelManager', function () {
 
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
                 expect(gesuchModelManager.getFall()).toBeDefined();
-                expect(gesuchModelManager.getFall().verantwortlicher).toBeUndefined();
+                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBeUndefined();
             });
             it('does not force to create a new fall and gesuch', () => {
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
@@ -200,15 +203,15 @@ describe('gesuchModelManager', function () {
                 expect(oldGesuch).toBe(gesuchModelManager.getGesuch());
             });
         });
-        describe('setUserAsFallVerantwortlicher', () => {
-            it('puts the given user as the verantwortlicher for the fall', () => {
+        describe('setUserAsFallVerantwortlicherBG', () => {
+            it('puts the given user as the verantwortlicherBG for the fall', () => {
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-                spyOn(fallRS, 'setVerantwortlicherJA').and.returnValue($q.when({}));
+                spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
                 let user: TSUser = new TSUser('Emiliano', 'Camacho');
-                gesuchModelManager.setUserAsFallVerantwortlicher(user);
+                gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
                 scope.$apply();
-                expect(gesuchModelManager.getFall().verantwortlicher).toBe(user);
+                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
             });
         });
         describe('exist at least one Betreuung among all kinder', function () {

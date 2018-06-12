@@ -92,27 +92,6 @@ public interface FallService {
 	 * Gibt die GS1-Emailadresse des neusten Gesuchs fuer diesen Fall zurueck, wenn noch kein Gesuch vorhanden ist, wird
 	 * die E-Mail zurueckgegeben die beim Besitzer des Falls eingegeben wurde (aus IAM importiert)
 	 */
-	Optional<String> getCurrentEmailAddress(String fallID);
-
-	/**
-	 * Logik fuer die Ermittlung des Hauptverantwortlichen:
-	 * (1) Wenn ein JA-Verantwortlicher gesetzt ist, ist dieser der Hauptverantwortlicher
-	 * (2) Wenn kein JA-Verantwortlicher gesetzt ist, aber ein SCH-Verantwortlicher, ist dieser der Hauptverantwortlicher
-	 * (3) Wenn noch gar nichts gesetzt ist (z.B. noch gar kein Gesuch erfasst) wird der DefaultVerantwortlicherJA zurueckgegeben
-	 */
 	@Nonnull
-	Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Fall fall);
-
-	/**
-	 * stores the verantwortlicherJA on the given fall
-	 */
-	@Nonnull
-	Fall setVerantwortlicherJA(@Nonnull String fallId, @Nullable Benutzer benutzer);
-
-	/**
-	 * stores the verantwortlicherSCH on the given fall
-	 */
-	@Nonnull
-	Fall setVerantwortlicherSCH(@Nonnull String fallId, @Nullable Benutzer benutzer);
-
+	Optional<String> getCurrentEmailAddress(@Nonnull String fallID);
 }

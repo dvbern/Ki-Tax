@@ -188,7 +188,6 @@ public final class TestJaxDataUtil {
 	public static JaxFall createTestJaxFall() {
 		JaxFall jaxFall = new JaxFall();
 		jaxFall.setFallNummer(1);
-		jaxFall.setVerantwortlicher(createTestJaxBenutzer());
 		return jaxFall;
 	}
 

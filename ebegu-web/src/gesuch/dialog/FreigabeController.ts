@@ -36,8 +36,8 @@ export class FreigabeController {
     private gesuch: TSAntragDTO;
     private selectedUserJA: string;
     private selectedUserSCH: string;
-    private userJAList: Array<TSUser>;
-    private userSCHList: Array<TSUser>;
+    private userBGList: Array<TSUser>;
+    private userTSList: Array<TSUser>;
     private fallNummer: string;
     private familie: string;
     private errorMessage: string;
@@ -76,8 +76,8 @@ export class FreigabeController {
         // (3) Defaults aus Properties
 
         // Jugendamt
-        if (this.gesuch.verantwortlicher && this.gesuch.verantwortlicherUsernameJA) {
-            this.selectedUserJA = this.gesuch.verantwortlicherUsernameJA;
+        if (this.gesuch.verantwortlicherBG && this.gesuch.verantwortlicherUsernameBG) {
+            this.selectedUserJA = this.gesuch.verantwortlicherUsernameBG;
         } else {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
@@ -89,8 +89,8 @@ export class FreigabeController {
             }
         }
         // Schulamt
-        if (this.gesuch.verantwortlicherSCH && this.gesuch.verantwortlicherUsernameSCH) {
-           this.selectedUserSCH = this.gesuch.verantwortlicherUsernameSCH;
+        if (this.gesuch.verantwortlicherTS && this.gesuch.verantwortlicherUsernameTS) {
+           this.selectedUserSCH = this.gesuch.verantwortlicherUsernameTS;
         } else {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
@@ -105,10 +105,10 @@ export class FreigabeController {
 
     private updateUserList() {
         this.userRS.getBenutzerJAorAdmin().then((response: any) => {
-            this.userJAList = angular.copy(response);
+            this.userBGList = angular.copy(response);
         });
         this.userRS.getBenutzerSCHorAdminSCH().then((response: any) => {
-            this.userSCHList = angular.copy(response);
+            this.userTSList = angular.copy(response);
         });
     }
 

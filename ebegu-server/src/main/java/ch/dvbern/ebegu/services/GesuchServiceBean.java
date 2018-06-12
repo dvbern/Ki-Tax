@@ -177,6 +177,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private BetreuungService betreuungService;
 	@Inject
 	private GesuchDeletionLogService gesuchDeletionLogService;
+	@Inject
+	private DossierService dossierService;
 
 	@Nonnull
 	@Override
@@ -312,10 +314,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA })
-	// TODO (team) evt. umbenennen: getGesucheForBenutzerPendenzenJugendamt
-	public Collection<Gesuch> getAllActiveGesucheOfVerantwortlichePerson(@Nonnull String benutzername) {
+	public Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername) {
 		Validate.notNull(benutzername);
-		Benutzer benutzer = benutzerService.findBenutzer(benutzername).orElseThrow(() -> new EbeguEntityNotFoundException("getAllActiveGesucheOfVerantwortlichePerson", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, benutzername));
+		Benutzer benutzer = benutzerService.findBenutzer(benutzername).orElseThrow(() -> new EbeguEntityNotFoundException("getGesucheForBenutzerPendenzenBG", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, benutzername));
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
@@ -323,7 +324,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
-		Predicate predicateVerantwortlicher = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.verantwortlicher), benutzer);
+		Predicate predicateVerantwortlicher = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.verantwortlicherBG), benutzer);
 		// Gesuchsperiode darf nicht geschlossen sein
 		Predicate predicateGesuchsperiode = root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.status).in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
 
@@ -649,11 +650,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				setVerantwortliche(usernameJA, usernameSCH, gesuch, false, false);
 			} else {
 				// in case of mutation, we take default Verantwortliche and set them only if not set...
-				String propertyDefaultVerantwortlicher = applicationPropertyService.findApplicationPropertyAsString(
-					ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER);
-				String propertyDefaultVerantwortlicherSch = applicationPropertyService.findApplicationPropertyAsString(
-					ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_SCH);
-				setVerantwortliche(propertyDefaultVerantwortlicher, propertyDefaultVerantwortlicherSch, gesuch, true, false);
+				String propertyDefaultVerantwortlicherBG = applicationPropertyService.findApplicationPropertyAsString(
+					ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
+				String propertyDefaultVerantwortlicherTS = applicationPropertyService.findApplicationPropertyAsString(
+					ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
+				setVerantwortliche(propertyDefaultVerantwortlicherBG, propertyDefaultVerantwortlicherTS, gesuch, true, false);
 			}
 
 			// Falls es ein OnlineGesuch war: Das Eingangsdatum setzen
@@ -671,35 +672,70 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, ADMINISTRATOR_SCHULAMT, SCHULAMT, GESUCHSTELLER })
-	public boolean setVerantwortliche(@Nullable String usernameJA, @Nullable String usernameSCH, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
+	public boolean setVerantwortliche(@Nullable String usernameBG, @Nullable String usernameTS, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
 		boolean hasVerantwortlicheChanged = false;
-		if (usernameJA != null) {
-			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(usernameJA);
-			if (verantwortlicher.isPresent()
-				&& gesuch.hasBetreuungOfJugendamt()
-				&& (verantwortlicher.get().getRole().isRoleJugendamt() || verantwortlicher.get().getRole().isSuperadmin())
-				&& (gesuch.getFall().getVerantwortlicher() == null || !onlyIfNotSet)) {
-				if (persist) {
-					fallService.setVerantwortlicherJA(gesuch.getFall().getId(), verantwortlicher.get());
+		if (usernameBG != null) {
+			Optional<Benutzer> optionalUserBG = benutzerService.findBenutzer(usernameBG);
+			if (optionalUserBG.isPresent() && gesuch.hasBetreuungOfJugendamt()) {
+				Benutzer userBG = optionalUserBG.get();
+				boolean hasUserChangedGMDE = setVerantwortlicherIfNecessaryGMDE(userBG, gesuch, onlyIfNotSet, persist);
+				boolean hasUserChangedBG = setVerantwortlicherIfNecessaryBG(userBG, gesuch, onlyIfNotSet, persist);
+				if (hasUserChangedGMDE || hasUserChangedBG) {
+					hasVerantwortlicheChanged = true;
 				}
-				gesuch.getFall().setVerantwortlicher(verantwortlicher.get());
-				hasVerantwortlicheChanged = true;
 			}
 		}
-		if (usernameSCH != null) {
-			Optional<Benutzer> verantwortlicherSCH = benutzerService.findBenutzer(usernameSCH);
-			if (verantwortlicherSCH.isPresent()
-				&& gesuch.hasBetreuungOfSchulamt()
-				&& (verantwortlicherSCH.get().getRole().isRoleSchulamt() || verantwortlicherSCH.get().getRole().isSuperadmin())
-				&& (gesuch.getFall().getVerantwortlicherSCH() == null || !onlyIfNotSet)) {
-				if (persist) {
-					fallService.setVerantwortlicherSCH(gesuch.getFall().getId(), verantwortlicherSCH.get());
+		if (usernameTS != null) {
+			Optional<Benutzer> optionalUserTS = benutzerService.findBenutzer(usernameTS);
+			if (optionalUserTS.isPresent() && gesuch.hasBetreuungOfSchulamt()) {
+				Benutzer userTS = optionalUserTS.get();
+				boolean hasUserChangedGMDE = setVerantwortlicherIfNecessaryGMDE(userTS, gesuch, onlyIfNotSet, persist);
+				boolean hasUserChangedTS = setVerantwortlicherIfNecessaryTS(userTS, gesuch, onlyIfNotSet, persist);
+				if (hasUserChangedGMDE || hasUserChangedTS) {
+					hasVerantwortlicheChanged = true;
 				}
-				gesuch.getFall().setVerantwortlicherSCH(verantwortlicherSCH.get());
-				hasVerantwortlicheChanged = true;
 			}
 		}
 		return hasVerantwortlicheChanged;
+	}
+
+	private boolean setVerantwortlicherIfNecessaryGMDE(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
+		if (user.getRole().isRoleGemeinde()) {
+			if (gesuch.getDossier().getVerantwortlicherGMDE() == null || !onlyIfNotSet) {
+				if (persist) {
+					dossierService.setVerantwortlicherGMDE(gesuch.getDossier().getId(), user);
+				}
+				gesuch.getDossier().setVerantwortlicherGMDE(user);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean setVerantwortlicherIfNecessaryBG(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
+		if (user.getRole().isRoleJugendamt()) {
+			if (gesuch.getDossier().getVerantwortlicherBG() == null || !onlyIfNotSet) {
+				if (persist) {
+					dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
+				}
+				gesuch.getDossier().setVerantwortlicherBG(user);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean setVerantwortlicherIfNecessaryTS(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
+		if (user.getRole().isRoleSchulamt()) {
+			if (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet) {
+				if (persist) {
+					dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
+				}
+				gesuch.getDossier().setVerantwortlicherTS(user);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

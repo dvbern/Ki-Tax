@@ -174,11 +174,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
 		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), mergedBetreuung.getBetreuungsstatus(), isNew)) {
-			String propertyDefaultVerantwortlicher = applicationPropertyService.findApplicationPropertyAsString(
-				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER);
-			String propertyDefaultVerantwortlicherSch = applicationPropertyService.findApplicationPropertyAsString(
-				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_SCH);
-			gesuchService.setVerantwortliche(propertyDefaultVerantwortlicher, propertyDefaultVerantwortlicherSch, mergedBetreuung.extractGesuch(), true, true);
+			String propertyDefaultVerantwortlicherBG = applicationPropertyService.findApplicationPropertyAsString(
+				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
+			String propertyDefaultVerantwortlicherTS = applicationPropertyService.findApplicationPropertyAsString(
+				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
+			gesuchService.setVerantwortliche(propertyDefaultVerantwortlicherBG, propertyDefaultVerantwortlicherTS, mergedBetreuung.extractGesuch(), true, true);
 		}
 
 

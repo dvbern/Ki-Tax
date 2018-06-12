@@ -197,18 +197,18 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		return property;
 	}
 
+	@Nonnull
 	@Override
 	@PermitAll
-	@Nullable
-	public Optional<Benutzer> readDefaultVerantwortlicherFromProperties() {
-		return readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER);
+	public Optional<Benutzer> readDefaultVerantwortlicherBGFromProperties() {
+		return readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
 	}
 
+	@Nonnull
 	@Override
 	@PermitAll
-	@Nullable
-	public Optional<Benutzer> readDefaultVerantwortlicherSCHFromProperties() {
-		return readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_SCH);
+	public Optional<Benutzer> readDefaultVerantwortlicherTSFromProperties() {
+		return readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
 	}
 
 	private Optional<Benutzer> readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey key) {
@@ -218,7 +218,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			if (defaultVerantwortlicherOptional.isPresent()) {
 				return defaultVerantwortlicherOptional;
 			}
-			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}", ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER);
+			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}", ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
 		}
 		return Optional.empty();
 	}

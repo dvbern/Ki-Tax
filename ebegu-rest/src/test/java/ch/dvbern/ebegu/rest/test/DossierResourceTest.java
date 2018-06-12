@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -21,8 +21,10 @@ import java.time.Month;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxFall;
-import ch.dvbern.ebegu.api.resource.FallResource;
+import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
+import ch.dvbern.ebegu.api.resource.DossierResource;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -44,10 +46,10 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
-public class FallResourceTest extends AbstractEbeguRestLoginTest {
+public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Inject
-	private FallResource fallResource;
+	private DossierResource dossierResource;
 	@Inject
 	private InstitutionService institutionService;
 	@Inject
@@ -55,15 +57,25 @@ public class FallResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private JaxBConverter converter;
 
+
 	@Test
-	public void findGesuchForInstitution() {
+	public void updateVerantwortlicherUserForDossier() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
-		final JaxFall foundFall = fallResource.findFall(converter.toJaxId(gesuch.getFall()));
+		Benutzer sachbearbeiter = TestDataUtil.createAndPersistJABenutzer(persistence);
 
-		Assert.assertNotNull(foundFall);
-		Assert.assertNotNull(foundFall.getId());
-		Assert.assertNotNull(foundFall.getNextNumberKind());
+		JaxDossier foundDossier = dossierResource.findDossier(converter.toJaxId(gesuch.getDossier()));
+
+		Assert.assertNotNull(foundDossier);
+		Assert.assertNotNull(foundDossier.getVerantwortlicherBG());
+		Assert.assertNotEquals(sachbearbeiter.getUsername(), foundDossier.getVerantwortlicherBG().getUsername());
+
+		JaxAuthLoginElement userToSet = converter.benutzerToAuthLoginElement(sachbearbeiter);
+		foundDossier.setVerantwortlicherBG(userToSet);
+		JaxDossier updatedDossier = (JaxDossier) dossierResource.create(foundDossier, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
+		Assert.assertNotNull(updatedDossier);
+		Assert.assertNotNull(updatedDossier.getVerantwortlicherBG());
+		Assert.assertEquals(sachbearbeiter.getUsername(), updatedDossier.getVerantwortlicherBG().getUsername());
 	}
 
 	// HELP METHODS

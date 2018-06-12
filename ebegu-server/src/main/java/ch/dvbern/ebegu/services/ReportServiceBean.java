@@ -463,8 +463,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		final Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.INNER);
-		final Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
-		final Join<Fall, Benutzer> verantwortlicherJoin = fallJoin.join(Fall_.verantwortlicher, JoinType.LEFT);
+		final Join<Dossier, Benutzer> verantwortlicherJoin = dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
 		SetJoin<Benutzer, Berechtigung> verantwortlicherBerechtigungenJoin = verantwortlicherJoin.join(Benutzer_.berechtigungen);
 
 		query.multiselect(verantwortlicherJoin.get(Benutzer_.id).alias(Benutzer_.id.getName()),

@@ -125,7 +125,7 @@ describe('posteingangFilter', function () {
             expect(posteingangFilter(mitteilungArray, {sentDatum: ''})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {sentDatum: '2016-05-05'})).toEqual([]);
         });
-        it('should return an array with only the elements of the given verantwortlicher/empfaenger', function () {
+        it('should return an array with only the elements of the given verantwortlicherBG/empfaenger', function () {
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'Julian Becker'})).toEqual([mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'Blaser'})).toEqual([mitteilung1, mitteilung2]);
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'ser'})).toEqual([mitteilung1, mitteilung2]);

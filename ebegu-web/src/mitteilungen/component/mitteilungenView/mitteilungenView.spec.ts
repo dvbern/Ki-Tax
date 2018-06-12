@@ -76,7 +76,6 @@ describe('mitteilungenView', function () {
         dossier.fall.besitzer = besitzer;
         verantwortlicher = new TSUser();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
-        fall.verantwortlicher = verantwortlicher;
         dossier.verantwortlicherBG = verantwortlicher;
 
         spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));

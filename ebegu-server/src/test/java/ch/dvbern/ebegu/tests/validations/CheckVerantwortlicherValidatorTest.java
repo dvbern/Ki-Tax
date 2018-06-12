@@ -20,14 +20,15 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.tests.util.ValidationTestHelper;
 import ch.dvbern.ebegu.tets.TestDataUtil;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherJAValidationGroup;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherSCHValidationGroup;
-import ch.dvbern.ebegu.validators.CheckVerantwortlicherJA;
-import ch.dvbern.ebegu.validators.CheckVerantwortlicherSCH;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
+import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
+import ch.dvbern.ebegu.validators.CheckVerantwortlicherTS;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,60 +43,61 @@ public class CheckVerantwortlicherValidatorTest {
 
 	@Before
 	public void setUp() {
+		Mandant mandant = TestDataUtil.createDefaultMandant();
 		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		//wir verwenden dummy service daher geben wir hier null als em mit
 		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null));
 		this.customFactory = config.buildValidatorFactory();
-		schUser = TestDataUtil.createBenutzer(UserRole.SCHULAMT, "userSCH", null, null, null);
-		jaUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, "userJA", null, null, null);
-		jaAdmin = TestDataUtil.createBenutzer(UserRole.ADMIN, "adminJA", null, null, null);
-		schAdmin = TestDataUtil.createBenutzer(UserRole.ADMINISTRATOR_SCHULAMT, "adminSCH", null, null, null);
+		schUser = TestDataUtil.createBenutzer(UserRole.SCHULAMT, "userSCH", null, null, mandant);
+		jaUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, "userJA", null, null, mandant);
+		jaAdmin = TestDataUtil.createBenutzer(UserRole.ADMIN, "adminJA", null, null, mandant);
+		schAdmin = TestDataUtil.createBenutzer(UserRole.ADMINISTRATOR_SCHULAMT, "adminSCH", null, null, mandant);
 	}
 
 	@Test
 	public void testCheckVerantwortlicherNormalUsers() {
-		final Fall fall = new Fall();
-		fall.setVerantwortlicher(jaUser);
-		fall.setVerantwortlicherSCH(schUser);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherJA.class, fall, customFactory, ChangeVerantwortlicherJAValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherSCH.class, fall, customFactory, ChangeVerantwortlicherSCHValidationGroup.class);
+		final Dossier dossier = new Dossier();
+		dossier.setVerantwortlicherBG(jaUser);
+		dossier.setVerantwortlicherTS(schUser);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
 	}
 
 	@Test
 	public void testCheckVerantwortlicherAdminUsers() {
-		final Fall fall = new Fall();
-		fall.setVerantwortlicher(jaAdmin);
-		fall.setVerantwortlicherSCH(schAdmin);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherJA.class, fall, customFactory, ChangeVerantwortlicherJAValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherSCH.class, fall, customFactory, ChangeVerantwortlicherSCHValidationGroup.class);
+		final Dossier dossier = new Dossier();
+		dossier.setVerantwortlicherBG(jaAdmin);
+		dossier.setVerantwortlicherTS(schAdmin);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
 	}
 
 	@Test
 	public void testCheckVerantwortlicherNullUsers() {
-		final Fall fall = new Fall();
-		fall.setVerantwortlicher(null);
-		fall.setVerantwortlicherSCH(null);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherJA.class, fall, customFactory, ChangeVerantwortlicherJAValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherSCH.class, fall, customFactory, ChangeVerantwortlicherSCHValidationGroup.class);
+		final Dossier dossier = new Dossier();
+		dossier.setVerantwortlicherBG(null);
+		dossier.setVerantwortlicherTS(null);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
 	}
 
 	@Test
 	public void testCheckVerantwortlicherWrongSCHUser() {
-		final Fall fall = new Fall();
-		fall.setVerantwortlicher(schAdmin);
-		fall.setVerantwortlicherSCH(schAdmin);
-		ValidationTestHelper.assertViolated(CheckVerantwortlicherJA.class, fall, customFactory, ChangeVerantwortlicherJAValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherSCH.class, fall, customFactory, ChangeVerantwortlicherSCHValidationGroup.class);
+		final Dossier dossier = new Dossier();
+		dossier.setVerantwortlicherBG(schAdmin);
+		dossier.setVerantwortlicherTS(schAdmin);
+		ValidationTestHelper.assertViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
 	}
 
 	@Test
 	public void testCheckVerantwortlicherWrongJAUser() {
-		final Fall fall = new Fall();
-		fall.setVerantwortlicher(jaAdmin);
-		fall.setVerantwortlicherSCH(jaAdmin);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherJA.class, fall, customFactory, ChangeVerantwortlicherJAValidationGroup.class);
-		ValidationTestHelper.assertViolated(CheckVerantwortlicherSCH.class, fall, customFactory, ChangeVerantwortlicherSCHValidationGroup.class);
+		final Dossier dossier = new Dossier();
+		dossier.setVerantwortlicherBG(jaAdmin);
+		dossier.setVerantwortlicherTS(jaAdmin);
+		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
+		ValidationTestHelper.assertViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
 	}
 
 }

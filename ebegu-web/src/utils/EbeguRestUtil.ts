@@ -620,8 +620,6 @@ export default class EbeguRestUtil {
         if (fall) {
             this.abstractEntityToRestObject(restFall, fall);
             restFall.fallNummer = fall.fallNummer;
-            restFall.verantwortlicher = this.userToRestObject({}, fall.verantwortlicher);
-            restFall.verantwortlicherSCH = this.userToRestObject({}, fall.verantwortlicherSCH);
             restFall.nextNumberKind = fall.nextNumberKind;
             restFall.nextNumberDossier = fall.nextNumberDossier;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
@@ -635,8 +633,6 @@ export default class EbeguRestUtil {
         if (fallFromServer) {
             this.parseAbstractEntity(fallTS, fallFromServer);
             fallTS.fallNummer = fallFromServer.fallNummer;
-            fallTS.verantwortlicher = this.parseUser(new TSUser(), fallFromServer.verantwortlicher);
-            fallTS.verantwortlicherSCH = this.parseUser(new TSUser(), fallFromServer.verantwortlicherSCH);
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
             fallTS.nextNumberDossier = fallFromServer.nextNumberDossier;
             fallTS.besitzer = this.parseUser(new TSUser(), fallFromServer.besitzer);
@@ -1533,10 +1529,10 @@ export default class EbeguRestUtil {
         restPendenz.gesuchsperiodeGueltigBis = DateUtil.momentToLocalDate(pendenz.gesuchsperiodeGueltigBis);
         restPendenz.institutionen = pendenz.institutionen;
         restPendenz.kinder = pendenz.kinder;
-        restPendenz.verantwortlicher = pendenz.verantwortlicher;
-        restPendenz.verantwortlicherSCH = pendenz.verantwortlicherSCH;
-        restPendenz.verantwortlicherUsernameJA = pendenz.verantwortlicherUsernameJA;
-        restPendenz.verantwortlicherUsernameSCH = pendenz.verantwortlicherUsernameSCH;
+        restPendenz.verantwortlicherBG = pendenz.verantwortlicherBG;
+        restPendenz.verantwortlicherTS = pendenz.verantwortlicherTS;
+        restPendenz.verantwortlicherUsernameBG = pendenz.verantwortlicherUsernameBG;
+        restPendenz.verantwortlicherUsernameTS = pendenz.verantwortlicherUsernameTS;
         restPendenz.status = pendenz.status;
         restPendenz.verfuegt = pendenz.verfuegt;
         restPendenz.beschwerdeHaengig = pendenz.beschwerdeHaengig;
@@ -1561,10 +1557,10 @@ export default class EbeguRestUtil {
         antragTS.gesuchsperiodeGueltigAb = DateUtil.localDateToMoment(antragFromServer.gesuchsperiodeGueltigAb);
         antragTS.gesuchsperiodeGueltigBis = DateUtil.localDateToMoment(antragFromServer.gesuchsperiodeGueltigBis);
         antragTS.institutionen = antragFromServer.institutionen;
-        antragTS.verantwortlicher = antragFromServer.verantwortlicher;
-        antragTS.verantwortlicherSCH = antragFromServer.verantwortlicherSCH;
-        antragTS.verantwortlicherUsernameJA = antragFromServer.verantwortlicherUsernameJA;
-        antragTS.verantwortlicherUsernameSCH = antragFromServer.verantwortlicherUsernameSCH;
+        antragTS.verantwortlicherBG = antragFromServer.verantwortlicherBG;
+        antragTS.verantwortlicherTS = antragFromServer.verantwortlicherTS;
+        antragTS.verantwortlicherUsernameBG = antragFromServer.verantwortlicherUsernameBG;
+        antragTS.verantwortlicherUsernameTS = antragFromServer.verantwortlicherUsernameTS;
         antragTS.status = antragFromServer.status;
         antragTS.verfuegt = antragFromServer.verfuegt;
         antragTS.beschwerdeHaengig = antragFromServer.beschwerdeHaengig;

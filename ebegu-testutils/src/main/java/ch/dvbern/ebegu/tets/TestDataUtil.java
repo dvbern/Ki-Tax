@@ -924,7 +924,7 @@ public final class TestDataUtil {
 	public static void persistEntities(Gesuch gesuch, Persistence persistence) {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 
-		gesuch.getFall().setVerantwortlicher(verantwortlicher);
+		gesuch.getDossier().setVerantwortlicherBG(verantwortlicher);
 		persistence.persist(gesuch.getFall());
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		persistence.persist(gesuch.getGesuchsperiode());

@@ -18,13 +18,20 @@ package ch.dvbern.ebegu.services;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
@@ -33,6 +40,9 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherGMDEValidationGroup;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 
@@ -62,6 +72,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Inject
 	private MitteilungService mitteilungService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@Nonnull
 	@Override
@@ -138,5 +151,59 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(dossier);
 		return !mitteilungenForCurrentRolle.isEmpty();
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Dossier dossier) {
+		Benutzer verantwortlicher = dossier.getHauptVerantwortlicher();
+		if (verantwortlicher == null) {
+			return applicationPropertyService.readDefaultVerantwortlicherBGFromProperties();
+		}
+		return Optional.of(verantwortlicher);
+	}
+
+	@Nonnull
+	@Override
+	public Dossier setVerantwortlicherBG(@Nonnull String dossierId, @Nullable Benutzer benutzer) {
+		final Dossier dossier = findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		dossier.setVerantwortlicherBG(benutzer);
+
+		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
+		validateVerantwortlicher(dossier, ChangeVerantwortlicherBGValidationGroup.class);
+		return saveDossier(dossier);
+	}
+
+	@Nonnull
+	@Override
+	public Dossier setVerantwortlicherTS(@Nonnull String dossierId, @Nullable Benutzer benutzer) {
+		final Dossier dossier = findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		dossier.setVerantwortlicherTS(benutzer);
+
+		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
+		validateVerantwortlicher(dossier, ChangeVerantwortlicherTSValidationGroup.class);
+		return saveDossier(dossier);
+	}
+
+	@Nonnull
+	@Override
+	public Dossier setVerantwortlicherGMDE(@Nonnull String dossierId, @Nullable Benutzer benutzer) {
+		final Dossier dossier = findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherGMDE",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		dossier.setVerantwortlicherGMDE(benutzer);
+
+		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
+		validateVerantwortlicher(dossier, ChangeVerantwortlicherGMDEValidationGroup.class);
+		return saveDossier(dossier);
+	}
+
+	private void validateVerantwortlicher(@Nonnull Dossier dossier, @Nonnull Class validationGroup) {
+		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
+		Set<ConstraintViolation<Dossier>> constraintViolations = validator.validate(dossier, validationGroup);
+		if (!constraintViolations.isEmpty()) {
+			throw new ConstraintViolationException(constraintViolations);
+		}
 	}
 }

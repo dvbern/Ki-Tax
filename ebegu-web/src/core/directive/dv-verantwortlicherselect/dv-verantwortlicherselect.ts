@@ -119,9 +119,9 @@ export class VerantwortlicherselectController {
 
     private setVerantwortlicherGesuchModelManager(verantwortlicher: TSUser) {
         if (this.schulamt) {
-            this.gesuchModelManager.setUserAsFallVerantwortlicherSCH(verantwortlicher);
+            this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
-            this.gesuchModelManager.setUserAsFallVerantwortlicher(verantwortlicher);
+            this.gesuchModelManager.setUserAsFallVerantwortlicherBG(verantwortlicher);
         }
     }
 
@@ -138,7 +138,7 @@ export class VerantwortlicherselectController {
     /**
      *
      * @param user
-     * @returns {boolean} true if the given user is already the verantwortlicher of the current fall
+     * @returns {boolean} true if the given user is already the verantwortlicherBG of the current fall
      */
     public isCurrentVerantwortlicher(user: TSUser): boolean {
         return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
@@ -146,9 +146,9 @@ export class VerantwortlicherselectController {
 
     public getFallVerantwortlicher(): TSUser {
         if (this.schulamt) {
-            return this.gesuchModelManager.getFallVerantwortlicherSCH();
+            return this.gesuchModelManager.getFallVerantwortlicherTS();
         } else {
-            return this.gesuchModelManager.getFallVerantwortlicher();
+            return this.gesuchModelManager.getFallVerantwortlicherBG();
         }
     }
 }

@@ -136,7 +136,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private MailService mailService;
 
 	@Inject
-	private FallService fallService;
+	private DossierService dossierService;
 
 	@Inject
 	private GesuchService gesuchService;
@@ -213,7 +213,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void setSenderAndEmpfaenger(@Nonnull Mitteilung mitteilung) {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
 
-		Optional<Benutzer> optEmpfaengerAmt = fallService.getHauptOrDefaultVerantwortlicher(mitteilung.getFall());
+		Optional<Benutzer> optEmpfaengerAmt = dossierService.getHauptOrDefaultVerantwortlicher(mitteilung.getDossier());
 		final Benutzer empfaengerAmt = optEmpfaengerAmt.orElseThrow(() ->
 			new EbeguRuntimeException("setSenderAndEmpfaenger", ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND, mitteilung.getId())
 		);
@@ -686,10 +686,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// auch tatsaechlich dem Schulamt "gehoert"
 		if (mitteilung.getEmpfaengerAmt() == Amt.SCHULAMT) {
 			// An wen soll die Meldung delegiert werden?
-			Benutzer verantwortlicherJA = mitteilung.getFall().getVerantwortlicher();
+			Benutzer verantwortlicherJA = mitteilung.getDossier().getVerantwortlicherBG();
 			if (verantwortlicherJA == null) {
 				// Kein JA-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
-				Optional<Benutzer> optVerantwortlicherJA = applicationPropertyService.readDefaultVerantwortlicherFromProperties();
+				Optional<Benutzer> optVerantwortlicherJA = applicationPropertyService.readDefaultVerantwortlicherBGFromProperties();
 				verantwortlicherJA = optVerantwortlicherJA.orElseThrow(() ->
 					new EbeguRuntimeException("mitteilungUebergebenAnJugendamt", ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND, mitteilung.getId())
 				);
@@ -713,16 +713,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// auch tatsaechlich dem Jugendamt "gehoert"
 		if (mitteilung.getEmpfaengerAmt() == Amt.JUGENDAMT) {
 			// An wen soll die Meldung delegiert werden?
-			Benutzer verantwortlicherSCH = mitteilung.getFall().getVerantwortlicherSCH();
-			if (verantwortlicherSCH == null) {
-				// Kein SCH-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
-				Optional<Benutzer> optVerantwortlicherSCH = applicationPropertyService.readDefaultVerantwortlicherSCHFromProperties();
-				verantwortlicherSCH = optVerantwortlicherSCH.orElseThrow(() ->
+			Benutzer verantwortlicherTS = mitteilung.getDossier().getVerantwortlicherTS();
+			if (verantwortlicherTS == null) {
+				// Kein TS-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
+				Optional<Benutzer> optVerantwortlicherTS = applicationPropertyService.readDefaultVerantwortlicherTSFromProperties();
+				verantwortlicherTS = optVerantwortlicherTS.orElseThrow(() ->
 					new EbeguRuntimeException("mitteilungUebergebenAnSchulamt", ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND, mitteilung.getId())
 				);
 			}
 			// Den VerantwortlichenJA als Empfänger setzen
-			mitteilung.setEmpfaenger(verantwortlicherSCH);
+			mitteilung.setEmpfaenger(verantwortlicherTS);
 			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 			return persistence.merge(mitteilung);
 

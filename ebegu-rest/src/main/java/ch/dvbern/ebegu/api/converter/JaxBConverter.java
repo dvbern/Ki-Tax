@@ -778,26 +778,6 @@ public class JaxBConverter {
 		Validate.notNull(fallJAXP);
 		convertAbstractFieldsToEntity(fallJAXP, fall);
 		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
-		if (fallJAXP.getVerantwortlicher() != null) {
-			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(fallJAXP.getVerantwortlicher().getUsername());
-			if (verantwortlicher.isPresent()) {
-				fall.setVerantwortlicher(verantwortlicher.get()); // because the user doesn't come from the client but from the server
-			} else {
-				throw new EbeguEntityNotFoundException("fallToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallJAXP.getVerantwortlicher());
-			}
-		} else {
-			fall.setVerantwortlicher(null);
-		}
-		if (fallJAXP.getVerantwortlicherSCH() != null) {
-			Optional<Benutzer> verantwortlicherSCH = benutzerService.findBenutzer(fallJAXP.getVerantwortlicherSCH().getUsername());
-			if (verantwortlicherSCH.isPresent()) {
-				fall.setVerantwortlicherSCH(verantwortlicherSCH.get()); // because the user doesn't come from the client but from the server
-			} else {
-				throw new EbeguEntityNotFoundException("fallToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallJAXP.getVerantwortlicherSCH());
-			}
-		} else {
-			fall.setVerantwortlicherSCH(null);
-		}
 		if (fallJAXP.getNextNumberKind() != null) {
 			fall.setNextNumberKind(fallJAXP.getNextNumberKind());
 		}
@@ -819,12 +799,6 @@ public class JaxBConverter {
 		final JaxFall jaxFall = new JaxFall();
 		convertAbstractFieldsToJAX(persistedFall, jaxFall);
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
-		if (persistedFall.getVerantwortlicher() != null) {
-			jaxFall.setVerantwortlicher(benutzerToAuthLoginElement(persistedFall.getVerantwortlicher()));
-		}
-		if (persistedFall.getVerantwortlicherSCH() != null) {
-			jaxFall.setVerantwortlicherSCH(benutzerToAuthLoginElement(persistedFall.getVerantwortlicherSCH()));
-		}
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
 		jaxFall.setNextNumberDossier(persistedFall.getNextNumberDossier());
 		if (persistedFall.getBesitzer() != null) {
@@ -874,20 +848,20 @@ public class JaxBConverter {
 		}
 		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
 		// TODO (KIBON-6) eigentlich: Wenn der VerantwortlicheBG die Berechtigung "Gemeinde" hat, muss er auf dem Entity als VerantwortlicherGMDE gesetzt werden
-//		if (dossierJAX.getVerantwortlicherBG() != null) {
-//			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
-//			if (verantwortlicher.isPresent()) {
-//				dossier.setVerantwortlicherBG(verantwortlicher.get()); // because the user doesn't come from the client but from the server
-//			} else {
-//				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
-//			}
-//		} else {
-//			dossier.setVerantwortlicherBG(null);
-//		}
+		if (dossierJAX.getVerantwortlicherBG() != null) {
+			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
+			if (verantwortlicher.isPresent()) {
+				dossier.setVerantwortlicherBG(verantwortlicher.get()); // because the user doesn't come from the client but from the server
+			} else {
+				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
+			}
+		} else {
+			dossier.setVerantwortlicherBG(null);
+		}
 		if (dossierJAX.getVerantwortlicherTS() != null) {
-			Optional<Benutzer> verantwortlicherSCH = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername());
-			if (verantwortlicherSCH.isPresent()) {
-				dossier.setVerantwortlicherTS(verantwortlicherSCH.get()); // because the user doesn't come from the client but from the server
+			Optional<Benutzer> verantwortlicherTS = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername());
+			if (verantwortlicherTS.isPresent()) {
+				dossier.setVerantwortlicherTS(verantwortlicherTS.get()); // because the user doesn't come from the client but from the server
 			} else {
 				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherTS());
 			}
@@ -2835,13 +2809,22 @@ public class JaxBConverter {
 		antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(gesuch, gesuch.getStatus()));
 		antrag.setGesuchsperiodeGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 		antrag.setGesuchsperiodeGueltigBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
-		if (gesuch.getFall().getVerantwortlicher() != null) {
-			antrag.setVerantwortlicher(gesuch.getFall().getVerantwortlicher().getFullName());
-			antrag.setVerantwortlicherUsernameJA(gesuch.getFall().getVerantwortlicher().getUsername());
+		Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
+		if (verantwortlicherBG != null) {
+			antrag.setVerantwortlicherBG(verantwortlicherBG.getFullName());
+			antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
 		}
-		if (gesuch.getFall().getVerantwortlicherSCH() != null) {
-			antrag.setVerantwortlicherSCH(gesuch.getFall().getVerantwortlicherSCH().getFullName());
-			antrag.setVerantwortlicherUsernameSCH(gesuch.getFall().getVerantwortlicherSCH().getUsername());
+		Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
+		if (verantwortlicherTS != null) {
+			antrag.setVerantwortlicherTS(verantwortlicherTS.getFullName());
+			antrag.setVerantwortlicherUsernameTS(verantwortlicherTS.getUsername());
+		}
+		Benutzer verantwortlicherGMDE = gesuch.getDossier().getVerantwortlicherGMDE();
+		if (verantwortlicherGMDE != null) {
+			antrag.setVerantwortlicherBG(verantwortlicherGMDE.getFullName());
+			antrag.setVerantwortlicherUsernameBG(verantwortlicherGMDE.getUsername());
+			antrag.setVerantwortlicherTS(verantwortlicherGMDE.getFullName());
+			antrag.setVerantwortlicherUsernameTS(verantwortlicherGMDE.getUsername());
 		}
 		antrag.setVerfuegt(gesuch.getStatus().isAnyStatusOfVerfuegt());
 		antrag.setBeschwerdeHaengig(gesuch.getStatus() == AntragStatus.BESCHWERDE_HAENGIG);

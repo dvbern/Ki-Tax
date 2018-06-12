@@ -65,8 +65,8 @@ export default class DVSTPersistQuicksearch implements IDirective {
                     quicksearchListController.selectedKinder = savedState.search.predicateObject.kinder;
                     quicksearchListController.selectedEingangsdatum = savedState.search.predicateObject.eingangsdatum;
                     quicksearchListController.selectedDokumenteHochgeladen = savedState.search.predicateObject.dokumenteHochgeladen;
-                    this.setVerantwortlicherFromName(quicksearchListController, savedState.search.predicateObject.verantwortlicher);
-                    this.setVerantwortlicherSCHFromName(quicksearchListController, savedState.search.predicateObject.verantwortlicherSCH);
+                    this.setVerantwortlicherBGFromName(quicksearchListController, savedState.search.predicateObject.verantwortlicherBG);
+                    this.setVerantwortlicherTSFromName(quicksearchListController, savedState.search.predicateObject.verantwortlicherTS);
                 }
                 let tableState = stTableCtrl.tableState();
 
@@ -82,15 +82,15 @@ export default class DVSTPersistQuicksearch implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherFromName(quicksearchListController: DVQuicksearchListController, verantwortlicherFullname: string): void {
-        if (verantwortlicherFullname && quicksearchListController) {
+    private setVerantwortlicherBGFromName(quicksearchListController: DVQuicksearchListController, verantwortlicherBGFullname: string): void {
+        if (verantwortlicherBGFullname && quicksearchListController) {
             this.userRS.getBenutzerJAorAdmin().then((response: any) => {
                 let userList: TSUser[] = angular.copy(response);
                 if (userList) {
                     for (let i = 0; i < userList.length; i++) {
-                        if (userList[i] && userList[i].getFullName() === verantwortlicherFullname) {
-                            quicksearchListController.selectedVerantwortlicher = userList[i];
-                            quicksearchListController.userChanged(quicksearchListController.selectedVerantwortlicher);
+                        if (userList[i] && userList[i].getFullName() === verantwortlicherBGFullname) {
+                            quicksearchListController.selectedVerantwortlicherBG = userList[i];
+                            quicksearchListController.userChanged(quicksearchListController.selectedVerantwortlicherBG);
                             break;
                         }
                     }
@@ -104,15 +104,15 @@ export default class DVSTPersistQuicksearch implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherSCHFromName(quicksearchListController: DVQuicksearchListController, verantwortlicherSCHFullname: string): void {
-        if (verantwortlicherSCHFullname && quicksearchListController) {
+    private setVerantwortlicherTSFromName(quicksearchListController: DVQuicksearchListController, verantwortlicherTSFullname: string): void {
+        if (verantwortlicherTSFullname && quicksearchListController) {
             this.userRS.getBenutzerSCHorAdminSCH().then((response: any) => {
                 let userList: TSUser[] = angular.copy(response);
                 if (userList) {
                     for (let i = 0; i < userList.length; i++) {
-                        if (userList[i] && userList[i].getFullName() === verantwortlicherSCHFullname) {
-                            quicksearchListController.selectedVerantwortlicherSCH = userList[i];
-                            quicksearchListController.userChanged(quicksearchListController.selectedVerantwortlicherSCH);
+                        if (userList[i] && userList[i].getFullName() === verantwortlicherTSFullname) {
+                            quicksearchListController.selectedVerantwortlicherTS = userList[i];
+                            quicksearchListController.userChanged(quicksearchListController.selectedVerantwortlicherTS);
                             break;
                         }
                     }

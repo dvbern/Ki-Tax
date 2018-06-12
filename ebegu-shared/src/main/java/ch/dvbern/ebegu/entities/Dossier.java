@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -30,6 +31,12 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherGMDEValidationGroup;
+import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
+import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
+import ch.dvbern.ebegu.validators.CheckVerantwortlicherGMDE;
+import ch.dvbern.ebegu.validators.CheckVerantwortlicherTS;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -43,8 +50,16 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gemeinde_id" }, name = "UK_dossier_fall_gemeinde")
+	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gemeinde_id" }, name = "UK_dossier_fall_gemeinde"),
+	indexes = {
+		@Index(name = "IX_dossier_verantwortlicher_bg", columnList = "verantwortlicherBG_id"),
+		@Index(name = "IX_dossier_verantwortlicher_ts", columnList = "verantwortlicherTS_id"),
+		@Index(name = "IX_dossier_verantwortlicher_gmde", columnList = "verantwortlicherGMDE_id"),
+	}
 )
+@CheckVerantwortlicherBG(groups = ChangeVerantwortlicherBGValidationGroup.class)
+@CheckVerantwortlicherTS(groups = ChangeVerantwortlicherTSValidationGroup.class)
+@CheckVerantwortlicherGMDE(groups = ChangeVerantwortlicherGMDEValidationGroup.class)
 public class Dossier extends AbstractEntity implements Searchable {
 
 	private static final long serialVersionUID = -2511152887055775241L;
@@ -186,5 +201,22 @@ public class Dossier extends AbstractEntity implements Searchable {
 	@Override
 	public String getOwningDossierId() {
 		return getId();
+	}
+
+	/**
+	 * wenn der VerantwortlicherBG oder GMDE gesetzt ist, wir er zurueckgegeben.
+	 * Sonst wenn der VerantwortlicherTS gesetzt ist, wir er zurueckgegeben.
+	 * Sonst wird null zurueckgegeben
+	 */
+	@Nullable
+	public Benutzer getHauptVerantwortlicher() {
+		Benutzer hauptverantwortlicher = this.getVerantwortlicherBG();
+		if (hauptverantwortlicher == null) {
+			hauptverantwortlicher = this.getVerantwortlicherGMDE();
+			if (hauptverantwortlicher == null) {
+				hauptverantwortlicher = this.getVerantwortlicherTS();
+			}
+		}
+		return hauptverantwortlicher;
 	}
 }

@@ -106,8 +106,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		dossier = TestDataUtil.createDefaultDossier();
 		fall = dossier.getFall();
 		fall.setMandant(mandant);
-		fall.setVerantwortlicher(empfaengerJA);
-		fall.setVerantwortlicherSCH(empfaengerSCH);
+		dossier.setVerantwortlicherBG(empfaengerJA);
+		dossier.setVerantwortlicherTS(empfaengerSCH);
 		fall = persistence.persist(fall);
 
 		traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
@@ -115,8 +115,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.persist(empfaengerINST);
 
 		// Default-Verantwortliche setzen, damit beim Senden der Message automatisch der Empfaenger ermittelt werden kann
-		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER, "saja", persistence);
-		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_SCH, "scju", persistence);
+		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG, "saja", persistence);
+		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS, "scju", persistence);
 	}
 
 	@Test
@@ -442,7 +442,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		// Als GS einloggen und eine Meldung schreiben
 		prepareDependentObjects("gesuchst");
 		// Den Fall auf NUR-SCHULAMT setzen, damit die Meldung ans Schulamt geht
-		fall.setVerantwortlicher(null);
+		dossier.setVerantwortlicherBG(null);
 		persistence.merge(fall);
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
 		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,

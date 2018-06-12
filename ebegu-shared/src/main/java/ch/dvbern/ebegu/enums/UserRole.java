@@ -42,6 +42,11 @@ public enum UserRole {
 		return ADMIN == this || SACHBEARBEITER_JA == this;
 	}
 
+	public boolean isRoleGemeinde() {
+		//TODO (KIBON-6) Rolle Gemeinde gibts noch nicht. Aber der Superadmin wird wohl sowas wie GEMEINDE haben
+		return isSuperadmin();
+	}
+
 	public boolean isSuperadmin() {
 		return SUPER_ADMIN == this;
 	}

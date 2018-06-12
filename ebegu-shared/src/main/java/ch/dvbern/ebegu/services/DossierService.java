@@ -19,8 +19,10 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 
 /**
@@ -63,5 +65,32 @@ public interface DossierService {
 	 * Checks whether the given Dossier has at least one Mitteilung or not. Will throw an exception if the dossier is not found.
 	 */
 	boolean hasDossierAnyMitteilung(@NotNull String dossierId);
+
+	/**
+	 * Logik fuer die Ermittlung des Hauptverantwortlichen:
+	 * (1) Wenn ein JA-Verantwortlicher gesetzt ist, ist dieser der Hauptverantwortlicher
+	 * (2) Wenn kein JA-Verantwortlicher gesetzt ist, aber ein SCH-Verantwortlicher, ist dieser der Hauptverantwortlicher
+	 * (3) Wenn noch gar nichts gesetzt ist (z.B. noch gar kein Gesuch erfasst) wird der DefaultVerantwortlicherJA zurueckgegeben
+	 */
+	@Nonnull
+	Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Dossier dossier);
+
+	/**
+	 * Setzt den BG-Verantwortlichen auf dem Dossier
+	 */
+	@Nonnull
+	Dossier setVerantwortlicherBG(@Nonnull String dossierId, @Nullable Benutzer benutzer);
+
+	/**
+	 * Setzt den TS-Verantwortlichen auf dem Dossier
+	 */
+	@Nonnull
+	Dossier setVerantwortlicherTS(@Nonnull String dossierId, @Nullable Benutzer benutzer);
+
+	/**
+	 * Setzt den GMDE-Verantwortlichen auf dem Dossier
+	 */
+	@Nonnull
+	Dossier setVerantwortlicherGMDE(@Nonnull String dossierId, @Nullable Benutzer benutzer);
 
 }

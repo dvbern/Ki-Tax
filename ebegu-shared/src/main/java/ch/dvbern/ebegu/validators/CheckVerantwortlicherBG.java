@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2017 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -15,25 +15,31 @@
 
 package ch.dvbern.ebegu.validators;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import ch.dvbern.ebegu.entities.Fall;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Validator der prueft, dass der eingegebene Verantwortlicher die richtige Role hat. SuperAdmin wird auch als Role zugelassen,
  * damit man auch Testfaelle erzeugen kann.
  */
-public class CheckVerantwortlicherValidatorJA implements ConstraintValidator<CheckVerantwortlicherJA, Fall> {
+@Target({ TYPE, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Constraint(validatedBy = CheckVerantwortlicherValidatorBG.class)
+@Documented
+public @interface CheckVerantwortlicherBG {
 
-	@Override
-	public void initialize(CheckVerantwortlicherJA constraintAnnotation) {
-		// nop
-	}
+	String message() default "{invalid_verantwortlicher}";
 
-	@Override
-	public boolean isValid(Fall instance, ConstraintValidatorContext context) {
-		return instance.getVerantwortlicher() == null || instance.getVerantwortlicher().getRole().isRoleJugendamt()
-			|| instance.getVerantwortlicher().getRole().isSuperadmin();
-	}
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 }

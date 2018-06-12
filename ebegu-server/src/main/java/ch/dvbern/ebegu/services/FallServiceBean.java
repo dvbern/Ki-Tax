@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,10 +36,6 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -60,8 +55,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherJAValidationGroup;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherSCHValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.Validate;
 
@@ -212,8 +205,9 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		return Optional.empty();
 	}
 
+	@Nonnull
 	@Override
-	public Optional<String> getCurrentEmailAddress(String fallID) {
+	public Optional<String> getCurrentEmailAddress(@Nonnull String fallID) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
@@ -247,48 +241,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		}
 		return Optional.ofNullable(emailToReturn);
 
-	}
-
-	@Override
-	@Nonnull
-	public Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Fall fall) {
-		Benutzer verantwortlicher = fall.getHauptVerantwortlicher();
-		if (verantwortlicher == null) {
-			return applicationPropertyService.readDefaultVerantwortlicherFromProperties();
-		}
-		return Optional.of(verantwortlicher);
-	}
-
-	@Nonnull
-	@Override
-	public Fall setVerantwortlicherJA(@Nonnull String fallId, @Nullable Benutzer benutzer) {
-		final Fall fall = findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherJA",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
-		fall.setVerantwortlicher(benutzer);
-
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
-		validateVerantwortlicher(fall, ChangeVerantwortlicherJAValidationGroup.class);
-		return saveFall(fall);
-	}
-
-	@Nonnull
-	@Override
-	public Fall setVerantwortlicherSCH(@Nonnull String fallId, @Nullable Benutzer benutzer){
-		final Fall fall = findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherSCH",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
-		fall.setVerantwortlicherSCH(benutzer);
-
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
-		validateVerantwortlicher(fall, ChangeVerantwortlicherSCHValidationGroup.class);
-		return saveFall(fall);
-	}
-
-	private void validateVerantwortlicher(@Nonnull Fall fall, @Nonnull Class validationGroup) {
-		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		Set<ConstraintViolation<Fall>> constraintViolations = validator.validate(fall, validationGroup);
-		if (!constraintViolations.isEmpty()) {
-			throw new ConstraintViolationException(constraintViolations);
-		}
 	}
 
 	private String readBesitzerEmailForFall(String fallID) {

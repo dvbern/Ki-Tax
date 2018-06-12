@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {IEntityRS} from '../../core/service/iEntityRS.rest';
 import TSDossier from '../../models/TSDossier';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -68,6 +68,22 @@ export default class DossierRS implements IEntityRS {
         }).then((response: any) => {
             this.$log.debug('PARSING dossier REST object ', response.data);
             return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
+        });
+    }
+
+    public setVerantwortlicherBG(dossierId: string, username: string): IHttpPromise<TSDossier> {
+        return this.http.put(this.serviceURL + '/verantwortlicherBG/' +  encodeURIComponent(dossierId), username, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+    public setVerantwortlicherTS(dossierId: string, username: string): IHttpPromise<TSDossier> {
+        return this.http.put(this.serviceURL + '/verantwortlicherTS/' +  encodeURIComponent(dossierId), username, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
     }
 }

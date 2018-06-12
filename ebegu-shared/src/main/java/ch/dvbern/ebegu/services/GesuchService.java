@@ -124,7 +124,7 @@ public interface GesuchService {
 	 * @return Liste aller Gesuche aus der DB
 	 */
 	@Nonnull
-	Collection<Gesuch> getAllActiveGesucheOfVerantwortlichePerson(@Nonnull String benutzername);
+	Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername);
 
 	/**
 	 * entfernt ein Gesuch aus der Database. Es wird ein LogEintrag erstellt mit dem Grund des Löschens-

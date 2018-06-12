@@ -61,8 +61,8 @@ export class DVQuicksearchListController {
     tableId: string;
     tableTitle: string;
 
-    selectedVerantwortlicher: TSUser;
-    selectedVerantwortlicherSCH: TSUser;
+    selectedVerantwortlicherBG: TSUser;
+    selectedVerantwortlicherTS: TSUser;
     selectedEingangsdatum: string;
     selectedKinder: string;
     selectedFallNummer: string;

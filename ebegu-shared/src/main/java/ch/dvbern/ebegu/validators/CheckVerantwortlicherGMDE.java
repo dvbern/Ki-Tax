@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -27,13 +27,14 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Die Abwesenheiten einer Betreuung duerfen sich nicht ueberlappen
+ * Validator der prueft, dass der eingegebene Verantwortlicher die richtige Role hat. SuperAdmin wird auch als Role zugelassen,
+ * damit man auch Testfaelle erzeugen kann.
  */
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckVerantwortlicherValidatorJA.class)
+@Constraint(validatedBy = CheckVerantwortlicherValidatorGMDE.class)
 @Documented
-public @interface CheckVerantwortlicherJA {
+public @interface CheckVerantwortlicherGMDE {
 
 	String message() default "{invalid_verantwortlicher}";
 

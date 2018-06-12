@@ -123,7 +123,7 @@ public class SearchResource {
 	@Path("/jugendamt/user/{benutzername}")
 	public List<JaxAntragDTO> getAllPendenzenJA(@Nonnull @NotNull @PathParam("benutzername") String benutzername) {
 		Validate.notNull(benutzername);
-		Collection<Gesuch> gesucheList = gesuchService.getAllActiveGesucheOfVerantwortlichePerson(benutzername);
+		Collection<Gesuch> gesucheList = gesuchService.getGesucheForBenutzerPendenzenBG(benutzername);
 
 		List<JaxAntragDTO> pendenzenList = new ArrayList<>();
 		gesucheList.stream().filter(gesuch -> gesuch.getFall() != null)
