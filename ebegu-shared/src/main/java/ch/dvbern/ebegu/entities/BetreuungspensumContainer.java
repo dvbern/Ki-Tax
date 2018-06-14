@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -28,7 +30,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang3.Validate;
 import org.hibernate.envers.Audited;
 
 /**
@@ -107,9 +108,9 @@ public class BetreuungspensumContainer extends AbstractEntity implements Compara
 	 */
 	@Transient
 	public Gesuchsperiode extractGesuchsperiode() {
-		Validate.notNull(this.getBetreuung(), "Can not extract Gesuchsperiode because Betreuung is null");
-		Validate.notNull(this.getBetreuung().getKind(), "Can not extract Gesuchsperiode because Kind is null");
-		Validate.notNull(this.getBetreuung().getKind().getGesuch(), "Can not extract Gesuchsperiode because Gesuch is null");
+		Objects.requireNonNull(this.getBetreuung(), "Can not extract Gesuchsperiode because Betreuung is null");
+		Objects.requireNonNull(this.getBetreuung().getKind(), "Can not extract Gesuchsperiode because Kind is null");
+		Objects.requireNonNull(this.getBetreuung().getKind().getGesuch(), "Can not extract Gesuchsperiode because Gesuch is null");
 		return this.getBetreuung().getKind().getGesuch().getGesuchsperiode();
 	}
 

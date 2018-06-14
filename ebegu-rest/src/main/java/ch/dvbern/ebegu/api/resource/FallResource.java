@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -47,7 +48,6 @@ import ch.dvbern.ebegu.services.FallService;
 import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Fall
@@ -96,7 +96,7 @@ public class FallResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxFall findFall(
 		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
-		Validate.notNull(fallJAXPId.getId());
+		Objects.requireNonNull(fallJAXPId.getId());
 		String fallID = converter.toEntityId(fallJAXPId);
 		Optional<Fall> fallOptional = fallService.findFall(fallID);
 
@@ -152,7 +152,7 @@ public class FallResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(fallJaxId.getId());
+		Objects.requireNonNull(fallJaxId.getId());
 
 		Benutzer benutzer = null;
 		if(!Strings.isNullOrEmpty(username)) {
@@ -179,7 +179,7 @@ public class FallResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(fallJaxId.getId());
+		Objects.requireNonNull(fallJaxId.getId());
 
 		Benutzer benutzer = null;
 		if(!Strings.isNullOrEmpty(username)) {

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,7 +32,6 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Ein Rechner mit den ganzen Operationen fuer Finanziellesituation
@@ -63,7 +63,7 @@ public class FinanzielleSituationRechner {
 
 	@Nonnull
 	public FinanzielleSituationResultateDTO calculateResultateEinkommensverschlechterung(@Nonnull Gesuch gesuch, int basisJahrPlus, boolean hasSecondGesuchsteller) {
-		Validate.notNull(gesuch.extractEinkommensverschlechterungInfo());
+		Objects.requireNonNull(gesuch.extractEinkommensverschlechterungInfo());
 
 		final FinanzielleSituationResultateDTO einkVerResultDTO = new FinanzielleSituationResultateDTO();
 		setEinkommensverschlechterungParameters(gesuch, basisJahrPlus, einkVerResultDTO, hasSecondGesuchsteller);

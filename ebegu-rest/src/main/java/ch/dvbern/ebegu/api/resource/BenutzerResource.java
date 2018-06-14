@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,6 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
@@ -171,7 +171,7 @@ public class BenutzerResource {
 	public JaxAuthLoginElement findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		Validate.notNull(username);
+		Objects.requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 
 		return benutzerOptional

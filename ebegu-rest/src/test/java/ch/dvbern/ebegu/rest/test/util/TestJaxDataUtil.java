@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -64,7 +65,6 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.util.Constants;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -128,7 +128,7 @@ public final class TestJaxDataUtil {
 		JaxGesuchstellerContainer testJaxGesuchsteller = createTestJaxGesuchsteller();
 		JaxErwerbspensumContainer container = createTestJaxErwerbspensumContainer();
 		JaxErwerbspensumContainer container2 = createTestJaxErwerbspensumContainer();
-		Validate.notNull(container2.getErwerbspensumGS());
+		Objects.requireNonNull(container2.getErwerbspensumGS());
 		container2.getErwerbspensumGS().setGueltigAb(LocalDate.now().plusYears(1));
 		container2.getErwerbspensumGS().setGueltigBis(null);
 

@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,12 +47,10 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.MahnungTyp;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MahnungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Mahnungen
@@ -81,11 +80,11 @@ public class MahnungResource {
 	public JaxMahnung save(
 		@Nonnull @NotNull JaxMahnung mahnungJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
-		Validate.notNull(mahnungJAXP);
-		Validate.notNull(mahnungJAXP.getGesuch());
-		Validate.notNull(mahnungJAXP.getGesuch().getId());
+		Objects.requireNonNull(mahnungJAXP);
+		Objects.requireNonNull(mahnungJAXP.getGesuch());
+		Objects.requireNonNull(mahnungJAXP.getGesuch().getId());
 
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		if (MahnungTyp.ERSTE_MAHNUNG == mahnungJAXP.getMahnungTyp()) {
@@ -108,8 +107,8 @@ public class MahnungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxMahnung> findMahnungen(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) throws EbeguException {
-		Validate.notNull(gesuchJAXPId.getId());
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		String gesuchID = converter.toEntityId(gesuchJAXPId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchID);
 
@@ -131,7 +130,7 @@ public class MahnungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response mahnlaufBeenden(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 
 		resourceHelper.assertGesuchStatusEqual(gesuchJAXPId.getId(),
 			AntragStatusDTO.ERSTE_MAHNUNG, AntragStatusDTO.ERSTE_MAHNUNG_ABGELAUFEN,
@@ -157,7 +156,7 @@ public class MahnungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getInitialeBemerkungen(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		String gesuchID = converter.toEntityId(gesuchJAXPId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchID);
 

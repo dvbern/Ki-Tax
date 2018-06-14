@@ -50,7 +50,6 @@ import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -282,7 +281,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
 	public void removeVerfuegung(@Nonnull Verfuegung verfuegung) {
-		Validate.notNull(verfuegung);
+		Objects.requireNonNull(verfuegung);
 		Optional<Verfuegung> entityToRemove = this.findVerfuegung(verfuegung.getId());
 		Verfuegung loadedVerf = entityToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			verfuegung));

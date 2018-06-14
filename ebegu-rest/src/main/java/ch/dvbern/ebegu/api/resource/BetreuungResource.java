@@ -61,7 +61,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Betreuungen. Betreuung = ein Kind in einem Betreuungsangebot bei einer Institution.
@@ -165,7 +164,7 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getId());
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(), Betreuungsstatus.WARTEN);
 
@@ -195,7 +194,7 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getId());
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(), Betreuungsstatus.WARTEN);
@@ -225,7 +224,7 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getId());
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(), Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
@@ -254,7 +253,7 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getId());
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		//Anmeldungen ablehnen kann man entweder im Status SCHULAMT_ANMELDUNG_AUSGELOEST oder SCHULAMT_FALSCHE_INSTITUTION
@@ -284,7 +283,7 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getId());
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(), Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
@@ -311,7 +310,7 @@ public class BetreuungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxBetreuung findBetreuung(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId) {
-		Validate.notNull(betreuungJAXPId.getId());
+		Objects.requireNonNull(betreuungJAXPId.getId());
 		String id = converter.toEntityId(betreuungJAXPId);
 		Optional<Betreuung> fallOptional = betreuungService.findBetreuung(id);
 
@@ -333,7 +332,7 @@ public class BetreuungResource {
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungJAXPId.getId());
+		Objects.requireNonNull(betreuungJAXPId.getId());
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungJAXPId.getId());
 
 		if (betreuung.isPresent()) {

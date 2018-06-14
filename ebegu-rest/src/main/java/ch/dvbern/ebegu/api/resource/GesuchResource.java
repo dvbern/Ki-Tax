@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -74,7 +75,6 @@ import com.google.common.collect.ArrayListMultimap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +144,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchJAXP.getId());
+		Objects.requireNonNull(gesuchJAXP.getId());
 		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchJAXP.getId());
 
 		Gesuch gesuchFromDB = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXP.getId()));
@@ -164,7 +164,7 @@ public class GesuchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGesuch findGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		String gesuchID = converter.toEntityId(gesuchJAXPId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchID);
 
@@ -194,7 +194,7 @@ public class GesuchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxAntragDTO findGesuchForFreigabe(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		String gesuchID = converter.toEntityId(gesuchJAXPId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuchForFreigabe(gesuchID);
 
@@ -264,7 +264,7 @@ public class GesuchResource {
 		return completeGesuch;
 	}
 
-	@ApiOperation(value = "Aktualisiert die Bemerkungen fuer ein Gesuch.", response = Void.class)
+	@ApiOperation("Aktualisiert die Bemerkungen fuer ein Gesuch.")
 	@Nullable
 	@PUT
 	@Path("/bemerkung/{gesuchId}")
@@ -276,7 +276,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 
 		if (gesuchOptional.isPresent()) {
@@ -289,7 +289,7 @@ public class GesuchResource {
 		throw new EbeguEntityNotFoundException("updateBemerkung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 
-	@ApiOperation(value = "Aktualisiert die Bemerkungen der Steuerverwaltung fuer ein Gesuch.", response = Void.class)
+	@ApiOperation("Aktualisiert die Bemerkungen der Steuerverwaltung fuer ein Gesuch.")
 	@Nullable
 	@PUT
 	@Path("/bemerkungPruefungSTV/{gesuchId}")
@@ -301,7 +301,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 
 		if (gesuchOptional.isPresent()) {
@@ -314,7 +314,7 @@ public class GesuchResource {
 		throw new EbeguEntityNotFoundException("updateBemerkungPruefungSTV", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 
-	@ApiOperation(value = "Aktualisiert den Status eines Gesuchs", response = Void.class)
+	@ApiOperation("Aktualisiert den Status eines Gesuchs")
 	@Nullable
 	@PUT
 	@Path("/status/{gesuchId}/{statusDTO}")
@@ -324,8 +324,8 @@ public class GesuchResource {
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Nonnull @NotNull @PathParam("statusDTO") AntragStatusDTO statusDTO) {
 
-		Validate.notNull(gesuchJAXPId.getId());
-		Validate.notNull(statusDTO);
+		Objects.requireNonNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(statusDTO);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 
 		if (gesuchOptional.isPresent()) {
@@ -347,8 +347,8 @@ public class GesuchResource {
 	 * @return Set mit Antraegen, jeweils nur der neuste zu einem bestimmten Fall
 	 */
 	@Nonnull
-	@SuppressWarnings(value = { "unused" })
-	@SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD")
+	@SuppressWarnings("unused")
+	@SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
 	private Set<Gesuch> reduceToNewestAntrag(List<Gesuch> foundAntraege) {
 		ArrayListMultimap<Fall, Gesuch> fallToAntragMultimap = ArrayListMultimap.create();
 		for (Gesuch gesuch : foundAntraege) {
@@ -372,7 +372,7 @@ public class GesuchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxAntragDTO> getAllAntragDTOForFall(
 		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
-		Validate.notNull(fallJAXPId.getId());
+		Objects.requireNonNull(fallJAXPId.getId());
 		return gesuchService.getAllAntragDTOForFall(converter.toEntityId(fallJAXPId));
 	}
 
@@ -388,7 +388,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 
 		// Wenn der GS eine Mutation macht, ist das Eingangsdatum erst null. Wir muessen das Gesuch so erstellen
 		LocalDate eingangsdatum = null;
@@ -420,8 +420,8 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchsperiodeJaxId.getId());
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 
 		// Wenn der GS ein Erneuerungsgesuch macht, ist das Eingangsdatum erst null. Wir muessen das Gesuch so erstellen
 		LocalDate eingangsdatum = null;
@@ -456,7 +456,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusForFreigabe(antragJaxId.getId());
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 
 		final String antragId = converter.toEntityId(antragJaxId);
 
@@ -476,7 +476,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(antragId);
 
@@ -501,7 +501,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(antragId);
 
@@ -529,7 +529,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.VERFUEGT, AntragStatusDTO.NUR_SCHULAMT);
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(antragId);
 
@@ -556,7 +556,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.IN_BEARBEITUNG_STV);
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(antragId);
 
@@ -584,7 +584,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT_STV);
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(antragId);
 
@@ -616,7 +616,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.BESCHWERDE_HAENGIG);
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(antragId);
 
@@ -627,7 +627,7 @@ public class GesuchResource {
 		throw new EbeguEntityNotFoundException("removeBeschwerdeHaengig", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId());
 	}
 
-	@ApiOperation(value = "Loescht eine online Mutation", response = Void.class)
+	@ApiOperation("Loescht eine online Mutation")
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@DELETE
 	@Path("/removeOnlineMutation/{fallId}/{gesuchsperiodeId}")
@@ -637,8 +637,8 @@ public class GesuchResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(fallId.getId());
-		Validate.notNull(gesuchsperiodeId.getId());
+		Objects.requireNonNull(fallId.getId());
+		Objects.requireNonNull(gesuchsperiodeId.getId());
 		Optional<Fall> fall = fallService.findFall(fallId.getId());
 		if (!fall.isPresent()) {
 			throw new EbeguEntityNotFoundException("removeOnlineMutation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Fall_ID invalid " + fallId.getId());
@@ -652,7 +652,7 @@ public class GesuchResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Loescht ein online Erneuerungsgesuch", response = Void.class)
+	@ApiOperation("Loescht ein online Erneuerungsgesuch")
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@DELETE
 	@Path("/removeOnlineFolgegesuch/{fallId}/{gesuchsperiodeId}")
@@ -662,8 +662,8 @@ public class GesuchResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(fallJAXPId.getId());
-		Validate.notNull(gesuchsperiodeJAXPId.getId());
+		Objects.requireNonNull(fallJAXPId.getId());
+		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
 
 		Optional<Fall> fall = fallService.findFall(fallJAXPId.getId());
 		if (!fall.isPresent()) {
@@ -685,7 +685,7 @@ public class GesuchResource {
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchJaxId.getId());
+		Objects.requireNonNull(gesuchJaxId.getId());
 
 		Gesuch gesuch = gesuchService.findGesuch(gesuchJaxId.getId(), true).orElseThrow(()
 			-> new EbeguEntityNotFoundException("removePapiergesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJaxId.getId()));
@@ -701,7 +701,7 @@ public class GesuchResource {
 	public Response removeGesuchstellerAntrag(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchJaxId.getId());
+		Objects.requireNonNull(gesuchJaxId.getId());
 
 		Gesuch gesuch = gesuchService.findGesuch(gesuchJaxId.getId(), true).orElseThrow(()
 			-> new EbeguEntityNotFoundException("removeGesuchstellerAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJaxId.getId()));
@@ -725,7 +725,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT);
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(antragId);
 		if (!gesuchOptional.isPresent()) {
@@ -753,7 +753,7 @@ public class GesuchResource {
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT);
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 
 		final Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() -> new EbeguEntityNotFoundException("verfuegenStarten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragId));
@@ -773,7 +773,7 @@ public class GesuchResource {
 	public Response findGesuchBetreuungenStatus(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 		if (!gesuchOptional.isPresent()) {
 			throw new EbeguEntityNotFoundException("findGesuchBetreuungenStatus", ErrorCodeEnum
@@ -793,7 +793,7 @@ public class GesuchResource {
 	public Response gesuchVerfuegen(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 		if (!gesuchOptional.isPresent()) {
 			throw new EbeguEntityNotFoundException("gesuchVerfuegen", ErrorCodeEnum
@@ -815,7 +815,7 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(antragJaxId.getId());
+		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 
 		if (gesuchService.changeFinSitStatus(antragId, finSitStatus) == 1) {
@@ -833,7 +833,7 @@ public class GesuchResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isNeuestesGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId))
 			.orElseThrow(() -> new EbeguEntityNotFoundException("isNeuestesGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXPId.getId()));
 		Boolean neustesGesuch = gesuchService.isNeustesGesuch(gesuch);
@@ -849,8 +849,8 @@ public class GesuchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getIdOfNewestGesuch(@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
 		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
-		Validate.notNull(fallJaxId.getId());
-		Validate.notNull(gesuchsperiodeJaxId.getId());
+		Objects.requireNonNull(fallJaxId.getId());
+		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 
 		Optional<Fall> fall = fallService.findFall(fallJaxId.getId());
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeJaxId.getId());

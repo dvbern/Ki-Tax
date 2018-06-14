@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.batch.jobs.report;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,6 @@ import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +118,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
-			Validate.notNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
+			Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
 			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId);
 			return uploadFileInfo;
 		}

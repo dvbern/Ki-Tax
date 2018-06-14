@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -57,7 +56,6 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -66,7 +64,6 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.Validate;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
@@ -111,7 +108,7 @@ public class EbeguVorlageResource {
 	public List<JaxEbeguVorlage> getEbeguVorlagenByGesuchsperiode(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
-		Validate.notNull(id.getId());
+		Objects.requireNonNull(id.getId());
 		String gesuchsperiodeId = converter.toEntityId(id);
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
 		if (gesuchsperiode.isPresent()) {
@@ -152,12 +149,12 @@ public class EbeguVorlageResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Speichert eine Vorlage in der Datenbank")
+	@ApiOperation("Speichert eine Vorlage in der Datenbank")
 	@POST
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response save(@Context HttpServletRequest request, @Context UriInfo uriInfo, MultipartFormDataInput input)
-		throws IOException, ServletException, MimeTypeParseException, SQLException, EbeguException {
+		throws IOException, MimeTypeParseException {
 
 		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
 
@@ -242,14 +239,14 @@ public class EbeguVorlageResource {
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(EbeguVorlageResource.class)
-			.path("/" + persistedEbeguVorlage.getId())
+			.path('/' + persistedEbeguVorlage.getId())
 			.build();
 
 		return Response.created(uri).entity(jaxEbeguVorlageToReturn).build();
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Loescht die Vorlage mit der uebergebenen Id aus der Datenbank.", response = Void.class)
+	@ApiOperation("Loescht die Vorlage mit der uebergebenen Id aus der Datenbank.")
 	@Nullable
 	@DELETE
 	@Path("/{ebeguVorlageId}")
@@ -258,7 +255,7 @@ public class EbeguVorlageResource {
 		@Nonnull @NotNull @PathParam("ebeguVorlageId") JaxId ebeguVorlageId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(ebeguVorlageId.getId());
+		Objects.requireNonNull(ebeguVorlageId.getId());
 		ebeguVorlageService.removeVorlage(converter.toEntityId(ebeguVorlageId));
 		return Response.ok().build();
 	}
