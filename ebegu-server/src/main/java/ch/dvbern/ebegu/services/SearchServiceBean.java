@@ -163,7 +163,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Join<Dossier, Benutzer> verantwortlicherBG = dossier.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
 		Join<Dossier, Benutzer> verantwortlicherTS = dossier.join(Dossier_.verantwortlicherTS, JoinType.LEFT);
 		//TODO (KIBON-6) Gemeinde berücksichtigen
-		Join<Dossier, Benutzer> verantwortlicherGMDE = dossier.join(Dossier_.verantwortlicherGMDE, JoinType.LEFT);
+//		Join<Dossier, Benutzer> verantwortlicherGMDE = dossier.join(Dossier_.verantwortlicherGMDE, JoinType.LEFT);
 		Join<Gesuch, Gesuchsperiode> gesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);
 
 		SetJoin<Gesuch, KindContainer> kindContainers = root.join(Gesuch_.kindContainers, JoinType.LEFT);

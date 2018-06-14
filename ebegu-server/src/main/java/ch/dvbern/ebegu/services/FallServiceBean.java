@@ -103,9 +103,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	private SuperAdminService superAdminService;
 
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
-	@Inject
 	private DossierService dossierService;
 
 	@Nonnull

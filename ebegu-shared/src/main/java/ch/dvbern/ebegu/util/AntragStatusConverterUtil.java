@@ -80,7 +80,7 @@ public final class AntragStatusConverterUtil {
 		case GEPRUEFT_STV:
 			return AntragStatusDTO.GEPRUEFT_STV;
 		default:
-			return null;
+			throw new IllegalStateException("Unbekannter Status: " + status + " in Gesuch " + antrag.getId());
 		}
 	}
 

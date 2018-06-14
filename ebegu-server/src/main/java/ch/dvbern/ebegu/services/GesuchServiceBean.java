@@ -700,40 +700,34 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	private boolean setVerantwortlicherIfNecessaryGMDE(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
-		if (user.getRole().isRoleGemeinde()) {
-			if (gesuch.getDossier().getVerantwortlicherGMDE() == null || !onlyIfNotSet) {
-				if (persist) {
-					dossierService.setVerantwortlicherGMDE(gesuch.getDossier().getId(), user);
-				}
-				gesuch.getDossier().setVerantwortlicherGMDE(user);
-				return true;
+		if (user.getRole().isRoleGemeinde() && (gesuch.getDossier().getVerantwortlicherGMDE() == null || !onlyIfNotSet)) {
+			if (persist) {
+				dossierService.setVerantwortlicherGMDE(gesuch.getDossier().getId(), user);
 			}
+			gesuch.getDossier().setVerantwortlicherGMDE(user);
+			return true;
 		}
 		return false;
 	}
 
 	private boolean setVerantwortlicherIfNecessaryBG(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
-		if (user.getRole().isRoleJugendamt()) {
-			if (gesuch.getDossier().getVerantwortlicherBG() == null || !onlyIfNotSet) {
-				if (persist) {
-					dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
-				}
-				gesuch.getDossier().setVerantwortlicherBG(user);
-				return true;
+		if (user.getRole().isRoleJugendamt() && (gesuch.getDossier().getVerantwortlicherBG() == null || !onlyIfNotSet)) {
+			if (persist) {
+				dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
 			}
+			gesuch.getDossier().setVerantwortlicherBG(user);
+			return true;
 		}
 		return false;
 	}
 
 	private boolean setVerantwortlicherIfNecessaryTS(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
-		if (user.getRole().isRoleSchulamt()) {
-			if (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet) {
-				if (persist) {
-					dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
-				}
-				gesuch.getDossier().setVerantwortlicherTS(user);
-				return true;
+		if (user.getRole().isRoleSchulamt() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
+			if (persist) {
+				dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
 			}
+			gesuch.getDossier().setVerantwortlicherTS(user);
+			return true;
 		}
 		return false;
 	}

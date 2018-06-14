@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -76,6 +78,6 @@ public class Gemeinde extends AbstractEntity {
 			return false;
 		}
 		Gemeinde gemeinde = (Gemeinde) other;
-		return name == gemeinde.getName();
+		return Objects.equals(this.getName(), gemeinde.getName());
 	}
 }
