@@ -18,13 +18,12 @@ package ch.dvbern.ebegu.dto.suchfilter.lucene;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractEntity;
+
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -96,27 +95,5 @@ public enum SearchEntityType {
 	@Nonnull
 	public IndexedEBEGUFieldName[] getIndexedFields() {
 		return indexedFields.clone();
-	}
-
-	/**
-	 * @param clazz Die Entity-Klasse.
-	 * @param exact true: Es wird nach der exakten Klasse gesucht. False: clazz darf auch eine Subklasse der Entity sein.
-	 */
-	@Nullable
-	public static SearchEntityType fromEntityClass(@Nonnull Class<? extends AbstractEntity> clazz, boolean exact) {
-		Objects.requireNonNull(clazz);
-
-		for (SearchEntityType e : values()) {
-			if (exact) {
-				if (Objects.equals(e.getEntityClass(), clazz)) {
-					return e;
-				}
-			} else {
-				if (e.getEntityClass().isAssignableFrom(clazz)) {
-					return e;
-				}
-			}
-		}
-		return null;
 	}
 }

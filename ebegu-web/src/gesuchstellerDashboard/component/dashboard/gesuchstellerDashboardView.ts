@@ -20,7 +20,6 @@ import ErrorService from '../../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
-import FallRS from '../../../gesuch/service/fallRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';

@@ -44,7 +44,6 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.services.DossierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Dossier
@@ -103,7 +102,7 @@ public class DossierResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxDossier findDossier(
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
-		Validate.notNull(dossierJAXPId.getId());
+		Objects.requireNonNull(dossierJAXPId.getId());
 		String dossierId = converter.toEntityId(dossierJAXPId);
 		Optional<Dossier> dossierOptional = dossierService.findDossier(dossierId);
 
@@ -123,8 +122,8 @@ public class DossierResource {
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJaxId,
 		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
 
-		Validate.notNull(gemeindeJaxId.getId());
-		Validate.notNull(fallJaxId.getId());
+		Objects.requireNonNull(gemeindeJaxId.getId());
+		Objects.requireNonNull(fallJaxId.getId());
 
 		String gemeindeId = converter.toEntityId(gemeindeJaxId);
 		String fallId = converter.toEntityId(fallJaxId);
@@ -146,7 +145,7 @@ public class DossierResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gemeindeJaxId.getId());
+		Objects.requireNonNull(gemeindeJaxId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJaxId);
 
 		Dossier dossier = dossierService.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);

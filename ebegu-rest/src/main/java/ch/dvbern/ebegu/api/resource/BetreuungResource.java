@@ -133,10 +133,14 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		String gesuchId = betreuungenJAXP.get(0).getGesuchId();
-		if (!betreuungenJAXP.isEmpty() && gesuchId != null) {
-			final Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId);
-			gesuch.ifPresent(gesuch1 -> resourceHelper.assertGesuchStatusForBenutzerRole(gesuch1));
+		if (!betreuungenJAXP.isEmpty()) {
+			final String gesuchId = betreuungenJAXP.get(0).getGesuchId();
+			if (gesuchId != null) {
+				final Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(gesuchId);
+				final Gesuch gesuch = gesuchOpt.orElseThrow(() -> new EbeguRuntimeException("saveAbwesenheiten",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
+				resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
+			}
 		}
 
 		List<JaxBetreuung> resultBetreuungen = new ArrayList<>();
