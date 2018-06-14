@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.MitteilungService;
@@ -82,6 +83,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private DossierService dossierService;
 
 	@Inject
 	private Persistence persistence;
@@ -256,7 +260,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testSetAllNewMitteilungenOfFallGelesen() {
 		prepareDependentObjects("gesuchst");
 		dossier.getFall().setBesitzer(sender);
-		dossier = persistence.merge(dossier);
+		persistence.merge(dossier.getFall());
 
 		Mitteilung entwurf = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
@@ -443,7 +447,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		prepareDependentObjects("gesuchst");
 		// Den Fall auf NUR-SCHULAMT setzen, damit die Meldung ans Schulamt geht
 		dossier.setVerantwortlicherBG(null);
-		persistence.merge(fall);
+		persistence.merge(dossier);
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
 		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
@@ -487,5 +491,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	private void prepareDependentObjects(String gesuchstellerUserName) {
 		sender = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, gesuchstellerUserName, null, null, mandant);
 		persistence.persist(sender);
+		dossier = dossierService.saveDossier(dossier);
 	}
 }

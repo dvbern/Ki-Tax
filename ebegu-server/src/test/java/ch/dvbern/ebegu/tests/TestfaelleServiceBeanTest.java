@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * Die gespeicherten Daten können mit writeToFile = true neu generiert werden.
  */
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
+@UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 

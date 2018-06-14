@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -92,16 +93,24 @@ public abstract class AbstractTestfall {
 
 	protected String fixId = null;
 	protected Fall fall = null;
+	protected Gemeinde gemeinde = null;
 	protected Dossier dossier = null;
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
 
-	public AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+	protected AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
 		boolean betreuungenBestaetigt) {
 		this.gesuchsperiode = gesuchsperiode;
 		this.institutionStammdatenList = institutionStammdatenList;
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
 	}
+
+	protected AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+		boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+		this(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+		this.gemeinde = gemeinde;
+	}
+
 
 	public abstract Gesuch fillInGesuch();
 
@@ -112,24 +121,39 @@ public abstract class AbstractTestfall {
 	public Fall createFall(@Nullable Benutzer verantwortlicher) {
 		fall = new Fall();
 		fall.setTimestampErstellt(LocalDateTime.now().minusDays(7));
+		createDossier(fall, verantwortlicher);
 		return fall;
 	}
 
 	public Fall createFall() {
 		fall = new Fall();
+		createDossier(fall);
 		return fall;
 	}
 
-	public Dossier createDossier(Benutzer verantwortlicher) {
-		dossier = new Dossier();
+	private Dossier createDossier(@Nonnull Fall fall, @Nullable Benutzer verantwortlicher) {
+		dossier = createDossier(fall);
 		dossier.setVerantwortlicherBG(verantwortlicher);
 		dossier.setTimestampErstellt(LocalDateTime.now().minusDays(7));
 		return dossier;
 	}
 
-	public Dossier createDossier() {
+	private Dossier createDossier(@Nonnull Fall fall) {
 		dossier = new Dossier();
+		dossier.setFall(fall);
+		if (gemeinde != null) {
+			dossier.setGemeinde(gemeinde);
+		} else {
+			dossier.setGemeinde(createGemeinde());
+		}
 		return dossier;
+	}
+
+	private Gemeinde createGemeinde() {
+		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setEnabled(true);
+		gemeinde.setName("Testgemeinde");
+		return gemeinde;
 	}
 
 	public void createGesuch(@Nullable LocalDate eingangsdatum, AntragStatus status) {
@@ -140,12 +164,7 @@ public abstract class AbstractTestfall {
 	public void createGesuch(@Nullable LocalDate eingangsdatum) {
 		// Fall
 		if (fall == null) {
-			fall = createFall(null);
-		}
-		// Dossier
-		if (dossier == null) {
-			dossier = new Dossier();
-			dossier.setFall(fall);
+			fall = createFall();
 		}
 		// Gesuch
 		gesuch = new Gesuch();
@@ -292,13 +311,14 @@ public abstract class AbstractTestfall {
 		return betreuung;
 	}
 
+	@Nonnull
 	protected InstitutionStammdaten createInstitutionStammdaten(BetreuungsangebotTyp betreuungsangebotTyp, String institutionsId) {
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
 			if (institutionStammdaten.getBetreuungsangebotTyp() == betreuungsangebotTyp && institutionStammdaten.getInstitution().getId().equals(institutionsId)) {
 				return institutionStammdaten;
 			}
 		}
-		return null;
+		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden");
 	}
 
 	protected BetreuungspensumContainer createBetreuungspensum(int pensum) {
@@ -337,6 +357,7 @@ public abstract class AbstractTestfall {
 		return ekvContainer;
 	}
 
+	@Nonnull
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(boolean erstesJahr, boolean zweitesJahr) {
 		EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
 		if (erstesJahr) {
@@ -365,7 +386,8 @@ public abstract class AbstractTestfall {
 		ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfoJA);
 	}
 
-	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(LocalDate stichtagEKV1, LocalDate stichtagEKV2) {
+	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(
+			@Nullable LocalDate stichtagEKV1, @Nullable LocalDate stichtagEKV2) {
 		EinkommensverschlechterungInfoContainer infoContainer = new EinkommensverschlechterungInfoContainer();
 		EinkommensverschlechterungInfo info = new EinkommensverschlechterungInfo();
 		info.setEkvFuerBasisJahrPlus1(stichtagEKV1 != null);

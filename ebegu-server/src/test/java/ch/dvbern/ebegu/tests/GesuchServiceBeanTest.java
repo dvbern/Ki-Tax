@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
@@ -40,6 +41,7 @@ import org.junit.runner.RunWith;
  */
 @SuppressWarnings("LocalVariableNamingConvention")
 @RunWith(Arquillian.class)
+@UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class GesuchServiceBeanTest extends AbstractTestdataCreationTest {
 

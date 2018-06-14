@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
@@ -111,7 +112,7 @@ import org.slf4j.LoggerFactory;
 @Transactional(TransactionMode.DISABLED)
 public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
-	private final Logger LOG = LoggerFactory.getLogger(GesuchServiceTest.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(GesuchServiceTest.class.getSimpleName());
 
 	@Inject
 	private GesuchService gesuchService;
@@ -359,7 +360,6 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		} catch (EJBAccessException e) {
 			//noop
 		}
-
 		gesuch.getFall().setBesitzer(gesuchsteller);
 		persistence.merge(gesuch.getFall());
 		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), null, null);
@@ -783,8 +783,6 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.IN_BEARBEITUNG_GS);
 		gesuch.setTimestampErstellt(timestampErstellt);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
-		gesuch.getFall().setBesitzer(TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence));
-		persistence.merge(gesuch.getFall());
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
@@ -795,8 +793,6 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.FREIGABEQUITTUNG);
 		gesuch.setFreigabeDatum(datumFreigabe);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
-		gesuch.getFall().setBesitzer(TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence));
-		persistence.merge(gesuch.getFall());
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
@@ -840,7 +836,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		// Diese Entitaeten wurden korrekterweise nur umgehaengt und nicht kopiert.
 		if (property instanceof Fall || property instanceof Mandant || property instanceof Gesuchsperiode
 			|| property instanceof Institution || property instanceof InstitutionStammdaten || property instanceof Benutzer
-			|| property instanceof Traegerschaft) {
+			|| property instanceof Traegerschaft || property instanceof Gemeinde|| property instanceof Dossier) {
 			return true;
 		}
 		return false;
@@ -864,12 +860,10 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		return persistence.merge(gesuch);
 	}
 
-	private Gesuch persistEinkommensverschlechterungEntity() {
-		final Gesuch gesuch = TestDataUtil.createDefaultEinkommensverschlechterungsGesuch();
-		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		gesuchService.createGesuch(gesuch);
-		return gesuch;
+	private void persistEinkommensverschlechterungEntity() {
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.IN_BEARBEITUNG_JA);
+		gesuch.setEinkommensverschlechterungInfoContainer(TestDataUtil.createDefaultEinkommensverschlechterungsInfoContainer(gesuch));
+		persistence.merge(gesuch);
 	}
 
 	/**
@@ -891,13 +885,13 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 			});
 
 		} catch (LoginException e) {
-			LOG.error("Could not login as admin to read Gesuche");
+			LOG.error("Could not login as admin to read Gesuche", e);
 		} finally {
 			if (loginContext != null) {
 				try {
 					loginContext.logout();
 				} catch (LoginException e) {
-					LOG.error("could not logout");
+					LOG.error("could not logout", e);
 				}
 			}
 		}

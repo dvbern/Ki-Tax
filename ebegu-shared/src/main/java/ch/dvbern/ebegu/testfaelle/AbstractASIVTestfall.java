@@ -18,8 +18,11 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -31,8 +34,13 @@ import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
  */
 public abstract class AbstractASIVTestfall extends AbstractTestfall {
 
-	public AbstractASIVTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt) {
+	protected AbstractASIVTestfall(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Collection<InstitutionStammdaten> institutionStammdatenList,
+			boolean betreuungenBestaetigt, @Nonnull Gemeinde gemeinde) {
+		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+	}
+
+	protected AbstractASIVTestfall(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Collection<InstitutionStammdaten> institutionStammdatenList,
+			boolean betreuungenBestaetigt) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
 	}
 

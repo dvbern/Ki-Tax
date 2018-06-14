@@ -71,6 +71,7 @@ import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.FerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -167,6 +168,8 @@ public final class TestDataUtil {
 	public static final LocalDate STICHTAG_EKV_1_GUELTIG = STICHTAG_EKV_1.plusMonths(1);
 	public static final LocalDate STICHTAG_EKV_2 = LocalDate.of(PERIODE_JAHR_2, Month.APRIL, 1);
 	public static final LocalDate STICHTAG_EKV_2_GUELTIG = STICHTAG_EKV_2.plusMonths(1);
+
+	public static final String GEMEINDE_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
 
 	private TestDataUtil() {
 	}
@@ -289,6 +292,17 @@ public final class TestDataUtil {
 		Mandant mandant = new Mandant();
 		mandant.setName("Mandant1");
 		return mandant;
+	}
+
+	public static Gemeinde getTestGemeinde(Persistence persistence) {
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_ID);
+		if (gemeinde == null) {
+			gemeinde = new Gemeinde();
+			gemeinde.setName("Testgemeinde");
+			gemeinde.setEnabled(true);
+			return persistence.persist(gemeinde);
+		}
+		return gemeinde;
 	}
 
 	public static Fachstelle createDefaultFachstelle() {
@@ -663,12 +677,6 @@ public final class TestDataUtil {
 		return einkommensverschlechterungInfo;
 	}
 
-	public static Gesuch createDefaultEinkommensverschlechterungsGesuch() {
-		Gesuch gesuch = createDefaultGesuch();
-		gesuch.setEinkommensverschlechterungInfoContainer(createDefaultEinkommensverschlechterungsInfoContainer(gesuch));
-		return gesuch;
-	}
-
 	public static GesuchstellerContainer createDefaultGesuchstellerWithEinkommensverschlechterung() {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		final GesuchstellerContainer gesuchsteller = createDefaultGesuchstellerContainer(gesuch);
@@ -889,6 +897,7 @@ public final class TestDataUtil {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
 		testfall.createGesuch(eingangsdatum, status);
+		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
 		persistence.persist(testfall.getGesuch().getGesuchsperiode());
@@ -911,6 +920,7 @@ public final class TestDataUtil {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
 		testfall.createGesuch(eingangsdatum);
+		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
 		persistence.persist(testfall.getGesuch().getGesuchsperiode());
@@ -953,6 +963,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
@@ -962,6 +973,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence, AntragStatus status) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
+		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
@@ -973,6 +985,7 @@ public final class TestDataUtil {
 		final Fall fall = persistence.persist(TestDataUtil.createDefaultFall());
 		Dossier dossier = new Dossier();
 		dossier.setFall(fall);
+		dossier.setGemeinde(getTestGemeinde(persistence));
 		dossier = persistence.persist(dossier);
 		return dossier;
 	}
@@ -1261,6 +1274,7 @@ public final class TestDataUtil {
 	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
 			@Nonnull GesuchService gesuchService) {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		gesuch.setEingangsart(Eingangsart.PAPIER);
 		gesuch.setStatus(status);
 		gesuch.setEingangsart(eingangsart);

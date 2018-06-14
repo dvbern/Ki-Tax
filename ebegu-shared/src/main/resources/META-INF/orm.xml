@@ -60,7 +60,8 @@ FROM kind_container
   LEFT OUTER JOIN traegerschaft ON traegerschaft.id = institution.traegerschaft_id
   INNER JOIN gesuch ON gesuch.id = kind_container.gesuch_id
   INNER JOIN gesuchsperiode ON gesuchsperiode.id = gesuch.gesuchsperiode_id
-  INNER JOIN fall ON fall.id = gesuch.fall_id
+  INNER JOIN dossier ON dossier.id = gesuch.dossier_id
+  INNER JOIN fall ON fall.id = dossier.fall_id
 
   LEFT OUTER JOIN (
                     SELECT
@@ -152,7 +153,8 @@ FROM kind_container
   LEFT OUTER JOIN traegerschaft ON traegerschaft.id = institution.traegerschaft_id
   INNER JOIN gesuch ON gesuch.id = kind_container.gesuch_id
   INNER JOIN gesuchsperiode ON gesuchsperiode.id = gesuch.gesuchsperiode_id
-  INNER JOIN fall ON fall.id = gesuch.fall_id
+  INNER JOIN dossier ON dossier.id = gesuch.dossier_id
+  INNER JOIN fall ON fall.id = dossier.fall_id
 
   LEFT OUTER JOIN (
 	SELECT

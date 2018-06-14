@@ -52,6 +52,7 @@ public class Testfall_DoppelKita_Regel2 extends AbstractTestfall {
 		super(gesuchsperiode, institutionStammdatenList, false);
 	}
 
+	@Override
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		Gesuch gesuch = createAlleinerziehend();

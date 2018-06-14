@@ -67,7 +67,7 @@ public interface TestfaelleService {
 		boolean verfuegen,
 		@Nonnull String username, @Nullable String gesuchsPeriodeId);
 
-	@Nullable
+	@Nonnull
 	Gesuch createAndSaveTestfaelle(@Nonnull String fallid,
 		boolean betreuungenBestaetigt,
 		boolean verfuegen);

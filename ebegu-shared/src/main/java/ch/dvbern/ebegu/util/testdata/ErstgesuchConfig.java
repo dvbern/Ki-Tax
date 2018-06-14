@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.util.TestfallName;
 
@@ -34,6 +35,7 @@ public class ErstgesuchConfig {
 	private boolean verfuegt;
 	private LocalDate eingangsdatum;
 	private LocalDateTime timestampVerfuegt;
+	private Gemeinde gemeinde;
 
 	private ErstgesuchConfig() {
 	}
@@ -108,5 +110,13 @@ public class ErstgesuchConfig {
 
 	public void setTimestampVerfuegt(LocalDateTime timestampVerfuegt) {
 		this.timestampVerfuegt = timestampVerfuegt;
+	}
+
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }

@@ -271,7 +271,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	@Override
-	@Nullable
+	@Nonnull
 	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid,
 		boolean betreuungenBestaetigt,
 		boolean verfuegen) {
@@ -342,7 +342,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		if (ASIV10.equals(fallid)) {
 			return createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
 		}
-		return null;
+		throw new IllegalArgumentException("Unbekannter Testfall: " + fallid);
 	}
 
 	@Override
@@ -494,11 +494,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		if (!fallByBesitzer.isPresent()) {
 			if (currentBenutzer.isPresent()) {
 				fall = fromTestfall.createFall(currentBenutzer.get());
-				dossier = fromTestfall.createDossier(currentBenutzer.get());
 			} else {
 				fall = fromTestfall.createFall();
-				dossier = fromTestfall.createDossier();
 			}
+			dossier = fromTestfall.getDossier();
 		} else {
 			// Fall ist schon vorhanden
 			fall = fallByBesitzer.get();
@@ -525,7 +524,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 
-		dossier.setFall(persistedFall);
 		final Dossier persistedDossier = dossierService.saveDossier(dossier);
 		fromTestfall.setDossier(persistedDossier);;
 

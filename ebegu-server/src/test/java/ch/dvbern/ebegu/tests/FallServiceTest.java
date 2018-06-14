@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -76,9 +75,8 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		fallService.saveFall(secondFall);
 
 		//Wir erwarten das die Fallnummern 1 und 2 (bzw in PSQL 0 und 1 ) vergeben wurden
-		List<Fall> moreFaelle = new ArrayList<>(fallService.getAllFalle(false).stream()
-			.sorted(Comparator.comparingLong(Fall::getFallNummer))
-			.collect(Collectors.toList()));
+		List<Fall> moreFaelle = fallService.getAllFalle(false).stream()
+			.sorted(Comparator.comparingLong(Fall::getFallNummer)).collect(Collectors.toList());
 		Assert.assertEquals(2, moreFaelle.size());
 		for (int i = 0; i < moreFaelle.size(); i++) {
 			int expectedFallNr = (i + 1); //H2 DB faengt anscheinend im Gegensatz zu PSQL bei 1 an wenn auto increment
@@ -89,6 +87,8 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void changeVerantwortlicherOfFallTest() {
 		Dossier dossier = TestDataUtil.createDefaultDossier();
+		persistence.persist(dossier.getFall());
+		dossier.setGemeinde(TestDataUtil.getTestGemeinde(persistence));
 		Dossier savedDossier = dossierService.saveDossier(dossier);
 
 		Optional<Dossier> loadedDossierOptional = dossierService.findDossier(savedDossier.getId());
@@ -101,7 +101,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 		Dossier updatedDossier = dossierService.saveDossier(loadedDossier);
 		Assert.assertNotNull(loadedDossier.getVerantwortlicherBG());
-		Assert.assertEquals(benutzerToSet.getId(), updatedDossier.getVerantwortlicherBG());
+		Assert.assertEquals(benutzerToSet, updatedDossier.getVerantwortlicherBG());
 
 	}
 
@@ -130,7 +130,9 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 		final Optional<Fall> fall = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fall.isPresent());
-		Assert.assertEquals("gesuchst", fall.get().getBesitzer().getUsername());
+		Fall persistedFall = fall.get();
+		Assert.assertNotNull(persistedFall.getBesitzer());
+		Assert.assertEquals("gesuchst", persistedFall.getBesitzer().getUsername());
 
 		final Optional<Fall> fall2 = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertFalse(fall2.isPresent()); // if a fall already exists for this GS it is not created again
@@ -141,12 +143,16 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		loginAsGesuchsteller("gesuchst");
 		final Optional<Fall> fall = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fall.isPresent());
-		Assert.assertEquals("gesuchst", fall.get().getBesitzer().getUsername());
+		Fall persistedFall = fall.get();
+		Assert.assertNotNull(persistedFall.getBesitzer());
+		Assert.assertEquals("gesuchst", persistedFall.getBesitzer().getUsername());
 
 		loginAsGesuchsteller("gesuchst2");
 		final Optional<Fall> fall2 = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fall2.isPresent()); // if a fall already exists for this GS it is not created again
-		Assert.assertEquals("gesuchst2", fall2.get().getBesitzer().getUsername());
+		Fall persistedFall2 = fall2.get();
+		Assert.assertNotNull(persistedFall2.getBesitzer());
+		Assert.assertEquals("gesuchst2", persistedFall2.getBesitzer().getUsername());
 	}
 
 	@Test
@@ -155,6 +161,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		final Optional<Fall> fallOpt = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		Assert.assertTrue(fallOpt.isPresent());
 		Fall fall = fallOpt.get();
+		Assert.assertNotNull(fall.getBesitzer());
 		Assert.assertEquals("e@e", fall.getBesitzer().getEmail());
 		Assert.assertEquals("gesuchst", fall.getBesitzer().getUsername());
 		Optional<String> emailAddressForFall = fallService.getCurrentEmailAddress(fall.getId());
@@ -168,6 +175,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		loginAsGesuchsteller("gesuchst");
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null);
 
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		Assert.assertNotNull(gesuch.getGesuchsteller1().getGesuchstellerJA().getMail());
 		Assert.assertNotNull(gesuch.getFall().getBesitzer());
 		Assert.assertFalse(gesuch.getFall().getBesitzer().getEmail().equals(gesuch.getGesuchsteller1().getGesuchstellerJA().getMail()));
@@ -176,7 +184,5 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(emailAddressForFall.isPresent());
 		String email = emailAddressForFall.get();
 		Assert.assertEquals("test@example.com", email);
-
 	}
-
 }
