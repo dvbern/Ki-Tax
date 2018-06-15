@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,12 +60,10 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -80,9 +79,6 @@ public class MitteilungResource {
 
 	@Inject
 	private MitteilungService mitteilungService;
-
-	@Inject
-	private FallService fallService;
 
 	@Inject
 	private DossierService dossierService;
@@ -206,7 +202,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(mitteilungId.getId());
+		Objects.requireNonNull(mitteilungId.getId());
 		String mitteilungID = converter.toEntityId(mitteilungId);
 		Optional<Mitteilung> optional = mitteilungService.findMitteilung(mitteilungID);
 
@@ -225,7 +221,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxBetreuungId.getId());
+		Objects.requireNonNull(jaxBetreuungId.getId());
 		String betreuungId = converter.toEntityId(jaxBetreuungId);
 		Optional<Betreuung> optional = betreuungService.findBetreuung(betreuungId);
 
@@ -249,7 +245,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxDossierId.getId());
+		Objects.requireNonNull(jaxDossierId.getId());
 		String dossierId = converter.toEntityId(jaxDossierId);
 		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
 		if (dossier.isPresent()) {
@@ -279,7 +275,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungId.getId());
+		Objects.requireNonNull(betreuungId.getId());
 		String id = converter.toEntityId(betreuungId);
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(id);
 		if (betreuung.isPresent()) {
@@ -316,7 +312,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxDossierId.getId());
+		Objects.requireNonNull(jaxDossierId.getId());
 		String dossierId = converter.toEntityId(jaxDossierId);
 		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
 		if (dossier.isPresent()) {
@@ -341,7 +337,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(betreuungId.getId());
+		Objects.requireNonNull(betreuungId.getId());
 		String id = converter.toEntityId(betreuungId);
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(id);
 		if (betreuung.isPresent()) {
@@ -364,7 +360,7 @@ public class MitteilungResource {
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(mitteilungJAXPId.getId());
+		Objects.requireNonNull(mitteilungJAXPId.getId());
 		Optional<Mitteilung> mitteilung = mitteilungService.findMitteilung(mitteilungJAXPId.getId());
 		if (mitteilung.isPresent()) {
 			mitteilungService.removeMitteilung(mitteilung.get());
@@ -385,7 +381,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxDossierId.getId());
+		Objects.requireNonNull(jaxDossierId.getId());
 		String dossierId = converter.toEntityId(jaxDossierId);
 		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
 		if (dossier.isPresent()) {
@@ -423,7 +419,7 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxDossierId.getId());
+		Objects.requireNonNull(jaxDossierId.getId());
 		String dossierId = converter.toEntityId(jaxDossierId);
 		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
 		if (dossier.isPresent()) {
@@ -441,7 +437,7 @@ public class MitteilungResource {
 	public JaxMitteilung mitteilungUebergebenAnJugendamt(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
 
-		Validate.notNull(mitteilungJaxId.getId());
+		Objects.requireNonNull(mitteilungJaxId.getId());
 		String mitteilungId = converter.toEntityId(mitteilungJaxId);
 		Mitteilung mitteilung = mitteilungService.mitteilungUebergebenAnJugendamt(mitteilungId);
 		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
@@ -456,7 +452,7 @@ public class MitteilungResource {
 	public JaxMitteilung mitteilungUebergebenAnSchulamt(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
 
-		Validate.notNull(mitteilungJaxId.getId());
+		Objects.requireNonNull(mitteilungJaxId.getId());
 		String mitteilungId = converter.toEntityId(mitteilungJaxId);
 		Mitteilung mitteilung = mitteilungService.mitteilungUebergebenAnSchulamt(mitteilungId);
 		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());

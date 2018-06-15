@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -79,9 +78,6 @@ public class SearchIndexResource {
 
 	@Inject
 	private InstitutionService institutionService;
-
-	@Inject
-	private FallService fallService;
 
 	@Inject
 	private DossierService dossierService;

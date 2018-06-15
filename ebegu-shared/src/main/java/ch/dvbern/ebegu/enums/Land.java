@@ -15,9 +15,9 @@
 
 package ch.dvbern.ebegu.enums;
 
-import javax.annotation.Nullable;
+import java.util.Objects;
 
-import org.apache.commons.lang3.Validate;
+import javax.annotation.Nullable;
 
 /**
  * Enum fuer die Laender (ISO 3166-1 Alpha 2 Code)
@@ -312,7 +312,7 @@ public enum Land {
 
 	@Nullable
 	public static Land fromString(String code) {
-		Validate.notNull(code, "Laendercode muss gesetzt sein");
+		Objects.requireNonNull(code, "Laendercode muss gesetzt sein");
 		for (final Land land : values()) {
 			if (code.equalsIgnoreCase(land.name())) {
 				return land;

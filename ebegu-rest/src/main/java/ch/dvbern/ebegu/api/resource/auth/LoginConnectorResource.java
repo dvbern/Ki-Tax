@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
@@ -42,7 +44,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,9 +173,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Override
 	public JaxExternalAuthAccessElement createLoginFromIAM(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
-		Validate.notNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
+		Objects.requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
-		LOG.debug("ExternalLogin System is creating Authorization for user " + jaxExtAuthUser.getUsername());
+		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 
 		checkLocalAccessOnly();
@@ -186,7 +187,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	private JaxExternalAuthAccessElement convertToJaxExternalAuthAccessElement(@Nonnull AuthAccessElement loginDataForCookie) {
-		Validate.notNull(loginDataForCookie, "login data to convert may not be null");
+		Objects.requireNonNull(loginDataForCookie, "login data to convert may not be null");
 		return new JaxExternalAuthAccessElement(
 			loginDataForCookie.getAuthId(),
 			loginDataForCookie.getAuthToken(),

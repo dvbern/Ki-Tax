@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 
 /**
  * Allgemeine Utils fuer EBEGU
@@ -44,16 +43,16 @@ public class EbeguUtil {
 	 * Berechnet ob die Daten bei der Familiensituation von einem GS auf 2 GS geaendert wurde.
 	 */
 	public static boolean fromOneGSToTwoGS(FamiliensituationContainer familiensituationContainer) {
-		Validate.notNull(familiensituationContainer);
-		Validate.notNull(familiensituationContainer.getFamiliensituationJA());
-		Validate.notNull(familiensituationContainer.getFamiliensituationErstgesuch());
+		Objects.requireNonNull(familiensituationContainer);
+		Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA());
+		Objects.requireNonNull(familiensituationContainer.getFamiliensituationErstgesuch());
 
 		return fromOneGSToTwoGS(familiensituationContainer.getFamiliensituationErstgesuch(), familiensituationContainer.getFamiliensituationJA());
 	}
 
 	public static boolean fromOneGSToTwoGS(Familiensituation oldFamiliensituation, Familiensituation newFamiliensituation) {
-		Validate.notNull(oldFamiliensituation);
-		Validate.notNull(newFamiliensituation);
+		Objects.requireNonNull(oldFamiliensituation);
+		Objects.requireNonNull(newFamiliensituation);
 		return !oldFamiliensituation.hasSecondGesuchsteller() && newFamiliensituation.hasSecondGesuchsteller();
 	}
 

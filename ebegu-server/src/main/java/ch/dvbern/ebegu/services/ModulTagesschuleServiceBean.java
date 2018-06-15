@@ -28,7 +28,6 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -63,7 +62,7 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
 	public void removeModul(@Nonnull String modulTagesschuleId) {
-		Validate.notNull(modulTagesschuleId);
+		Objects.requireNonNull(modulTagesschuleId);
 		Optional<ModulTagesschule> modulOptional = findModul(modulTagesschuleId);
 		ModulTagesschule modulToRemove = modulOptional.orElseThrow(() -> new EbeguEntityNotFoundException("removeModul", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			modulTagesschuleId));

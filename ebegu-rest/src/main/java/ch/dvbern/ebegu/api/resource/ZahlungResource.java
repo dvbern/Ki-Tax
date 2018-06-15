@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,8 +41,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.Validate;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
@@ -52,13 +51,11 @@ import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.util.DateUtil;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -133,9 +130,9 @@ public class ZahlungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.ADMIN, UserRoleName.SACHBEARBEITER_JA, UserRoleName.JURIST, UserRoleName.REVISOR })
 	public JaxZahlungsauftrag findZahlungsauftrag(
-		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
-		Validate.notNull(zahlungsauftragJAXPId.getId());
+		Objects.requireNonNull(zahlungsauftragJAXPId.getId());
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
@@ -155,9 +152,9 @@ public class ZahlungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.SACHBEARBEITER_INSTITUTION, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT})
 	public JaxZahlungsauftrag findZahlungsauftraginstitution(
-		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
-		Validate.notNull(zahlungsauftragJAXPId.getId());
+		Objects.requireNonNull(zahlungsauftragJAXPId.getId());
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
@@ -178,9 +175,9 @@ public class ZahlungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN })
 	public JaxZahlungsauftrag zahlungsauftragAusloesen(
-		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) throws EbeguException, MimeTypeParseException {
+		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) throws MimeTypeParseException {
 
-		Validate.notNull(zahlungsauftragJAXPId.getId());
+		Objects.requireNonNull(zahlungsauftragJAXPId.getId());
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 
 		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragAusloesen(zahlungsauftragId);
@@ -240,9 +237,9 @@ public class ZahlungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxZahlung zahlungBestaetigen(
-		@Nonnull @NotNull @PathParam("zahlungId") JaxId zahlungJAXPId) throws EbeguException, MimeTypeParseException {
+		@Nonnull @NotNull @PathParam("zahlungId") JaxId zahlungJAXPId) {
 
-		Validate.notNull(zahlungJAXPId.getId());
+		Objects.requireNonNull(zahlungJAXPId.getId());
 		String zahlungId = converter.toEntityId(zahlungJAXPId);
 
 		final Zahlung zahlung = zahlungService.zahlungBestaetigen(zahlungId);
@@ -256,7 +253,7 @@ public class ZahlungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public Response deleteAllZahlungsauftraege() throws EbeguException, MimeTypeParseException {
+	public Response deleteAllZahlungsauftraege() {
 
 		zahlungService.deleteAllZahlungsauftraege();
 		return Response.ok().build();

@@ -32,8 +32,6 @@ import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import FallRS from '../../service/fallRS.rest';
-import TSFall from '../../../models/TSFall';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 

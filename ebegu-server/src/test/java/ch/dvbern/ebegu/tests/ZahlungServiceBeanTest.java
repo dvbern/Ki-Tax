@@ -22,6 +22,7 @@ import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,7 +58,6 @@ import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Assert;
@@ -114,7 +114,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void zahlungsauftragErstellenNormal() throws Exception {
+	public void zahlungsauftragErstellenNormal() {
 		final Gesuch gesuch = createGesuch(true);
 		checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
 	}
@@ -131,7 +131,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Die bereits erstellte Verfuegung ohne Aenderung mutieren und verfuegen, Zahlungslauf starten
 	 */
 	@Test
-	public void zahlungsauftragErstellenNormalUndMutationNoChange() throws Exception {
+	public void zahlungsauftragErstellenNormalUndMutationNoChange() {
 		final Gesuch gesuch = createGesuch(true);
 		checkZahlungErstgesuch(gesuch, DATUM_SEPTEMBER.atStartOfDay());
 		final Gesuch mutation = createMutationHeirat(gesuch, true);
@@ -149,7 +149,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Die bereits erstellte Verfuegung mutieren mit Aenderung. In der Zahlung muessen alle Korrekturen angezeigt werden.
 	 */
 	@Test
-	public void zahlungsauftragErstellenNormalUndMutationChange() throws Exception {
+	public void zahlungsauftragErstellenNormalUndMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
 		final Gesuch mutation = createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
@@ -183,7 +183,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * In der Zahlung muessen alle Korrekturen angezeigt werden aber die von erster Mutation nicht.
 	 */
 	@Test
-	public void zahlungsauftragErstellenNormalUndTwoMutationChange() throws Exception {
+	public void zahlungsauftragErstellenNormalUndTwoMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
 		final Gesuch mutation = createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
@@ -222,7 +222,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Die bereits erstellte Verfuegung mutieren mit Aenderung aber diese ignorieren. Alle Korrekturen werden als ignoriert angezeigt
 	 */
 	@Test
-	public void zahlungsauftragErstellenNormalUndMutationChangeIgnoriert() throws Exception {
+	public void zahlungsauftragErstellenNormalUndMutationChangeIgnoriert() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
 		final Gesuch mutation = createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), true);
@@ -267,7 +267,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void zahlungsauftragErstellenMitKorrekturMultiple() throws Exception {
+	public void zahlungsauftragErstellenMitKorrekturMultiple() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
 		// 01.08.2016 - 31.07.2017, EWP 60%
 
@@ -312,7 +312,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void zahlungsauftragErstellenMitKorrekturMonatUeberspringen() throws Exception {
+	public void zahlungsauftragErstellenMitKorrekturMonatUeberspringen() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
 		// 01.08.2016 - 31.07.2017, EWP 60%
 
@@ -373,7 +373,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void zahlungsauftragAusloesen() throws Exception {
+	public void zahlungsauftragAusloesen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
@@ -383,7 +383,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void findZahlungsauftrag() throws Exception {
+	public void findZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
@@ -392,7 +392,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void deleteZahlungsauftrag() throws Exception {
+	public void deleteZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
@@ -402,7 +402,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void getAllZahlungsauftraege() throws Exception {
+	public void getAllZahlungsauftraege() {
 		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
 
 		createGesuch(true);
@@ -411,7 +411,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void zahlungBestaetigen() throws Exception {
+	public void zahlungBestaetigen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
@@ -446,7 +446,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		}
 		gesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
 		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch);
-		Validate.notNull(lastStatusChange);
+		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);
 		return persistence.merge(gesuch);
@@ -507,7 +507,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
 		gesuchService.updateGesuch(gesuch, false, null);
 		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch);
-		Validate.notNull(lastStatusChange);
+		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);
 		return gesuch;
@@ -518,8 +518,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), eingangsdatum);
 		if (gesuchOptional.isPresent()) {
 			final Gesuch mutation = gesuchOptional.get();
-			Validate.notNull(mutation.getGesuchsteller1());
-			Validate.notNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
+			Objects.requireNonNull(mutation.getGesuchsteller1());
+			Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
 			mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(60000d));
 			gesuchService.createGesuch(mutation);
 			// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte richtig gesetzt wird. So wird auch dies getestet
@@ -535,7 +535,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void testDeleteZahlungspositionenOfGesuch() throws Exception {
+	public void testDeleteZahlungspositionenOfGesuch() {
 		Gesuch gesuch = createGesuch(true);
 		Assert.assertNotNull(gesuch);
 		zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);

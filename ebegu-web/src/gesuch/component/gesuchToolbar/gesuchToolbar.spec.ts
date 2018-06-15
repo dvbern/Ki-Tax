@@ -22,7 +22,6 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {IGesuchStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import DossierRS from '../../service/dossierRS.rest';
-import FallRS from '../../service/fallRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {GesuchToolbarController} from './gesuchToolbar';

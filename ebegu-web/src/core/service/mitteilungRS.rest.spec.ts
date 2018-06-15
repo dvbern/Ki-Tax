@@ -18,7 +18,6 @@ import TSBetreuung from '../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
-import TSKindContainer from '../../models/TSKindContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import MitteilungRS from './mitteilungRS.rest';
@@ -28,9 +27,6 @@ describe('MitteilungRS', function () {
     let mitteilungRS: MitteilungRS;
     let $httpBackend: angular.IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
-    let mockKind: TSKindContainer;
-    let mockKindRest: any;
-    let gesuchId: string;
     let $q: angular.IQService;
     let wizardStepManager: WizardStepManager;
     let $rootScope: angular.IRootScopeService;

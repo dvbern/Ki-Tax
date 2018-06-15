@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -56,7 +57,6 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Kinder
@@ -117,7 +117,7 @@ public class KindResource {
 	public JaxKindContainer findKind(
 		@Nonnull @NotNull @PathParam("kindContainerId") JaxId kindJAXPId) {
 
-		Validate.notNull(kindJAXPId.getId());
+		Objects.requireNonNull(kindJAXPId.getId());
 		String kindID = converter.toEntityId(kindJAXPId);
 		Optional<KindContainer> optional = kindService.findKind(kindID);
 
@@ -146,7 +146,7 @@ public class KindResource {
 		@Nonnull @NotNull @PathParam("kindContainerId") JaxId kindJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(kindJAXPId.getId());
+		Objects.requireNonNull(kindJAXPId.getId());
 		KindContainer kind = kindService.findKind(kindJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("removeKind", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "KindID invalid: " + kindJAXPId.getId()));
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -165,7 +165,7 @@ public class KindResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Set<KindDubletteDTO> getKindDubletten(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId) {
-		Validate.notNull(gesuchJaxId.getId());
+		Objects.requireNonNull(gesuchJaxId.getId());
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		return kindService.getKindDubletten(gesuchId);
 	}

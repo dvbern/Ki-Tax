@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -98,7 +97,7 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public void removeEinkommensverschlechterungContainer(@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer) {
-		Validate.notNull(einkommensverschlechterungContainer);
+		Objects.requireNonNull(einkommensverschlechterungContainer);
 		einkommensverschlechterungContainer.getGesuchsteller().setEinkommensverschlechterungContainer(null);
 		persistence.merge(einkommensverschlechterungContainer.getGesuchsteller());
 
@@ -111,7 +110,7 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public void removeEinkommensverschlechterung(@Nonnull Einkommensverschlechterung einkommensverschlechterung) {
-		Validate.notNull(einkommensverschlechterung);
+		Objects.requireNonNull(einkommensverschlechterung);
 		persistence.remove(Einkommensverschlechterung.class, einkommensverschlechterung.getId());
 	}
 

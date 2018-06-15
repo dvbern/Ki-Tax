@@ -112,7 +112,6 @@ import ch.dvbern.ebegu.util.FreigabeCopyUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -315,7 +314,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA })
 	public Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername) {
-		Validate.notNull(benutzername);
+		Objects.requireNonNull(benutzername);
 		Benutzer benutzer = benutzerService.findBenutzer(benutzername).orElseThrow(() -> new EbeguEntityNotFoundException("getGesucheForBenutzerPendenzenBG", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, benutzername));
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -336,7 +335,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN })
 	public void removeGesuch(@Nonnull String gesuchId, GesuchDeletionCause deletionCause) {
-		Validate.notNull(gesuchId);
+		Objects.requireNonNull(gesuchId);
 		Optional<Gesuch> gesuchOptional = findGesuch(gesuchId);
 		Gesuch gesToRemove = gesuchOptional.orElseThrow(() -> new EbeguEntityNotFoundException("removeGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
 		authorizer.checkWriteAuthorization(gesToRemove);

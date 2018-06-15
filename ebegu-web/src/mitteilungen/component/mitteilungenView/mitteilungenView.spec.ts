@@ -20,7 +20,6 @@ import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import FallRS from '../../../gesuch/service/fallRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
-import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
