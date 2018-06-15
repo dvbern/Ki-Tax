@@ -116,6 +116,7 @@ describe('gesuchModelManager', function () {
         describe('saveGesuchAndFall', () => {
             it('creates a Fall with a linked Gesuch', () => {
                 spyOn(fallRS, 'createFall').and.returnValue($q.when({}));
+                spyOn(dossierRS, 'createDossier').and.returnValue($q.when({}));
                 let gesuch: TSGesuch = new TSGesuch();
                 gesuch.id = '123123';
                 spyOn(gesuchRS, 'createGesuch').and.returnValue($q.when({data: gesuch}));

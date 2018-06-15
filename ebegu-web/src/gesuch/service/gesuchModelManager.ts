@@ -211,8 +211,8 @@ export default class GesuchModelManager {
     }
 
     public getFall(): TSFall {
-        if (this.gesuch && this.gesuch.dossier) {
-            return this.gesuch.dossier.fall;
+        if (this.getGesuch() && this.getGesuch().dossier) {
+            return this.getGesuch().dossier.fall;
         }
         return undefined;
     }

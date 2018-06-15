@@ -29,6 +29,7 @@ import TSAntragDTO from '../models/TSAntragDTO';
 import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
+import TSDossier from '../models/TSDossier';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSFachstelle} from '../models/TSFachstelle';
 import TSFall from '../models/TSFall';
@@ -188,6 +189,9 @@ describe('EbeguRestUtil', function () {
                 let fall: TSFall = new TSFall();
                 TestDataUtil.setAbstractFieldsUndefined(fall);
                 fall.nextNumberKind = 2;
+                let dossier = new TSDossier();
+                TestDataUtil.setAbstractFieldsUndefined(dossier);
+                myGesuch.dossier = dossier;
                 myGesuch.dossier.fall = fall;
                 myGesuch.dossier.fall.besitzer = undefined;
                 let gesuchsteller: TSGesuchstellerContainer = createGesuchsteller();
