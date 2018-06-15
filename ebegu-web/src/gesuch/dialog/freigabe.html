@@ -54,8 +54,8 @@
                                 <select name="verantwortlicherBG"
                                         id="verantwortlicherBG"
                                         class="form-control"
-                                        ng-options="user.username as user.getFullName() for user in vm.userJAList"
-                                        ng-model="vm.selectedUserJA">
+                                        ng-options="user.username as user.getFullName() for user in vm.userBGList"
+                                        ng-model="vm.selectedUserBG">
                                     <option value="">{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</option>
                                 </select>
                             </div>
@@ -72,8 +72,8 @@
                                 <select name="verantwortlicherTS"
                                         id="verantwortlicherTS"
                                         class="form-control"
-                                        ng-options="user.username as user.getFullName() for user in vm.userSCHList"
-                                        ng-model="vm.selectedUserSCH">
+                                        ng-options="user.username as user.getFullName() for user in vm.userTSList"
+                                        ng-model="vm.selectedUserTS">
                                     <option value="">{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</option>
                                 </select>
                             </div>

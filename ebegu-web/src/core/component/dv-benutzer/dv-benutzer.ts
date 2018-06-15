@@ -85,14 +85,14 @@ export class DVBenutzerController {
                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den "Default-Verantwortlichen" des
                // entsprechenden Amtes handelt
                if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
-                   this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER').then(defaultBenutzerJA => {
+                   this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
                        if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
                            this._isDefaultVerantwortlicher = true;
                        }
                    });
                }
                if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
-                   this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_SCH').then(defaultBenutzerSCH => {
+                   this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
                        if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
                            this._isDefaultVerantwortlicher = true;
                        }
