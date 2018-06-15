@@ -113,10 +113,7 @@ public class DossierResource {
 		String dossierId = converter.toEntityId(dossierJAXPId);
 		Optional<Dossier> dossierOptional = dossierService.findDossier(dossierId);
 
-		if (!dossierOptional.isPresent()) {
-			return null;
-		}
-		return converter.dossierToJAX(dossierOptional.get());
+		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
 	}
 
 	@ApiOperation(value = "Returns the Dossier of the given Fall for the given Gemeinde.", response = JaxDossier.class)
@@ -135,10 +132,8 @@ public class DossierResource {
 		String gemeindeId = converter.toEntityId(gemeindeJaxId);
 		String fallId = converter.toEntityId(fallJaxId);
 		Optional<Dossier> dossierOptional = dossierService.findDossierByGemeindeAndFall(gemeindeId, fallId);
-		if (!dossierOptional.isPresent()) {
-			return null;
-		}
-		return converter.dossierToJAX(dossierOptional.get());
+
+		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
 	}
 
 	@ApiOperation(value = "Creates a new Dossier in the database if it doesnt exist with the current user as owner.", response = JaxDossier.class)
@@ -171,8 +166,8 @@ public class DossierResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxDossierId.getId());
-		Validate.notNull(username);
+		Objects.requireNonNull(jaxDossierId.getId());
+		Objects.requireNonNull(username);
 
 		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
@@ -199,8 +194,8 @@ public class DossierResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(jaxDossierId.getId());
-		Validate.notNull(username);
+		Objects.requireNonNull(jaxDossierId.getId());
+		Objects.requireNonNull(username);
 
 		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
