@@ -690,7 +690,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 parentController: undefined,
                 elementID: undefined
             }).then(() => {   //User confirmed removal
-                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getGesuch().dossier,
+                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
                     this.mutationsmeldungModel).then((response) => {
 
                     this.form.$setUntouched();
@@ -731,7 +731,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public openExistingBetreuungsmitteilung(): void {
         this.$state.go('gesuch.mitteilung', {
-            fallId: this.gesuchModelManager.getFall().id,
+            dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
             mitteilungId: this.existingMutationsMeldung.id

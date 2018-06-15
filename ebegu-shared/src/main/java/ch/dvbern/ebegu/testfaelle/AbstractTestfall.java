@@ -109,12 +109,6 @@ public abstract class AbstractTestfall {
 
 	public abstract String getVorname();
 
-	public Fall createFall(@Nullable Benutzer verantwortlicher) {
-		fall = new Fall();
-		fall.setTimestampErstellt(LocalDateTime.now().minusDays(7));
-		return fall;
-	}
-
 	public Fall createFall() {
 		fall = new Fall();
 		return fall;
@@ -140,7 +134,7 @@ public abstract class AbstractTestfall {
 	public void createGesuch(@Nullable LocalDate eingangsdatum) {
 		// Fall
 		if (fall == null) {
-			fall = createFall(null);
+			fall = createFall();
 		}
 		// Dossier
 		if (dossier == null) {

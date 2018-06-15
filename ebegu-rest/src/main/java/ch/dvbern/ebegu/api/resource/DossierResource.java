@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.DossierService;
+import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -167,17 +168,22 @@ public class DossierResource {
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(jaxDossierId.getId());
-		Objects.requireNonNull(username);
 
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 		Dossier dossier = dossierService.findDossier(jaxDossierId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxDossierId.getId()));
 
-		if (benutzer.getRole().isRoleGemeinde()) {
-			this.dossierService.setVerantwortlicherGMDE(dossier.getId(), benutzer);
+		if (Strings.isNullOrEmpty(username)) {
+			this.dossierService.setVerantwortlicherBG(dossier.getId(), null);
+
 		} else {
-			this.dossierService.setVerantwortlicherBG(dossier.getId(), benutzer);
+			Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
+
+			if (benutzer.getRole().isRoleGemeinde()) {
+				this.dossierService.setVerantwortlicherGMDE(dossier.getId(), benutzer);
+			} else {
+				this.dossierService.setVerantwortlicherBG(dossier.getId(), benutzer);
+			}
 		}
 		return Response.ok().build();
 	}
@@ -195,17 +201,23 @@ public class DossierResource {
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(jaxDossierId.getId());
-		Objects.requireNonNull(username);
 
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 		Dossier dossier = dossierService.findDossier(jaxDossierId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxDossierId.getId()));
 
-		if (benutzer.getRole().isRoleGemeinde()) {
-			this.dossierService.setVerantwortlicherGMDE(dossier.getId(), benutzer);
+		if (Strings.isNullOrEmpty(username)) {
+			this.dossierService.setVerantwortlicherTS(dossier.getId(), null);
+
 		} else {
-			this.dossierService.setVerantwortlicherTS(dossier.getId(), benutzer);
+			final Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
+
+			if (benutzer.getRole().isRoleGemeinde()) {
+				this.dossierService.setVerantwortlicherGMDE(dossier.getId(), benutzer);
+			} else {
+				this.dossierService.setVerantwortlicherTS(dossier.getId(), benutzer);
+			}
+
 		}
 		return Response.ok().build();
 	}

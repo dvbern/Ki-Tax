@@ -208,7 +208,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
 
     private gotoMitteilung(betreuung: TSBetreuung) {
         this.$state.go('gesuch.mitteilung', {
-            fallId: this.gesuchModelManager.getFall().id,
+            dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: betreuung.id,
             mitteilungId: undefined

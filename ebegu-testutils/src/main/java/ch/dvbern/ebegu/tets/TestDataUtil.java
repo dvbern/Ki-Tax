@@ -735,7 +735,7 @@ public final class TestDataUtil {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createDefaultInstitutionStammdaten());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -886,8 +886,7 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall, AntragStatus status) {
-		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
-		testfall.createFall(verantwortlicher);
+		testfall.createFall();
 		testfall.createGesuch(eingangsdatum, status);
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
@@ -908,8 +907,7 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall) {
-		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
-		testfall.createFall(verantwortlicher);
+		testfall.createFall();
 		testfall.createGesuch(eingangsdatum);
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());

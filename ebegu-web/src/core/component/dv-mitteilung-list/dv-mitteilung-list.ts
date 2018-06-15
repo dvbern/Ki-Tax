@@ -166,7 +166,6 @@ export class DVMitteilungListController {
 
     private initMitteilungForCurrentBenutzer() {
         let currentUser: TSUser = this.authServiceRS.getPrincipal();
-
         //common attributes
         this.currentMitteilung = new TSMitteilung();
         this.currentMitteilung.dossier = this.dossier;

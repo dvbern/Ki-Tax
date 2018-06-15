@@ -216,7 +216,7 @@ public interface GesuchService {
 	 * @param persist speichert die Verantwortliche direkt auf der DB in Update-Query
 	 * @return true if Verantwortliche changed
 	 */
-	boolean setVerantwortliche(@Nullable String usernameJA, @Nullable String usernameSCH, Gesuch gesuch, boolean onlyIfNotSet, boolean persist);
+	boolean setVerantwortliche(@Nullable String usernameBG, @Nullable String usernameTS, Gesuch gesuch, boolean onlyIfNotSet, boolean persist);
 
 	/**
 	 * Setzt das gegebene Gesuch als Beschwerde hängig und bei allen Gescuhen der Periode den Flag

@@ -2797,7 +2797,7 @@ public class JaxBConverter {
 	}
 
 	@Nonnull
-	private JaxAntragDTO gesuchToAntragDTOBasic(Gesuch gesuch) {
+	private JaxAntragDTO gesuchToAntragDTOBasic(@Nonnull Gesuch gesuch) {
 		JaxAntragDTO antrag = new JaxAntragDTO();
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
@@ -2811,20 +2811,16 @@ public class JaxBConverter {
 		antrag.setGesuchsperiodeGueltigBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
 		Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
 		if (verantwortlicherBG != null) {
-			antrag.setVerantwortlicherBG(verantwortlicherBG.getFullName());
-			antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
+			setVerantwortlicherBGToAntragDTO(antrag, verantwortlicherBG);
 		}
 		Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
 		if (verantwortlicherTS != null) {
-			antrag.setVerantwortlicherTS(verantwortlicherTS.getFullName());
-			antrag.setVerantwortlicherUsernameTS(verantwortlicherTS.getUsername());
+			setVerantwortlicherTSToAntragDTO(antrag, verantwortlicherTS);
 		}
 		Benutzer verantwortlicherGMDE = gesuch.getDossier().getVerantwortlicherGMDE();
 		if (verantwortlicherGMDE != null) {
-			antrag.setVerantwortlicherBG(verantwortlicherGMDE.getFullName());
-			antrag.setVerantwortlicherUsernameBG(verantwortlicherGMDE.getUsername());
-			antrag.setVerantwortlicherTS(verantwortlicherGMDE.getFullName());
-			antrag.setVerantwortlicherUsernameTS(verantwortlicherGMDE.getUsername());
+			setVerantwortlicherBGToAntragDTO(antrag, verantwortlicherGMDE);
+			setVerantwortlicherTSToAntragDTO(antrag, verantwortlicherGMDE);
 		}
 		antrag.setVerfuegt(gesuch.getStatus().isAnyStatusOfVerfuegt());
 		antrag.setBeschwerdeHaengig(gesuch.getStatus() == AntragStatus.BESCHWERDE_HAENGIG);
@@ -2835,6 +2831,16 @@ public class JaxBConverter {
 		antrag.setDokumenteHochgeladen(gesuch.getDokumenteHochgeladen());
 		antrag.setFinSitStatus(gesuch.getFinSitStatus());
 		return antrag;
+	}
+
+	private void setVerantwortlicherTSToAntragDTO(@Nonnull JaxAntragDTO antrag, @Nonnull Benutzer verantwortlicherTS) {
+		antrag.setVerantwortlicherTS(verantwortlicherTS.getFullName());
+		antrag.setVerantwortlicherUsernameTS(verantwortlicherTS.getUsername());
+	}
+
+	private void setVerantwortlicherBGToAntragDTO(@Nonnull JaxAntragDTO antrag, @Nonnull Benutzer verantwortlicherBG) {
+		antrag.setVerantwortlicherBG(verantwortlicherBG.getFullName());
+		antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
 	}
 
 	public Mahnung mahnungToEntity(@Nonnull final JaxMahnung jaxMahnung, @Nonnull final Mahnung mahnung) {

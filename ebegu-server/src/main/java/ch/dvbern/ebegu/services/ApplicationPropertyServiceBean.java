@@ -216,7 +216,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			if (defaultVerantwortlicherOptional.isPresent()) {
 				return defaultVerantwortlicherOptional;
 			}
-			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}", ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
+			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}",
+				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
 		}
 		return Optional.empty();
 	}
