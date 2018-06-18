@@ -41,7 +41,7 @@ public class Gemeinde extends AbstractEntity {
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@NotNull
-	private String name; // todo wenn ja dann SQL anpassen
+	private String name;
 
 	@Column(nullable = false)
 	@NotNull
