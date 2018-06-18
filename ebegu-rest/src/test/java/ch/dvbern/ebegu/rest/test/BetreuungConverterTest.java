@@ -69,6 +69,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 	public void convertFachstelleTest() {
 		Betreuung betreuung = insertNewEntity();
 		KindContainer kind = betreuung.getKind();
+		Assert.assertNotNull(kind.getKindJA().getPensumFachstelle());
 		Assert.assertEquals(Constants.END_OF_TIME, kind.getKindJA().getPensumFachstelle().getGueltigkeit().getGueltigBis());
 
 		JaxPensumFachstelle jaxPenFachstelle = converter.pensumFachstelleToJax(kind.getKindJA().getPensumFachstelle());
@@ -99,13 +100,10 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 
 		kind.getKindGS().setPensumFachstelle(pensumFachstelle);
 		kind.getKindJA().setPensumFachstelle(pensumFachstelle2);
-		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		kind.setGesuch(persistence.persist(gesuch));
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		kind.setGesuch(gesuch);
 		betreuung.setKind(persistence.persist(kind));
 		betreuung.setInstitutionStammdaten(instStammdaten);
 		return persistence.persist(betreuung);
 	}
-
 }

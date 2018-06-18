@@ -18,11 +18,13 @@ package ch.dvbern.ebegu.rest.test;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.api.resource.FachstelleResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
@@ -62,6 +64,8 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 	private PensumFachstelleService pensumFachstelleService;
 	@Inject
 	private BenutzerService benutzerService;
+	@Inject
+	private DossierResource dossierResource;
 
 	@Inject
 	private JaxBConverter converter;
@@ -75,6 +79,10 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
+		jaxGesuch.getDossier().setFall(returnedFall);
+		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(jaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
+		jaxGesuch.setDossier(returnedDossier);
+
 		Assert.assertNotNull(returnedFall);
 		JaxGesuchsperiode returnedGesuchsperiode = saveGesuchsperiodeInStatusAktiv(jaxGesuch.getGesuchsperiode());
 		jaxGesuch.getDossier().setFall(returnedFall);

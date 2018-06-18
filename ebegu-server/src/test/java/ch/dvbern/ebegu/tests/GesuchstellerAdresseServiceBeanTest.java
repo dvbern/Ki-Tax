@@ -87,10 +87,11 @@ public class GesuchstellerAdresseServiceBeanTest extends AbstractEbeguLoginTest 
 	@Test
 	public void removeAdresseTest() {
 		Assert.assertNotNull(adresseService);
+		// 1 Adresse wird schon mit dem Gesuch erstellt. Wir fuegen eine zweite ein:
 		GesuchstellerAdresseContainer insertedAdresses = insertNewEntity();
-		Assert.assertEquals(1, adresseService.getAllAdressen().size());
+		Assert.assertEquals(2, adresseService.getAllAdressen().size());
 		adresseService.removeAdresse(insertedAdresses);
-		Assert.assertEquals(0, adresseService.getAllAdressen().size());
+		Assert.assertEquals(1, adresseService.getAllAdressen().size());
 	}
 
 	// Help Methods

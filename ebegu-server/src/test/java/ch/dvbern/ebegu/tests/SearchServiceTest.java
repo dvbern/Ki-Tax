@@ -282,6 +282,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		TestDataUtil.gesuchVerfuegen(gesuch, gesuchService);
 
+		loginAsSachbearbeiterJA();
+
 		// es muss 2 Faelle geben
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 		Pair<Long, List<Gesuch>> allantraege = searchService.searchAllAntraege(filterDTO);

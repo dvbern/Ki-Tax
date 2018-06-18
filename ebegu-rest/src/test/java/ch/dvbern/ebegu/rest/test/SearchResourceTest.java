@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAntragSearchresultDTO;
 import ch.dvbern.ebegu.api.resource.SearchResource;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
@@ -44,7 +43,7 @@ import org.junit.runner.RunWith;
  * Testet SearchResource
  */
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
+@UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class SearchResourceTest extends AbstractEbeguRestLoginTest {
 
@@ -52,8 +51,6 @@ public class SearchResourceTest extends AbstractEbeguRestLoginTest {
 	private SearchResource searchResource;
 	@Inject
 	private Persistence persistence;
-	@Inject
-	private JaxBConverter converter;
 
 	@Test
 	public void getAllPendenzenJATest() {
@@ -63,7 +60,7 @@ public class SearchResourceTest extends AbstractEbeguRestLoginTest {
 		TestDataUtil.persistEntities(gesuch2, persistence);
 
 		AntragTableFilterDTO antragSearch = TestDataUtil.createDefaultAntragTableFilterDTO();
-		Response response = searchResource.getAllPendenzenJA(antragSearch, null, null);
+		Response response = searchResource.getAllPendenzenJA(antragSearch, DUMMY_URIINFO, DUMMY_RESPONSE);
 		JaxAntragSearchresultDTO pendenzenList = (JaxAntragSearchresultDTO) response.getEntity();
 		// Die Antraege muessen sortiert werden, damit der Test immer gleich ablaeuft
 		//noinspection ComparatorMethodParameterNotUsed

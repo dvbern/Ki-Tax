@@ -225,6 +225,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class JaxBConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
+	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
 
 	@Inject
 	private GesuchstellerService gesuchstellerService;
@@ -835,7 +836,7 @@ public class JaxBConverter {
 		if (fallFromDB.isPresent()) {
 			dossier.setFall(fallFromDB.get());
 		} else {
-			throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
+			throw new EbeguEntityNotFoundException(DOSSIER_TO_ENTITY, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
 		}
 		// Gemeinde darf nicht ueberschrieben werden
 		if (dossierJAX.getGemeinde() != null) {
@@ -843,7 +844,7 @@ public class JaxBConverter {
 			if (gemeindeFromDB.isPresent()) {
 				dossier.setGemeinde(gemeindeFromDB.get());
 			} else {
-				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
+				throw new EbeguEntityNotFoundException(DOSSIER_TO_ENTITY, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
 			}
 		}
 		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
@@ -853,7 +854,7 @@ public class JaxBConverter {
 			if (verantwortlicher.isPresent()) {
 				dossier.setVerantwortlicherBG(verantwortlicher.get()); // because the user doesn't come from the client but from the server
 			} else {
-				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
+				throw new EbeguEntityNotFoundException(DOSSIER_TO_ENTITY, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherBG());
 			}
 		} else {
 			dossier.setVerantwortlicherBG(null);
@@ -863,7 +864,7 @@ public class JaxBConverter {
 			if (verantwortlicherTS.isPresent()) {
 				dossier.setVerantwortlicherTS(verantwortlicherTS.get()); // because the user doesn't come from the client but from the server
 			} else {
-				throw new EbeguEntityNotFoundException("dossierToEntity", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherTS());
+				throw new EbeguEntityNotFoundException(DOSSIER_TO_ENTITY, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getVerantwortlicherTS());
 			}
 		} else {
 			dossier.setVerantwortlicherTS(null);

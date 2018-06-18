@@ -741,9 +741,9 @@ public final class TestDataUtil {
 
 	public static Gesuch createTestgesuchDagmar() {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
-		insttStammdaten.add(TestDataUtil.createDefaultInstitutionStammdaten());
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
-		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -894,7 +894,8 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall, AntragStatus status) {
-		testfall.createFall();
+		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
+		testfall.createFall(verantwortlicher);
 		testfall.createGesuch(eingangsdatum, status);
 		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
@@ -916,7 +917,8 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall) {
-		testfall.createFall();
+		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
+		testfall.createFall(verantwortlicher);
 		testfall.createGesuch(eingangsdatum);
 		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
@@ -932,8 +934,12 @@ public final class TestDataUtil {
 	public static void persistEntities(Gesuch gesuch, Persistence persistence) {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 
+		Gemeinde testGemeinde = getTestGemeinde(persistence);
+		gesuch.getDossier().setGemeinde(testGemeinde);
+
 		gesuch.getDossier().setVerantwortlicherBG(verantwortlicher);
 		persistence.persist(gesuch.getFall());
+		persistence.persist(gesuch.getDossier());
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		persistence.persist(gesuch.getGesuchsperiode());
 
@@ -961,11 +967,16 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		Benutzer benutzer = createAndPersistBenutzer(persistence);
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.getDossier().setVerantwortlicherBG(benutzer);
 		persistence.persist(gesuch.getFall());
+
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		persistence.persist(gs);
 		return gesuch;
 	}
 

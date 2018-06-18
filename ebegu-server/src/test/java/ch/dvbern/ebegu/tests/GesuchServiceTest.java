@@ -360,8 +360,9 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		} catch (EJBAccessException e) {
 			//noop
 		}
-		gesuch.getFall().setBesitzer(gesuchsteller);
-		persistence.merge(gesuch.getFall());
+		Fall fall = persistence.find(Fall.class, gesuch.getFall().getId());
+		fall.setBesitzer(gesuchsteller);
+		persistence.merge(fall);
 		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), null, null);
 		Assert.assertEquals(AntragStatus.FREIGEGEBEN, eingelesenesGesuch.getStatus());
 		try {

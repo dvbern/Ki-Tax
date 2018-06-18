@@ -318,7 +318,7 @@ public abstract class AbstractTestfall {
 				return institutionStammdaten;
 			}
 		}
-		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden");
+		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden: " + institutionsId);
 	}
 
 	protected BetreuungspensumContainer createBetreuungspensum(int pensum) {

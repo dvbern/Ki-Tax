@@ -18,9 +18,11 @@ package ch.dvbern.ebegu.rest.test;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.api.resource.EinkommensverschlechterungInfoResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
@@ -55,6 +57,9 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	private FallResource fallResource;
 
 	@Inject
+	private DossierResource dossierResource;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@Inject
@@ -87,6 +92,9 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToAuthLoginElement(verantwortlicher));
 
 		JaxFall returnedFall = fallResource.saveFall(testJaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
+		testJaxGesuch.getDossier().setFall(returnedFall);
+		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(testJaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
+		testJaxGesuch.setDossier(returnedDossier);
 		Assert.assertNotNull(returnedFall);
 		testJaxGesuch.setGesuchsperiode(saveGesuchsperiodeInStatusAktiv(testJaxGesuch.getGesuchsperiode()));
 		testJaxGesuch.getDossier().setFall(returnedFall);

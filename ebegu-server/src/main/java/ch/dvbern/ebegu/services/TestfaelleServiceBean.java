@@ -493,7 +493,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Dossier dossier = null;
 		if (!fallByBesitzer.isPresent()) {
 			if (currentBenutzer.isPresent()) {
-				fall = fromTestfall.createFall();
+				fall = fromTestfall.createFall(currentBenutzer.get());
 			} else {
 				fall = fromTestfall.createFall();
 			}
