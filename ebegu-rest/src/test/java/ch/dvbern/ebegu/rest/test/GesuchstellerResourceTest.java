@@ -55,8 +55,7 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Before
 	public void setUp() {
-		final Gesuch testGesuch = TestDataUtil.createDefaultGesuch();
-		TestDataUtil.persistEntities(testGesuch, persistence);
+		final Gesuch testGesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		gesuchJAXPId = new JaxId(testGesuch.getId());
 	}
 

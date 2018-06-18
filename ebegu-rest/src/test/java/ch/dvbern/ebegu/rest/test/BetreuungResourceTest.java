@@ -24,12 +24,14 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.resource.BetreuungResource;
+import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.api.resource.FachstelleResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
@@ -80,6 +82,8 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	private GesuchResource gesuchResource;
 	@Inject
 	private FallResource fallResource;
+	@Inject
+	private DossierResource dossierResource;
 	@Inject
 	private BenutzerService benutzerService;
 	@Inject
@@ -164,14 +168,16 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	// HELP
 
-	private KindContainer persistKindAndDependingObjects() throws EbeguException {
+	private KindContainer persistKindAndDependingObjects() {
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
-		jaxGesuch.setGesuchsperiode(saveGesuchsperiodeInStatusAktiv(jaxGesuch.getGesuchsperiode()));
 		jaxGesuch.getDossier().setFall(returnedFall);
+		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(jaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
+		jaxGesuch.setGesuchsperiode(saveGesuchsperiodeInStatusAktiv(jaxGesuch.getGesuchsperiode()));
+		jaxGesuch.setDossier(returnedDossier);
 		JaxGesuch returnedGesuch = (JaxGesuch) gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 
 		KindContainer returnedKind = TestDataUtil.createDefaultKindContainer();
