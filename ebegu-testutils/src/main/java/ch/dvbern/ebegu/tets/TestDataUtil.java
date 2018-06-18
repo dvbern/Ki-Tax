@@ -22,6 +22,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -127,7 +128,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ANZAHL_TAGE_KANTON;
@@ -743,7 +743,7 @@ public final class TestDataUtil {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createDefaultInstitutionStammdaten());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -752,9 +752,9 @@ public final class TestDataUtil {
 	}
 
 	public static void setFinanzielleSituation(Gesuch gesuch, BigDecimal einkommen) {
-		Validate.notNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
-		Validate.notNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(einkommen);
 	}
@@ -766,7 +766,7 @@ public final class TestDataUtil {
 		if (gesuch.extractEinkommensverschlechterungInfo() == null) {
 			gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
-			Validate.notNull(einkommensverschlechterungInfo);
+			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(false);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
@@ -775,7 +775,7 @@ public final class TestDataUtil {
 			gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
 			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnAug(einkommen);
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
-			Validate.notNull(einkommensverschlechterungInfo);
+			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
 			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(STICHTAG_EKV_1);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
@@ -783,7 +783,7 @@ public final class TestDataUtil {
 			gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(new Einkommensverschlechterung());
 			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohnAug(einkommen);
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
-			Validate.notNull(einkommensverschlechterungInfo);
+			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(true);
 			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus2(STICHTAG_EKV_2);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
@@ -894,8 +894,7 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall, AntragStatus status) {
-		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
-		testfall.createFall(verantwortlicher);
+		testfall.createFall();
 		testfall.createGesuch(eingangsdatum, status);
 		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
@@ -917,8 +916,7 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall) {
-		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
-		testfall.createFall(verantwortlicher);
+		testfall.createFall();
 		testfall.createGesuch(eingangsdatum);
 		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
@@ -1239,8 +1237,8 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
 		persistence.persist(betreuung.getInstitutionStammdaten());
-		Validate.notNull(betreuung.getKind().getKindGS().getPensumFachstelle());
-		Validate.notNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
+		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
 		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
@@ -1283,9 +1281,9 @@ public final class TestDataUtil {
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
 		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
 		gesuch.setGesuchsteller1(gesuchsteller1);
-		Validate.notNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
-		Validate.notNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
 		gesuchService.createGesuch(gesuch);
 		return gesuch;

@@ -508,8 +508,9 @@ describe('dvNavigation', function () {
         gesuch.eingangsart = TSEingangsart.ONLINE;
         gesuch.id = '123';
         gesuch.dossier = new TSDossier();
-        gesuch.dossier.fall = new TSFall();
         gesuch.dossier.id = '123';
+        gesuch.dossier.fall = new TSFall();
+        gesuch.dossier.fall.id = '123';
         gesuch.gesuchsperiode = new TSGesuchsperiode();
         gesuch.gesuchsperiode.id = '123';
         spyOn(gesuch.gesuchsperiode, 'hasTagesschulenAnmeldung').and.returnValue(true);

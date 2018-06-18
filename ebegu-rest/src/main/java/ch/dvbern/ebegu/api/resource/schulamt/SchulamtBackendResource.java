@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -71,7 +72,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -172,7 +172,7 @@ public class SchulamtBackendResource {
 	}
 
 	private JaxExternalAnmeldungTagesschule getAnmeldungTagesschule(Betreuung betreuung) {
-		Validate.notNull(betreuung.getBelegungTagesschule());
+		Objects.requireNonNull(betreuung.getBelegungTagesschule());
 
 		List<JaxExternalModul> anmeldungen = new ArrayList<>();
 		betreuung.getBelegungTagesschule().getModuleTagesschule().forEach(modulTagesschule -> anmeldungen.add(new JaxExternalModul(modulTagesschule
@@ -187,7 +187,7 @@ public class SchulamtBackendResource {
 	}
 
 	private JaxExternalAnmeldungFerieninsel getAnmeldungFerieninsel(Betreuung betreuung) {
-		Validate.notNull(betreuung.getBelegungFerieninsel());
+		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
 
 		List<LocalDate> datumList = new ArrayList<>();
 		betreuung.getBelegungFerieninsel().getTage().forEach(belegungFerieninselTag -> datumList.add(belegungFerieninselTag.getTag()));
@@ -277,7 +277,7 @@ public class SchulamtBackendResource {
 
 	private Response getExternalFinanzielleSituationResponse(long fallNummer, LocalDate stichtag, Gesuch neustesGesuch) {
 		final Familiensituation familiensituation = neustesGesuch.extractFamiliensituation();
-		Validate.notNull(familiensituation);
+		Objects.requireNonNull(familiensituation);
 
 		if (familiensituation.getSozialhilfeBezueger() != null && familiensituation.getSozialhilfeBezueger()
 			&& neustesGesuch.getFinSitStatus() == FinSitStatus.AKZEPTIERT) {
@@ -321,9 +321,9 @@ public class SchulamtBackendResource {
 	private JaxExternalFinanzielleSituation convertToJaxExternalFinanzielleSituation(long fallNummer, LocalDate stichtag, Gesuch neustesGesuch,
 		VerfuegungZeitabschnitt zeitabschnitt) {
 		final GesuchstellerContainer gesuchsteller1 = neustesGesuch.getGesuchsteller1();
-		Validate.notNull(gesuchsteller1);
+		Objects.requireNonNull(gesuchsteller1);
 		final GesuchstellerAdresse rechnungsAdresse = gesuchsteller1.extractEffectiveRechnungsAdresse(stichtag);
-		Validate.notNull(rechnungsAdresse);
+		Objects.requireNonNull(rechnungsAdresse);
 		return new JaxExternalFinanzielleSituation(
 			fallNummer,
 			stichtag,
@@ -345,9 +345,9 @@ public class SchulamtBackendResource {
 	private JaxExternalFinanzielleSituation convertToJaxExternalFinanzielleSituationWithoutFinDaten(long fallNummer, LocalDate stichtag, Gesuch neustesGesuch,
 		JaxExternalTarifart tarifart) {
 		final GesuchstellerContainer gesuchsteller1 = neustesGesuch.getGesuchsteller1();
-		Validate.notNull(gesuchsteller1);
+		Objects.requireNonNull(gesuchsteller1);
 		final GesuchstellerAdresse rechnungsAdresse = gesuchsteller1.extractEffectiveRechnungsAdresse(stichtag);
-		Validate.notNull(rechnungsAdresse);
+		Objects.requireNonNull(rechnungsAdresse);
 		return new JaxExternalFinanzielleSituation(
 			fallNummer,
 			stichtag,

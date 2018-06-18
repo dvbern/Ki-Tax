@@ -103,7 +103,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		//TODO (KIBON-6) Aktuell wissen wir beim Aufruf dieser Methode die GemeindeId noch nicht. Wir geben immer das erste / einzige Dossier zurueck
 		Collection<Dossier> dossiersByFall = findDossiersByFall(fallId);
 		if (!dossiersByFall.isEmpty()) {
-			return Optional.of(dossiersByFall.iterator().next());
+			return dossiersByFall.stream().findFirst();
 		}
 		return Optional.empty();
 	}

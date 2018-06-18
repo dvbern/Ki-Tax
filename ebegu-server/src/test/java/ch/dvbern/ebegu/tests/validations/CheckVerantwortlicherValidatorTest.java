@@ -57,18 +57,18 @@ public class CheckVerantwortlicherValidatorTest {
 
 	@Test
 	public void testCheckVerantwortlicherNormalUsers() {
-		final Dossier dossier = new Dossier();
-		dossier.setVerantwortlicherBG(jaUser);
-		dossier.setVerantwortlicherTS(schUser);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
+		testCheckVerantwortlicherUsers(jaUser, schUser);
 	}
 
 	@Test
 	public void testCheckVerantwortlicherAdminUsers() {
+		testCheckVerantwortlicherUsers(jaAdmin, schAdmin);
+	}
+
+	private void testCheckVerantwortlicherUsers(Benutzer user1, Benutzer user2) {
 		final Dossier dossier = new Dossier();
-		dossier.setVerantwortlicherBG(jaAdmin);
-		dossier.setVerantwortlicherTS(schAdmin);
+		dossier.setVerantwortlicherBG(user1);
+		dossier.setVerantwortlicherTS(user2);
 		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
 		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
 	}

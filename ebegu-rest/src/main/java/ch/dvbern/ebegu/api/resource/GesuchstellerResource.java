@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -54,7 +55,6 @@ import ch.dvbern.ebegu.services.PersonenSucheService;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Gesuchsteller
@@ -122,7 +122,7 @@ public class GesuchstellerResource {
 	public JaxGesuchstellerContainer findGesuchsteller(
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) throws EbeguException {
 
-		Validate.notNull(gesuchstellerJAXPId.getId());
+		Objects.requireNonNull(gesuchstellerJAXPId.getId());
 		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
 		Optional<GesuchstellerContainer> optional = gesuchstellerService.findGesuchsteller(gesuchstellerID);
 
@@ -146,10 +146,10 @@ public class GesuchstellerResource {
 		@QueryParam("geburtsdatum") String geburtsdatum,
 		@QueryParam("geschlecht") String geschlecht,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguException {
-		Validate.notNull(nachname, "name must be set");
-		Validate.notNull(vorname, "vorname must be set");
-		Validate.notNull(geburtsdatum, "geburtsdatum must be set");
-		Validate.notNull(geschlecht, "geschlecht must be set");
+		Objects.requireNonNull(nachname, "name must be set");
+		Objects.requireNonNull(vorname, "vorname must be set");
+		Objects.requireNonNull(geburtsdatum, "geburtsdatum must be set");
+		Objects.requireNonNull(geschlecht, "geschlecht must be set");
 		LocalDate geburtsdatumDate = DateUtil.parseStringToDateOrReturnNow(geburtsdatum);
 		return personenSucheService.suchePerson(nachname, geburtsdatumDate, Geschlecht.valueOf(geschlecht));
 	}
@@ -176,8 +176,8 @@ public class GesuchstellerResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) throws EbeguException {
 
-		Validate.notNull(gesuchstellerJAXPId.getId());
-		Validate.notNull(ewkPersonJAXPId.getId());
+		Objects.requireNonNull(gesuchstellerJAXPId.getId());
+		Objects.requireNonNull(ewkPersonJAXPId.getId());
 		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
 		String ewkPersonID = converter.toEntityId(ewkPersonJAXPId);
 		Optional<GesuchstellerContainer> optional = gesuchstellerService.findGesuchsteller(gesuchstellerID);

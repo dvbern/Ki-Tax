@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -45,7 +46,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer die History von Gesuchen/Mutationen (Antraegen)
@@ -75,7 +75,7 @@ public class AntragStatusHistoryResource {
 	public JaxAntragStatusHistory findLastStatusChange(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId jaxGesuchId) {
 
-		Validate.notNull(jaxGesuchId.getId());
+		Objects.requireNonNull(jaxGesuchId.getId());
 		String gesuchId = converter.toEntityId(jaxGesuchId);
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId);
 
@@ -98,9 +98,9 @@ public class AntragStatusHistoryResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId jaxGesuchsperiodeId,
 		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId) {
 
-		Validate.notNull(jaxGesuchsperiodeId.getId());
+		Objects.requireNonNull(jaxGesuchsperiodeId.getId());
 		String gesuchsperiodeId = converter.toEntityId(jaxGesuchsperiodeId);
-		Validate.notNull(jaxDossierId.getId());
+		Objects.requireNonNull(jaxDossierId.getId());
 		String dossierId = converter.toEntityId(jaxDossierId);
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(()

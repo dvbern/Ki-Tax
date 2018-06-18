@@ -45,9 +45,8 @@
                            aria-label="{{'NO_VERANTWORTLICHER_SELECTED' | translate}}"
                            style="position: relative;">
                 <span>
-
-                     <a href="#" ng-click="$event.preventDefault();" aria-hidden>{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</a>
-                    <i ng-if="!vm.getFallVerantwortlicherBG()"
+                    <a href="#" ng-click="$event.preventDefault();" aria-hidden>{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</a>
+                    <i ng-if="!vm.getFallVerantwortlicher()"
                        ng-class="{'fa fa-user': !vm.schulamt, 'fa fa-graduation-cap': vm.schulamt}"
                        aria-hidden="true"
                        style="line-height: 4rem; padding-left: 1rem;"></i>

@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,6 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.services.FachstelleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Fachstellen
@@ -105,7 +105,7 @@ public class FachstelleResource {
 		@Context HttpServletRequest request,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(fachstelleJAXPID.getId());
+		Objects.requireNonNull(fachstelleJAXPID.getId());
 		fachstelleService.removeFachstelle(converter.toEntityId(fachstelleJAXPID));
 		return Response.ok().build();
 	}
@@ -119,7 +119,7 @@ public class FachstelleResource {
 	public JaxFachstelle findFachstelle(
 		@Nonnull @NotNull @PathParam("fachstelleId") JaxId fachstelleId) {
 
-		Validate.notNull(fachstelleId.getId());
+		Objects.requireNonNull(fachstelleId.getId());
 		Optional<Fachstelle> fachstelleFromDB = fachstelleService.findFachstelle(converter.toEntityId(fachstelleId));
 
 		return fachstelleFromDB.map(fachstelle -> converter.fachstelleToJAX(fachstelle)).orElse(null);

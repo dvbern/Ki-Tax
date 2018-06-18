@@ -100,7 +100,7 @@ public class PDFServiceBeanTest {
 
 		//setup gesuch with one Gesuchsteller
 		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		testfall_1GS.createFall(TestDataUtil.createDefaultBenutzer());
+		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_1GS = testfall_1GS.fillInGesuch();
@@ -113,7 +113,7 @@ public class PDFServiceBeanTest {
 
 		//setup gesuch with two Gesuchstellers
 		Testfall02_FeutzYvonne testfall_2GS = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		testfall_2GS.createFall(TestDataUtil.createDefaultBenutzer());
+		testfall_2GS.createFall();
 		testfall_2GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_2GS = testfall_2GS.fillInGesuch();
@@ -126,7 +126,7 @@ public class PDFServiceBeanTest {
 
 		//setup Schulamt only gesuch
 		Testfall11_SchulamtOnly testfall_SchulamtOnly = new Testfall11_SchulamtOnly(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		testfall_SchulamtOnly.createFall(TestDataUtil.createDefaultBenutzer());
+		testfall_SchulamtOnly.createFall();
 		testfall_SchulamtOnly.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_Schulamt = testfall_SchulamtOnly.fillInGesuch();
@@ -399,7 +399,7 @@ public class PDFServiceBeanTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 
@@ -420,7 +420,7 @@ public class PDFServiceBeanTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		// Hack damit Dokument mit zwei Gesuchsteller dargestellt wird
@@ -445,7 +445,7 @@ public class PDFServiceBeanTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 

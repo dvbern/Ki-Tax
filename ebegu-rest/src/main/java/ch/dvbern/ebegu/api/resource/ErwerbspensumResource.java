@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Erwerbspensum
@@ -122,7 +122,7 @@ public class ErwerbspensumResource {
 	public JaxErwerbspensumContainer findErwerbspensum(
 		@Nonnull @NotNull @PathParam("erwerbspensumContID") JaxId erwerbspensumContID) throws EbeguRuntimeException {
 
-		Validate.notNull(erwerbspensumContID.getId());
+		Objects.requireNonNull(erwerbspensumContID.getId());
 		String entityID = converter.toEntityId(erwerbspensumContID);
 		Optional<ErwerbspensumContainer> optional = erwerbspensumService.findErwerbspensum(entityID);
 
@@ -143,7 +143,7 @@ public class ErwerbspensumResource {
 	public Collection<JaxErwerbspensumContainer> findErwerbspensumForGesuchsteller(
 		@Nonnull @NotNull @PathParam("gesuchstellerID") JaxId gesuchstellerID) throws EbeguEntityNotFoundException {
 
-		Validate.notNull(gesuchstellerID.getId());
+		Objects.requireNonNull(gesuchstellerID.getId());
 		String gesEntityID = converter.toEntityId(gesuchstellerID);
 		Optional<GesuchstellerContainer> gesuchsteller = gesuchstellerService.findGesuchsteller(gesEntityID);
 		GesuchstellerContainer gs = gesuchsteller.orElseThrow(
@@ -167,7 +167,7 @@ public class ErwerbspensumResource {
 		@Nonnull @NotNull @PathParam("erwerbspensumContID") JaxId erwerbspensumContIDJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(erwerbspensumContIDJAXPId.getId());
+		Objects.requireNonNull(erwerbspensumContIDJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(gesuchJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("removeErwerbspensum", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJAXPId.getId()));
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -182,7 +182,7 @@ public class ErwerbspensumResource {
 	@Path("/required/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	public boolean isErwerbspensumRequired(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
-		Validate.notNull(gesuchJAXPId.getId());
+		Objects.requireNonNull(gesuchJAXPId.getId());
 		Gesuch gesuch = gesuchService.findGesuch(gesuchJAXPId.getId()).orElseThrow(()
 			-> new EbeguEntityNotFoundException("isErwerbspensumRequired", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJAXPId.getId()));
 		return erwerbspensumService.isErwerbspensumRequired(gesuch);

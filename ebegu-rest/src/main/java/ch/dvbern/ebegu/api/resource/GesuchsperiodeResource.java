@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,6 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Gesuchsperiode
@@ -100,7 +100,7 @@ public class GesuchsperiodeResource {
 	public JaxGesuchsperiode findGesuchsperiode(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId) {
 
-		Validate.notNull(gesuchsperiodeJAXPId.getId());
+		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
 		String gesuchsperiodeID = converter.toEntityId(gesuchsperiodeJAXPId);
 		Optional<Gesuchsperiode> optional = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID);
 
@@ -129,7 +129,7 @@ public class GesuchsperiodeResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchsperiodeJAXPId.getId());
+		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
 		gesuchsperiodeService.removeGesuchsperiode(converter.toEntityId(gesuchsperiodeJAXPId));
 		return Response.ok().build();
 	}

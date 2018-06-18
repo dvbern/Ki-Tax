@@ -34,8 +34,8 @@ export class FreigabeController {
         'EbeguUtil', 'CONSTANTS', '$translate', 'ApplicationPropertyRS'];
 
     private gesuch: TSAntragDTO;
-    private selectedUserJA: string;
-    private selectedUserSCH: string;
+    private selectedUserBG: string;
+    private selectedUserTS: string;
     private userBGList: Array<TSUser>;
     private userTSList: Array<TSUser>;
     private fallNummer: string;
@@ -77,27 +77,27 @@ export class FreigabeController {
 
         // Jugendamt
         if (this.gesuch.verantwortlicherBG && this.gesuch.verantwortlicherUsernameBG) {
-            this.selectedUserJA = this.gesuch.verantwortlicherUsernameBG;
+            this.selectedUserBG = this.gesuch.verantwortlicherUsernameBG;
         } else {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
-                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER').then(username => {
-                    this.selectedUserJA = username.value;
+                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(username => {
+                    this.selectedUserBG = username.value;
                 });
             } else {
-                this.selectedUserJA = this.authService.getPrincipal().username;
+                this.selectedUserBG = this.authService.getPrincipal().username;
             }
         }
         // Schulamt
         if (this.gesuch.verantwortlicherTS && this.gesuch.verantwortlicherUsernameTS) {
-           this.selectedUserSCH = this.gesuch.verantwortlicherUsernameTS;
+           this.selectedUserTS = this.gesuch.verantwortlicherUsernameTS;
         } else {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
-                this.selectedUserSCH = this.authService.getPrincipal().username;
+                this.selectedUserTS = this.authService.getPrincipal().username;
             } else {
-                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_SCH').then(username => {
-                    this.selectedUserSCH = username.value;
+                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(username => {
+                    this.selectedUserTS = username.value;
                 });
             }
         }
@@ -125,7 +125,7 @@ export class FreigabeController {
     }
 
     public freigeben(): IPromise<any> {
-        return this.gesuchRS.antragFreigeben(this.docID, this.selectedUserJA, this.selectedUserSCH)
+        return this.gesuchRS.antragFreigeben(this.docID, this.selectedUserBG, this.selectedUserTS)
             .then(() => {
                 return this.$mdDialog.hide();
             });

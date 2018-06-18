@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.activation.MimeType;
@@ -38,7 +39,6 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +65,8 @@ public class FileSaverServiceBean implements FileSaverService {
 	@Override
 	@PermitAll
 	public void save(UploadFileInfo uploadFileInfo, String folderName) {
-		Validate.notNull(uploadFileInfo);
-		Validate.notNull(uploadFileInfo.getFilename());
+		Objects.requireNonNull(uploadFileInfo);
+		Objects.requireNonNull(uploadFileInfo.getFilename());
 
 		UUID uuid = UUID.randomUUID();
 
@@ -112,8 +112,8 @@ public class FileSaverServiceBean implements FileSaverService {
 	@Override
 	@PermitAll
 	public boolean copy(FileMetadata fileToCopy, String folderName) {
-		Validate.notNull(fileToCopy);
-		Validate.notNull(folderName);
+		Objects.requireNonNull(fileToCopy);
+		Objects.requireNonNull(folderName);
 
 		Path oldfile = Paths.get(fileToCopy.getFilepfad());
 		UUID uuid = UUID.randomUUID();

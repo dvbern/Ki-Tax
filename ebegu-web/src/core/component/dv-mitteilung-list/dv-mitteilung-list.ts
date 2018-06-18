@@ -18,7 +18,6 @@ import {IStateService} from 'angular-ui-router';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
-import FallRS from '../../../gesuch/service/fallRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {TSAmt} from '../../../models/enums/TSAmt';
@@ -167,7 +166,6 @@ export class DVMitteilungListController {
 
     private initMitteilungForCurrentBenutzer() {
         let currentUser: TSUser = this.authServiceRS.getPrincipal();
-
         //common attributes
         this.currentMitteilung = new TSMitteilung();
         this.currentMitteilung.dossier = this.dossier;

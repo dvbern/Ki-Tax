@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,11 +39,9 @@ import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.AdresseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Adressen
@@ -66,14 +65,14 @@ public class AdresseResource {
 	public Response create(
 		@Nonnull @NotNull JaxAdresse adresseJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Adresse convertedAdresse = converter.adresseToEntity(adresseJAXP, new Adresse());
 		Adresse persistedAdresse = this.adresseService.createAdresse(convertedAdresse);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(AdresseResource.class)
-			.path("/" + persistedAdresse.getId())
+			.path('/' + persistedAdresse.getId())
 			.build();
 
 		return Response.created(uri).entity(converter.adresseToJAX(persistedAdresse)).build();
@@ -87,9 +86,9 @@ public class AdresseResource {
 	public JaxAdresse update(
 		@Nonnull @NotNull JaxAdresse adresseJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
-		Validate.notNull(adresseJAXP.getId());
+		Objects.requireNonNull(adresseJAXP.getId());
 		Adresse adrFromDB = adresseService.findAdresse(adresseJAXP.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, adresseJAXP.getId()));
 		Adresse adrToMerge = converter.adresseToEntity(adresseJAXP, adrFromDB);
 		Adresse modifiedAdresse = this.adresseService.updateAdresse(adrToMerge);

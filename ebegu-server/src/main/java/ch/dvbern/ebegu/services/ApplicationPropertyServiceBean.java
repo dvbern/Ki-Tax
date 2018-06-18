@@ -34,19 +34,17 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Benutzer;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.ApplicationProperty_;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -77,8 +75,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public ApplicationProperty saveOrUpdateApplicationProperty(@Nonnull final ApplicationPropertyKey key, @Nonnull final String value) {
-		Validate.notNull(key);
-		Validate.notNull(value);
+		Objects.requireNonNull(key);
+		Objects.requireNonNull(value);
 		Optional<ApplicationProperty> property = readApplicationProperty(key);
 		if (property.isPresent()) {
 			property.get().setValue(value);
@@ -134,7 +132,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key) {
-		Validate.notNull(key);
+		Objects.requireNonNull(key);
 		Optional<ApplicationProperty> propertyToRemove = readApplicationProperty(key);
 		propertyToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeApplicationProperty", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
 		propertyToRemove.ifPresent(applicationProperty -> persistence.remove(applicationProperty));
@@ -218,7 +216,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			if (defaultVerantwortlicherOptional.isPresent()) {
 				return defaultVerantwortlicherOptional;
 			}
-			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}", ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
+			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}",
+				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
 		}
 		return Optional.empty();
 	}

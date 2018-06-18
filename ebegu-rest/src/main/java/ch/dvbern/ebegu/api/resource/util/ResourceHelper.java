@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource.util;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -36,7 +37,6 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class ResourceHelper {
 
 	@SuppressWarnings("ConstantConditions")
 	public void assertGesuchStatusForFreigabe(@Nonnull String gesuchId) {
-		Validate.notNull(gesuchId);
+		Objects.requireNonNull(gesuchId);
 		Optional<Gesuch> optGesuch = gesuchService.findGesuchForFreigabe(gesuchId);
 		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
 		assertGesuchStatus(gesuchId, gesuch, AntragStatusDTO.IN_BEARBEITUNG_GS, AntragStatusDTO.FREIGABEQUITTUNG);
@@ -71,7 +71,7 @@ public class ResourceHelper {
 
 	@SuppressWarnings("ConstantConditions")
 	public void assertGesuchStatusEqual(@Nonnull String gesuchId, @Nonnull AntragStatusDTO... antragStatusFromClient) {
-		Validate.notNull(gesuchId);
+		Objects.requireNonNull(gesuchId);
 		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchId);
 		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
 		assertGesuchStatus(gesuchId, gesuch, antragStatusFromClient);
@@ -136,7 +136,7 @@ public class ResourceHelper {
 	}
 
 	public void assertBetreuungStatusEqual(@Nonnull String betreuungId, @Nonnull Betreuungsstatus... betreuungsstatusFromClient) {
-		Validate.notNull(betreuungId);
+		Objects.requireNonNull(betreuungId);
 		Optional<Betreuung> optBetreuung = betreuungService.findBetreuung(betreuungId);
 		Betreuung betreuungFromDB = optBetreuung.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_BETREUUNG_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, betreuungId));
 		// Der Status des Client-Objektes darf nicht weniger weit sein als der des Server-Objektes

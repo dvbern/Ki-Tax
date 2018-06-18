@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
@@ -25,7 +26,11 @@ import javax.inject.Inject;
 import javax.transaction.Status;
 import javax.transaction.TransactionSynchronizationRegistry;
 
-import org.apache.commons.lang.Validate;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.DownloadFile;
+import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
@@ -35,13 +40,6 @@ import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.DownloadFile;
-import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.lib.cdipersistence.Persistence;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Allgemeine Mailing-Funktionalität
@@ -64,9 +62,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	@PermitAll
 	public void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress) throws MailException {
-		Validate.notNull(subject);
-		Validate.notNull(messageBody);
-		Validate.notNull(mailadress);
+		Objects.requireNonNull(subject);
+		Objects.requireNonNull(messageBody);
+		Objects.requireNonNull(mailadress);
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
@@ -76,9 +74,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	public void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress, @Nonnull DownloadFile attachement) throws
 		MailException {
-		Validate.notNull(subject);
-		Validate.notNull(messageBody);
-		Validate.notNull(mailadress);
+		Objects.requireNonNull(subject);
+		Objects.requireNonNull(messageBody);
+		Objects.requireNonNull(mailadress);
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
@@ -174,8 +172,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	 * For this reason this method flushes the EntityManager before sending emails.
 	 */
 	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress) throws MailException {
-		Validate.notNull(mailadress);
-		Validate.notNull(messageBody);
+		Objects.requireNonNull(mailadress);
+		Objects.requireNonNull(messageBody);
 		// wir haben hier nicht zwingend immer eine transaktion
 		final int transactionStatus = txReg.getTransactionStatus();
 		if (Status.STATUS_NO_TRANSACTION != transactionStatus) {

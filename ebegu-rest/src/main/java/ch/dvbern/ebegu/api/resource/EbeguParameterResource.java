@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,6 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Parameter
@@ -138,7 +138,7 @@ public class EbeguParameterResource {
 	public List<JaxEbeguParameter> getEbeguParameterByGesuchsperiode(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
-		Validate.notNull(id.getId());
+		Objects.requireNonNull(id.getId());
 		String gesuchsperiodeId = converter.toEntityId(id);
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
 		if (gesuchsperiode.isPresent()) {

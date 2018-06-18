@@ -20,7 +20,6 @@ import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import FallRS from '../../../gesuch/service/fallRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
-import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
@@ -57,7 +56,7 @@ describe('mitteilungenView', function () {
         fallRS = $injector.get('FallRS');
         betreuungRS = $injector.get('BetreuungRS');
         stateParams = $injector.get('$stateParams');
-        stateParams = $injector.get('$stateParams');
+        dossierRS = $injector.get('DossierRS');
         $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
         $q = $injector.get('$q');
@@ -193,7 +192,7 @@ describe('mitteilungenView', function () {
 
     function createMitteilungForUser(user: TSUser): void {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
-        spyOn(fallRS, 'findFall').and.returnValue($q.when(dossier.fall));
+        spyOn(dossierRS, 'findDossier').and.returnValue($q.when(dossier));
         spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.when([{}]));
         spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.when([{}]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
