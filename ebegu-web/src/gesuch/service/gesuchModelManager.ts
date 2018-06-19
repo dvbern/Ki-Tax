@@ -807,14 +807,14 @@ export default class GesuchModelManager {
             this.getKindToWorkWith().betreuungen.push(storedBetreuung);  //neues kind anfuegen
             this.setBetreuungIndex(this.getKindToWorkWith().betreuungen.length - 1);
         }
-        this.getFallFromServer(); // to reload the verantwortliche that may have changed
+        this.getDossierFromServer(); // to reload the verantwortliche that may have changed
         return storedBetreuung;
     }
 
     public saveKind(kindToSave: TSKindContainer): IPromise<TSKindContainer> {
         return this.kindRS.saveKind(kindToSave, this.gesuch.id)
             .then((storedKindCont: TSKindContainer) => {
-                this.getFallFromServer();
+                this.getDossierFromServer();
                 if (!kindToSave.isNew()) {   //gespeichertes kind war nicht neu
                     let i: number = EbeguUtil.getIndexOfElementwithID(kindToSave, this.gesuch.kindContainers);
                        if (i >= 0) {
@@ -842,10 +842,10 @@ export default class GesuchModelManager {
      * Sucht das Gesuch im Server und aktualisiert es mit dem bekommenen Daten
      * @returns {IPromise<void>}
      */
-    private getFallFromServer(): IPromise<TSFall> {
-        return this.fallRS.findFall(this.gesuch.dossier.fall.id).then((fallResponse) => {
-            this.gesuch.dossier.fall = fallResponse;
-            return this.gesuch.dossier.fall;
+    private getDossierFromServer(): IPromise<TSDossier> {
+        return this.dossierRS.findDossier(this.gesuch.dossier.id).then((dossierResponse) => {
+            this.gesuch.dossier = dossierResponse;
+            return this.gesuch.dossier;
         });
     }
 

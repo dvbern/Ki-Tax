@@ -178,7 +178,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
 			String propertyDefaultVerantwortlicherTS = applicationPropertyService.findApplicationPropertyAsString(
 				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
-			gesuchService.setVerantwortliche(propertyDefaultVerantwortlicherBG, propertyDefaultVerantwortlicherTS, mergedBetreuung.extractGesuch(), true, true);
+			gesuchService.setVerantwortliche(propertyDefaultVerantwortlicherBG, propertyDefaultVerantwortlicherTS,
+				mergedBetreuung.extractGesuch(), true, true);
 		}
 
 
