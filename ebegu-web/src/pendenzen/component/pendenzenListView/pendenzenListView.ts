@@ -19,7 +19,7 @@ import IPromise = angular.IPromise;
 import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
 import ILogService = angular.ILogService;
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 
 let template = require('./pendenzenListView.html');
@@ -38,7 +38,7 @@ export class PendenzenListViewController {
 
     static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
-    constructor(private gesuchModelManager: GesuchModelManager, private $state: IStateService, private $log: ILogService,
+    constructor(private gesuchModelManager: GesuchModelManager, private $state: StateService, private $log: ILogService,
                 private searchRS: SearchRS) {
     }
 

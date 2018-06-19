@@ -14,7 +14,6 @@
  */
 
 import {IComponentOptions, IFormController, ILogService} from 'angular';
-import {IStateService} from 'angular-ui-router';
 import {Moment} from 'moment';
 import {IBenutzerStateParams} from '../../../admin/admin.route';
 import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyRS.rest';
@@ -34,6 +33,7 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import UserRS from '../../service/userRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
+import {StateService} from '@uirouter/core';
 
 let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 let template = require('./dv-benutzer.html');
@@ -68,7 +68,7 @@ export class DVBenutzerController {
     /* @ngInject */
     constructor(private $log: ILogService, private institutionRS: InstitutionRS, private traegerschaftenRS: TraegerschaftRS,
                 private authServiceRS: AuthServiceRS, private $translate: ITranslateService,
-                private $stateParams: IBenutzerStateParams, private userRS: UserRS, private $state: IStateService,
+                private $stateParams: IBenutzerStateParams, private userRS: UserRS, private $state: StateService,
                 private dvDialog: DvDialog, private applicationPropertyRS: ApplicationPropertyRS) {
 
         this.TSRoleUtil = TSRoleUtil;
@@ -215,10 +215,6 @@ export class DVBenutzerController {
 
     canAddBerechtigung(): boolean {
         return this.futureBerechtigungen && this.futureBerechtigungen.length < 1;
-    }
-
-    canBeenden(): boolean {
-       return this.currentBerechtigung && this.currentBerechtigung.role !== TSRole.GESUCHSTELLER;
     }
 
     addBerechtigung() {

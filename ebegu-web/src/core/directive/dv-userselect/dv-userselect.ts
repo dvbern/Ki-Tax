@@ -22,7 +22,10 @@ let template = require('./dv-userselect.html');
 export class DVUserselect implements IDirective {
     restrict = 'E';
     require: any = {smartTable: '?^stTable'};
-    scope = {
+    scope = {};
+    controller = UserselectController;
+    controllerAs = 'vm';
+    bindToController = {
         ngModel: '=',
         inputId: '@',
         dvUsersearch: '@',
@@ -34,9 +37,6 @@ export class DVUserselect implements IDirective {
         schulamt: '<'
         //initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
     };
-    controller = UserselectController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     static factory(): IDirectiveFactory {

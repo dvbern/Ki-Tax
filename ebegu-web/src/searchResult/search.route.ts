@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 searchRun.$inject = ['RouterHelper'];
 
@@ -23,7 +23,7 @@ export function searchRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguSearchListState()
     ];
@@ -31,12 +31,12 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguSearchListState implements IState {
+export class EbeguSearchListState implements Ng1StateDeclaration {
     name = 'search';
     template = '<search-list-view flex="auto" class="overflow-scroll">';
     url = '/search/:searchString';
 }
 
-export class ISearchResultateStateParams implements IStateParamsService {
+export class ISearchResultateStateParams {
     searchString: string;
 }

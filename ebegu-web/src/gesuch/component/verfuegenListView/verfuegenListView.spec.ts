@@ -24,12 +24,13 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {VerfuegenListViewController} from './verfuegenListView';
+import {StateService} from '@uirouter/core';
 
 describe('verfuegenListViewTest', function () {
 
     let verfuegenListView: VerfuegenListViewController;
     let gesuchModelManager: GesuchModelManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let tsKindContainer: TSKindContainer;
     let berechnungsManager: BerechnungsManager;
     let $q: angular.IQService;

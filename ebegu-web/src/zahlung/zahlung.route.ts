@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
 
 zahlungRun.$inject = ['RouterHelper'];
@@ -24,20 +24,20 @@ export function zahlungRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguZahlungState()
     ];
 }
 
 //STATES
-export class EbeguZahlungState implements IState {
+export class EbeguZahlungState implements Ng1StateDeclaration {
     name = 'zahlung';
     template = '<zahlung-view flex="auto" class="overflow-scroll">';
     url = '/zahlung/:zahlungsauftragId';
 }
 
-export class IZahlungsauftragStateParams implements IStateParamsService {
+export class IZahlungsauftragStateParams {
     zahlungsauftrag: TSZahlungsauftrag;
     zahlungsauftragId: string;
 }

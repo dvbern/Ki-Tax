@@ -23,7 +23,7 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSUser from '../../../models/TSUser';
 import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
@@ -84,7 +84,7 @@ export class DVQuicksearchListController {
 
     constructor(private ebeguUtil: EbeguUtil, private $filter: IFilterService,
                 private institutionRS: InstitutionRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $state: IStateService, private CONSTANTS: any, private authServiceRS: AuthServiceRS) {
+                private $state: StateService, private CONSTANTS: any, private authServiceRS: AuthServiceRS) {
     }
     $onInit() {
         this.initViewModel();

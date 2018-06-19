@@ -35,7 +35,6 @@ export class DVDisplayElement implements IDirective {
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
 
     multiElement: any;
-    replace = true;
     ngShow: any;
 
     static $inject: string[] = ['ngShowDirective'];

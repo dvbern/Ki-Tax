@@ -22,7 +22,7 @@ import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import './institutionenListView.less';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 
 let template = require('./institutionenListView.html');
 let style = require('./institutionenListView.less');
@@ -46,7 +46,7 @@ export class InstitutionenListViewController extends AbstractAdminViewController
 
     static $inject = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
     /* @ngInject */
-    constructor(private institutionRS: InstitutionRS, private dvDialog: DvDialog, authServiceRS: AuthServiceRS, private $state: IStateService) {
+    constructor(private institutionRS: InstitutionRS, private dvDialog: DvDialog, authServiceRS: AuthServiceRS, private $state: StateService) {
         super(authServiceRS);
     }
 

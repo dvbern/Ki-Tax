@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 pendenzRun.$inject = ['RouterHelper'];
 
@@ -23,7 +23,7 @@ export function pendenzRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguPendenzenBetreuungenListState()
     ];
@@ -31,7 +31,7 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguPendenzenBetreuungenListState implements IState {
+export class EbeguPendenzenBetreuungenListState implements Ng1StateDeclaration {
     name = 'pendenzenBetreuungen';
     template = '<pendenzen-betreuungen-list-view flex="auto" class="overflow-scroll">';
     url = '/pendenzenBetreuungen';

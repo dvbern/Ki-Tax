@@ -14,7 +14,7 @@
  */
 
 import IComponentOptions = angular.IComponentOptions;
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import ITimeoutService = angular.ITimeoutService;
 import ILogService = angular.ILogService;
 import TSFall from '../../../models/TSFall';
@@ -52,7 +52,7 @@ export class AlleVerfuegungenViewController {
         'GesuchModelManager', 'DownloadRS', '$log', '$timeout'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, private $stateParams: IAlleVerfuegungenStateParams,
+    constructor(private $state: StateService, private $stateParams: IAlleVerfuegungenStateParams,
                 private authServiceRS: AuthServiceRS, private fallRS: FallRS, private ebeguUtil: EbeguUtil,
                 private betreuungRS: BetreuungRS, private gesuchModelManager: GesuchModelManager,
                 private downloadRS: DownloadRS, private $log: ILogService, private $timeout: ITimeoutService) {

@@ -26,10 +26,12 @@ import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSUser from '../../models/TSUser';
 import EbeguUtil from '../../utils/EbeguUtil';
+import {StateService} from '@uirouter/core';
 
 import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
+
 describe('posteingangView', function () {
 
     let authServiceRS: AuthServiceRS;
@@ -43,7 +45,7 @@ describe('posteingangView', function () {
     let $httpBackend: angular.IHttpBackendService;
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $log: any;
     let CONSTANTS: any;
     let wizardStepManager: WizardStepManager;

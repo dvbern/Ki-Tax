@@ -26,7 +26,10 @@ let template = require('./dv-datepicker.html');
 export class DVDatepicker implements IDirective {
     restrict = 'E';
     require: any = {ngModelCtrl: 'ngModel'};
-    scope = {
+    scope = {};
+    controller = DatepickerController;
+    controllerAs = 'vm';
+    bindToController = {
         ngModel: '=',
         inputId: '@',
         ngRequired: '<',
@@ -37,9 +40,6 @@ export class DVDatepicker implements IDirective {
         dvMinDate: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvMaxDate: '<?'  // Kann als String im Format allowedFormats oder als Moment angegeben werden
     };
-    controller = DatepickerController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     /* constructor() { this.link = this.unboundLink.bind(this); }*/

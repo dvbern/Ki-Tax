@@ -13,47 +13,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IState, IStateProvider, IUrlRouterProvider} from 'angular-ui-router';
+import {StateProvider, Ng1StateDeclaration, UIRouter} from '@uirouter/angularjs';
 import {ILocationProvider, IServiceProvider} from 'angular';
 
 export class RouterHelper {
-    static $inject = ['$stateProvider', '$urlRouterProvider'];
+    static $inject = ['$stateProvider', '$uiRouterProvider'];
 
     hasOtherwise: boolean;
-    stateProvider: IStateProvider;
-    urlRouterProvider: IUrlRouterProvider;
+    stateProvider: StateProvider;
+    uiRouterProvider: UIRouter;
 
     /* @ngInject */
-    constructor($stateProvider: IStateProvider, $urlRouterProvider: IUrlRouterProvider) {
+    constructor($stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
         this.hasOtherwise = false;
         this.stateProvider = $stateProvider;
-        this.urlRouterProvider = $urlRouterProvider;
+        this.uiRouterProvider = $uiRouterProvider;
     }
 
-    public configureStates(states: IState[], otherwisePath?: string): void {
+    public configureStates(states: Ng1StateDeclaration[], otherwisePath?: string): void {
         states.forEach((state) => {
             this.stateProvider.state(state);
         });
         if (otherwisePath && !this.hasOtherwise) {
             this.hasOtherwise = true;
-            this.urlRouterProvider.otherwise(otherwisePath);
+            this.uiRouterProvider.urlService.rules.otherwise(otherwisePath);
         }
     }
 
-    public getStates(): IState[] {
-        return this.stateProvider.$get();
-    }
+    // public getStates(): Ng1StateDeclaration[] {
+    //     return this.stateProvider.$get();
+    // }
 }
 
 export default class RouterHelperProvider implements IServiceProvider {
-    static $inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];
+    static $inject = ['$locationProvider', '$stateProvider', '$uiRouterProvider'];
 
     private routerHelper: RouterHelper;
 
     /* @ngInject */
-    constructor($locationProvider: ILocationProvider, $stateProvider: IStateProvider, $urlRouterProvider: IUrlRouterProvider) {
+    constructor($locationProvider: ILocationProvider, $stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
         $locationProvider.html5Mode(false);
-        this.routerHelper = new RouterHelper($stateProvider, $urlRouterProvider);
+        this.routerHelper = new RouterHelper($stateProvider, $uiRouterProvider);
     }
 
     $get(): RouterHelper {

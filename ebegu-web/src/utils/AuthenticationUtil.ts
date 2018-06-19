@@ -14,7 +14,7 @@
  */
 
 import TSUser from '../models/TSUser';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import {TSRoleUtil} from './TSRoleUtil';
 import {TSRole} from '../models/enums/TSRole';
 
@@ -23,7 +23,7 @@ export default class AuthenticationUtil {
     /**
      *  Navigiert basierend auf der Rolle zu einer anderen Startseite
      */
-    public static navigateToStartPageForRole(user: TSUser, $state: IStateService): void {
+    public static navigateToStartPageForRole(user: TSUser, $state: StateService): void {
         let currentRole: TSRole = user.getCurrentRole();
         if (currentRole === TSRole.SUPER_ADMIN) {
             $state.go('faelle');

@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -34,7 +34,7 @@ export class DvPulldownUserMenuController {
     static $inject: any[] = ['$state', 'AuthServiceRS'];
     TSRoleUtil = TSRoleUtil;
 
-    constructor(private $state: IStateService, private authServiceRS: AuthServiceRS) {
+    constructor(private $state: StateService, private authServiceRS: AuthServiceRS) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

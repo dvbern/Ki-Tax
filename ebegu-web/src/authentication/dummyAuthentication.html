@@ -19,16 +19,17 @@
     </h3>
     <div class="col-md-5 col-md-offset-3">
 
-        <div class="first-row panel panel-default mark-hover panel-body" ng-click="vm.logIn(vm.superadmin)" ng-hide="!vm.devMode"
-             ng-bind="vm.superadmin.vorname + ' ' + vm.superadmin.nachname + ', ' + vm.superadmin.email + ', ' + 'Rolle ' + (vm.superadmin.getRoleKey() | translate) + ' '
-                          + vm.superadmin.institution.name + vm.superadmin.traegerschaft.name"></div>
+        <div class="first-row panel panel-default mark-hover panel-body" (click)="logIn(superadmin)" [hidden]="!devMode"
+             [textContent]="superadmin.vorname + ' ' + superadmin.nachname + ', ' + superadmin.email + ', ' + 'Rolle '
+             + ' ' + (superadmin.getRoleKey() | translate)"></div>
 
-        <div class="first-row panel panel-default" ng-repeat="user in vm.usersList">
-            <div class="mark-hover panel-body" ng-click="vm.logIn(user)"
-                 ng-bind="user.vorname + ' ' + user.nachname + ', ' + user.email + ', ' + 'Rolle ' + (user.getRoleKey() | translate) + ' '
-                          + user.institution.name + user.traegerschaft.name"></div>
+        <div class="first-row panel panel-default" *ngFor="let user of usersList">
+            <div class="mark-hover panel-body" (click)="logIn(user)"
+                 [textContent]="user.vorname + ' ' + user.nachname + ', ' + user.email + ', '
+                 + 'Rolle ' + (user.getRoleKey() | translate) + ', '
+                 + (user.currentBerechtigung.institution?.name ? user.currentBerechtigung.institution.name : '')
+                 + (user.currentBerechtigung.traegerschaft?.name ? user.currentBerechtigung.traegerschaft.name : '')"></div>
         </div>
-
 
     </div>
 </div>

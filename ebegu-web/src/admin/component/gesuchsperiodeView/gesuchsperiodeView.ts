@@ -29,7 +29,7 @@ import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 
 let template = require('./gesuchsperiodeView.html');
 let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
@@ -58,7 +58,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     constructor(private ebeguParameterRS: EbeguParameterRS, private dvDialog: DvDialog, private globalCacheService: GlobalCacheService,
                 private gesuchsperiodeRS: GesuchsperiodeRS, private $log: ILogService, private $stateParams: IGesuchsperiodeStateParams,
-                private $state: IStateService, authServiceRS: AuthServiceRS) {
+                private $state: StateService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
     }
 

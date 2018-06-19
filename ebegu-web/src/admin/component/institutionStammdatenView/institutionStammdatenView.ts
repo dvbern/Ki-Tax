@@ -31,8 +31,8 @@ import TSLand from '../../../models/types/TSLand';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IInstitutionStammdatenStateParams} from '../../admin.route';
+import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
-import IStateService = angular.ui.IStateService;
 
 let template = require('./institutionStammdatenView.html');
 require('./institutionStammdatenView.less');
@@ -61,7 +61,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
 
     constructor(private institutionRS: InstitutionRS, private ebeguUtil: EbeguUtil,
                 private institutionStammdatenRS: InstitutionStammdatenRS,
-                private $state: IStateService, private listResourceRS: ListResourceRS, authServiceRS: AuthServiceRS,
+                private $state: StateService, private listResourceRS: ListResourceRS, authServiceRS: AuthServiceRS,
                 private $stateParams: IInstitutionStammdatenStateParams) {
         super(authServiceRS);
     }
