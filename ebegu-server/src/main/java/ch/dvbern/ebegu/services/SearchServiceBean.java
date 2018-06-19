@@ -353,7 +353,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * nur VerantwortlicherSCH ist gesetzt -> SCH-Gesuche
 	 */
 	private Predicate createPredicateJAOrMischGesuche(CriteriaBuilder cb, Join<Gesuch, Dossier> dossier) {
-		//TODO (KIBON-6) Gemeinde berücksichtigen
 		final Predicate predicateIsVerantwortlicherBG = cb.isNotNull(dossier.get(Dossier_.verantwortlicherBG));
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 
@@ -370,7 +369,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * nur VerantwortlicherSCH ist gesetzt -> SCH-Gesuche
 	 */
 	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
-		//TODO (KIBON-6) Gemeinde berücksichtigen
 		final Predicate predicateIsVerantwortlicherBG = cb.isNotNull(dossier.get(Dossier_.verantwortlicherBG));
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
