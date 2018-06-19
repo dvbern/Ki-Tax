@@ -73,6 +73,7 @@ public abstract class AbstractEbeguRestTest {
 	public UriInfo DUMMY_URIINFO;
 
 	public AbstractEbeguRestTest() {
+		// it is required to instantiate HttpServletResponse to create the wrapper.
 		HttpServletResponse response = new HttpServletResponse() {
 			@Override
 			public void addCookie(Cookie cookie) {
