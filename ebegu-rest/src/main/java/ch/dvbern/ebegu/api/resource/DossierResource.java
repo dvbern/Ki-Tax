@@ -155,7 +155,7 @@ public class DossierResource {
 		return converter.dossierToJAX(dossier);
 	}
 
-	@ApiOperation("Setzt den Verantwortlichen BG /GMDE (je nach Rolle) fuer dieses Dossier")
+	@ApiOperation("Setzt den Verantwortlichen BG fuer dieses Dossier")
 	@Nullable
 	@PUT
 	@Path("/verantwortlicherBG/{dossierId}")
@@ -179,16 +179,12 @@ public class DossierResource {
 			Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 
-			if (benutzer.getRole().isRoleGemeinde()) {
-				this.dossierService.setVerantwortlicherGMDE(dossier.getId(), benutzer);
-			} else {
-				this.dossierService.setVerantwortlicherBG(dossier.getId(), benutzer);
-			}
+			this.dossierService.setVerantwortlicherBG(dossier.getId(), benutzer);
 		}
 		return Response.ok().build();
 	}
 
-	@ApiOperation("Setzt den Verantwortlichen TS /GMDE (je nach Rolle) fuer dieses Dossier")
+	@ApiOperation("Setzt den Verantwortlichen TS fuer dieses Dossier")
 	@Nullable
 	@PUT
 	@Path("/verantwortlicherTS/{dossierId}")
@@ -212,11 +208,7 @@ public class DossierResource {
 			final Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 
-			if (benutzer.getRole().isRoleGemeinde()) {
-				this.dossierService.setVerantwortlicherGMDE(dossier.getId(), benutzer);
-			} else {
-				this.dossierService.setVerantwortlicherTS(dossier.getId(), benutzer);
-			}
+			this.dossierService.setVerantwortlicherTS(dossier.getId(), benutzer);
 
 		}
 		return Response.ok().build();

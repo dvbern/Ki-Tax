@@ -32,10 +32,8 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherGMDEValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
-import ch.dvbern.ebegu.validators.CheckVerantwortlicherGMDE;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherTS;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
@@ -54,12 +52,10 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 	indexes = {
 		@Index(name = "IX_dossier_verantwortlicher_bg", columnList = "verantwortlicherBG_id"),
 		@Index(name = "IX_dossier_verantwortlicher_ts", columnList = "verantwortlicherTS_id"),
-		@Index(name = "IX_dossier_verantwortlicher_gmde", columnList = "verantwortlicherGMDE_id"),
 	}
 )
 @CheckVerantwortlicherBG(groups = ChangeVerantwortlicherBGValidationGroup.class)
 @CheckVerantwortlicherTS(groups = ChangeVerantwortlicherTSValidationGroup.class)
-@CheckVerantwortlicherGMDE(groups = ChangeVerantwortlicherGMDEValidationGroup.class)
 public class Dossier extends AbstractEntity implements Searchable {
 
 	private static final long serialVersionUID = -2511152887055775241L;
@@ -89,11 +85,6 @@ public class Dossier extends AbstractEntity implements Searchable {
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_verantwortlicher_ts_id"))
 	private Benutzer verantwortlicherTS = null; // Mitarbeiter des SCH
-
-	@Nullable
-	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_verantwortlicher_gmde_id"))
-	private Benutzer verantwortlicherGMDE = null; // Mitarbeiter der Gemeinde
 
 	@Nonnull
 	public Fall getFall() {
@@ -137,15 +128,6 @@ public class Dossier extends AbstractEntity implements Searchable {
 
 	public void setVerantwortlicherTS(@Nullable Benutzer verantwortlicherTS) {
 		this.verantwortlicherTS = verantwortlicherTS;
-	}
-
-	@Nullable
-	public Benutzer getVerantwortlicherGMDE() {
-		return verantwortlicherGMDE;
-	}
-
-	public void setVerantwortlicherGMDE(@Nullable Benutzer verantwortlicherGMDE) {
-		this.verantwortlicherGMDE = verantwortlicherGMDE;
 	}
 
 	@Override
@@ -204,7 +186,7 @@ public class Dossier extends AbstractEntity implements Searchable {
 	}
 
 	/**
-	 * wenn der VerantwortlicherBG oder GMDE gesetzt ist, wir er zurueckgegeben.
+	 * wenn der VerantwortlicherBG gesetzt ist, wir er zurueckgegeben.
 	 * Sonst wenn der VerantwortlicherTS gesetzt ist, wir er zurueckgegeben.
 	 * Sonst wird null zurueckgegeben
 	 */
@@ -212,10 +194,7 @@ public class Dossier extends AbstractEntity implements Searchable {
 	public Benutzer getHauptVerantwortlicher() {
 		Benutzer hauptverantwortlicher = this.getVerantwortlicherBG();
 		if (hauptverantwortlicher == null) {
-			hauptverantwortlicher = this.getVerantwortlicherGMDE();
-			if (hauptverantwortlicher == null) {
-				hauptverantwortlicher = this.getVerantwortlicherTS();
-			}
+			hauptverantwortlicher = this.getVerantwortlicherTS();
 		}
 		return hauptverantwortlicher;
 	}

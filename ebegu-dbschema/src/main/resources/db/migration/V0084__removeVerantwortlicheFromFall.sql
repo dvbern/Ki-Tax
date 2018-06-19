@@ -11,7 +11,6 @@ ALTER TABLE fall_aud DROP verantwortlichersch_id;
 
 CREATE INDEX IX_dossier_verantwortlicher_bg ON dossier (verantwortlicherbg_id);
 CREATE INDEX IX_dossier_verantwortlicher_ts ON dossier (verantwortlicherts_id);
-CREATE INDEX IX_dossier_verantwortlicher_gmde ON dossier (verantwortlichergmde_id);
 
 UPDATE application_property SET name = 'DEFAULT_VERANTWORTLICHER_BG' WHERE name = 'DEFAULT_VERANTWORTLICHER';
 UPDATE application_property SET name = 'DEFAULT_VERANTWORTLICHER_TS' WHERE name = 'DEFAULT_VERANTWORTLICHER_SCH';

@@ -677,9 +677,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Optional<Benutzer> optionalUserBG = benutzerService.findBenutzer(usernameBG);
 			if (optionalUserBG.isPresent() && gesuch.hasBetreuungOfJugendamt()) {
 				Benutzer userBG = optionalUserBG.get();
-				boolean hasUserChangedGMDE = setVerantwortlicherIfNecessaryGMDE(userBG, gesuch, onlyIfNotSet, persist);
 				boolean hasUserChangedBG = setVerantwortlicherIfNecessaryBG(userBG, gesuch, onlyIfNotSet, persist);
-				if (hasUserChangedGMDE || hasUserChangedBG) {
+				if (hasUserChangedBG) {
 					hasVerantwortlicheChanged = true;
 				}
 			}
@@ -688,25 +687,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Optional<Benutzer> optionalUserTS = benutzerService.findBenutzer(usernameTS);
 			if (optionalUserTS.isPresent() && gesuch.hasBetreuungOfSchulamt()) {
 				Benutzer userTS = optionalUserTS.get();
-				boolean hasUserChangedGMDE = setVerantwortlicherIfNecessaryGMDE(userTS, gesuch, onlyIfNotSet, persist);
 				boolean hasUserChangedTS = setVerantwortlicherIfNecessaryTS(userTS, gesuch, onlyIfNotSet, persist);
-				if (hasUserChangedGMDE || hasUserChangedTS) {
+				if (hasUserChangedTS) {
 					hasVerantwortlicheChanged = true;
 				}
 			}
 		}
 		return hasVerantwortlicheChanged;
-	}
-
-	private boolean setVerantwortlicherIfNecessaryGMDE(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {
-		if (user.getRole().isRoleGemeinde() && (gesuch.getDossier().getVerantwortlicherGMDE() == null || !onlyIfNotSet)) {
-			if (persist) {
-				dossierService.setVerantwortlicherGMDE(gesuch.getDossier().getId(), user);
-			}
-			gesuch.getDossier().setVerantwortlicherGMDE(user);
-			return true;
-		}
-		return false;
 	}
 
 	private boolean setVerantwortlicherIfNecessaryBG(Benutzer user, Gesuch gesuch, boolean onlyIfNotSet, boolean persist) {

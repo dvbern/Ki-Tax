@@ -41,7 +41,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherGMDEValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -184,18 +183,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
 		validateVerantwortlicher(dossier, ChangeVerantwortlicherTSValidationGroup.class);
-		return saveDossier(dossier);
-	}
-
-	@Nonnull
-	@Override
-	public Dossier setVerantwortlicherGMDE(@Nonnull String dossierId, @Nullable Benutzer benutzer) {
-		final Dossier dossier = findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherGMDE",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
-		dossier.setVerantwortlicherGMDE(benutzer);
-
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
-		validateVerantwortlicher(dossier, ChangeVerantwortlicherGMDEValidationGroup.class);
 		return saveDossier(dossier);
 	}
 

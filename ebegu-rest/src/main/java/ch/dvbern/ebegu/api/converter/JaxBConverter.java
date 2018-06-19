@@ -848,7 +848,6 @@ public class JaxBConverter {
 			}
 		}
 		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
-		// TODO (KIBON-6) eigentlich: Wenn der VerantwortlicheBG die Berechtigung "Gemeinde" hat, muss er auf dem Entity als VerantwortlicherGMDE gesetzt werden
 		if (dossierJAX.getVerantwortlicherBG() != null) {
 			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
 			if (verantwortlicher.isPresent()) {
@@ -878,16 +877,11 @@ public class JaxBConverter {
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(this.gemeindeToJAX(persistedDossier.getGemeinde()));
 		jaxDossier.setDossierNummer(persistedDossier.getDossierNummer());
-		if (persistedDossier.getVerantwortlicherGMDE() != null) {
-			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherGMDE()));
-			jaxDossier.setVerantwortlicherTS(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherGMDE()));
-		} else {
-			if (persistedDossier.getVerantwortlicherBG() != null) {
-				jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherBG()));
-			}
-			if (persistedDossier.getVerantwortlicherTS() != null) {
-				jaxDossier.setVerantwortlicherTS(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherTS()));
-			}
+		if (persistedDossier.getVerantwortlicherBG() != null) {
+			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherBG()));
+		}
+		if (persistedDossier.getVerantwortlicherTS() != null) {
+			jaxDossier.setVerantwortlicherTS(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherTS()));
 		}
 		return jaxDossier;
 	}
@@ -1640,6 +1634,7 @@ public class JaxBConverter {
 		return container;
 	}
 
+	@Nullable
 	public JaxEinkommensverschlechterungContainer einkommensverschlechterungContainerToJAX(final EinkommensverschlechterungContainer persistedEkv) {
 		if (persistedEkv != null) {
 			final JaxEinkommensverschlechterungContainer jaxEinkommensverschlechterung = new JaxEinkommensverschlechterungContainer();
@@ -1738,6 +1733,7 @@ public class JaxBConverter {
 		return einkommensverschlechterung;
 	}
 
+	@Nullable
 	private JaxEinkommensverschlechterung einkommensverschlechterungToJAX(@Nullable final Einkommensverschlechterung persistedEinkommensverschlechterung) {
 
 		if (persistedEinkommensverschlechterung != null) {
@@ -2817,11 +2813,6 @@ public class JaxBConverter {
 		Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
 		if (verantwortlicherTS != null) {
 			setVerantwortlicherTSToAntragDTO(antrag, verantwortlicherTS);
-		}
-		Benutzer verantwortlicherGMDE = gesuch.getDossier().getVerantwortlicherGMDE();
-		if (verantwortlicherGMDE != null) {
-			setVerantwortlicherBGToAntragDTO(antrag, verantwortlicherGMDE);
-			setVerantwortlicherTSToAntragDTO(antrag, verantwortlicherGMDE);
 		}
 		antrag.setVerfuegt(gesuch.getStatus().isAnyStatusOfVerfuegt());
 		antrag.setBeschwerdeHaengig(gesuch.getStatus() == AntragStatus.BESCHWERDE_HAENGIG);

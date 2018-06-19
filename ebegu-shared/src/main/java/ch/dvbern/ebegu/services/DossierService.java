@@ -87,10 +87,4 @@ public interface DossierService {
 	@Nonnull
 	Dossier setVerantwortlicherTS(@Nonnull String dossierId, @Nullable Benutzer benutzer);
 
-	/**
-	 * Setzt den GMDE-Verantwortlichen auf dem Dossier
-	 */
-	@Nonnull
-	Dossier setVerantwortlicherGMDE(@Nonnull String dossierId, @Nullable Benutzer benutzer);
-
 }

@@ -9,7 +9,6 @@ CREATE TABLE dossier (
 	dossier_nummer          BIGINT      NOT NULL,
 	fall_id                 VARCHAR(36) NOT NULL,
 	verantwortlicherbg_id   VARCHAR(36),
-	verantwortlichergmde_id VARCHAR(36),
 	verantwortlicherts_id   VARCHAR(36),
 	PRIMARY KEY (id)
 );
@@ -26,7 +25,6 @@ CREATE TABLE dossier_aud (
 	dossier_nummer          BIGINT,
 	fall_id                 VARCHAR(36),
 	verantwortlicherbg_id   VARCHAR(36),
-	verantwortlichergmde_id VARCHAR(36),
 	verantwortlicherts_id   VARCHAR(36),
 	PRIMARY KEY (id, rev)
 );
@@ -48,11 +46,6 @@ REFERENCES fall (id);
 ALTER TABLE dossier
 	ADD CONSTRAINT FK_dossier_verantwortlicher_bg_id
 FOREIGN KEY (verantwortlicherbg_id)
-REFERENCES benutzer (id);
-
-ALTER TABLE dossier
-	ADD CONSTRAINT FK_dossier_verantwortlicher_gmde_id
-FOREIGN KEY (verantwortlichergmde_id)
 REFERENCES benutzer (id);
 
 ALTER TABLE dossier
@@ -79,8 +72,7 @@ INSERT INTO dossier (
 		0, -- dossierNummer
 		id, -- fallId
 		verantwortlicher_id, -- verantwortlicherBG
-		verantwortlichersch_id, -- verantwortlicherTS
-		NULL -- verantwortlicherGMDE
+		verantwortlichersch_id -- verantwortlicherTS
 	FROM fall);
 
 
