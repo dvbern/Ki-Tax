@@ -184,8 +184,8 @@ export default class GesuchRS implements IEntityRS {
         });
     }
 
-    public removeOnlineMutation(fallID: string, gesuchsperiodeId: string): IPromise<boolean> {
-        return this.http.delete(this.serviceURL + '/removeOnlineMutation/' + encodeURIComponent(fallID)
+    public removeOnlineMutation(dossierID: string, gesuchsperiodeId: string): IPromise<boolean> {
+        return this.http.delete(this.serviceURL + '/removeOnlineMutation/' + encodeURIComponent(dossierID)
             + '/' + encodeURIComponent(gesuchsperiodeId))
             .then((response: any) => {
                 this.$rootScope.$broadcast(TSMitteilungEvent[TSMitteilungEvent.MUTATIONSMITTEILUNG_MUTATION_REMOVED], response);
@@ -193,8 +193,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public removeOnlineFolgegesuch(fallID: string, gesuchsperiodeId: string): IPromise<boolean> {
-        return this.http.delete(this.serviceURL + '/removeOnlineFolgegesuch/' + encodeURIComponent(fallID)
+    public removeOnlineFolgegesuch(dossierID: string, gesuchsperiodeId: string): IPromise<boolean> {
+        return this.http.delete(this.serviceURL + '/removeOnlineFolgegesuch/' + encodeURIComponent(dossierID)
             + '/' + encodeURIComponent(gesuchsperiodeId))
             .then((response: any) => {
                 return response.data;

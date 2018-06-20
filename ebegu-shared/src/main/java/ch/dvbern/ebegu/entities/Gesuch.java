@@ -95,12 +95,15 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_antrag_gesuchsperiode_id"))
 	private Gesuchsperiode gesuchsperiode;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate eingangsdatum;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate freigabeDatum;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate eingangsdatumSTV;
 
@@ -211,16 +214,20 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Column(nullable = false)
 	private boolean gesperrtWegenBeschwerde = false;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumGewarntNichtFreigegeben;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumGewarntFehlendeQuittung;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDateTime timestampVerfuegt;
 
 	// Es muss nullable sein koennen, damit man ein UNIQUE_KEY machen kann
+	@Nullable
 	@Column(nullable = true)
 	private Boolean gueltig = null;
 
@@ -347,6 +354,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
+	@Nullable
 	public LocalDate getEingangsdatum() {
 		return eingangsdatum;
 	}
@@ -355,11 +363,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.eingangsdatum = eingangsdatum;
 	}
 
+	@Nullable
 	public LocalDate getEingangsdatumSTV() {
 		return eingangsdatumSTV;
 	}
 
-	public void setEingangsdatumSTV(LocalDate eingangsdatumSTV) {
+	public void setEingangsdatumSTV(@Nullable LocalDate eingangsdatumSTV) {
 		this.eingangsdatumSTV = eingangsdatumSTV;
 	}
 
@@ -372,11 +381,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.freigabeDatum = freigabeDatum;
 	}
 
+	@Nonnull
 	public AntragStatus getStatus() {
 		return status;
 	}
 
-	public final void setStatus(AntragStatus status) {
+	public final void setStatus(@Nonnull AntragStatus status) {
 		this.status = status;
 	}
 
@@ -470,6 +480,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.finanzDatenDTO_zuZweit = finanzDatenDTO_zuZweit;
 	}
 
+	@Nullable
 	public LocalDate getDatumGewarntNichtFreigegeben() {
 		return datumGewarntNichtFreigegeben;
 	}
@@ -478,6 +489,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.datumGewarntNichtFreigegeben = datumGewarntNichtFreigegeben;
 	}
 
+	@Nullable
 	public LocalDate getDatumGewarntFehlendeQuittung() {
 		return datumGewarntFehlendeQuittung;
 	}
@@ -486,6 +498,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.datumGewarntFehlendeQuittung = datumGewarntFehlendeQuittung;
 	}
 
+	@Nullable
 	public LocalDateTime getTimestampVerfuegt() {
 		return timestampVerfuegt;
 	}
@@ -821,7 +834,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public String getEingangsdatumFormated() {
-		return Constants.DATE_FORMATTER.format(eingangsdatum);
+		if (eingangsdatum != null) {
+			return Constants.DATE_FORMATTER.format(eingangsdatum);
+		}
+		return "";
 	}
 
 	public String getFreigabedatumFormated() {

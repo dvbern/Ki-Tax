@@ -668,7 +668,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(0, mitteilungService.findAllBetreuungsmitteilungenForBetreuung(betreuungErstGesuch).size());
 		Assert.assertEquals(1, mitteilungService.findAllBetreuungsmitteilungenForBetreuung(betreuungMutation).size());
 
-		gesuchService.removeOnlineMutation(mutation.getFall(), mutation.getGesuchsperiode());
+		gesuchService.removeOnlineMutation(mutation.getDossier(), mutation.getGesuchsperiode());
 
 		final Optional<Gesuch> removedMutation = gesuchService.findGesuch(mutationID);
 		Assert.assertFalse(removedMutation.isPresent());

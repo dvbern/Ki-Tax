@@ -808,18 +808,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchOptional.isPresent()) {
 			Gesuch gesuch = gesuchOptional.get();
 			authorizer.checkWriteAuthorization(gesuch);
-			if (!isThereAnyOpenMutation(gesuch.getFall(), gesuch.getGesuchsperiode())) {
+			if (!isThereAnyOpenMutation(gesuch.getDossier(), gesuch.getGesuchsperiode())) {
 				authorizer.checkReadAuthorization(gesuch);
 				Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getFall(), true);
 				Gesuch gesuchForMutation = gesuchForMutationOpt.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Kein Verfuegtes Gesuch fuer ID " + antragId));
 				return getGesuchMutation(eingangsdatum, gesuchForMutation);
-			} else {
-				throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-					gesuch.getFall().getId(), gesuch.getGesuchsperiode().getId());
 			}
-		} else {
-			throw new EbeguEntityNotFoundException("antragMutieren", "Es existiert kein Antrag mit ID, kann keine Mutation erstellen " + antragId, antragId);
+
+			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
+				gesuch.getDossier().getId(), gesuch.getGesuchsperiode().getId());
 		}
+
+		throw new EbeguEntityNotFoundException("antragMutieren", "Es existiert kein Antrag mit ID, kann keine Mutation erstellen " + antragId, antragId);
 	}
 
 	@Override
@@ -831,31 +831,32 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final Optional<Fall> fall = fallService.findFallByNumber(fallNummer);
 		final Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
 
-		if (fall.isPresent() && gesuchsperiode.isPresent()) {
-			if (!isThereAnyOpenMutation(fall.get(), gesuchsperiode.get())) {
-				Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode.get(), fall.get(), true);
-				Gesuch gesuchForMutation = gesuchForMutationOpt.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Kein Verfuegtes Gesuch fuer Fallnummer " + fallNummer));
-				return getGesuchMutation(eingangsdatum, gesuchForMutation);
-			} else {
-				throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION, fall.get().getId(),
-					gesuchsperiodeId);
-			}
-		} else {
-			throw new EbeguEntityNotFoundException("antragMutieren", "fall oder gesuchsperiode konnte nicht geladen werden  fallNr:" + fallNummer + "gsPerID" + gesuchsperiodeId);
-		}
+		// TODO KIBON-6 dies muss mit dossier und nicht mit fallnummer
+//		if (fall.isPresent() && gesuchsperiode.isPresent()) {
+//			if (!isThereAnyOpenMutation(fall.get(), gesuchsperiode.get())) {
+//				Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode.get(), fall.get(), true);
+//				Gesuch gesuchForMutation = gesuchForMutationOpt.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Kein Verfuegtes Gesuch fuer Fallnummer " + fallNummer));
+//				return getGesuchMutation(eingangsdatum, gesuchForMutation);
+//			}
+//
+//			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION, fall.getdossier().getId(),
+//				gesuchsperiodeId);
+//		}
+
+		throw new EbeguEntityNotFoundException("antragMutieren", "fall oder gesuchsperiode konnte nicht geladen werden  fallNr:" + fallNummer + "gsPerID" + gesuchsperiodeId);
 	}
 
-	private boolean isThereAnyOpenMutation(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
-		List<Gesuch> criteriaResults = findExistingOpenMutationen(fall, gesuchsperiode);
+	private boolean isThereAnyOpenMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		List<Gesuch> criteriaResults = findExistingOpenMutationen(dossier, gesuchsperiode);
 		return !criteriaResults.isEmpty();
 	}
 
 	/**
 	 * Diese Methode gibt eine Liste zurueck. Diese Liste sollte aber maximal eine Mutation enthalten, da es unmoeglich ist,
-	 * mehrere offene Mutationen fuer dieselbe Gesuchsperiode zu haben. Rechte werden nicht beruecksichtigt d.h. alle
-	 * Gesuche werden geguckt und daher die richtige letzte Mutation wird zurueckgegeben.
+	 * mehrere offene Mutationen in einem Dossier fuer dieselbe Gesuchsperiode zu haben. Rechte werden nicht beruecksichtigt
+	 * d.h. alle Gesuche werden geguckt und daher die richtige letzte Mutation wird zurueckgegeben.
 	 */
-	private List<Gesuch> findExistingOpenMutationen(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private List<Gesuch> findExistingOpenMutationen(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
@@ -864,14 +865,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateMutation = root.get(Gesuch_.typ).in(AntragTyp.MUTATION);
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
+		Predicate predicateDossier = cb.equal(root.get(Gesuch_.dossier), dossier);
 
-		query.where(predicateMutation, predicateStatus, predicateGesuchsperiode, predicateFall);
+		query.where(predicateMutation, predicateStatus, predicateGesuchsperiode, predicateDossier);
 		query.select(root);
 		return persistence.getCriteriaResults(query);
 	}
 
-	private List<Gesuch> findExistingFolgegesuch(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private List<Gesuch> findExistingFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
@@ -880,9 +881,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateMutation = root.get(Gesuch_.typ).in(AntragTyp.ERNEUERUNGSGESUCH);
 		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getInBearbeitungGSStates());
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
+		Predicate predicateDossier = cb.equal(root.get(Gesuch_.dossier), dossier);
 
-		query.where(predicateMutation, predicateStatus, predicateGesuchsperiode, predicateFall);
+		query.where(predicateMutation, predicateStatus, predicateGesuchsperiode, predicateDossier);
 		query.select(root);
 		return persistence.getCriteriaResults(query);
 	}
@@ -921,7 +922,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		} else {
 			// must have the gesuchsperiodeID as first item in the arguments list
 			throw new EbeguExistingAntragException("antragErneuern", ErrorCodeEnum.ERROR_EXISTING_ERNEUERUNGSGESUCH,
-				gesuch.getFall().getId(), gesuchsperiodeId);
+				gesuch.getDossier().getId(), gesuchsperiodeId);
 		}
 	}
 
@@ -986,6 +987,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@PermitAll
 	public boolean isNeustesGesuch(@Nonnull Gesuch gesuch) {
+		// TODO KIBON-6 muss mit dossier funktionieren
 		final Optional<Gesuch> neustesGesuchFuerGesuch = getNeustesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getFall(), false);
 		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(neustesGesuchFuerGesuch.get().getId(), gesuch.getId());
 	}
@@ -1281,10 +1283,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
-	public void removeOnlineMutation(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
-		// TODO KIBON-6 dies muss mit dem dossier und nicht mit dem fall
-		logDeletingOfGesuchstellerAntrag(fall, gesuchsperiode);
-		final Gesuch onlineMutation = findOnlineMutation(fall, gesuchsperiode);
+	public void removeOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		logDeletingOfGesuchstellerAntrag(dossier, gesuchsperiode);
+		final Gesuch onlineMutation = findOnlineMutation(dossier, gesuchsperiode);
 		moveBetreuungmitteilungenToPreviousAntrag(onlineMutation);
 		List<Betreuung> betreuungen = new ArrayList<>(onlineMutation.extractAllBetreuungen());
 		superAdminService.removeGesuch(onlineMutation.getId());
@@ -1294,8 +1295,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
-	public Gesuch findOnlineMutation(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
-		List<Gesuch> criteriaResults = findExistingOpenMutationen(fall, gesuchsperiode);
+	public Gesuch findOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		List<Gesuch> criteriaResults = findExistingOpenMutationen(dossier, gesuchsperiode);
 		if (criteriaResults.size() > 1) {
 			// It should be impossible that there are more than one open Mutation
 			throw new EbeguRuntimeException("findOnlineMutation", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
@@ -1329,10 +1330,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
-	public void removeOnlineFolgegesuch(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
-		// TODO KIBON-6 dies muss mit dem dossier und nicht mit dem fall
-		logDeletingOfGesuchstellerAntrag(fall, gesuchsperiode);
-		Gesuch gesuch = findOnlineFolgegesuch(fall, gesuchsperiode);
+	public void removeOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		logDeletingOfGesuchstellerAntrag(dossier, gesuchsperiode);
+		Gesuch gesuch = findOnlineFolgegesuch(dossier, gesuchsperiode);
 		List<Betreuung> betreuungen = new ArrayList<>(gesuch.extractAllBetreuungen());
 		superAdminService.removeGesuch(gesuch.getId());
 
@@ -1340,8 +1340,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	public Gesuch findOnlineFolgegesuch(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
-		List<Gesuch> criteriaResults = findExistingFolgegesuch(fall, gesuchsperiode);
+	public Gesuch findOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		List<Gesuch> criteriaResults = findExistingFolgegesuch(dossier, gesuchsperiode);
 		if (criteriaResults.size() > 1) {
 			// It should be impossible that there are more than one open Folgegesuch for one period
 			throw new EbeguRuntimeException("findOnlineFolgegesuch", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
@@ -1542,11 +1542,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return Optional.of(criteriaResults.get(0));
 	}
 
-	private void logDeletingOfGesuchstellerAntrag(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private void logDeletingOfGesuchstellerAntrag(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		LOG.info("****************************************************");
 		LOG.info("Online Gesuch wird gelöscht:");
 		LOG.info("Benutzer: {}", principalBean.getBenutzer().getUsername());
-		LOG.info("Fall: {}", fall.getFallNummer());
+		LOG.info("Fall: {}", dossier.getFall().getFallNummer());
+		LOG.info("Dossier: {}", dossier.getDossierNummer());
 		LOG.info("Gesuchsperiode: {}", gesuchsperiode.getGesuchsperiodeString());
 		LOG.info("****************************************************");
 	}

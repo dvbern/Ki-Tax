@@ -148,7 +148,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	@Nonnull
-	@SuppressWarnings(value = { "PMD.NcssMethodCount", "PMD.AvoidDuplicateLiterals" })
+	@SuppressWarnings({ "PMD.NcssMethodCount", "PMD.AvoidDuplicateLiterals" })
 	public StringBuilder createAndSaveTestfaelle(@Nonnull String fallid,
 		@Nullable Integer iterationCount,
 		boolean betreuungenBestaetigt,
