@@ -292,6 +292,9 @@ describe('dvNavigation', function () {
         it('moves to gesuch.fallcreation when coming from FAMILIENSITUATION', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
+            let dossier = new TSDossier();
+            dossier.id = '123';
+            spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
             mockGesuch();
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
@@ -301,7 +304,7 @@ describe('dvNavigation', function () {
                     eingangsart: 'ONLINE',
                     gesuchId: '123',
                     gesuchsperiodeId: '123',
-                    fallId: '123'
+                    dossierId: dossier.id,
                 });
         });
         it('moves to gesuch.stammdaten when coming from GESUCHSTELLER from 2GS', () => {

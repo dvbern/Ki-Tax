@@ -85,7 +85,7 @@ export class EbeguGesuchState implements IState {
 
 export class EbeguNewFallState implements IState {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: IState } = {
         'gesuchViewPort': {
@@ -103,7 +103,7 @@ export class EbeguNewFallState implements IState {
 
 export class EbeguMutationState implements IState {
     name = 'gesuch.mutation';
-    url = '/mutation/:createMutation/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    url = '/mutation/:createMutation/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: IState } = {
         'gesuchViewPort': {
@@ -121,7 +121,7 @@ export class EbeguMutationState implements IState {
 
 export class EbeguErneuerungsgesuchState implements IState {
     name = 'gesuch.erneuerung';
-    url = '/erneuerung/:createErneuerung/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    url = '/erneuerung/:createErneuerung/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: IState } = {
         'gesuchViewPort': {
@@ -561,7 +561,7 @@ export class INewFallStateParams implements IStateParamsService {
     eingangsart: TSEingangsart;
     gesuchsperiodeId: string;
     gesuchId: string;
-    fallId: string;
+    dossierId: string;
 }
 
 export class IErwerbspensumStateParams implements IStateParamsService {
@@ -643,9 +643,9 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
         } else {
             let eingangsart = $stateParams.eingangsart;
             let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            let fallId = $stateParams.fallId;
+            let dossierId = $stateParams.dossierId;
             //initialize gesuch
-            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, fallId);
+            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
@@ -674,9 +674,9 @@ export function createEmptyMutation(gesuchModelManager: GesuchModelManager, $sta
         let gesuchId = $stateParams.gesuchId;
         let eingangsart = $stateParams.eingangsart;
         let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let fallId = $stateParams.fallId;
+        let dossierId = $stateParams.dossierId;
         if (gesuchId && eingangsart) {
-            gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, fallId);
+            gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     return $q.defer(gesuchModelManager.getGesuch());
@@ -689,9 +689,9 @@ export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelMana
         let gesuchId = $stateParams.gesuchId;
         let eingangsart = $stateParams.eingangsart;
         let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let fallId = $stateParams.fallId;
+        let dossierId = $stateParams.dossierId;
         if (gesuchId && eingangsart) {
-            gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, fallId);
+            gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     return $q.defer(gesuchModelManager.getGesuch());

@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
 /**
  * Service zum Verwalten von Fallen
@@ -78,7 +79,7 @@ public interface FallService {
 	 *
 	 * @param fall der Fall als DTO
 	 */
-	void removeFall(@Nonnull Fall fall);
+	void removeFall(@Nonnull Fall fall, GesuchDeletionCause deletionCause);
 
 	/**
 	 * Erstellt einen neuen Fall fuer den aktuellen Benutzer und setzt diesen als Besitzer des Falles.

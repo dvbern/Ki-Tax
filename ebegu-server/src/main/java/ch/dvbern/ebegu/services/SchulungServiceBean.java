@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -505,7 +506,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			if (gesuchOptional.isPresent()) {
 				final Optional<Fall> fall = fallService.findFall(gesuchOptional.get().getFall().getId());
 				// Fall und seine abhaengigen Gesuche loeschen
-				fall.ifPresent(fall1 -> fallService.removeFall(fall1));
+				fall.ifPresent(fall1 -> fallService.removeFall(fall1, GesuchDeletionCause.USER));
 			}
 		}
 	}

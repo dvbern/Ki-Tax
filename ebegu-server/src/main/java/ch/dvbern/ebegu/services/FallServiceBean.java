@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Gesuchsteller_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -93,13 +94,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	private PrincipalBean principalBean;
 
 	@Inject
-	private GesuchService gesuchService;
-
-	@Inject
 	private MitteilungService mitteilungService;
-
-	@Inject
-	private SuperAdminService superAdminService;
 
 	@Inject
 	private DossierService dossierService;
@@ -165,24 +160,17 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public void removeFall(@Nonnull Fall fall) {
+	public void removeFall(@Nonnull Fall fall, GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(fall);
 		Optional<Fall> fallToRemove = findFall(fall.getId());
 		Fall loadedFall = fallToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fall));
 		authorizer.checkWriteAuthorization(loadedFall);
 		// Remove all depending objects
 		mitteilungService.removeAllMitteilungenForFall(loadedFall);
-		// Alle Gesuche des Falls ebenfalls loeschen
-		final List<String> allGesucheForFall = gesuchService.getAllGesuchIDsForFall(loadedFall.getId());
-		allGesucheForFall
-			.forEach(gesuchId -> gesuchService.findGesuch(gesuchId)
-				.ifPresent((gesuch) ->
-					superAdminService.removeGesuch(gesuch.getId()))
-			);
-		// Die (jetzt leeren) Dossiers ebenfalls loeschen
+		// Alle Dossier Des Falls loeschen (die entsprechenden Gesuchen werden damit auch geloescht
 		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
 		for (Dossier dossier : dossiersByFall) {
-			persistence.remove(dossier);
+			dossierService.removeDossier(dossier.getId(), deletionCause);
 		}
 		//Finally remove the Fall when all other objects are really removed
 		persistence.remove(loadedFall);

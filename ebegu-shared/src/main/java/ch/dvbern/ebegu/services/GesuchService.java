@@ -192,6 +192,12 @@ public interface GesuchService {
 	List<String> getAllGesuchIDsForFall(String fallId);
 
 	/**
+	 * Alle GesucheIDs des Dossiers zurueckgeben
+	 */
+	@Nonnull
+	List<String> getAllGesuchIDsForDossier(String dossierId);
+
+	/**
 	 * Alle Gesuche fuer den gegebenen Fall in der gegebenen Periode
 	 */
 	@Nonnull

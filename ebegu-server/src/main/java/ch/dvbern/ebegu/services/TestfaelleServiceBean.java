@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -349,7 +350,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	public void removeGesucheOfGS(@Nonnull String username) {
 		Benutzer benutzer = benutzerService.findBenutzer(username).orElse(null);
 		Optional<Fall> existingFall = fallService.findFallByBesitzer(benutzer);
-		existingFall.ifPresent(fall -> fallService.removeFall(fall));
+		existingFall.ifPresent(fall -> fallService.removeFall(fall, GesuchDeletionCause.USER));
 	}
 
 	@Override

@@ -164,7 +164,7 @@ export class GesuchstellerDashboardListViewController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: antrag.antragId,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.dossier.fall.id
+                    dossierId: this.dossier.id
                 });
             }
         } else {
@@ -176,7 +176,7 @@ export class GesuchstellerDashboardListViewController {
                     gesuchId: this.antragList[0].antragId,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.dossier.fall.id
+                    dossierId: this.dossier.id
                 });
             } else {
                 // Dies ist das erste Gesuch
@@ -185,7 +185,7 @@ export class GesuchstellerDashboardListViewController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: null,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.dossier.fall.id
+                    dossierId: this.dossier.id
                 });
             }
         }

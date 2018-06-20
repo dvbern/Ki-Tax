@@ -180,10 +180,12 @@ public class GesuchsperiodeResource {
 	@SuppressWarnings("InstanceMethodNamingConvention")
 	@Nonnull
 	@GET
-	@Path("/unclosed/{fallId}")
+	@Path("/unclosed/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nonnull @PathParam("fallId") String fallId) {
+	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
+		@Nonnull @PathParam("dossierId") String fallId) {
+
 		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(fallId).stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())

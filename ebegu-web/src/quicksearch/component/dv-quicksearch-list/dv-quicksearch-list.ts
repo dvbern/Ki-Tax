@@ -167,7 +167,7 @@ export class DVQuicksearchListController {
 
     private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO) {
         if (isCtrlKeyPressed) {
-            let url = this.$state.href('mitteilungen', {fallId: fallAntrag.dossierId});
+            let url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
             this.$state.go('mitteilungen', {dossierId: fallAntrag.dossierId});

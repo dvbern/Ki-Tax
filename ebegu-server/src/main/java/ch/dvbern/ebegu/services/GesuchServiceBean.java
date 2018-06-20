@@ -556,6 +556,28 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
+	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@Nonnull
+	public List<String> getAllGesuchIDsForDossier(String dossierId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		query.select(root.get(Gesuch_.id));
+
+		ParameterExpression<String> dossierIdParam = cb.parameter(String.class, "dossierId");
+
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
+		query.where(dossierPredicate);
+		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
+		TypedQuery<String> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(dossierIdParam, dossierId);
+
+		return q.getResultList();
+
+	}
+
+	@Override
 	@Nonnull
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public List<Gesuch> getAllGesucheForFallAndPeriod(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
@@ -1115,7 +1137,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				LOG.error("Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch " + gesuch.getId(), e);
+				LOG.error("Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch {}", gesuch.getId(), e);
 				anzahl--;
 			}
 		}
@@ -1159,7 +1181,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				LOG.error("Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch " + gesuch.getId(), e);
+				LOG.error("Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch {}", gesuch.getId(), e);
 				anzahl--;
 			}
 		}
@@ -1186,7 +1208,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				}
 				removeGesuch(gesuch.getId(), typ);
 			} catch (MailException e) {
-				LOG.error("Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch " + gesuch.getId(), e);
+				LOG.error("Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch {}", gesuch.getId(), e);
 				anzahl--;
 			}
 		}
@@ -1260,11 +1282,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void removeOnlineMutation(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
+		// TODO KIBON-6 dies muss mit dem dossier und nicht mit dem fall
 		logDeletingOfGesuchstellerAntrag(fall, gesuchsperiode);
 		final Gesuch onlineMutation = findOnlineMutation(fall, gesuchsperiode);
 		moveBetreuungmitteilungenToPreviousAntrag(onlineMutation);
-		List<Betreuung> betreuungen = new ArrayList<>();
-		betreuungen.addAll(onlineMutation.extractAllBetreuungen());
+		List<Betreuung> betreuungen = new ArrayList<>(onlineMutation.extractAllBetreuungen());
 		superAdminService.removeGesuch(onlineMutation.getId());
 
 		mailService.sendInfoBetreuungGeloescht(betreuungen);
@@ -1308,10 +1330,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void removeOnlineFolgegesuch(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
+		// TODO KIBON-6 dies muss mit dem dossier und nicht mit dem fall
 		logDeletingOfGesuchstellerAntrag(fall, gesuchsperiode);
 		Gesuch gesuch = findOnlineFolgegesuch(fall, gesuchsperiode);
-		List<Betreuung> betreuungen = new ArrayList<>();
-		betreuungen.addAll(gesuch.extractAllBetreuungen());
+		List<Betreuung> betreuungen = new ArrayList<>(gesuch.extractAllBetreuungen());
 		superAdminService.removeGesuch(gesuch.getId());
 
 		mailService.sendInfoBetreuungGeloescht(betreuungen);
@@ -1338,8 +1360,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen()) {
 			throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
 		}
-		List<Betreuung> betreuungen = new ArrayList<>();
-		betreuungen.addAll(gesuch.extractAllBetreuungen());
+		List<Betreuung> betreuungen = new ArrayList<>(gesuch.extractAllBetreuungen());
 		// Bei Erstgesuch wird auch der Fall mitgelöscht
 		if (gesuch.getTyp() == AntragTyp.ERSTGESUCH) {
 			superAdminService.removeFall(gesuch.getFall());
@@ -1361,8 +1382,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
 			throw new EbeguRuntimeException("removeGesuchstellerAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
 		}
-		List<Betreuung> betreuungen = new ArrayList<>();
-		betreuungen.addAll(gesuch.extractAllBetreuungen());
+		List<Betreuung> betreuungen = new ArrayList<>(gesuch.extractAllBetreuungen());
 		superAdminService.removeGesuch(gesuch.getId());
 
 		mailService.sendInfoBetreuungGeloescht(betreuungen);
@@ -1525,19 +1545,19 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private void logDeletingOfGesuchstellerAntrag(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode) {
 		LOG.info("****************************************************");
 		LOG.info("Online Gesuch wird gelöscht:");
-		LOG.info("Benutzer: " + principalBean.getBenutzer().getUsername());
-		LOG.info("Fall: " + fall.getFallNummer());
-		LOG.info("Gesuchsperiode: " + gesuchsperiode.getGesuchsperiodeString());
+		LOG.info("Benutzer: {}", principalBean.getBenutzer().getUsername());
+		LOG.info("Fall: {}", fall.getFallNummer());
+		LOG.info("Gesuchsperiode: {}", gesuchsperiode.getGesuchsperiodeString());
 		LOG.info("****************************************************");
 	}
 
 	private void logDeletingOfAntrag(@Nonnull Gesuch gesuch) {
 		LOG.info("****************************************************");
 		LOG.info("Gesuch wird gelöscht:");
-		LOG.info("Benutzer: " + principalBean.getBenutzer().getUsername());
-		LOG.info("Fall: " + gesuch.getFall().getFallNummer());
-		LOG.info("Gesuchsperiode: " + gesuch.getGesuchsperiode().getGesuchsperiodeString());
-		LOG.info("Gesuch-Id: " + gesuch.getId());
+		LOG.info("Benutzer: {}", principalBean.getBenutzer().getUsername());
+		LOG.info("Fall: {}", gesuch.getFall().getFallNummer());
+		LOG.info("Gesuchsperiode: {}", gesuch.getGesuchsperiode().getGesuchsperiodeString());
+		LOG.info("Gesuch-Id: {}", gesuch.getId());
 		LOG.info("****************************************************");
 	}
 
