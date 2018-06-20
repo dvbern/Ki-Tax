@@ -75,6 +75,11 @@ public interface Authorizer {
 	void checkReadAuthorizationFaelle(@Nullable Collection<Fall> faelle);
 
 	/**
+	 * prueft ob der aktuell eingeloggte benutzer fuer ALLE uebergebnen faelle berechtigt ist
+	 */
+	void checkReadAuthorizationDossiers(@Nullable Collection<Dossier> dossiers);
+
+	/**
 	 * prueft, ob der aktuell eingeloggte Benutzer das uebergebene Dossier lesen darf
 	 */
 	void checkReadAuthorizationDossier(@Nullable Dossier dossier);

@@ -137,6 +137,7 @@ public class DatabaseMigrationServiceBean extends AbstractBaseService implements
 		return new AsyncResult<>(Boolean.TRUE);
 	}
 
+	// TODO KIBON alle scripts loeschen
 
 	@SuppressWarnings({ "PMD.NcssMethodCount", "OverlyComplexMethod", "OverlyNestedMethod" })
 	private void processScript1105_GesuchGueltigDatumVerfuegt() {

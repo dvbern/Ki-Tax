@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -140,6 +142,16 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			.forEach(gesuch -> gesuchService.removeGesuch(gesuch, deletionCause));
 
 		persistence.remove(dossierToRemove);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Dossier> getAllDossiers(boolean doAuthCheck) {
+		List<Dossier> dossiers = new ArrayList<>(criteriaQueryHelper.getAll(Dossier.class));
+		if (doAuthCheck) {
+			authorizer.checkReadAuthorizationDossiers(dossiers);
+		}
+		return dossiers;
 	}
 
 	@Nonnull

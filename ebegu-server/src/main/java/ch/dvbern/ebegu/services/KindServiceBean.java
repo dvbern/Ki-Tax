@@ -193,11 +193,11 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		Predicate predicateVorname = cb.equal(joinKind.get(Kind_.vorname), kindContainer.getKindJA().getVorname());
 		Predicate predicateGeburtsdatum = cb.equal(joinKind.get(Kind_.geburtsdatum), kindContainer.getKindJA().getGeburtsdatum());
 		// Aber nicht vom selben Fall
-		Predicate predicateOtherFall = cb.notEqual(joinGesuch.get(Gesuch_.dossier).get(Dossier_.fall), kindContainer.getGesuch().getFall());
+		Predicate predicateOtherDossier = cb.notEqual(joinGesuch.get(Gesuch_.dossier), kindContainer.getGesuch().getDossier());
 		// Nur das zuletzt gueltige Gesuch
 		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.FOR_KIND_DUBLETTEN);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.timestampErstellt)));
-		query.where(predicateName, predicateVorname, predicateGeburtsdatum, predicateOtherFall, predicateStatus);
+		query.where(predicateName, predicateVorname, predicateGeburtsdatum, predicateOtherDossier, predicateStatus);
 
 		return persistence.getCriteriaResults(query);
 	}

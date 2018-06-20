@@ -61,6 +61,15 @@ public interface DossierService {
 	void removeDossier(@Nonnull String dossierId, GesuchDeletionCause deletionCause);
 
 	/**
+	 * Gibt alle existierenden Dossiers zurueck.
+	 *
+	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) für alle Dossiers geprüft werden muessen.
+	 * @return Liste aller Dossiers aus der DB
+	 */
+	@Nonnull
+	Collection<Dossier> getAllDossiers(boolean doAuthCheck);
+
+	/**
 	 * Erstellt ein Dossier und einen Fall (beides, falls noch nicht vorhanden) fuer den eingeloggten
 	 * Benutzer als GS (Besitzer) fuer die uebergebene Gemeinde
 	 */

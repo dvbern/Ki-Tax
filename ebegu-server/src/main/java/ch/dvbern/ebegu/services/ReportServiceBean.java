@@ -1136,7 +1136,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private Gesuch getGueltigesGesuch(Map<Long, Gesuch> neustesVerfuegtesGesuchCache, Gesuch gesuch) {
 		Gesuch gueltigeGesuch;
 		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(gesuch.getFall().getFallNummer(),
-			gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getFall(), false)
+			gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false)
 				.orElse(gesuch));
 		return gueltigeGesuch;
 	}

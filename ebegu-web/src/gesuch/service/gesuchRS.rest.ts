@@ -249,8 +249,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public getIdOfNewestGesuch(gesuchsperiodeId: string, fallId: string): IPromise<string> {
-        return this.http.get(this.serviceURL + '/newestid/' + encodeURIComponent(gesuchsperiodeId) + '/' + encodeURIComponent(fallId))
+    public getIdOfNewestGesuch(gesuchsperiodeId: string, dossierId: string): IPromise<string> {
+        return this.http.get(this.serviceURL + '/newestid/' + encodeURIComponent(gesuchsperiodeId) + '/' + encodeURIComponent(dossierId))
             .then((response: any) => {
                 return response.data;
             });

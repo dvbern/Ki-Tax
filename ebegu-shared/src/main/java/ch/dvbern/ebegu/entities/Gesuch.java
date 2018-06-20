@@ -555,7 +555,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		}
 		final Gesuch otherAntrag = (Gesuch) other;
 		return Objects.equals(this.getEingangsdatum(), otherAntrag.getEingangsdatum())
-			&& Objects.equals(this.getFall(), otherAntrag.getFall())
+			&& Objects.equals(this.getDossier(), otherAntrag.getDossier())
 			&& Objects.equals(this.getGesuchsperiode(), otherAntrag.getGesuchsperiode());
 	}
 

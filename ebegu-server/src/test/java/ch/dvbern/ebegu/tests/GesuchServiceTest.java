@@ -173,11 +173,11 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(insertedGesuch.getId());
 		Assert.assertTrue(gesuch.isPresent());
-		Assert.assertEquals(insertedGesuch.getFall().getId(), gesuch.get().getFall().getId());
+		Assert.assertEquals(insertedGesuch.getDossier().getId(), gesuch.get().getDossier().getId());
 
 		gesuch.get().setDossier(TestDataUtil.createAndPersistDossierAndFall(persistence));
 		final Gesuch updated = gesuchService.updateGesuch(gesuch.get(), false, null);
-		Assert.assertEquals(updated.getFall().getId(), gesuch.get().getFall().getId());
+		Assert.assertEquals(updated.getDossier().getId(), gesuch.get().getDossier().getId());
 
 	}
 
@@ -258,7 +258,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(gesuchOptional.isPresent());
 		Assert.assertEquals(AntragTyp.MUTATION, gesuchOptional.get().getTyp());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, gesuchOptional.get().getStatus());
-		Assert.assertEquals(gesuchVerfuegt.getFall(), gesuchOptional.get().getFall());
+		Assert.assertEquals(gesuchVerfuegt.getDossier(), gesuchOptional.get().getDossier());
 		Assert.assertTrue(gesuchOptional.get().isNew());
 
 		// Sicherstellen, dass alle Objekte kopiert und nicht referenziert sind.
@@ -299,7 +299,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 		Assert.assertEquals(AntragTyp.ERNEUERUNGSGESUCH, folgegesuch.getTyp());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, folgegesuch.getStatus());
-		Assert.assertEquals(erstgesuch.getFall(), folgegesuch.getFall());
+		Assert.assertEquals(erstgesuch.getDossier(), folgegesuch.getDossier());
 		Assert.assertTrue(folgegesuch.isNew());
 
 		// Sicherstellen, dass alle Objekte kopiert und nicht referenziert sind.
@@ -477,7 +477,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void testGetAllGesucheForFallAndPeriod() {
+	public void testGetAllGesucheForDossierAndPeriod() {
 		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
@@ -492,10 +492,10 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch1415_1 = TestDataUtil.createGesuch(dossier, otherPeriod, AntragStatus.IN_BEARBEITUNG_JA);
 		persistence.persist(gesuch1415_1);
 
-		final List<Gesuch> allGesuche_1 = gesuchService.getAllGesucheForFallAndPeriod(gesuch1516_1.getFall(), gesuch1516_1.getGesuchsperiode());
+		final List<Gesuch> allGesuche_1 = gesuchService.getAllGesucheForDossierAndPeriod(gesuch1516_1.getDossier(), gesuch1516_1.getGesuchsperiode());
 		Assert.assertEquals(2, allGesuche_1.size());
 
-		final List<Gesuch> allGesuche_2 = gesuchService.getAllGesucheForFallAndPeriod(gesuch1516_1.getFall(), gesuch1415_1.getGesuchsperiode());
+		final List<Gesuch> allGesuche_2 = gesuchService.getAllGesucheForDossierAndPeriod(gesuch1516_1.getDossier(), gesuch1415_1.getGesuchsperiode());
 		Assert.assertEquals(1, allGesuche_2.size());
 	}
 

@@ -51,7 +51,6 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -806,7 +805,6 @@ public class GesuchResource {
 
 	}
 
-	// TODO KIBON-6 muss mit dossier funktionieren
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@ApiOperation(value = "Ermittelt ob das uebergebene Gesuch das neuestes dieses Falls und Jahres ist.", response = Boolean.class)
 	@Nullable
@@ -822,29 +820,30 @@ public class GesuchResource {
 		return Response.ok(neustesGesuch).build();
 	}
 
-	// TODO KIBON-6 muss mit dossier funktionieren
 	@ApiOperation(value = "Gibt die ID des neuesten Gesuchs dieses Falls und Jahres zurueck. Wenn es noch keinen Fall, kein Gesuch oder keine Gesuchsperiode "
 		+ "gibt, wird null zurueckgegeben", response = String.class)
 	@Nonnull
 	@GET
-	@Path("/newestid/{gesuchsperiodeId}/{fallId}")
+	@Path("/newestid/{gesuchsperiodeId}/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getIdOfNewestGesuch(@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
-		Objects.requireNonNull(fallJaxId.getId());
+		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJaxId) {
+
+		Objects.requireNonNull(dossierJaxId.getId());
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 
-		Optional<Fall> fall = fallService.findFall(fallJaxId.getId());
+		Optional<Dossier> dossier = dossierService.findDossier(dossierJaxId.getId());
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeJaxId.getId());
 
-		if (!fall.isPresent()) {
-			throw new EbeguEntityNotFoundException("getIdOfNewestGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallJaxId.getId());
+		if (!dossier.isPresent()) {
+			throw new EbeguEntityNotFoundException("getIdOfNewestGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJaxId.getId());
 		}
 		if (!gesuchsperiode.isPresent()) {
 			throw new EbeguEntityNotFoundException("getIdOfNewestGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeJaxId.getId());
 		}
-		Optional<String> idOfNeuestesGesuch = gesuchService.getIdOfNeuestesGesuch(gesuchsperiode.get(), fall.get());
+
+		Optional<String> idOfNeuestesGesuch = gesuchService.getIdOfNeuestesGesuch(gesuchsperiode.get(), dossier.get());
 		if (idOfNeuestesGesuch.isPresent()) {
 			return Response.ok(idOfNeuestesGesuch.get()).build();
 		}
