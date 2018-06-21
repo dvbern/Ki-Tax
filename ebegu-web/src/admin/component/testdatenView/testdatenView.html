@@ -256,16 +256,15 @@
             </div>
 
             <!-- Mutieren -->
-            <!-- TODO KIBON-6 dies geht nicht mehr nur mit dem Fa°ll. Muss bei Dossier-->
             <h2 class="marginTop20">
                 <span data-translate="Mutiere"></span>
             </h2>
             <div class="row">
                 <div class="col-md-12 dv-input-container-small">
                     <dv-input-container class="form-group">
-                        <label class="md-no-float" data-translate="FALL_UPPER" for="fallid">
+                        <label class="md-no-float" data-translate="DOSSIER_ID" for="dossierid">
                         </label>
-                        <input id="fallid" type="text" name="fallid" ng-model="vm.fallId"
+                        <input id="dossierid" type="text" name="dossierid" ng-model="vm.dossierid"
                                dv-max-length class="form-control" style="background: #F0F0F0;">
                     </dv-input-container>
                 </div>
@@ -303,7 +302,7 @@
                         <div class="col-md-4">
                             <button type="button" class=" btn-testfall"
                                     ng-click="vm.mutiereFallHeirat()">
-                                <span data-translate="FALL_MUTIEREN_HEIRAT"></span>
+                                <span data-translate="DOSSIER_MUTIEREN_HEIRAT"></span>
                             </button>
 
                         </div>
@@ -329,7 +328,7 @@
                         <div class="col-md-4">
                             <button type="button" class=" btn-testfall"
                                     ng-click="vm.mutiereFallScheidung()">
-                                <span data-translate="FALL_MUTIEREN_SCHEIDUNG"></span>
+                                <span data-translate="DOSSIER_MUTIEREN_SCHEIDUNG"></span>
                             </button>
 
                         </div>

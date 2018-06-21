@@ -826,25 +826,24 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@Nonnull
 	@RolesAllowed(SUPER_ADMIN)
-	public Optional<Gesuch> testfallMutieren(@Nonnull Long fallNummer, @Nonnull String gesuchsperiodeId,
+	public Optional<Gesuch> testfallMutieren(@Nonnull String dossierID, @Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum) {
 		// Mutiert wird immer das Gesuch mit dem letzten Verfügungsdatum
-		final Optional<Fall> fall = fallService.findFallByNumber(fallNummer);
+		final Optional<Dossier> dossier = dossierService.findDossier(dossierID);
 		final Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
 
-		// TODO KIBON-6 dies muss mit dossier und nicht mit fallnummer
-//		if (fall.isPresent() && gesuchsperiode.isPresent()) {
-//			if (!isThereAnyOpenMutation(fall.get(), gesuchsperiode.get())) {
-//				Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode.get(), fall.get(), true);
-//				Gesuch gesuchForMutation = gesuchForMutationOpt.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Kein Verfuegtes Gesuch fuer Fallnummer " + fallNummer));
-//				return getGesuchMutation(eingangsdatum, gesuchForMutation);
-//			}
-//
-//			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION, fall.getdossier().getId(),
-//				gesuchsperiodeId);
-//		}
+		if (dossier.isPresent() && gesuchsperiode.isPresent()) {
+			if (!isThereAnyOpenMutation(dossier.get(), gesuchsperiode.get())) {
+				Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode.get(), dossier.get(), true);
+				Gesuch gesuchForMutation = gesuchForMutationOpt.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Kein Verfuegtes Gesuch fuer Fallnummer " + dossierID));
+				return getGesuchMutation(eingangsdatum, gesuchForMutation);
+			}
 
-		throw new EbeguEntityNotFoundException("antragMutieren", "fall oder gesuchsperiode konnte nicht geladen werden  fallNr:" + fallNummer + "gsPerID" + gesuchsperiodeId);
+			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION, dossier.get().getId(),
+				gesuchsperiodeId);
+		}
+
+		throw new EbeguEntityNotFoundException("antragMutieren", "dossier oder gesuchsperiode konnte nicht geladen werden  fallNr:" + dossierID + "gsPerID" + gesuchsperiodeId);
 	}
 
 	private boolean isThereAnyOpenMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {

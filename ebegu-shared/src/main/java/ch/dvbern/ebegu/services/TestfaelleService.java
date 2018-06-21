@@ -73,17 +73,17 @@ public interface TestfaelleService {
 		boolean verfuegen);
 
 	@Nullable
-	Gesuch mutierenHeirat(@Nonnull Long fallNummer,
+	Gesuch mutierenHeirat(@Nonnull String dossierId,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen);
 
 	@Nonnull
-	Gesuch mutierenFinSit(@Nonnull Long fallNummer, @Nonnull String gesuchsperiodeId,
+	Gesuch mutierenFinSit(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
 							@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen,
 							BigDecimal nettoLohn, boolean ignorieren);
 
 	@Nullable
-	Gesuch mutierenScheidung(@Nonnull Long fallNummer,
+	Gesuch mutierenScheidung(@Nonnull String dossierId,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen);
 
