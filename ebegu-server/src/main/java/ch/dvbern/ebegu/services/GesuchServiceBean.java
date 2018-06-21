@@ -1039,7 +1039,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Root<Gesuch> root = query.from(Gesuch.class);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateFallNummer = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer), fallnummer); // TODO KIBON es sollte pro Dossier sein
+		Predicate predicateFallNummer = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer), fallnummer); // TODO KIBON es sollte pro Dossier sein <- existiert schulamtInterface in Kibon? wie??? zuerst dies klaeren
 		Predicate predicateFinSit = root.get(Gesuch_.finSitStatus).isNotNull();
 
 		query.where(predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
