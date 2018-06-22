@@ -111,7 +111,7 @@ export class GesuchstellerDashboardListViewController {
             this._activeGesuchsperiodenList = angular.copy(response);
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
             for (let gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.fall.id).then(response => {
+                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
                 });
             }
@@ -164,7 +164,7 @@ export class GesuchstellerDashboardListViewController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: antrag.antragId,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.dossier.fall.id
+                    dossierId: this.dossier.id
                 });
             }
         } else {
@@ -176,7 +176,7 @@ export class GesuchstellerDashboardListViewController {
                     gesuchId: this.antragList[0].antragId,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.dossier.fall.id
+                    dossierId: this.dossier.id
                 });
             } else {
                 // Dies ist das erste Gesuch
@@ -185,7 +185,7 @@ export class GesuchstellerDashboardListViewController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: null,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.dossier.fall.id
+                    dossierId: this.dossier.id
                 });
             }
         }

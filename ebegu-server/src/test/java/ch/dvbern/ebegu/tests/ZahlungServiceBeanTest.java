@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -48,7 +49,6 @@ import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AntragStatusHistoryService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -90,9 +90,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Inject
 	private AntragStatusHistoryService antragStatusHistoryService;
@@ -452,7 +449,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		return persistence.merge(gesuch);
 	}
 
-	@Nullable
+	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
 		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen);
 	}
@@ -460,13 +457,13 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Nullable
 	private Gesuch createMutationHeirat(@Nullable Gesuch gesuch, boolean verfuegen) {
 		Assert.assertNotNull(gesuch);
-		return testfaelleService.mutierenHeirat(gesuch.getFall().getFallNummer(), gesuch.getGesuchsperiode().getId(),
+		return testfaelleService.mutierenHeirat(gesuch.getDossier().getId(), gesuch.getGesuchsperiode().getId(),
 			LocalDate.of(TestDataUtil.PERIODE_JAHR_0, Month.DECEMBER, 15), LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.JANUARY, 15), verfuegen);
 	}
 
 	private Gesuch createMutationFinSit(@Nullable Gesuch gesuch, boolean verfuegen, LocalDateTime timestampVerfuegt, BigDecimal nettoLohn, boolean ignorieren) {
 		Assert.assertNotNull(gesuch);
-		final Gesuch mutation = testfaelleService.mutierenFinSit(gesuch.getFall().getFallNummer(), gesuch.getGesuchsperiode().getId(),
+		final Gesuch mutation = testfaelleService.mutierenFinSit(gesuch.getDossier().getId(), gesuch.getGesuchsperiode().getId(),
 			LocalDate.of(TestDataUtil.PERIODE_JAHR_0, Month.DECEMBER, 15), LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.JANUARY, 15),
 			verfuegen, nettoLohn, ignorieren);// Im Gesuch ist nettolohn nicht definiert, also 0. Hier machen wir es hoeher
 		mutation.setTimestampVerfuegt(timestampVerfuegt);
@@ -503,35 +500,17 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = createMutationBetreuungspensum(erstgesuch, eingangsdatum, pensum);
 		Assert.assertNotNull(gesuch);
 		gesuchService.postGesuchVerfuegen(gesuch);
-		gesuch = gesuchService.findGesuch(gesuch.getId()).get();
-		gesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
-		gesuchService.updateGesuch(gesuch, false, null);
-		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch);
+
+		final Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(gesuch.getId());
+		Assert.assertTrue(gesuchOpt.isPresent());
+		Gesuch loadedGesuch = gesuchOpt.get();
+		loadedGesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
+		gesuchService.updateGesuch(loadedGesuch, false, null);
+		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(loadedGesuch);
 		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);
-		return gesuch;
-	}
-
-	@Nullable
-	private Gesuch createMutationEinkommen(Gesuch erstgesuch, LocalDate eingangsdatum) {
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), eingangsdatum);
-		if (gesuchOptional.isPresent()) {
-			final Gesuch mutation = gesuchOptional.get();
-			Objects.requireNonNull(mutation.getGesuchsteller1());
-			Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
-			mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(60000d));
-			gesuchService.createGesuch(mutation);
-			// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte richtig gesetzt wird. So wird auch dies getestet
-			testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
-			verfuegungService.calculateVerfuegung(mutation);
-			List<Betreuung> betreuungs = mutation.extractAllBetreuungen();
-			for (Betreuung betreuung : betreuungs) {
-				verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
-			}
-			return mutation;
-		}
-		return gesuchOptional.orElse(null);
+		return loadedGesuch;
 	}
 
 	@Test

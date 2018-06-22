@@ -384,7 +384,7 @@ export class NavigatorController {
                 eingangsart: this.gesuchModelManager.getGesuch().eingangsart,
                 gesuchId: gesuchId,
                 gesuchsperiodeId: this.gesuchModelManager.getGesuch().gesuchsperiode.id,
-                fallId: this.gesuchModelManager.getFall().id
+                dossierId: this.gesuchModelManager.getDossier().id
             });
 
         } else if (stepName === TSWizardStepName.FAMILIENSITUATION) {

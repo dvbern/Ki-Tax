@@ -469,10 +469,9 @@ export class GesuchToolbarController implements IDVFocusableController {
             eingangsart = TSEingangsart.PAPIER;
         }
         this.$state.go('gesuch.mutation', {
-            //TODO (KIBON-6) Mutieren pro Dossier
             createMutation: true,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
-            fallId: this.getGesuch().dossier.fall.id,
+            dossierId: this.getGesuch().dossier.id,
             eingangsart: eingangsart,
             gesuchsperiodeId: this.getGesuch().gesuchsperiode.id
         });
@@ -517,7 +516,7 @@ export class GesuchToolbarController implements IDVFocusableController {
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
             eingangsart: eingangsart,
             gesuchsperiodeId: this.neuesteGesuchsperiode.id,
-            fallId: this.dossier.fall.id //TODO (KIBON-6) Erneuern pro Dossier
+            dossierId: this.dossier.id,
         });
     }
 

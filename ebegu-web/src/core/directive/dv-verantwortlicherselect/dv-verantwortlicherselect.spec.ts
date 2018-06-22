@@ -66,7 +66,6 @@ describe('dvVerantwortlicherSelect', function () {
         it('does nothing if the passed user is empty, verantwortlicherBG remains as it was before', () => {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
-            spyOn(gesuchModelManager, 'updateFall');
 
             verantwortlicherselectController.setVerantwortlicher(undefined);
             expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
@@ -74,7 +73,6 @@ describe('dvVerantwortlicherSelect', function () {
         it('sets the user as the verantwortlicherBG of the current fall', () => {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
-            spyOn(gesuchModelManager, 'updateFall');
 
             let newUser: TSUser = new TSUser('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);

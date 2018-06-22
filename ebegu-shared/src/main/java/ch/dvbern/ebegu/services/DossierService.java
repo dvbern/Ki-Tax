@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
 /**
  * Service zum Verwalten von Dossiers
@@ -53,6 +54,20 @@ public interface DossierService {
 	 */
 	@Nonnull
 	Dossier saveDossier(@Nonnull Dossier dossier);
+
+	/**
+	 * entfernt ein Dossier aus der Database. Es wird ein LogEintrag erstellt mit dem Grund des Löschens-
+	 */
+	void removeDossier(@Nonnull String dossierId, GesuchDeletionCause deletionCause);
+
+	/**
+	 * Gibt alle existierenden Dossiers zurueck.
+	 *
+	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) für alle Dossiers geprüft werden muessen.
+	 * @return Liste aller Dossiers aus der DB
+	 */
+	@Nonnull
+	Collection<Dossier> getAllDossiers(boolean doAuthCheck);
 
 	/**
 	 * Erstellt ein Dossier und einen Fall (beides, falls noch nicht vorhanden) fuer den eingeloggten

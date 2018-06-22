@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -112,7 +113,7 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 		fallService.saveFall(fall);
 		Assert.assertEquals(1, fallService.getAllFalle(false).size());
 
-		fallService.removeFall(fall);
+		fallService.removeFall(fall, GesuchDeletionCause.USER);
 		Assert.assertEquals(0, fallService.getAllFalle(false).size());
 	}
 

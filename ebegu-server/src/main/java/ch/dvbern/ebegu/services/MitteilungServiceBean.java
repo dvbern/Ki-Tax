@@ -622,7 +622,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			//Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
 				throw new EbeguExistingAntragException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-					exception, gesuch.getFall().getId(), gesuch.getGesuchsperiode().getId());
+					exception, gesuch.getDossier().getId(), gesuch.getGesuchsperiode().getId());
 			}
 			throw exception;
 		}

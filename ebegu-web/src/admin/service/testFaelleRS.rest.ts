@@ -53,8 +53,8 @@ export class TestFaelleRS {
         return this.http.get(this.serviceURL + '/testfall/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + bestaetigt + '/' + verfuegen);
     }
 
-    public mutiereFallHeirat(fallNummer: Number, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<String> {
-        return this.http.get(this.serviceURL + '/mutationHeirat/' + fallNummer + '/' +
+    public mutiereFallHeirat(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<String> {
+        return this.http.get(this.serviceURL + '/mutationHeirat/' + dossierid + '/' +
             encodeURIComponent(gesuchsperiodeid), {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
@@ -63,8 +63,8 @@ export class TestFaelleRS {
         });
     }
 
-    public mutiereFallScheidung(fallNummer: Number, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<String> {
-        return this.http.get(this.serviceURL + '/mutationScheidung/' + fallNummer + '/' +
+    public mutiereFallScheidung(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<String> {
+        return this.http.get(this.serviceURL + '/mutationScheidung/' + dossierid + '/' +
             encodeURIComponent(gesuchsperiodeid), {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),

@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -38,6 +40,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
@@ -65,6 +68,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private GesuchService gesuchService;
 
 	@Inject
 	private GemeindeService gemeindeService;
@@ -122,6 +128,30 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		dossier.setGemeinde(bern);
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
+	}
+
+	@Override
+	public void removeDossier(@Nonnull String dossierId, GesuchDeletionCause deletionCause) {
+		Objects.requireNonNull(dossierId);
+
+		final Optional<Dossier> optDossier = findDossier(dossierId);
+		final Dossier dossierToRemove = optDossier.orElseThrow(()
+			-> new EbeguEntityNotFoundException("removeDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+
+		gesuchService.getAllGesuchIDsForDossier(dossierToRemove.getId())
+			.forEach(gesuch -> gesuchService.removeGesuch(gesuch, deletionCause));
+
+		persistence.remove(dossierToRemove);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Dossier> getAllDossiers(boolean doAuthCheck) {
+		List<Dossier> dossiers = new ArrayList<>(criteriaQueryHelper.getAll(Dossier.class));
+		if (doAuthCheck) {
+			authorizer.checkReadAuthorizationDossiers(dossiers);
+		}
+		return dossiers;
 	}
 
 	@Nonnull

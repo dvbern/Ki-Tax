@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -36,7 +37,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -81,6 +82,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private DossierService dossierService;
 
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
@@ -180,15 +184,14 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			Collection<Gesuch> gesucheOfPeriode = criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, gesuchsperiode, Gesuch_.gesuchsperiode);
 			for (Gesuch gesuch : gesucheOfPeriode) {
 				Fall fall = gesuch.getFall();
+				Dossier dossier = gesuch.getDossier();
+
 				// Gesuch, WizardSteps, Mahnungen, Dokumente, AntragstatusHistory, Zahlungspositionen
 				LOGGER.info("Deleting Gesuch of Fall {}", gesuch.getFall().getFallNummer());
 				gesuchService.removeGesuch(gesuch.getId(), GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
-				// Feststellen, ob es das letzte Gesuch dieses Falles war
-				List<String> allGesuchIDsForFall = gesuchService.getAllGesuchIDsForFall(fall.getId());
-				if (allGesuchIDsForFall.isEmpty()) {
-					LOGGER.info("This was the last Gesuch of Fall, deleting Fall {}", fall.getFallNummer());
-					fallService.removeFall(fall);
-				}
+
+				removeDossierIfEmpty(dossier, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
+				removeFallIfEmpty(fall, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 			}
 			// FerieninselStammdaten dieser Gesuchsperiode loeschen
 			Collection<FerieninselStammdaten> ferieninselStammdatenList = ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsPeriodeId);
@@ -200,6 +203,22 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			persistence.remove(gesuchsperiode);
 		} else {
 			throw new EbeguRuntimeException("removeGesuchsperiode", ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_REMOVED);
+		}
+	}
+
+	private void removeFallIfEmpty(@Nonnull Fall fall, @Nonnull GesuchDeletionCause cause) {
+		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
+		if (dossiersByFall.isEmpty()) {
+			LOGGER.info("This was the last Gesuch/Dossier of Fall, deleting Fall {}", fall.getFallNummer());
+			fallService.removeFall(fall, cause);
+		}
+	}
+
+	private void removeDossierIfEmpty(@Nonnull Dossier dossier, @Nonnull GesuchDeletionCause cause) {
+		List<String> allGesuchIDsForDossier = gesuchService.getAllGesuchIDsForDossier(dossier.getId());
+		if (allGesuchIDsForDossier.isEmpty()) {
+			LOGGER.info("This was the last Gesuch of Dossier, deleting Dossier {}", dossier.getDossierNummer());
+			dossierService.removeDossier(dossier.getId(), cause);
 		}
 	}
 
@@ -223,25 +242,25 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(String fallId) {
-		Fall fall = persistence.find(Fall.class, fallId);
-		if (fall == null) {
+	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nullable String dossierId) {
+		Dossier dossier = persistence.find(Dossier.class, dossierId);
+		if (dossier == null) {
 			throw new EbeguEntityNotFoundException("getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden",
-				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, fallId);
+				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, dossierId);
 		}
-		final Collection<Gesuchsperiode> gesuchsperiodenImStatus = getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
+		final Collection<Gesuchsperiode> gesuchsperiodenImStatus = getAllNichtAbgeschlosseneGesuchsperioden();
 		if (!gesuchsperiodenImStatus.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 			Root<Gesuch> root = query.from(Gesuch.class);
-			Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
+			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
 			Predicate gesuchsperiodePredicate = root.get(Gesuch_.gesuchsperiode).in(gesuchsperiodenImStatus);
 			// Es interessieren nur die Gesuche, die entweder Papier oder Online und freigegeben sind, also keine, die in Bearbeitung GS sind.
 
 			Predicate gesuchStatus = root.get(Gesuch_.status).in(AntragStatus.getInBearbeitungGSStates()).not();
 
-			query.where(fallPredicate, gesuchsperiodePredicate, gesuchStatus);
+			query.where(dossierPredicate, gesuchsperiodePredicate, gesuchStatus);
 			List<Gesuch> criteriaResults = persistence.getCriteriaResults(query);
 			// Die Gesuchsperioden, die jetzt in der Liste sind, sind sicher besetzt (eventuell noch weitere, sprich Online-Gesuche)
 			for (Gesuch criteriaResult : criteriaResults) {

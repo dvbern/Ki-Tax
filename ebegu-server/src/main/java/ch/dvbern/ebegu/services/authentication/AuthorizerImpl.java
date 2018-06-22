@@ -162,6 +162,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkReadAuthorizationDossiers(Collection<Dossier> dossiers) {
+		if (dossiers != null) {
+			dossiers.forEach(this::checkReadAuthorizationDossier);
+		}
+	}
+
+	@Override
 	public void checkReadAuthorizationDossier(@Nullable Dossier dossier) {
 		boolean allowed = isReadAuthorizedDossier(dossier);
 		if (!allowed) {

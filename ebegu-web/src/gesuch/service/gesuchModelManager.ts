@@ -352,24 +352,6 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Update den Fall
-     * @returns {IPromise<TSFall>}
-     */
-    public updateFall(): IPromise<TSFall> {
-        if (this.gesuch && this.gesuch.dossier.fall) {
-            return this.fallRS.updateFall(this.gesuch.dossier.fall).then((fallResponse: any) => {
-                let parsedFall = this.ebeguRestUtil.parseFall(this.gesuch.dossier.fall, fallResponse);
-                return this.gesuch.dossier.fall = angular.copy(parsedFall);
-            });
-        } else {
-            this.log.warn('Es wurde versucht einen undefined Fall zu speichern');
-            let deferred = this.$q.defer<TSFall>();
-            deferred.resolve(undefined);
-            return deferred.promise;
-        }
-    }
-
-    /**
      * Speichert den StammdatenToWorkWith.
      */
     public updateGesuchsteller(umzug: boolean): IPromise<TSGesuchstellerContainer> {
@@ -561,10 +543,10 @@ export default class GesuchModelManager {
      * @param forced
      * @param eingangsart
      * @param gesuchsperiodeId
-     * @param fallId
+     * @param dossierId
      * @return a void promise that is resolved once all subpromises are done
      */
-    public initGesuchWithEingangsart(forced: boolean, eingangsart: TSEingangsart, gesuchsperiodeId: string, fallId: string): IPromise<TSGesuch> {
+    public initGesuchWithEingangsart(forced: boolean, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string): IPromise<TSGesuch> {
         this.initGesuch(forced, eingangsart);
         let setGesuchsperiodeProm: IPromise<void>;
         if (gesuchsperiodeId) {
@@ -574,9 +556,9 @@ export default class GesuchModelManager {
         }
 
         let setFallProm: angular.IPromise<void>;
-        if (fallId) {
-            setFallProm = this.fallRS.findFall(fallId).then(foundFall => {
-                this.gesuch.dossier.fall = foundFall;
+        if (dossierId) {
+            setFallProm = this.dossierRS.findDossier(dossierId).then(foundDossier => {
+                this.gesuch.dossier = foundDossier;
             });
         }
 
@@ -609,27 +591,27 @@ export default class GesuchModelManager {
      * @param gesuchID
      * @param eingangsart
      * @param gesuchsperiodeId
-     * @param fallId
+     * @param dossierId
      */
-    public initMutation(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, fallId: string): void {
-        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, fallId, TSAntragTyp.MUTATION);
+    public initMutation(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string): void {
+        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.MUTATION);
     }
 
     /**
      * Diese Methode erstellt ein Fake-Erneuerungsgesuch als gesuch fuer das GesuchModelManager. Das Gesuch ist noch leer und hat
      * das ID des Gesuchs aus dem es erstellt wurde.
      */
-    public initErneuerungsgesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, fallId: string) {
-        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, fallId, TSAntragTyp.ERNEUERUNGSGESUCH);
+    public initErneuerungsgesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string) {
+        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.ERNEUERUNGSGESUCH);
     }
 
-    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, fallId: string, antragTyp: TSAntragTyp): void {
+    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string, antragTyp: TSAntragTyp): void {
         this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
             this.gesuch.gesuchsperiode = periode;
         });
         this.initAntrag(antragTyp, eingangsart);
-        this.fallRS.findFall(fallId).then(foundFall => {
-            this.gesuch.dossier.fall = foundFall;
+        this.dossierRS.findDossier(dossierId).then(foundDossier => {
+            this.gesuch.dossier = foundDossier;
         });
         this.gesuch.id = gesuchID; //setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
         if (TSEingangsart.ONLINE === eingangsart) {

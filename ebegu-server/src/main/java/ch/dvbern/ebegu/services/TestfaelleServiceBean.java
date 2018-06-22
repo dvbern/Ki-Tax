@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -147,7 +148,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	@Nonnull
-	@SuppressWarnings(value = { "PMD.NcssMethodCount", "PMD.AvoidDuplicateLiterals" })
+	@SuppressWarnings({ "PMD.NcssMethodCount", "PMD.AvoidDuplicateLiterals" })
 	public StringBuilder createAndSaveTestfaelle(@Nonnull String fallid,
 		@Nullable Integer iterationCount,
 		boolean betreuungenBestaetigt,
@@ -349,23 +350,23 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	public void removeGesucheOfGS(@Nonnull String username) {
 		Benutzer benutzer = benutzerService.findBenutzer(username).orElse(null);
 		Optional<Fall> existingFall = fallService.findFallByBesitzer(benutzer);
-		existingFall.ifPresent(fall -> fallService.removeFall(fall));
+		existingFall.ifPresent(fall -> fallService.removeFall(fall, GesuchDeletionCause.USER));
 	}
 
 	@Override
 	@Nonnull
-	public Gesuch mutierenHeirat(@Nonnull Long fallNummer, @Nonnull String gesuchsperiodeId,
+	public Gesuch mutierenHeirat(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen) {
 
 		Objects.requireNonNull(eingangsdatum);
 		Objects.requireNonNull(gesuchsperiodeId);
-		Objects.requireNonNull(fallNummer);
+		Objects.requireNonNull(dossierId);
 		Objects.requireNonNull(aenderungPer);
 
 		Familiensituation newFamsit = getFamiliensituationZuZweit(aenderungPer);
 		Familiensituation oldFamsit = getFamiliensituationAlleine(null);
 
-		Gesuch mutation = gesuchService.testfallMutieren(fallNummer, gesuchsperiodeId, eingangsdatum).orElseThrow(() -> new EbeguEntityNotFoundException
+		Gesuch mutation = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum).orElseThrow(() -> new EbeguEntityNotFoundException
 			("mutierenHeirat", "Gesuch zum Mutieren nicht gefunden"));
 		final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
 		Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
@@ -385,15 +386,15 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 	@Override
 	@Nonnull
-	public Gesuch mutierenFinSit(@Nonnull Long fallNummer, @Nonnull String gesuchsperiodeId, @Nonnull LocalDate eingangsdatum,
+	public Gesuch mutierenFinSit(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId, @Nonnull LocalDate eingangsdatum,
 		@Nonnull LocalDate aenderungPer, boolean verfuegen, BigDecimal nettoLohn, boolean ignorieren) {
 
 		Objects.requireNonNull(eingangsdatum);
 		Objects.requireNonNull(gesuchsperiodeId);
-		Objects.requireNonNull(fallNummer);
+		Objects.requireNonNull(dossierId);
 		Objects.requireNonNull(aenderungPer);
 
-		Gesuch mutation = gesuchService.testfallMutieren(fallNummer, gesuchsperiodeId, eingangsdatum).orElseThrow(() -> new EbeguEntityNotFoundException
+		Gesuch mutation = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum).orElseThrow(() -> new EbeguEntityNotFoundException
 			("mutierenFinSit", "Gesuch zum Mutieren nicht gefunden"));
 		Objects.requireNonNull(mutation.getGesuchsteller1(), "GS1 muss gesetzt sein");
 		Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer(), "FinSit vom GS1 muss gesetzt sein");
@@ -408,12 +409,12 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 	@Override
 	@Nullable
-	public Gesuch mutierenScheidung(@Nonnull Long fallNummer, @Nonnull String gesuchsperiodeId,
+	public Gesuch mutierenScheidung(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen) {
 
 		Objects.requireNonNull(eingangsdatum);
 		Objects.requireNonNull(gesuchsperiodeId);
-		Objects.requireNonNull(fallNummer);
+		Objects.requireNonNull(dossierId);
 		Objects.requireNonNull(aenderungPer);
 
 		Familiensituation newFamsit = new Familiensituation();
@@ -425,7 +426,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		oldFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		oldFamsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 
-		Optional<Gesuch> gesuchOptional = gesuchService.testfallMutieren(fallNummer, gesuchsperiodeId, eingangsdatum);
+		Optional<Gesuch> gesuchOptional = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum);
 		if (gesuchOptional.isPresent()) {
 			final Gesuch mutation = gesuchOptional.get();
 			final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
