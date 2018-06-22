@@ -33,6 +33,7 @@ public class CheckVerantwortlicherValidatorTS implements ConstraintValidator<Che
 
 	@Override
 	public boolean isValid(Dossier instance, ConstraintValidatorContext context) {
-		return instance.getVerantwortlicherTS() == null || instance.getVerantwortlicherTS().getRole().isRoleSchulamt();
+		return instance.getVerantwortlicherTS() == null || instance.getVerantwortlicherTS().getRole().isRoleSchulamt()
+			|| instance.getVerantwortlicherTS().getRole().isSuperadmin();
 	}
 }

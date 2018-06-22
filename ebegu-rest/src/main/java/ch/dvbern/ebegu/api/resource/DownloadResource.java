@@ -518,11 +518,9 @@ public class DownloadResource {
 	 */
 	private void loadRelationsAndDetach(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			if (kindContainer.getBetreuungen() != null) {
-				for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-					betreuung.getBetreuungspensumContainers().size();
-					betreuung.getAbwesenheitContainers().size();
-				}
+			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				betreuung.getBetreuungspensumContainers().size();
+				betreuung.getAbwesenheitContainers().size();
 			}
 		}
 		if (gesuch.getGesuchsteller1() != null) {

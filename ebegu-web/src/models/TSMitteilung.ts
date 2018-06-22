@@ -13,16 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAmt} from './enums/TSAmt';
-import {TSRole} from './enums/TSRole';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSDossier from './TSDossier';
-import TSFall from './TSFall';
-import TSUser from './TSUser';
-import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
-import {TSMitteilungStatus} from './enums/TSMitteilungStatus';
-import TSBetreuung from './TSBetreuung';
 import * as moment from 'moment';
+import {TSAmt} from './enums/TSAmt';
+import {TSMitteilungStatus} from './enums/TSMitteilungStatus';
+import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
+import TSAbstractEntity from './TSAbstractEntity';
+import TSBetreuung from './TSBetreuung';
+import TSDossier from './TSDossier';
+import TSUser from './TSUser';
 
 export default class TSMitteilung extends TSAbstractEntity {
 

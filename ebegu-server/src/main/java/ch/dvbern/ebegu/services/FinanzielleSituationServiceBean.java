@@ -148,6 +148,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
 			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 		if (optGrenzwert.isPresent()) {
+			//noinspection ConstantConditions
 			return MathUtil.ZWEI_NACHKOMMASTELLE.divide(BigDecimal.valueOf(100).subtract(optGrenzwert.get().getValueAsBigDecimal()), BigDecimal.valueOf(100));
 		}
 		return BigDecimal.ONE; // By default wird 1 als Grenz gesetzt und alle EKV werden akzeptiert

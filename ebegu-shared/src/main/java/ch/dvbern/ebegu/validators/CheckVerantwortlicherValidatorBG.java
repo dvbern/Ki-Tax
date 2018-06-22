@@ -33,6 +33,7 @@ public class CheckVerantwortlicherValidatorBG implements ConstraintValidator<Che
 
 	@Override
 	public boolean isValid(Dossier instance, ConstraintValidatorContext context) {
-		return instance.getVerantwortlicherBG() == null || instance.getVerantwortlicherBG().getRole().isRoleJugendamt();
+		return instance.getVerantwortlicherBG() == null || instance.getVerantwortlicherBG().getRole().isRoleJugendamt()
+			|| instance.getVerantwortlicherBG().getRole().isSuperadmin();
 	}
 }

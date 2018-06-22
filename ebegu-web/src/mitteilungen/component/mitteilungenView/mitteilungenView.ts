@@ -15,9 +15,8 @@
 
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
-import {StateService} from '@uirouter/core';
 import ITimeoutService = angular.ITimeoutService;
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';

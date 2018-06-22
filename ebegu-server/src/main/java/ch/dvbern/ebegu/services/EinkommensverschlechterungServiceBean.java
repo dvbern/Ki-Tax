@@ -101,10 +101,10 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 		einkommensverschlechterungContainer.getGesuchsteller().setEinkommensverschlechterungContainer(null);
 		persistence.merge(einkommensverschlechterungContainer.getGesuchsteller());
 
-		Optional<EinkommensverschlechterungContainer> entityToRemove = findEinkommensverschlechterungContainer(einkommensverschlechterungContainer.getId());
-		entityToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeEinkommensverschlechterungContainer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, einkommensverschlechterungContainer));
-		entityToRemove.ifPresent(einkommensverschlechterungContainer1 -> persistence.remove
-			(EinkommensverschlechterungContainer.class, einkommensverschlechterungContainer1.getId()));
+		EinkommensverschlechterungContainer entityToRemove = findEinkommensverschlechterungContainer(einkommensverschlechterungContainer.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("removeEinkommensverschlechterungContainer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				einkommensverschlechterungContainer));
+		persistence.remove(EinkommensverschlechterungContainer.class, entityToRemove.getId());
 	}
 
 	@Override

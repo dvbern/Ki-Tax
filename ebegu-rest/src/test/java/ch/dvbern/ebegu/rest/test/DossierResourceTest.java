@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Testet FallResource
+ * Testet DossierResource
  */
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")

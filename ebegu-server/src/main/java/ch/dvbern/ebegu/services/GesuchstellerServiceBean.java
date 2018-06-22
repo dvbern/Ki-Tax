@@ -204,9 +204,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public void removeGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller) {
 		Objects.requireNonNull(gesuchsteller);
-		Optional<GesuchstellerContainer> gesuchstellerToRemove = findGesuchsteller(gesuchsteller.getId());
-		gesuchstellerToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeGesuchsteller", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsteller));
-		gesuchstellerToRemove.ifPresent(gesuchstellerContainer -> persistence.remove(gesuchstellerContainer));
+		GesuchstellerContainer gesuchstellerToRemove = findGesuchsteller(gesuchsteller.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("removeGesuchsteller", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsteller));
+		persistence.remove(gesuchstellerToRemove);
 	}
 
 	@Nullable

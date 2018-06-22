@@ -59,9 +59,6 @@ import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.ADMINISTRATOR_SCHULAMT;

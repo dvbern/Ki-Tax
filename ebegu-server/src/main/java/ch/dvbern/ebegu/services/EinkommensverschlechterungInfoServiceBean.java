@@ -128,11 +128,10 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 		einkommensverschlechterungInfo.getGesuch().setEinkommensverschlechterungInfoContainer(null);
 		persistence.merge(einkommensverschlechterungInfo.getGesuch());
 
-		Optional<EinkommensverschlechterungInfoContainer> propertyToRemove = findEinkommensverschlechterungInfo(einkommensverschlechterungInfo.getId());
-		propertyToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeEinkommensverschlechterungInfo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+		EinkommensverschlechterungInfoContainer propertyToRemove = findEinkommensverschlechterungInfo(einkommensverschlechterungInfo.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("removeEinkommensverschlechterungInfo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			einkommensverschlechterungInfo));
-		propertyToRemove.ifPresent(einkommensverschlechterungInfoContainer -> persistence.remove
-			(EinkommensverschlechterungInfoContainer.class, einkommensverschlechterungInfoContainer.getId()));
+		persistence.remove(EinkommensverschlechterungInfoContainer.class, propertyToRemove.getId());
 	}
 
 	/**

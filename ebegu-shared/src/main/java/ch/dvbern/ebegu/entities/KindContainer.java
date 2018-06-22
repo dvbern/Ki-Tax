@@ -66,6 +66,7 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_container_gesuch_id"), nullable = false)
 	private Gesuch gesuch;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_container_kindgs_id"), nullable = true)
@@ -112,11 +113,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		this.gesuch = gesuch;
 	}
 
+	@Nullable
 	public Kind getKindGS() {
 		return kindGS;
 	}
 
-	public void setKindGS(Kind kindGS) {
+	public void setKindGS(@Nullable Kind kindGS) {
 		this.kindGS = kindGS;
 	}
 
@@ -163,7 +165,7 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	}
 
 	@Override
-	public int compareTo(KindContainer other) {
+	public int compareTo(@Nonnull KindContainer other) {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
 		compareToBuilder.append(this.getKindNummer(), other.getKindNummer());
 		compareToBuilder.append(this.getId(), other.getId());

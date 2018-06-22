@@ -59,7 +59,6 @@ import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
-import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -553,7 +552,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		q.setParameter(fallIdParam, fallId);
 
 		return q.getResultList();
-
 	}
 
 	@Override
@@ -575,7 +573,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		q.setParameter(dossierIdParam, dossierId);
 
 		return q.getResultList();
-
 	}
 
 	@Override
@@ -1072,34 +1069,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Gesuch gesuch = criteriaResults.get(0);
 		return Optional.of(gesuch);
-	}
-
-	@Override
-	@Nonnull
-	@Deprecated //TODO (hefr) Nur noch für die Migaration V0040 gebraucht! Umbenennen? Name stimmt sowieso nicht (freigegeben)
-	@RolesAllowed(SUPER_ADMIN)
-	public Optional<String> getNeustesFreigegebenesGesuchIdFuerGesuch(Gesuchsperiode gesuchsperiode, Fall fall) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<String> query = cb.createQuery(String.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-		Join<Gesuch, AntragStatusHistory> join = root.join(Gesuch_.antragStatusHistories, JoinType.INNER);
-
-		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
-		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
-		Predicate predicateAntragStatus = join.get(AntragStatusHistory_.status).in(AntragStatus.FIRST_STATUS_OF_VERFUEGT);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fall);
-
-		query.where(predicateStatus, predicateGesuchsperiode, predicateAntragStatus, predicateFall);
-		query.select(root.get(Gesuch_.id));
-		query.orderBy(cb.desc(join.get(AntragStatusHistory_.timestampVon))); // Das mit dem neuesten Verfuegungsdatum
-		List<String> criteriaResults = persistence.getCriteriaResults(query, 1);
-		if (criteriaResults.isEmpty()) {
-			return Optional.empty();
-		}
-		String gesuchId = criteriaResults.get(0);
-
-		return Optional.of(gesuchId);
 	}
 
 	@Override

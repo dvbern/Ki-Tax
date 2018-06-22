@@ -16,7 +16,6 @@
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
 import TSGesuch from '../../../models/TSGesuch';
 import TSUser from '../../../models/TSUser';
 import {EbeguWebCore} from '../../core.module';

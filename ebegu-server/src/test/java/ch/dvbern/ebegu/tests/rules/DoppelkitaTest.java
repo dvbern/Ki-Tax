@@ -59,9 +59,9 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Assert.assertNotNull(verfuegung);
 				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
-					Verfuegung verfuegung = betreuung.getVerfuegung();
-					System.out.println(verfuegung);
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -70,8 +70,6 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
 					assertZeitabschnitt(januar, 50, 20, 20);
 				} else {     //KITA Bruennen
-					Verfuegung verfuegung = betreuung.getVerfuegung();
-					System.out.println(verfuegung);
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -103,9 +101,9 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Assert.assertNotNull(verfuegung);
 				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
-					Verfuegung verfuegung = betreuung.getVerfuegung();
-					System.out.println(verfuegung);
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -114,8 +112,6 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
 					assertZeitabschnitt(januar, 50, 60, 50);
 				} else {     //KITA Bruennen
-					Verfuegung verfuegung = betreuung.getVerfuegung();
-					System.out.println(verfuegung);
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt okbober = verfuegung.getZeitabschnitte().get(2); // Oktober
@@ -147,9 +143,9 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Assert.assertNotNull(verfuegung);
 				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
-					Verfuegung verfuegung = betreuung.getVerfuegung();
-					System.out.println(verfuegung);
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -158,8 +154,6 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
 					assertZeitabschnitt(januar, 30, 60, 30);
 				} else {     //KITA Bruennen
-					Verfuegung verfuegung = betreuung.getVerfuegung();
-					System.out.println(verfuegung);
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);

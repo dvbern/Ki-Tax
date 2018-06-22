@@ -159,7 +159,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		// Join all the relevant relations (except gesuchsteller join, which is only done when needed)
 		Join<Gesuch, Dossier> dossier = root.join(Gesuch_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> fall = dossier.join(Dossier_.fall, JoinType.INNER);
-
 		Join<Dossier, Benutzer> verantwortlicherBG = dossier.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
 		Join<Dossier, Benutzer> verantwortlicherTS = dossier.join(Dossier_.verantwortlicherTS, JoinType.LEFT);
 		Join<Gesuch, Gesuchsperiode> gesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);

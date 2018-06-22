@@ -85,8 +85,7 @@ export class DVMitteilungListController {
                 private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager, private $scope: IScope,
                 private $timeout: ITimeoutService,
-                private dossierRS: DossierRS
-    ) {
+                private dossierRS: DossierRS) {
         this.TSRole = TSRole;
         this.TSRoleUtil = TSRoleUtil;
         this.ebeguUtil = ebeguUtil;

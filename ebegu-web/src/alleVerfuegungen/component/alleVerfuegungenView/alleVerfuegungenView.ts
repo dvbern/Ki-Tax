@@ -14,11 +14,9 @@
  */
 
 import IComponentOptions = angular.IComponentOptions;
-import {StateService} from '@uirouter/core';
-import ITimeoutService = angular.ITimeoutService;
 import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';

@@ -107,9 +107,9 @@ public class GesuchstellerAdresseServiceBean extends AbstractBaseService impleme
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public void removeAdresse(@Nonnull GesuchstellerAdresseContainer gesuchstellerAdresse) {
 		Objects.requireNonNull(gesuchstellerAdresse);
-		Optional<GesuchstellerAdresseContainer> adresseToRemove = findAdresse(gesuchstellerAdresse.getId());
-		adresseToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeAdresse", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchstellerAdresse));
-		adresseToRemove.ifPresent(gesuchstellerAdresseContainer -> persistence.remove(gesuchstellerAdresseContainer));
+		GesuchstellerAdresseContainer adresseToRemove = findAdresse(gesuchstellerAdresse.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("removeAdresse", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchstellerAdresse));
+		persistence.remove(adresseToRemove);
 	}
 
 	/**

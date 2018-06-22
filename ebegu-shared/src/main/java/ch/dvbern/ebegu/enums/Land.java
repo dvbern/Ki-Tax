@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.enums;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -270,18 +271,18 @@ public enum Land {
 	}
 
 	/**
-	 * Is this {@link Land} still valid? Unused and replaced codes will be marked as invalid.
+	 * Is this Land still valid? Unused and replaced codes will be marked as invalid.
 	 */
 	public boolean isValid() {
 		return valid;
 	}
 
 	public boolean isSchweiz() {
-		return this.equals(Land.CH);
+		return this == Land.CH;
 	}
 
 	public boolean isPlzRelevant() {
-		return isSchweiz() || this.equals(Land.LI);
+		return isSchweiz() || this == Land.LI;
 	}
 
 	public int getSortierung() {

@@ -122,7 +122,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
 	public EnumSet<BetreuungsangebotTyp> getAllAngeboteFromTraegerschaft(@Nonnull String traegerschaftId) {
-		Validate.notNull(traegerschaftId);
+		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);
 		Traegerschaft traegerschaft = traegerschaftOptional.orElseThrow(() -> new EbeguEntityNotFoundException("setInactive", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
 

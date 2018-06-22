@@ -53,7 +53,6 @@ public interface Searchable {
 	 * verknuepfung gibt. In diesem Fall muss die fallID per query emittelt werden :(
 	 */
 	@Nullable
-	//TODO (KIBON-6) Brauchts dies noch?
 	String getOwningFallId();
 
 	/**
