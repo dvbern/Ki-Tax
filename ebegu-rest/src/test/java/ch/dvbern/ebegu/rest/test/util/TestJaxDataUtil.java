@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
@@ -68,7 +70,10 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Generiert Testdaten fuer JAX DTOs
  */
-public class TestJaxDataUtil {
+public final class TestJaxDataUtil {
+
+	private TestJaxDataUtil() {
+	}
 
 	public static JaxGesuchstellerContainer createTestJaxGesuchsteller() {
 		JaxGesuchstellerContainer jaxGesuchstellerContainer = new JaxGesuchstellerContainer();
@@ -123,6 +128,7 @@ public class TestJaxDataUtil {
 		JaxGesuchstellerContainer testJaxGesuchsteller = createTestJaxGesuchsteller();
 		JaxErwerbspensumContainer container = createTestJaxErwerbspensumContainer();
 		JaxErwerbspensumContainer container2 = createTestJaxErwerbspensumContainer();
+		Objects.requireNonNull(container2.getErwerbspensumGS());
 		container2.getErwerbspensumGS().setGueltigAb(LocalDate.now().plusYears(1));
 		container2.getErwerbspensumGS().setGueltigBis(null);
 
@@ -166,7 +172,7 @@ public class TestJaxDataUtil {
 		JaxAdresse jaxAdresse = new JaxAdresse();
 		jaxAdresse.setAdresseTyp(AdresseTyp.WOHNADRESSE);
 		jaxAdresse.setGemeinde("Bern" + postfix);
-		jaxAdresse.setHausnummer("1" + postfix);
+		jaxAdresse.setHausnummer('1' + postfix);
 		jaxAdresse.setLand(Land.CH);
 		jaxAdresse.setOrt("Bern" + postfix);
 		jaxAdresse.setPlz("3014" + postfix);
@@ -182,8 +188,15 @@ public class TestJaxDataUtil {
 	public static JaxFall createTestJaxFall() {
 		JaxFall jaxFall = new JaxFall();
 		jaxFall.setFallNummer(1);
-		jaxFall.setVerantwortlicher(createTestJaxBenutzer());
 		return jaxFall;
+	}
+
+	public static JaxDossier createTestJaxDossier() {
+		JaxDossier jaxDossier = new JaxDossier();
+		jaxDossier.setDossierNummer(1);
+		jaxDossier.setVerantwortlicherBG(createTestJaxBenutzer());
+		jaxDossier.setFall(createTestJaxFall());
+		return jaxDossier;
 	}
 
 	public static JaxAuthLoginElement createTestJaxBenutzer() {
@@ -210,7 +223,7 @@ public class TestJaxDataUtil {
 	public static JaxGesuch createTestJaxGesuch() {
 		JaxGesuch jaxGesuch = new JaxGesuch();
 		jaxGesuch.setEingangsart(Eingangsart.PAPIER);
-		jaxGesuch.setFall(createTestJaxFall());
+		jaxGesuch.setDossier(createTestJaxDossier());
 		jaxGesuch.setGesuchsperiode(createTestJaxGesuchsperiode());
 		jaxGesuch.setGesuchsteller1(createTestJaxGesuchsteller());
 		jaxGesuch.setEingangsdatum(LocalDate.now());

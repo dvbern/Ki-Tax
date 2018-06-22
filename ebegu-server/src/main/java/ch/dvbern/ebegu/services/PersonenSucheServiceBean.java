@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
@@ -84,7 +85,7 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@Override
 	@Nonnull
 	public EWKResultat suchePerson(@Nonnull Gesuchsteller gesuchsteller) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
-		Validate.notNull(gesuchsteller, "Gesuchsteller muss gesetzt sein");
+		Objects.requireNonNull(gesuchsteller, "Gesuchsteller muss gesetzt sein");
 		Validate.isTrue(!gesuchsteller.isNew(), "Gesuchsteller muss zuerst gespeichert werden!");
 		EWKResultat resultat;
 		if (StringUtils.isNotEmpty(gesuchsteller.getEwkPersonId())) {
@@ -104,8 +105,8 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@Override
 	@Nonnull
 	public Gesuchsteller selectPerson(@Nonnull Gesuchsteller gesuchsteller, @Nonnull String ewkPersonID) {
-		Validate.notNull(gesuchsteller, "Gesuchsteller muss gesetzt sein");
-		Validate.notNull(ewkPersonID, "ewkPersonID muss gesetzt sein");
+		Objects.requireNonNull(gesuchsteller, "Gesuchsteller muss gesetzt sein");
+		Objects.requireNonNull(ewkPersonID, "ewkPersonID muss gesetzt sein");
 		Validate.isTrue(!gesuchsteller.isNew(), "Gesuchsteller muss zuerst gespeichert werden!");
 		gesuchsteller.setEwkPersonId(ewkPersonID);
 		gesuchsteller.setEwkAbfrageDatum(LocalDate.now());

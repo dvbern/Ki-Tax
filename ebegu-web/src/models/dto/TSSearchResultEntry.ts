@@ -23,6 +23,7 @@ export default class TSSearchResultEntry {
     private _resultId: string;
     private _gesuchID: string;
     private _fallID: string;
+    private _dossierId: string;
     private _text: string;
 
     constructor() {
@@ -74,6 +75,14 @@ export default class TSSearchResultEntry {
 
     public set fallID(value: string) {
         this._fallID = value;
+    }
+
+    public get dossierId(): string {
+        return this._dossierId;
+    }
+
+    public set dossierId(value: string) {
+        this._dossierId = value;
     }
 
     get text(): string {

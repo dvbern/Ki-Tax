@@ -33,10 +33,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.services.ExportService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TestfaelleService;
-import ch.dvbern.ebegu.services.TraegerschaftService;
-import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -54,7 +51,7 @@ import org.junit.runner.RunWith;
  */
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
+@UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 
@@ -63,6 +60,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private Persistence persistence;
+
 	@Inject
 	private InstitutionService instService;
 
@@ -71,17 +69,6 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private TestfaelleService testfaelleService;
-
-	@Inject
-	private TraegerschaftService traegerschaftService;
-
-	@Inject
-	private InstitutionStammdatenService institutionStammdatenService;
-
-	@Inject
-	private VerfuegungService verfuegungService;
-
-	private Gesuchsperiode gesuchsperiode;
 
 	@Before
 	public void init() {
@@ -94,8 +81,9 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	/**
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
+	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 		return gesuchsperiode;
@@ -117,7 +105,11 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	public void exportTestVorVerfuegt() {
 
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true);
-		Assert.assertNotNull(gesuch.getKindContainers().stream().findFirst().get().getBetreuungen().stream().findFirst().get().getVerfuegung());
+		Assert.assertNotNull(gesuch.getKindContainers().stream().findFirst());
+		Assert.assertTrue(gesuch.getKindContainers().stream().findFirst().isPresent());
+		KindContainer container = gesuch.getKindContainers().stream().findFirst().get();
+		Assert.assertTrue(container.getBetreuungen().stream().findFirst().isPresent());
+		Assert.assertNotNull(container.getBetreuungen().stream().findFirst().get().getVerfuegung());
 		VerfuegungenExportDTO exportedVerfuegungen = exportService.exportAllVerfuegungenOfAntrag(gesuch.getId());
 		Assert.assertNotNull(exportedVerfuegungen);
 		Assert.assertNotNull(exportedVerfuegungen.getVerfuegungen());
@@ -126,10 +118,10 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				Assert.assertNotNull(betreuung.getVerfuegung());
+				@SuppressWarnings("ConstantConditions")
 				VerfuegungExportDTO matchingVerfuegungExport = exportedVerfuegungen.getVerfuegungen().stream()
 					.filter(verfuegungExportDTO -> verfuegungExportDTO.getRefnr().equals(betreuung.getBGNummer())).reduce(StreamsUtil.toOnlyElement()).get();
 				checkExportedValuesCorrect(betreuung.getVerfuegung(), matchingVerfuegungExport);
-
 			}
 		}
 	}

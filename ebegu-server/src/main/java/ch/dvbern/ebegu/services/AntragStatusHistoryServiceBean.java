@@ -39,7 +39,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -154,10 +154,10 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	public Collection<AntragStatusHistory> findAllAntragStatusHistoryByGPFall(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Fall fall) {
+	public Collection<AntragStatusHistory> findAllAntragStatusHistoryByGPForDossier(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier) {
 		Objects.requireNonNull(gesuchsperiode);
-		Objects.requireNonNull(fall);
-		authorizer.checkReadAuthorizationFall(fall);
+		Objects.requireNonNull(dossier);
+		authorizer.checkReadAuthorizationDossier(dossier);
 
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 
@@ -166,7 +166,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 		Set<AntragStatus> antragStatuses = AntragStatus.allowedforRole(role);
 
 		Root<AntragStatusHistory> root = query.from(AntragStatusHistory.class);
-		Predicate fallPredicate = cb.equal(root.get(AntragStatusHistory_.gesuch).get(Gesuch_.fall), fall);
+		Predicate fallPredicate = cb.equal(root.get(AntragStatusHistory_.gesuch).get(Gesuch_.dossier), dossier);
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(AntragStatusHistory_.gesuch).get(Gesuch_.gesuchsperiode), gesuchsperiode);
 		Predicate rolePredicate = root.get(AntragStatusHistory_.gesuch).get(Gesuch_.status).in(antragStatuses);
 		query.where(fallPredicate, gesuchsperiodePredicate, rolePredicate);

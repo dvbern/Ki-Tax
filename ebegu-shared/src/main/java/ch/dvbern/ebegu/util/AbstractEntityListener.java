@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
@@ -114,6 +115,15 @@ public class AbstractEntityListener {
 			Verfuegung verfuegung = (Verfuegung) entity;
 			if (!verfuegung.getBetreuung().getBetreuungsstatus().isGeschlossenJA()) {
 				throw new IllegalStateException("Verfuegung darf nicht gespeichert werden, wenn die Betreuung nicht verfuegt ist");
+			}
+		} else if (entity instanceof Dossier) {
+			// Neue Dossiernummer setzen
+			Dossier dossier = (Dossier) entity;
+			Optional<Fall> optFall = getFallService().findFall(dossier.getFall().getId());
+			if (optFall.isPresent()) {
+				Fall fall = optFall.get();
+				dossier.setDossierNummer(fall.getNextNumberDossier());
+				fall.setNextNumberDossier(fall.getNextNumberDossier() + 1);
 			}
 		}
 	}

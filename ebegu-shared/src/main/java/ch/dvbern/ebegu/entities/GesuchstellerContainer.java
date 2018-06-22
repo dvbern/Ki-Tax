@@ -336,6 +336,12 @@ public class GesuchstellerContainer extends AbstractEntity implements Searchable
 		return null;   //leider nicht ohne serviceabfrage verfuegbar
 	}
 
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return null;  //leider nicht ohne serviceabfrage verfuegbar
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

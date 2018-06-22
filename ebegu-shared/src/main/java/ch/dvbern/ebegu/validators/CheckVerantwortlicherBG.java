@@ -27,13 +27,14 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Die Abwesenheiten einer Betreuung duerfen sich nicht ueberlappen
+ * Validator der prueft, dass der eingegebene Verantwortlicher die richtige Role hat. SuperAdmin wird auch als Role zugelassen,
+ * damit man auch Testfaelle erzeugen kann.
  */
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckVerantwortlicherValidatorJA.class)
+@Constraint(validatedBy = CheckVerantwortlicherValidatorBG.class)
 @Documented
-public @interface CheckVerantwortlicherJA {
+public @interface CheckVerantwortlicherBG {
 
 	String message() default "{invalid_verantwortlicher}";
 

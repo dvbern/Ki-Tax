@@ -20,10 +20,10 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
 /**
  * Service zum Verwalten von Fallen
@@ -79,45 +79,20 @@ public interface FallService {
 	 *
 	 * @param fall der Fall als DTO
 	 */
-	void removeFall(@Nonnull Fall fall);
+	void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause);
 
 	/**
 	 * Erstellt einen neuen Fall fuer den aktuellen Benutzer und setzt diesen als Besitzer des Falles.
 	 * - Nur wenn der aktuellen Benutzer ein GESUCHSTELLER ist und noch keinen Fall zugeordnet hat
 	 * - In allen anderen Fällen ein Optional.empty() wird zurueckgegeben
 	 */
+	@Nonnull
 	Optional<Fall> createFallForCurrentGesuchstellerAsBesitzer();
 
 	/**
 	 * Gibt die GS1-Emailadresse des neusten Gesuchs fuer diesen Fall zurueck, wenn noch kein Gesuch vorhanden ist, wird
 	 * die E-Mail zurueckgegeben die beim Besitzer des Falls eingegeben wurde (aus IAM importiert)
 	 */
-	Optional<String> getCurrentEmailAddress(String fallID);
-
-	/**
-	 * Checks whether the given Fall has at least one Mitteilung or not. Will throw an exception if the fall is not found.
-	 */
-	boolean hasFallAnyMitteilung(@NotNull String fallID);
-
-	/**
-	 * Logik fuer die Ermittlung des Hauptverantwortlichen:
-	 * (1) Wenn ein JA-Verantwortlicher gesetzt ist, ist dieser der Hauptverantwortlicher
-	 * (2) Wenn kein JA-Verantwortlicher gesetzt ist, aber ein SCH-Verantwortlicher, ist dieser der Hauptverantwortlicher
-	 * (3) Wenn noch gar nichts gesetzt ist (z.B. noch gar kein Gesuch erfasst) wird der DefaultVerantwortlicherJA zurueckgegeben
-	 */
 	@Nonnull
-	Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Fall fall);
-
-	/**
-	 * stores the verantwortlicherJA on the given fall
-	 */
-	@Nonnull
-	Fall setVerantwortlicherJA(@Nonnull String fallId, @Nullable Benutzer benutzer);
-
-	/**
-	 * stores the verantwortlicherSCH on the given fall
-	 */
-	@Nonnull
-	Fall setVerantwortlicherSCH(@Nonnull String fallId, @Nullable Benutzer benutzer);
-
+	Optional<String> getCurrentEmailAddress(@Nonnull String fallID);
 }

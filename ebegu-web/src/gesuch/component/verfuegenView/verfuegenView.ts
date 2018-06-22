@@ -221,8 +221,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public getFall() {
-        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().fall;
+        if (this.gesuchModelManager) {
+            return this.gesuchModelManager.getFall();
         }
         return undefined;
     }
@@ -291,7 +291,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     /**
      * Nur wenn das Gesuch im Status VERFUEGEN und die Betreuung im Status BESTAETIGT oder STORNIERT
      * sind, kann der Benutzer das Angebot verfuegen. Sonst ist dieses nicht erlaubt.
-     * STORNIERT ist erlaubt weil die Kita verantwortlicher dafuer ist, die Betreuung in diesem Status zu setzen,
+     * STORNIERT ist erlaubt weil die Kita verantwortlicherBG dafuer ist, die Betreuung in diesem Status zu setzen,
      * d.h. die Betreuung hat bereits diesen Status wenn man auf den Step Verfuegung kommt
      * @returns {boolean}
      */

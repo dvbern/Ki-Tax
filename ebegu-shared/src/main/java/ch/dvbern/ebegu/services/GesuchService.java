@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -124,7 +125,7 @@ public interface GesuchService {
 	 * @return Liste aller Gesuche aus der DB
 	 */
 	@Nonnull
-	Collection<Gesuch> getAllActiveGesucheOfVerantwortlichePerson(@Nonnull String benutzername);
+	Collection<Gesuch> getGesucheForBenutzerPendenzenBG(@Nonnull String benutzername);
 
 	/**
 	 * entfernt ein Gesuch aus der Database. Es wird ein LogEintrag erstellt mit dem Grund des Löschens-
@@ -162,7 +163,7 @@ public interface GesuchService {
 	 * hilfsmethode zur mutation von faellen ueber das gui. Wird fuer testzwecke benoetigt
 	 */
 	@Nonnull
-	Optional<Gesuch> testfallMutieren(@Nonnull Long fallNummer, @Nonnull String gesuchsperiodeId,
+	Optional<Gesuch> testfallMutieren(@Nonnull String dossierID, @Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum);
 
 	/**
@@ -176,7 +177,7 @@ public interface GesuchService {
 	 * Gibt das letzte verfuegte Gesuch fuer die uebergebene Gesuchsoperde und den uebergebenen Fall zurueck.
 	 */
 	@Nonnull
-	Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Fall fall, boolean doAuthCheck);
+	Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier, boolean doAuthCheck);
 
 	/**
 	 * Gibt das neueste Gesuch der im selben Fall und Periode wie das gegebene Gesuch ist.
@@ -192,10 +193,16 @@ public interface GesuchService {
 	List<String> getAllGesuchIDsForFall(String fallId);
 
 	/**
+	 * Alle GesucheIDs des Dossiers zurueckgeben
+	 */
+	@Nonnull
+	List<String> getAllGesuchIDsForDossier(@Nonnull String dossierId);
+
+	/**
 	 * Alle Gesuche fuer den gegebenen Fall in der gegebenen Periode
 	 */
 	@Nonnull
-	List<Gesuch> getAllGesucheForFallAndPeriod(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode);
+	List<Gesuch> getAllGesucheForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Das gegebene Gesuch wird mit heutigem Datum freigegeben und den Step FREIGABE auf OK gesetzt
@@ -216,7 +223,7 @@ public interface GesuchService {
 	 * @param persist speichert die Verantwortliche direkt auf der DB in Update-Query
 	 * @return true if Verantwortliche changed
 	 */
-	boolean setVerantwortliche(@Nullable String usernameJA, @Nullable String usernameSCH, Gesuch gesuch, boolean onlyIfNotSet, boolean persist);
+	boolean setVerantwortliche(@Nullable String usernameBG, @Nullable String usernameTS, Gesuch gesuch, boolean onlyIfNotSet, boolean persist);
 
 	/**
 	 * Setzt das gegebene Gesuch als Beschwerde hängig und bei allen Gescuhen der Periode den Flag
@@ -253,7 +260,8 @@ public interface GesuchService {
 	 * Gibt die ID des neuesten Gesuchs fuer einen Fall und eine Gesuchsperiode zurueck. Dieses kann auch ein
 	 * Gesuch sein, fuer welches ich nicht berechtigt bin!
 	 */
-	Optional<String> getIdOfNeuestesGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Fall fall);
+	@Nonnull
+	Optional<String> getIdOfNeuestesGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier);
 
 	/**
 	 * Gibt das Geusch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das Flag FinSitStatus
@@ -303,29 +311,26 @@ public interface GesuchService {
 	 * Sucht die neueste Online Mutation, die zu dem gegebenen Antrag gehoert und loescht sie.
 	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN oder SUPER_ADMIN
 	 * aufgerufen werden, wegen loescherechten wird es dann immer mir RunAs/SUPER_ADMIN) ausgefuehrt.
-	 *
-	 * @param fall Der Antraege, zu denen die Mutation gehoert, die geloescht werden muss
+	 *  @param dossier Der Antraege, zu denen die Mutation gehoert, die geloescht werden muss
 	 * @param gesuchsperiode Gesuchsperiode, in der die Gesuche geloescht werden sollen
 	 */
-	void removeOnlineMutation(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode);
+	void removeOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Sucht die neueste Online Mutation, die zu dem gegebenen Antrag gehoert
 	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN oder SUPER_ADMIN
 	 * aufgerufen werden, wegen loescherechten wird es dann immer mir RunAs/SUPER_ADMIN) ausgefuehrt.
-	 *
-	 * @param fall Der Antraege, zu denen die Mutation gehoert
+	 *  @param dossier Der Antraege, zu denen die Mutation gehoert
 	 * @param gesuchsperiode Gesuchsperiode
 	 */
-	Gesuch findOnlineMutation(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode);
+	Gesuch findOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Sucht und entfernt ein Folgegesuch fuer den gegebenen Antrag in der gegebenen Gesuchsperiode
-	 *
-	 * @param fall Der Antraeg des Falles
+	 *  @param dossier Der Antraeg des Falles
 	 * @param gesuchsperiode Gesuchsperiode in der das Folgegesuch gesucht werden muss
 	 */
-	void removeOnlineFolgegesuch(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode);
+	void removeOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Loescht das angegebene Gesuch falls es sich um ein Papiergesuch handelt, das noch nicht im Status "verfuegen" oder verfuegt ist.
@@ -340,11 +345,10 @@ public interface GesuchService {
 
 	/**
 	 * Sucht ein Folgegesuch fuer den gegebenen Antrag in der gegebenen Gesuchsperiode
-	 *
-	 * @param fall Der Antraeg des Falles
+	 *  @param dossier Der Antraeg des Falles
 	 * @param gesuchsperiode Gesuchsperiode in der das Folgegesuch gesucht werden muss
 	 */
-	Gesuch findOnlineFolgegesuch(@Nonnull Fall fall, @Nonnull Gesuchsperiode gesuchsperiode);
+	Gesuch findOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Schliesst ein Gesuch, das sich im Status GEPRUEFT befindet und kein Angebot hat

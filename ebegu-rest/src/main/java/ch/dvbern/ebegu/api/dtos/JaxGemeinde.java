@@ -13,32 +13,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.api.dtos;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.validation.Constraint;
-import javax.validation.Payload;
-
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Die Abwesenheiten einer Betreuung duerfen sich nicht ueberlappen
+ * DTO fuer Gemeinden
  */
-@Target({ TYPE, ANNOTATION_TYPE })
-@Retention(RUNTIME)
-@Constraint(validatedBy = CheckVerantwortlicherValidatorSCH.class)
-@Documented
-public @interface CheckVerantwortlicherSCH {
+@XmlRootElement(name = "gemeinde")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxGemeinde extends JaxAbstractDTO {
 
-	String message() default "{invalid_verantwortlicher}";
+	private static final long serialVersionUID = 7980499854206395920L;
 
-	Class<?>[] groups() default {};
+	@NotNull
+	private String name;
 
-	Class<? extends Payload>[] payload() default {};
+	private boolean enabled;
 
+
+	@Nonnull
+	public String getName() {
+		return name;
+	}
+
+	public void setName(@Nonnull String name) {
+		this.name = name;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 }

@@ -16,6 +16,7 @@
 import {TSAmt} from './enums/TSAmt';
 import {TSRole} from './enums/TSRole';
 import TSAbstractEntity from './TSAbstractEntity';
+import TSDossier from './TSDossier';
 import TSFall from './TSFall';
 import TSUser from './TSUser';
 import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
@@ -25,7 +26,7 @@ import * as moment from 'moment';
 
 export default class TSMitteilung extends TSAbstractEntity {
 
-    private _fall: TSFall;
+    private _dossier: TSDossier;
     private _betreuung: TSBetreuung;
     private _senderTyp: TSMitteilungTeilnehmerTyp;
     private _empfaengerTyp: TSMitteilungTeilnehmerTyp;
@@ -36,11 +37,11 @@ export default class TSMitteilung extends TSAbstractEntity {
     private _mitteilungStatus: TSMitteilungStatus;
     private _sentDatum: moment.Moment;
 
-    constructor(fall?: TSFall, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSUser,
+    constructor(dossier?: TSDossier, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSUser,
                 empfaenger?: TSUser, subject?: string, message?: string, mitteilungStatus?: TSMitteilungStatus,
                 sentDatum?: moment.Moment) {
         super();
-        this._fall = fall;
+        this._dossier = dossier;
         this._betreuung = betreuung;
         this._senderTyp = senderTyp;
         this._empfaengerTyp = empfaengerTyp;
@@ -52,12 +53,12 @@ export default class TSMitteilung extends TSAbstractEntity {
         this._sentDatum = sentDatum;
     }
 
-    get fall(): TSFall {
-        return this._fall;
+    get dossier(): TSDossier {
+        return this._dossier;
     }
 
-    set fall(value: TSFall) {
-        this._fall = value;
+    set dossier(value: TSDossier) {
+        this._dossier = value;
     }
 
     get betreuung(): TSBetreuung {
@@ -133,8 +134,8 @@ export default class TSMitteilung extends TSAbstractEntity {
     }
 
     get verantwortlicher(): string {
-        if (this._fall.verantwortlicher) {
-            return this._fall.verantwortlicher.getFullName();
+        if (this.dossier.getHauptverantwortlicher()) {
+            return this.dossier.getHauptverantwortlicher().getFullName();
         }
         return '';
     }

@@ -44,7 +44,7 @@ export class PosteingangViewController {
     numberOfPages: number = 1;
     selectedAmt: string;
     selectedMitteilungsstatus: TSMitteilungStatus;
-    includeClosed: boolean;
+    includeClosed: boolean = false;
 
 
 
@@ -60,7 +60,7 @@ export class PosteingangViewController {
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
         this.$state.go('mitteilungen', {
-            fallId: mitteilung.fall.id
+            dossierId: mitteilung.dossier.id
         });
     }
 

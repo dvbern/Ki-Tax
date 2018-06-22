@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,6 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang.Validate;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -99,11 +99,11 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMINISTRATOR_SCHULAMT, SCHULAMT })
 	public QuickSearchResultDTO search(@Nonnull String searchText, @Nonnull List<SearchFilter> filters) {
-		Validate.notNull(searchText, "searchText must be set");
-		Validate.notNull(filters, "filters must be set");
+		Objects.requireNonNull(searchText, "searchText must be set");
+		Objects.requireNonNull(filters, "filters must be set");
 		QuickSearchResultDTO result = new QuickSearchResultDTO();
 		List<String> stringsToMatch = tokenizeAndAndAddWildcardToQuery(searchText);
-		Validate.notNull(filters);
+		Objects.requireNonNull(filters);
 		for (SearchFilter filter : filters) {
 			QuickSearchResultDTO subResult = searchInSingleIndex(stringsToMatch, filter);
 			result.addSubResult(subResult);
@@ -160,7 +160,7 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	@Nonnull
 	private FullTextQuery buildLuceneQuery(@Nonnull List<String> searchTermList, @Nonnull SearchFilter filter) {
 		Class<Searchable> entityClass = filter.getSearchEntityType().getEntityClass();
-		Validate.notNull(filter.getSearchEntityType());
+		Objects.requireNonNull(filter.getSearchEntityType());
 
 		EntityManager em = persistence.getEntityManager();
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);

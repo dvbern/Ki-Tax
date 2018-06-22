@@ -24,7 +24,7 @@ import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 
 /**
@@ -160,11 +160,11 @@ public interface BetreuungService {
 	List<Betreuung> findAllBetreuungenFromGesuch(String gesuchId);
 
 	/**
-	 * @param fall Fall, dessen verfuegte Betreuungen zurueckgegeben werden
-	 * @return BetreuungList, welche zum Fall gehoeren oder null
+	 * @param dossier Dossier, dessen verfuegte Betreuungen zurueckgegeben werden
+	 * @return BetreuungList, welche zum Dossier gehoeren oder null
 	 */
 	@Nonnull
-	List<Betreuung> findAllBetreuungenWithVerfuegungFromFall(@Nonnull Fall fall);
+	List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier);
 
 	/**
 	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) ohne eine neue Verfuegung zu erstellen

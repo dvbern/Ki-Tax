@@ -38,6 +38,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -80,7 +81,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
-	private FallService fallService;
+	private DossierService dossierService;
 
 	@Inject
 	private GesuchService gesuchService;
@@ -148,9 +149,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	private void pruefungZahlungenSollFuerGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull LocalDateTime datumLetzteZahlung) {
 		LOGGER.info("Pruefe Gesuchsperiode {}", gesuchsperiode.toString());
-		Collection<Fall> allFaelle = fallService.getAllFalle(true);
-		for (Fall fall : allFaelle) {
-			Optional<Gesuch> gesuchOptional = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, fall, false);
+		Collection<Dossier> allDossiers = dossierService.getAllDossiers(true);
+		for (Dossier dossier : allDossiers) {
+			Optional<Gesuch> gesuchOptional = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, dossier, false);
 			gesuchOptional.ifPresent(gesuch -> pruefeZahlungenSollFuerGesuch(gesuch, datumLetzteZahlung));
 		}
 		LOGGER.info("... done");

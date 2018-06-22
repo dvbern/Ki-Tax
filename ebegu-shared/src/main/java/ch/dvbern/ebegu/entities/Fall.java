@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,12 +31,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
-import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherJAValidationGroup;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherSCHValidationGroup;
-import ch.dvbern.ebegu.validators.CheckVerantwortlicherJA;
-import ch.dvbern.ebegu.validators.CheckVerantwortlicherSCH;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
@@ -52,8 +46,6 @@ import org.hibernate.search.bridge.builtin.LongBridge;
  */
 @Audited
 @Entity
-@CheckVerantwortlicherJA(groups = ChangeVerantwortlicherJAValidationGroup.class)
-@CheckVerantwortlicherSCH(groups = ChangeVerantwortlicherSCHValidationGroup.class)
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "fallNummer", name = "UK_fall_nummer"),
@@ -62,14 +54,12 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 	indexes = {
 		@Index(name = "IX_fall_fall_nummer", columnList = "fallNummer"),
 		@Index(name = "IX_fall_besitzer", columnList = "besitzer_id"),
-		@Index(name = "IX_fall_verantwortlicher", columnList = "verantwortlicher_id"),
-		@Index(name = "IX_fall_verantwortlicher_sch", columnList = "verantwortlichersch_id"),
 		@Index(name = "IX_fall_mandant", columnList = "mandant_id")
 	}
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
-public class Fall extends AbstractEntity implements HasMandant, Searchable {
+public class Fall extends AbstractEntity implements HasMandant {
 
 	private static final long serialVersionUID = -9154456879261811678L;
 
@@ -78,16 +68,6 @@ public class Fall extends AbstractEntity implements HasMandant, Searchable {
 	@Min(1)
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private long fallNummer = 1;
-
-	@Nullable
-	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_verantwortlicher_id"))
-	private Benutzer verantwortlicher = null; // Mitarbeiter des JA
-
-	@Nullable
-	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_verantwortlicher_sch_id"))
-	private Benutzer verantwortlicherSCH = null; // Mitarbeiter des SCH
 
 	@Nullable
 	@ManyToOne(optional = true)
@@ -105,6 +85,11 @@ public class Fall extends AbstractEntity implements HasMandant, Searchable {
 	private Integer nextNumberKind = 1;
 
 	@NotNull
+	@Min(1)
+	@Column(nullable = false)
+	private Integer nextNumberDossier = 1;
+
+	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_mandant_id"))
 	private Mandant mandant;
@@ -115,24 +100,6 @@ public class Fall extends AbstractEntity implements HasMandant, Searchable {
 
 	public void setFallNummer(long fallNummer) {
 		this.fallNummer = fallNummer;
-	}
-
-	@Nullable
-	public Benutzer getVerantwortlicher() {
-		return verantwortlicher;
-	}
-
-	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
-	}
-
-	@Nullable
-	public Benutzer getVerantwortlicherSCH() {
-		return verantwortlicherSCH;
-	}
-
-	public void setVerantwortlicherSCH(@Nullable Benutzer verantwortlicherSCH) {
-		this.verantwortlicherSCH = verantwortlicherSCH;
 	}
 
 	@Nullable
@@ -150,6 +117,14 @@ public class Fall extends AbstractEntity implements HasMandant, Searchable {
 
 	public void setNextNumberKind(Integer nextNumberKind) {
 		this.nextNumberKind = nextNumberKind;
+	}
+
+	public Integer getNextNumberDossier() {
+		return nextNumberDossier;
+	}
+
+	public void setNextNumberDossier(Integer nextNumberDossier) {
+		this.nextNumberDossier = nextNumberDossier;
 	}
 
 	@Override
@@ -180,49 +155,5 @@ public class Fall extends AbstractEntity implements HasMandant, Searchable {
 	@Transient
 	public String getPaddedFallnummer() {
 		return StringUtils.leftPad(String.valueOf(this.getFallNummer()), Constants.FALLNUMMER_LENGTH, '0');
-	}
-
-	@Nonnull
-	@Override
-	public String getSearchResultId() {
-		return getId();
-	}
-
-	@Nonnull
-	@Override
-	public String getSearchResultSummary() {
-		return getPaddedFallnummer();
-	}
-
-	@Nullable
-	@Override
-	public String getSearchResultAdditionalInformation() {
-		return toString();
-	}
-
-	@Nullable
-	@Override
-	public String getOwningGesuchId() {
-		//haben wir hier nicht da der Fall nicht zu einem Gesuch gehoert
-		return null;
-	}
-
-	@Override
-	public String getOwningFallId() {
-		return getId();
-	}
-
-	/**
-	 * wenn der Verantwortlicher gesetzt ist, wir er zurueckgegeben.
-	 * Sonst wenn der VerantwortlicherSCH gesetzt ist, wir er zurueckgegeben.
-	 * Sonst wird null zurueckgegeben
-	 */
-	@Nullable
-	public Benutzer getHauptVerantwortlicher() {
-		Benutzer hauptverantwortlicher = this.getVerantwortlicher();
-		if (hauptverantwortlicher == null) {
-			hauptverantwortlicher = this.getVerantwortlicherSCH();
-		}
-		return hauptverantwortlicher;
 	}
 }

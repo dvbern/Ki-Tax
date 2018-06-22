@@ -39,7 +39,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(SuperAdminService.class)
-@RunAs(value = UserRoleName.SUPER_ADMIN)
+@RunAs(UserRoleName.SUPER_ADMIN)
 public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Inject
@@ -57,12 +57,12 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN })
 	public void removeFall(@Nonnull Fall fall) {
-		fallService.removeFall(fall);
+		fallService.removeFall(fall, GesuchDeletionCause.USER);
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed(value = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
 	public Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser) {
 		return gesuchService.updateGesuch(gesuch, saveInStatusHistory, saveAsUser);
 	}

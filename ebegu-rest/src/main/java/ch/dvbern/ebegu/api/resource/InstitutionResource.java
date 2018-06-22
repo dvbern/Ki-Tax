@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Institution
@@ -98,7 +98,7 @@ public class InstitutionResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(institutionJAXP.getId());
+		Objects.requireNonNull(institutionJAXP.getId());
 		Optional<Institution> optInstitution = institutionService.findInstitution(institutionJAXP.getId());
 		Institution institutionFromDB = optInstitution.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionJAXP.getId()));
 
@@ -117,7 +117,7 @@ public class InstitutionResource {
 	public JaxInstitution findInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
-		Validate.notNull(institutionJAXPId.getId());
+		Objects.requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
 		Optional<Institution> optional = institutionService.findInstitution(institutionID);
 
@@ -134,7 +134,7 @@ public class InstitutionResource {
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(institutionJAXPId.getId());
+		Objects.requireNonNull(institutionJAXPId.getId());
 		institutionService.setInstitutionInactive(converter.toEntityId(institutionJAXPId));
 		return Response.ok().build();
 	}
@@ -149,7 +149,7 @@ public class InstitutionResource {
 	public List<JaxInstitution> getAllInstitutionenFromTraegerschaft(
 		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId) {
 
-		Validate.notNull(traegerschaftJAXPId.getId());
+		Objects.requireNonNull(traegerschaftJAXPId.getId());
 		String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
 		return institutionService.getAllInstitutionenFromTraegerschaft(traegerschaftId).stream()
 			.map(institution -> converter.institutionToJAX(institution))

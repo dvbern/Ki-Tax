@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,7 @@ import org.junit.runner.RunWith;
  */
 @SuppressWarnings({ "LocalVariableNamingConvention", "InstanceMethodNamingConvention", "InstanceVariableNamingConvention" })
 @RunWith(Arquillian.class)
+@UsingDataSet("datasets/mandant-dataset.xml")
 public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Inject

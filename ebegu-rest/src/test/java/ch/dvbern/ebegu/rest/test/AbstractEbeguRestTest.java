@@ -16,9 +16,17 @@
 package ch.dvbern.ebegu.rest.test;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.resource.GesuchsperiodeResource;
@@ -35,6 +43,8 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.as.arquillian.api.ServerSetup;
+import org.jboss.resteasy.core.ResteasyHttpServletResponseWrapper;
+import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -42,6 +52,8 @@ import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Diese Klasse implementiert die Methode "Deployment" fuer die Arquillian Tests und muss
@@ -57,10 +69,205 @@ public abstract class AbstractEbeguRestTest {
 	@Inject
 	private GesuchsperiodeResource gesuchsperiodeResource;
 
+	public HttpServletResponse DUMMY_RESPONSE;
+	public UriInfo DUMMY_URIINFO;
+
+	public AbstractEbeguRestTest() {
+		// it is required to instantiate HttpServletResponse to create the wrapper.
+		HttpServletResponse response = new HttpServletResponse() {
+			@Override
+			public void addCookie(Cookie cookie) {
+
+			}
+
+			@Override
+			public boolean containsHeader(String name) {
+				return false;
+			}
+
+			@Override
+			public String encodeURL(String url) {
+				return "";
+			}
+
+			@Override
+			public String encodeRedirectURL(String url) {
+				return "";
+			}
+
+			@Override
+			public String encodeUrl(String url) {
+				return "";
+			}
+
+			@Override
+			public String encodeRedirectUrl(String url) {
+				return "";
+			}
+
+			@Override
+			public void sendError(int sc, String msg) {
+
+			}
+
+			@Override
+			public void sendError(int sc) {
+
+			}
+
+			@Override
+			public void sendRedirect(String location) {
+
+			}
+
+			@Override
+			public void setDateHeader(String name, long date) {
+
+			}
+
+			@Override
+			public void addDateHeader(String name, long date) {
+
+			}
+
+			@Override
+			public void setHeader(String name, String value) {
+
+			}
+
+			@Override
+			public void addHeader(String name, String value) {
+
+			}
+
+			@Override
+			public void setIntHeader(String name, int value) {
+
+			}
+
+			@Override
+			public void addIntHeader(String name, int value) {
+
+			}
+
+			@Override
+			public void setStatus(int sc) {
+
+			}
+
+			@Override
+			public void setStatus(int sc, String sm) {
+
+			}
+
+			@Override
+			public int getStatus() {
+				return 0;
+			}
+
+			@Override
+			public String getHeader(String name) {
+				return "";
+			}
+
+			@Override
+			public Collection<String> getHeaders(String name) {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public Collection<String> getHeaderNames() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public String getCharacterEncoding() {
+				return "";
+			}
+
+			@Override
+			public String getContentType() {
+				return "";
+			}
+
+			@Override
+			public ServletOutputStream getOutputStream() {
+				return null;
+			}
+
+			@Override
+			public PrintWriter getWriter() {
+				return null;
+			}
+
+			@Override
+			public void setCharacterEncoding(String charset) {
+
+			}
+
+			@Override
+			public void setContentLength(int len) {
+
+			}
+
+			@Override
+			public void setContentLengthLong(long len) {
+
+			}
+
+			@Override
+			public void setContentType(String type) {
+
+			}
+
+			@Override
+			public void setBufferSize(int size) {
+
+			}
+
+			@Override
+			public int getBufferSize() {
+				return 0;
+			}
+
+			@Override
+			public void flushBuffer() {
+
+			}
+
+			@Override
+			public void resetBuffer() {
+
+			}
+
+			@Override
+			public boolean isCommitted() {
+				return false;
+			}
+
+			@Override
+			public void reset() {
+
+			}
+
+			@Override
+			public void setLocale(Locale loc) {
+
+			}
+
+			@Override
+			public Locale getLocale() {
+				return Locale.GERMAN;
+			}
+		};
+		DUMMY_RESPONSE = new ResteasyHttpServletResponseWrapper(response, null) {};
+		DUMMY_URIINFO = new ResteasyUriInfo("test", "test", "test");
+	}
+
 	@Deployment
 	@OverProtocol("Servlet 3.0")
 	public static Archive<?> createTestArchive() {
-
+		//noinspection ConstantConditions
 		return createTestArchive(null);
 	}
 
@@ -107,33 +314,39 @@ public abstract class AbstractEbeguRestTest {
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusEntwurf(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusAktiv(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusInaktiv(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.INAKTIV);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusGesperrt(JaxGesuchsperiode gesuchsperiode) {
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.INAKTIV);
-		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		gesuchsperiode = gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assertNotNull(gesuchsperiode);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.GESCHLOSSEN);
-		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, null, null);
+		return gesuchsperiodeResource.saveGesuchsperiode(gesuchsperiode, DUMMY_URIINFO, DUMMY_RESPONSE);
 	}
 }

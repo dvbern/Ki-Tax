@@ -22,7 +22,7 @@ import TSBetreuung from '../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../../models/TSBetreuungspensumContainer';
-import TSFall from '../../models/TSFall';
+import TSDossier from '../../models/TSDossier';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import DateUtil from '../../utils/DateUtil';
@@ -97,8 +97,8 @@ export default class MitteilungRS {
         });
     }
 
-    public getEntwurfForCurrentRolleForFall(fallId: string): IPromise<TSMitteilung> {
-        return this.http.get(this.serviceURL + '/entwurf/fall/' + fallId).then((response: any) => {
+    public getEntwurfOfDossierForCurrentRolle(dossierId: string): IPromise<TSMitteilung> {
+        return this.http.get(this.serviceURL + '/entwurf/dossier/' + dossierId).then((response: any) => {
             this.$log.debug('PARSING mitteilung REST object ', response.data);
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
         });
@@ -111,8 +111,8 @@ export default class MitteilungRS {
         });
     }
 
-    public getMitteilungenForCurrentRolleForFall(fallId: string): IPromise<Array<TSMitteilung>> {
-        return this.http.get(this.serviceURL + '/forrole/fall/' + fallId).then((response: any) => {
+    public getMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<Array<TSMitteilung>> {
+        return this.http.get(this.serviceURL + '/forrole/dossier/' + dossierId).then((response: any) => {
             this.$log.debug('PARSING mitteilung REST object ', response.data);
             return this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungen); // The response is a wrapper
         });
@@ -138,21 +138,21 @@ export default class MitteilungRS {
             });
     }
 
-    public setAllNewMitteilungenOfFallGelesen(fallId: string): IPromise<Array<TSMitteilung>> {
-        return this.http.put(this.serviceURL + '/setallgelesen/' + fallId, null).then((response: any) => {
+    public setAllNewMitteilungenOfDossierGelesen(dossierId: string): IPromise<Array<TSMitteilung>> {
+        return this.http.put(this.serviceURL + '/setallgelesen/' + dossierId, null).then((response: any) => {
             this.$log.debug('PARSING mitteilungen REST objects ', response.data);
             return this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungen); // The response is a wrapper
         });
     }
 
-    public getAmountNewMitteilungenForCurrentRolle(fallId: string): IPromise<number> {
-        return this.http.get(this.serviceURL + '/amountnew/' + fallId).then((response: any) => {
+    public getAmountNewMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<number> {
+        return this.http.get(this.serviceURL + '/amountnew/dossier/' + dossierId).then((response: any) => {
             return response.data;
         });
     }
 
-    public sendbetreuungsmitteilung(fall: TSFall, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
-        let mutationsmeldung: TSBetreuungsmitteilung = this.createBetreuungsmitteilung(fall, betreuung);
+    public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
+        let mutationsmeldung: TSBetreuungsmitteilung = this.createBetreuungsmitteilung(dossier, betreuung);
         let restMitteilung: any = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         return this.http.put(this.serviceURL + '/sendbetreuungsmitteilung', restMitteilung, {
             headers: {
@@ -204,14 +204,14 @@ export default class MitteilungRS {
         });
     }
 
-    private createBetreuungsmitteilung(fall: TSFall, betreuung: TSBetreuung): TSBetreuungsmitteilung {
+    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): TSBetreuungsmitteilung {
         let mutationsmeldung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
-        mutationsmeldung.fall = fall;
+        mutationsmeldung.dossier = dossier;
         mutationsmeldung.betreuung = betreuung;
         mutationsmeldung.senderTyp = TSMitteilungTeilnehmerTyp.INSTITUTION;
         mutationsmeldung.empfaengerTyp = TSMitteilungTeilnehmerTyp.JUGENDAMT;
         mutationsmeldung.sender = this.authServiceRS.getPrincipal();
-        mutationsmeldung.empfaenger = fall.besitzer ? fall.besitzer : undefined;
+        mutationsmeldung.empfaenger = dossier.fall.besitzer ? dossier.fall.besitzer : undefined;
         mutationsmeldung.subject = this.$translate.instant('MUTATIONSMELDUNG_BETREFF');
         mutationsmeldung.message = this.createNachrichtForMutationsmeldung(betreuung);
         mutationsmeldung.mitteilungStatus = TSMitteilungStatus.ENTWURF;

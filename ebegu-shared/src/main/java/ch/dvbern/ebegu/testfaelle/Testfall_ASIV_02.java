@@ -18,11 +18,13 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -43,8 +45,9 @@ public class Testfall_ASIV_02 extends AbstractASIVTestfall {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
 	}
 
-	public Testfall_ASIV_02(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
-		super(gesuchsperiode, institutionStammdatenList, false);
+	public Testfall_ASIV_02(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde
+		gemeinde) {
+		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 
 	@Override
@@ -91,6 +94,7 @@ public class Testfall_ASIV_02 extends AbstractASIVTestfall {
 		return erstgesuch;
 	}
 
+	@Override
 	public Gesuch createMutation(Gesuch erstgesuch) {
 		Gesuch mutation = createAlleinerziehend(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 15));
 		return mutation;

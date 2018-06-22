@@ -13,10 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validationgroups;
+package ch.dvbern.ebegu.validators;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import ch.dvbern.ebegu.entities.Dossier;
 
 /**
- * ValidationGroup für Validierungen beim Setzen von Verantwortlichen auf einem Fall
+ * Validator der prueft, dass der eingegebene Verantwortlicher die richtige Role hat. SuperAdmin wird auch als Role zugelassen,
+ * damit man auch Testfaelle erzeugen kann.
  */
-public interface ChangeVerantwortlicherSCHValidationGroup {
+public class CheckVerantwortlicherValidatorTS implements ConstraintValidator<CheckVerantwortlicherTS, Dossier> {
+
+	@Override
+	public void initialize(CheckVerantwortlicherTS constraintAnnotation) {
+		// nop
+	}
+
+	@Override
+	public boolean isValid(Dossier instance, ConstraintValidatorContext context) {
+		return instance.getVerantwortlicherTS() == null || instance.getVerantwortlicherTS().getRole().isRoleSchulamt();
+	}
 }

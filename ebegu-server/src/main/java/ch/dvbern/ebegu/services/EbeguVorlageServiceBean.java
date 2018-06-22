@@ -60,6 +60,8 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
@@ -189,7 +191,7 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void removeVorlage(@Nonnull String id) {
-		Validate.notNull(id);
+		Objects.requireNonNull(id);
 		Optional<EbeguVorlage> ebeguVorlage = findById(id);
 		EbeguVorlage ebeguVorlageEntity = ebeguVorlage.orElseThrow(() -> new EbeguEntityNotFoundException
 			("removeEbeguVorlage", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));

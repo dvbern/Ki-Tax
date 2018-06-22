@@ -33,6 +33,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -59,6 +60,8 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.ADMINISTRATOR_SCHULAMT;
@@ -157,6 +160,21 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
+	@Override
+	public void checkReadAuthorizationDossiers(Collection<Dossier> dossiers) {
+		if (dossiers != null) {
+			dossiers.forEach(this::checkReadAuthorizationDossier);
+		}
+	}
+
+	@Override
+	public void checkReadAuthorizationDossier(@Nullable Dossier dossier) {
+		boolean allowed = isReadAuthorizedDossier(dossier);
+		if (!allowed) {
+			throwViolation(dossier);
+		}
+	}
+
 	private boolean isReadAuthorizedFall(@Nullable final Fall fall) {
 		if (fall == null) {
 			return true;
@@ -171,6 +189,26 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		//Gesuchstellereigentuemer pruefen
 		if (this.isGSOwner(() -> fall, principalBean.getPrincipal().getName())) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isReadAuthorizedDossier(@Nullable final Dossier dossier) {
+		if (dossier == null) {
+			return true;
+		}
+
+		validateMandantMatches(dossier.getFall());
+		//berechtigte Rollen pruefen
+		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA,
+			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT, JURIST, REVISOR };
+		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
+			return true;
+		}
+		//TODO (team) hier muss dann spaeter die Rolle genauer geprüft werden!
+		//Gesuchstellereigentuemer pruefen
+		if (this.isGSOwner(() -> dossier.getFall(), principalBean.getPrincipal().getName())) {
 			return true;
 		}
 		return false;
@@ -193,10 +231,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkWriteAuthorization(@Nullable Fall fall) {
 		if (fall != null) {
-
 			boolean allowed = isReadAuthorizedFall(fall);
 			if (!allowed) {
 				throwViolation(fall);
+			}
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationDossier(@Nullable Dossier dossier) {
+		if (dossier != null) {
+			//TODO (KIBON-6): Wie muss die Berechtigung funktionieren?
+			boolean allowed = isReadAuthorizedDossier(dossier);
+			if (!allowed) {
+				throwViolation(dossier);
 			}
 		}
 	}
@@ -415,12 +463,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		if (principalBean.isCallerInRole(SACHBEARBEITER_INSTITUTION)) {
 			Institution institution = principalBean.getBenutzer().getInstitution();
-			Validate.notNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
+			Objects.requireNonNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			return betreuung.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
 		if (principalBean.isCallerInRole(SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
-			Validate.notNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
+			Objects.requireNonNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			Collection<Institution> institutions = institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 			Institution instToMatch = betreuung.getInstitutionStammdaten().getInstitution();
 			return institutions.stream().anyMatch(instToMatch::equals);
@@ -451,12 +499,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInRole(SACHBEARBEITER_INSTITUTION)) {
 			Institution institution = principalBean.getBenutzer().getInstitution();
-			Validate.notNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
+			Objects.requireNonNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			return entity.hasBetreuungOfInstitution(institution); //@reviewer: oder besser ueber service ?
 		}
 		if (principalBean.isCallerInRole(SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
-			Validate.notNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
+			Objects.requireNonNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			Collection<Institution> institutions = institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 			return institutions.stream().anyMatch(entity::hasBetreuungOfInstitution);  // irgend eine der betreuungen des gesuchs matched
 		}

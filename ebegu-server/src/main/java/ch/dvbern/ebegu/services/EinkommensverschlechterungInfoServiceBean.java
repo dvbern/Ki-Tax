@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -37,7 +38,6 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -80,9 +80,9 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	@Override
 	@Nonnull
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
-	public EinkommensverschlechterungInfoContainer updateEinkommensVerschlechterungInfoAndGesuch(Gesuch gesuch, EinkommensverschlechterungInfoContainer
-		oldEVData,
-		EinkommensverschlechterungInfoContainer convertedEkvi) {
+	public EinkommensverschlechterungInfoContainer updateEinkommensVerschlechterungInfoAndGesuch(@Nonnull Gesuch gesuch,
+			@Nullable EinkommensverschlechterungInfoContainer oldEVData, @Nonnull EinkommensverschlechterungInfoContainer convertedEkvi) {
+
 		convertedEkvi.setGesuch(gesuch);
 		gesuch.setEinkommensverschlechterungInfoContainer(convertedEkvi);
 
@@ -101,6 +101,7 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 
 		//cannot return convertedEkvi because it hasn't been updated after the Gesuch was saved. So we need to take
 		// it from the Gesuch
+		Objects.requireNonNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		return gesuch.getEinkommensverschlechterungInfoContainer();
 	}
 
@@ -123,7 +124,7 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public void removeEinkommensverschlechterungInfo(@Nonnull EinkommensverschlechterungInfoContainer einkommensverschlechterungInfo) {
-		Validate.notNull(einkommensverschlechterungInfo);
+		Objects.requireNonNull(einkommensverschlechterungInfo);
 		einkommensverschlechterungInfo.getGesuch().setEinkommensverschlechterungInfoContainer(null);
 		persistence.merge(einkommensverschlechterungInfo.getGesuch());
 
@@ -154,8 +155,8 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 		}
 	}
 
-	private void removeEKVContainerIfNotNeeded(GesuchstellerContainer gesuchsteller, EinkommensverschlechterungInfoContainer oldData,
-		EinkommensverschlechterungInfoContainer convertedEkvi) {
+	private void removeEKVContainerIfNotNeeded(@Nullable GesuchstellerContainer gesuchsteller, @Nullable EinkommensverschlechterungInfoContainer oldData,
+		@Nullable EinkommensverschlechterungInfoContainer convertedEkvi) {
 		if (isNeededToRemoveEinkommensverschlechterungCont(gesuchsteller, oldData, convertedEkvi)) {
 			//noinspection ConstantConditions
 			einkommensverschlechterungService.removeEinkommensverschlechterungContainer(gesuchsteller.getEinkommensverschlechterungContainer());
@@ -166,8 +167,8 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	/**
 	 * Returns true when the given GS already has an einkommensverschlechtrung and the new EVInfo says that no EV should be present
 	 */
-	private boolean isNeededToRemoveEinkommensverschlechterungCont(GesuchstellerContainer gesuchsteller, EinkommensverschlechterungInfoContainer oldData,
-		EinkommensverschlechterungInfoContainer newData) {
+	private boolean isNeededToRemoveEinkommensverschlechterungCont(@Nullable GesuchstellerContainer gesuchsteller,
+		@Nullable EinkommensverschlechterungInfoContainer oldData, @Nullable EinkommensverschlechterungInfoContainer newData) {
 		return oldData != null && newData != null && gesuchsteller != null
 			&& !newData.getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()
 			&& gesuchsteller.getEinkommensverschlechterungContainer() != null;
@@ -177,7 +178,7 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	 * This method creates all required EkvContainer and EKV. It uses the information contained in the EKVInfo to
 	 * know when these EKVCont and EKV must be created. They will be created using the values by default.
 	 */
-	private void addEmptyEKVContainerIfNeeded(GesuchstellerContainer gesuchsteller, EinkommensverschlechterungInfoContainer ekvInfo) {
+	private void addEmptyEKVContainerIfNeeded(@Nullable GesuchstellerContainer gesuchsteller, @Nonnull EinkommensverschlechterungInfoContainer ekvInfo) {
 		if (gesuchsteller != null) {
 			if (gesuchsteller.getEinkommensverschlechterungContainer() == null
 				&& ekvInfo.getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {

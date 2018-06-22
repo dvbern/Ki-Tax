@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -95,7 +94,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void removeTraegerschaft(@Nonnull String traegerschaftId) {
-		Validate.notNull(traegerschaftId);
+		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftToRemove = findTraegerschaft(traegerschaftId);
 		Traegerschaft traegerschaft = traegerschaftToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeTraegerschaft",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
@@ -113,7 +112,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void setInactive(@Nonnull String traegerschaftId) {
-		Validate.notNull(traegerschaftId);
+		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);
 		Traegerschaft traegerschaft = traegerschaftOptional.orElseThrow(() -> new EbeguEntityNotFoundException("setInactive", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
 		traegerschaft.setActive(false);

@@ -85,7 +85,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
             }
         }
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.fallId).then((response: TSGesuchsperiode[]) => {
+        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then((response: TSGesuchsperiode[]) => {
             this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
         });
     }

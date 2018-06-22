@@ -221,7 +221,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getFall() {
         if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().fall;
+            return this.gesuchModelManager.getFall();
         }
         return undefined;
     }

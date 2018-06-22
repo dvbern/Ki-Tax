@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -43,7 +44,6 @@ import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,9 @@ public class EWKWebService implements IEWKWebService {
 
 	@Nonnull
 	@Override
-	public EWKResultat suchePerson(@Nonnull String name, @Nonnull String vorname, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	public EWKResultat suchePerson(@Nonnull String name, @Nonnull String vorname, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht)
+		throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+
 		PersonenSucheReq request = new PersonenSucheReq();
 		request.setNachname(name);
 		request.setVorname(vorname);
@@ -109,7 +111,9 @@ public class EWKWebService implements IEWKWebService {
 
 	@Nonnull
 	@Override
-	public EWKResultat suchePerson(@Nonnull String name, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	public EWKResultat suchePerson(@Nonnull String name, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht)
+		throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+
 		PersonenSucheReq request = new PersonenSucheReq();
 		request.setNachname(name);
 		request.setGeburtsdatum(geburtsdatum);
@@ -171,16 +175,16 @@ public class EWKWebService implements IEWKWebService {
 			if (StringUtils.isEmpty(password)) {
 				throw new PersonenSucheServiceException(METHOD_NAME_INIT_PERSONEN_SUCHE, "Es wurde keine Passwort definiert fuer den PersonenSuche Service");
 			}
-			LOGGER.info("PersonenSucheService Endpoint: " + endpointURL);
-			LOGGER.info("PersonenSucheService Username: " + username);
+			LOGGER.info("PersonenSucheService Endpoint: {}", endpointURL);
+			LOGGER.info("PersonenSucheService Username: {}", username);
 
 			URL url;
 			try {
 				// Test der neu mitgeteilten WSDL-URL:
 				url = new URL(wsdlURL);
-				LOGGER.info("PersonenSucheService WSDL: " + url);
+				LOGGER.info("PersonenSucheService WSDL: {}", url);
 				Object content = url.getContent();
-				LOGGER.info("PersonenSucheService WSDL-Content: " + content);
+				LOGGER.info("PersonenSucheService WSDL-Content: {}", content);
 			} catch (IOException e) {
 				url = null;
 				LOGGER.error("PersonenSucheService WSDL not found: ", e);
@@ -190,17 +194,17 @@ public class EWKWebService implements IEWKWebService {
 				if (url == null) {
 					// WSDL wird mitgeliefert. Die EndpointURL?wsdl funktioniert so nicht.
 					url = EWKWebService.class.getResource("/wsdl/Stadt_Bern_E-BEGU_Personensuche_v1.2.wsdl");
-					Validate.notNull(url, "WSDL konnte unter der angegebenen URI nicht gefunden werden. Kann Service-Port nicht erstellen");
-					LOGGER.info("PersonenSucheService URL: " + url);
+					Objects.requireNonNull(url, "WSDL konnte unter der angegebenen URI nicht gefunden werden. Kann Service-Port nicht erstellen");
+					LOGGER.info("PersonenSucheService URL: {}", url);
 				}
 				LOGGER.info("PersonenSucheService TargetNameSpace: " + TARGET_NAME_SPACE);
 				LOGGER.info("PersonenSucheService ServiceName: " + SERVICE_NAME);
 				final QName qname = new QName(TARGET_NAME_SPACE, SERVICE_NAME);
-				LOGGER.info("PersonenSucheService QName: " + qname);
+				LOGGER.info("PersonenSucheService QName: {}", qname);
 				final Service service = Service.create(url, qname);
-				LOGGER.info("PersonenSucheService Service created: " + service);
+				LOGGER.info("PersonenSucheService Service created: {}", service);
 				port = service.getPort(PersonenSucheOB.class);
-				LOGGER.info("PersonenSucheService Port created: " + port);
+				LOGGER.info("PersonenSucheService Port created: {}", port);
 				final BindingProvider bp = (BindingProvider) port;
 
 				bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);

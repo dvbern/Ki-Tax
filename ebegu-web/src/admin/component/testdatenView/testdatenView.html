@@ -262,9 +262,9 @@
             <div class="row">
                 <div class="col-md-12 dv-input-container-small">
                     <dv-input-container class="form-group">
-                        <label class="md-no-float" data-translate="FALL_UPPER" for="fallid">
+                        <label class="md-no-float" data-translate="DOSSIER_ID" for="dossierid">
                         </label>
-                        <input id="fallid" type="text" name="fallid" ng-model="vm.fallId"
+                        <input id="dossierid" type="text" name="dossierid" ng-model="vm.dossierid"
                                dv-max-length class="form-control" style="background: #F0F0F0;">
                     </dv-input-container>
                 </div>
@@ -302,7 +302,7 @@
                         <div class="col-md-4">
                             <button type="button" class=" btn-testfall"
                                     ng-click="vm.mutiereFallHeirat()">
-                                <span data-translate="FALL_MUTIEREN_HEIRAT"></span>
+                                <span data-translate="DOSSIER_MUTIEREN_HEIRAT"></span>
                             </button>
 
                         </div>
@@ -328,7 +328,7 @@
                         <div class="col-md-4">
                             <button type="button" class=" btn-testfall"
                                     ng-click="vm.mutiereFallScheidung()">
-                                <span data-translate="FALL_MUTIEREN_SCHEIDUNG"></span>
+                                <span data-translate="DOSSIER_MUTIEREN_SCHEIDUNG"></span>
                             </button>
 
                         </div>
@@ -412,38 +412,7 @@
                     <h2 data-translate="MANUELLE_SKRIPTS"></h2>
                 </div>
                 <div>
-                    <button type="button" class=" btn-testfall"
-                            ng-click="vm.processScript('1105')">
-                        <span>EBEGU-1105: Gueltig-Flag auf Gesuch und Betreuung</span>
-                    </button>
-                </div>
-                <div>
-                    <br/>
-                    <button type="button" class=" btn-testfall"
-                            ng-click="vm.processScript('1204')">
-                        <span>EBEGU-1204: nicht existierende EKV erstellen</span>
-                    </button>
-                </div>
-                <div>
-                    <br/>
-                    <button type="button" class=" btn-testfall"
-                            ng-click="vm.processScript('1098')">
-                        <span>EBEGU-1098: Kita Statusfilterung</span>
-                    </button>
-                </div>
-                <div>
-                    <br/>
-                    <button type="button" class=" btn-testfall"
-                            ng-click="vm.processScript('1136')">
-                        <span>EBEGU-1136: Eliminieren doppelter Statusübergänge</span>
-                    </button>
-                </div>
-                <div>
-                    <br/>
-                    <button type="button" class=" btn-testfall"
-                            ng-click="vm.processScript('1470')">
-                        <span>EBEGU-1470: TimestampVerfuegt auf allen verfuegten Gesuchen setzen</span>
-                    </button>
+                    <span>Noch kein Skript zur Auswahl</span>
                 </div>
             </div>
         </div>

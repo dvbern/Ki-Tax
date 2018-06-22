@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,15 +36,12 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -54,16 +50,13 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Gesuchsteller_;
-import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherJAValidationGroup;
-import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherSCHValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -101,16 +94,10 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	private PrincipalBean principalBean;
 
 	@Inject
-	private GesuchService gesuchService;
-
-	@Inject
 	private MitteilungService mitteilungService;
 
 	@Inject
-	private SuperAdminService superAdminService;
-
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
+	private DossierService dossierService;
 
 	@Nonnull
 	@Override
@@ -173,24 +160,23 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public void removeFall(@Nonnull Fall fall) {
-		Validate.notNull(fall);
+	public void removeFall(@Nonnull Fall fall, GesuchDeletionCause deletionCause) {
+		Objects.requireNonNull(fall);
 		Optional<Fall> fallToRemove = findFall(fall.getId());
 		Fall loadedFall = fallToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fall));
 		authorizer.checkWriteAuthorization(loadedFall);
 		// Remove all depending objects
 		mitteilungService.removeAllMitteilungenForFall(loadedFall);
-		// Alle Gesuche des Falls ebenfalls loeschen
-		final List<String> allGesucheForFall = gesuchService.getAllGesuchIDsForFall(loadedFall.getId());
-		allGesucheForFall
-			.forEach(gesuchId -> gesuchService.findGesuch(gesuchId)
-				.ifPresent((gesuch) ->
-					superAdminService.removeGesuch(gesuch.getId()))
-			);
+		// Alle Dossier des Falls loeschen (die entsprechenden Gesuchen werden damit auch geloescht
+		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
+		for (Dossier dossier : dossiersByFall) {
+			dossierService.removeDossier(dossier.getId(), deletionCause);
+		}
 		//Finally remove the Fall when all other objects are really removed
 		persistence.remove(loadedFall);
 	}
 
+	@Nonnull
 	@Override
 	public Optional<Fall> createFallForCurrentGesuchstellerAsBesitzer() {
 		UserRole role = principalBean.discoverMostPrivilegedRole();
@@ -203,14 +189,16 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		return Optional.empty();
 	}
 
+	@Nonnull
 	@Override
-	public Optional<String> getCurrentEmailAddress(String fallID) {
+	public Optional<String> getCurrentEmailAddress(@Nonnull String fallID) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<Gesuch> root = query.from(Gesuch.class);
 		ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
-		Join<Gesuch, Fall> fallJoin = root.join(Gesuch_.fall, JoinType.LEFT);
+		Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
 		Join<Gesuch, GesuchstellerContainer> gesuchstellerJoin = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
 		Join<GesuchstellerContainer, Gesuchsteller> gesDataJoin = gesuchstellerJoin.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
 		Predicate gesuchOfFall = cb.equal(fallJoin.get(Fall_.id), fallIdParam);
@@ -237,56 +225,6 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		}
 		return Optional.ofNullable(emailToReturn);
 
-	}
-
-	@Override
-	public boolean hasFallAnyMitteilung(@NotNull String fallID) {
-		final Optional<Fall> fallOpt = findFall(fallID);
-		final Fall fall = fallOpt.orElseThrow(() -> new EbeguEntityNotFoundException("hasFallAnyMitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallID));
-		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(fall);
-		return !mitteilungenForCurrentRolle.isEmpty();
-	}
-
-	@Override
-	@Nonnull
-	public Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Fall fall) {
-		Benutzer verantwortlicher = fall.getHauptVerantwortlicher();
-		if (verantwortlicher == null) {
-			return applicationPropertyService.readDefaultVerantwortlicherFromProperties();
-		}
-		return Optional.of(verantwortlicher);
-	}
-
-	@Nonnull
-	@Override
-	public Fall setVerantwortlicherJA(@Nonnull String fallId, @Nullable Benutzer benutzer) {
-		final Fall fall = findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherJA",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
-		fall.setVerantwortlicher(benutzer);
-
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
-		validateVerantwortlicher(fall, ChangeVerantwortlicherJAValidationGroup.class);
-		return saveFall(fall);
-	}
-
-	@Nonnull
-	@Override
-	public Fall setVerantwortlicherSCH(@Nonnull String fallId, @Nullable Benutzer benutzer){
-		final Fall fall = findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherSCH",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
-		fall.setVerantwortlicherSCH(benutzer);
-
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
-		validateVerantwortlicher(fall, ChangeVerantwortlicherSCHValidationGroup.class);
-		return saveFall(fall);
-	}
-
-	private void validateVerantwortlicher(@Nonnull Fall fall, @Nonnull Class validationGroup) {
-		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		Set<ConstraintViolation<Fall>> constraintViolations = validator.validate(fall, validationGroup);
-		if (!constraintViolations.isEmpty()) {
-			throw new ConstraintViolationException(constraintViolations);
-		}
 	}
 
 	private String readBesitzerEmailForFall(String fallID) {

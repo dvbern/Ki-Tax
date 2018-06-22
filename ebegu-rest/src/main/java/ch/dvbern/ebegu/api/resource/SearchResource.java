@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.resource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Stateless;
@@ -54,7 +55,6 @@ import ch.dvbern.ebegu.services.SearchService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -122,8 +122,8 @@ public class SearchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/jugendamt/user/{benutzername}")
 	public List<JaxAntragDTO> getAllPendenzenJA(@Nonnull @NotNull @PathParam("benutzername") String benutzername) {
-		Validate.notNull(benutzername);
-		Collection<Gesuch> gesucheList = gesuchService.getAllActiveGesucheOfVerantwortlichePerson(benutzername);
+		Objects.requireNonNull(benutzername);
+		Collection<Gesuch> gesucheList = gesuchService.getGesucheForBenutzerPendenzenBG(benutzername);
 
 		List<JaxAntragDTO> pendenzenList = new ArrayList<>();
 		gesucheList.stream().filter(gesuch -> gesuch.getFall() != null)

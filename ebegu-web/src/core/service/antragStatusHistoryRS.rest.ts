@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSAntragStatusHistory from '../../models/TSAntragStatusHistory';
-import TSGesuch from '../../models/TSGesuch';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import TSAntragStatusHistory from '../../models/TSAntragStatusHistory';
+import TSDossier from '../../models/TSDossier';
+import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TSFall from '../../models/TSFall';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class AntragStatusHistoryRS {
 
@@ -66,9 +66,9 @@ export default class AntragStatusHistoryRS {
         return undefined;
     }
 
-    public loadAllAntragStatusHistoryByGesuchsperiode(fall: TSFall, gesuchsperiode: TSGesuchsperiode): IPromise<Array<TSAntragStatusHistory>> {
-        if (gesuchsperiode && gesuchsperiode.id && fall && fall.id) {
-            return this.http.get(this.serviceURL + '/verlauf/' + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(fall.id))
+    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier, gesuchsperiode: TSGesuchsperiode): IPromise<Array<TSAntragStatusHistory>> {
+        if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
+            return this.http.get(this.serviceURL + '/verlauf/' + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);
@@ -80,7 +80,7 @@ export default class AntragStatusHistoryRS {
     /**
      * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch nicht
      * gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
-     * @returns {any}
+     * @returns {string}
      */
     public getUserFullname(): string {
         if (this.lastChange && this.lastChange.benutzer) {

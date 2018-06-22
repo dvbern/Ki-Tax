@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util.testdata;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -25,6 +26,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 public class TestdataSetupConfig {
 
 	private Mandant mandant;
+	private Gemeinde gemeinde;
 	private InstitutionStammdaten kitaBruennen;
 	private InstitutionStammdaten kitaWeissenstein;
 	private InstitutionStammdaten tagiWeissenstein;
@@ -119,5 +121,13 @@ public class TestdataSetupConfig {
 
 	public void setFerieninselBruennen(InstitutionStammdaten ferieninselBruennen) {
 		this.ferieninselBruennen = ferieninselBruennen;
+	}
+
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }

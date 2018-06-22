@@ -16,20 +16,20 @@
 import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import ErrorService from '../../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
-import FallRS from '../../../gesuch/service/fallRS.rest';
+import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../../models/enums/TSGesuchBetreuungenStatus';
 import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSFall from '../../../models/TSFall';
+import TSDossier from '../../../models/TSDossier';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import ErrorService from '../../../core/errors/service/ErrorService';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import ITranslateService = angular.translate.ITranslateService;
@@ -48,18 +48,18 @@ export class GesuchstellerDashboardListViewController {
 
     private antragList: Array<TSAntragDTO> = [];
     private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
-    fallId: string;
+    dossier: TSDossier;
     totalResultCount: string = '-';
     amountNewMitteilungen: number;
     mapOfNewestAntraege: { [key: string]: string } = {}; // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
 
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
-        'FallRS', '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
+        '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService', 'DossierRS'];
 
     constructor(private $state: StateService, private $log: ILogService,
                 private authServiceRS: AuthServiceRS, private searchRS: SearchRS, private ebeguUtil: EbeguUtil,
-                private gesuchsperiodeRS: GesuchsperiodeRS, private fallRS: FallRS, private $translate: ITranslateService,
-                private mitteilungRS: MitteilungRS, private gesuchRS: GesuchRS, private errorService: ErrorService) {
+                private gesuchsperiodeRS: GesuchsperiodeRS, private $translate: ITranslateService,
+                private mitteilungRS: MitteilungRS, private gesuchRS: GesuchRS, private errorService: ErrorService, private dossierRS: DossierRS) {
     }
 
     $onInit() {
@@ -77,28 +77,33 @@ export class GesuchstellerDashboardListViewController {
     }
 
     private updateAntragList(): IPromise<any> {
-        return this.fallRS.findFallByCurrentBenutzerAsBesitzer().then((existingFall: TSFall) => {
-            if (existingFall) {
-                this.fallId = existingFall.id;
-                return this.searchRS.getAntraegeGesuchstellerList().then((response: any) => {
-                    this.antragList = angular.copy(response);
-                    return this.antragList;
-                });
-            } else { //fall es fuer den GS noch keine Fall gibt, erstellen wir einen
-                return this.fallRS.createFallForCurrentBenutzerAsBesitzer().then((createdFall: TSFall) => {
-                    if (createdFall) {
-                        this.fallId = createdFall.id;
-                    }
-                    return this.antragList;
-                });
+        //TODO (KIBON-6) Gemeinde!
+        return this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer('unknown').then((createdDossier: TSDossier) => {
+            this.dossier = createdDossier;
+            return this.searchRS.getAntraegeGesuchstellerList().then((response: any) => {
+                this.antragList = angular.copy(response);
+                return this.antragList;
+            });
+        });
+    }
+
+    private readDossierOfCurrentBenutzer(fallId: string) {
+        //TODO (KIBON-6) Gemeinde!
+        this.dossierRS.getDossierForFallAndGemeinde('unnknown', fallId).then((resultDossier: TSDossier) => {
+            if (resultDossier) {
+                this.dossier = resultDossier;
+            } else {
+                this.dossier = undefined;
             }
         });
     }
 
     private getAmountNewMitteilungen(): void {
-        this.mitteilungRS.getAmountNewMitteilungenForCurrentRolle(this.fallId).then((response: number) => {
-            this.amountNewMitteilungen = response;
-        });
+        if (this.dossier) {
+            this.mitteilungRS.getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossier.id).then((response: number) => {
+                this.amountNewMitteilungen = response;
+            });
+        }
     }
 
     private updateActiveGesuchsperiodenList(): void {
@@ -106,7 +111,7 @@ export class GesuchstellerDashboardListViewController {
             this._activeGesuchsperiodenList = angular.copy(response);
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
             for (let gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.fallId).then(response => {
+                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
                 });
             }
@@ -119,7 +124,7 @@ export class GesuchstellerDashboardListViewController {
 
     public goToMitteilungenOeffen() {
         this.$state.go('mitteilungen', {
-            fallId: this.fallId
+            dossierId: this.dossier.id
         });
     }
 
@@ -159,7 +164,7 @@ export class GesuchstellerDashboardListViewController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
                     gesuchId: antrag.antragId,
-                    fallId: this.fallId
+                    dossierId: this.dossier.id
                 });
             }
         } else {
@@ -171,7 +176,7 @@ export class GesuchstellerDashboardListViewController {
                     gesuchsperiodeId: periode.id,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: this.antragList[0].antragId,
-                    fallId: this.fallId
+                    dossierId: this.dossier.id
                 });
             } else {
                 // Dies ist das erste Gesuch
@@ -180,7 +185,7 @@ export class GesuchstellerDashboardListViewController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: null,
                     gesuchsperiodeId: periode.id,
-                    fallId: this.fallId
+                    dossierId: this.dossier.id
                 });
             }
         }
@@ -230,7 +235,6 @@ export class GesuchstellerDashboardListViewController {
             }
         } else {
             // Noch kein Antrag vorhanden -> Text GESUCH BEANTRAGEN
-            // this.$state.go('gesuch.fallcreation', {createNew: true, gesuchId: null});
             return this.$translate.instant('GS_BEANTRAGEN');
         }
         return undefined;
@@ -280,18 +284,18 @@ export class GesuchstellerDashboardListViewController {
     }
 
     /**
-     * JA und Mischgesuche -> verantwortlicher
-     * SCHGesuche -> verantwortlicherSCH (oder "Schulamt" wenn kein Verantwortlicher vorhanden
+     * JA und Mischgesuche -> verantwortlicherBG
+     * SCHGesuche -> verantwortlicherTS (oder "Schulamt" wenn kein Verantwortlicher vorhanden
      */
     public getHauptVerantwortlicherFullName(antrag: TSAntragDTO): string {
         if (antrag) {
-            if (antrag.verantwortlicher) {
-                return antrag.verantwortlicher;
+            if (antrag.verantwortlicherBG) {
+                return antrag.verantwortlicherBG;
             }
-            if (antrag.verantwortlicherSCH) {
-                return antrag.verantwortlicherSCH;
+            if (antrag.verantwortlicherTS) {
+                return antrag.verantwortlicherTS;
             }
-            if (antrag.status === TSAntragStatus.NUR_SCHULAMT) { //legacy for old Faelle where verantwortlicherSCH didn't exist
+            if (antrag.status === TSAntragStatus.NUR_SCHULAMT) { //legacy for old Faelle where verantwortlicherTS didn't exist
                 return this.ebeguUtil.translateString('NUR_SCHULAMT');
             }
         }

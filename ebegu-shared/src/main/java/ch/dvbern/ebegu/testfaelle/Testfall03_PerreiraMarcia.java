@@ -18,11 +18,14 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -47,10 +50,14 @@ public class Testfall03_PerreiraMarcia extends AbstractTestfall {
 		super(gesuchsperiode, institutionStammdatenList, false);
 	}
 
+	public Testfall03_PerreiraMarcia(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
+	}
+
 	@Override
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
-		Gesuch gesuch = createVerheiratet();
+		gesuch = createVerheiratet();
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer("Cortes", "Ignazi");
@@ -80,13 +87,13 @@ public class Testfall03_PerreiraMarcia extends AbstractTestfall {
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
 		finanzielleSituationGS1.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(26861));
-		finanzielleSituationGS1.getFinanzielleSituationJA().setBruttovermoegen(MathUtil.DEFAULT.from(15730));
+		finanzielleSituationGS1.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(15730)));
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
 
 		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer();
 		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(65817));
-		finanzielleSituationGS1.getFinanzielleSituationJA().setSchulden(MathUtil.DEFAULT.from(58402));
+		finanzielleSituationGS1.getFinanzielleSituationJA().setSchulden(Objects.requireNonNull(MathUtil.DEFAULT.from(58402)));
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
 

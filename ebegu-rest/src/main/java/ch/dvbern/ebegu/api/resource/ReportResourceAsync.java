@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +47,6 @@ import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -93,7 +93,7 @@ public class ReportResourceAsync {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
 		String ip = downloadResource.getIP(request);
-		Validate.notNull(dateTimeStichtag);
+		Objects.requireNonNull(dateTimeStichtag);
 		LocalDate datumVon = DateUtil.parseStringToDateOrReturnNow(dateTimeStichtag);
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
@@ -120,8 +120,8 @@ public class ReportResourceAsync {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(dateTimeFromParam);
-		Validate.notNull(dateTimeToParam);
+		Objects.requireNonNull(dateTimeFromParam);
+		Objects.requireNonNull(dateTimeToParam);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(dateTimeFromParam);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(dateTimeToParam);
 
@@ -152,8 +152,8 @@ public class ReportResourceAsync {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateAuswertungVon = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateAuswertungBis = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -183,8 +183,8 @@ public class ReportResourceAsync {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateAuswertungVon = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateAuswertungBis = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -230,7 +230,7 @@ public class ReportResourceAsync {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
 		throws EbeguRuntimeException {
 
-		Validate.notNull(gesuchPeriodIdParam);
+		Objects.requireNonNull(gesuchPeriodIdParam);
 		String ip = downloadResource.getIP(request);
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
@@ -257,8 +257,8 @@ public class ReportResourceAsync {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -290,8 +290,8 @@ public class ReportResourceAsync {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 		String periodeId = gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null;
@@ -320,7 +320,7 @@ public class ReportResourceAsync {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(stichtag);
+		Objects.requireNonNull(stichtag);
 		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stichtag);
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);

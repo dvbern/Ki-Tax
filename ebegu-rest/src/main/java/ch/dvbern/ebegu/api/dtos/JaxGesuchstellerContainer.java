@@ -54,13 +54,18 @@ public class JaxGesuchstellerContainer extends JaxAbstractDTO {
 	private JaxAdresseContainer rechnungsAdresse;
 
 	@Valid
+	@Nullable
 	private JaxFinanzielleSituationContainer finanzielleSituationContainer;
 
 	@Valid
 	@Nullable
 	private JaxEinkommensverschlechterungContainer einkommensverschlechterungContainer;
 
+	@Nullable
 	private Collection<JaxErwerbspensumContainer> erwerbspensenContainers = new LinkedHashSet<>();
+
+
+
 
 	public JaxGesuchsteller getGesuchstellerGS() {
 		return gesuchstellerGS;
@@ -102,19 +107,21 @@ public class JaxGesuchstellerContainer extends JaxAbstractDTO {
 		this.rechnungsAdresse = rechnungsAdresse;
 	}
 
+	@Nullable
 	public JaxFinanzielleSituationContainer getFinanzielleSituationContainer() {
 		return finanzielleSituationContainer;
 	}
 
-	public void setFinanzielleSituationContainer(final JaxFinanzielleSituationContainer finanzielleSituationContainer) {
+	public void setFinanzielleSituationContainer(@Nullable final JaxFinanzielleSituationContainer finanzielleSituationContainer) {
 		this.finanzielleSituationContainer = finanzielleSituationContainer;
 	}
 
+	@Nullable
 	public Collection<JaxErwerbspensumContainer> getErwerbspensenContainers() {
 		return erwerbspensenContainers;
 	}
 
-	public void setErwerbspensenContainers(final Collection<JaxErwerbspensumContainer> erwerbspensenContainers) {
+	public void setErwerbspensenContainers(@Nullable final Collection<JaxErwerbspensumContainer> erwerbspensenContainers) {
 		this.erwerbspensenContainers = erwerbspensenContainers;
 	}
 

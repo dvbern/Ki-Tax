@@ -103,16 +103,16 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	private LocalDate gesuchsperiodeGueltigBis = null;
 
 	@NotNull
-	private String verantwortlicher; 	// Name Vorname
+	private String verantwortlicherBG; 	// Name Vorname
 
 	@Nullable
-	private String verantwortlicherSCH; // Name Vorname
+	private String verantwortlicherTS; // Name Vorname
 
 	@Nullable
-	private String verantwortlicherUsernameJA; 	// Wird fuer Freigabe gebraucht
+	private String verantwortlicherUsernameBG; 	// Wird fuer Freigabe gebraucht
 
 	@Nullable
-	private String verantwortlicherUsernameSCH; // Wird fuer Freigabe gebraucht
+	private String verantwortlicherUsernameTS; // Wird fuer Freigabe gebraucht
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -186,39 +186,39 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 		this.gesuchsperiodeGueltigBis = gesuchsperiodeGueltigBis;
 	}
 
-	public String getVerantwortlicher() {
-		return verantwortlicher;
+	public String getVerantwortlicherBG() {
+		return verantwortlicherBG;
 	}
 
-	public void setVerantwortlicher(String verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
-	}
-
-	@Nullable
-	public String getVerantwortlicherSCH() {
-		return verantwortlicherSCH;
-	}
-
-	public void setVerantwortlicherSCH(@Nullable String verantwortlicherSCH) {
-		this.verantwortlicherSCH = verantwortlicherSCH;
+	public void setVerantwortlicherBG(String verantwortlicherBG) {
+		this.verantwortlicherBG = verantwortlicherBG;
 	}
 
 	@Nullable
-	public String getVerantwortlicherUsernameJA() {
-		return verantwortlicherUsernameJA;
+	public String getVerantwortlicherTS() {
+		return verantwortlicherTS;
 	}
 
-	public void setVerantwortlicherUsernameJA(@Nullable String verantwortlicherUsernameJA) {
-		this.verantwortlicherUsernameJA = verantwortlicherUsernameJA;
+	public void setVerantwortlicherTS(@Nullable String verantwortlicherTS) {
+		this.verantwortlicherTS = verantwortlicherTS;
 	}
 
 	@Nullable
-	public String getVerantwortlicherUsernameSCH() {
-		return verantwortlicherUsernameSCH;
+	public String getVerantwortlicherUsernameBG() {
+		return verantwortlicherUsernameBG;
 	}
 
-	public void setVerantwortlicherUsernameSCH(@Nullable String verantwortlicherUsernameSCH) {
-		this.verantwortlicherUsernameSCH = verantwortlicherUsernameSCH;
+	public void setVerantwortlicherUsernameBG(@Nullable String verantwortlicherUsernameBG) {
+		this.verantwortlicherUsernameBG = verantwortlicherUsernameBG;
+	}
+
+	@Nullable
+	public String getVerantwortlicherUsernameTS() {
+		return verantwortlicherUsernameTS;
+	}
+
+	public void setVerantwortlicherUsernameTS(@Nullable String verantwortlicherUsernameTS) {
+		this.verantwortlicherUsernameTS = verantwortlicherUsernameTS;
 	}
 
 	@Nullable

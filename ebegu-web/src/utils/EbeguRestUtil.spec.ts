@@ -29,6 +29,7 @@ import TSAntragDTO from '../models/TSAntragDTO';
 import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
+import TSDossier from '../models/TSDossier';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSFachstelle} from '../models/TSFachstelle';
 import TSFall from '../models/TSFall';
@@ -188,8 +189,11 @@ describe('EbeguRestUtil', function () {
                 let fall: TSFall = new TSFall();
                 TestDataUtil.setAbstractFieldsUndefined(fall);
                 fall.nextNumberKind = 2;
-                myGesuch.fall = fall;
-                myGesuch.fall.besitzer = undefined;
+                let dossier = new TSDossier();
+                TestDataUtil.setAbstractFieldsUndefined(dossier);
+                myGesuch.dossier = dossier;
+                myGesuch.dossier.fall = fall;
+                myGesuch.dossier.fall.besitzer = undefined;
                 let gesuchsteller: TSGesuchstellerContainer = createGesuchsteller();
                 gesuchsteller.gesuchstellerGS = undefined;
                 TestDataUtil.setAbstractFieldsUndefined(gesuchsteller);
@@ -216,7 +220,7 @@ describe('EbeguRestUtil', function () {
                 expect(transformedGesuch).toBeDefined();
 
                 expect(transformedGesuch.einkommensverschlechterungInfoContainer).toEqual(myGesuch.einkommensverschlechterungInfoContainer);
-                expect(transformedGesuch.fall).toEqual(myGesuch.fall);
+                expect(transformedGesuch.dossier.fall).toEqual(myGesuch.dossier.fall);
                 expect(transformedGesuch.gesuchsteller1).toEqual(myGesuch.gesuchsteller1);
                 expect(transformedGesuch.gesuchsteller2).toEqual(myGesuch.gesuchsteller2);
                 expect(transformedGesuch.gesuchsperiode).toEqual(myGesuch.gesuchsperiode);

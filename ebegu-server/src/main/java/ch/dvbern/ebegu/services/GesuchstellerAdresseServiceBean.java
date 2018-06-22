@@ -50,7 +50,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -107,7 +106,7 @@ public class GesuchstellerAdresseServiceBean extends AbstractBaseService impleme
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public void removeAdresse(@Nonnull GesuchstellerAdresseContainer gesuchstellerAdresse) {
-		Validate.notNull(gesuchstellerAdresse);
+		Objects.requireNonNull(gesuchstellerAdresse);
 		Optional<GesuchstellerAdresseContainer> adresseToRemove = findAdresse(gesuchstellerAdresse.getId());
 		adresseToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeAdresse", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchstellerAdresse));
 		adresseToRemove.ifPresent(gesuchstellerAdresseContainer -> persistence.remove(gesuchstellerAdresseContainer));

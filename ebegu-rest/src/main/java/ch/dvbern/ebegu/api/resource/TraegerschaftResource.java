@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,12 +45,10 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Traegerschaft
@@ -77,7 +76,7 @@ public class TraegerschaftResource {
 	public JaxTraegerschaft saveTraegerschaft(
 		@Nonnull @NotNull @Valid JaxTraegerschaft traegerschaftJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Traegerschaft traegerschaft = new Traegerschaft();
 		if (traegerschaftJAXP.getId() != null) {
@@ -99,14 +98,14 @@ public class TraegerschaftResource {
 	public JaxTraegerschaft findTraegerschaft(
 		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId) {
 
-		Validate.notNull(traegerschaftJAXPId.getId());
+		Objects.requireNonNull(traegerschaftJAXPId.getId());
 		String traegerschaftID = converter.toEntityId(traegerschaftJAXPId);
 		Optional<Traegerschaft> optional = traegerschaftService.findTraegerschaft(traegerschaftID);
 
 		return optional.map(traegerschaft -> converter.traegerschaftToJAX(traegerschaft)).orElse(null);
 	}
 
-	@ApiOperation(value = "Loescht die Traegerschaft mit der uebergebenen id", response = Void.class)
+	@ApiOperation("Loescht die Traegerschaft mit der uebergebenen id")
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
 	@DELETE
@@ -116,7 +115,7 @@ public class TraegerschaftResource {
 		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(traegerschaftJAXPId.getId());
+		Objects.requireNonNull(traegerschaftJAXPId.getId());
 		final String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
 		Collection<Institution> allInstitutionen = institutionService.getAllActiveInstitutionenFromTraegerschaft(traegerschaftId);
 		for (Institution institution : allInstitutionen) {
