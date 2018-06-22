@@ -75,9 +75,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Resource fuer Gesuch
  */
@@ -87,8 +84,6 @@ import org.slf4j.LoggerFactory;
 public class GesuchResource {
 
 	public static final String GESUCH_ID_INVALID = "GesuchId invalid: ";
-
-	private final Logger LOG = LoggerFactory.getLogger(GesuchResource.class.getSimpleName());
 
 	@Inject
 	private GesuchService gesuchService;
@@ -336,8 +331,8 @@ public class GesuchResource {
 			}
 			return Response.ok().build();
 		}
-		LOG.error("Could not update Status because the Geusch with ID " + gesuchJAXPId.getId() + " could not be read");
-		throw new EbeguEntityNotFoundException("updateStatus", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + gesuchJAXPId.getId());
+		String message = "Could not update Status because the Geusch with ID " + gesuchJAXPId.getId() + " could not be read";
+		throw new EbeguEntityNotFoundException("updateStatus", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 
 	/**

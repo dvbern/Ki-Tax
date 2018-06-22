@@ -39,8 +39,6 @@ import org.apache.commons.lang3.Validate;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA;
 
@@ -48,8 +46,6 @@ import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_FIXBETRAG_STADT_PRO_
  * Uebergeordneter Service. Alle Services sollten von diesem Service erben. Wird verwendet um Interceptors einzuschalten
  */
 public abstract class AbstractBaseService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
 	@Inject
 	private Persistence persistence;
@@ -91,8 +87,8 @@ public abstract class AbstractBaseService {
 	private BigDecimal loadYearlyParameter(@Nonnull EbeguParameterKey key, int jahr) {
 		Optional<EbeguParameter> result = ebeguParameterService.getEbeguParameterByKeyAndDate(key, LocalDate.of(jahr, 1, 1));
 		if (!result.isPresent()) {
-			LOGGER.error("Required yearly calculator parameter '{}' could not be loaded for year {}'", key, jahr);
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, key);
+			String message = "Required yearly calculator parameter '" + key + "' could not be loaded for year " + jahr + '\'';
+			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, key);
 		}
 		return result.get().getValueAsBigDecimal();
 	}

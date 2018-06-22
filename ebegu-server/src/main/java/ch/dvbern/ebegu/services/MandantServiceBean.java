@@ -30,8 +30,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Service fuer Mandanten
@@ -40,8 +38,6 @@ import org.slf4j.LoggerFactory;
 @Local(MandantService.class)
 @PermitAll
 public class MandantServiceBean extends AbstractBaseService implements MandantService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(MandantServiceBean.class);
 
 	@Inject
 	private Persistence persistence;
@@ -63,9 +59,8 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 		Collection<Mandant> mandants = criteriaQueryHelper.getAll(Mandant.class);
 		if (mandants != null && !mandants.isEmpty()) {
 			return mandants.iterator().next();
-		} else {
-			LOG.error("Wir erwarten, dass mindestens ein Mandant bereits in der DB existiert");
-			throw new EbeguRuntimeException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
+		String message = "Wir erwarten, dass mindestens ein Mandant bereits in der DB existiert";
+		throw new EbeguRuntimeException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 	}
 }

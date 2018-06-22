@@ -68,8 +68,8 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@Inject
 	private Persistence persistence;
 
-	@SuppressWarnings(value = { "PMD.UnusedPrivateMethod", "IfStatementWithIdenticalBranches" })
-	@SuppressFBWarnings(value = { "SIC_INNER_SHOULD_BE_STATIC_ANON" })
+	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "IfStatementWithIdenticalBranches" })
+	@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 	@PostConstruct
 	private void resolveService() {
 		if (config.isPersonenSucheDisabled()) {
