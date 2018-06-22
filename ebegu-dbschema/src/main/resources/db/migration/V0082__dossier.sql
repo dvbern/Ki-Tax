@@ -94,10 +94,12 @@ FOREIGN KEY (dossier_id)
 REFERENCES dossier (id);
 
 -- Den Unique Key auf dem Gesuch anpassen
-
+set FOREIGN_KEY_CHECKS=0;
 DROP INDEX UK_gueltiges_gesuch ON gesuch;
+set FOREIGN_KEY_CHECKS=1;
 ALTER TABLE gesuch
 	ADD CONSTRAINT UK_gueltiges_gesuch UNIQUE (dossier_id, gesuchsperiode_id, gueltig);
+
 
 
 -- Nicht mehr benötigte Constraints und Columns löschen
