@@ -228,7 +228,6 @@ public class GesuchResource {
 			if (UserRole.SUPER_ADMIN == role) {
 				return completeGesuch;
 			}
-
 			Collection<Institution> instForCurrBenutzer = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 			return cleanGesuchForInstitutionTraegerschaft(completeGesuch, instForCurrBenutzer);
 		}

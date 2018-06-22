@@ -58,7 +58,7 @@ public interface DossierService {
 	/**
 	 * entfernt ein Dossier aus der Database. Es wird ein LogEintrag erstellt mit dem Grund des Löschens-
 	 */
-	void removeDossier(@Nonnull String dossierId, GesuchDeletionCause deletionCause);
+	void removeDossier(@Nonnull String dossierId, @Nonnull GesuchDeletionCause deletionCause);
 
 	/**
 	 * Gibt alle existierenden Dossiers zurueck.

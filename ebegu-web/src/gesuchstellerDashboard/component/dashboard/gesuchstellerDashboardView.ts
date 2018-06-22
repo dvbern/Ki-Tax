@@ -235,7 +235,6 @@ export class GesuchstellerDashboardListViewController {
             }
         } else {
             // Noch kein Antrag vorhanden -> Text GESUCH BEANTRAGEN
-            // this.$state.go('gesuch.fallcreation', {createNew: true, gesuchId: null});
             return this.$translate.instant('GS_BEANTRAGEN');
         }
         return undefined;

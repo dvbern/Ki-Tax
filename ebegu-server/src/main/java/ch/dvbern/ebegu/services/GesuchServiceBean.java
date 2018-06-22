@@ -745,8 +745,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public Gesuch setBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch) {
-		final List<Gesuch> allGesucheForFall = getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
-		allGesucheForFall.iterator().forEachRemaining(gesuchLoop -> {
+		final List<Gesuch> allGesucheForDossier = getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
+		allGesucheForDossier.iterator().forEachRemaining(gesuchLoop -> {
 			if (gesuch.equals(gesuchLoop)) {
 				gesuchLoop.setStatus(AntragStatus.BESCHWERDE_HAENGIG);
 				updateGesuch(gesuchLoop, true, null);
@@ -787,8 +787,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public Gesuch removeBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch) {
-		final List<Gesuch> allGesucheForFall = getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
-		allGesucheForFall.iterator().forEachRemaining(gesuchLoop -> {
+		final List<Gesuch> allGesucheForDossier = getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
+		allGesucheForDossier.iterator().forEachRemaining(gesuchLoop -> {
 			if (gesuch.equals(gesuchLoop) && AntragStatus.BESCHWERDE_HAENGIG == gesuchLoop.getStatus()) {
 				final AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChangeBeforeBeschwerde(gesuchLoop);
 				gesuchLoop.setStatus(lastStatusChange.getStatus());
@@ -1006,7 +1006,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	private Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier, boolean checkReadAuthorization) {
 		authorizer.checkReadAuthorizationDossier(dossier);
-
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 

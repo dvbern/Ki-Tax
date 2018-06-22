@@ -167,7 +167,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 		authorizer.checkWriteAuthorization(loadedFall);
 		// Remove all depending objects
 		mitteilungService.removeAllMitteilungenForFall(loadedFall);
-		// Alle Dossier Des Falls loeschen (die entsprechenden Gesuchen werden damit auch geloescht
+		// Alle Dossier des Falls loeschen (die entsprechenden Gesuchen werden damit auch geloescht
 		Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(fall.getId());
 		for (Dossier dossier : dossiersByFall) {
 			dossierService.removeDossier(dossier.getId(), deletionCause);

@@ -184,9 +184,9 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
-		@Nonnull @PathParam("dossierId") String fallId) {
+		@Nonnull @PathParam("dossierId") String dossierId) {
 
-		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(fallId).stream()
+		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId).stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());

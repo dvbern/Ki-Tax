@@ -196,7 +196,7 @@ public interface GesuchService {
 	 * Alle GesucheIDs des Dossiers zurueckgeben
 	 */
 	@Nonnull
-	List<String> getAllGesuchIDsForDossier(String dossierId);
+	List<String> getAllGesuchIDsForDossier(@Nonnull String dossierId);
 
 	/**
 	 * Alle Gesuche fuer den gegebenen Fall in der gegebenen Periode
@@ -260,6 +260,7 @@ public interface GesuchService {
 	 * Gibt die ID des neuesten Gesuchs fuer einen Fall und eine Gesuchsperiode zurueck. Dieses kann auch ein
 	 * Gesuch sein, fuer welches ich nicht berechtigt bin!
 	 */
+	@Nonnull
 	Optional<String> getIdOfNeuestesGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier);
 
 	/**

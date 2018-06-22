@@ -555,9 +555,9 @@ export default class GesuchModelManager {
             });
         }
 
-        let setFallProm: angular.IPromise<void>;
+        let setDossierPromise: angular.IPromise<void>;
         if (dossierId) {
-            setFallProm = this.dossierRS.findDossier(dossierId).then(foundDossier => {
+            setDossierPromise = this.dossierRS.findDossier(dossierId).then(foundDossier => {
                 this.gesuch.dossier = foundDossier;
             });
         }
@@ -576,7 +576,7 @@ export default class GesuchModelManager {
         }
 
         // this creates a list of promises and resolves them all. once all promises are resolved the .then function is triggered
-        return this.$q.all([setGesuchsperiodeProm, setFallProm]).then(() => {
+        return this.$q.all([setGesuchsperiodeProm, setDossierPromise]).then(() => {
             this.log.debug('initialized new gesuch ', this.gesuch);
             return this.gesuch;
 

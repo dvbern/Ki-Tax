@@ -79,7 +79,7 @@ public interface FallService {
 	 *
 	 * @param fall der Fall als DTO
 	 */
-	void removeFall(@Nonnull Fall fall, GesuchDeletionCause deletionCause);
+	void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause);
 
 	/**
 	 * Erstellt einen neuen Fall fuer den aktuellen Benutzer und setzt diesen als Besitzer des Falles.

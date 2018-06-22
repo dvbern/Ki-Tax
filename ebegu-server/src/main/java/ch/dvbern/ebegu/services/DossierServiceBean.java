@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,6 +48,12 @@ import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer Dossier
@@ -115,6 +122,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
 		Gemeinde bern = gemeindeService.getFirst();
@@ -131,7 +139,8 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	}
 
 	@Override
-	public void removeDossier(@Nonnull String dossierId, GesuchDeletionCause deletionCause) {
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeDossier(@Nonnull String dossierId, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(dossierId);
 
 		final Optional<Dossier> optDossier = findDossier(dossierId);
