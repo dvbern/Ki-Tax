@@ -81,29 +81,29 @@ export class FaelleListViewController {
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since last time
                 this.gesuchModelManager.clearGesuch();
                 if (isAnyStatusOfVerfuegt(antrag.status)) {
-                    this.openGesuch(antrag.antragId, 'gesuch.verfuegen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.verfuegen', isCtrlKeyPressed);
                 } else {
-                    this.openGesuch(antrag.antragId, 'gesuch.betreuungen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.betreuungen', isCtrlKeyPressed);
                 }
             } else {
-                this.openGesuch(antrag.antragId, 'gesuch.fallcreation', isCtrlKeyPressed);
+                this.openGesuch(antrag, 'gesuch.fallcreation', isCtrlKeyPressed);
             }
         }
     }
 
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
-     * @param antragId
+     * @param antrag
      * @param urlToGoTo
      * @param isCtrlKeyPressed true if user pressed ctrl when clicking
      */
-    private openGesuch(antragId: string, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
-        if (antragId) {
+    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
+        if (antrag) {
             if (isCtrlKeyPressed) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antragId});
+                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antragId});
+                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

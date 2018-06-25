@@ -53,9 +53,9 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
                 gesuchsperiodeGueltigAb?: moment.Moment, gesuchsperiodeGueltigBis?: moment.Moment,
                 verfuegt?: boolean, laufnummer?: number, besitzerUsername?: string, eingangsart?: TSEingangsart, beschwerdeHaengig?: boolean,
                 kinder?: Array<string>, gesuchBetreuungenStatus?: TSGesuchBetreuungenStatus, dokumenteHochgeladen?: boolean,
-                verantwortlicherUsernameBG?: string, verantwortlicherUsernameTS?: string) {
+                verantwortlicherUsernameBG?: string, verantwortlicherUsernameTS?: string, dossierId?: string) {
 
-        super(fallNummer, familienName);
+        super(fallNummer, dossierId, familienName);
         this._antragId = antragId;
         this._antragTyp = antragTyp;
         this._eingangsdatum = eingangsdatum;
