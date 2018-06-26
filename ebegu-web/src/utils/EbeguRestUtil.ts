@@ -378,12 +378,12 @@ export default class EbeguRestUtil {
      * Nimmt den eingegebenen Code und erzeugt ein TSLand Objekt mit dem Code und
      * seine Uebersetzung.
      * @param landCode
-     * @returns {any}
+     * @returns {TSLand}
      */
     public landCodeToTSLand(landCode: string): TSLand {
         if (landCode) {
             let translationKey = this.landCodeToTSLandCode(landCode);
-            return new TSLand(landCode, this.ebeguUtil.translateString(translationKey));
+            return new TSLand(landCode, translationKey); // this.ebeguUtil.translateString(translationKey));
         }
         return undefined;
     }
@@ -391,7 +391,7 @@ export default class EbeguRestUtil {
     /**
      * Fügt das 'Land_' dem eingegebenen Landcode hinzu.
      * @param landCode
-     * @returns {any}
+     * @returns {string}
      */
     public landCodeToTSLandCode(landCode: string): string {
         if (landCode) {

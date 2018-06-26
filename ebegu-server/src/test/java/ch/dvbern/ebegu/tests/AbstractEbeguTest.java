@@ -232,7 +232,7 @@ public abstract class AbstractEbeguTest {
 		} catch (LoginException ex) {
 			LOG.error("could not login as admin user for test");
 		}
-		Benutzer i = TestDataUtil.createBenutzer(UserRole.ADMIN, "admin", null, null, mandant);
+		Benutzer i = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.ADMIN, "admin", null, null, mandant, persistence);
 		persistence.persist(i);
 	}
 }

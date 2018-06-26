@@ -818,16 +818,15 @@ public class JaxBConverter {
 				.reduce(StreamsUtil.toOnlyElement())
 				.orElse(new Gemeinde());
 			final Gemeinde gemeindeToAdd = gemeindeToEntity(jaxGemeinde, gemeindeToMergeWith);
-			if (gemeindeToAdd != null) {
-				final boolean added = transformedGemeindeList.add(gemeindeToAdd);
-				if (!added) {
-					LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", gemeindeToAdd);
-				}
+			final boolean added = transformedGemeindeList.add(gemeindeToAdd);
+			if (!added) {
+				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", gemeindeToAdd);
 			}
 		}
 		return transformedGemeindeList;
 	}
 
+	@Nonnull
 	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde gemeindeJax, @Nonnull final Gemeinde gemeinde) {
 		Objects.requireNonNull(gemeinde);
 		Objects.requireNonNull(gemeindeJax);
@@ -2502,6 +2501,7 @@ public class JaxBConverter {
 
 		// Gemeinden
 		final Set<Gemeinde> convertedBerechtigungen = gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList(), berechtigung);
+		berechtigung.setGemeindeList(convertedBerechtigungen);
 		return berechtigung;
 	}
 

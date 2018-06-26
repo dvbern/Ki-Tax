@@ -298,10 +298,45 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_ID);
 		if (gemeinde == null) {
 			gemeinde = new Gemeinde();
+			gemeinde.setId(GEMEINDE_ID);
 			gemeinde.setName("Testgemeinde");
 			gemeinde.setEnabled(true);
 			return persistence.persist(gemeinde);
 		}
+		return gemeinde;
+	}
+
+	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_BERN);
+		if (gemeinde == null) {
+			gemeinde = createGemeindeBern();
+			return persistence.persist(gemeinde);
+		}
+		return gemeinde;
+	}
+
+	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
+		if (gemeinde == null) {
+			gemeinde = createGemeindeOstermundigen();
+			return persistence.persist(gemeinde);
+		}
+		return gemeinde;
+	}
+
+	public static Gemeinde createGemeindeBern() {
+		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_BERN);
+		gemeinde.setName("Bern");
+		gemeinde.setEnabled(true);
+		return gemeinde;
+	}
+
+	public static Gemeinde createGemeindeOstermundigen() {
+		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
+		gemeinde.setName("Ostermundigen");
+		gemeinde.setEnabled(true);
 		return gemeinde;
 	}
 
@@ -909,9 +944,19 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
+	private static Benutzer createAndPersistBenutzer(Persistence persistence, Gemeinde persistedGemeinde) {
+		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
+		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
+		persistence.persist(verantwortlicher.getMandant());
+		persistence.persist(verantwortlicher);
+		return verantwortlicher;
+	}
+
+	@Nonnull
 	private static Benutzer createAndPersistBenutzer(Persistence persistence) {
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
 		persistence.persist(verantwortlicher.getMandant());
+		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeBern(persistence));
 		persistence.persist(verantwortlicher);
 		return verantwortlicher;
 	}
@@ -963,6 +1008,21 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getInstitutionStammdaten());
 
 		persistence.persist(gesuch);
+	}
+
+	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
+		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
+		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.getDossier().setVerantwortlicherBG(benutzer);
+		persistence.persist(gesuch.getFall());
+
+		persistence.persist(gesuch.getDossier());
+		persistence.persist(gesuch.getGesuchsperiode());
+		persistence.persist(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		persistence.persist(gs);
+		return gesuch;
 	}
 
 	public static Gesuch createAndPersistGesuch(Persistence persistence) {
@@ -1055,6 +1115,15 @@ public final class TestDataUtil {
 
 	}
 
+	public static Benutzer createBenutzerWithDefaultGemeinde(UserRole role, String userName, @Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution, @Nonnull  Mandant mandant, @Nonnull Persistence persistence) {
+		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant);
+		if (role.isRoleGemeindeabhaengig()) {
+			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getTestGemeinde(persistence));
+		}
+		return benutzer;
+	}
+
 	public static Benutzer createBenutzer(UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution,
 			@Nonnull  Mandant mandant) {
 		final Benutzer benutzer = new Benutzer();
@@ -1075,7 +1144,8 @@ public final class TestDataUtil {
 	public static Benutzer createAndPersistJABenutzer(Persistence persistence) {
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		final Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, UUID.randomUUID().toString(), null, null, mandant);
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, UUID.randomUUID().toString(),
+			null, null, mandant, persistence);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1085,7 +1155,8 @@ public final class TestDataUtil {
 		persistence.persist(traegerschaft);
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		final Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, UUID.randomUUID().toString(), traegerschaft, null, mandant);
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, UUID.randomUUID().toString(),
+			traegerschaft, null, mandant, persistence);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1106,7 +1177,8 @@ public final class TestDataUtil {
 			mandant = TestDataUtil.createDefaultMandant();
 			persistence.persist(mandant);
 		}
-		final Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SUPER_ADMIN, "superadmin", null, null, mandant);
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
+			null, null, mandant, persistence);
 		persistence.merge(benutzer);
 		return benutzer;
 	}

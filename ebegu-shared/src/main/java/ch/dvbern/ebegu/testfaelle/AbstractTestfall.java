@@ -75,6 +75,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractTestfall {
 
+	public static final String ID_GEMEINDE_BERN = "ea02b313-e7c3-4b26-9ef7-e413f4046db2";
+	public static final String ID_GEMEINDE_OSTERMUNDIGEN = "80a8e496-b73c-4a4a-a163-a0b2caf76487";
+
 	public static final String ID_INSTITUTION_WEISSENSTEIN = "ab353df1-47ca-4618-b849-2265cf1c356a";
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "945e3eef-8f43-43d2-a684-4aa61089684b";
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_TAGI = "3304040a-3eb7-426c-a838-51981df87cec";
