@@ -21,18 +21,24 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 public enum UserRole {
-	SUPER_ADMIN,
-	ADMIN,
-	SACHBEARBEITER_JA,
-	SACHBEARBEITER_TRAEGERSCHAFT,
-	SACHBEARBEITER_INSTITUTION,
-	JURIST,
-	REVISOR,
-	STEUERAMT,
-	ADMINISTRATOR_SCHULAMT,
-	SCHULAMT,
-	GESUCHSTELLER;
 
+	SUPER_ADMIN(false),
+	ADMIN(true),
+	SACHBEARBEITER_JA(true),
+	SACHBEARBEITER_TRAEGERSCHAFT(false),
+	SACHBEARBEITER_INSTITUTION(false),
+	JURIST(true),
+	REVISOR(true),
+	STEUERAMT(true),
+	ADMINISTRATOR_SCHULAMT(true),
+	SCHULAMT(true),
+	GESUCHSTELLER(false);
+
+	private boolean isGemeindeabhaengig;
+
+	UserRole(boolean isGemeindeabhaengig) {
+		this.isGemeindeabhaengig = isGemeindeabhaengig;
+	}
 
 	public boolean isRoleSchulamt() {
 		return ADMINISTRATOR_SCHULAMT == this || SCHULAMT == this;
@@ -85,5 +91,9 @@ public enum UserRole {
 		default:
 			return Amt.NONE;
 		}
+	}
+
+	public boolean isRoleGemeindeabhaengig(){
+		return isGemeindeabhaengig;
 	}
 }

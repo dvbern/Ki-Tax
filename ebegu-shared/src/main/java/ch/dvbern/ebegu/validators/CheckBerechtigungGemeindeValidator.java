@@ -49,25 +49,10 @@ public class CheckBerechtigungGemeindeValidator implements ConstraintValidator<C
 	 */
 	@Override
 	public boolean isValid(Berechtigung berechtigung, @Nullable ConstraintValidatorContext context) {
-		switch(berechtigung.getRole()) {
-		case ADMIN:
-		case SACHBEARBEITER_JA:
-		case ADMINISTRATOR_SCHULAMT:
-		case SCHULAMT:
-		case JURIST:
-		case REVISOR:
-		case STEUERAMT: {
+		if (berechtigung.getRole().isRoleGemeindeabhaengig()) {
 			return berechtigung.getGemeindeList().size() >= 1;
-		}
-		case SUPER_ADMIN:
-		case GESUCHSTELLER:
-		case SACHBEARBEITER_TRAEGERSCHAFT:
-		case SACHBEARBEITER_INSTITUTION: {
+		} else {
 			return berechtigung.getGemeindeList().isEmpty();
-		}
-		default: {
-			return false;
-		}
 		}
 	}
 }
