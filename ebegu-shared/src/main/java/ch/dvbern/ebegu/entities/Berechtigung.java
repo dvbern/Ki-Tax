@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,8 +30,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -61,6 +65,12 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@NotNull
 	private UserRole role;
 
+	@Nonnull
+	@NotNull
+	@ManyToMany()
+	@Size (min = 1)
+	private Set<Gemeinde> gemeindeList = new TreeSet<>();
+
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_institution_id"))
@@ -86,6 +96,15 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 
 	public void setRole(UserRole role) {
 		this.role = role;
+	}
+
+	@Nonnull
+	public Set<Gemeinde> getGemeindeList() {
+		return gemeindeList;
+	}
+
+	public void setGemeindeList(@Nonnull Set<Gemeinde> gemeindeList) {
+		this.gemeindeList = gemeindeList;
 	}
 
 	@Nullable

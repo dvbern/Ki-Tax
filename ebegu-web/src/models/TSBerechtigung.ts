@@ -16,6 +16,7 @@
 import {TSAmt} from './enums/TSAmt';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSGemeinde from './TSGemeinde';
 import TSInstitution from './TSInstitution';
 import {TSTraegerschaft} from './TSTraegerschaft';
 import {TSDateRange} from './types/TSDateRange';
@@ -25,6 +26,7 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
     private _traegerschaft: TSTraegerschaft;
     private _institution: TSInstitution;
     private _role: TSRole;
+    private _gemeindeList: Array<TSGemeinde> = [];
 
     private _enabled: boolean; // Wird nicht zum Server gemappt, nur zur Anzeige im GUI
 
@@ -57,6 +59,14 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
 
     set institution(value: TSInstitution) {
         this._institution = value;
+    }
+
+    get gemeindeList(): Array<TSGemeinde> {
+        return this._gemeindeList;
+    }
+
+    set gemeindeList(value: Array<TSGemeinde>) {
+        this._gemeindeList = value;
     }
 
     get enabled(): boolean {
