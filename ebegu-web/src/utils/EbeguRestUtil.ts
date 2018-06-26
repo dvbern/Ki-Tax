@@ -383,7 +383,7 @@ export default class EbeguRestUtil {
     public landCodeToTSLand(landCode: string): TSLand {
         if (landCode) {
             let translationKey = this.landCodeToTSLandCode(landCode);
-            return new TSLand(landCode, translationKey); // this.ebeguUtil.translateString(translationKey));
+            return new TSLand(landCode, this.ebeguUtil.translateString(translationKey));
         }
         return undefined;
     }
