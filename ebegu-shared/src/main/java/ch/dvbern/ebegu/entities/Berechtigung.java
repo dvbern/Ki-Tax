@@ -33,12 +33,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BerechtigungChangedEntityListener;
-import ch.dvbern.ebegu.validators.CheckBerechtigung;
+import ch.dvbern.ebegu.validators.CheckBerechtigungGemeinde;
+import ch.dvbern.ebegu.validators.CheckBerechtigungInstitutionTraegerschaft;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
@@ -48,7 +48,8 @@ import org.hibernate.envers.Audited;
 @Entity
 @EntityListeners(BerechtigungChangedEntityListener.class)
 @Audited
-@CheckBerechtigung
+@CheckBerechtigungInstitutionTraegerschaft
+@CheckBerechtigungGemeinde
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Berechtigung extends AbstractDateRangedEntity implements Comparable<Berechtigung> {
@@ -68,7 +69,6 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@Nonnull
 	@NotNull
 	@ManyToMany()
-	@Size (min = 1)
 	private Set<Gemeinde> gemeindeList = new TreeSet<>();
 
 	@Nullable

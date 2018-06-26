@@ -25,6 +25,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -34,7 +35,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name")
 )
-public class Gemeinde extends AbstractEntity {
+public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
@@ -79,5 +80,14 @@ public class Gemeinde extends AbstractEntity {
 		}
 		Gemeinde gemeinde = (Gemeinde) other;
 		return Objects.equals(this.getName(), gemeinde.getName());
+	}
+
+	@Override
+	public int compareTo(Gemeinde o) {
+		CompareToBuilder builder = new CompareToBuilder();
+		builder.append(this.getName(), o.getName());
+		builder.append(this.isEnabled(), o.isEnabled());
+		builder.append(this.getId(), o.getId());
+		return builder.toComparison();
 	}
 }
