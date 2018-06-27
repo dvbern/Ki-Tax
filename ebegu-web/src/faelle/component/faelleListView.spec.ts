@@ -81,20 +81,20 @@ describe('faelleListView', function () {
         });
         describe('editPendenzJA', function () {
             it('should call findGesuch and open the view gesuch.fallcreation with it for normal user', function () {
-                let tsGesuch = callEditFall();
+                callEditFall();
 
                 expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
 
             });
             it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', function () {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                let tsGesuch = callEditFall();
+                callEditFall();
                 expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
             });
             it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt', function () {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 mockAntrag.status = TSAntragStatus.VERFUEGT;
-                let tsGesuch = callEditFall();
+                callEditFall();
                 expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
             });
         });
