@@ -87,9 +87,11 @@
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}">
                         <button  ngf-select="vm.uploadAnhaenge($files, row)" ngf-multiple="true"
                                accept="{{vm.allowedMimetypes}}"
-                               class="fa fa-upload dv-btn-operation" title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                               class="dv-btn fa fa-upload dv-btn-operation"
+                                 title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                                aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                                ng-disabled="vm.isDokumenteUploadDisabled()" tabindex="0">
+                        </button>
                     </td>
                 </tr>
 

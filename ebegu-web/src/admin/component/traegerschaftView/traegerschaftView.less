@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 @import '../../../style/variables.less';
+@import '../../../style/mixins.less';
 
 .traegerschaftView {
     #name_ID {
@@ -23,4 +23,52 @@
     #mail_ID {
         background: @contrast-lighter;
     }
+    #cancelLink {
+        color: #fff;
+    }
 }
+
+.flex-end-column {
+    display: flex;
+    justify-content: flex-end;
+}
+
+dv-traegerschaft-view {
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.traegerschaft-table {
+    padding-bottom: 3rem;
+}
+
+.mat-table {
+    font-family: "Open Sans", Arial, Helvetica, sans-serif !important;
+    .mat-cell {
+        font-size: 1.4rem !important;
+        letter-spacing: .1rem !important;
+    }
+    .mat-row {
+        padding: 0 .8rem;
+        height: 6rem !important;
+        min-height:0 !important;
+    }
+
+    .mat-header-row {
+        min-height: 3rem;
+        height: 4rem;
+        color: @contrast-darkest !important;
+        border-top-width: 1px !important;
+        border-top-style: solid;
+        border-color: #000;
+        padding:0;
+        .mat-sort-header-button {
+            color: #000;
+        }
+    }
+
+    font-weight: 600 !important;
+}
+

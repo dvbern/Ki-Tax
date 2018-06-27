@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 @import '../style/variables.less';
 @import '../style/mixins.less';
 @import '../style/organisms/sidenav.less';
@@ -300,71 +299,60 @@ dv-accordion.ewksubsub {
     min-width: 3rem;
     display: block;
     position: relative;
-    dv-navigation, .nav-row-verfuegen, .nav-row-betreuung {
-        -ms-box-orient: horizontal;
-        display: -ms-flexbox;
-        display: flex;
-        flex-direction: row-reverse;
-        -ms-flex-direction: row-reverse;
+
+    dv-navigation, .dv-navigation {
+        padding: 0 3rem;
+    }
+
+    dv-navigation, .dv-navigation {
         bottom: 4rem;
         left: 0;
         right: 0;
         transform: unset;
         position: absolute;
         margin: 0;
-        align-items: center;
-        & > div {
-            flex-direction: row-reverse;
-            -ms-flex-direction: row-reverse;
-            clear: both;
-            margin-bottom: 0;
-            display: flex;
-            position: static;
-            padding: 0 3rem 0;
-            width: 100%;
-        }
-    }
-    .nav-row-verfuegen {
-        flex-direction: row;
-        -ms-flex-direction: row;
-        dv-navigation {
-            margin-left: 3rem;
-            margin-right: auto;
 
+        dv-navigation, .dv-navigation {
             position: static;
-            width: auto;
-            & > div {
-                width: auto;
-                padding: 0;
-            }
-        }
-        & > div {
+            flex: 1;
             padding: 0;
-            width: auto;
-            margin-right: 3rem;
         }
     }
-    .nav-row-betreuung {
+
+    .dv-navigation,
+    .dv-navigation-flex {
+
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+
+    }
+    .dv-navigation-flex {
+        flex: 1;
+        .dv-navigation-item {
+            padding: 0 .75rem;
+        }
+    }
+
+    .dv-navigation--betreuung {
         flex-direction: column;
-        -ms-flex-direction: column;
-        bottom: 2rem;
-        & > div {
-            width: auto;
-            margin-bottom: 1rem;
-            &:last-child {
-                margin-left: 0;
-                margin-bottom: 0;
-                width: auto;
-            }
-            & > div {
-                display: flex;
-                flex-direction: row;
-                -ms-flex-direction: row;
-                padding: 0;
-                & > div {
-                    padding: 0 0.75rem 0;
-                }
-            }
+        .dv-navigation-flex {
+            flex-direction: column;
+        }
+
+        .dv-navigation-item {
+            padding: .75rem 0;
+        }
+    }
+
+    .dv-navigation--verfuegen {
+        dv-navigation, .dv-navigation-flex, .dv-navigation{
+            flex:0;
+        }
+        flex-direction: row;
+        .dv-navigation-flex {
+            flex-direction: row-reverse;
         }
     }
     & > div {
@@ -445,13 +433,13 @@ dv-accordion.ewksubsub {
         border-bottom: 1px solid @contrast-darkest;
     }
 
-    &.BESTAETIGT .betreuung-bar ,&.SCHULAMT_ANMELDUNG_UEBERNOMMEN .betreuung-bar {
+    &.BESTAETIGT .betreuung-bar, &.SCHULAMT_ANMELDUNG_UEBERNOMMEN .betreuung-bar {
         border-color: @success;
     }
-    &.WARTEN .betreuung-bar ,&.SCHULAMT_FALSCHE_INSTITUTION .betreuung-bar ,&.SCHULAMT_ANMELDUNG_ABGELEHNT .betreuung-bar {
+    &.WARTEN .betreuung-bar, &.SCHULAMT_FALSCHE_INSTITUTION .betreuung-bar, &.SCHULAMT_ANMELDUNG_ABGELEHNT .betreuung-bar {
         border-color: @warning;
     }
-    &.ABGEWIESEN .betreuung-bar{
+    &.ABGEWIESEN .betreuung-bar {
         border-color: @danger;
     }
     &.VERFUEGT .betreuung-bar {
