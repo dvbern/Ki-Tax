@@ -38,7 +38,8 @@
             </div>
             <div class="row marginTop50" ng-if="vm.isThereFreigabequittung()">
                 <div class="col-md-12">
-                    <dv-loading-button type="button" button-class="btn-link link-underline" button-click="vm.openFreigabequittungPDF(false)">
+                    <dv-loading-button type="button" button-class="btn-link link-underline"
+                                       button-click="vm.openFreigabequittungPDF(false)">
                         <i class="fa fa-file-text-o"></i>
                         <span data-translate="PDF_FREIGABEQUITTUNG_ANZEIGEN"></span>
                     </dv-loading-button>
@@ -140,18 +141,20 @@
         </div>
     </div>
 
-    <div class="nav-row-verfuegen">
+    <div class="dv-navigation dv-navigation--verfuegen">
 
         <dv-navigation dv-previous="true" dv-next="false" ng-if="vm.canBeFreigegeben()">
         </dv-navigation>
         <dv-navigation dv-previous="true" dv-next="true" ng-if="!vm.canBeFreigegeben()" class="freigabe-nav">
         </dv-navigation>
-        <div>
-            <dv-loading-button type="submit" button-click="vm.gesuchEinreichen()"
-                               aria-label="{{'ANTRAG_EINREICHEN' | translate}}" ng-if="vm.canBeFreigegeben()">
-                <span data-translate="ANTRAG_EINREICHEN"></span>
-            </dv-loading-button>
-        </div>
+        <dv-loading-button class="dv-navigation-item"
+                           type="submit"
+                           button-click="vm.gesuchEinreichen()"
+                           aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
+                           ng-if="vm.canBeFreigegeben()">
+            <span data-translate="ANTRAG_EINREICHEN"></span>
+        </dv-loading-button>
+
     </div>
 
 </div>

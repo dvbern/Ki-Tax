@@ -29,7 +29,9 @@ import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -66,9 +68,17 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@NotNull
 	private UserRole role;
 
-	@Nonnull
 	@NotNull
-	@ManyToMany()
+	@ManyToMany
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "berechtigung_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_berechtigung_gemeinde_gemeinde_id"),
+		indexes = {
+			@Index(name = "IX_berechtigung_gemeinde_berechtigung_id", columnList = "berechtigung_id"),
+			@Index(name = "IX_berechtigung_gemeinde_gemeinde_id", columnList = "gemeinde_id"),
+		}
+	)
 	private Set<Gemeinde> gemeindeList = new TreeSet<>();
 
 	@Nullable
