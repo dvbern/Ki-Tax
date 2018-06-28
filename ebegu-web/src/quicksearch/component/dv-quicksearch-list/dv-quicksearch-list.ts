@@ -178,7 +178,8 @@ export class DVQuicksearchListController {
         if (antragDTO.antragId) {
             let navObj: any = {
                 createNew: false,
-                gesuchId: antragDTO.antragId
+                gesuchId: antragDTO.antragId,
+                dossierId: antragDTO.dossierId
             };
             if (isCtrlKeyPressed) {
                 let url = this.$state.href('gesuch.fallcreation', navObj);

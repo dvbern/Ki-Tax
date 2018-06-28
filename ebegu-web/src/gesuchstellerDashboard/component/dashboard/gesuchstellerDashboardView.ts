@@ -40,11 +40,11 @@ require('./gesuchstellerDashboardView.less');
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     transclude = false;
     template = template;
-    controller = GesuchstellerDashboardListViewController;
+    controller = GesuchstellerDashboardViewController;
     controllerAs = 'vm';
 }
 
-export class GesuchstellerDashboardListViewController {
+export class GesuchstellerDashboardViewController {
 
     private antragList: Array<TSAntragDTO> = [];
     private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
@@ -152,7 +152,7 @@ export class GesuchstellerDashboardListViewController {
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId});
+                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
@@ -245,7 +245,7 @@ export class GesuchstellerDashboardListViewController {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
                 this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId});
+                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }
