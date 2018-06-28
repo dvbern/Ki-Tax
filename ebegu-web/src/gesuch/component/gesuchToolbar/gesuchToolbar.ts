@@ -601,7 +601,8 @@ export class GesuchToolbarController implements IDVFocusableController {
                     if (this.antragList.length > 1) {
                         let navObj: any = {
                             createNew: false,
-                            gesuchId: this.antragList[0].antragId
+                            gesuchId: this.antragList[0].antragId,
+                            dossierId: this.antragList[0].dossierId
                         };
                         this.$state.go('gesuch.fallcreation', navObj);
                     } else {

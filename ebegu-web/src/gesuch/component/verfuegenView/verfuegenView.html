@@ -182,7 +182,7 @@
                 <!--VerfuegungPDF anzeigen-->
                 <div class="row marginTop20 text-left">
                     <div class="col-xs-12" ng-if="vm.showVerfuegungPdfLink()">
-                        <button type="button" class="btn-link link-underline"
+                        <button type="button" class="dv-btn btn-link link-underline"
                                 ng-click="vm.openVerfuegungPDF()">
                             <i class="fa fa-file-text-o"></i>
                             <span data-translate="PDF_VERFUEGUNG_ANZEIGEN"></span>
@@ -211,7 +211,7 @@
                     </div>
 
                     <div class="col-xs-12" ng-if="vm.showNichtEintretenPdfLink()">
-                        <button type="button" class="btn-link link-underline"
+                        <button type="button" class="dv-btn btn-link link-underline"
                                 ng-click="vm.openNichteintretenPDF()">
                             <i class="fa fa-file-text-o"></i>
                             <span data-translate="PDF_NICHT_EINTRETEN_ANZEIGEN"></span>
@@ -229,23 +229,27 @@
                 </div>
 
                 <!-- Navigation Buttons -->
-                <div class="nav-row-verfuegen">
+                <div class="dv-navigation dv-navigation--verfuegen">
                     <dv-navigation dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2">
                     </dv-navigation>
-                    <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
-                        <div ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()">
+                    <div class="dv-navigation-flex"
+                         dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
+                        <div class="dv-navigation-item"
+                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()">
                             <dv-loading-button type="submit" button-click="vm.save()">
                                 <span data-translate="VERFUEGEN_UPPER"></span>
                             </dv-loading-button>
                         </div>
-                        <div
-                            ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
+                        <div class="dv-navigation-item"
+                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
                             <dv-loading-button type="submit"
                                                button-click="vm.nichtEintreten()">
                                 <span data-translate="VERFUEGEN_NICHT_EINTRETEN_UPPER"></span>
                             </dv-loading-button>
                         </div>
-                        <div ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
+                        <div class="dv-navigation-item"
+                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
@@ -253,13 +257,15 @@
                                 <span data-translate="VERFUEGEN_ABLEHNEN_UPPER"></span>
                             </dv-loading-button>
                         </div>
-                        <div ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        <div class="dv-navigation-item"
+                             ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
                                 <span data-translate="VERFUEGEN_VERZICHTEN_UPPER"></span>
                             </dv-loading-button>
                         </div>
-                        <div ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        <div class="dv-navigation-item"
+                             ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit" button-click="vm.save()">
                                 <span data-translate="TROTZDEM_VERFUEGEN_UPPER"></span>
                             </dv-loading-button>

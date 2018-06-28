@@ -37,6 +37,9 @@ public class JaxAbstractAntragDTO implements Serializable {
 	@NotNull
 	private String familienName;
 
+	@NotNull
+	private String dossierId;
+
 	private String clazz;
 
 	public JaxAbstractAntragDTO(String clazz) {
@@ -57,6 +60,14 @@ public class JaxAbstractAntragDTO implements Serializable {
 
 	public void setFamilienName(String familienName) {
 		this.familienName = familienName;
+	}
+
+	public String getDossierId() {
+		return dossierId;
+	}
+
+	public void setDossierId(String dossierId) {
+		this.dossierId = dossierId;
 	}
 
 	public String getClazz() {

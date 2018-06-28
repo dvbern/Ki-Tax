@@ -2826,6 +2826,7 @@ public class JaxBConverter {
 		JaxAntragDTO antrag = new JaxAntragDTO();
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
+		antrag.setDossierId(gesuch.getDossier().getId());
 		antrag.setFamilienName(gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractNachname() : "");
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
 		antrag.setEingangsdatumSTV(gesuch.getEingangsdatumSTV());
