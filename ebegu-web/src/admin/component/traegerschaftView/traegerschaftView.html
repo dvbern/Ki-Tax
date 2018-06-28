@@ -13,7 +13,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="traegerschaftView adminModul overflow-scroll" flex="auto">
+<div class="traegerschaftView adminModul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
         <div class="viewTitle">
             <h1 [textContent]="'TRAEGERSCHAFT' | translate"></h1>
@@ -23,7 +23,7 @@
 
                 <div class="row">
                     <!--Tabelle zum anzeigen aller Traegerschaften-->
-                    <div class="col-md-12 table-responsive">
+                    <div class="col-md-12 table-responsive traegerschaft-table">
 
                         <mat-table #table [dataSource]="dataSource" matSort>
                             <!-- Column Name -->
@@ -43,7 +43,7 @@
                                 <mat-cell *matCellDef="let traegerschaft">
                                     <button dvNgDebounceClick
                                             (debounceClick)="removeTraegerschaft(traegerschaft)"
-                                            class="btn-sm"
+                                            class="dv-btn dv-btn-sm pull-right"
                                             [disabled]="isReadonly()">
                                         <i class="fa fa-minus"> </i>
                                     </button>
@@ -53,12 +53,12 @@
                             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
                         </mat-table>
-                        <tr *ngIf="showNoContentMessage()">
-                            <td colspan="2" class="empty-table" [textContent]="'TRAEGERSCHAFTEN_NOCH_KEINE' | translate"></td>
-                        </tr>
+                        <div class="mat-row" *ngIf="showNoContentMessage()"
+                             [textContent]="'TRAEGERSCHAFTEN_NOCH_KEINE' | translate">
+                        </div>
 
 
-                        <div class="row" *ngIf="traegerschaft">
+                        <div class="row marginTop40" *ngIf="traegerschaft">
                             <div class="col-md-6 form-group">
                                 <div class="row">
                                     <div class="col-md-4">
@@ -105,30 +105,30 @@
                                     <div class="col-md-4">
                                         <button dvNgDebounceClick
                                                 (debounceClick)="saveTraegerschaft()"
-                                                class="color-success"
+                                                class="dv-btn color-success"
                                                 [disabled]="isReadonly()">
                                             <span [textContent]="'SAVE' | translate"></span>
                                         </button>
                                     </div>
                                     <div class="col-md-4">
-                                        <a href="#" id="cancelLink" class="dv-btn" unsaved-warning-clear
+                                        <button href="#" id="cancelLink" class="dv-btn cancel-button" unsaved-warning-clear
                                            (click)="cancelTraegerschaft(); $event.preventDefault();">
                                             <span [textContent]="'CANCEL' | translate"></span>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div *ngIf="!traegerschaft && !isReadonly()">
+                        <div *ngIf="!traegerschaft && !isReadonly()" class="marginTop50">
                             <div class="row">
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-6  form-group">
                                     <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Traegerschaft-->
                                     <div class="row">
                                         <div class="col-md-6">
                                             <button dvNgDebounceClick
                                                     (debounceClick)="createTraegerschaft(); form.reset();"
-                                                    class="dv-btn-sm color-success"
+                                                    class="dv-btn dv-btn-sm color-success"
                                                     [disabled]="traegerschaft">
                                                 <i class="glyphicon glyphicon-plus"></i>
                                                 <span [textContent]="'TRAEGERSCHAFT_HINZUFUEGEN' | translate"></span>
