@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+
 /**
  * DTO fuer Daten der Anmeldung
  */
@@ -46,7 +48,7 @@ public class JaxAnmeldungDTO {
 	private Boolean mutterspracheDeutsch;
 
 	@Nullable
-	private Boolean einschulung;
+	private EinschulungTyp einschulungTyp;
 
 	public JaxBetreuung getBetreuung() {
 		return betreuung;
@@ -91,11 +93,11 @@ public class JaxAnmeldungDTO {
 	}
 
 	@Nullable
-	public Boolean getEinschulung() {
-		return einschulung;
+	public EinschulungTyp getEinschulungTyp() {
+		return einschulungTyp;
 	}
 
-	public void setEinschulung(@Nullable Boolean einschulung) {
-		this.einschulung = einschulung;
+	public void setEinschulungTyp(@Nullable EinschulungTyp einschulungTyp) {
+		this.einschulungTyp = einschulungTyp;
 	}
 }

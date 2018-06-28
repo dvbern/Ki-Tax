@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -388,7 +389,7 @@ public class BetreuungResource {
 
 			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kind.get().getKindJA().getFamilienErgaenzendeBetreuung()) {
 				kind.get().getKindJA().setFamilienErgaenzendeBetreuung(true);
-				kind.get().getKindJA().setEinschulung(jaxAnmeldungDTO.getEinschulung());
+				kind.get().getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
 				kind.get().getKindJA().setMutterspracheDeutsch(jaxAnmeldungDTO.getMutterspracheDeutsch());
 				kind.get().getKindJA().setWohnhaftImGleichenHaushalt(jaxAnmeldungDTO.getWohnhaftImGleichenHaushalt());
 				kindService.saveKind(kind.get());

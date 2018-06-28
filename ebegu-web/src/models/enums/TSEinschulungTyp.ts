@@ -1,0 +1,46 @@
+/*
+ * Ki-Tax: System for the management of external childcare subsidies
+ * Copyright (C) 2017 City of Bern Switzerland
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+export enum TSEinschulungTyp {
+    VORSCHULALTER = <any>'VORSCHULALTER',
+    KINDERGARTEN1 = <any>'KINDERGARTEN1',
+    KINDERGARTEN2 = <any>'KINDERGARTEN2',
+    KLASSE1 = <any>'KLASSE1',
+    KLASSE2 = <any>'KLASSE2',
+    KLASSE3 = <any>'KLASSE3',
+    KLASSE4 = <any>'KLASSE4',
+    KLASSE5 = <any>'KLASSE5',
+    KLASSE6 = <any>'KLASSE6',
+    KLASSE7 = <any>'KLASSE7',
+    KLASSE8 = <any>'KLASSE8',
+    KLASSE9 = <any>'KLASSE9',
+}
+
+export function getTSEinschulungTypValues(): Array<TSEinschulungTyp> {
+    return [
+        TSEinschulungTyp.VORSCHULALTER,
+        TSEinschulungTyp.KINDERGARTEN1,
+        TSEinschulungTyp.KINDERGARTEN2,
+        TSEinschulungTyp.KLASSE1,
+        TSEinschulungTyp.KLASSE2,
+        TSEinschulungTyp.KLASSE3,
+        TSEinschulungTyp.KLASSE4,
+        TSEinschulungTyp.KLASSE5,
+        TSEinschulungTyp.KLASSE6,
+        TSEinschulungTyp.KLASSE7,
+        TSEinschulungTyp.KLASSE8,
+        TSEinschulungTyp.KLASSE9,
+    ];
+}

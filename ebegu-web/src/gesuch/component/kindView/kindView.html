@@ -183,27 +183,29 @@
                         </div>
                     </div>
 
-                    <!--Das Kind ist per 1.8.XX eingeschult (auch Kindergarten)-->
+                    <!--Wird Ihr Kind am 01.08.XXXX eingeschult?-->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group" ng-show="vm.getModel().familienErgaenzendeBetreuung">
                                 <span class="ebeguH1 required">
                                     <span data-translate="EINSCHULUNG"
-                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}"> </span>
-                                    <dv-tooltip input-id="einschulung" text="'EINSCHULUNG_HELP' | translate"></dv-tooltip>
+                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
+                                    </span>
                                 </span>
-                                <dv-radio-container name="einschulung" class="input-element"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly()"
-                                                    ng-required="vm.getModel().familienErgaenzendeBetreuung"
-                                                    ng-model="vm.getModel().einschulung"
-                                                    aria-described-by="einschulung-error"
-                                >
-                                </dv-radio-container>
-                                <dv-bisher gs="vm.getContainer().kindGS.einschulung"
-                                           ja="vm.getContainer().kindJA.einschulung"></dv-bisher>
-                                <dv-error-messages input-id="einschulung" for="vm.form.einschulung.$error"
+                                <div class="dv-select-style">
+                                    <select name="einschulungTyp" id="einschulungTyp"
+                                            class="form-control"
+                                            aria-describedby="einschulung-error"
+                                            dv-enable-allowed-roles="vm.allowedRoles"
+                                            dv-enable-expression="!vm.isGesuchReadonly()"
+                                            ng-model="vm.getModel().einschulungTyp"
+                                            ng-options="typ | translate for typ in vm.einschulungTypValues track by typ"
+                                            ng-required="vm.getModel().familienErgaenzendeBetreuung">
+                                    </select>
+                                </div>
+                                <dv-bisher gs="vm.getContainer().kindGS.einschulungTyp"
+                                           ja="vm.getContainer().kindJA.einschulungTyp"></dv-bisher>
+                                <dv-error-messages input-id="einschulungTyp" for="vm.form.einschulung.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
