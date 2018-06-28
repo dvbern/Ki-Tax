@@ -809,7 +809,7 @@ public class JaxBConverter {
 	}
 
 	@Nonnull
-	private Set<Gemeinde> gemeindeListToEntity(@Nonnull Set<JaxGemeinde> jaxGemeindeList, @Nonnull Set<Gemeinde> gemeindeList, Berechtigung berechtigung) {
+	private Set<Gemeinde> gemeindeListToEntity(@Nonnull Set<JaxGemeinde> jaxGemeindeList, @Nonnull Set<Gemeinde> gemeindeList) {
 		final Set<Gemeinde> transformedGemeindeList = new TreeSet<>();
 		for (final JaxGemeinde jaxGemeinde : jaxGemeindeList) {
 			final Gemeinde gemeindeToMergeWith = gemeindeList
@@ -2501,7 +2501,9 @@ public class JaxBConverter {
 		}
 
 		// Gemeinden
-		final Set<Gemeinde> convertedBerechtigungen = gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList(), berechtigung);
+		final Set<Gemeinde> gemeindeListe = gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList());
+		berechtigung.setGemeindeList(gemeindeListe);
+
 		return berechtigung;
 	}
 
