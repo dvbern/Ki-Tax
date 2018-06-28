@@ -90,7 +90,7 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
         eingangsart: '',
         gesuchsperiodeId: '',
         gesuchId: '',
-        fallId: '',
+        dossierId: '',
     };
 
     views: { [name: string]: Ng1StateDeclaration } = {

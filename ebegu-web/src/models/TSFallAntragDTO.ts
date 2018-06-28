@@ -18,14 +18,12 @@ import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 export default class TSFallAntragDTO extends TSAbstractAntragDTO {
 
     private _fallID: string;
-    private _dossierId: string;
 
     public static readonly serverClassName = 'JaxFallAntragDTO';
 
     constructor(fallID?: string, dossierId?: string, fallNummer?: number, familienName?: string) {
-        super(fallNummer, familienName);
+        super(fallNummer, dossierId, familienName);
         this._fallID = fallID;
-        this._dossierId = dossierId;
     }
 
     public get fallID(): string {
@@ -34,13 +32,5 @@ export default class TSFallAntragDTO extends TSAbstractAntragDTO {
 
     public set fallID(fallID: string) {
         this._fallID = fallID;
-    }
-
-    public get dossierId(): string {
-        return this._dossierId;
-    }
-
-    public set dossierId(value: string) {
-        this._dossierId = value;
     }
 }

@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -52,7 +53,7 @@ import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
-import org.infinispan.manager.CacheContainer;
+import org.infinispan.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,8 +73,16 @@ public class AuthServiceBean implements AuthService {
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
-	@Resource(lookup = "java:jboss/infinispan/container/ebeguCache")
-	private CacheContainer cacheContainer;
+	@Resource(lookup = "java:jboss/infinispan/cache/ebeguCache/ebeguAuthorizationCache")
+	private Cache<?, ?> cache;
+
+	@PostConstruct
+	void init() {
+		if (cache == null) {
+			LOG.warn("ACHTUNG: Cache konnte nicht initialisiert werden. " +
+				"Ist die Infinispan Cache konfiguration im Standalone.xml korrekt und ist der Dependencies Eintrag im MANIFEST.MF gesetzt?");
+		}
+	}
 
 	@Nonnull
 	@Override
@@ -118,7 +127,7 @@ public class AuthServiceBean implements AuthService {
 		Root<AuthorisierterBenutzer> root = delete.from(AuthorisierterBenutzer.class);
 		Predicate authTokenPredicate = criteriaBuilder.equal(root.get(AuthorisierterBenutzer_.authToken), authToken);
 		delete.where(criteriaBuilder.and(authTokenPredicate));
-		cacheContainer.getCache().remove(authToken);
+		cache.remove(authTokenPredicate);
 		try {
 			entityManager.createQuery(delete).executeUpdate();
 			return true;

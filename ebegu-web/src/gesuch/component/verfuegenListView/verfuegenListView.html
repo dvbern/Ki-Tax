@@ -113,7 +113,7 @@
                      dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                      dv-show-expression="vm.isFinanziellesituationPDFVisible()">
                     <div class="col-md-12">
-                        <button type="button" class=" btn-link link-underline"
+                        <button type="button" class="dv-btn btn-link link-underline"
                                 ng-click="vm.openFinanzielleSituationPDF()">
                             <i class="fa fa-file-text-o"></i>
                             <span data-translate="PDF_FINSITUATION_ANZEIGEN"></span>
@@ -124,7 +124,7 @@
                 <div class="row text-left" ng-show="vm.isBegleitschreibenVisible()">
                     <div class="col-md-12">
 
-                        <button type="button" class=" btn-link link-underline"
+                        <button type="button" class="dv-btn btn-link link-underline"
                                 ng-click="vm.openBegleitschreibenPDF()">
                             <i class="fa fa-file-text-o"></i>
                             <span data-translate="PDF_BEGLEITSCHREIBEN_ANZEIGEN"></span>
@@ -135,7 +135,7 @@
                 <div class="row text-left" ng-show="vm.isKompletteKorrespondenzVisible()">
                     <div class="col-md-12">
 
-                        <button type="button" class=" btn-link link-underline"
+                        <button type="button" class="dv-btn btn-link link-underline"
                                 ng-click="vm.openKompletteKorrespondenzPDF()">
                             <i class="fa fa-file-text-o"></i>
                             <span data-translate="PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN"></span>
@@ -151,7 +151,7 @@
                         <hr class="header"/>
                     </div>
                     <div class="col-md-12" ng-repeat="mahn in vm.getMahnungList()">
-                        <button type="button" class=" btn-link link-underline" ng-click="vm.openMahnungPDF(mahn)">
+                        <button type="button" class="dv-btn btn-link link-underline" ng-click="vm.openMahnungPDF(mahn)">
                             <i class="fa fa-file-text-o"></i>
                             <span data-translate="MAHNUNG_DETAIL"
                                   data-translate-value-mahnung-typ="{{mahn.mahnungTyp | translate}}"
@@ -198,7 +198,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="button" class=" btn-link link-underline" ng-click="vm.openMahnungPDF()">
+                                <button type="button" class="dv-btn btn-link link-underline" ng-click="vm.openMahnungPDF()">
                                     <i class="fa fa-file-text-o"></i>
                                     <span data-translate="PDF_MAHNUNG_ANZEIGEN"></span>
                                 </button>
@@ -209,89 +209,106 @@
             </div>
         </div>
 
-        <div class="nav-row-verfuegen">
+        <div class="dv-navigation dv-navigation--verfuegen">
             <dv-navigation dv-previous="true" dv-next="false" dv-sub-step="1">
             </dv-navigation>
 
-            <div dv-show-element
+            <div class="dv-navigation-flex"
+                 dv-show-element
                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button button-click="vm.setAbschliessen()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.setAbschliessen()"
                                    aria-label="{{'ABSCHLIESSEN_UPPER' | translate}}"
                                    ng-if="vm.showAbschliessen() && !vm.showCloseWithoutAngebot()"
                                    button-disabled="!vm.isFinSitChoosen()">
                     <span data-translate="ABSCHLIESSEN_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.ersteMahnungErstellen()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.ersteMahnungErstellen()"
                                    aria-label="{{'ERSTE_MAHNUNG_UPPER' | translate}}"
                                    ng-if="vm.showErsteMahnungErstellen()">
                     <span data-translate="ERSTE_MAHNUNG_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button type="submit" button-click="vm.saveMahnung()"
+                <dv-loading-button class="dv-navigation-item"
+                                   type="submit" button-click="vm.saveMahnung()"
                                    aria-label="{{'ERSTE_MAHNUNG_AUSLOESEN_UPPER' | translate}}"
                                    ng-if="vm.showErsteMahnungAusloesen()">
                     <span data-translate="ERSTE_MAHNUNG_AUSLOESEN_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.zweiteMahnungErstellen()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.zweiteMahnungErstellen()"
                                    aria-label="{{'ZWEITE_MAHNUNG_UPPER' | translate}}"
                                    ng-if="vm.showZweiteMahnungErstellen()">
                     <span data-translate="ZWEITE_MAHNUNG_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button type="submit" button-click="vm.saveMahnung()"
+                <dv-loading-button class="dv-navigation-item"
+                                   type="submit" button-click="vm.saveMahnung()"
                                    aria-label="{{'ZWEITE_MAHNUNG_AUSLOESEN_UPPER' | translate}}"
                                    ng-if="vm.showZweiteMahnungAusloesen()">
                     <span data-translate="ZWEITE_MAHNUNG_AUSLOESEN_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.mahnlaufBeenden()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.mahnlaufBeenden()"
                                    aria-label="{{'DOKUMENTE_KOMPLETT_UPPER' | translate}}"
                                    ng-if="vm.showMahnlaufBeenden()">
                     <span data-translate="MAHNLAUF_BEENDEN"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.dokumenteNichtKomplett()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.dokumenteNichtKomplett()"
                                    aria-label="{{'DOKUMENTE_NICHT_KOMPLETT_UPPER' | translate}}"
                                    ng-if="vm.showDokumenteNichtKomplett()">
                     <span data-translate="DOKUMENTE_NICHT_KOMPLETT_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.zweiteMahnungNichtEingetreten()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.zweiteMahnungNichtEingetreten()"
                                    aria-label="{{'ZWEITE_MAHNUNG_NCINT_EINGETRETEN' | translate}}"
                                    ng-if="vm.showZweiteMahnungNichtEingetreten()">
                     <span data-translate="ZWEITE_MAHNUNG_NCINT_EINGETRETEN"></span>
                 </dv-loading-button>
-                <dv-loading-button type="button" button-click="vm.setGesuchStatusBeschwerdeHaengig()"
+                <dv-loading-button class="dv-navigation-item"
+                                   type="button" button-click="vm.setGesuchStatusBeschwerdeHaengig()"
                                    aria-label="{{'BESCHWERDE_HAENGIG_UPPER' | translate}}"
                                    ng-if="vm.showBeschwerdeHaengig()">
                     <span data-translate="BESCHWERDE_HAENGIG_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button type="button" button-click="vm.setGesuchStatusBeschwerdeAbschliessen()"
+                <dv-loading-button class="dv-navigation-item"
+                                   type="button" button-click="vm.setGesuchStatusBeschwerdeAbschliessen()"
                                    aria-label="{{'BESCHWERDE_ABSCHLIESSEN_UPPER' | translate}}"
                                    ng-if="vm.showBeschwerdeAbschliessen()">
                     <span data-translate="BESCHWERDE_ABSCHLIESSEN_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.sendToSteuerverwaltung()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.sendToSteuerverwaltung()"
                                    aria-label="{{'SEND_TO_STV_UPPER' | translate}}"
                                    ng-if="vm.showSendToSteuerverwaltung()">
                     <span data-translate="SEND_TO_STV_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.stvPruefungAbschliessen()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.stvPruefungAbschliessen()"
                                    aria-label="{{'STV_PRUEFUNG_ABSCHLIESSEN_UPPER' | translate}}"
                                    ng-if="vm.showSTVPruefungAbschliessen()">
                     <span data-translate="STV_PRUEFUNG_ABSCHLIESSEN_UPPER"></span>
                 </dv-loading-button>
             </div>
-            <div dv-show-element
+            <div class="dv-navigation-flex"
+                 dv-show-element
                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button type="button" button-click="vm.setGesuchStatusGeprueft()"
+                <dv-loading-button class="dv-navigation-item"
+                                   type="button" button-click="vm.setGesuchStatusGeprueft()"
                                    aria-label="{{'GEPRUEFT_UPPER' | translate}}" ng-if="vm.showGeprueft()"
                                    button-disabled="!vm.isFinSitChoosen()">
                     <span data-translate="GEPRUEFT_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.setGesuchStatusVerfuegen()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.setGesuchStatusVerfuegen()"
                                    aria-label="{{'VERFUEGUNG_STARTEN_UPPER' | translate}}"
                                    ng-if="vm.showVerfuegenStarten()">
                     <span data-translate="VERFUEGUNG_STARTEN_UPPER"></span>
                 </dv-loading-button>
-                <dv-loading-button button-click="vm.closeWithoutAngebot()"
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.closeWithoutAngebot()"
                                    aria-label="{{'BEENDEN_OHNE_ANGEBOT_UPPER' | translate}}"
                                    ng-if="vm.showCloseWithoutAngebot()">
                     <span data-translate="BEENDEN_OHNE_ANGEBOT_UPPER"></span>

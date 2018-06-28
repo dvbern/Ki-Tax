@@ -16,6 +16,48 @@
 @import '../variables.less';
 @import '../mixins.less';
 
+
+.dv-btn {
+    .ebeguNormal();
+    white-space: nowrap;
+    font-size: 1.4rem;
+    text-align: center;
+    letter-spacing: 0.2rem;
+    border: none;
+    background: @primary;
+    color: @contrast-lightest;
+    padding: 0 1.5rem 0;
+    height: 4rem;
+    span {
+        line-height: inherit;
+        text-align: center;
+        vertical-align: middle;
+    }
+    &.active, &:active {
+        background: @primary;
+        color: @contrast-lightest;
+        text-decoration: none !important;
+    }
+    &:hover {
+        background: @primary-dark;
+        color: @contrast-lightest;
+    }
+
+    &:active, &:hover {
+        outline: none ;
+        text-decoration: none !important;
+    }
+    &:focus {
+        outline: 2px solid @contrast-darkest;
+        outline-offset: 0;
+
+    }
+    &[disabled], &[disabled]:hover {
+        color: @contrast-lightest;
+        background: @contrast;
+    }
+}
+
 .color-success {
     background: @success;
     &:hover {
@@ -62,6 +104,11 @@ dv-navigation {
 .btn-link {
     font-size: 1.4rem;
     color: @contrast-darkest;
+    background: transparent;
+    &:hover, &:active {
+        background: transparent;
+        color: @contrast-darkest;
+    }
     &.link-underline {
         padding: 0;
         &:hover {
@@ -101,6 +148,7 @@ dv-navigation {
     span {
         line-height: 3rem;
     }
+    border-radius:0;
 }
 
 .dv-btn-institution {
@@ -108,8 +156,8 @@ dv-navigation {
 }
 
 .dv-btn-operation {
-    &.centered-btn{
-        width:100%;
+    &.centered-btn {
+        width: 100%;
     }
     background: transparent;
     color: @contrast-darkest;
@@ -174,46 +222,6 @@ a.dv-btn {
     }
 }
 
-button, .dv-btn {
-    .ebeguNormal();
-    white-space: nowrap;
-    font-size: 1.4rem;
-    text-align: center;
-    letter-spacing: 0.2rem;
-    border: none;
-    background: @primary;
-    color: @contrast-lightest;
-    padding: 0 1.5rem 0;
-    height: 4rem;
-    span {
-        line-height: inherit;
-        text-align: center;
-        vertical-align: middle;
-    }
-    &.active, &:active {
-        background: @primary;
-        color: @contrast-lightest;
-
-    }
-    &:hover {
-        background: @primary-dark;
-        color: @contrast-lightest;
-    }
-
-    &:active, &:hover {
-        outline: none ;
-        text-decoration: none !important;
-    }
-    &:focus {
-        outline: 2px solid @contrast-darkest;
-        outline-offset: 0;
-
-    }
-    &[disabled], &[disabled]:hover {
-        color: @contrast-lightest;
-        background: @contrast;
-    }
-}
 .dv-btn-operation--white{
     color: @contrast-lightest;
     &.active, &:active {

@@ -1541,6 +1541,7 @@ export default class EbeguRestUtil {
     public antragDTOToRestObject(restPendenz: any, pendenz: TSAntragDTO): any {
         restPendenz.antragId = pendenz.antragId;
         restPendenz.fallNummer = pendenz.fallNummer;
+        restPendenz.dossierId = pendenz.dossierId;
         restPendenz.familienName = pendenz.familienName;
         restPendenz.angebote = pendenz.angebote;
         restPendenz.antragTyp = pendenz.antragTyp;
@@ -1569,6 +1570,7 @@ export default class EbeguRestUtil {
     public parseAntragDTO(antragTS: TSAntragDTO, antragFromServer: any): TSAntragDTO {
         antragTS.antragId = antragFromServer.antragId;
         antragTS.fallNummer = antragFromServer.fallNummer;
+        antragTS.dossierId = antragFromServer.dossierId;
         antragTS.familienName = antragFromServer.familienName;
         antragTS.angebote = antragFromServer.angebote;
         antragTS.kinder = antragFromServer.kinder;
