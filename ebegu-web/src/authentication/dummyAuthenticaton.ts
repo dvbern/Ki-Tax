@@ -14,6 +14,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
+import TSGemeinde from '../models/TSGemeinde';
 import TSUser from '../models/TSUser';
 import {TSRole} from '../models/enums/TSRole';
 import AuthenticationUtil from '../utils/AuthenticationUtil';
@@ -56,6 +57,7 @@ export class DummyAuthenticationListViewComponent {
     public juristBern: TSUser;
 
     private readonly mandant: TSMandant;
+    private readonly gemeindeBern: TSGemeinde;
     private readonly institution: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
     private readonly traegerschaftLeoLea: TSTraegerschaft;
@@ -68,11 +70,12 @@ export class DummyAuthenticationListViewComponent {
                 @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
                 @Inject(UIRouter) private readonly uiRouter: UIRouter) {
 
-        this.mandant = this.getMandant();
-        this.traegerschaftStadtBern = this.getTraegerschaftStadtBern();
-        this.traegerschaftLeoLea = this.getTraegerschaftLeoLea();
-        this.traegerschaftSGF = this.getTraegerschaftSGF();
-        this.traegerschaftFamex = this.getTraegerschaftFamex();
+        this.mandant = DummyAuthenticationListViewComponent.getMandant();
+        this.gemeindeBern = DummyAuthenticationListViewComponent.getGemeindeBern();
+        this.traegerschaftStadtBern = DummyAuthenticationListViewComponent.getTraegerschaftStadtBern();
+        this.traegerschaftLeoLea = DummyAuthenticationListViewComponent.getTraegerschaftLeoLea();
+        this.traegerschaftSGF = DummyAuthenticationListViewComponent.getTraegerschaftSGF();
+        this.traegerschaftFamex = DummyAuthenticationListViewComponent.getTraegerschaftFamex();
         this.institution = this.getInsitution();
         this.applicationPropertyRS.isDevMode().then((response) => {
             this.devMode = response;
@@ -105,31 +108,43 @@ export class DummyAuthenticationListViewComponent {
 
         // Gemeindeabhängige User
         this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN);
+            this.mandant, TSRole.ADMIN, undefined, undefined, this.gemeindeBern);
         this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA);
+            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, this.gemeindeBern);
         this.administratorTSBern = new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT);
+            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, this.gemeindeBern);
         this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT);
+            this.mandant, TSRole.SCHULAMT, undefined, undefined, this.gemeindeBern);
 
         this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
-            this.mandant, TSRole.STEUERAMT);
+            this.mandant, TSRole.STEUERAMT, undefined, undefined, this.gemeindeBern);
         this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
-            this.mandant, TSRole.REVISOR);
+            this.mandant, TSRole.REVISOR, undefined, undefined, this.gemeindeBern);
         this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
-            this.mandant, TSRole.JURIST);
+            this.mandant, TSRole.JURIST, undefined, undefined, this.gemeindeBern);
     }
 
     /**
      * Der Mandant wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      * @returns {TSMandant}
      */
-    private getMandant(): TSMandant {
+    private static getMandant(): TSMandant {
         let mandant = new TSMandant();
         mandant.name = 'TestMandant';
         mandant.id = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
         return mandant;
+    }
+
+    /**
+     * Gemeinde Bern wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     * @returns {TSGemeinde}
+     */
+    private static getGemeindeBern(): TSGemeinde {
+        let bern = new TSGemeinde();
+        bern.name = 'Bern';
+        bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+        bern.enabled = true;
+        return bern;
     }
 
     /**
@@ -148,7 +163,7 @@ export class DummyAuthenticationListViewComponent {
     /**
      * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
-    private getTraegerschaftStadtBern(): TSTraegerschaft {
+    private static getTraegerschaftStadtBern(): TSTraegerschaft {
         let traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'Kitas & Tagis Stadt Bern';
         traegerschaft.mail = 'kitasundtagis@example.com';
@@ -159,7 +174,7 @@ export class DummyAuthenticationListViewComponent {
     /**
      * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
-    private getTraegerschaftLeoLea(): TSTraegerschaft {
+    private static getTraegerschaftLeoLea(): TSTraegerschaft {
         let traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'LeoLea';
         traegerschaft.mail = 'leolea@example.com';
@@ -170,7 +185,7 @@ export class DummyAuthenticationListViewComponent {
     /**
      * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
-    private getTraegerschaftSGF(): TSTraegerschaft {
+    private static getTraegerschaftSGF(): TSTraegerschaft {
         let traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'SGF';
         traegerschaft.mail = 'sgf@example.com';
@@ -181,7 +196,7 @@ export class DummyAuthenticationListViewComponent {
     /**
      * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
-    private getTraegerschaftFamex(): TSTraegerschaft {
+    private static getTraegerschaftFamex(): TSTraegerschaft {
         let traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'FAMEX';
         traegerschaft.mail = 'famex@example.com';

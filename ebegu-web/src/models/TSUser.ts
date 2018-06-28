@@ -18,6 +18,7 @@ import EbeguUtil from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import TSBerechtigung from './TSBerechtigung';
+import TSGemeinde from './TSGemeinde';
 import TSInstitution from './TSInstitution';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
@@ -38,7 +39,7 @@ export default class TSUser {
 
 
     constructor(vorname?: string, nachname?: string, username?: string, password?: string, email?: string,
-                mandant?: TSMandant, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution,
+                mandant?: TSMandant, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution, gemeinde?: TSGemeinde,
                 amt?: TSAmt, gesperrt?: boolean) {
         this._vorname = vorname;
         this._nachname = nachname;
@@ -53,6 +54,9 @@ export default class TSUser {
         this._currentBerechtigung.role = role;
         this._currentBerechtigung.institution = institution;
         this._currentBerechtigung.traegerschaft = traegerschaft;
+        if (gemeinde) {
+            this._currentBerechtigung.gemeindeList.push(gemeinde);
+        }
         this._berechtigungen.push(this._currentBerechtigung);
     }
 
