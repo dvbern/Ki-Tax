@@ -33,8 +33,28 @@ require('./dummyAuthentication.less');
 })
 export class DummyAuthenticationListViewComponent {
 
-    public usersList: Array<TSUser>;
+    // Allgemeine User
     public superadmin: TSUser;
+    public sachbearbeiterInstitutionKitaBruennen: TSUser;
+    public sachbearbeiterTraegerschaftStadtBern: TSUser;
+    public sachbearbeiterTraegerschaftLeoLea: TSUser;
+    public sachbearbeiterTraegerschaftSGF: TSUser;
+
+    public gesuchstellerEmmaGerber: TSUser;
+    public gesuchstellerHeinrichMueller: TSUser;
+    public gesuchstellerMichaelBerger: TSUser;
+    public gesuchstellerHansZimmermann: TSUser;
+
+    // Gemeindeabhängige User
+    public administratorBGBern: TSUser;
+    public sachbearbeiterBGBern: TSUser;
+    public administratorTSBern: TSUser;
+    public sachbearbeiterTSBern: TSUser;
+
+    public steueramtBern: TSUser;
+    public revisorBern: TSUser;
+    public juristBern: TSUser;
+
     private readonly mandant: TSMandant;
     private readonly institution: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
@@ -48,7 +68,7 @@ export class DummyAuthenticationListViewComponent {
                 @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
                 @Inject(UIRouter) private readonly uiRouter: UIRouter) {
 
-        this.usersList = [];
+        this.initUsers();
         this.mandant = this.getMandant();
         this.traegerschaftStadtBern = this.getTraegerschaftStadtBern();
         this.traegerschaftLeoLea = this.getTraegerschaftLeoLea();
@@ -58,40 +78,47 @@ export class DummyAuthenticationListViewComponent {
         this.applicationPropertyRS.isDevMode().then((response) => {
             this.devMode = response;
         });
-        this.usersList.push(new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN));
-        this.usersList.push(new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA));
-        this.usersList.push(new TSUser('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA));
-        this.usersList.push(new TSUser('Sophie', 'Bergmann', 'beso', 'password3', 'sophie.bergmann@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_INSTITUTION, undefined, this.institution));
-        this.usersList.push(new TSUser('Agnes', 'Krause', 'krad', 'password4', 'agnes.krause@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftStadtBern));
-        this.usersList.push(new TSUser('Lea', 'Lehmann', 'lele', 'password7', 'lea.lehmann@gexample.com',
-            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftLeoLea));
-        this.usersList.push(new TSUser('Simon', 'Gfeller', 'gfsi', 'password8', 'simon.gfeller@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftSGF));
-        this.usersList.push(new TSUser('Emma', 'Gerber', 'geem', 'password6', 'emma.gerber@example.com',
-            this.mandant, TSRole.GESUCHSTELLER));
-        this.usersList.push(new TSUser('Heinrich', 'Mueller', 'muhe', 'password6', 'heinrich.mueller@example.com',
-            this.mandant, TSRole.GESUCHSTELLER));
-        this.usersList.push(new TSUser('Michael', 'Berger', 'bemi', 'password6', 'michael.berger@example.com',
-            this.mandant, TSRole.GESUCHSTELLER));
-        this.usersList.push(new TSUser('Hans', 'Zimmermann', 'ziha', 'password6', 'hans.zimmermann@example.com',
-            this.mandant, TSRole.GESUCHSTELLER));
-        this.usersList.push(new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
-            this.mandant, TSRole.STEUERAMT));
-        this.usersList.push(new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT));
-        this.usersList.push(new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT));
-        this.usersList.push(new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
-            this.mandant, TSRole.JURIST));
-        this.usersList.push(new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
-            this.mandant, TSRole.REVISOR));
+    }
+
+    private initUsers(): void {
+        // Allgemeine User
         this.superadmin = new TSUser('E-BEGU', 'Superuser', 'ebegu', 'password10', 'superuser@example.com',
             this.mandant, TSRole.SUPER_ADMIN);
+
+        this.sachbearbeiterInstitutionKitaBruennen = new TSUser('Sophie', 'Bergmann', 'beso', 'password3', 'sophie.bergmann@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_INSTITUTION, undefined, this.institution);
+        this.sachbearbeiterTraegerschaftStadtBern = new TSUser('Agnes', 'Krause', 'krad', 'password4', 'agnes.krause@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftStadtBern);
+        this.sachbearbeiterTraegerschaftLeoLea = new TSUser('Lea', 'Lehmann', 'lele', 'password7', 'lea.lehmann@gexample.com',
+            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftLeoLea);
+        this.sachbearbeiterTraegerschaftSGF = new TSUser('Simon', 'Gfeller', 'gfsi', 'password8', 'simon.gfeller@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftSGF);
+
+        this.gesuchstellerEmmaGerber = new TSUser('Emma', 'Gerber', 'geem', 'password6', 'emma.gerber@example.com',
+            this.mandant, TSRole.GESUCHSTELLER);
+        this.gesuchstellerHeinrichMueller = new TSUser('Heinrich', 'Mueller', 'muhe', 'password6', 'heinrich.mueller@example.com',
+            this.mandant, TSRole.GESUCHSTELLER);
+        this.gesuchstellerMichaelBerger = new TSUser('Michael', 'Berger', 'bemi', 'password6', 'michael.berger@example.com',
+            this.mandant, TSRole.GESUCHSTELLER);
+        this.gesuchstellerHansZimmermann = new TSUser('Hans', 'Zimmermann', 'ziha', 'password6', 'hans.zimmermann@example.com',
+            this.mandant, TSRole.GESUCHSTELLER);
+
+        // Gemeindeabhängige User
+        this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
+            this.mandant, TSRole.ADMIN);
+        this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_JA);
+        this.administratorTSBern = new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
+            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT);
+        this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
+            this.mandant, TSRole.SCHULAMT);
+
+        this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
+            this.mandant, TSRole.STEUERAMT);
+        this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
+            this.mandant, TSRole.REVISOR);
+        this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
+            this.mandant, TSRole.JURIST);
     }
 
     /**
