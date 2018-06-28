@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.util.ResourceBundle;
+
 import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -49,10 +51,28 @@ public class CheckBerechtigungGemeindeValidator implements ConstraintValidator<C
 	 */
 	@Override
 	public boolean isValid(Berechtigung berechtigung, @Nullable ConstraintValidatorContext context) {
-		if (berechtigung.getRole().isRoleGemeindeabhaengig()) {
-			return berechtigung.getGemeindeList().size() >= 1;
-		} else {
-			return berechtigung.getGemeindeList().isEmpty();
+		if (berechtigung.getRole().isRoleGemeindeabhaengig() && berechtigung.getGemeindeList().isEmpty()) {
+			setConstraintViolationMessage(context, true);
+			return false;
+
+		}
+		if (!berechtigung.getRole().isRoleGemeindeabhaengig() && !berechtigung.getGemeindeList().isEmpty()) {
+			setConstraintViolationMessage(context, false);
+			return false;
+		}
+		return true;
+	}
+
+	private void setConstraintViolationMessage(@Nullable ConstraintValidatorContext context, boolean isGemeindeAbhaengig) {
+		if (context != null) {
+			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+			String message = rb.getString("invalid_berechtigung_gemeinde_rules"); //by default gemeinde not allowed
+			if (isGemeindeAbhaengig) {
+				message = rb.getString("invalid_berechtigung_keine_gemeinde_rules");
+			}
+			context.disableDefaultConstraintViolation();
+			context.buildConstraintViolationWithTemplate(message)
+				.addConstraintViolation();
 		}
 	}
 }
