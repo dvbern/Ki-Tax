@@ -68,7 +68,6 @@ export class DummyAuthenticationListViewComponent {
                 @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
                 @Inject(UIRouter) private readonly uiRouter: UIRouter) {
 
-        this.initUsers();
         this.mandant = this.getMandant();
         this.traegerschaftStadtBern = this.getTraegerschaftStadtBern();
         this.traegerschaftLeoLea = this.getTraegerschaftLeoLea();
@@ -78,6 +77,7 @@ export class DummyAuthenticationListViewComponent {
         this.applicationPropertyRS.isDevMode().then((response) => {
             this.devMode = response;
         });
+        this.initUsers();
     }
 
     private initUsers(): void {
