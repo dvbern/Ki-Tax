@@ -36,12 +36,12 @@ export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
                 return actual.getFullName().toUpperCase().indexOf(expected.toUpperCase()) >= 0;
             }
             // Fall-Nummer
-            if (expression.fall && expression.fall.fallNummer && expression.fall.fallNummer === expected) {
+            if (expression.dossier && expression.dossier.fall && expression.dossier.fall.fallNummer && expression.dossier.fall.fallNummer === expected) {
                 let actualString = ebeguUtil.addZerosToNumber(actual, CONSTANTS.FALLNUMMER_LENGTH);
                 return actualString.indexOf(expected) >= 0;
             }
             // Familie
-            if (expression.fall && expression.fall.besitzer && expression.fall.besitzer === expected) {
+            if (expression.dossier && expression.dossier.fall && expression.dossier.fall.besitzer && expression.dossier.fall.besitzer === expected) {
                 if (actual) {
                     return actual.getFullName().toUpperCase().indexOf(expected.toUpperCase()) >= 0;
                 }

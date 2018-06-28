@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -51,13 +52,10 @@ public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLogi
 
 	@Test
 	public void createEinkommensverschlechterungInfoTest() {
-		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		gesuch.setFall(persistence.persist(TestDataUtil.createDefaultFall()));
-		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch = persistence.persist(gesuch);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
 
 		TestDataUtil.createDefaultEinkommensverschlechterungsInfoContainer(gesuch);
-
+		Assert.assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		einkommensverschlechterungInfoService.createEinkommensverschlechterungInfo(gesuch.getEinkommensverschlechterungInfoContainer());
 
 		Assert.assertNotNull(gesuch);
@@ -69,11 +67,11 @@ public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLogi
 	}
 
 	private EinkommensverschlechterungInfoContainer persistAndGetEinkommensverschlechterungInfoOnGesuch() {
-		Gesuch gesuch = TestDataUtil.createDefaultEinkommensverschlechterungsGesuch();
-		gesuch.setFall(persistence.persist(TestDataUtil.createDefaultFall()));
-		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
-		gesuch = persistence.persist(gesuch);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.IN_BEARBEITUNG_JA);
+		gesuch.setEinkommensverschlechterungInfoContainer(TestDataUtil.createDefaultEinkommensverschlechterungsInfoContainer(gesuch));
+		gesuch = persistence.merge(gesuch);
 
+		Assert.assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		return gesuch.getEinkommensverschlechterungInfoContainer();
 	}
 
@@ -105,7 +103,7 @@ public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLogi
 			.getGesuch(), null, einkommensverschlechterungInfo);
 
 		final Optional<EinkommensverschlechterungInfoContainer> ekvInfoUpdated = einkommensverschlechterungInfoService.findEinkommensverschlechterungInfo(einkommensverschlechterungInfo.getId());
-
+		Assert.assertTrue(ekvInfoUpdated.isPresent());
 		final EinkommensverschlechterungInfoContainer info1 = ekvInfoUpdated.get();
 		Assert.assertNotNull(info1);
 		Assert.assertTrue(info1.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2());
@@ -116,7 +114,7 @@ public class EinkommensverschlechterungInfoServiceTest extends AbstractEbeguLogi
 		einkommensverschlechterungInfoService.updateEinkommensVerschlechterungInfoAndGesuch(info1.getGesuch(), null, info1);
 
 		final Optional<EinkommensverschlechterungInfoContainer> ekvInfoUpdated2 = einkommensverschlechterungInfoService.findEinkommensverschlechterungInfo(info1.getId());
-
+		Assert.assertTrue(ekvInfoUpdated2.isPresent());
 		final EinkommensverschlechterungInfoContainer info2 = ekvInfoUpdated2.get();
 		Assert.assertNotNull(info2);
 		Assert.assertFalse(info2.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2());

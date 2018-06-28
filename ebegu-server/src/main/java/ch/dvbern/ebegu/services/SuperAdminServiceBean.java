@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRoleName;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -38,7 +39,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(SuperAdminService.class)
-@RunAs(value = UserRoleName.SUPER_ADMIN)
+@RunAs(UserRoleName.SUPER_ADMIN)
 public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Inject
@@ -48,7 +49,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	private FallService fallService;
 
 	@Override
-	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN, ADMINISTRATOR_SCHULAMT })
 	public void removeGesuch(@Nonnull String gesuchId) {
 		gesuchService.removeGesuch(gesuchId, GesuchDeletionCause.USER);
 	}
@@ -56,12 +57,12 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN })
 	public void removeFall(@Nonnull Fall fall) {
-		fallService.removeFall(fall);
+		fallService.removeFall(fall, GesuchDeletionCause.USER);
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed(value = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
 	public Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser) {
 		return gesuchService.updateGesuch(gesuch, saveInStatusHistory, saveAsUser);
 	}

@@ -34,11 +34,11 @@ function getStates(): Ng1StateDeclaration[] {
 export class EbeguAlleVerfuegungenState implements Ng1StateDeclaration {
     name = 'alleVerfuegungen';
     template = '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/alleVerfuegungen/:fallId';
+    url = '/alleVerfuegungen/:dossierId';
 }
 
 // PARAMS
 
 export class IAlleVerfuegungenStateParams {
-    fallId: string;
+    dossierId: string;
 }

@@ -15,9 +15,10 @@
 
 package ch.dvbern.ebegu.enums;
 
-import javax.annotation.Nullable;
+import java.util.Objects;
 
-import org.apache.commons.lang3.Validate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Enum fuer die Laender (ISO 3166-1 Alpha 2 Code)
@@ -270,24 +271,25 @@ public enum Land {
 	}
 
 	/**
-	 * Is this {@link Land} still valid? Unused and replaced codes will be marked as invalid.
+	 * Is this Land still valid? Unused and replaced codes will be marked as invalid.
 	 */
 	public boolean isValid() {
 		return valid;
 	}
 
 	public boolean isSchweiz() {
-		return this.equals(Land.CH);
+		return this == Land.CH;
 	}
 
 	public boolean isPlzRelevant() {
-		return isSchweiz() || this.equals(Land.LI);
+		return isSchweiz() || this == Land.LI;
 	}
 
 	public int getSortierung() {
 		return sortierung;
 	}
 
+	@Nullable
 	public static Land getByBsvCode(final String bsvCode) {
 		for (final Land land : values()) {
 			if (bsvCode.equals(land.getBsvCode())) {
@@ -310,9 +312,9 @@ public enum Land {
 		return null;
 	}
 
-	@Nullable
+	@Nonnull
 	public static Land fromString(String code) {
-		Validate.notNull(code, "Laendercode muss gesetzt sein");
+		Objects.requireNonNull(code, "Laendercode muss gesetzt sein");
 		for (final Land land : values()) {
 			if (code.equalsIgnoreCase(land.name())) {
 				return land;

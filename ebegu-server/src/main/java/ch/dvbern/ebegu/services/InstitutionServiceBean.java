@@ -51,7 +51,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang3.Validate;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -102,7 +101,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public Institution setInstitutionInactive(@Nonnull String institutionId) {
-		Validate.notNull(institutionId);
+		Objects.requireNonNull(institutionId);
 		Optional<Institution> institutionToRemove = findInstitution(institutionId);
 
 		Institution institution = institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
@@ -113,7 +112,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void deleteInstitution(@Nonnull String institutionId) {
-		Validate.notNull(institutionId);
+		Objects.requireNonNull(institutionId);
 		Optional<Institution> institutionToRemove = findInstitution(institutionId);
 		Institution institution = institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));

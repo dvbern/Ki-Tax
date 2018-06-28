@@ -116,18 +116,17 @@ export class DvQuicksearchboxController {
                     this.gesuchModelManager.clearGesuch();
                     if (isAnyStatusOfVerfuegt(this.selectedItem.antragDTO.status)) {
 
-                        this.openGesuch(this.selectedItem.gesuchID, 'gesuch.verfuegen');
+                        this.openGesuch(this.selectedItem.antragDTO, 'gesuch.verfuegen');
                     } else {
-                        this.openGesuch(this.selectedItem.gesuchID, 'gesuch.betreuungen');
+                        this.openGesuch(this.selectedItem.antragDTO, 'gesuch.betreuungen');
                     }
                 } else {
-                    this.openGesuch(this.selectedItem.gesuchID, 'gesuch.fallcreation');
+                    this.openGesuch(this.selectedItem.antragDTO, 'gesuch.fallcreation');
                 }
-            } else if (this.selectedItem.entity === 'FALL') {
+            } else if (this.selectedItem.entity === 'DOSSIER') {
                 //open mitteilung
-                this.$state.go('mitteilungen', {fallId: this.selectedItem.fallID});
+                this.$state.go('mitteilungen', {dossierId: this.selectedItem.dossierId});
             } else {
-
                 this.$state.go('search', {searchString: this.searchString});
             }
         }
@@ -135,17 +134,17 @@ export class DvQuicksearchboxController {
 
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
-     * @param antragId
+     * @param antrag
      * @param urlToGoTo
      * @param inNewTab true if fall should be opend in new tab
      */
-    private openGesuch(antragId: string, urlToGoTo: string, inNewTab?: boolean): void {
-        if (antragId) {
+    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab?: boolean): void {
+        if (antrag) {
             if (inNewTab) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antragId});
+                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antragId});
+                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

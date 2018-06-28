@@ -44,7 +44,7 @@ public class JaxGesuch extends JaxAbstractDTO {
 	private static final long serialVersionUID = -1217019901364130097L;
 
 	@NotNull
-	private JaxFall fall;
+	private JaxDossier dossier;
 
 	@NotNull
 	private JaxGesuchsperiode gesuchsperiode;
@@ -275,12 +275,12 @@ public class JaxGesuch extends JaxAbstractDTO {
 		this.gesuchBetreuungenStatus = gesuchBetreuungenStatus;
 	}
 
-	public JaxFall getFall() {
-		return fall;
+	public JaxDossier getDossier() {
+		return dossier;
 	}
 
-	public void setFall(JaxFall fall) {
-		this.fall = fall;
+	public void setDossier(JaxDossier dossier) {
+		this.dossier = dossier;
 	}
 
 	public JaxGesuchsperiode getGesuchsperiode() {

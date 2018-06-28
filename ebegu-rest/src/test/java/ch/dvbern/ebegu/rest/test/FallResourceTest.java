@@ -21,15 +21,12 @@ import java.time.Month;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.resource.FallResource;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -59,35 +56,14 @@ public class FallResourceTest extends AbstractEbeguRestLoginTest {
 	private JaxBConverter converter;
 
 	@Test
-	public void testFindGesuchForInstitution() throws EbeguException {
+	public void findGesuchForInstitution() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
 		final JaxFall foundFall = fallResource.findFall(converter.toJaxId(gesuch.getFall()));
 
 		Assert.assertNotNull(foundFall);
-		Assert.assertNotNull(foundFall.getVerantwortlicher());
-
 		Assert.assertNotNull(foundFall.getId());
 		Assert.assertNotNull(foundFall.getNextNumberKind());
-	}
-
-	@Test
-	public void testUpdateVerantwortlicherUserForFall() throws EbeguException {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
-		Benutzer sachbearbeiter = TestDataUtil.createAndPersistJABenutzer(persistence);
-		final JaxFall foundFall = fallResource.findFall(converter.toJaxId(gesuch.getFall()));
-
-		Assert.assertNotNull(foundFall);
-		Assert.assertNotNull(foundFall.getVerantwortlicher());
-		Assert.assertNotEquals(sachbearbeiter.getUsername(), foundFall.getVerantwortlicher().getUsername());
-
-		JaxAuthLoginElement userToSet = converter.benutzerToAuthLoginElement(sachbearbeiter);
-		foundFall.setVerantwortlicher(userToSet);
-		JaxFall updatedFall = fallResource.saveFall(foundFall, null, null);
-		Assert.assertNotNull(updatedFall);
-		Assert.assertNotNull(updatedFall.getVerantwortlicher());
-		Assert.assertEquals(sachbearbeiter.getUsername(), updatedFall.getVerantwortlicher().getUsername());
 	}
 
 	// HELP METHODS

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,6 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang.Validate;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -49,8 +49,6 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.QueryContextBuilder;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.hibernate.search.query.dsl.TermTermination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -67,8 +65,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Stateless
 @RolesAllowed({ SUPER_ADMIN, ADMIN })
 public class SearchIndexServiceBean implements SearchIndexService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SearchIndexServiceBean.class);
 
 	@Nonnull
 	private static final List<SearchFilter> SEARCH_FILTER_FOR_ALL_ENTITIES =
@@ -95,7 +91,6 @@ public class SearchIndexServiceBean implements SearchIndexService {
 		try {
 			fullTextEntityManager.createIndexer().startAndWait();
 		} catch (InterruptedException e) {
-			LOG.error("Could not index data");
 			throw new EbeguRuntimeException("rebuildSearchIndex", "Index konnte nicht erstellt werden", e, e.getMessage());
 		}
 	}
@@ -104,11 +99,11 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMINISTRATOR_SCHULAMT, SCHULAMT })
 	public QuickSearchResultDTO search(@Nonnull String searchText, @Nonnull List<SearchFilter> filters) {
-		Validate.notNull(searchText, "searchText must be set");
-		Validate.notNull(filters, "filters must be set");
+		Objects.requireNonNull(searchText, "searchText must be set");
+		Objects.requireNonNull(filters, "filters must be set");
 		QuickSearchResultDTO result = new QuickSearchResultDTO();
 		List<String> stringsToMatch = tokenizeAndAndAddWildcardToQuery(searchText);
-		Validate.notNull(filters);
+		Objects.requireNonNull(filters);
 		for (SearchFilter filter : filters) {
 			QuickSearchResultDTO subResult = searchInSingleIndex(stringsToMatch, filter);
 			result.addSubResult(subResult);
@@ -165,7 +160,7 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	@Nonnull
 	private FullTextQuery buildLuceneQuery(@Nonnull List<String> searchTermList, @Nonnull SearchFilter filter) {
 		Class<Searchable> entityClass = filter.getSearchEntityType().getEntityClass();
-		Validate.notNull(filter.getSearchEntityType());
+		Objects.requireNonNull(filter.getSearchEntityType());
 
 		EntityManager em = persistence.getEntityManager();
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);

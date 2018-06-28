@@ -106,19 +106,17 @@ public final class FreigabeCopyUtil {
 				container.setKindGS(null);
 			}
 			// Betreuungen pro Kind
-			if (container.getBetreuungen() != null) {
-				for (Betreuung betreuung : container.getBetreuungen()) {
-					// Betreuung
-					if (betreuung.getBetreuungspensumContainers() != null) {
-						for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {
-							copyBetreuungspensumContainer(betreuungspensumContainer);
-						}
+			for (Betreuung betreuung : container.getBetreuungen()) {
+				// Betreuung
+				if (betreuung.getBetreuungspensumContainers() != null) {
+					for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {
+						copyBetreuungspensumContainer(betreuungspensumContainer);
 					}
-					// Abwesenheiten pro Betreuung
-					if (betreuung.getAbwesenheitContainers() != null) {
-						for (AbwesenheitContainer abwesenheitContainer : betreuung.getAbwesenheitContainers()) {
-							copyAbwesenheitContainer(abwesenheitContainer);
-						}
+				}
+				// Abwesenheiten pro Betreuung
+				if (betreuung.getAbwesenheitContainers() != null) {
+					for (AbwesenheitContainer abwesenheitContainer : betreuung.getAbwesenheitContainers()) {
+						copyAbwesenheitContainer(abwesenheitContainer);
 					}
 				}
 			}

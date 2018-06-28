@@ -23,13 +23,15 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 /**
  * Diese Klasse enthaelt Methoden, um den AntragStatus von DB in DTO umzuwandeln.
  */
 @SuppressWarnings("OverlyComplexMethod")
-public class AntragStatusConverterUtil {
+public final class AntragStatusConverterUtil {
 
 	private AntragStatusConverterUtil() {
 		// Util-Methode soll nicht instanziert werden
@@ -42,6 +44,7 @@ public class AntragStatusConverterUtil {
 	 * @param status Der AntragStatus vom Entity
 	 * @return Der AntragStatusDTO, der zum Client geschickt wird
 	 */
+	@Nonnull
 	public static AntragStatusDTO convertStatusToDTO(Gesuch antrag, AntragStatus status) {
 		switch (status) {
 		case IN_BEARBEITUNG_GS:
@@ -79,7 +82,7 @@ public class AntragStatusConverterUtil {
 		case GEPRUEFT_STV:
 			return AntragStatusDTO.GEPRUEFT_STV;
 		default:
-			return null;
+			throw new IllegalStateException("Unbekannter Status: " + status + " in Gesuch " + antrag.getId());
 		}
 	}
 
@@ -106,6 +109,7 @@ public class AntragStatusConverterUtil {
 	 * @param statusDTO Der AntragStatusDTO vom Client
 	 * @return Der AntragStatus fuer das Entity
 	 */
+	@Nonnull
 	public static AntragStatus convertStatusToEntity(AntragStatusDTO statusDTO) {
 		switch (statusDTO) {
 		case IN_BEARBEITUNG_GS:
@@ -145,7 +149,7 @@ public class AntragStatusConverterUtil {
 		case GEPRUEFT_STV:
 			return AntragStatus.GEPRUEFT_STV;
 		default:
-			return null;
+			throw new EbeguRuntimeException("convertStatusToEntity", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, statusDTO);
 		}
 	}
 

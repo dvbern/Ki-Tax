@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
@@ -42,7 +44,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,18 +164,18 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 		final JaxMandant first = mandantResource.getFirst();
 		if (first.getId() == null) {
-			LOG.error("error while loading mandant");
-			throw new EbeguEntityNotFoundException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-		} else {
-			return first.getId();
+			String message = "error while loading mandant";
+			throw new EbeguEntityNotFoundException("getFirst", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
+
+		return first.getId();
 	}
 
 	@Override
 	public JaxExternalAuthAccessElement createLoginFromIAM(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
-		Validate.notNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
+		Objects.requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
-		LOG.debug("ExternalLogin System is creating Authorization for user " + jaxExtAuthUser.getUsername());
+		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 
 		checkLocalAccessOnly();
@@ -186,7 +187,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	private JaxExternalAuthAccessElement convertToJaxExternalAuthAccessElement(@Nonnull AuthAccessElement loginDataForCookie) {
-		Validate.notNull(loginDataForCookie, "login data to convert may not be null");
+		Objects.requireNonNull(loginDataForCookie, "login data to convert may not be null");
 		return new JaxExternalAuthAccessElement(
 			loginDataForCookie.getAuthId(),
 			loginDataForCookie.getAuthToken(),
@@ -206,9 +207,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (!this.configuration.isRemoteLoginConnectorAllowed()) {
 			boolean isLocallyAccessed = this.localhostChecker.isAddressLocalhost(request.getRemoteAddr());
 			if (!isLocallyAccessed) {
-				final String requestedHost = this.request.getHeader("host");
-				String hostmachine = requestedHost != null ? requestedHost.split(":")[0] : "";
-				LOG.error("Refusing remote access for host {} from remote addr {} ", hostmachine, request.getRemoteAddr());
 				throw new EJBAccessException("This Service may only be called from localhost but was accessed from  " + request.getRemoteAddr());
 			}
 		}
@@ -232,7 +230,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	private UserRole convertRoleString(@Nullable String roleString) {
 		if (roleString == null) {
 			String msg = "Null Value for role, Could not convert to a valid UserRole";
-			LOG.error(msg);
 			throw new IllegalArgumentException(msg);
 		}
 		try {

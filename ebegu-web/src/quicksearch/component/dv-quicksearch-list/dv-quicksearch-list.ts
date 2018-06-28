@@ -61,8 +61,8 @@ export class DVQuicksearchListController {
     tableId: string;
     tableTitle: string;
 
-    selectedVerantwortlicher: TSUser;
-    selectedVerantwortlicherSCH: TSUser;
+    selectedVerantwortlicherBG: TSUser;
+    selectedVerantwortlicherTS: TSUser;
     selectedEingangsdatum: string;
     selectedKinder: string;
     selectedFallNummer: string;
@@ -167,10 +167,10 @@ export class DVQuicksearchListController {
 
     private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO) {
         if (isCtrlKeyPressed) {
-            let url = this.$state.href('mitteilungen', {fallId: fallAntrag.fallID});
+            let url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
-            this.$state.go('mitteilungen', {fallId: fallAntrag.fallID});
+            this.$state.go('mitteilungen', {dossierId: fallAntrag.dossierId});
         }
     }
 
@@ -178,7 +178,8 @@ export class DVQuicksearchListController {
         if (antragDTO.antragId) {
             let navObj: any = {
                 createNew: false,
-                gesuchId: antragDTO.antragId
+                gesuchId: antragDTO.antragId,
+                dossierId: antragDTO.dossierId
             };
             if (isCtrlKeyPressed) {
                 let url = this.$state.href('gesuch.fallcreation', navObj);

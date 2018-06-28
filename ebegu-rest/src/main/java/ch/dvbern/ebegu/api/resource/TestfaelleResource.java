@@ -113,11 +113,11 @@ public class TestfaelleResource {
 
 	@ApiOperation(value = "Simuliert fuer den uebergebenen Testfall eine Heirat", response = String.class)
 	@GET
-	@Path("/mutationHeirat/{fallNummer}/{gesuchsperiodeid}")
+	@Path("/mutationHeirat/{dossierId}/{gesuchsperiodeid}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response mutationHeirat(
-		@PathParam("fallNummer") Long fallNummer,
+		@PathParam("dossierId") String dossierId,
 		@PathParam("gesuchsperiodeid") String gesuchsperiodeid,
 		@Nullable @QueryParam("mutationsdatum") String stringMutationsdatum,
 		@Nullable @QueryParam("aenderungper") String stringAenderungPer) {
@@ -126,20 +126,20 @@ public class TestfaelleResource {
 		LocalDate mutationsdatum = DateUtil.parseStringToDateOrReturnNow(stringMutationsdatum);
 		LocalDate aenderungPer = DateUtil.parseStringToDateOrReturnNow(stringAenderungPer);
 
-		final Gesuch gesuch = testfaelleService.mutierenHeirat(fallNummer, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
+		final Gesuch gesuch = testfaelleService.mutierenHeirat(dossierId, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
 		if (gesuch != null) {
 			return Response.ok(FALL + gesuch.getFall().getFallNummer() + " mutiert zu heirat").build();
 		}
-		return Response.ok(FALL + fallNummer + " konnte nicht mutiert").build();
+		return Response.ok(FALL + dossierId + " konnte nicht mutiert").build();
 	}
 
 	@ApiOperation(value = "Simuliert fuer den uebergebenen Testfall eine Scheidung", response = String.class)
 	@GET
-	@Path("/mutationScheidung/{fallNummer}/{gesuchsperiodeid}")
+	@Path("/mutationScheidung/{dossierId}/{gesuchsperiodeid}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response mutierenScheidung(
-		@PathParam("fallNummer") Long fallNummer,
+		@PathParam("dossierId") String dossierId,
 		@PathParam("gesuchsperiodeid") String gesuchsperiodeid,
 		@Nullable @QueryParam("mutationsdatum") String stringMutationsdatum,
 		@Nullable @QueryParam("aenderungper") String stringAenderungPer) {
@@ -148,11 +148,11 @@ public class TestfaelleResource {
 		LocalDate mutationsdatum = DateUtil.parseStringToDateOrReturnNow(stringMutationsdatum);
 		LocalDate aenderungPer = DateUtil.parseStringToDateOrReturnNow(stringAenderungPer);
 
-		final Gesuch gesuch = testfaelleService.mutierenScheidung(fallNummer, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
+		final Gesuch gesuch = testfaelleService.mutierenScheidung(dossierId, gesuchsperiodeid, mutationsdatum, aenderungPer, false);
 		if (gesuch != null) {
 			return Response.ok(FALL + gesuch.getFall().getFallNummer() + " mutiert zu scheidung").build();
 		}
-		return Response.ok(FALL + fallNummer + " konnte nicht mutiert").build();
+		return Response.ok(FALL + dossierId + " konnte nicht mutiert").build();
 	}
 
 	@ApiOperation(value = "Setzt die Schulungsdaten zurueck", response = String.class)

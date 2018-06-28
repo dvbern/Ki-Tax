@@ -48,7 +48,7 @@ export class TestdatenViewController {
         'DatabaseMigrationRS', 'ZahlungRS', 'ApplicationPropertyRS', 'GesuchRS', 'DailyBatchRS'];
 
     testFaelleRS: TestFaelleRS;
-    fallId: number;
+    dossierid: string;
     verfuegenGesuchid: string;
     mutationsdatum: moment.Moment;
     aenderungperHeirat: moment.Moment;
@@ -145,7 +145,7 @@ export class TestdatenViewController {
     }
 
     public mutiereFallHeirat(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallHeirat(this.fallId, '0621fb5d-a187-5a91-abaf-8a813c4d263a',
+        return this.testFaelleRS.mutiereFallHeirat(this.dossierid, this.selectedGesuchsperiode.id,
             this.mutationsdatum, this.aenderungperHeirat).then((response) => {
             return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
                 title: response.data
@@ -156,7 +156,7 @@ export class TestdatenViewController {
     }
 
     public mutiereFallScheidung(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallScheidung(this.fallId, '0621fb5d-a187-5a91-abaf-8a813c4d263a',
+        return this.testFaelleRS.mutiereFallScheidung(this.dossierid, this.selectedGesuchsperiode.id,
             this.mutationsdatum, this.aenderungperScheidung).then((respone) => {
             return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
                 title: respone.data

@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 
 import io.swagger.annotations.Api;
@@ -181,7 +180,7 @@ public class ApplicationPropertyResource {
 		@Nonnull @NotNull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		ApplicationProperty modifiedProperty = this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, key), value);
 
@@ -203,7 +202,7 @@ public class ApplicationPropertyResource {
 		@Nonnull @PathParam("key") String key,
 		@Nonnull @NotNull String value,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		ApplicationProperty modifiedProperty = this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, key), value);
 
@@ -211,7 +210,7 @@ public class ApplicationPropertyResource {
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Removes an application property")
+	@ApiOperation("Removes an application property")
 	@Nullable
 	@DELETE
 	@Path("/{key}")
@@ -231,7 +230,7 @@ public class ApplicationPropertyResource {
 		return Response.ok(ebeguConfiguration.getIsZahlungenTestMode()).build();
 	}
 
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	@ApiOperation(value = "Gibt den Wert des Properties zurück", response = Boolean.class)
 	@GET
 	@Consumes(MediaType.WILDCARD)

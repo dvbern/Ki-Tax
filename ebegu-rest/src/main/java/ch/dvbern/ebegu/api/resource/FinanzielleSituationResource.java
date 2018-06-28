@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -57,7 +58,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer FinanzielleSituation
@@ -130,7 +130,7 @@ public class FinanzielleSituationResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchJAXP.getId());
+		Objects.requireNonNull(gesuchJAXP.getId());
 		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchJAXP.getId());
 		Gesuch gesuchFromDB = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituationStart", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXP.getId()));
 
@@ -176,7 +176,7 @@ public class FinanzielleSituationResource {
 		Gesuch gesuch = new Gesuch();
 		gesuch.initFamiliensituationContainer();
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		Validate.notNull(familiensituation);
+		Objects.requireNonNull(familiensituation);
 		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS1() != null) {
 			gesuch.setGesuchsteller1(new GesuchstellerContainer());
@@ -207,7 +207,7 @@ public class FinanzielleSituationResource {
 	public JaxFinanzielleSituationContainer findFinanzielleSituation(
 		@Nonnull @NotNull @PathParam("finanzielleSituationId") JaxId finanzielleSituationId) {
 
-		Validate.notNull(finanzielleSituationId.getId());
+		Objects.requireNonNull(finanzielleSituationId.getId());
 		String finanzielleSituationID = converter.toEntityId(finanzielleSituationId);
 		Optional<FinanzielleSituationContainer> optional = finanzielleSituationService.findFinanzielleSituation(finanzielleSituationID);
 

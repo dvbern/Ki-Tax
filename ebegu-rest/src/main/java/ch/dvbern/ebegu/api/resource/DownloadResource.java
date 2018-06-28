@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
@@ -39,10 +40,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
@@ -74,10 +71,11 @@ import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * REST Resource fuer den Download von Dokumenten
@@ -177,7 +175,7 @@ public class DownloadResource {
 
 		String ip = getIP(request);
 
-		Validate.notNull(jaxId.getId());
+		Objects.requireNonNull(jaxId.getId());
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = dokumentService.findDokument(id)
@@ -198,7 +196,7 @@ public class DownloadResource {
 
 		String ip = getIP(request);
 
-		Validate.notNull(jaxId.getId());
+		Objects.requireNonNull(jaxId.getId());
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = vorlageService.findVorlage(id)
@@ -242,7 +240,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Validate.notNull(jaxGesuchId.getId());
+		Objects.requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -275,7 +273,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Validate.notNull(jaxGesuchId.getId());
+		Objects.requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -308,7 +306,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Validate.notNull(jaxGesuchId.getId());
+		Objects.requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -336,7 +334,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("forceCreation") Boolean forceCreation,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Validate.notNull(jaxGesuchId.getId());
+		Objects.requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -369,8 +367,8 @@ public class DownloadResource {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException,
 		IOException, MimeTypeParseException {
 
-		Validate.notNull(jaxGesuchId.getId());
-		Validate.notNull(jaxBetreuungId.getId());
+		Objects.requireNonNull(jaxGesuchId.getId());
+		Objects.requireNonNull(jaxBetreuungId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -401,7 +399,7 @@ public class DownloadResource {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,
 		IOException, MimeTypeParseException, MergeDocException {
 
-		Validate.notNull(jaxMahnung);
+		Objects.requireNonNull(jaxMahnung);
 		String ip = getIP(request);
 
 		Mahnung mahnung = converter.mahnungToEntity(jaxMahnung, new Mahnung());
@@ -427,7 +425,7 @@ public class DownloadResource {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,
 		IOException, MimeTypeParseException, MergeDocException {
 
-		Validate.notNull(jaxBetreuungId);
+		Objects.requireNonNull(jaxBetreuungId);
 		String ip = getIP(request);
 
 		Betreuung betreuung = betreuungService.findBetreuung(jaxBetreuungId.getId()).orElseThrow(()
@@ -453,7 +451,7 @@ public class DownloadResource {
 	public Response getDokumentAccessTokenVerfuegungExport(
 		@Nonnull @Valid @PathParam("betreuungId") JaxId jaxBetreuungId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
-		Validate.notNull(jaxBetreuungId);
+		Objects.requireNonNull(jaxBetreuungId);
 		String ip = getIP(request);
 
 		UploadFileInfo uploadFileInfo = exportService.exportVerfuegungOfBetreuungAsFile(converter.toEntityId(jaxBetreuungId));
@@ -472,7 +470,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("zahlungsauftragId") JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MimeTypeParseException {
 
-		Validate.notNull(jaxId.getId());
+		Objects.requireNonNull(jaxId.getId());
 		String ip = getIP(request);
 
 		final Optional<Zahlungsauftrag> zahlungsauftrag = zahlungService.findZahlungsauftrag(converter.toEntityId(jaxId));
@@ -520,11 +518,9 @@ public class DownloadResource {
 	 */
 	private void loadRelationsAndDetach(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			if (kindContainer.getBetreuungen() != null) {
-				for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-					betreuung.getBetreuungspensumContainers().size();
-					betreuung.getAbwesenheitContainers().size();
-				}
+			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				betreuung.getBetreuungspensumContainers().size();
+				betreuung.getAbwesenheitContainers().size();
 			}
 		}
 		if (gesuch.getGesuchsteller1() != null) {

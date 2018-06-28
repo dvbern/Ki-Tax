@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -54,13 +55,11 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer EinkommensverschlechterungContainer
@@ -101,7 +100,7 @@ public class EinkommensverschlechterungResource {
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId,
 		@Nonnull @NotNull @Valid JaxEinkommensverschlechterungContainer ekvContainerJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Gesuch gesuch = gesuchService.findGesuch(gesuchJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("saveEinkommensverschlechterungContainer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJAXPId.getId()));
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -129,9 +128,9 @@ public class EinkommensverschlechterungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxEinkommensverschlechterungContainer findEinkommensverschlechterungContainer(
-		@Nonnull @NotNull @PathParam("ekvContainerId") JaxId ekvContainerId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("ekvContainerId") JaxId ekvContainerId) {
 
-		Validate.notNull(ekvContainerId.getId());
+		Objects.requireNonNull(ekvContainerId.getId());
 		String ekvContainerID = converter.toEntityId(ekvContainerId);
 		Optional<EinkommensverschlechterungContainer> optional = einkVerschlService.findEinkommensverschlechterungContainer(ekvContainerID);
 
@@ -150,9 +149,9 @@ public class EinkommensverschlechterungResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxEinkommensverschlechterungContainer findEkvContainerForGesuchsteller(
-		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId) {
 
-		Validate.notNull(gesuchstellerId.getId());
+		Objects.requireNonNull(gesuchstellerId.getId());
 		String gsID = converter.toEntityId(gesuchstellerId);
 		Optional<GesuchstellerContainer> optionalGS = gesuchstellerService.findGesuchsteller(gsID);
 		if (!optionalGS.isPresent()) {
@@ -175,9 +174,9 @@ public class EinkommensverschlechterungResource {
 		@Nonnull @NotNull @PathParam("basisJahrPlus") String basisJahrPlus,
 		@Nonnull @NotNull @Valid JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
-		Validate.notNull(basisJahrPlus);
+		Objects.requireNonNull(basisJahrPlus);
 
 		Gesuch gesuch = converter.gesuchToStoreableEntity(gesuchJAXP);
 		FinanzielleSituationResultateDTO abstFinSitResultateDTO = einkVerschlService.calculateResultate(gesuch, Integer.parseInt(basisJahrPlus));
@@ -203,9 +202,9 @@ public class EinkommensverschlechterungResource {
 		@Nonnull @NotNull @PathParam("basisJahrPlus") String basisJahrPlus,
 		@Nonnull @NotNull @Valid JaxFinanzModel jaxFinSitModel,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
-		Validate.notNull(basisJahrPlus);
+		Objects.requireNonNull(basisJahrPlus);
 		Gesuch gesuch = new Gesuch();
 		gesuch.initFamiliensituationContainer();
 		gesuch.extractFamiliensituation().setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());

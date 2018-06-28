@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.resource;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,18 +42,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.Validate;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.DateUtil;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -78,7 +75,7 @@ public class InstitutionStammdatenResource {
 	public JaxInstitutionStammdaten saveInstitutionStammdaten(
 		@Nonnull @NotNull @Valid JaxInstitutionStammdaten institutionStammdatenJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		InstitutionStammdaten instDaten;
 		if (institutionStammdatenJAXP.getId() != null) {
@@ -106,9 +103,9 @@ public class InstitutionStammdatenResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxInstitutionStammdaten findInstitutionStammdaten(
-		@Nonnull @NotNull @PathParam("institutionStammdatenId") JaxId institutionStammdatenJAXPId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("institutionStammdatenId") JaxId institutionStammdatenJAXPId) {
 
-		Validate.notNull(institutionStammdatenJAXPId.getId());
+		Objects.requireNonNull(institutionStammdatenJAXPId.getId());
 		String institutionStammdatenID = converter.toEntityId(institutionStammdatenJAXPId);
 		Optional<InstitutionStammdaten> optional = institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenID);
 
@@ -130,8 +127,7 @@ public class InstitutionStammdatenResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Loescht die InstitutionsStammdaten mit der uebergebenen Id aus der Datenbank",
-		response = Void.class)
+	@ApiOperation("Loescht die InstitutionsStammdaten mit der uebergebenen Id aus der Datenbank")
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
 	@DELETE
@@ -141,7 +137,7 @@ public class InstitutionStammdatenResource {
 		@Nonnull @NotNull @PathParam("institutionStammdatenId") JaxId institutionStammdatenJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(institutionStammdatenJAXPId.getId());
+		Objects.requireNonNull(institutionStammdatenJAXPId.getId());
 		institutionStammdatenService.removeInstitutionStammdaten(converter.toEntityId(institutionStammdatenJAXPId));
 		return Response.ok().build();
 	}
@@ -186,8 +182,8 @@ public class InstitutionStammdatenResource {
 	public List<JaxInstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(
 		@Nonnull @NotNull @QueryParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId) {
 
-		Validate.notNull(gesuchsperiodeJaxId);
-		Validate.notNull(gesuchsperiodeJaxId.getId());
+		Objects.requireNonNull(gesuchsperiodeJaxId);
+		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId).stream()
 			.map(institutionStammdaten -> converter.institutionStammdatenToJAX(institutionStammdaten))
@@ -210,7 +206,7 @@ public class InstitutionStammdatenResource {
 	public List<JaxInstitutionStammdaten> getAllInstitutionStammdatenByInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
-		Validate.notNull(institutionJAXPId.getId());
+		Objects.requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
 		return institutionStammdatenService.getAllInstitutionStammdatenByInstitution(institutionID).stream()
 			.map(instStammdaten -> converter.institutionStammdatenToJAX(instStammdaten))
@@ -230,8 +226,7 @@ public class InstitutionStammdatenResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer() {
-		List<BetreuungsangebotTyp> result = new ArrayList<>();
-		result.addAll(institutionStammdatenService.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer());
+		List<BetreuungsangebotTyp> result = new ArrayList<>(institutionStammdatenService.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer());
 		return result;
 	}
 }

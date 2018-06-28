@@ -211,7 +211,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public isKompletteKorrespondenzVisible(): boolean {
         let status = this.getAntragStatus();
-        return this.isBegleitschreibenVisible() && isAnyStatusOfVerfuegt(status);
+        return this.isBegleitschreibenVisible() && isAnyStatusOfVerfuegt(status) && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getJugendamtAndSchulamtRole());
     }
 
     private getAntragStatus(): TSAntragStatus {
@@ -221,7 +221,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getFall() {
         if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().fall;
+            return this.gesuchModelManager.getFall();
         }
         return undefined;
     }

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.resource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -51,7 +52,6 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
 
@@ -90,7 +90,7 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(dateTimeStichtag);
+		Objects.requireNonNull(dateTimeStichtag);
 		LocalDate date = DateUtil.parseStringToDateOrReturnNow(dateTimeStichtag);
 
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(date,
@@ -117,8 +117,8 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(dateTimeFromParam);
-		Validate.notNull(dateTimeToParam);
+		Objects.requireNonNull(dateTimeFromParam);
+		Objects.requireNonNull(dateTimeToParam);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(dateTimeFromParam);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(dateTimeToParam);
 
@@ -152,8 +152,8 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateAuswertungVon = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateAuswertungBis = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -182,8 +182,8 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateAuswertungVon = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateAuswertungBis = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -207,9 +207,9 @@ public class ReportResource {
 	public Response getZahlungsauftragReportExcel(
 		@QueryParam("zahlungsauftragID") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException {
 
-		Validate.notNull(jaxId);
+		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
@@ -231,9 +231,9 @@ public class ReportResource {
 	public Response getZahlungReportExcel(
 		@QueryParam("zahlungID") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException {
 
-		Validate.notNull(jaxId);
+		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
@@ -255,9 +255,9 @@ public class ReportResource {
 	public Response getZahlungPeridoReportExcel(
 		@QueryParam("gesuchsperiodeID") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException {
 
-		Validate.notNull(jaxId);
+		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
@@ -285,8 +285,8 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -320,8 +320,8 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(auswertungVon);
-		Validate.notNull(auswertungBis);
+		Objects.requireNonNull(auswertungVon);
+		Objects.requireNonNull(auswertungBis);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
 
@@ -353,7 +353,7 @@ public class ReportResource {
 
 		String ip = downloadResource.getIP(request);
 
-		Validate.notNull(stichtag);
+		Objects.requireNonNull(stichtag);
 		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stichtag);
 
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchsteller(date);

@@ -40,7 +40,7 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	private static final long serialVersionUID = -1297771341674137397L;
 
 	@Nullable
-	private JaxFall fall;
+	private JaxDossier dossier;
 
 	@Nullable
 	private JaxBetreuung betreuung;
@@ -73,12 +73,12 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	private LocalDateTime sentDatum;
 
 	@Nullable
-	public JaxFall getFall() {
-		return fall;
+	public JaxDossier getDossier() {
+		return dossier;
 	}
 
-	public void setFall(@Nullable JaxFall fall) {
-		this.fall = fall;
+	public void setDossier(@Nullable JaxDossier dossier) {
+		this.dossier = dossier;
 	}
 
 	@Nullable

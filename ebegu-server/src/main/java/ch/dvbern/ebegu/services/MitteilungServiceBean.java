@@ -67,6 +67,8 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -134,7 +136,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private MailService mailService;
 
 	@Inject
-	private FallService fallService;
+	private DossierService dossierService;
 
 	@Inject
 	private GesuchService gesuchService;
@@ -185,8 +187,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 
 		} catch (MailException e) {
-			LOG.error(String.format("Mail InfoMitteilungErhalten konnte nicht verschickt werden fuer Mitteilung %s", mitteilung.getId()), e);
-			throw new EbeguRuntimeException("sendMitteilung", ErrorCodeEnum.ERROR_MAIL, e);
+			String message = String.format("Mail InfoMitteilungErhalten konnte nicht verschickt werden fuer Mitteilung %s", mitteilung.getId());
+			throw new EbeguRuntimeException("sendMitteilung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
 		return persistence.merge(mitteilung);
@@ -211,7 +213,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void setSenderAndEmpfaenger(@Nonnull Mitteilung mitteilung) {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
 
-		Optional<Benutzer> optEmpfaengerAmt = fallService.getHauptOrDefaultVerantwortlicher(mitteilung.getFall());
+		Optional<Benutzer> optEmpfaengerAmt = dossierService.getHauptOrDefaultVerantwortlicher(mitteilung.getDossier());
 		final Benutzer empfaengerAmt = optEmpfaengerAmt.orElseThrow(() ->
 			new EbeguRuntimeException("setSenderAndEmpfaenger", ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND, mitteilung.getId())
 		);
@@ -312,7 +314,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, ADMINISTRATOR_SCHULAMT })
 	public Collection<Betreuungsmitteilung> findAllBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
@@ -378,10 +380,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
 		ADMINISTRATOR_SCHULAMT, SCHULAMT })
-	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-		authorizer.checkReadAuthorizationFall(fall);
-		return getMitteilungenForCurrentRolle(Mitteilung_.fall, fall);
+	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
+		authorizer.checkReadAuthorizationDossier(dossier);
+		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier);
 	}
 
 	@Nonnull
@@ -418,13 +420,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return mitteilungen;
 	}
 
-	@Override
 	@Nullable
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
 		ADMINISTRATOR_SCHULAMT })
-	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-		return getEntwurfForCurrentRolle(Mitteilung_.fall, fall);
+	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
+		authorizer.checkReadAuthorizationDossier(dossier);
+		return getEntwurfForCurrentRolle(Mitteilung_.dossier, dossier);
 	}
 
 	@Override
@@ -476,7 +479,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, ADMINISTRATOR_SCHULAMT, SCHULAMT, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public void removeMitteilung(@Nonnull Mitteilung mitteilung) {
 		Objects.requireNonNull(mitteilung);
 		authorizer.checkWriteAuthorizationMitteilung(mitteilung);
@@ -486,10 +490,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN })
 	public void removeAllMitteilungenForFall(@Nonnull Fall fall) {
-		Collection<Mitteilung> mitteilungen = criteriaQueryHelper.getEntitiesByAttribute(Mitteilung.class, fall, Mitteilung_.fall);
-		for (Mitteilung mitteilung : mitteilungen) {
-			authorizer.checkWriteAuthorizationMitteilung(mitteilung);
-			persistence.remove(Mitteilung.class, mitteilung.getId());
+		// Alle Mitteilungen aller Dossiers dieses Falls
+		Collection<Dossier> dossiersOfFall = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
+		for (Dossier dossier : dossiersOfFall) {
+			Collection<Mitteilung> mitteilungen = criteriaQueryHelper.getEntitiesByAttribute(Mitteilung.class, dossier, Mitteilung_.dossier);
+			for (Mitteilung mitteilung : mitteilungen) {
+				authorizer.checkWriteAuthorizationMitteilung(mitteilung);
+				persistence.remove(Mitteilung.class, mitteilung.getId());
+			}
 		}
 	}
 
@@ -515,12 +523,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
 		ADMINISTRATOR_SCHULAMT })
-	public Collection<Mitteilung> setAllNewMitteilungenOfFallGelesen(@Nonnull Fall fall) {
-		Collection<Mitteilung> mitteilungen = getMitteilungenForCurrentRolle(fall);
+	public Collection<Mitteilung> setAllNewMitteilungenOfDossierGelesen(@Nonnull Dossier dossier) {
+		Collection<Mitteilung> mitteilungen = getMitteilungenForCurrentRolle(dossier);
 		for (Mitteilung mitteilung : mitteilungen) {
 			if (MitteilungStatus.NEU == mitteilung.getMitteilungStatus()) {
 				setMitteilungsStatusIfBerechtigt(mitteilung, MitteilungStatus.GELESEN, MitteilungStatus.NEU);
@@ -529,20 +537,20 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return mitteilungen;
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
 		ADMINISTRATOR_SCHULAMT, SCHULAMT })
-	public Collection<Mitteilung> getNewMitteilungenForCurrentRolleAndFall(@Nonnull Fall fall) {
-		Objects.requireNonNull(fall, "fall muss gesetzt sein");
-		authorizer.checkReadAuthorizationFall(fall);
+	public Collection<Mitteilung> getNewMitteilungenOfDossierForCurrentRolle(@Nonnull Dossier dossier) {
+		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
+		authorizer.checkReadAuthorizationDossier(dossier);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 		List<Predicate> predicates = new ArrayList<>();
 
-		Predicate predicateFall = cb.equal(root.get(Mitteilung_.fall), fall);
+		Predicate predicateFall = cb.equal(root.get(Mitteilung_.dossier), dossier);
 		predicates.add(predicateFall);
 
 		Predicate predicateNew = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
@@ -615,7 +623,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			//Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
 				throw new EbeguExistingAntragException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-					exception, gesuch.getFall().getId(), gesuch.getGesuchsperiode().getId());
+					exception, gesuch.getDossier().getId(), gesuch.getGesuchsperiode().getId());
 			}
 			throw exception;
 		}
@@ -679,10 +687,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// auch tatsaechlich dem Schulamt "gehoert"
 		if (mitteilung.getEmpfaengerAmt() == Amt.SCHULAMT) {
 			// An wen soll die Meldung delegiert werden?
-			Benutzer verantwortlicherJA = mitteilung.getFall().getVerantwortlicher();
+			Benutzer verantwortlicherJA = mitteilung.getDossier().getVerantwortlicherBG();
 			if (verantwortlicherJA == null) {
 				// Kein JA-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
-				Optional<Benutzer> optVerantwortlicherJA = applicationPropertyService.readDefaultVerantwortlicherFromProperties();
+				Optional<Benutzer> optVerantwortlicherJA = applicationPropertyService.readDefaultVerantwortlicherBGFromProperties();
 				verantwortlicherJA = optVerantwortlicherJA.orElseThrow(() ->
 					new EbeguRuntimeException("mitteilungUebergebenAnJugendamt", ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND, mitteilung.getId())
 				);
@@ -706,16 +714,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// auch tatsaechlich dem Jugendamt "gehoert"
 		if (mitteilung.getEmpfaengerAmt() == Amt.JUGENDAMT) {
 			// An wen soll die Meldung delegiert werden?
-			Benutzer verantwortlicherSCH = mitteilung.getFall().getVerantwortlicherSCH();
-			if (verantwortlicherSCH == null) {
-				// Kein SCH-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
-				Optional<Benutzer> optVerantwortlicherSCH = applicationPropertyService.readDefaultVerantwortlicherSCHFromProperties();
-				verantwortlicherSCH = optVerantwortlicherSCH.orElseThrow(() ->
+			Benutzer verantwortlicherTS = mitteilung.getDossier().getVerantwortlicherTS();
+			if (verantwortlicherTS == null) {
+				// Kein TS-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
+				Optional<Benutzer> optVerantwortlicherTS = applicationPropertyService.readDefaultVerantwortlicherTSFromProperties();
+				verantwortlicherTS = optVerantwortlicherTS.orElseThrow(() ->
 					new EbeguRuntimeException("mitteilungUebergebenAnSchulamt", ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND, mitteilung.getId())
 				);
 			}
 			// Den VerantwortlichenJA als Empfänger setzen
-			mitteilung.setEmpfaenger(verantwortlicherSCH);
+			mitteilung.setEmpfaenger(verantwortlicherTS);
 			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 			return persistence.merge(mitteilung);
 
@@ -746,7 +754,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 
 		// Join all the relevant relations
-		Join<Mitteilung, Fall> joinFall = root.join(Mitteilung_.fall, JoinType.INNER);
+		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
+
 		Join<Fall, Benutzer> joinBesitzer = joinFall.join(Fall_.besitzer, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinSender = root.join(Mitteilung_.sender, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinEmpfaenger = root.join(Mitteilung_.empfaenger, JoinType.LEFT);
@@ -882,7 +892,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@SuppressWarnings("ReuseOfLocalVariable")
 	private void constructOrderByClause(@Nonnull MitteilungTableFilterDTO tableFilterDTO, CriteriaBuilder cb, CriteriaQuery query,
-		Root<Mitteilung> root, Join<Mitteilung, Fall> joinFall, Join<Fall, Benutzer> joinBesitzer,
+		Root<Mitteilung> root, Join<Dossier, Fall> joinFall, Join<Fall, Benutzer> joinBesitzer,
 		Join<Mitteilung, Benutzer> joinSender, Join<Mitteilung, Benutzer> joinEmpfaenger, SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen) {
 		Expression<?> expression = null;
 		if (tableFilterDTO.getSort() != null && tableFilterDTO.getSort().getPredicate() != null) {

@@ -13,10 +13,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validationgroups;
+package ch.dvbern.ebegu.api.dtos;
+
+import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * ValidationGroup für Validierungen beim Setzen von Verantwortlichen auf einem Fall
+ * DTO fuer Gemeinden
  */
-public interface ChangeVerantwortlicherJAValidationGroup {
+@XmlRootElement(name = "gemeinde")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxGemeinde extends JaxAbstractDTO {
+
+	private static final long serialVersionUID = 7980499854206395920L;
+
+	@NotNull
+	private String name;
+
+	private boolean enabled;
+
+
+	@Nonnull
+	public String getName() {
+		return name;
+	}
+
+	public void setName(@Nonnull String name) {
+		this.name = name;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 }

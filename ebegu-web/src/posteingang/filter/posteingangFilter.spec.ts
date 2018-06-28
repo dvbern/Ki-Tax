@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehmerTyp';
+import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSUser from '../../models/TSUser';
@@ -50,6 +51,8 @@ describe('posteingangFilter', function () {
         let fall1 = new TSFall();
         fall1.fallNummer = 112;
         fall1.besitzer = gesuchsteller1;
+        let dossier1 = new TSDossier();
+        dossier1.fall = fall1;
 
         let gesuchsteller2 = new TSUser();
         gesuchsteller2.nachname = 'Gerber';
@@ -57,30 +60,34 @@ describe('posteingangFilter', function () {
         let fall2 = new TSFall();
         fall2.fallNummer = 108;
         fall2.besitzer = gesuchsteller2;
+        let dossier2 = new TSDossier();
+        dossier2.fall = fall2;
 
         let fallNoBesitzer = new TSFall();
         fallNoBesitzer.fallNummer = 1010;
         fallNoBesitzer.besitzer = undefined;
+        let dossierNoBesitzer = new TSDossier();
+        dossierNoBesitzer.fall = fallNoBesitzer;
 
         mitteilungArray = [];
 
-        mitteilung1 = new TSMitteilung(fall1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
+        mitteilung1 = new TSMitteilung(dossier1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
             ja1, 'Frage zum IAM', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, moment('2016-01-01'));
         mitteilungArray.push(mitteilung1);
 
-        mitteilung2 = new TSMitteilung(fall1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
+        mitteilung2 = new TSMitteilung(dossier1, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller1,
             ja1, 'Adressänderung', 'Unsere neue Adresse lautet...', TSMitteilungStatus.NEU, moment('2016-02-02'));
         mitteilungArray.push(mitteilung2);
 
-        mitteilung3 = new TSMitteilung(fall2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
+        mitteilung3 = new TSMitteilung(dossier2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
             ja2, 'Frage zu Dokumentupload', 'Welche Dokumente kann ich...', TSMitteilungStatus.NEU, moment('2016-03-03'));
         mitteilungArray.push(mitteilung3);
 
-        mitteilung4 = new TSMitteilung(fall2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
+        mitteilung4 = new TSMitteilung(dossier2, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
             ja2, 'Gesuch freigegeben', 'Was nun?', TSMitteilungStatus.NEU, moment('2016-02-02'));
         mitteilungArray.push(mitteilung4);
 
-        mitteilung5 = new TSMitteilung(fallNoBesitzer, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
+        mitteilung5 = new TSMitteilung(dossierNoBesitzer, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT, gesuchsteller2,
             ja2, 'Gesuch freigegeben', 'Was nun?', TSMitteilungStatus.NEU, moment('2016-02-02'));
         mitteilungArray.push(mitteilung5);
 
@@ -95,16 +102,16 @@ describe('posteingangFilter', function () {
                                                                                      // pattern
         });
         it('should return an array with only the element with the given Fallnummer', function () {
-            expect(posteingangFilter(mitteilungArray, {'fall': {'fallNummer': '000'}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
-            expect(posteingangFilter(mitteilungArray, {'fall': {'fallNummer': '0001'}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
-            expect(posteingangFilter(mitteilungArray, {'fall': {'fallNummer': '1'}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
-            expect(posteingangFilter(mitteilungArray, {'fall': {'fallNummer': '12'}})).toEqual([mitteilung1, mitteilung2]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '000'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '0001'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '1'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '12'}}})).toEqual([mitteilung1, mitteilung2]);
         });
         it('should return an array with only the elements with the given Familie (Besitzer)', function () {
-            expect(posteingangFilter(mitteilungArray, {'fall': {'besitzer': 'berger'}})).toEqual([mitteilung1, mitteilung2]);
-            expect(posteingangFilter(mitteilungArray, {'fall': {'besitzer': 'er'}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
-            expect(posteingangFilter(mitteilungArray, {'fall': {'besitzer': ''}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
-            expect(posteingangFilter(mitteilungArray, {'fall': {'besitzer': 'rrr'}})).toEqual([]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': 'berger'}}})).toEqual([mitteilung1, mitteilung2]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': 'er'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': ''}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
+            expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': 'rrr'}}})).toEqual([]);
         });
         it('should return an array with only the elements with the given subject', function () {
             expect(posteingangFilter(mitteilungArray, {subject: 'frage'})).toEqual([mitteilung1, mitteilung3]);
@@ -118,7 +125,7 @@ describe('posteingangFilter', function () {
             expect(posteingangFilter(mitteilungArray, {sentDatum: ''})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {sentDatum: '2016-05-05'})).toEqual([]);
         });
-        it('should return an array with only the elements of the given verantwortlicher/empfaenger', function () {
+        it('should return an array with only the elements of the given verantwortlicherBG/empfaenger', function () {
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'Julian Becker'})).toEqual([mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'Blaser'})).toEqual([mitteilung1, mitteilung2]);
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'ser'})).toEqual([mitteilung1, mitteilung2]);

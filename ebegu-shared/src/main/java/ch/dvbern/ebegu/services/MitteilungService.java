@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -84,10 +85,10 @@ public interface MitteilungService {
 	Collection<Mitteilung> findAllMitteilungenForBetreuung(@Nonnull Betreuung betreuung);
 
 	/**
-	 * Gibt alle Mitteilungen fuer den uebergenen Fall zurueck, welche fuer den eingeloggten Benutzer sichtbar sind.
+	 * Gibt alle Mitteilungen fuer das uebergebene Dossier zurueck, welche fuer den eingeloggten Benutzer sichtbar sind.
 	 */
 	@Nonnull
-	Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Fall fall);
+	Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier);
 
 	/**
 	 * Gibt alle Mitteilungen fuer die uebergebene Betreuung zurueck, welche fuer den eingeloggten Benutzer sichtbar sind.
@@ -96,11 +97,11 @@ public interface MitteilungService {
 	Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Betreuung betreuung);
 
 	/**
-	 * Gibt den Entwurf einer Mitteilung zurueck, welche zum uebergebenen Fall erfasst wurde. Es gibt einen Entwurf pro Amt, d.h. alle Mitarbeiter
+	 * Gibt den Entwurf einer Mitteilung zurueck, welche zum uebergebenen Dossier erfasst wurde. Es gibt einen Entwurf pro Amt, d.h. alle Mitarbeiter
 	 * des Jugendamtes "teilen" sich einen Entwurf, dasselbe gilt fuer die Mitarbeiter des Schulamtes.
 	 */
 	@Nullable
-	Mitteilung getEntwurfForCurrentRolle(@Nonnull Fall fall);
+	Mitteilung getEntwurfForCurrentRolle(@Nonnull Dossier dossier);
 
 	/**
 	 * Gibt den Entwurf einer Mitteilung zurueck, welche zur uebergebenen Betreuung erfasst wurde. Es gibt einen Entwurf pro Amt, d.h. alle Mitarbeiter
@@ -125,17 +126,17 @@ public interface MitteilungService {
 	void removeAllBetreuungMitteilungenForGesuch(@Nonnull Gesuch gesuch);
 
 	/**
-	 * Sucht alle Mitteilungen des uebergebenen Falls und fuer jede, die im Status NEU ist, wechselt
+	 * Sucht alle Mitteilungen des uebergebenen Dossiers und fuer jede, die im Status NEU ist, wechselt
 	 * ihren Status auf GELESEN.
 	 */
 	@Nonnull
-	Collection<Mitteilung> setAllNewMitteilungenOfFallGelesen(@Nonnull Fall fall);
+	Collection<Mitteilung> setAllNewMitteilungenOfDossierGelesen(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt alle ungelesenen Mitteilungen (Status NEU) fuer den uebergebenen Fall zurueck, welche fuer den eingeloggten Benutzer sichtbar sind
+	 * Gibt alle ungelesenen Mitteilungen (Status NEU) fuer das uebergebene Dossier zurueck, welche fuer den eingeloggten Benutzer sichtbar sind
 	 */
 	@Nonnull
-	Collection<Mitteilung> getNewMitteilungenForCurrentRolleAndFall(@Nonnull Fall fall);
+	Collection<Mitteilung> getNewMitteilungenOfDossierForCurrentRolle(@Nonnull Dossier dossier);
 
 	/**
 	 * Gibt die Anzahl aller ungelesenen Mitteilungen (Status NEU), welche fuer den eingeloggten Benutzer sichtbar sind.

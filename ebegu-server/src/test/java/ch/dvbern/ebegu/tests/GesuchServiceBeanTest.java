@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.TestdataCreationService;
 import ch.dvbern.ebegu.util.TestfallName;
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
@@ -40,6 +42,7 @@ import org.junit.runner.RunWith;
  */
 @SuppressWarnings("LocalVariableNamingConvention")
 @RunWith(Arquillian.class)
+@UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class GesuchServiceBeanTest extends AbstractTestdataCreationTest {
 
@@ -59,7 +62,7 @@ public class GesuchServiceBeanTest extends AbstractTestdataCreationTest {
 		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(), LocalDateTime.now()), erstgesuch);
 		testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), mutation);
 
-		fallService.removeFall(erstgesuch.getFall());
+		fallService.removeFall(erstgesuch.getFall(), GesuchDeletionCause.USER);
 		Assert.assertTrue("Gesuche wurden in der richtigen Reihenfolge geloscht", fallService.getAllFalle(false).isEmpty());
 	}
 }

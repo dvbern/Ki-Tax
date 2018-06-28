@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +31,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,15 +47,15 @@ public final class StateMachineFactory {
 	public static StateMachine<AntragStatus, AntragEvents> getStateMachine(
 		@Nonnull Gesuch gesuch,
 		@Nonnull StateMachineConfig<AntragStatus, AntragEvents> config) {
-		Validate.notNull(gesuch);
-		Validate.notNull(config);
+		Objects.requireNonNull(gesuch);
+		Objects.requireNonNull(config);
 
 		StateMachine<AntragStatus, AntragEvents> gesuchFiniteStateMachine =
 			new StateMachine<>(gesuch.getStatus(), config);
 		gesuchFiniteStateMachine.onUnhandledTrigger((antragStatus, antragEvent) -> {
 
-			LOG.error("State Machine received unhandled event ({}) for current state {}", antragEvent, antragStatus);
-			throw new EbeguRuntimeException("handleFSMEvent", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, antragStatus);
+			String message = String.format("State Machine received unhandled event (%s) for current state %s", antragEvent, antragStatus);
+			throw new EbeguRuntimeException("handleFSMEvent", message, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, antragStatus);
 		});
 
 		return gesuchFiniteStateMachine;

@@ -562,6 +562,12 @@ public class Betreuung extends AbstractEntity implements Comparable<Betreuung>, 
 		return extractGesuch().getFall().getId();
 	}
 
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return extractGesuch().getDossier().getId();
+	}
+
 	// Funktion zum Kopieren von Tagesschule und Ferieninsel Angebote
 	public void copyAnmeldung(Betreuung betreuung) {
 		if (this.getBetreuungsstatus() != betreuung.getBetreuungsstatus()) {

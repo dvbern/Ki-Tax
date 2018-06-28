@@ -14,22 +14,21 @@
  */
 
 import IComponentOptions = angular.IComponentOptions;
-import {StateService} from '@uirouter/core';
-import ITimeoutService = angular.ITimeoutService;
 import ILogService = angular.ILogService;
-import TSFall from '../../../models/TSFall';
+import ITimeoutService = angular.ITimeoutService;
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
-import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
-import FallRS from '../../../gesuch/service/fallRS.rest';
-import TSBetreuung from '../../../models/TSBetreuung';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import TSDownloadFile from '../../../models/TSDownloadFile';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import DossierRS from '../../../gesuch/service/dossierRS.rest';
+import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
+import TSBetreuung from '../../../models/TSBetreuung';
+import TSDossier from '../../../models/TSDossier';
+import TSDownloadFile from '../../../models/TSDownloadFile';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
 let template = require('./alleVerfuegungenView.html');
 require('./alleVerfuegungenView.less');
@@ -43,30 +42,28 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
 
 export class AlleVerfuegungenViewController {
 
-    fall: TSFall;
+    dossier: TSDossier;
     alleVerfuegungen: Array<any> = [];
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'FallRS', 'EbeguUtil', 'BetreuungRS',
-        'GesuchModelManager', 'DownloadRS', '$log', '$timeout'];
+    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
+        'DownloadRS', '$log', '$timeout', 'DossierRS'];
 
     /* @ngInject */
     constructor(private $state: StateService, private $stateParams: IAlleVerfuegungenStateParams,
-                private authServiceRS: AuthServiceRS, private fallRS: FallRS, private ebeguUtil: EbeguUtil,
-                private betreuungRS: BetreuungRS, private gesuchModelManager: GesuchModelManager,
-                private downloadRS: DownloadRS, private $log: ILogService, private $timeout: ITimeoutService) {
+                private authServiceRS: AuthServiceRS, private betreuungRS: BetreuungRS, private downloadRS: DownloadRS,
+                private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS) {
     }
 
     $onInit() {
-        if (this.$stateParams.fallId) {
-            this.fallRS.findFall(this.$stateParams.fallId).then((response) => {
-                this.fall = response;
-                if (this.fall === undefined) {
+        if (this.$stateParams.dossierId) {
+            this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
+                this.dossier = response;
+                if (this.dossier === undefined) {
                     this.cancel();
                 }
-
-                this.betreuungRS.findAllBetreuungenWithVerfuegungFromFall(this.fall.id).then((response) => {
+                this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then((response) => {
                     response.forEach((item) => {
                         this.alleVerfuegungen.push(item);
                     });

@@ -13,32 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.services;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.util.Optional;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import javax.annotation.Nonnull;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import ch.dvbern.ebegu.entities.Gemeinde;
 
 /**
- * Die Abwesenheiten einer Betreuung duerfen sich nicht ueberlappen
+ * Service zum Verwalten von Gemeinden
  */
-@Target({ TYPE, ANNOTATION_TYPE })
-@Retention(RUNTIME)
-@Constraint(validatedBy = CheckVerantwortlicherValidatorSCH.class)
-@Documented
-public @interface CheckVerantwortlicherSCH {
+public interface GemeindeService {
 
-	String message() default "{invalid_verantwortlicher}";
+	/**
+	 * Gibt die Gemeinde mit der uebergebenen ID zurueck.
+	 */
+	@Nonnull
+	Optional<Gemeinde> findGemeinde(@Nonnull String id);
 
-	Class<?>[] groups() default {};
-
-	Class<? extends Payload>[] payload() default {};
+	/**
+	 * Gibt die erste (und aktuell einzige) Gemeinde aus der DB zurueck
+	 */
+	@Nonnull
+	Gemeinde getFirst();
 
 }

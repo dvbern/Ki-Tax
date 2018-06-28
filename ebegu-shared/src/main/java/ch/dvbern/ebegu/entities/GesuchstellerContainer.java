@@ -326,14 +326,22 @@ public class GesuchstellerContainer extends AbstractEntity implements Searchable
 		return toString();
 	}
 
+	@Nullable
 	@Override
 	public String getOwningGesuchId() {
 		return null;   //leider nicht ohne serviceabfrage verfuegbar
 	}
 
+	@Nullable
 	@Override
 	public String getOwningFallId() {
 		return null;   //leider nicht ohne serviceabfrage verfuegbar
+	}
+
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return null;  //leider nicht ohne serviceabfrage verfuegbar
 	}
 
 	@Override

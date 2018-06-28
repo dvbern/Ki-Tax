@@ -13,12 +13,12 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<gesuch-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" fallid="{{vm.getGesuch().fall.id}}"
+<gesuch-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getGesuch().dossier.id}}"
                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </gesuch-toolbar>
 
 <gesuch-toolbar-gesuchsteller flex="nogrow" class="gesuch-toolbar-gesuchsteller" gesuchid="{{vm.getGesuchId()}}"
-                              fallid="{{vm.getGesuch().fall.id}}"
+                              dossier-id="{{vm.getGesuch().dossier.id}}"
                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
 </gesuch-toolbar-gesuchsteller>
 <!--Gesuchnavigation (Uebersicht)  fuer den Gesuchsteller (mobile)-->
@@ -77,7 +77,7 @@
                     ng-class="{'active-element': vm.isElementActive('GESUCH_ERSTELLEN')}">
                     <!--this button is added twice because it should do nothing if the gesuch is not saved yet-->
                     <button ng-if="!vm.getGesuch().isNew()" type="button" class="col-xs-10  btn-link"
-                            ui-sref="gesuch.fallcreation({createNew: false, gesuchId: vm.getGesuchId()})"
+                            ui-sref="gesuch.fallcreation({createNew: false, gesuchId: vm.getGesuchId(), dossierId: vm.getGesuch().dossier.id})"
                             ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
                             aria-hidden="{{vm.isWizardStepDisabled('GESUCH_ERSTELLEN')}}"
                             ng-click="vm.closeSidenav('sidenav')">
@@ -260,7 +260,7 @@
         <div ui-view="kommentarViewPort" flex="100"></div>
     </div>
     <md-sidenav dv-show-element
-                dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForKommentarSpalte()" class="md-sidenav-right" md-component-id="ewk" id="ewk"
+                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()" class="md-sidenav-right" md-component-id="ewk" id="ewk"
                 md-disable-backdrop md-whiteframe="4" md-is-open="vm.openEwkSidenav">
         <button ng-click="vm.closeSidenav('ewk')" class="dv-btn-operation" style="width:2rem; margin-left:auto;">
             <i class="fa fa-times"></i>

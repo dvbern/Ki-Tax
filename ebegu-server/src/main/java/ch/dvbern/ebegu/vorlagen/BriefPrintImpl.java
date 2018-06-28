@@ -99,8 +99,8 @@ public class BriefPrintImpl implements BriefPrint {
 
 	@Override
 	public String getUnterzeichner() {
-		if (gesuch.getFall().getHauptVerantwortlicher() != null) {
-			return gesuch.getFall().getHauptVerantwortlicher().getFullName();
+		if (gesuch.getDossier().getHauptVerantwortlicher() != null) {
+			return gesuch.getDossier().getHauptVerantwortlicher().getFullName();
 		}
 		return "";
 	}

@@ -85,12 +85,12 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
     params = {
         eingangsart: '',
         gesuchsperiodeId: '',
         gesuchId: '',
-        fallId: '',
+        dossierId: '',
     };
 
     views: { [name: string]: Ng1StateDeclaration } = {
@@ -109,7 +109,7 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 
 export class EbeguMutationState implements Ng1StateDeclaration {
     name = 'gesuch.mutation';
-    url = '/mutation/:createMutation/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    url = '/mutation/:createMutation/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -127,7 +127,7 @@ export class EbeguMutationState implements Ng1StateDeclaration {
 
 export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     name = 'gesuch.erneuerung';
-    url = '/erneuerung/:createErneuerung/:eingangsart/:gesuchsperiodeId/:gesuchId/:fallId';
+    url = '/erneuerung/:createErneuerung/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -551,7 +551,7 @@ export class EbeguFreigabeState implements Ng1StateDeclaration {
 
 export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     name = 'gesuch.mitteilung';
-    url = '/mitteilung/:fallId/:gesuchId/:betreuungId/:mitteilungId';
+    url = '/mitteilung/:dossierId/:gesuchId/:betreuungId/:mitteilungId';
     params = {
         mitteilungId: '',
     };
@@ -596,7 +596,7 @@ export class INewFallStateParams {
     eingangsart: TSEingangsart;
     gesuchsperiodeId: string;
     gesuchId: string;
-    fallId: string;
+    dossierId: string;
 }
 
 export class IErwerbspensumStateParams {
@@ -678,9 +678,9 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
         } else {
             let eingangsart = $stateParams.eingangsart;
             let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            let fallId = $stateParams.fallId;
+            let dossierId = $stateParams.dossierId;
             //initialize gesuch
-            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, fallId);
+            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
@@ -709,9 +709,9 @@ export function createEmptyMutation(gesuchModelManager: GesuchModelManager, $sta
         let gesuchId = $stateParams.gesuchId;
         let eingangsart = $stateParams.eingangsart;
         let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let fallId = $stateParams.fallId;
+        let dossierId = $stateParams.dossierId;
         if (gesuchId && eingangsart) {
-            gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, fallId);
+            gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     return $q.defer(gesuchModelManager.getGesuch());
@@ -724,9 +724,9 @@ export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelMana
         let gesuchId = $stateParams.gesuchId;
         let eingangsart = $stateParams.eingangsart;
         let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let fallId = $stateParams.fallId;
+        let dossierId = $stateParams.dossierId;
         if (gesuchId && eingangsart) {
-            gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, fallId);
+            gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     return $q.defer(gesuchModelManager.getGesuch());

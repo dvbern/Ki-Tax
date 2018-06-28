@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,11 +44,9 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.Fachstelle;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.FachstelleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Fachstellen
@@ -64,14 +63,14 @@ public class FachstelleResource {
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Saves a Fachstelle in the database", response = JaxFachstelle.class)
-	@Nullable
+	@Nonnull
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxFachstelle saveFachstelle(
 		@Nonnull @NotNull @Valid JaxFachstelle fachstelleJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Fachstelle fachstelle = new Fachstelle();
 		if (fachstelleJAXP.getId() != null) {
@@ -96,7 +95,7 @@ public class FachstelleResource {
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Removes a Fachstelle from the database", response = Void.class)
+	@ApiOperation("Removes a Fachstelle from the database")
 	@Nullable
 	@DELETE
 	@Path("/{fachstelleJAXPID}")
@@ -104,9 +103,9 @@ public class FachstelleResource {
 	public Response remove(
 		@Nonnull @NotNull @PathParam("fachstelleJAXPID") JaxId fachstelleJAXPID,
 		@Context HttpServletRequest request,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
-		Validate.notNull(fachstelleJAXPID.getId());
+		Objects.requireNonNull(fachstelleJAXPID.getId());
 		fachstelleService.removeFachstelle(converter.toEntityId(fachstelleJAXPID));
 		return Response.ok().build();
 	}
@@ -118,14 +117,11 @@ public class FachstelleResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxFachstelle findFachstelle(
-		@Nonnull @NotNull @PathParam("fachstelleId") JaxId fachstelleId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("fachstelleId") JaxId fachstelleId) {
 
-		Validate.notNull(fachstelleId.getId());
+		Objects.requireNonNull(fachstelleId.getId());
 		Optional<Fachstelle> fachstelleFromDB = fachstelleService.findFachstelle(converter.toEntityId(fachstelleId));
 
-		if (!fachstelleFromDB.isPresent()) {
-			return null;
-		}
-		return converter.fachstelleToJAX(fachstelleFromDB.get());
+		return fachstelleFromDB.map(fachstelle -> converter.fachstelleToJAX(fachstelle)).orElse(null);
 	}
 }

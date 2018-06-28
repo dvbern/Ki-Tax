@@ -13,10 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validationgroups;
+import TSAbstractEntity from './TSAbstractEntity';
 
-/**
- * ValidationGroup für Validierungen beim Setzen von Verantwortlichen auf einem Fall
- */
-public interface ChangeVerantwortlicherSCHValidationGroup {
+export default class TSGemeinde extends TSAbstractEntity {
+
+    private _name: string;
+    private _enabled: boolean;
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
+    }
+
+    public get enabled(): boolean {
+        return this._enabled;
+    }
+
+    public set enabled(value: boolean) {
+        this._enabled = value;
+    }
 }

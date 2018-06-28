@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -44,12 +45,6 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Sets;
-
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Workjob;
@@ -66,6 +61,9 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -203,8 +201,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		final List<Workjob> openWorkjobs = this.findWorkjobs(principalBean.getPrincipal().getName(), statesToSearch);
 		final boolean alreadyQueued = openWorkjobs.stream().anyMatch(workJob::isSame);
 		if (alreadyQueued) {
-			LOG.error("An identical Workjob was already queued by this user; {} ", workJob);
-			throw new EbeguRuntimeException("checkIfJobCreationAllowed", ErrorCodeEnum.ERROR_JOB_ALREADY_EXISTS);
+			String messsage = String.format("An identical Workjob was already queued by this user; %s ", workJob);
+			throw new EbeguRuntimeException("checkIfJobCreationAllowed", messsage, ErrorCodeEnum.ERROR_JOB_ALREADY_EXISTS);
 		}
 	}
 
@@ -221,8 +219,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT, SACHBEARBEITER_INSTITUTION,
 		SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
 	public List<Workjob> findWorkjobs(@Nonnull String startingUserName, @Nonnull Set<BatchJobStatus> statesToSearch) {
-		Validate.notNull(startingUserName, "username to search must be set");
-		Validate.notNull(statesToSearch, "statesToSearch  must be set");
+		Objects.requireNonNull(startingUserName, "username to search must be set");
+		Objects.requireNonNull(statesToSearch, "statesToSearch  must be set");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Workjob> query = cb.createQuery(Workjob.class);
@@ -282,7 +280,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Override
 	public void addResultToWorkjob(@Nonnull String workjobID, @Nonnull String resultData) {
-		Validate.notNull(resultData);
+		Objects.requireNonNull(resultData);
 
 		CriteriaBuilder cb = this.persistence.getCriteriaBuilder();
 		CriteriaUpdate<Workjob> updateQuery = cb.createCriteriaUpdate(Workjob.class);

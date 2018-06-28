@@ -106,14 +106,14 @@ public interface ApplicationPropertyService {
 	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue);
 
 	/**
-	 * Gibt den DefaultVerantwortlichen JA zurueck.
+	 * Gibt den DefaultVerantwortlichen BG zurueck.
 	 */
 	@Nonnull
-	Optional<Benutzer> readDefaultVerantwortlicherFromProperties();
+	Optional<Benutzer> readDefaultVerantwortlicherBGFromProperties();
 
 	/**
-	 * Gibt den DefaultVerantwortlichen SCH zurueck.
+	 * Gibt den DefaultVerantwortlichen TS zurueck.
 	 */
 	@Nonnull
-	Optional<Benutzer> readDefaultVerantwortlicherSCHFromProperties();
+	Optional<Benutzer> readDefaultVerantwortlicherTSFromProperties();
 }

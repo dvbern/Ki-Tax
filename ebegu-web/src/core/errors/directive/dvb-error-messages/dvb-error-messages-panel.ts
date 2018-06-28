@@ -85,7 +85,7 @@ export class DvErrorMessagesPanelComponent {
             parentController: undefined,
             elementID: undefined
         }).then(() => {   //User confirmed removal
-            this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId).then((response) => {});
+            this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId).then(() => {});
         });
     }
 
@@ -96,7 +96,7 @@ export class DvErrorMessagesPanelComponent {
             parentController: undefined,
             elementID: undefined
         }).then(() => {   //User confirmed removal
-            this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId).then((response) => {});
+            this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId).then(() => {});
         });
     }
 
@@ -105,7 +105,6 @@ export class DvErrorMessagesPanelComponent {
     }
 
     show() {
-        // this.element.show();
         angular.element('dvb-error-messages-panel').show();     //besser als $element injection fuer tests
     }
 

@@ -235,7 +235,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public setErsterSchultag(): void {
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
         let ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
-        if (!this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(ersterSchultag)) {
+        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(ersterSchultag)) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
     }
@@ -389,7 +389,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getGesuch().fall, this.getBetreuungModel());
+        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(), this.getBetreuungModel());
         let $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
@@ -690,7 +690,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 parentController: undefined,
                 elementID: undefined
             }).then(() => {   //User confirmed removal
-                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getGesuch().fall,
+                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
                     this.mutationsmeldungModel).then((response) => {
 
                     this.form.$setUntouched();
@@ -731,7 +731,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public openExistingBetreuungsmitteilung(): void {
         this.$state.go('gesuch.mitteilung', {
-            fallId: this.gesuchModelManager.getGesuch().fall.id,
+            dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
             mitteilungId: this.existingMutationsMeldung.id

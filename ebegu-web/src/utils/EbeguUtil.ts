@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import TSDossier from '../models/TSDossier';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {IFilterService} from 'angular';
 import TSAbstractEntity from '../models/TSAbstractEntity';
@@ -193,9 +194,9 @@ export default class EbeguUtil {
      */
     public getGesuchNameFromGesuch(gesuch: TSGesuch): string {
         let text = '';
-        if (gesuch) {
-            if (gesuch.fall) {
-                text = this.addZerosToNumber(gesuch.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        if (gesuch && gesuch.dossier) {
+            if (gesuch.dossier.fall) {
+                text = this.addZerosToNumber(gesuch.dossier.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
             }
             if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.extractNachname()) {
                 text = text + ' ' + gesuch.gesuchsteller1.extractNachname();
@@ -208,12 +209,12 @@ export default class EbeguUtil {
      * Returns a string like "fallID GesuchstellerName". The name of the GS comes from the name of the
      * owner of the given fall. Use this method instead of getGesuchNameFromGesuch only when there is no Gesuch but a fall
      */
-    public getGesuchNameFromFall(fall: TSFall): string {
+    public getGesuchNameFromDossier(dossier: TSDossier): string {
         let text = '';
-        if (fall) {
-            text = this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
-            if (fall.besitzer && fall.besitzer.getFullName()) {
-                text = text + ' ' + fall.besitzer.getFullName();
+        if (dossier && dossier.fall) {
+            text = this.addZerosToNumber(dossier.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+            if (dossier.fall.besitzer && dossier.fall.besitzer.getFullName()) {
+                text = text + ' ' + dossier.fall.besitzer.getFullName();
             }
         }
         return text;
