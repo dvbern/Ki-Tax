@@ -101,13 +101,15 @@ body {
     ui-view-ng-upgrade {
         flex: 1;
         display: flex;
+        max-height: 100%;
         ui-view {
             flex: 1;
             display: flex;
+
             & > * {
                 width: 100%;
                 height: auto;
-                overflow-y: scroll;
+                overflow-y: auto;
                 overflow-x: hidden;
             }
         }
@@ -125,7 +127,7 @@ dumm
 
 .overflow-scroll {
     overflow-x: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .dv-progressbar {
