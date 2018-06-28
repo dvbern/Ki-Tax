@@ -39,7 +39,7 @@ export default class TSUser {
 
 
     constructor(vorname?: string, nachname?: string, username?: string, password?: string, email?: string,
-                mandant?: TSMandant, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution, gemeinde?: TSGemeinde,
+                mandant?: TSMandant, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution, gemeinde?: TSGemeinde[],
                 amt?: TSAmt, gesperrt?: boolean) {
         this._vorname = vorname;
         this._nachname = nachname;
@@ -55,7 +55,7 @@ export default class TSUser {
         this._currentBerechtigung.institution = institution;
         this._currentBerechtigung.traegerschaft = traegerschaft;
         if (gemeinde) {
-            this._currentBerechtigung.gemeindeList.push(gemeinde);
+            this._currentBerechtigung.gemeindeList = gemeinde;
         }
         this._berechtigungen.push(this._currentBerechtigung);
     }

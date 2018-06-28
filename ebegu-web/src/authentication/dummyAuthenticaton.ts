@@ -52,12 +52,31 @@ export class DummyAuthenticationListViewComponent {
     public administratorTSBern: TSUser;
     public sachbearbeiterTSBern: TSUser;
 
+    public administratorBGOstermundigen: TSUser;
+    public sachbearbeiterBGOstermundigen: TSUser;
+    public administratorTSOstermundigen: TSUser;
+    public sachbearbeiterTSOstermundigen: TSUser;
+
+    public administratorBGBernOstermundigen: TSUser;
+    public sachbearbeiterBGBernOstermundigen: TSUser;
+    public administratorTSBernOstermundigen: TSUser;
+    public sachbearbeiterTSBernOstermundigen: TSUser;
+
     public steueramtBern: TSUser;
     public revisorBern: TSUser;
     public juristBern: TSUser;
 
+    public steueramtOstermundigen: TSUser;
+    public revisorOstermundigen: TSUser;
+    public juristOstermundigen: TSUser;
+
+    public steueramtBernOstermundigen: TSUser;
+    public revisorBernOstermundigen: TSUser;
+    public juristBernOstermundigen: TSUser;
+
     private readonly mandant: TSMandant;
     private readonly gemeindeBern: TSGemeinde;
+    private readonly gemeindeOstermundigen: TSGemeinde;
     private readonly institution: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
     private readonly traegerschaftLeoLea: TSTraegerschaft;
@@ -72,6 +91,7 @@ export class DummyAuthenticationListViewComponent {
 
         this.mandant = DummyAuthenticationListViewComponent.getMandant();
         this.gemeindeBern = DummyAuthenticationListViewComponent.getGemeindeBern();
+        this.gemeindeOstermundigen = DummyAuthenticationListViewComponent.getGemeindeOstermundigen();
         this.traegerschaftStadtBern = DummyAuthenticationListViewComponent.getTraegerschaftStadtBern();
         this.traegerschaftLeoLea = DummyAuthenticationListViewComponent.getTraegerschaftLeoLea();
         this.traegerschaftSGF = DummyAuthenticationListViewComponent.getTraegerschaftSGF();
@@ -108,20 +128,52 @@ export class DummyAuthenticationListViewComponent {
 
         // Gemeindeabhängige User
         this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeBern]);
         this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, [this.gemeindeBern]);
         this.administratorTSBern = new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeBern]);
         this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern]);
+
+        this.administratorBGOstermundigen = new TSUser('Kurt', 'Schmid', 'scku', 'password1', 'kurt.blaser@example.com',
+            this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.sachbearbeiterBGOstermundigen = new TSUser('Jörg', 'Keller', 'kejo', 'password1', 'joerg.becker@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.administratorTSOstermundigen = new TSUser('Adrian', 'Huber', 'huad', 'password1', 'adrian.schuler@example.com',
+            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.sachbearbeiterTSOstermundigen = new TSUser('Julien', 'Odermatt', 'odju', 'password1', 'julien.schuler@example.com',
+            this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeOstermundigen]);
+
+        this.administratorBGBernOstermundigen = new TSUser('Kurt', 'Kälin', 'kaku', 'password1', 'kurt.blaser@example.com',
+            this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+        this.sachbearbeiterBGBernOstermundigen = new TSUser('Jörg', 'Aebischer', 'aejo', 'password1', 'joerg.becker@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+        this.administratorTSBernOstermundigen = new TSUser('Adrian', 'Bernasconi', 'bead', 'password1', 'adrian.schuler@example.com',
+            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+        this.sachbearbeiterTSBernOstermundigen = new TSUser('Julien', 'Bucheli', 'buju', 'password1', 'julien.schuler@example.com',
+            this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
 
         this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
-            this.mandant, TSRole.STEUERAMT, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern]);
         this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
-            this.mandant, TSRole.REVISOR, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeBern]);
         this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
-            this.mandant, TSRole.JURIST, undefined, undefined, this.gemeindeBern);
+            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeBern]);
+
+        this.steueramtOstermundigen = new TSUser('Rodolfo', 'Iten', 'itro', 'password11', 'rodolfo.geldmacher@example.com',
+            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.revisorOstermundigen = new TSUser('Reto', 'Werlen', 'were', 'password1', 'reto.revisor@example.com',
+            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.juristOstermundigen = new TSUser('Julia', 'Adler', 'adju', 'password1', 'julia.jurist@example.com',
+            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeOstermundigen]);
+
+        this.steueramtBernOstermundigen = new TSUser('Rodolfo', 'Hermann', 'hero', 'password11', 'rodolfo.geldmacher@example.com',
+            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+        this.revisorBernOstermundigen = new TSUser('Reto', 'Hug', 'hure', 'password1', 'reto.revisor@example.com',
+            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+        this.juristBernOstermundigen = new TSUser('Julia', 'Lory', 'luju', 'password1', 'julia.jurist@example.com',
+            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
     }
 
     /**
@@ -145,6 +197,18 @@ export class DummyAuthenticationListViewComponent {
         bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         bern.enabled = true;
         return bern;
+    }
+
+    /**
+     * Gemeinde Ostermundigen wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     * @returns {TSGemeinde}
+     */
+    private static getGemeindeOstermundigen(): TSGemeinde {
+        let ostermundigen = new TSGemeinde();
+        ostermundigen.name = 'Ostermundigen';
+        ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
+        ostermundigen.enabled = true;
+        return ostermundigen;
     }
 
     /**
