@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 import static java.util.Collections.emptyList;
 
 /**
- * This Authenticator will check if an Token Passed bz the {@link CookieTokenAuthModule} is actually valid.
- * To be valid a token must be stored in the Cache already or exist in the authorisierte_benutyer table
+ * This Authenticator will check if an Token Passed by the {@link CookieTokenAuthModule} is actually valid.
+ * To be valid a token must be stored in the Cache already or exist in the authorisierte_benutzer table
  */
 @RequestScoped
 public class EBEGUTokenAuthenticator implements TokenAuthenticator {
@@ -77,7 +77,7 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 		LOG.debug("\t lifespan: {}", cache.getCacheConfiguration().expiration().lifespan());
 		LOG.debug("\t wakeup Interval: {}", cache.getCacheConfiguration().expiration().wakeUpInterval());
 		LOG.debug("\t attributes: {}", cache.getCacheConfiguration().expiration().attributes());
-		LOG.debug("\t using expiration lifespan of " + expirationLifespan);
+		LOG.debug("\t using expiration lifespan of {}", expirationLifespan);
 
 	}
 
@@ -97,15 +97,15 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 			if (cachedUser != null
 				&& cachedUser.getLastLogin().plus(expirationLifespan, ChronoUnit.MILLIS).isAfter(LocalDateTime.now())) {
 				//cache token gelten immer als valid (kein expired check)
-				LOG.debug("Cache HIT, found token in cache, no further checks neceasary" + effectiveToken);
+				LOG.debug("Cache HIT, found token in cache, no further checks neceasary{}", effectiveToken);
 				user = cachedUser;
 
 			} else {
-				LOG.debug("Cache MISS, could not find active cache entry for " + effectiveToken);
+				LOG.debug("Cache MISS, could not find active cache entry for {}", effectiveToken);
 
 				Optional<AuthorisierterBenutzer> authUser = readUserFromDatabase(effectiveToken, doRefreshToken);
 				if (!authUser.isPresent()) {
-					LOG.debug("Could not load authorisierter_benutzer with  token  " + effectiveToken);
+					LOG.debug("Could not load authorisierter_benutzer with  token  {}", effectiveToken);
 					return false;
 				}
 				user = authUser.get();
@@ -131,7 +131,7 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 		LocalDateTime maxDateFromNow = now.minus(Constants.LOGIN_TIMEOUT_SECONDS, ChronoUnit.SECONDS);
 
 		if (user.getLastLogin().isBefore(maxDateFromNow)) {
-			LOG.debug("Token is no longer valid: " + user.getAuthToken());
+			LOG.debug("Token is no longer valid: {}", user.getAuthToken());
 			return false;
 		}
 		return true;
