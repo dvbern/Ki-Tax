@@ -77,7 +77,7 @@
                     ng-class="{'active-element': vm.isElementActive('GESUCH_ERSTELLEN')}">
                     <!--this button is added twice because it should do nothing if the gesuch is not saved yet-->
                     <button ng-if="!vm.getGesuch().isNew()" type="button" class="col-xs-10  btn-link"
-                            ui-sref="gesuch.fallcreation({createNew: false, gesuchId: vm.getGesuchId()})"
+                            ui-sref="gesuch.fallcreation({createNew: false, gesuchId: vm.getGesuchId(), dossierId: vm.getGesuch().dossier.id})"
                             ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
                             aria-hidden="{{vm.isWizardStepDisabled('GESUCH_ERSTELLEN')}}"
                             ng-click="vm.closeSidenav('sidenav')">
