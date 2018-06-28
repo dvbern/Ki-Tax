@@ -97,8 +97,24 @@ body {
     flex: 1 1 auto;
     overflow: hidden;
     flex-direction: column;
+
+    ui-view-ng-upgrade {
+        flex: 1;
+        display: flex;
+        ui-view {
+            flex: 1;
+            display: flex;
+            & > * {
+                width: 100%;
+                height: auto;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+        }
+    }
 }
 
+dumm
 .overflow-hidden {
     overflow: hidden;
 }
@@ -366,7 +382,7 @@ dv-quicksearchbox {
 }
 
 .skiplinks {
-    display: block!important;
+    display: block !important;
     .skiplinks__list {
         list-style: none;
         height: 0;
