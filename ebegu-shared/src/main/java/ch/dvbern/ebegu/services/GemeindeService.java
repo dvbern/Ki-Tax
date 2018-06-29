@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -38,4 +39,9 @@ public interface GemeindeService {
 	@Nonnull
 	Gemeinde getFirst();
 
+	/**
+	 * Gibt alle Gemeinden zurück
+	 */
+	@Nonnull
+	Collection<Gemeinde> getAllGemeinden();
 }
