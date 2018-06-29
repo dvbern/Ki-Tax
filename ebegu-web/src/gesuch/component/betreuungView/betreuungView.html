@@ -87,14 +87,16 @@
                         <div class="row">
                             <div class="col-sm-6 dv-input-container-small form-group">
                                 <label class="md-no-float" data-translate="VON"></label>
-                                <input id="pensumFachstelleGueltigAb_ID" type="text" name="pensumFachstelleGueltigAb" ng-disabled="true"
+                                <input id="pensumFachstelleGueltigAb_ID" type="text" name="pensumFachstelleGueltigAb"
+                                       ng-disabled="true"
                                        ng-value="vm.getKindModel().extractPensumFachstelle().gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
                                        class="form-control">
                                 <div class="dv-error-messages"></div>
                             </div>
                             <div class="col-sm-6 dv-input-container-small form-group">
                                 <label class="md-no-float" data-translate="BIS"></label>
-                                <input id="pensumFachstelleGueltigBis_ID" type="text" name="pensumFachstelleGueltigBis" ng-disabled="true"
+                                <input id="pensumFachstelleGueltigBis_ID" type="text" name="pensumFachstelleGueltigBis"
+                                       ng-disabled="true"
                                        ng-value="vm.getKindModel().extractPensumFachstelle().gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
                                        class="form-control">
                                 <div class="dv-error-messages"></div>
@@ -116,11 +118,13 @@
                                                 text="'BETREUUNGSANGEBOT_WAEHLEN_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="betreuungsangebot-error" name="betreuungsangebot" id="betreuungsangebot"
+                                    <select aria-describedby="betreuungsangebot-error" name="betreuungsangebot"
+                                            id="betreuungsangebot"
                                             ng-model="vm.betreuungsangebot"
                                             class="form-control"
                                             ng-options="betreuungsangebot as betreuungsangebot.value for betreuungsangebot in vm.betreuungsangebotValues"
-                                            ng-required="true" ng-disabled="!vm.isEnabled() || !vm.enableBetreuungsangebotsTyp()"
+                                            ng-required="true"
+                                            ng-disabled="!vm.isEnabled() || !vm.enableBetreuungsangebotsTyp()"
                                             ng-change="vm.changedAngebot()">
                                     </select>
                                     <dv-error-messages input-id="betreuungsangebot"
@@ -136,9 +140,11 @@
                          dv-show-expression="vm.isTagesschule() && vm.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.getBetreuungModel().keineDetailinformationen" name="keineDetailinformationen"
+                                <md-checkbox ng-model="vm.getBetreuungModel().keineDetailinformationen"
+                                             name="keineDetailinformationen"
                                              ng-change="vm.keineDetailAnmeldungClicked()"
-                                             aria-label="{{'ANMELDUNG_KEINE_DETAILINFORMATIONEN'|translate}}" ng-disabled="!vm.isEnabled()">
+                                             aria-label="{{'ANMELDUNG_KEINE_DETAILINFORMATIONEN'|translate}}"
+                                             ng-disabled="!vm.isEnabled()">
                                     <span data-translate="ANMELDUNG_KEINE_DETAILINFORMATIONEN"></span>
                                 </md-checkbox>
                             </div>
@@ -161,7 +167,8 @@
                                         ng-required="true" ng-change="vm.setSelectedInstitutionStammdaten()"
                                         ng-disabled="!(vm.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
                                 </select>
-                                <dv-error-messages input-id="institution" for="vm.form.institution.$error"></dv-error-messages>
+                                <dv-error-messages input-id="institution"
+                                                   for="vm.form.institution.$error"></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -170,7 +177,8 @@
                         <div class="col-sm-12 dv-input-container-medium form-group">
                             <label class="md-no-float" data-translate="INSTITUTION" for="institution">
                             </label>
-                            <input aria-describedby="institutioninput-error" name="institution" id="institutioninput" type="text"
+                            <input aria-describedby="institutioninput-error" name="institution" id="institutioninput"
+                                   type="text"
                                    ng-model="vm.getInstitutionSD().institution.name"
                                    class="form-control"
                                    ng-required="true"
@@ -234,7 +242,8 @@
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
                                                    data-translate-value-betreuungspensumnumber="{{$index + 1}}"
                                                    for="betreuungspensum-{{$index}}"></label>
-                                            <input aria-describedby="betreuungspensum-{{$index}}-error" id="betreuungspensum-{{$index}}" type="number"
+                                            <input aria-describedby="betreuungspensum-{{$index}}-error"
+                                                   id="betreuungspensum-{{$index}}" type="number"
                                                    name="betreuungspensum-{{$index}}"
                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.pensum"
                                                    dv-max-length class="form-control"
@@ -291,7 +300,8 @@
                                                            button-click="vm.removeBetreuungspensum(betpen)"
                                                            button-class="dv-btn-operation"
                                                            button-disabled="!((vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus)">
-                                            <i class="fa fa-lg fa-trash-o" title="{{'BETREUUNGSPENSUM_DELETE' | translate}}"
+                                            <i class="fa fa-lg fa-trash-o"
+                                               title="{{'BETREUUNGSPENSUM_DELETE' | translate}}"
                                                aria-label="{{'BETREUUNGSPENSUM_DELETE' | translate}}"></i>
                                             <span data-translate="BETREUUNGSPENSUM_ENTFERNEN_INDEX"
                                                   data-translate-value-betreuungspensumnumber="{{$index + 1}}"></span>
@@ -339,7 +349,8 @@
                                     <div class="checkbox">
                                         <md-checkbox ng-model="vm.getBetreuungModel().erweiterteBeduerfnisse"
                                                      name="erweiterteBeduerfnisse"
-                                                     aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}" dv-enable-element
+                                                     aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
+                                                     dv-enable-element
                                                      dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                                      dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
                                             <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
@@ -460,12 +471,14 @@
                 <!--Hier wird die Direktive dv-navigation nicht benutzt. Grund dafuer ist, dass die Logik in diesem Fall sehr kompliziert ist.
                     wenn wir die Direktive benutzen wollen muessen wir viel anpassen, daher lohnt es sich die Buttons direkt zu erstellen-->
                 <!-- todo verbessern. Es muss fuer alle Angebottypen geprueft werden ob die Buttons hier oder in den individuellen Component implementiert sind-->
-                <div class="nav-row-betreuung" ng-if="vm.displayGlobalNavigationButtons()">
+                <div class="dv-navigation dv-navigation--betreuung" ng-if="vm.displayGlobalNavigationButtons()">
                     <!--Die Order der Knoepfe soll im HTML so sein, dass der weiter Knopf als erster im Form ist, dies wird dann fuer die darstelltung
                     mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in einem input Feld automaitisch der erste submit button triggered wird-->
-                    <div dv-show-element
+                    <div class="dv-navigation-item"
+                         dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
                          dv-show-expression="vm.isTagesschule() && !vm.tageschuleSaveDisabled()">
+
                         <dv-loading-button button-click="vm.saveSchulamt()" type="submit"
                                            button-class="save">
                             <span data-translate="SPEICHERN_UPPER"></span>
@@ -473,9 +486,10 @@
                     </div>
 
                     <!--Institution Buttons-->
-                    <div dv-show-element
+                    <div class="dv-navigation-item"
+                         dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                         dv-show-expression="vm.isMutationsmeldungAllowed()">
+                         dv-show-expression="vm.isMutationsmeldungAllowed()" >
 
                         <dv-loading-button button-click="vm.mutationsmeldungErstellen()"
                                            ng-if="!vm.isMutationsmeldungStatus"
@@ -489,25 +503,28 @@
                         </dv-loading-button>
                     </div>
 
-                    <div dv-show-element
+                    <div class="dv-navigation-flex"
+                         dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                          dv-show-expression="vm.isBetreuungsstatusWarten()">
 
-                        <div ng-if="vm.isFromMutation()">
+                        <div class="dv-navigation-item"
+                             ng-if="vm.isFromMutation()" >
                             <dv-loading-button button-click="vm.stornieren()"
                                                aria-label="{{'STORNIEREN_UPPER' | translate}}">
                                 <span data-translate="STORNIEREN_UPPER"></span>
                             </dv-loading-button>
                         </div>
 
-                        <div>
+                        <div class="dv-navigation-item">
                             <dv-loading-button button-click="vm.platzBestaetigen()" type="submit"
                                                aria-label="{{'BESTAETIGEN_UPPER' | translate}}">
                                 <span data-translate="BESTAETIGEN_UPPER"></span>
                             </dv-loading-button>
                         </div>
 
-                        <div ng-if="!vm.isFromMutation()">
+                        <div class="dv-navigation-item"
+                             ng-if="!vm.isFromMutation()" >
                             <dv-loading-button button-click="vm.platzAbweisen()"
                                                aria-label="{{'ABWEISEN_UPPER' | translate}}">
                                 <span data-translate="ABWEISEN_UPPER"></span>
@@ -518,17 +535,20 @@
 
 
                     <!--Platz anfordern-->
-                    <div dv-show-element
+                    <div class="dv-navigation-item"
+                         dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
                          dv-show-expression="vm.isBetreuungsstatusAusstehend()">
                         <dv-loading-button button-click="vm.platzAnfordern()">
                             <span data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
                         </dv-loading-button>
                     </div>
-                    <dv-loading-button button-click="vm.cancel()" button-class="cancel-button"
-                                       type="reset">
-                        <span data-translate="ABBRECHEN_UPPER"></span>
-                    </dv-loading-button>
+                    <div class="dv-navigation-item">
+                        <dv-loading-button button-click="vm.cancel()" button-class="cancel-button"
+                                           type="reset">
+                            <span data-translate="ABBRECHEN_UPPER"></span>
+                        </dv-loading-button>
+                    </div>
                 </div>
             </form>
         </div>

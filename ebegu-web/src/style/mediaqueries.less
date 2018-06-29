@@ -109,52 +109,17 @@
     }
 
     #gesuchContainer {
-        .nav-row-betreuung {
+
+        .dv-navigation--betreuung {
             flex-direction: row-reverse;
-            -ms-flex-direction: row-reverse;
-            bottom: 4rem;
-            & > div {
-                width: auto;
-                margin-bottom: 0;
-                padding: 0;
-                margin-right: auto;
-
-                &:last-child {
-                    margin-left: 3rem;
-                    margin-right: auto;
-                    margin-bottom: 0;
-                    padding: 0;
-                }
-                &:first-child {
-                    margin-right: 3rem;
-                    margin-left: auto;
-                }
-                &:only-child {
-                    margin-left: 3rem;
-                    margin-right: auto;
-                }
-                & > div {
-                    display: flex;
-                    flex-direction: row;
-                    -ms-flex-direction: row;
-                    padding: 0;
-                    &:first-child {
-                        padding-right: 0;
-                    }
-                    & > div {
-                        padding: 0;
-                    }
-                }
+            .dv-navigation-flex {
+                flex-direction: row;
             }
-        }
-        .nav-row-verfuegen {
-            & > div {
-                padding: 0;
-                & > div {
-                    padding: 0 0.75rem 0;
-                }
 
+            .dv-navigation-item {
+                padding: 0 .75rem;
             }
+
         }
     }
 }
@@ -182,57 +147,15 @@
     }
 
     #gesuchContainer {
-        .nav-row-betreuung {
-            & > div {
-                width: auto;
-                margin-bottom: 0;
-                padding: 0;
-                margin-right: auto;
 
-                &:last-child {
-                    margin-left: auto;
-                    margin-right: 0;
-                    margin-bottom: 0;
-                    padding: 0 0.75rem 0;
-                    padding-left: 0;
-                }
-                &:first-child {
-                    margin-right: auto;
-                    margin-left: 0;
-                }
-                &:only-child {
-                    margin-left: auto;
-                    margin-right: auto;
-                }
-                & > div {
-                    padding: 0 0.75rem 0;
-                }
-            }
-        }
-        dv-navigation, .nav-row-verfuegen {
-            & > div {
-                padding: 0;
-                & > div {
-                    padding: 0 0.75rem 0;
-                }
+        .dv-navigation,
+        .dv-navigation-flex {
+            justify-content: center;
 
+            .dv-navigation-item {
+                padding:0 .75rem;
             }
-        }
-        .nav-row-verfuegen {
-            dv-navigation {
-                margin-left: auto;
-                margin-right: 0;
-                &:only-child {
-                    margin-right: auto;
-                }
 
-            }
-            & > div {
-                margin-right: 0;
-            }
-            & > div + div, & > div:only-of-type {
-                margin-right: auto;
-            }
         }
     }
 }

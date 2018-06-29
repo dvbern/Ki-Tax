@@ -18,10 +18,12 @@ import EbeguUtil from '../utils/EbeguUtil';
 export default class TSAbstractAntragDTO {
 
     private _fallNummer: number;
+    private _dossierId: string;
     private _familienName: string;
 
-    constructor(fallNummer?: number, familienName?: string) {
+    constructor(fallNummer?: number, dossierId?: string, familienName?: string) {
         this._fallNummer = fallNummer;
+        this._dossierId = dossierId;
         this._familienName = familienName;
     }
 
@@ -31,6 +33,14 @@ export default class TSAbstractAntragDTO {
 
     set fallNummer(value: number) {
         this._fallNummer = value;
+    }
+
+    get dossierId(): string {
+        return this._dossierId;
+    }
+
+    set dossierId(value: string) {
+        this._dossierId = value;
     }
 
     get familienName(): string {

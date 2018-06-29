@@ -1,4 +1,4 @@
-<!--
+\<!--
   ~ Ki-Tax: System for the management of external childcare subsidies
   ~ Copyright (C) 2018 City of Bern Switzerland
   ~ This program is free software: you can redistribute it and/or modify
@@ -313,11 +313,11 @@
             <!-- Buttons -->
             <div class="button-row dv-input-container-medium marginTop50">
 
-                <dv-loading-button type="submit" button-class="" ng-if="!vm.isDefaultVerantwortlicher">
+                <dv-loading-button type="submit" button-class="" ng-if="!vm.isDefaultVerantwortlicher" class="button-row-item">
                     <span data-translate="BENUTZER_SAVE"></span>
                 </dv-loading-button>
 
-                <div ng-show="!vm.selectedUser.gesperrt" ng-if="!vm.isDefaultVerantwortlicher">
+                <div ng-show="!vm.selectedUser.gesperrt" ng-if="!vm.isDefaultVerantwortlicher" class="button-row-item">
                     <dv-loading-button type="button"
                                        button-click="vm.inactivateBenutzer()"
                                        button-class="cancel-button">
@@ -325,7 +325,7 @@
                     </dv-loading-button>
                 </div>
 
-                <div ng-show="vm.selectedUser.gesperrt" ng-if="!vm.isDefaultVerantwortlicher">
+                <div ng-show="vm.selectedUser.gesperrt" ng-if="!vm.isDefaultVerantwortlicher" class="button-row-item">
                     <dv-loading-button type="button"
                                        button-click="vm.reactivateBenutzer()"
                                        button-class="cancel-button">
@@ -333,7 +333,7 @@
                     </dv-loading-button>
                 </div>
 
-                <div>
+                <div class="button-row-item">
                     <dv-loading-button type="button"
                                        button-click="vm.cancel()"
                                        button-class="cancel-button">
