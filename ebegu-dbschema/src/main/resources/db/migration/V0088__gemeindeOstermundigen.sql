@@ -4,8 +4,9 @@ VALUES ('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '2018-01-01 00:00:00', '2018-01-
 
 UPDATE dossier
 SET gemeinde_id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+
 UPDATE berechtigung_gemeinde
-SET gemeinde_list_id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+SET gemeinde_id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
 
 -- Jetzt das "alte" Bern loeschen
 DELETE FROM gemeinde
