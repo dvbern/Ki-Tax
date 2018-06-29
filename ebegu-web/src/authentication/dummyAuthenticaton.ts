@@ -14,16 +14,16 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import TSGemeinde from '../models/TSGemeinde';
-import TSUser from '../models/TSUser';
+import {UIRouter} from '@uirouter/core';
+import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import {TSRole} from '../models/enums/TSRole';
+import TSGemeinde from '../models/TSGemeinde';
+import TSInstitution from '../models/TSInstitution';
+import {TSMandant} from '../models/TSMandant';
+import {TSTraegerschaft} from '../models/TSTraegerschaft';
+import TSUser from '../models/TSUser';
 import AuthenticationUtil from '../utils/AuthenticationUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
-import {TSMandant} from '../models/TSMandant';
-import TSInstitution from '../models/TSInstitution';
-import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
-import {UIRouter} from '@uirouter/core';
 
 require('./dummyAuthentication.less');
 
@@ -106,24 +106,8 @@ export class DummyAuthenticationListViewComponent {
     private initUsers(): void {
         this.createGeneralUsers();
         this.createUsersOfBern();
-    }
-
-    private createUsersOfBern() {
-        this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN);
-        this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA);
-        this.administratorTSBern = new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT);
-        this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT);
-
-        this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
-            this.mandant, TSRole.STEUERAMT);
-        this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
-            this.mandant, TSRole.REVISOR);
-        this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
-            this.mandant, TSRole.JURIST);
+        this.createUsersOfOstermundigen();
+        this.createUsersOfBothBernAndOstermundigen();
     }
 
     private createGeneralUsers() {
@@ -147,8 +131,9 @@ export class DummyAuthenticationListViewComponent {
             this.mandant, TSRole.GESUCHSTELLER);
         this.gesuchstellerHansZimmermann = new TSUser('Hans', 'Zimmermann', 'ziha', 'password6', 'hans.zimmermann@example.com',
             this.mandant, TSRole.GESUCHSTELLER);
+    }
 
-        // Gemeindeabhängige User
+    private createUsersOfBern() {
         this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
             this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeBern]);
         this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
@@ -158,6 +143,15 @@ export class DummyAuthenticationListViewComponent {
         this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
             this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern]);
 
+        this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
+            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern]);
+        this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
+            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeBern]);
+        this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
+            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeBern]);
+    }
+
+    private createUsersOfOstermundigen() {
         this.administratorBGOstermundigen = new TSUser('Kurt', 'Schmid', 'scku', 'password1', 'kurt.blaser@example.com',
             this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeOstermundigen]);
         this.sachbearbeiterBGOstermundigen = new TSUser('Jörg', 'Keller', 'kejo', 'password1', 'joerg.becker@example.com',
@@ -167,6 +161,16 @@ export class DummyAuthenticationListViewComponent {
         this.sachbearbeiterTSOstermundigen = new TSUser('Julien', 'Odermatt', 'odju', 'password1', 'julien.schuler@example.com',
             this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeOstermundigen]);
 
+        this.steueramtOstermundigen = new TSUser('Rodolfo', 'Iten', 'itro', 'password1', 'rodolfo.geldmacher@example.com',
+            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.revisorOstermundigen = new TSUser('Reto', 'Werlen', 'were', 'password1', 'reto.revisor@example.com',
+            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.juristOstermundigen = new TSUser('Julia', 'Adler', 'adju', 'password1', 'julia.jurist@example.com',
+            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeOstermundigen]);
+
+    }
+
+    private createUsersOfBothBernAndOstermundigen() {
         this.administratorBGBernOstermundigen = new TSUser('Kurt', 'Kälin', 'kaku', 'password1', 'kurt.blaser@example.com',
             this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
         this.sachbearbeiterBGBernOstermundigen = new TSUser('Jörg', 'Aebischer', 'aejo', 'password1', 'joerg.becker@example.com',
@@ -176,21 +180,8 @@ export class DummyAuthenticationListViewComponent {
         this.sachbearbeiterTSBernOstermundigen = new TSUser('Julien', 'Bucheli', 'buju', 'password1', 'julien.schuler@example.com',
             this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
 
-        this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
-            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern]);
-        this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
-            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeBern]);
-        this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
-            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeBern]);
 
-        this.steueramtOstermundigen = new TSUser('Rodolfo', 'Iten', 'itro', 'password11', 'rodolfo.geldmacher@example.com',
-            this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeOstermundigen]);
-        this.revisorOstermundigen = new TSUser('Reto', 'Werlen', 'were', 'password1', 'reto.revisor@example.com',
-            this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeOstermundigen]);
-        this.juristOstermundigen = new TSUser('Julia', 'Adler', 'adju', 'password1', 'julia.jurist@example.com',
-            this.mandant, TSRole.JURIST, undefined, undefined, [this.gemeindeOstermundigen]);
-
-        this.steueramtBernOstermundigen = new TSUser('Rodolfo', 'Hermann', 'hero', 'password11', 'rodolfo.geldmacher@example.com',
+        this.steueramtBernOstermundigen = new TSUser('Rodolfo', 'Hermann', 'hero', 'password1', 'rodolfo.geldmacher@example.com',
             this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
         this.revisorBernOstermundigen = new TSUser('Reto', 'Hug', 'hure', 'password1', 'reto.revisor@example.com',
             this.mandant, TSRole.REVISOR, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
@@ -291,6 +282,7 @@ export class DummyAuthenticationListViewComponent {
     }
 
     public logIn(user: TSUser): void {
+        console.log('loginnnnnnnnn', user);
         this.authServiceRS.loginRequest(user).then(() => {
             AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
         });
