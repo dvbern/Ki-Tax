@@ -159,8 +159,9 @@
         wenn wir die Direktive benutzen wollen muessen wir viel anpassen, daher lohnt es sich die Buttons direkt zu erstellen-->
     <!-- Buttons fuer JA/SCH und Gesuchsteller -->
     <!--todo verbesserung in eigene Direktive da in betreuungTagesschule dupliziert-->
-    <div class="nav-row-betreuung">
-        <div dv-show-element
+    <div class="dv-navigation">
+        <div class="dv-navigation-item"
+             dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
              dv-show-expression="vm.betreuung.isEnabled() && vm.isAnmeldungMoeglich() && !vm.isFreigabequittungAusstehend()">
             <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
@@ -168,34 +169,51 @@
             </dv-loading-button>
         </div>
 
-        <div dv-show-element
+        <div class="dv-navigation-flex"
+             dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
              dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.isAnmeldungMoeglich() && vm.aktuellGueltig">
-            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
+            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save"
+                               class="dv-navigation-item">
                 <span data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
-            <dv-loading-button button-click="vm.anmeldungSchulamtAblehnen()" type="button" button-class="save">
+            <dv-loading-button class="dv-navigation-item"
+                               button-click="vm.anmeldungSchulamtAblehnen()"
+                               type="button"
+                               button-class="save">
                 <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
         </div>
 
-        <div dv-show-element
+        <div class="dv-navigation-flex"
+             dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
-            <dv-loading-button button-click="vm.anmeldungSchulamtUebernehmen()" type="button" button-class="save">
+            <dv-loading-button class="dv-navigation-item"
+                               button-click="vm.anmeldungSchulamtUebernehmen()"
+                               type="button"
+                               button-class="save">
                 <span data-translate="SCHULAMT_ANMELDUNG_UEBERNEHMEN"></span>
             </dv-loading-button>
-            <dv-loading-button button-click="vm.anmeldungSchulamtAblehnen()" type="button" button-class="save">
+            <dv-loading-button class="dv-navigation-item"
+                               button-click="vm.anmeldungSchulamtAblehnen()"
+                               type="button"
+                               button-class="save">
                 <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
-            <dv-loading-button button-click="vm.anmeldungSchulamtFalscheInstitution()" type="button"
+            <dv-loading-button class="dv-navigation-item"
+                               button-click="vm.anmeldungSchulamtFalscheInstitution()"
+                               type="button"
                                button-class="save">
                 <span data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
             </dv-loading-button>
 
         </div>
         <!-- Abbrechen: Immer vorhanden -->
-        <dv-loading-button button-click="vm.cancel()" button-class="cancel-button" type="reset">
+        <dv-loading-button class="dv-navigation-item"
+                           button-click="vm.cancel()"
+                           button-class="cancel-button"
+                           type="reset">
             <span data-translate="ABBRECHEN_UPPER"></span>
         </dv-loading-button>
     </div>

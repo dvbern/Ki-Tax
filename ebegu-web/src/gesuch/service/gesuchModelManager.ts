@@ -71,7 +71,7 @@ import {TSErrorLevel} from '../../models/enums/TSErrorLevel';
 import AdresseRS from '../../core/service/adresseRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {isJugendamt, isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
+import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
