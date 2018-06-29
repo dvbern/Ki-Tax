@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
+import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -373,6 +374,12 @@ public final class TestJaxDataUtil {
 		JaxMandant mandant = new JaxMandant();
 		mandant.setName("TestMandant");
 		return mandant;
+	}
+
+	public static JaxGemeinde createTestGemeinde() {
+		JaxGemeinde gemeinde = new JaxGemeinde();
+		gemeinde.setName("TestGemeinde");
+		return gemeinde;
 	}
 
 	public static JaxInstitution createTestJaxInstitution() {

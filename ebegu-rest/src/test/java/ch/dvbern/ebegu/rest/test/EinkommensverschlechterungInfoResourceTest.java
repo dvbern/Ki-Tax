@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.api.resource.EinkommensverschlechterungInfoResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.tets.TestDataUtil;
@@ -84,7 +85,9 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	}
 
 	private JaxGesuch crateJaxGesuch() {
+		Gemeinde persistedGemeinde = persistence.persist(converter.gemeindeToEntity(TestJaxDataUtil.createTestGemeinde(), new Gemeinde()));
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
+		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
 		persistence.persist(verantwortlicher.getMandant());
 		verantwortlicher = persistence.persist(verantwortlicher);
 

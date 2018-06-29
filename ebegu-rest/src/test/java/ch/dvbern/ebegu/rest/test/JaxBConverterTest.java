@@ -53,6 +53,8 @@ import ch.dvbern.ebegu.util.testdata.TestdataSetupConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -116,6 +118,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		testdataCreationService.setupTestdata(setupConfig);
 	}
 
+	@Transactional(TransactionMode.DEFAULT)
 	@Test
 	public void gesuchSpeichernDarfGesuchsperiodeNichtUpdaten() {
 		Gesuchsperiode gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
