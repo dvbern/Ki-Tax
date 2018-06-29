@@ -143,6 +143,7 @@ public class Kind extends AbstractPersonEntity {
 		if (this.getPensumFachstelle() != null) {
 			mutation.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
 		}
+		mutation.setEinschulungTyp(this.getEinschulungTyp());
 		return copyForMutationOrErneuerung(mutation);
 	}
 
@@ -165,7 +166,6 @@ public class Kind extends AbstractPersonEntity {
 		mutation.setKinderabzug(this.getKinderabzug());
 		mutation.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		mutation.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
-		mutation.setEinschulungTyp(this.getEinschulungTyp());
 		return mutation;
 	}
 

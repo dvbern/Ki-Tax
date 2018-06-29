@@ -439,7 +439,7 @@
     "ABWESENHEIT_LOESCHEN": "Wollen Sie die Abwesenheit wirklich löschen?",
     "FAM_ERGAENZENDE_BETREUUNG": "Haben oder möchten Sie familienergänzende Betreuung für das Kind?",
     "MUTTERSPRACHE_DEUTSCH": "Wird in Ihrer Familie Deutsch gesprochen?",
-    "EINSCHULUNG": "Wird Ihr Kind am {{date}} eingeschult?",
+    "EINSCHULUNG": "Welche Klasse wird Ihr Kind am {{date}} besuchen?",
     "FACHSTELLE": "Fachstelle",
     "INVOLVIERTE_FACHSTELLE": "Involvierte Fachstelle",
     "KINDERABZUG": "Können Sie – mit oder ohne Steuererklärung – einen Kinderabzug geltend machen?",

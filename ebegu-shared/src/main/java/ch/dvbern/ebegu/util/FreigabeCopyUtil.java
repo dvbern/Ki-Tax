@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -128,7 +130,7 @@ public final class FreigabeCopyUtil {
 		kindGS.setMutterspracheDeutsch(kindJA.getMutterspracheDeutsch());
 		if (kindJA.getPensumFachstelle() != null) {
 			kindGS.setPensumFachstelle(new PensumFachstelle());
-			assert kindGS.getPensumFachstelle() != null;
+			Objects.requireNonNull(kindGS.getPensumFachstelle());
 			kindGS.getPensumFachstelle().setFachstelle(kindJA.getPensumFachstelle().getFachstelle());
 			kindGS.getPensumFachstelle().setPensum(kindJA.getPensumFachstelle().getPensum());
 			kindGS.getPensumFachstelle().setGueltigkeit(kindJA.getPensumFachstelle().getGueltigkeit());

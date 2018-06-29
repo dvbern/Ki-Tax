@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,7 @@
 package ch.dvbern.ebegu.enums;
 
 /**
- * Enum fuer Feld Familiensituation
+ * Enum fuer Feld EinschulungTyp
  */
 public enum EinschulungTyp {
 
