@@ -104,7 +104,29 @@ export class DummyAuthenticationListViewComponent {
     }
 
     private initUsers(): void {
-        // Allgemeine User
+        this.createGeneralUsers();
+        this.createUsersOfBern();
+    }
+
+    private createUsersOfBern() {
+        this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
+            this.mandant, TSRole.ADMIN);
+        this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_JA);
+        this.administratorTSBern = new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
+            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT);
+        this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
+            this.mandant, TSRole.SCHULAMT);
+
+        this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
+            this.mandant, TSRole.STEUERAMT);
+        this.revisorBern = new TSUser('Reto', 'Revisor', 'rere', 'password9', 'reto.revisor@example.com',
+            this.mandant, TSRole.REVISOR);
+        this.juristBern = new TSUser('Julia', 'Jurist', 'juju', 'password9', 'julia.jurist@example.com',
+            this.mandant, TSRole.JURIST);
+    }
+
+    private createGeneralUsers() {
         this.superadmin = new TSUser('E-BEGU', 'Superuser', 'ebegu', 'password10', 'superuser@example.com',
             this.mandant, TSRole.SUPER_ADMIN);
 
