@@ -23,6 +23,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {NgAdminModule} from '../admin/ng-admin.module';
 import appModule from '../app.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
+import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {applicationPropertyRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -45,6 +46,7 @@ export function createTranslateLoader(http: HttpClient) {
 
         NgAdminModule,
         NgAuthenticationModule,
+        NgGesuchModule,
     ],
     exports: [
         TranslateModule,

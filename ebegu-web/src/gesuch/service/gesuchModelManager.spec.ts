@@ -283,7 +283,7 @@ describe('gesuchModelManager', function () {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
                 createKindContainer();
-                let betreuung: TSBetreuung = createBetreuung();
+                createBetreuung();
                 gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
                 let verfuegung: TSVerfuegung = new TSVerfuegung();
                 spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));

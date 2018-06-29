@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2018 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<nav class="navbar navbar-default"
+     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()">
+    <div flex layout="row" layout-align="center center">
+
+        <div id="navbar" class="navbar-header">
+            <ul class="nav navbar-nav noMargin">
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    <a uiSref="pendenzen" [textContent]="'MENU_PENDENZEN' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getSchulamtRoles()">
+                    <a uiSref="pendenzenBetreuungen" [textContent]="'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getTraegerschaftInstitutionRoles()">
+                    <a uiSref="pendenzenBetreuungen" [textContent]="'MENU_PENDENZEN_INSTITUTION' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getSteueramtRoles()">
+                    <a uiSref="pendenzenSteueramt" [textContent]="'MENU_PENDENZEN_STEUERAMT' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForMenuAlleFaelle()">
+                    <a uiSref="faelle" [textContent]="'MENU_ALL_FAELLE' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    <a uiSref="gesuch.fallcreation({createNew: true, gesuchId: null, dossierId: null, eingangsart: 'PAPIER'})"
+                       [textContent]="'MENU_FALL_EROEFFNEN' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForZahlungen()">
+                    <a uiSref="zahlungsauftrag" [textContent]="'MENU_ZAHLUNG' | translate"></a>
+                </li>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
+                    <a uiSref="statistik" [textContent]="'MENU_STATISTIK' | translate"></a>
+                </li>
+                <!--<li uiSrefActive="active" -->
+                    <!--*dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">-->
+                    <!--<dv-posteingang uiSref="posteingang"></dv-posteingang>-->
+                <!--</li>-->
+            </ul>
+        </div> <!--/.nav-collapse -->
+    </div>
+</nav>
