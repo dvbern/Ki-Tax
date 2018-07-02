@@ -1519,7 +1519,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		LOG.info("Online Gesuch wird gelöscht:");
 		LOG.info("Benutzer: {}", principalBean.getBenutzer().getUsername());
 		LOG.info("Fall: {}", dossier.getFall().getFallNummer());
-		LOG.info("Dossier: {}", dossier.getDossierNummer());
+		LOG.info("Gemeinde: {}", dossier.getGemeinde().getGemeindeNummer());
 		LOG.info("Gesuchsperiode: {}", gesuchsperiode.getGesuchsperiodeString());
 		LOG.info("****************************************************");
 	}

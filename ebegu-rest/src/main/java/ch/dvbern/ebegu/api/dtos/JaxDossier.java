@@ -32,8 +32,6 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	private JaxGemeinde gemeinde;
 
-	private long dossierNummer;
-
 	private JaxAuthLoginElement verantwortlicherBG;
 
 	private JaxAuthLoginElement verantwortlicherTS;
@@ -53,14 +51,6 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	public void setGemeinde(JaxGemeinde gemeinde) {
 		this.gemeinde = gemeinde;
-	}
-
-	public long getDossierNummer() {
-		return dossierNummer;
-	}
-
-	public void setDossierNummer(long dossierNummer) {
-		this.dossierNummer = dossierNummer;
 	}
 
 	public JaxAuthLoginElement getVerantwortlicherBG() {

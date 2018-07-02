@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -41,6 +42,11 @@ public class Mandant extends AbstractEntity {
 	@NotNull
 	private String name;
 
+	@NotNull
+	@Min(1)
+	@Column(nullable = false)
+	private Integer nextNumberGemeinde = 1;
+
 	public Mandant() {
 	}
 
@@ -50,6 +56,14 @@ public class Mandant extends AbstractEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getNextNumberGemeinde() {
+		return nextNumberGemeinde;
+	}
+
+	public void setNextNumberGemeinde(Integer nextNumberGemeinde) {
+		this.nextNumberGemeinde = nextNumberGemeinde;
 	}
 
 	@Override
