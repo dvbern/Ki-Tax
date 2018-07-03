@@ -58,8 +58,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		bern = TestDataUtil.createGemeindeBern();
-		bern = persistence.persist(bern);
+		bern = TestDataUtil.getGemeindeBern(persistence);
 	}
 
 	@Test

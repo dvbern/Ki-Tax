@@ -75,6 +75,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractTestfall {
 
+	public static final String ID_MANDANT_KANTON_BERN = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
 	public static final String ID_GEMEINDE_BERN = "ea02b313-e7c3-4b26-9ef7-e413f4046db2";
 	public static final String ID_GEMEINDE_OSTERMUNDIGEN = "80a8e496-b73c-4a4a-a163-a0b2caf76487";
 
