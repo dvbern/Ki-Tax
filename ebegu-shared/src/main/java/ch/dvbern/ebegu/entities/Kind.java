@@ -157,6 +157,7 @@ public class Kind extends AbstractPersonEntity {
 				folgegesuchKind.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
 			}
 		}
+		// Beim Erneuerungsgesuch wird der EinschulungTyp NICHT kopiert
 		return copyForMutationOrErneuerung(folgegesuchKind);
 	}
 

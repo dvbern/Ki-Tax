@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -151,7 +152,10 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindFachstelle, dataRow.getKindFachstelle());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindErwBeduerfnisse, dataRow.getKindErwBeduerfnisse());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindDeutsch, dataRow.getKindDeutsch());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.eingeschult, dataRow.getKindEingeschult());
+
+			String eingeschult = dataRow.getKindEingeschult() != null ?
+				ServerMessageUtil.translateEnumValue(dataRow.getKindEingeschult()) : "";
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.eingeschult, eingeschult);
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittVon, dataRow.getZeitabschnittVon());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittBis, dataRow.getZeitabschnittBis());
