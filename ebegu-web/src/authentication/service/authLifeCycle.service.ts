@@ -15,6 +15,7 @@
 
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
+import {filter} from 'rxjs/operators';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 import {Subject} from 'rxjs/Subject';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -38,7 +39,13 @@ export class AuthLifeCycleService {
         this._authLifeCycleSubject.next(status);
     }
 
-    public get getAll$(): Observable<TSAuthEvent> {
+    public getAll$(): Observable<TSAuthEvent> {
         return this._authLifeCycleSubject.asObservable();
+    }
+
+    public get$(event: TSAuthEvent): Observable<TSAuthEvent> {
+        return this._authLifeCycleSubject
+            .asObservable()
+            .pipe(filter(value => value === event)) as Observable<TSAuthEvent>;
     }
 }

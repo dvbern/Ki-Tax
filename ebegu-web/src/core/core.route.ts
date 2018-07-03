@@ -15,7 +15,6 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {StateService, Transition, TransitionService} from '@uirouter/core';
-import {filter} from 'rxjs/operators';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
@@ -85,10 +84,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     // dieser call macht mit tests probleme, daher wird er fuer test auskommentiert
 
     // not used anymore?
-    authLifeCycleService.getAll$
-        .pipe(
-            filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
-        )
+    authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe((value: TSAuthEvent) => {
             if (ENV !== 'test') {
                 listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
@@ -106,10 +102,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
             gesuchModelManager.updateFachstellenList();
     });
 
-    authLifeCycleService.getAll$
-        .pipe(
-            filter((value: TSAuthEvent) => value === TSAuthEvent.NOT_AUTHENTICATED)
-        )
+    authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
         .subscribe((value: TSAuthEvent) => {
             //user is not yet authenticated, show loginpage
 

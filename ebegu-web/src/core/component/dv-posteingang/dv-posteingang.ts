@@ -20,7 +20,6 @@ import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {Log} from '../../../utils/LogFactory';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import MitteilungRS from '../../service/mitteilungRS.rest';
-import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'dv-posteingang',
@@ -43,29 +42,25 @@ export class DvPosteingangController implements OnInit {
     ngOnInit() {
         this.getAmountNewMitteilungen();
 
-        this.authLifeCycleService.getAll$
-            .pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGOUT_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(
-            value => {
-                clearInterval(this.reloadAmountMitteilungenInterval);
-            },
-            error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
-            () => {},
-        );
+                value => {
+                    clearInterval(this.reloadAmountMitteilungenInterval);
+                },
+                error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
+                () => {
+                },
+            );
 
-        this.authLifeCycleService.getAll$
-            .pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(
-            value => {
-                this.handleLogIn();
-            },
-            error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
-            () => {},
-        );
+                value => {
+                    this.handleLogIn();
+                },
+                error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
+                () => {
+                },
+            );
 
         // this.$rootScope.$on('POSTEINGANG_MAY_CHANGED', (event: any) => {
         //     this.getAmountNewMitteilungen();

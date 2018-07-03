@@ -14,7 +14,6 @@
  */
 
 import {IPromise, IQService} from 'angular';
-import {filter} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
@@ -44,9 +43,7 @@ export default class WizardStepManager {
                 private authLifeCycleService: AuthLifeCycleService) {
 
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
-        this.authLifeCycleService.getAll$.pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(value => {
                 this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole());
             });

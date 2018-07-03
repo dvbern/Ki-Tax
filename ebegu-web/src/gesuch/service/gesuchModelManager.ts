@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {filter} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSDossier from '../../models/TSDossier';
@@ -116,9 +115,7 @@ export default class GesuchModelManager {
                 private adresseRS: AdresseRS, private $q: IQService, private CONSTANTS: any, private authLifeCycleService: AuthLifeCycleService, private ewkRS: EwkRS,
                 private globalCacheService: GlobalCacheService, private dossierRS: DossierRS, private gemeindeRS: GemeindeRS) {
 
-        this.authLifeCycleService.getAll$.pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGOUT_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(value => {
                     this.setGesuch(undefined);
                     this.log.debug('Cleared gesuch on logout');

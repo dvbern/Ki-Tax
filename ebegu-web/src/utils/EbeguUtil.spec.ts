@@ -48,7 +48,7 @@ describe('EbeguUtil', function () {
     }));
 
     describe('translateStringList', () => {
-        fit('should translate the given list of words', () => {
+        it('should translate the given list of words', () => {
             let list: Array<string> = ['FIRST', 'SECOND'];
             let returnedList: Array<any> = ebeguUtil.translateStringList(list);
             expect(returnedList.length).toEqual(2);

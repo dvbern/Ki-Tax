@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {filter} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import TSGesuch from '../../models/TSGesuch';
 import {IPromise} from 'angular';
@@ -40,10 +39,7 @@ export default class BerechnungsManager {
 
         this.initValues();
 
-        this.authLifeCycleService.getAll$
-            .pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(value => this.initValues());
     }
 

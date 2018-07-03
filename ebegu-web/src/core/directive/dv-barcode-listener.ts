@@ -24,7 +24,6 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import ITimeoutService = angular.ITimeoutService;
 import IDocumentService = angular.IDocumentService;
 import ILogService = angular.ILogService;
-import {filter} from 'rxjs/operators';
 
 let FREIGEBEN_DIALOG_TEMPLATE = require('../../gesuch/dialog/freigabe.html');
 
@@ -63,16 +62,10 @@ export class DVBarcodeController {
             this.barcodeOnKeyPressed(e);
         };
 
-        this.authLifeCycleService.getAll$
-            .pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(value => this.handleLoginSuccessEvent(keypressEvent));
 
-        this.authLifeCycleService.getAll$
-            .pipe(
-                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGOUT_SUCCESS)
-            )
+        this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(value => this.handleLogoutSuccessEvent(keypressEvent));
 
     }
