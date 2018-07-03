@@ -13,55 +13,74 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService} from 'angular';
+import {Component, OnInit} from '@angular/core';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import {Log} from '../../../utils/LogFactory';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import MitteilungRS from '../../service/mitteilungRS.rest';
-import IRootScopeService = angular.IRootScopeService;
+import {filter} from 'rxjs/operators';
 
-let template = require('./dv-posteingang.html');
+@Component({
+    selector: 'dv-posteingang',
+    template: require('./dv-posteingang.html'),
+})
+export class DvPosteingangController implements OnInit {
 
-export class DvPosteingangComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings: any = {};
-    template = template;
-    controller = DvPosteingangController;
-    controllerAs = 'vm';
-}
-
-export class DvPosteingangController {
+    private log: Log = Log.createLog(AuthLifeCycleService);
 
     amountMitteilungen: number = 0;
     reloadAmountMitteilungenInterval: number;
 
-    static $inject: any[] = ['MitteilungRS', '$rootScope', 'AuthServiceRS', '$log'];
 
-    constructor(private mitteilungRS: MitteilungRS, private $rootScope: IRootScopeService,
+    constructor(private mitteilungRS: MitteilungRS,
                 private authServiceRS: AuthServiceRS,
-                private $log: ILogService) {
+                private authLifeCycleService: AuthLifeCycleService) {
+
+    }
+
+    ngOnInit() {
         this.getAmountNewMitteilungen();
 
-        this.$rootScope.$on('POSTEINGANG_MAY_CHANGED', (event: any) => {
-            this.getAmountNewMitteilungen();
-        });
+        this.authLifeCycleService.getAll$
+            .pipe(
+                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGOUT_SUCCESS)
+            )
+            .subscribe(
+            value => {
+                clearInterval(this.reloadAmountMitteilungenInterval);
+            },
+            error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
+            () => {},
+        );
 
-        this.$rootScope.$on(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], () => {
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
-                this.getAmountNewMitteilungen(); // call it a first time
+        this.authLifeCycleService.getAll$
+            .pipe(
+                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
+            )
+            .subscribe(
+            value => {
+                this.handleLogIn();
+            },
+            error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
+            () => {},
+        );
 
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) { // not for GS
-                    // call every 5 minutes (5*60*1000)
-                    this.reloadAmountMitteilungenInterval = window.setInterval(() => this.getAmountNewMitteilungen(), 300000);
-                }
+        // this.$rootScope.$on('POSTEINGANG_MAY_CHANGED', (event: any) => {
+        //     this.getAmountNewMitteilungen();
+        // });
+    }
+
+    private handleLogIn() {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
+            this.getAmountNewMitteilungen(); // call it a first time
+
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) { // not for GS
+                // call every 5 minutes (5*60*1000)
+                this.reloadAmountMitteilungenInterval = window.setInterval(() => this.getAmountNewMitteilungen(), 300000);
             }
-        });
-
-        // Das Interval muss nach jedem LOGOUT entfernt werden, um zu vermeiden dass es bei Benutzern auftritt die
-        // keinen Mitteilungen haben
-        this.$rootScope.$on(TSAuthEvent[TSAuthEvent.LOGOUT_SUCCESS], () => {
-            clearInterval(this.reloadAmountMitteilungenInterval);
-        });
+        }
     }
 
     private getAmountNewMitteilungen(): void {
@@ -71,10 +90,10 @@ export class DvPosteingangController {
             } else {
                 this.amountMitteilungen = response;
             }
-        }).catch((err) => {
+        }).catch(() => {
             //Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
             // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
-            this.$log.debug('received error message while reading posteingang. Ignoring ...');
+            this.log.debug('received error message while reading posteingang. Ignoring ...');
             this.amountMitteilungen = 0;
         });
     }

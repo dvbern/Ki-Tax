@@ -14,6 +14,8 @@
  */
 
 import {IPromise, IQService} from 'angular';
+import {filter} from 'rxjs/operators';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TSWizardStepName';
@@ -21,11 +23,10 @@ import TSWizardStep from '../../models/TSWizardStep';
 import WizardStepRS from './WizardStepRS.rest';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben, TSAntragStatus} from '../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import TSGesuch from '../../models/TSGesuch';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import IRootScopeService = angular.IRootScopeService;
 
 export default class WizardStepManager {
 
@@ -37,15 +38,18 @@ export default class WizardStepManager {
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
 
-    static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', '$rootScope'];
+    static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
     /* @ngInject */
     constructor(private authServiceRS: AuthServiceRS, private wizardStepRS: WizardStepRS, private $q: IQService,
-                private $rootScope: IRootScopeService) {
-        this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
+                private authLifeCycleService: AuthLifeCycleService) {
 
-        $rootScope.$on(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], () => {
-            this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
-        });
+        this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
+        this.authLifeCycleService.getAll$.pipe(
+                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
+            )
+            .subscribe(value => {
+                this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole());
+            });
     }
 
     public getCurrentStep(): TSWizardStep {

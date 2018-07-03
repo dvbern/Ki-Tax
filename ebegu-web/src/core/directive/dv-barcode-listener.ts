@@ -14,17 +14,17 @@
  */
 
 import {IDirective, IDirectiveFactory} from 'angular';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {DvDialog} from './dv-dialog/dv-dialog';
 import {FreigabeController} from '../../gesuch/dialog/FreigabeController';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import ErrorService from '../errors/service/ErrorService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import * as moment from 'moment';
 import ITimeoutService = angular.ITimeoutService;
 import IDocumentService = angular.IDocumentService;
 import ILogService = angular.ILogService;
-import IRootScopeService = angular.IRootScopeService;
+import {filter} from 'rxjs/operators';
 
 let FREIGEBEN_DIALOG_TEMPLATE = require('../../gesuch/dialog/freigabe.html');
 
@@ -47,7 +47,7 @@ export class DVBarcodeListener implements IDirective {
  */
 export class DVBarcodeController {
 
-    static $inject: string[] = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', '$rootScope'];
+    static $inject: string[] = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
 
     private barcodeReading: boolean = false;
     private barcodeBuffer: string[] = [];
@@ -55,8 +55,7 @@ export class DVBarcodeController {
 
     /* @ngInject */
     constructor(private $document: IDocumentService, private $timeout: ITimeoutService, private dVDialog: DvDialog, private authService: AuthServiceRS,
-                private errorService: ErrorService, private $log: ILogService, private $rootScope: IRootScopeService) {
-
+                private errorService: ErrorService, private $log: ILogService, private authLifeCycleService: AuthLifeCycleService) {
     }
 
     $onInit() {
@@ -64,17 +63,29 @@ export class DVBarcodeController {
             this.barcodeOnKeyPressed(e);
         };
 
-        this.$rootScope.$on(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], () => {
-            this.$document.unbind('keypress', keypressEvent);
-            if (this.authService.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles())) {
-                this.$document.bind('keypress', keypressEvent);
-            }
-        });
+        this.authLifeCycleService.getAll$
+            .pipe(
+                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
+            )
+            .subscribe(value => this.handleLoginSuccessEvent(keypressEvent));
 
-        this.$rootScope.$on(TSAuthEvent[TSAuthEvent.LOGOUT_SUCCESS], () => {
-            this.$document.unbind('keypress', keypressEvent);
-        });
+        this.authLifeCycleService.getAll$
+            .pipe(
+                filter((value: TSAuthEvent) => value === TSAuthEvent.LOGOUT_SUCCESS)
+            )
+            .subscribe(value => this.handleLogoutSuccessEvent(keypressEvent));
 
+    }
+
+    private handleLoginSuccessEvent(keypressEvent: any): void {
+        this.$document.unbind('keypress', keypressEvent);
+        if (this.authService.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles())) {
+            this.$document.bind('keypress', keypressEvent);
+        }
+    }
+
+    private handleLogoutSuccessEvent(keypressEvent: any): void {
+        this.$document.unbind('keypress', keypressEvent);
     }
 
     public barcodeOnKeyPressed(e: any): void {

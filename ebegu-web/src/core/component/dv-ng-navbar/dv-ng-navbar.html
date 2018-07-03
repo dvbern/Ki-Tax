@@ -53,10 +53,10 @@
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
                     <a uiSref="statistik" [textContent]="'MENU_STATISTIK' | translate"></a>
                 </li>
-                <!--<li uiSrefActive="active" -->
-                    <!--*dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">-->
-                    <!--<dv-posteingang uiSref="posteingang"></dv-posteingang>-->
-                <!--</li>-->
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    <dv-posteingang uiSref="posteingang"></dv-posteingang>
+                </li>
             </ul>
         </div> <!--/.nav-collapse -->
     </div>

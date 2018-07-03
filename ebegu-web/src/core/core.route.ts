@@ -15,7 +15,9 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {StateService, Transition, TransitionService} from '@uirouter/core';
+import {filter} from 'rxjs/operators';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
+import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
@@ -33,16 +35,15 @@ import {MandantRS} from './service/mandantRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 import ILocationService = angular.ILocationService;
 import ILogService = angular.ILogService;
-import IRootScopeService = angular.IRootScopeService;
 import ITimeoutService = angular.ITimeoutService;
 
-appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', '$rootScope', 'hotkeys',
+appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
     'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions'];
 
 /* @ngInject */
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
-                       mandantRS: MandantRS, $injector: IInjectorService, $rootScope: IRootScopeService, hotkeys: any, $timeout: ITimeoutService,
+                       mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
                        authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
                        $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
@@ -84,41 +85,47 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     // dieser call macht mit tests probleme, daher wird er fuer test auskommentiert
 
     // not used anymore?
-    $rootScope.$on(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], () => {
-        //do stuff if needed
-        if (ENV !== 'test') {
-            listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
-            mandantRS.getFirst();
-        }
-        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
-        //since we will need these lists anyway we already load on login
-        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
-            if (gesuchsperioden.length > 0) {
-                let newestGP = gesuchsperioden[0];
-                institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
+    authLifeCycleService.getAll$
+        .pipe(
+            filter((value: TSAuthEvent) => value === TSAuthEvent.LOGIN_SUCCESS)
+        )
+        .subscribe((value: TSAuthEvent) => {
+            if (ENV !== 'test') {
+                listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
+                mandantRS.getFirst();
             }
-        });
-        gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-        gesuchModelManager.updateFachstellenList();
+            globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
+            //since we will need these lists anyway we already load on login
+            gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
+                if (gesuchsperioden.length > 0) {
+                    let newestGP = gesuchsperioden[0];
+                    institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
+                }
+            });
+            gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
+            gesuchModelManager.updateFachstellenList();
     });
 
-    $rootScope.$on(TSAuthEvent[TSAuthEvent.NOT_AUTHENTICATED], () => {
-        //user is not yet authenticated, show loginpage
+    authLifeCycleService.getAll$
+        .pipe(
+            filter((value: TSAuthEvent) => value === TSAuthEvent.NOT_AUTHENTICATED)
+        )
+        .subscribe((value: TSAuthEvent) => {
+            //user is not yet authenticated, show loginpage
 
-        let currentPath = angular.copy($location.absUrl());
-        console.log('going to login page wiht current path ', currentPath);
+            let currentPath = angular.copy($location.absUrl());
+            console.log('going to login page wiht current path ', currentPath);
 
-        //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
-        if (currentPath.indexOf('fedletSSOInit') === -1
-            && ($state.current !== undefined && $state.current.name !== 'login')
-            && ($state.current !== undefined && $state.current.name !== 'locallogin')
-            && ($state.current !== undefined && $state.current.name !== 'schulung')
-            && currentPath.indexOf('sendRedirectForValidation') === -1) {
-            $state.go('login', {relayPath: currentPath, type: 'login'});
-        } else {
-            console.log('supressing redirect to ', currentPath);
-        }
-
+            //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
+            if (currentPath.indexOf('fedletSSOInit') === -1
+                && ($state.current !== undefined && $state.current.name !== 'login')
+                && ($state.current !== undefined && $state.current.name !== 'locallogin')
+                && ($state.current !== undefined && $state.current.name !== 'schulung')
+                && currentPath.indexOf('sendRedirectForValidation') === -1) {
+                $state.go('login', {relayPath: currentPath, type: 'login'});
+            } else {
+                console.log('supressing redirect to ', currentPath);
+            }
     });
 
     // Attempt to restore a user session upon startup

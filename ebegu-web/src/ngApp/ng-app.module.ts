@@ -24,7 +24,7 @@ import {NgAdminModule} from '../admin/ng-admin.module';
 import appModule from '../app.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
-import {applicationPropertyRSProvider} from '../hybridTools/ajs-upgraded-providers';
+import {applicationPropertyRSProvider, mitteilungRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './src/assets/translations/translations_', '.json');
@@ -53,6 +53,7 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     providers: [
         applicationPropertyRSProvider,
+        mitteilungRSProvider,
     ],
 })
 
