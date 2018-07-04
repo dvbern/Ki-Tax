@@ -37,6 +37,7 @@ import MahnungRS from '../gesuch/service/mahnungRS.rest';
 import SearchRS from '../gesuch/service/searchRS.rest';
 import WizardStepManager from '../gesuch/service/wizardStepManager';
 import WizardStepRS from '../gesuch/service/WizardStepRS.rest';
+import {PosteingangService} from '../posteingang/service/posteingang.service';
 import EbeguRestUtil from '../utils/EbeguRestUtil';
 import EbeguUtil from '../utils/EbeguUtil';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
@@ -205,6 +206,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
+    .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())

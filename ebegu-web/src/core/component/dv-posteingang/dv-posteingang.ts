@@ -17,6 +17,8 @@ import {Component, OnInit} from '@angular/core';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {Log} from '../../../utils/LogFactory';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import MitteilungRS from '../../service/mitteilungRS.rest';
@@ -35,7 +37,8 @@ export class DvPosteingangController implements OnInit {
 
     constructor(private mitteilungRS: MitteilungRS,
                 private authServiceRS: AuthServiceRS,
-                private authLifeCycleService: AuthLifeCycleService) {
+                private authLifeCycleService: AuthLifeCycleService,
+                private posteingangService: PosteingangService) {
 
     }
 
@@ -44,27 +47,22 @@ export class DvPosteingangController implements OnInit {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(
-                value => {
-                    clearInterval(this.reloadAmountMitteilungenInterval);
-                },
+                () => {clearInterval(this.reloadAmountMitteilungenInterval); },
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
-                () => {
-                },
             );
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(
-                value => {
-                    this.handleLogIn();
-                },
+                () => {this.handleLogIn(); },
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
-                () => {
-                },
             );
 
-        // this.$rootScope.$on('POSTEINGANG_MAY_CHANGED', (event: any) => {
-        //     this.getAmountNewMitteilungen();
-        // });
+        this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MAY_CHANGED)
+            .subscribe(
+                () => {
+                    this.getAmountNewMitteilungen(); },
+                error => this.log.info(`the received TSPostEingangEvent ${event} threw an error ${error}`),
+            );
     }
 
     private handleLogIn() {

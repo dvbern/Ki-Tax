@@ -14,27 +14,12 @@
  */
 
 import {NgModule} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
-import {UIRouterModule} from '@uirouter/angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {DvPosteingangController} from '../core/component/dv-posteingang/dv-posteingang';
-import {NgSharedModule} from '../shared/ng-shared.module';
+import {PosteingangService} from './service/posteingang.service';
 
 @NgModule({
-    imports: [
-        NgSharedModule,
-        TranslateModule,
-        UIRouterModule,
-    ],
-    declarations: [
-        DvNgNavbar,
-        DvPosteingangController,
-    ],
-    entryComponents: [
-        DvNgNavbar,
-        DvPosteingangController,
+    providers: [
+        PosteingangService,
     ],
 })
-
-export class NgGesuchModule {
+export class NgPosteingangModule {
 }

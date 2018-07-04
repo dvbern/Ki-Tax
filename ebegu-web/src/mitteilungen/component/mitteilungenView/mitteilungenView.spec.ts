@@ -25,6 +25,7 @@ import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSUser from '../../../models/TSUser';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import {EbeguWebMitteilungen} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
@@ -47,6 +48,7 @@ describe('mitteilungenView', function () {
     let verantwortlicher: TSUser;
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
+    let postEingangService: PosteingangService;
 
     beforeEach(angular.mock.module(EbeguWebMitteilungen.name));
 
@@ -196,7 +198,8 @@ describe('mitteilungenView', function () {
         spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.when([{}]));
         spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.when([{}]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
-            $rootScope, undefined, undefined, undefined, undefined, scope, $timeout, dossierRS);
+            $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
+            dossierRS, postEingangService);
         controller.$onInit();   // hack, muesste wohl eher so gehen
                                 // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();
