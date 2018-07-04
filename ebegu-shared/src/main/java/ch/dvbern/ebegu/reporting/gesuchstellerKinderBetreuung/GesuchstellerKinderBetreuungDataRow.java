@@ -85,7 +85,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private String kindFachstelle;
 	private Boolean kindErwBeduerfnisse;
 	private Boolean kindDeutsch;
-	private EinschulungTyp kindEingeschult;
+	private EinschulungTyp kindEinschulungTyp;
 
 	private LocalDate zeitabschnittVon;
 	private LocalDate zeitabschnittBis;
@@ -533,9 +533,9 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.kindDeutsch = kindDeutsch;
 	}
 
-	public EinschulungTyp getKindEingeschult() { return kindEingeschult; }
+	public EinschulungTyp getKindEinschulungTyp() { return kindEinschulungTyp; }
 
-	public void setKindEingeschult(EinschulungTyp kindEingeschult) { this.kindEingeschult = kindEingeschult; }
+	public void setKindEinschulungTyp(EinschulungTyp kindEinschulungTyp) { this.kindEinschulungTyp = kindEinschulungTyp; }
 
 	public LocalDate getZeitabschnittVon() {
 		return zeitabschnittVon;
