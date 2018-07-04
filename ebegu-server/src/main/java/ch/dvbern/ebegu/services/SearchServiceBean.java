@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -218,6 +219,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				Expression<String> fallNummerAsString = fall.get(Fall_.fallNummer).as(String.class);
 				String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 				predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
+			}
+			if(predicateObjectDto.getGemeinde() != null) {
+				Expression<String> gemeindeExpression = dossier.get(Dossier_.gemeinde).get(Gemeinde_.name);
+				String gemeindeWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getGemeinde());
+				predicates.add(cb.like(gemeindeExpression, gemeindeWithWildcards));
 			}
 			if (predicateObjectDto.getFamilienName() != null) {
 				Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
