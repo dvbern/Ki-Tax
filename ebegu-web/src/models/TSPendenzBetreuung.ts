@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSGesuchsperiode from './TSGesuchsperiode';
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import TSInstitution from './TSInstitution';
 import * as moment from 'moment';
+import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import TSGesuchsperiode from './TSGesuchsperiode';
+import TSInstitution from './TSInstitution';
 
 export default class TSPendenzBetreuung {
 
@@ -33,10 +33,22 @@ export default class TSPendenzBetreuung {
     private _eingangsdatumSTV: moment.Moment;
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
     private _institution: TSInstitution;
+    private _gemeinde: string;
 
-    constructor(betreuungsNummer?: string, betreuungsId?: string, gesuchId?: string, kindId?: string, name?: string, vorname?: string,
-                geburtsdatum?: moment.Moment, typ?: string, gesuchsperiode?: TSGesuchsperiode, eingangsdatum?: moment.Moment,
-                eingangsdatumSTV?: moment.Moment, betreuungsangebotTyp?: TSBetreuungsangebotTyp, institution?: TSInstitution) {
+    constructor(betreuungsNummer?: string,
+                betreuungsId?: string,
+                gesuchId?: string,
+                kindId?: string,
+                name?: string,
+                vorname?: string,
+                geburtsdatum?: moment.Moment,
+                typ?: string,
+                gesuchsperiode?: TSGesuchsperiode,
+                eingangsdatum?: moment.Moment,
+                eingangsdatumSTV?: moment.Moment,
+                betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+                institution?: TSInstitution,
+                gemeinde?: string) {
         this._betreuungsNummer = betreuungsNummer;
         this._betreuungsId = betreuungsId;
         this._gesuchId = gesuchId;
@@ -50,6 +62,7 @@ export default class TSPendenzBetreuung {
         this._eingangsdatumSTV = eingangsdatumSTV;
         this._betreuungsangebotTyp = betreuungsangebotTyp;
         this._institution = institution;
+        this._gemeinde = gemeinde;
     }
 
     get betreuungsNummer(): string {
@@ -154,5 +167,13 @@ export default class TSPendenzBetreuung {
 
     set institution(value: TSInstitution) {
         this._institution = value;
+    }
+
+    get gemeinde(): string {
+        return this._gemeinde;
+    }
+
+    set gemeinde(value: string) {
+        this._gemeinde = value;
     }
 }

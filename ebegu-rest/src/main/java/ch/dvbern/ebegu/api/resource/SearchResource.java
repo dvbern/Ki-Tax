@@ -144,15 +144,16 @@ public class SearchResource {
 		for (Betreuung betreuung : betreuungenInStatus) {
 			JaxPendenzBetreuungen pendenz = new JaxPendenzBetreuungen();
 			pendenz.setBetreuungsNummer(betreuung.getBGNummer());
+			pendenz.setGemeinde(betreuung.extractGesuch().getDossier().getGemeinde().getName());
 			pendenz.setBetreuungsId(betreuung.getId());
 			pendenz.setGesuchId(betreuung.extractGesuch().getId());
 			pendenz.setKindId(betreuung.getKind().getId());
 			pendenz.setName(betreuung.getKind().getKindJA().getNachname());
 			pendenz.setVorname(betreuung.getKind().getKindJA().getVorname());
 			pendenz.setGeburtsdatum(betreuung.getKind().getKindJA().getGeburtsdatum());
-			pendenz.setEingangsdatum(betreuung.extractGesuch().getEingangsdatum());
+			pendenz.setEingangsdatum(Objects.requireNonNull(betreuung.extractGesuch().getEingangsdatum()));
 			pendenz.setGesuchsperiode(converter.gesuchsperiodeToJAX(betreuung.extractGesuchsperiode()));
-			pendenz.setBetreuungsangebotTyp(betreuung.getBetreuungsangebotTyp());
+			pendenz.setBetreuungsangebotTyp(Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()));
 			pendenz.setInstitution(converter.institutionToJAX(betreuung.getInstitutionStammdaten().getInstitution()));
 			if (betreuung.getBetreuungsstatus() == Betreuungsstatus.WARTEN) {
 				if (betreuung.getVorgaengerId() == null) {

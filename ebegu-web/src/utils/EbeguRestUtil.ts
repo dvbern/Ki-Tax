@@ -1692,6 +1692,7 @@ export default class EbeguRestUtil {
         pendenzTS.eingangsdatumSTV = DateUtil.localDateToMoment(pendenzFromServer.eingangsdatumSTV);
         pendenzTS.betreuungsangebotTyp = pendenzFromServer.betreuungsangebotTyp;
         pendenzTS.institution = pendenzFromServer.institution;
+        pendenzTS.gemeinde = pendenzFromServer.gemeinde;
         return pendenzTS;
     }
 

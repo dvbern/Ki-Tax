@@ -40,6 +40,9 @@ public class JaxPendenzBetreuungen {
 	private String betreuungsNummer;
 
 	@NotNull
+	private String gemeinde;
+
+	@NotNull
 	private String betreuungsId;
 
 	@NotNull
@@ -80,6 +83,14 @@ public class JaxPendenzBetreuungen {
 
 	public void setBetreuungsNummer(String betreuungsNummer) {
 		this.betreuungsNummer = betreuungsNummer;
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	public String getBetreuungsId() {
