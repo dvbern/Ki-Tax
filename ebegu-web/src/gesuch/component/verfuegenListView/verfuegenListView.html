@@ -50,7 +50,9 @@
                                 <td ng-bind="kindContainer.kindJA.getFullName()"></td>
                                 <td ng-bind="betreuung.institutionStammdaten.institution.name"></td>
                                 <td ng-bind="betreuung.institutionStammdaten.betreuungsangebotTyp | translate"></td>
-                                <td ng-bind="vm.ebeguUtil.calculateBetreuungsId(vm.getGesuchsperiode(), vm.getFall(), kindContainer.kindNummer, betreuung.betreuungNummer)"></td>
+                                <td
+                                    ng-bind="vm.ebeguUtil.calculateBetreuungsId(vm.getGesuchsperiode(), vm.getFall(), vm.getGesuch().dossier.gemeinde,
+                                    kindContainer.kindNummer, betreuung.betreuungNummer)"></td>
                                 <td class="betreuung-status ng-class:betreuung.betreuungsstatus;">
                                     <div ng-bind="betreuung.betreuungsstatus | translate"></div>
                                     <span class="betreuung-bar"></span>

@@ -160,6 +160,7 @@ export const EbeguWebCore: angular.IModule = angular
         REST_API: '/ebegu/api/v1/',
         MAX_LENGTH: 255,
         FALLNUMMER_LENGTH: 6,
+        GEMEINDENUMMER_LENGTH: 3,
         PATTERN_BETRAG: '([0-9]{0,12})',
         PATTERN_PERCENTAGE: '^[0-9][0-9]?$|^100$',
         PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',

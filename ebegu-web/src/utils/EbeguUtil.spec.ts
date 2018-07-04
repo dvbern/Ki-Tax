@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import {EbeguWebCore} from '../core/core.module';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import TSFall from '../models/TSFall';
+import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
 import EbeguUtil from './EbeguUtil';
@@ -74,20 +75,23 @@ describe('EbeguUtil', function () {
     });
     describe('calculateBetreuungsId', () => {
         it('it returns empty string for undefined objects', () => {
-            expect(ebeguUtil.calculateBetreuungsId(undefined, undefined, 0, 0)).toBe('');
+            expect(ebeguUtil.calculateBetreuungsId(undefined, undefined, undefined, 0, 0)).toBe('');
         });
         it('it returns empty string for undefined kindContainer', () => {
             let fall: TSFall = new TSFall();
-            expect(ebeguUtil.calculateBetreuungsId(undefined, fall, 0, 0)).toBe('');
+            let gemeinde: TSGemeinde = new TSGemeinde();
+            expect(ebeguUtil.calculateBetreuungsId(undefined, fall, gemeinde, 0, 0)).toBe('');
         });
         it('it returns empty string for undefined betreuung', () => {
             let gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode();
-            expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, undefined, 0, 0)).toBe('');
+            expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, undefined, undefined, 0, 0)).toBe('');
         });
-        it('it returns the right ID: YY(gesuchsperiodeBegin).fallNummer.Kind.Betreuung', () => {
+        it('it returns the right ID: YY(gesuchsperiodeBegin).fallNummer.gemeindeNummer.Kind.Betreuung', () => {
             let fall: TSFall = new TSFall(254);
+            let gemeinde: TSGemeinde = new TSGemeinde();
+            gemeinde.gemeindeNummer = 99;
             let gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
-            expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, fall, 1, 1)).toBe('16.000254.1.1');
+            expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, fall, gemeinde, 1, 1)).toBe('16.000254.099.1.1');
         });
     });
     describe('getFirstDayGesuchsperiodeAsString', () => {

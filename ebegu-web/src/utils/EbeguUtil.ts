@@ -14,6 +14,7 @@
  */
 
 import TSDossier from '../models/TSDossier';
+import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {IFilterService} from 'angular';
 import TSAbstractEntity from '../models/TSAbstractEntity';
@@ -128,12 +129,13 @@ export default class EbeguUtil {
     }
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
-    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode, fall: TSFall, kindContainerNumber: number, betreuungNumber: number): string {
+    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode, fall: TSFall, gemeinde: TSGemeinde, kindContainerNumber: number, betreuungNumber: number): string {
         let betreuungsId: string = '';
         if (gesuchsperiode && fall) {
             betreuungsId =
                 gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
                 + '.' + this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH)
+                + '.' + this.addZerosToNumber(gemeinde.gemeindeNummer, this.CONSTANTS.GEMEINDENUMMER_LENGTH)
                 + '.' + kindContainerNumber
                 + '.' + betreuungNumber;
         }
@@ -141,12 +143,13 @@ export default class EbeguUtil {
     }
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
-    public calculateBetreuungsIdFromBetreuung(fall: TSFall, betreuung: TSBetreuung): string {
+    public calculateBetreuungsIdFromBetreuung(fall: TSFall, gemeinde: TSGemeinde, betreuung: TSBetreuung): string {
         let betreuungsId: string = '';
         if (betreuung && fall) {
             betreuungsId =
                 betreuung.gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
                 + '.' + this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH)
+                + '.' + this.addZerosToNumber(gemeinde.gemeindeNummer, this.CONSTANTS.GEMEINDENUMMER_LENGTH)
                 + '.' + betreuung.kindNummer
                 + '.' + betreuung.betreuungNummer;
         }

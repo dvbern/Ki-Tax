@@ -318,7 +318,7 @@ export class DVMitteilungListController {
     public getBgNummer(): string {
         let bgNummer: string = '';
         if (this.betreuung) {
-            bgNummer = this.ebeguUtil.calculateBetreuungsId(this.betreuung.gesuchsperiode, this.dossier.fall, this.betreuung.kindNummer, this.betreuung.betreuungNummer);
+            bgNummer = this.ebeguUtil.calculateBetreuungsId(this.betreuung.gesuchsperiode, this.dossier.fall, this.dossier.gemeinde, this.betreuung.kindNummer, this.betreuung.betreuungNummer);
         }
         return bgNummer;
     }
@@ -326,7 +326,7 @@ export class DVMitteilungListController {
     public betreuungAsString(mitteilung: TSMitteilung): string {
         let betreuungAsString: string;
         if (mitteilung.betreuung) {
-            let bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall,
+            let bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall, mitteilung.dossier.gemeinde,
                 mitteilung.betreuung.kindNummer, mitteilung.betreuung.betreuungNummer);
             betreuungAsString = mitteilung.betreuung.kindFullname + ', ' + bgNummer;
         }

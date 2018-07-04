@@ -31,15 +31,12 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
-import com.google.common.base.Strings;
 import org.apache.commons.lang.StringUtils;
 
 /**
  *
  */
 public class PrintUtil {
-
-	private static final int FALLNUMMER_MAXLAENGE = 6;
 
 	/**
 	 * Gibt die Korrespondenzadresse zurueck wenn vorhanden, ansonsten die aktuelle Wohnadresse wenn vorhanden, wenn keine
@@ -87,8 +84,9 @@ public class PrintUtil {
 	 */
 	public static String createFallNummerString(Gesuch gesuch) {
 
-		return Integer.toString(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear()).substring(2, 4) + "."
-			+ Strings.padStart(Long.toString(gesuch.getFall().getFallNummer()), FALLNUMMER_MAXLAENGE, '0');
+		return Integer.toString(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear()).substring(2, 4) + '.'
+			+ gesuch.getFall().getPaddedFallnummer() + '.'
+			+ gesuch.getDossier().getGemeinde().getPaddedGemeindeNummer();
 	}
 
 	/**
