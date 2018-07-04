@@ -14,7 +14,7 @@
  */
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {IState, IStateParamsService} from 'angular-ui-router';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
@@ -23,7 +23,7 @@ export function alleVerfuegungenRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
 
-function getStates(): IState[] {
+function getStates(): Ng1StateDeclaration[] {
     return [
         new EbeguAlleVerfuegungenState()
     ];
@@ -31,14 +31,14 @@ function getStates(): IState[] {
 
 //STATES
 
-export class EbeguAlleVerfuegungenState implements IState {
+export class EbeguAlleVerfuegungenState implements Ng1StateDeclaration {
     name = 'alleVerfuegungen';
     template = '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/alleVerfuegungen/:fallId';
+    url = '/alleVerfuegungen/:dossierId';
 }
 
 // PARAMS
 
-export class IAlleVerfuegungenStateParams implements IStateParamsService {
-    fallId: string;
+export class IAlleVerfuegungenStateParams {
+    dossierId: string;
 }

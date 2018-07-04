@@ -54,6 +54,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void oneBerechtigung() {
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
+		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		persistence.merge(benutzer.getMandant());
 		persistence.merge(benutzer);
 
@@ -66,6 +67,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void addBerechtigung() {
 		LocalDate AB_ERSTE_BERECHTIGUNG = LocalDate.now();
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
+		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getCurrentBerechtigung().getGueltigkeit().setGueltigAb(AB_ERSTE_BERECHTIGUNG);
 		persistence.merge(benutzer.getMandant());
 		benutzer = persistence.merge(benutzer);
@@ -83,6 +85,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		secondBerechtigung.setBenutzer(benutzer);
 		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_JA);
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
+		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
 		benutzer = benutzerService.saveBenutzer(benutzer);
 
@@ -104,6 +107,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void handleAbgelaufeneBerechtigung() {
 		LocalDate AB_ERSTE_BERECHTIGUNG = LocalDate.now().minusYears(1);
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
+		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getCurrentBerechtigung().getGueltigkeit().setGueltigAb(AB_ERSTE_BERECHTIGUNG);
 		persistence.merge(benutzer.getMandant());
 		benutzer = persistence.merge(benutzer);
@@ -122,6 +126,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_JA);
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
 		secondBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
+		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
 		benutzer = benutzerService.saveBenutzer(benutzer);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();

@@ -14,7 +14,6 @@
  */
 
 import HttpAuthInterceptor from './service/HttpAuthInterceptor';
-import {DummyAuthenticationComponentConfig} from './dummyAuthenticaton';
 import {authenticationRun} from './authentication.route';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import HttpBuffer from './service/HttpBuffer';
@@ -29,6 +28,5 @@ export const EbeguAuthentication: angular.IModule =
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
         .component('startView', new StartComponentConfig())
-        .component('dummyAuthenticationView', new DummyAuthenticationComponentConfig())
         .component('schulungView', new SchulungComponentConfig())
         .component('authenticationView', new AuthenticationComponentConfig());

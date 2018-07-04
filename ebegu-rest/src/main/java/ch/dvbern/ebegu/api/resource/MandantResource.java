@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -33,11 +34,9 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.MandantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Mandanten
@@ -59,8 +58,8 @@ public class MandantResource {
 	@Path("/id/{mandantId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMandant findMandant(@Nonnull @NotNull @PathParam("mandantId") JaxId mandantJAXPId) throws EbeguException {
-		Validate.notNull(mandantJAXPId.getId());
+	public JaxMandant findMandant(@Nonnull @NotNull @PathParam("mandantId") JaxId mandantJAXPId) {
+		Objects.requireNonNull(mandantJAXPId.getId());
 		String mandantID = converter.toEntityId(mandantJAXPId);
 		Optional<Mandant> optional = mandantService.findMandant(mandantID);
 

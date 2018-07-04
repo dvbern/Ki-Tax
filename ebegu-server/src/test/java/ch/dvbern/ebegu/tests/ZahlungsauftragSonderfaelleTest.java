@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,7 @@ import org.junit.runner.RunWith;
  * Tests fuer den Zahlungsservice
  */
 @RunWith(Arquillian.class)
+@UsingDataSet("datasets/mandant-dataset.xml")
 public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTest {
 
 	@Inject

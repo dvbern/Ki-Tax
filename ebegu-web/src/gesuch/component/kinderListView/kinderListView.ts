@@ -15,7 +15,7 @@
 
 import {IComponentOptions} from 'angular';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import TSKindContainer from '../../../models/TSKindContainer';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
@@ -53,7 +53,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
         'WizardStepManager', '$scope', 'CONSTANTS', '$timeout'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private $translate: ITranslateService, private DvDialog: DvDialog,
                 wizardStepManager: WizardStepManager, $scope: IScope, private CONSTANTS: any, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);

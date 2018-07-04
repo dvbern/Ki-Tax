@@ -15,6 +15,8 @@
 
 import 'angular';
 import './core.module.less';
+import DossierRS from '../gesuch/service/dossierRS.rest';
+import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
 import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
 import {DVBenutzerConfig} from './component/dv-benutzer/dv-benutzer';
 import {appRun} from './core.route';
@@ -200,6 +202,8 @@ export const EbeguWebCore: angular.IModule = angular
     .service('ZahlungRS', ZahlungRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)
+    .service('DossierRS', DossierRS)
+    .service('GemeindeRS', GemeindeRS)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

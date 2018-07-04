@@ -52,7 +52,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -68,7 +68,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -83,7 +83,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall03_PerreiraMarcia testfall = new Testfall03_PerreiraMarcia(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -98,7 +98,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall04_WaltherLaura testfall = new Testfall04_WaltherLaura(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -113,7 +113,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall05_LuethiMeret testfall = new Testfall05_LuethiMeret(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -129,7 +129,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		testfall.createFall(null);
+		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);

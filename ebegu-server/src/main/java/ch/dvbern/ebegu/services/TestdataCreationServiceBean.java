@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.EbeguParameter;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -130,8 +132,9 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	@Override
 	public Gesuch createErstgesuch(@Nonnull ErstgesuchConfig config) {
 		Gesuchsperiode gesuchsperiode = getGesuchsperiode(null, config);
+		Gemeinde gemeinde = getGemeinde(null, config);
 		insertParametersForTestfaelle(gesuchsperiode);
-		AbstractTestfall testfall = createTestfall(config, gesuchsperiode);
+		AbstractTestfall testfall = createTestfall(config, gesuchsperiode, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		if (config.isVerfuegt()) {
 			gesuch.setTimestampVerfuegt(config.getTimestampVerfuegt());
@@ -145,9 +148,10 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		Gesuch mutation = gesuchService.antragMutieren(vorgaengerAntrag.getId(), config.getEingangsdatum())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ""));
 		if (config.getErwerbspensum() != null) {
-			assert mutation.getGesuchsteller1() != null;
+			Objects.requireNonNull(mutation.getGesuchsteller1());
 			Set<ErwerbspensumContainer> erwerbspensenContainersNotEmpty = mutation.getGesuchsteller1().getErwerbspensenContainersNotEmpty();
 			for (ErwerbspensumContainer erwerbspensumContainer : erwerbspensenContainersNotEmpty) {
+				Objects.requireNonNull(erwerbspensumContainer.getErwerbspensumJA());
 				erwerbspensumContainer.getErwerbspensumJA().setPensum(config.getErwerbspensum());
 			}
 		}
@@ -173,7 +177,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	}
 
 	@Nonnull
-	private AbstractTestfall createTestfall(@Nonnull ErstgesuchConfig config, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private AbstractTestfall createTestfall(@Nonnull ErstgesuchConfig config, @Nonnull Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		TestfallName fallid = config.getTestfallName();
 		boolean betreuungenBestaetigt = config.isBetreuungenBestaetigt();
 
@@ -183,61 +187,61 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		List<InstitutionStammdaten> institutionStammdatenList = testfaelleService.getInstitutionsstammdatenForTestfaelle();
 
 		if (TestfallName.WAELTI_DAGMAR == fallid) {
-			return new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.FEUTZ_IVONNE == fallid) {
-			return new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.PERREIRA_MARCIA == fallid) {
-			return new Testfall03_PerreiraMarcia(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall03_PerreiraMarcia(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.WALTHER_LAURA == fallid) {
-			return new Testfall04_WaltherLaura(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall04_WaltherLaura(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.LUETHI_MERET == fallid) {
-			return new Testfall05_LuethiMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall05_LuethiMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.BECKER_NORA == fallid) {
-			return new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.MEIER_MERET == fallid) {
-			return new Testfall07_MeierMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall07_MeierMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.UMZUG_AUS == fallid) {
-			return new Testfall08_UmzugAusInAusBern(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall08_UmzugAusInAusBern(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.UMZUG_VOR == fallid) {
-			return new Testfall10_UmzugVorGesuchsperiode(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall10_UmzugVorGesuchsperiode(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ABWESENHEIT == fallid) {
-			return new Testfall09_Abwesenheit(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall09_Abwesenheit(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV1 == fallid) {
-			return new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV2 == fallid) {
-			return new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV3 == fallid) {
-			return new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV4 == fallid) {
-			return new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV5 == fallid) {
-			return new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV6 == fallid) {
-			return new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV7 == fallid) {
-			return new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV8 == fallid) {
-			return new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		if (TestfallName.ASIV9 == fallid) {
-			return new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+			return new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 		}
 		throw new IllegalStateException("Unbekannter Testfall: " + fallid);
 	}
@@ -264,6 +268,30 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		}
 		Mandant mandant = all.iterator().next();
 		return mandant;
+	}
+
+	@Nonnull
+	private Gemeinde getGemeinde(@Nullable TestdataSetupConfig setupConfig, @Nullable ErstgesuchConfig erstgesuchConfig) {
+		// Vorrang hat die Konfig des aktuellen Gesuchs
+		if (erstgesuchConfig != null && erstgesuchConfig.getGemeinde() != null) {
+			return saveGemeindeIfNeeded(erstgesuchConfig.getGemeinde());
+		}
+		// Zweite Prio hat die allgemeine Konfig des Tests
+		if (setupConfig != null && setupConfig.getGemeinde() != null) {
+			return saveGemeindeIfNeeded(setupConfig.getGemeinde());
+		}
+		// Wir nehmen was da ist
+		return saveGemeindeIfNeeded(getFirstGemeinde());
+	}
+
+	@Nonnull
+	private Gemeinde getFirstGemeinde() {
+		Collection<Gemeinde> all = criteriaQueryHelper.getAll(Gemeinde.class);
+		if (all == null || all.size() != 1) {
+			throw new IllegalStateException("Gemeinde not set up correctly");
+		}
+		Gemeinde gemeinde = all.iterator().next();
+		return gemeinde;
 	}
 
 	@Nonnull
@@ -296,6 +324,15 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			return persistence.persist(gesuchsperiode);
 		}
 		return gesuchsperiode;
+	}
+
+	@Nonnull
+	private Gemeinde saveGemeindeIfNeeded(@Nonnull Gemeinde gemeinde) {
+		Gemeinde persistedGemeinde = persistence.find(Gemeinde.class, gemeinde.getId());
+		if (persistedGemeinde == null) {
+			return persistence.persist(gemeinde);
+		}
+		return gemeinde;
 	}
 
 	private void insertInstitutionsstammdatenForTestfaelle(@Nonnull TestdataSetupConfig config, @Nonnull Mandant mandant) {

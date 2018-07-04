@@ -24,6 +24,7 @@ import TestDataUtil from '../../../utils/TestDataUtil';
 import {EbeguWebPendenzenBetreuungen} from '../../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenListView';
+import {StateService} from '@uirouter/core';
 
 describe('pendenzenBetreuungenListView', function () {
 
@@ -37,7 +38,7 @@ describe('pendenzenBetreuungenListView', function () {
     let $httpBackend: angular.IHttpBackendService;
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let CONSTANTS: any;
 
     beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));

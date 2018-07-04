@@ -13,29 +13,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebAdmin} from '../../admin.module';
+import {EbeguWebCore} from '../../core/core.module';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import DossierRS from './dossierRS.rest';
 
-describe('adminView', function () {
+describe('dossier', function () {
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    let dossierRS: DossierRS;
+    let $httpBackend: angular.IHttpBackendService;
+    let ebeguRestUtil: EbeguRestUtil;
+    let REST_API: string;
 
-    let component: any;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    beforeEach(angular.mock.module(EbeguWebCore.name));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
-        $componentController = $injector.get('$componentController');
-        let $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
+        dossierRS = $injector.get('DossierRS');
+        $httpBackend = $injector.get('$httpBackend');
+        ebeguRestUtil = $injector.get('EbeguRestUtil');
+        REST_API = $injector.get('REST_API');
     }));
 
-    it('should be defined', function () {
-        /*
-         To initialise your component controller you have to setup your (mock) bindings and
-         pass them to $componentController.
-         */
-        let bindings = {};
-        component = $componentController('dvTraegerschaftView', {$scope: scope}, bindings);
-        expect(component).toBeDefined();
+    describe('Public API', function () {
+
+        it('should include a createDossier() function', function () {
+            expect(dossierRS.createDossier).toBeDefined();
+        });
+
+    });
+
+    describe('API Usage', function () {
+
     });
 });

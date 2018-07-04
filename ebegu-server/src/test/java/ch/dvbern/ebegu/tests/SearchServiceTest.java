@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -65,8 +64,6 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	private SearchService searchService;
 	@Inject
 	private InstitutionService institutionService;
-	@Inject
-	private FallService fallService;
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
@@ -223,13 +220,14 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(Long.valueOf(2), secondResult.getLeft());
 		Assert.assertEquals(2, secondResult.getRight().size());
 
-		gesuch.getFall().setVerantwortlicher(null);
+		gesuch.getDossier().setVerantwortlicherBG(null);
 		persistence.merge(gesuch);
 		//traegerschaftbenutzer setzten
 		Traegerschaft traegerschaft = institutionToSet.getTraegerschaft();
 		Assert.assertNotNull("Unser testaufbau sieht vor, dass die institution zu einer traegerschaft gehoert", traegerschaft);
-		Benutzer verantwortlicherUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "anonymous", traegerschaft, null, TestDataUtil.createDefaultMandant());
-		gesDagmar.getFall().setVerantwortlicher(verantwortlicherUser);
+		Benutzer verantwortlicherUser = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "anonymous", traegerschaft,
+			null, TestDataUtil.createDefaultMandant(), persistence);
+		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren
 		Pair<Long, List<Gesuch>> thirdResult = searchService.searchAllAntraege(filterDTO);
@@ -248,20 +246,20 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetPendenzenForSteueramtUser() {
-		final Fall fall = fallService.saveFall(TestDataUtil.createDefaultFall());
+		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
 		final Gesuchsperiode gesuchsperiode1516 = TestDataUtil.createCustomGesuchsperiode(2015, 2016);
 		final Gesuchsperiode periodeToUpdate = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1516);
 
-		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.VERFUEGT);
+		Gesuch gesuchVerfuegt = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.VERFUEGT);
 		persistence.persist(gesuchVerfuegt);
 
-		Gesuch gesuchSTV = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.PRUEFUNG_STV);
+		Gesuch gesuchSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.PRUEFUNG_STV);
 		persistence.persist(gesuchSTV);
 
-		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
+		Gesuch gesuchGeprueftSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.GEPRUEFT_STV);
 		persistence.persist(gesuchGeprueftSTV);
 
-		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(fall, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
+		Gesuch gesuchBearbeitungSTV = TestDataUtil.createGesuch(dossier, periodeToUpdate, AntragStatus.IN_BEARBEITUNG_STV);
 		persistence.persist(gesuchBearbeitungSTV);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
@@ -285,6 +283,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		TestDataUtil.gesuchVerfuegen(gesuch, gesuchService);
 
+		loginAsSachbearbeiterJA();
+
 		// es muss 2 Faelle geben
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 		Pair<Long, List<Gesuch>> allantraege = searchService.searchAllAntraege(filterDTO);
@@ -302,7 +302,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchPendenzenMischgesuchFlagFinSit() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		addVerantwortlicherSCHToFall(gesuch.getFall());
+		addVerantwortlicherTSToDossier(gesuch.getDossier());
 
 		loginAsAdminSchulamt();
 
@@ -348,18 +348,19 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	private void convertToSCHGesuch(Gesuch gesuch) {
-		final Fall fall = addVerantwortlicherSCHToFall(gesuch.getFall());
-		fall.setVerantwortlicher(null);
-		persistence.merge(fall);
+		final Dossier dossier = addVerantwortlicherTSToDossier(gesuch.getDossier());
+		dossier.setVerantwortlicherBG(null);
+		persistence.merge(dossier);
 	}
 
-	private Fall addVerantwortlicherSCHToFall(@Nonnull Fall fall) {
+	private Dossier addVerantwortlicherTSToDossier(@Nonnull Dossier dossier) {
 		// mit 2 Verantwortlichen wird zu Mischgesuch
 		Benutzer verantSCH = TestDataUtil.createBenutzerSCH();
+		verantSCH.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		persistence.persist(verantSCH.getMandant());
 		persistence.persist(verantSCH);
-		fall.setVerantwortlicherSCH(verantSCH);
-		return persistence.merge(fall);
+		dossier.setVerantwortlicherTS(verantSCH);
+		return persistence.merge(dossier);
 	}
 
 }

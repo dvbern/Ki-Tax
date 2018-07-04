@@ -108,7 +108,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	public Optional<FinanzielleSituationContainer> findFinanzielleSituation(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		FinanzielleSituationContainer finanzielleSituation = persistence.find(FinanzielleSituationContainer.class, id);
-		authorizer.checkReadAuthorization(finanzielleSituation); //TODO: EBEGU-1610
+		authorizer.checkReadAuthorization(finanzielleSituation);
 		return Optional.ofNullable(finanzielleSituation);
 	}
 
@@ -148,6 +148,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
 			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 		if (optGrenzwert.isPresent()) {
+			//noinspection ConstantConditions
 			return MathUtil.ZWEI_NACHKOMMASTELLE.divide(BigDecimal.valueOf(100).subtract(optGrenzwert.get().getValueAsBigDecimal()), BigDecimal.valueOf(100));
 		}
 		return BigDecimal.ONE; // By default wird 1 als Grenz gesetzt und alle EKV werden akzeptiert

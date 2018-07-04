@@ -66,6 +66,7 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_container_gesuch_id"), nullable = false)
 	private Gesuch gesuch;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_container_kindgs_id"), nullable = true)
@@ -91,7 +92,7 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	@Column(nullable = false)
 	private Integer nextNumberBetreuung = 1;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "kind")
@@ -112,11 +113,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		this.gesuch = gesuch;
 	}
 
+	@Nullable
 	public Kind getKindGS() {
 		return kindGS;
 	}
 
-	public void setKindGS(Kind kindGS) {
+	public void setKindGS(@Nullable Kind kindGS) {
 		this.kindGS = kindGS;
 	}
 
@@ -144,12 +146,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		this.nextNumberBetreuung = nextNumberBetreuung;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<Betreuung> getBetreuungen() {
 		return betreuungen;
 	}
 
-	public void setBetreuungen(@Nullable Set<Betreuung> betreuungen) {
+	public void setBetreuungen(@Nonnull Set<Betreuung> betreuungen) {
 		this.betreuungen = betreuungen;
 	}
 
@@ -163,7 +165,7 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	}
 
 	@Override
-	public int compareTo(KindContainer other) {
+	public int compareTo(@Nonnull KindContainer other) {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
 		compareToBuilder.append(this.getKindNummer(), other.getKindNummer());
 		compareToBuilder.append(this.getId(), other.getId());
@@ -175,11 +177,9 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		super.copyForMutation(mutation);
 		mutation.setKindJA(this.getKindJA().copyForMutation(new Kind()));
 		mutation.setNextNumberBetreuung(this.getNextNumberBetreuung());
-		if (this.getBetreuungen() != null) {
-			mutation.setBetreuungen(new TreeSet<>());
-			for (Betreuung betreuung : this.getBetreuungen()) {
-				mutation.getBetreuungen().add(betreuung.copyForMutation(new Betreuung(), mutation, eingangsart));
-			}
+		mutation.setBetreuungen(new TreeSet<>());
+		for (Betreuung betreuung : this.getBetreuungen()) {
+			mutation.getBetreuungen().add(betreuung.copyForMutation(new Betreuung(), mutation, eingangsart));
 		}
 		return copyForMutationOrErneuerung(mutation, gesuchMutation);
 	}
@@ -230,6 +230,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 	@Override
 	public String getOwningFallId() {
 		return getGesuch().getFall().getId();
+	}
+
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return getGesuch().getDossier().getId();
 	}
 
 	@Override

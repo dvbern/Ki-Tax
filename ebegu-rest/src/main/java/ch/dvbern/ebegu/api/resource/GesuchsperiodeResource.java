@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,6 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * REST Resource fuer Gesuchsperiode
@@ -67,7 +67,7 @@ public class GesuchsperiodeResource {
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Erstellt eine neue Gesuchsperiode in der Datenbank", response = JaxGesuchsperiode.class)
-	@Nullable
+	@Nonnull
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@ public class GesuchsperiodeResource {
 	public JaxGesuchsperiode findGesuchsperiode(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId) {
 
-		Validate.notNull(gesuchsperiodeJAXPId.getId());
+		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
 		String gesuchsperiodeID = converter.toEntityId(gesuchsperiodeJAXPId);
 		Optional<Gesuchsperiode> optional = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID);
 
@@ -129,7 +129,7 @@ public class GesuchsperiodeResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
 		@Context HttpServletResponse response) {
 
-		Validate.notNull(gesuchsperiodeJAXPId.getId());
+		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
 		gesuchsperiodeService.removeGesuchsperiode(converter.toEntityId(gesuchsperiodeJAXPId));
 		return Response.ok().build();
 	}
@@ -180,11 +180,13 @@ public class GesuchsperiodeResource {
 	@SuppressWarnings("InstanceMethodNamingConvention")
 	@Nonnull
 	@GET
-	@Path("/unclosed/{fallId}")
+	@Path("/unclosed/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nonnull @PathParam("fallId") String fallId) {
-		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(fallId).stream()
+	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
+		@Nonnull @PathParam("dossierId") String dossierId) {
+
+		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId).stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());

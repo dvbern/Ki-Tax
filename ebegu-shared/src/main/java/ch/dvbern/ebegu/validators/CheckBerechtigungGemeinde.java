@@ -15,25 +15,27 @@
 
 package ch.dvbern.ebegu.validators;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import ch.dvbern.ebegu.entities.Fall;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-/**
- * Validator der prueft, dass der eingegebene Verantwortlicher die richtige Role hat. SuperAdmin wird auch als Role zugelassen,
- * damit man auch Testfaelle erzeugen kann.
- */
-public class CheckVerantwortlicherValidatorJA implements ConstraintValidator<CheckVerantwortlicherJA, Fall> {
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-	@Override
-	public void initialize(CheckVerantwortlicherJA constraintAnnotation) {
-		// nop
-	}
+@Target({ TYPE, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Constraint(validatedBy = CheckBerechtigungGemeindeValidator.class)
+@Documented
+public @interface CheckBerechtigungGemeinde {
 
-	@Override
-	public boolean isValid(Fall instance, ConstraintValidatorContext context) {
-		return instance.getVerantwortlicher() == null || instance.getVerantwortlicher().getRole().isRoleJugendamt()
-			|| instance.getVerantwortlicher().getRole().isSuperadmin();
-	}
+	String message() default "{invalid_berechtigung_gemeinde_rules}";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 }

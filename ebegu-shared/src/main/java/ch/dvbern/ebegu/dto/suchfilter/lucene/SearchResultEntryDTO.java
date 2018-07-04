@@ -44,6 +44,8 @@ public class SearchResultEntryDTO implements Serializable {
 	private String gesuchID;
 	@Nullable
 	private String fallID;
+	@Nullable
+	private String dossierId;
 
 	@Nullable
 	private JaxAbstractAntragDTO antragDTO; //dto mit detailinfos
@@ -54,7 +56,8 @@ public class SearchResultEntryDTO implements Serializable {
 		@Nonnull String text,
 		@Nullable String additionalInformation,
 		@Nullable String gesuchID,
-		@Nullable String fallID) {
+		@Nullable String fallID,
+		@Nullable String dossierID) {
 
 		this.entity = entity;
 		this.resultId = resultId;
@@ -62,6 +65,7 @@ public class SearchResultEntryDTO implements Serializable {
 		this.additionalInformation = additionalInformation;
 		this.gesuchID = gesuchID;
 		this.fallID = fallID;
+		this.dossierId = dossierID;
 	}
 
 	@Nonnull
@@ -104,6 +108,15 @@ public class SearchResultEntryDTO implements Serializable {
 		this.fallID = fallID;
 	}
 
+	@Nullable
+	public String getDossierId() {
+		return dossierId;
+	}
+
+	public void setDossierId(@Nullable String dossierId) {
+		this.dossierId = dossierId;
+	}
+
 	public static List<SearchResultEntryDTO> convertSearchResult(SearchFilter filter, List<Searchable> results) {
 		return results.stream().map(result -> new SearchResultEntryDTO(
 			filter.getSearchEntityType(),
@@ -111,9 +124,9 @@ public class SearchResultEntryDTO implements Serializable {
 			result.getSearchResultSummary(),
 			result.getSearchResultAdditionalInformation(),
 			result.getOwningGesuchId(),
-			result.getOwningFallId())
-		)
-			.collect(Collectors.toList());
+			result.getOwningFallId(),
+			result.getOwningDossierId())
+		).collect(Collectors.toList());
 	}
 
 	@Nullable

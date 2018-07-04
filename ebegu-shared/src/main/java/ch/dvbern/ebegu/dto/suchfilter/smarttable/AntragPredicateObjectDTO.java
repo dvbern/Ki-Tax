@@ -45,8 +45,8 @@ public class AntragPredicateObjectDTO implements Serializable {
 	private Boolean dokumenteHochgeladen;
 	private String angebote;        //Gesuch.kindContainers.betreuungen.institutionStammdaten.betreuungsangebotTyp
 	private String institutionen;   //Gesuch.kindContainers.betreuungen.institutionStammdaten.institution.name
-	private String verantwortlicher; //Fall.verwantwortlicher.name
-	private String verantwortlicherSCH; //Fall.verwantwortlicherSCH.name
+	private String verantwortlicherBG; //Dossier.verwantwortlicherBG.name
+	private String verantwortlicherTS; //Dossier.verwantwortlicherTS.name
 	private String kinder; //Gesuch.kindContainers.kindJa.vorname
 
 	public String getKinder() {
@@ -145,20 +145,20 @@ public class AntragPredicateObjectDTO implements Serializable {
 		this.institutionen = institutionen;
 	}
 
-	public String getVerantwortlicher() {
-		return verantwortlicher;
+	public String getVerantwortlicherBG() {
+		return verantwortlicherBG;
 	}
 
-	public void setVerantwortlicher(String verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
+	public void setVerantwortlicherBG(String verantwortlicherBG) {
+		this.verantwortlicherBG = verantwortlicherBG;
 	}
 
-	public String getVerantwortlicherSCH() {
-		return verantwortlicherSCH;
+	public String getVerantwortlicherTS() {
+		return verantwortlicherTS;
 	}
 
-	public void setVerantwortlicherSCH(String verantwortlicherSCH) {
-		this.verantwortlicherSCH = verantwortlicherSCH;
+	public void setVerantwortlicherTS(String verantwortlicherTS) {
+		this.verantwortlicherTS = verantwortlicherTS;
 	}
 
 	@Override
@@ -173,8 +173,8 @@ public class AntragPredicateObjectDTO implements Serializable {
 			.append("dokumenteHochgeladen", dokumenteHochgeladen)
 			.append("angebote", angebote)
 			.append("institutionen", institutionen)
-			.append("verantwortlicher", verantwortlicher)
-			.append("verantwortlicherSCH", verantwortlicherSCH)
+			.append("verantwortlicherBG", verantwortlicherBG)
+			.append("verantwortlicherTS", verantwortlicherTS)
 			.append("kinder", kinder)
 			.toString();
 	}

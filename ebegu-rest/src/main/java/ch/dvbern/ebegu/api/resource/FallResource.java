@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -32,22 +33,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.FallService;
-import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Fall
@@ -61,14 +55,11 @@ public class FallResource {
 	private FallService fallService;
 
 	@Inject
-	private BenutzerService benutzerService;
-
-	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Creates a new Fall in the database. The transfer object also has a relation to Gesuch " +
 		"which is stored in the database as well.", response = JaxFall.class)
-	@Nullable
+	@Nonnull
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -96,7 +87,7 @@ public class FallResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxFall findFall(
 		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
-		Validate.notNull(fallJAXPId.getId());
+		Objects.requireNonNull(fallJAXPId.getId());
 		String fallID = converter.toEntityId(fallJAXPId);
 		Optional<Fall> fallOptional = fallService.findFall(fallID);
 
@@ -138,59 +129,5 @@ public class FallResource {
 		}
 		Fall fallToReturn = fallOptional.get();
 		return converter.fallToJAX(fallToReturn);
-	}
-
-	@ApiOperation(value = "Setzt den Verantwortlichen JA fuer diesen Fall.", response = JaxFall.class)
-	@Nullable
-	@PUT
-	@Path("/verantwortlicherJA/{fallId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response setVerantwortlicherJA(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId,
-		@Nullable String username,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Validate.notNull(fallJaxId.getId());
-
-		Benutzer benutzer = null;
-		if(!Strings.isNullOrEmpty(username)) {
-			benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherJA",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
-		}
-		Fall fall = fallService.findFall(fallJaxId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherJA",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallJaxId.getId()));
-
-		this.fallService.setVerantwortlicherJA(fall.getId(), benutzer);
-
-		return Response.ok().build();
-	}
-
-	@ApiOperation(value = "Setzt den Verantwortlichen SCH fuer diesen Fall.", response = JaxFall.class)
-	@Nullable
-	@PUT
-	@Path("/verantwortlicherSCH/{fallId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response setVerantwortlicherSCH(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId,
-		@Nullable String username,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Validate.notNull(fallJaxId.getId());
-
-		Benutzer benutzer = null;
-		if(!Strings.isNullOrEmpty(username)) {
-			benutzer = benutzerService.findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherSCH",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
-		}
-		Fall fall = fallService.findFall(fallJaxId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherSCH",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallJaxId.getId()));
-
-		this.fallService.setVerantwortlicherSCH(fall.getId(), benutzer);
-
-		return Response.ok().build();
 	}
 }

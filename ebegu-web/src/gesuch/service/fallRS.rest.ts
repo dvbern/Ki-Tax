@@ -83,20 +83,4 @@ export default class FallRS {
             return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
         });
     }
-
-    public setVerantwortlicherJA(fallId: string, username: string): IHttpPromise<TSFall> {
-        return this.http.put(this.serviceURL + '/verantwortlicherJA/' +  encodeURIComponent(fallId), username, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    }
-
-    public setVerantwortlicherSCH(fallId: string, username: string): IHttpPromise<TSFall> {
-        return this.http.put(this.serviceURL + '/verantwortlicherSCH/' +  encodeURIComponent(fallId), username, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    }
 }

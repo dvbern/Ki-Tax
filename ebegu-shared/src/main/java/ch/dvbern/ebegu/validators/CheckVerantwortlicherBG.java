@@ -26,13 +26,17 @@ import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Validator der prueft, dass der eingegebene Verantwortlicher die richtige Role hat. SuperAdmin wird auch als Role zugelassen,
+ * damit man auch Testfaelle erzeugen kann.
+ */
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckBerechtigungValidator.class)
+@Constraint(validatedBy = CheckVerantwortlicherValidatorBG.class)
 @Documented
-public @interface CheckBerechtigung {
+public @interface CheckVerantwortlicherBG {
 
-	String message() default "{invalid_benutzer_roles_rules}";
+	String message() default "{invalid_verantwortlicher}";
 
 	Class<?>[] groups() default {};
 

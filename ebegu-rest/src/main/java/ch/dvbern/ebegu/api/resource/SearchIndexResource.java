@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -45,14 +44,14 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.QuickSearchResultDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchEntityType;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchFilter;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchResultEntryDTO;
-import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
-import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -81,7 +80,7 @@ public class SearchIndexResource {
 	private InstitutionService institutionService;
 
 	@Inject
-	private FallService fallService;
+	private DossierService dossierService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -165,11 +164,11 @@ public class SearchIndexResource {
 
 		faelleWithMitteilungResults.getResultEntities()
 			.forEach(searchResultEntryDTO -> {
-				if (searchResultEntryDTO.getEntity() == SearchEntityType.FALL && searchResultEntryDTO.getFallID() != null) {
-					final Optional<Fall> fallOpt = fallService.findFall(searchResultEntryDTO.getFallID());
-					final Fall fall = fallOpt.orElseThrow(() -> new EbeguEntityNotFoundException
-						("convertQuicksearchResultToDTO", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, searchResultEntryDTO.getFallID()));
-					quickSearchResultDTO.addSubResultFall(searchResultEntryDTO, fall);
+				String dossierId = searchResultEntryDTO.getDossierId();
+				if (searchResultEntryDTO.getEntity() == SearchEntityType.DOSSIER && dossierId != null) {
+					Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(()
+						-> new EbeguEntityNotFoundException("convertQuicksearchResultToDTO", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+					quickSearchResultDTO.addSubResultDossier(searchResultEntryDTO, dossier);
 				}
 			});
 
@@ -189,8 +188,8 @@ public class SearchIndexResource {
 			//we remeber the results that we only found in the fall index and that had a mitteilung
 			QuickSearchResultDTO result = new QuickSearchResultDTO();
 			for (SearchResultEntryDTO searchResult : quickSearch.getResultEntities()) {
-				if (SearchEntityType.FALL == searchResult.getEntity() && searchResult.getGesuchID() == null
-					&& searchResult.getFallID() != null && fallService.hasFallAnyMitteilung(searchResult.getFallID())) {
+				if (SearchEntityType.DOSSIER == searchResult.getEntity() && searchResult.getGesuchID() == null
+					&& searchResult.getDossierId() != null && dossierService.hasDossierAnyMitteilung(searchResult.getDossierId())) {
 					result.addResult(searchResult);
 				}
 			}
@@ -255,6 +254,6 @@ public class SearchIndexResource {
 
 	private boolean isCurrentUserInstitutionOrTraegerschaft() {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
-		return UserRole.SACHBEARBEITER_INSTITUTION.equals(userRole) || UserRole.SACHBEARBEITER_TRAEGERSCHAFT.equals(userRole);
+		return UserRole.SACHBEARBEITER_INSTITUTION == userRole || UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole;
 	}
 }

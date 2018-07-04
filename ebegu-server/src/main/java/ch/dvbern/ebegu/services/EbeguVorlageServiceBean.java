@@ -60,9 +60,6 @@ import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -73,8 +70,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Stateless
 @Local(EbeguVorlageService.class)
 public class EbeguVorlageServiceBean extends AbstractBaseService implements EbeguVorlageService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(EbeguVorlageServiceBean.class.getSimpleName());
 
 	@Inject
 	private Persistence persistence;
@@ -193,13 +188,14 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	public void removeVorlage(@Nonnull String id) {
-		Validate.notNull(id);
+		Objects.requireNonNull(id);
 		Optional<EbeguVorlage> ebeguVorlage = findById(id);
 		EbeguVorlage ebeguVorlageEntity = ebeguVorlage.orElseThrow(() -> new EbeguEntityNotFoundException
 			("removeEbeguVorlage", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
-		fileSaverService.remove(ebeguVorlageEntity.getVorlage().getFilepfad());
-
+		if (ebeguVorlageEntity.getVorlage() != null) {
+			fileSaverService.remove(ebeguVorlageEntity.getVorlage().getFilepfad());
+		}
 		ebeguVorlageEntity.setVorlage(null);
 		updateEbeguVorlage(ebeguVorlageEntity);
 	}
@@ -255,8 +251,12 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Override
 	@PermitAll
+	@Nullable
 	public Vorlage getBenutzerhandbuch() {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
+		if (userRole == null) {
+			return null;
+		}
 		EbeguVorlageKey key = EbeguVorlageKey.getBenutzerHandbuchKeyForRole(userRole);
 		if (key == null) {
 			return null;
@@ -285,7 +285,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 			vorlage.setFilepfad(benutzerhandbuch.getPathWithoutFileName() + File.separator + benutzerhandbuch.getActualFilename());
 			return vorlage;
 		} catch (IOException | MimeTypeParseException e) {
-			LOGGER.error("Could not save vorlage!", e);
 			throw new EbeguRuntimeException("getBenutzerhandbuch", "Could not create Benutzerhandbuch", e);
 		}
 	}

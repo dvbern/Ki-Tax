@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -35,6 +36,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,18 +48,26 @@ import org.junit.runner.RunWith;
 @Transactional(TransactionMode.DISABLED)
 public class MahnungServiceTest extends AbstractEbeguLoginTest {
 
+	private Gemeinde bern;
+
 	@Inject
 	private MahnungService mahnungService;
 
 	@Inject
 	private Persistence persistence;
 
+	@Before
+	public void setUp() {
+		bern = TestDataUtil.createGemeindeBern();
+		bern = persistence.persist(bern);
+	}
+
 	@Test
 	public void createErsteMahnung() {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		Mahnung mahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch));
 		Assert.assertNotNull(mahnung);
 		Assert.assertEquals(MahnungTyp.ERSTE_MAHNUNG, mahnung.getMahnungTyp());
@@ -68,7 +78,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		Mahnung ersteMahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch));
 		Assert.assertNotNull(ersteMahnung);
 		Mahnung zweiteMahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch));
@@ -80,7 +90,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch));
 	}
 
@@ -89,7 +99,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		Mahnung mahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch));
 		Assert.assertNotNull(mahnung);
 
@@ -103,7 +113,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		Mahnung ersteMahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch));
 		Assert.assertNotNull(ersteMahnung);
 
@@ -126,7 +136,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch));
 		mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch));
 
@@ -152,7 +162,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(mahnungService);
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 
-		Gesuch gesuchMitMahnung = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuchMitMahnung = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		gesuchMitMahnung.setStatus(AntragStatus.ERSTE_MAHNUNG);
 		persistence.merge(gesuchMitMahnung);
 		mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuchMitMahnung, LocalDate.now().plusWeeks(1), 3));
@@ -213,7 +223,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuchWithAbgelaufenerMahnung() {
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, bern);
 		gesuch.setStatus(AntragStatus.ERSTE_MAHNUNG);
 		gesuch = persistence.merge(gesuch);
 		final Mahnung mahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch,

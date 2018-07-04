@@ -23,13 +23,14 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {EinkommensverschlechterungResultateViewController} from './einkommensverschlechterungResultateView';
+import {StateService} from '@uirouter/core';
 
 describe('einkommensverschlechterungResultateView', function () {
 
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
     let ekvrvc: EinkommensverschlechterungResultateViewController;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
 

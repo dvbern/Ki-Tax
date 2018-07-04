@@ -14,13 +14,15 @@
  */
 
 import {IComponentOptions} from 'angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import IPromise = angular.IPromise;
 import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
 import ILogService = angular.ILogService;
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 let template = require('./pendenzenListView.html');
 require('./pendenzenListView.less');
@@ -36,10 +38,10 @@ export class PendenzenListViewController {
 
     totalResultCount: string = '0';
 
-    static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
+    static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS', 'AuthServiceRS'];
 
-    constructor(private gesuchModelManager: GesuchModelManager, private $state: IStateService, private $log: ILogService,
-                private searchRS: SearchRS) {
+    constructor(private gesuchModelManager: GesuchModelManager, private $state: StateService, private $log: ILogService,
+                private searchRS: SearchRS, private authServiceRS: AuthServiceRS) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
@@ -60,14 +62,27 @@ export class PendenzenListViewController {
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean) {
         this.gesuchModelManager.clearGesuch();
-        let navObj: any = {
-            gesuchId: pendenz.antragId
-        };
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
+            let navObj: any = {
+                gesuchId: pendenz.antragId
+            };
+            this.navigate('gesuch.familiensituation', navObj, isCtrlKeyPressed);
+        } else {
+            let navObj: any = {
+                createNew: false,
+                gesuchId: pendenz.antragId,
+                dossierId: pendenz.dossierId
+            };
+            this.navigate('gesuch.fallcreation', navObj, isCtrlKeyPressed);
+        }
+    }
+
+    private navigate(path: string, navObj: any, isCtrlKeyPressed: boolean): void {
         if (isCtrlKeyPressed) {
-            let url = this.$state.href('gesuch.familiensituation', navObj);
+            let url = this.$state.href(path, navObj);
             window.open(url, '_blank');
         } else {
-            this.$state.go('gesuch.familiensituation', navObj);
+            this.$state.go(path, navObj);
         }
     }
 }

@@ -48,14 +48,14 @@
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" data-translate="FREIGEBEN_DIALOG_LABEL_VERANTWORTLICHER"
-                                   for="verantwortlicher">
+                                   for="verantwortlicherBG">
                             </label>
                             <div class="dv-select-style">
-                                <select name="verantwortlicher"
-                                        id="verantwortlicher"
+                                <select name="verantwortlicherBG"
+                                        id="verantwortlicherBG"
                                         class="form-control"
-                                        ng-options="user.username as user.getFullName() for user in vm.userJAList"
-                                        ng-model="vm.selectedUserJA">
+                                        ng-options="user.username as user.getFullName() for user in vm.userBGList"
+                                        ng-model="vm.selectedUserBG">
                                     <option value="">{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</option>
                                 </select>
                             </div>
@@ -66,14 +66,14 @@
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" data-translate="FREIGEBEN_DIALOG_LABEL_VERANTWORTLICHER_SCH"
-                                   for="verantwortlicher">
+                                   for="verantwortlicherTS">
                             </label>
                             <div class="dv-select-style">
-                                <select name="verantwortlicherSCH"
-                                        id="verantwortlicherSCH"
+                                <select name="verantwortlicherTS"
+                                        id="verantwortlicherTS"
                                         class="form-control"
-                                        ng-options="user.username as user.getFullName() for user in vm.userSCHList"
-                                        ng-model="vm.selectedUserSCH">
+                                        ng-options="user.username as user.getFullName() for user in vm.userTSList"
+                                        ng-model="vm.selectedUserTS">
                                     <option value="">{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</option>
                                 </select>
                             </div>
@@ -85,7 +85,7 @@
     </md-dialog-content>
 
     <md-dialog-actions layout-align="space-between center">
-        <button class="ng-scope" type="button" ng-class=" {'btn-link' : !vm.hasError()}"
+        <button class="dv-btn ng-scope" type="button" ng-class=" {'btn-link' : !vm.hasError()}"
                 ng-if="vm.hasError() || vm.gesuch" ng-click="vm.cancel()" aria-label="{{'CANCEL' | translate}}">
             <span class="ng-binding ng-scope" data-translate="CANCEL"></span>
         </button>

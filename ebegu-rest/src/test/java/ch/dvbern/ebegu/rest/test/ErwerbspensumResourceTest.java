@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.api.resource.GesuchstellerResource;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
-import ch.dvbern.ebegu.services.EbeguParameterService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,14 +52,12 @@ public class ErwerbspensumResourceTest extends AbstractEbeguRestLoginTest {
 	private Persistence persistence;
 	@Inject
 	private JaxBConverter converter;
-	@Inject
-	private EbeguParameterService ebeguParameterService;
+
 	private JaxId gesuchJAXPId;
 
 	@Before
 	public void setUp() {
-		final Gesuch testGesuch = TestDataUtil.createDefaultGesuch();
-		TestDataUtil.persistEntities(testGesuch, persistence);
+		final Gesuch testGesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		gesuchJAXPId = new JaxId(testGesuch.getId());
 	}
 

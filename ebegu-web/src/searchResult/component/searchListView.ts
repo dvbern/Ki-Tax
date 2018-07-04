@@ -54,7 +54,7 @@ export class SearchListViewController {
             for (let res of quickSearchResult.resultEntities) {
                 this.antragList.push(res.antragDTO);
             }
-            this.ebeguUtil.handleSmarttablesUpdateBug(this.antragList);
+            EbeguUtil.handleSmarttablesUpdateBug(this.antragList);
         }).catch(() => {
             this.$log.warn('error during globalSearch');
         });

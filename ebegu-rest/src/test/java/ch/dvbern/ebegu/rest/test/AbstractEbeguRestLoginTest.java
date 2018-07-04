@@ -76,7 +76,7 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
-		Benutzer saja = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant);
+		Benutzer saja = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant, persistence);
 		persistence.persist(saja);
 		return saja;
 	}

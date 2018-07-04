@@ -14,7 +14,7 @@
  */
 
 import {IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
@@ -40,7 +40,10 @@ let style = require('./dv-navigation.less');
  */
 export class DVNavigation implements IDirective {
     restrict = 'E';
-    scope = {
+    scope = {};
+    controller = NavigatorController;
+    controllerAs = 'vm';
+    bindToController = {
         dvPrevious: '&?',
         dvNext: '&?',
         dvCancel: '&?',
@@ -51,9 +54,6 @@ export class DVNavigation implements IDirective {
         dvTranslateNext: '@',
         dvTranslatePrevious: '@'
     };
-    controller = NavigatorController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     static factory(): IDirectiveFactory {
@@ -84,7 +84,7 @@ export class NavigatorController {
     static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
 
     /* @ngInject */
-    constructor(private wizardStepManager: WizardStepManager, private state: IStateService, private gesuchModelManager: GesuchModelManager,
+    constructor(private wizardStepManager: WizardStepManager, private state: StateService, private gesuchModelManager: GesuchModelManager,
         private $translate: ITranslateService, private errorService: ErrorService, private $q: IQService, private $timeout: ITimeoutService) {
     }
 
@@ -384,7 +384,7 @@ export class NavigatorController {
                 eingangsart: this.gesuchModelManager.getGesuch().eingangsart,
                 gesuchId: gesuchId,
                 gesuchsperiodeId: this.gesuchModelManager.getGesuch().gesuchsperiode.id,
-                fallId: this.gesuchModelManager.getGesuch().fall.id
+                dossierId: this.gesuchModelManager.getDossier().id
             });
 
         } else if (stepName === TSWizardStepName.FAMILIENSITUATION) {

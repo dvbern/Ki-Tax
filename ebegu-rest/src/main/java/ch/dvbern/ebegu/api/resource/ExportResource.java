@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Stateless;
@@ -43,7 +44,6 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Resource for Exporting data
@@ -69,7 +69,7 @@ public class ExportResource {
 	public VerfuegungenExportDTO exportVerfuegungenOfAntrag(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
-		Validate.notNull(id.getId(), "id muss gesetzt sein");
+		Objects.requireNonNull(id.getId(), "id muss gesetzt sein");
 		String antragID = converter.toEntityId(id);
 		return this.exportServiceBean.exportAllVerfuegungenOfAntrag(antragID);
 	}

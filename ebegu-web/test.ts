@@ -13,10 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validationgroups;
+//IMPORTANT, zone.js must be imported FIRST
 
-/**
- * ValidationGroup für Validierungen beim Setzen von Verantwortlichen auf einem Fall
- */
-public interface ChangeVerantwortlicherSCHValidationGroup {
-}
+import 'zone.js/dist/long-stack-trace-zone';
+import 'zone.js/dist/proxy.js';
+import 'zone.js/dist/sync-test';
+import 'zone.js/dist/jasmine-patch';
+import 'zone.js/dist/async-test';
+import 'zone.js/dist/fake-async-test';
+import { getTestBed } from '@angular/core/testing';
+import {
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting
+} from '@angular/platform-browser-dynamic/testing';
+
+// First, initialize the Angular testing environment.
+getTestBed().initTestEnvironment(
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting(),
+);
+// Then we find all the tests for ng2.
+const context = require.context('./', true, /\.ngspec\.ts$/);
+// And load the modules.
+context.keys().forEach(context);

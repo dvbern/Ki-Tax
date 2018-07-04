@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
@@ -74,7 +74,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     /* @ngInject */
 
-    constructor(private $state: IStateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager, private DvDialog: DvDialog,
                 private downloadRS: DownloadRS, private mahnungRS: MahnungRS, private $log: ILogService,
                 private authServiceRs: AuthServiceRS, $scope: IScope, private gesuchRS: GesuchRS,
@@ -211,7 +211,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public isKompletteKorrespondenzVisible(): boolean {
         let status = this.getAntragStatus();
-        return this.isBegleitschreibenVisible() && isAnyStatusOfVerfuegt(status);
+        return this.isBegleitschreibenVisible() && isAnyStatusOfVerfuegt(status) && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getJugendamtAndSchulamtRole());
     }
 
     private getAntragStatus(): TSAntragStatus {
@@ -221,7 +221,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getFall() {
         if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().fall;
+            return this.gesuchModelManager.getFall();
         }
         return undefined;
     }

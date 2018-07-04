@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.batch.jobs.report;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.annotation.Nonnull;
@@ -38,7 +39,6 @@ import ch.dvbern.ebegu.services.DownloadFileService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
-import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +71,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	public String process() {
 		final String receiverEmail = getParameters().getProperty(WorkJobConstants.EMAIL_OF_USER);
 		LOG.debug("Sending mail with file for user to {}", receiverEmail);
-		Validate.notNull(receiverEmail, " Email muss gesetzt sein damit der Fertige Report an den Empfaenger geschickt werden kann");
+		Objects.requireNonNull(receiverEmail, " Email muss gesetzt sein damit der Fertige Report an den Empfaenger geschickt werden kann");
 		final Workjob workJob = readWorkjobFromDatabase();
 		final UploadFileInfo fileMetadata = jobDataContainer.getResult();
 		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
@@ -116,7 +116,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	@Nonnull
 	private Workjob readWorkjobFromDatabase() {
 		final Workjob workJob = workJobService.findWorkjobByExecutionId(jobCtx.getExecutionId());
-		Validate.notNull(workJob, "Workjob mit dieser execution id muss existieren  " + jobCtx.getExecutionId());
+		Objects.requireNonNull(workJob, "Workjob mit dieser execution id muss existieren  " + jobCtx.getExecutionId());
 		return workJob;
 	}
 

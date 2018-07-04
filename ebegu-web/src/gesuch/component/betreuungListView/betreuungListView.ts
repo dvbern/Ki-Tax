@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import {TSRole} from '../../../models/enums/TSRole';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -62,7 +62,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         'ErrorService', 'WizardStepManager', 'AuthServiceRS', '$scope', '$log', '$timeout'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, gesuchModelManager: GesuchModelManager,
+    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager,
                 private $translate: ITranslateService,
                 private DvDialog: DvDialog, private ebeguUtil: EbeguUtil, berechnungsManager: BerechnungsManager,
                 private errorService: ErrorService, wizardStepManager: WizardStepManager,
@@ -208,7 +208,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
 
     private gotoMitteilung(betreuung: TSBetreuung) {
         this.$state.go('gesuch.mitteilung', {
-            fallId: this.gesuchModelManager.getGesuch().fall.id,
+            dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: betreuung.id,
             mitteilungId: undefined

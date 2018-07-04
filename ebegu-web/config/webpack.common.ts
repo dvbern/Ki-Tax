@@ -81,7 +81,9 @@ export default (env: string): webpack.Configuration => {
 
     return {
         entry: {
-            'main': root('src', 'bootstrap.ts')
+            'polyfills': root('src', 'polyfills.ts'),
+            'vendor': root('src', 'vendor.ts'),
+            'main': root('src', 'bootstrap.ts'),
         },
         output: {
             path: path.join(process.cwd(), 'dist'),
@@ -92,7 +94,7 @@ export default (env: string): webpack.Configuration => {
             rules: rules()
         },
         resolve: {
-            extensions: ['.ts', '.js']
+            extensions: ['.ts', '.js'],
         },
 
         plugins: [
@@ -128,6 +130,18 @@ export default (env: string): webpack.Configuration => {
 
             // Moment: include only DE and FR locales
             new ContextReplacementPlugin(/moment[\\/]locale$/, /^\.\/(de)$/),
+
+            // Loesung fuer eien Bug in angular -> https://github.com/angular/angular/issues/20357
+            new ContextReplacementPlugin(
+                // The (\\|\/) piece accounts for path separators in *nix and Windows
+
+                // For Angular 5, see also https://github.com/angular/angular/issues/20357#issuecomment-343683491
+                /\@angular(\\|\/)core(\\|\/)esm5/,
+                root('src'), // location of your src
+                {
+                    // your Angular Async Route paths relative to this root directory
+                }
+            ),
 
             // Bundle webpack code into a prefixed chunk
             new CommonsChunkPlugin({

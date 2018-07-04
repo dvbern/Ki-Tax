@@ -47,8 +47,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Integration Test mit den Testfällen.
@@ -58,11 +56,9 @@ import org.slf4j.LoggerFactory;
  * Die gespeicherten Daten können mit writeToFile = true neu generiert werden.
  */
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
+@UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBeanTest.class);
 
 	@Inject
 	private TestfaelleService testfaelleService;
@@ -160,7 +156,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		//waelti dagmar arbeitet 60% und hat 20% zuschlag zum ewp
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true);
 		assert gesuch != null;
-		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getFall().getFallNummer(),
+		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.DECEMBER, 15), LocalDate.of(2017, Month.JANUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
@@ -169,7 +165,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testVerfuegung_BeckerNora_mutationHeirat() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true);
 		assert gesuch != null;
-		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getFall().getFallNummer(),
+		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(2017, Month.FEBRUARY, 15), LocalDate.of(2017, Month.FEBRUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
@@ -178,7 +174,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testVerfuegung_PerreiraMarcia_mutationScheidung() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true);
 		assert gesuch != null;
-		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getFall().getFallNummer(),
+		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.SEPTEMBER, 30), LocalDate.of(2016, Month.OCTOBER, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
 	}
@@ -190,7 +186,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testVerfuegung_MeierMeret_mutationScheidung() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true);
 		assert gesuch != null;
-		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getFall().getFallNummer(),
+		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
 			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.NOVEMBER, 15), LocalDate.of(2016, Month.OCTOBER, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
 	}

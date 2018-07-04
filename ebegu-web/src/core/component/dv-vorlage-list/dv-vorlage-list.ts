@@ -128,7 +128,7 @@ export class DVVorlageListController {
             //this.$log.debug('add dokument to dokumentList');
             this.ebeguVorlageList[index] = returnedDG;
         }
-        this.ebeguUtil.handleSmarttablesUpdateBug(this.ebeguVorlageList);
+        EbeguUtil.handleSmarttablesUpdateBug(this.ebeguVorlageList);
     }
 
     private getIndexOfElement(entityToSearch: TSEbeguVorlage, listToSearchIn: TSEbeguVorlage[]): number {
@@ -160,7 +160,7 @@ export class DVVorlageListController {
                         this.ebeguVorlageList[index] = ebeguVorlage;
                     }
                 });
-                this.ebeguUtil.handleSmarttablesUpdateBug(this.ebeguVorlageList);
+                EbeguUtil.handleSmarttablesUpdateBug(this.ebeguVorlageList);
 
             });
     }

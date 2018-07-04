@@ -19,18 +19,20 @@ import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import {EbeguWebCore} from '../../core.module';
 import {NavigatorController} from './dv-navigation';
+import {StateService} from '@uirouter/core';
 
 describe('dvNavigation', function () {
 
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $q: angular.IQService;
     let $rootScope: angular.IScope;
     let gesuchModelManager: GesuchModelManager;
@@ -291,6 +293,9 @@ describe('dvNavigation', function () {
         it('moves to gesuch.fallcreation when coming from FAMILIENSITUATION', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
+            let dossier = new TSDossier();
+            dossier.id = '123';
+            spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
             mockGesuch();
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
@@ -300,7 +305,7 @@ describe('dvNavigation', function () {
                     eingangsart: 'ONLINE',
                     gesuchId: '123',
                     gesuchsperiodeId: '123',
-                    fallId: '123'
+                    dossierId: dossier.id,
                 });
         });
         it('moves to gesuch.stammdaten when coming from GESUCHSTELLER from 2GS', () => {
@@ -506,8 +511,10 @@ describe('dvNavigation', function () {
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
         gesuch.eingangsart = TSEingangsart.ONLINE;
         gesuch.id = '123';
-        gesuch.fall = new TSFall();
-        gesuch.fall.id = '123';
+        gesuch.dossier = new TSDossier();
+        gesuch.dossier.id = '123';
+        gesuch.dossier.fall = new TSFall();
+        gesuch.dossier.fall.id = '123';
         gesuch.gesuchsperiode = new TSGesuchsperiode();
         gesuch.gesuchsperiode.id = '123';
         spyOn(gesuch.gesuchsperiode, 'hasTagesschulenAnmeldung').and.returnValue(true);

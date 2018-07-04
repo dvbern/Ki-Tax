@@ -22,7 +22,7 @@ import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 let template = require('./posteingangView.html');
 require('./posteingangView.less');
 
@@ -44,13 +44,13 @@ export class PosteingangViewController {
     numberOfPages: number = 1;
     selectedAmt: string;
     selectedMitteilungsstatus: TSMitteilungStatus;
-    includeClosed: boolean;
+    includeClosed: boolean = false;
 
 
 
     static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
 
-    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: IStateService,
+    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: StateService,
                 private authServiceRS: AuthServiceRS, private $log: ILogService) {
     }
 
@@ -60,7 +60,7 @@ export class PosteingangViewController {
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
         this.$state.go('mitteilungen', {
-            fallId: mitteilung.fall.id
+            dossierId: mitteilung.dossier.id
         });
     }
 

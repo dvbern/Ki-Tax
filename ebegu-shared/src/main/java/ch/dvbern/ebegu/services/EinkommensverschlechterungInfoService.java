@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -42,8 +43,8 @@ public interface EinkommensverschlechterungInfoService {
 	 * Aktualisiert idn EinkommensverschlechterungInfoContainer in der DB
 	 */
 	@Nonnull
-	EinkommensverschlechterungInfoContainer updateEinkommensVerschlechterungInfoAndGesuch(Gesuch gesuch, EinkommensverschlechterungInfoContainer oldEVData,
-		EinkommensverschlechterungInfoContainer convertedEkvi);
+	EinkommensverschlechterungInfoContainer updateEinkommensVerschlechterungInfoAndGesuch(@Nonnull Gesuch gesuch,
+		@Nullable EinkommensverschlechterungInfoContainer oldEVData, @Nonnull EinkommensverschlechterungInfoContainer convertedEkvi);
 
 	/**
 	 * @param key PK (id) der EinkommensverschlechterungInfoContainer

@@ -33,7 +33,6 @@ export default class DVSuppressFormSubmitOnEnter implements IDirective {
 
     restrict = 'A';
     link: IDirectiveLinkFn;
-    priority = -400;
     controller = DVSuppressFormSubmitOnEnterController;
     require: any = {mdRadioGroupCtrl: 'mdRadioGroup', myCtrl: 'dvSuppressFormSubmitOnEnter'};
 

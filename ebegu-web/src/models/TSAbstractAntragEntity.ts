@@ -13,17 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSFall from './TSFall';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSGesuchsperiode from './TSGesuchsperiode';
+import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {TSEingangsart} from './enums/TSEingangsart';
-import * as moment from 'moment';
+import TSAbstractEntity from './TSAbstractEntity';
+import TSDossier from './TSDossier';
+import TSGesuchsperiode from './TSGesuchsperiode';
 
 export default class TSAbstractAntragEntity extends TSAbstractEntity {
 
-    private _fall: TSFall;
+    private _dossier: TSDossier;
     private _gesuchsperiode: TSGesuchsperiode;
     private _eingangsdatum: moment.Moment;
     private _freigabeDatum: moment.Moment;
@@ -31,12 +31,12 @@ export default class TSAbstractAntragEntity extends TSAbstractEntity {
     private _typ: TSAntragTyp;
     private _eingangsart: TSEingangsart;
 
-    public get fall(): TSFall {
-        return this._fall;
+    get dossier(): TSDossier {
+        return this._dossier;
     }
 
-    public set fall(value: TSFall) {
-        this._fall = value;
+    set dossier(value: TSDossier) {
+        this._dossier = value;
     }
 
     get gesuchsperiode(): TSGesuchsperiode {

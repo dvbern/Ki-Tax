@@ -18,13 +18,17 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -52,34 +56,40 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
 	}
 
-	public Testfall08_UmzugAusInAusBern(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
-		super(gesuchsperiode, institutionStammdatenList, false);
+	public Testfall08_UmzugAusInAusBern(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 
 	@Override
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
-		Gesuch gesuch = createAlleinerziehend();
+		gesuch = createAlleinerziehend();
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 
 		//Wohnadresse NICHT in Bern
-		gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA().setNichtInGemeinde(true);
+		GesuchstellerAdresse gesuchstellerAdresseJA = gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA();
+		Objects.requireNonNull(gesuchstellerAdresseJA);
+		gesuchstellerAdresseJA.setNichtInGemeinde(true);
 		final int gesuchsperiodeFirstYear = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear();
-		gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA()
+		gesuchstellerAdresseJA
 			.setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(gesuchsperiodeFirstYear, 12, 14)));
 
 		// Umzugsadresse am 15.12.2016 in Bern
 		GesuchstellerAdresseContainer umzugInBern = createWohnadresseContainer(gesuchsteller1);
-		umzugInBern.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-		umzugInBern.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(gesuchsperiodeFirstYear, 12, 15),
+		GesuchstellerAdresse umzugInBernAdresseJA = umzugInBern.getGesuchstellerAdresseJA();
+		Objects.requireNonNull(umzugInBernAdresseJA);
+		umzugInBernAdresseJA.setNichtInGemeinde(false);
+		umzugInBernAdresseJA.setGueltigkeit(new DateRange(LocalDate.of(gesuchsperiodeFirstYear, 12, 15),
 			LocalDate.of(gesuchsperiodeFirstYear, 12, 31)));
 		gesuchsteller1.getAdressen().add(umzugInBern);
 
 		// Umzugsadresse am 01.01.2017 NICHT in Bern
 		GesuchstellerAdresseContainer umzugAusBern = createWohnadresseContainer(gesuchsteller1);
-		umzugAusBern.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
-		umzugAusBern.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(gesuchsperiodeFirstYear + 1, 1, 1), Constants.END_OF_TIME));
+		GesuchstellerAdresse umzugAusBernAdresseJA = umzugAusBern.getGesuchstellerAdresseJA();
+		Objects.requireNonNull(umzugAusBernAdresseJA);
+		umzugAusBernAdresseJA.setNichtInGemeinde(true);
+		umzugAusBernAdresseJA.setGueltigkeit(new DateRange(LocalDate.of(gesuchsperiodeFirstYear + 1, 1, 1), Constants.END_OF_TIME));
 		gesuchsteller1.getAdressen().add(umzugAusBern);
 
 		// Erwerbspensum
@@ -108,7 +118,7 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
 		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(53265));
-		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(MathUtil.DEFAULT.from(12147));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(12147)));
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
 

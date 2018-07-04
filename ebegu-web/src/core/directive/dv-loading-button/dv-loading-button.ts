@@ -32,8 +32,11 @@ export class DVLoadingButton implements IDirective {
     transclude = true;
     restrict = 'E';
     require: any = {dvLoadingButtonCtrl: 'dvLoadingButton', formCtrl: '^?form'};
-    replace = true;
-    scope = {
+    scope = {};
+    template = template;
+    controller = DVLoadingButtonController;
+    controllerAs = 'vm';
+    bindToController = {
         type: '@',
         delay: '@',
         buttonClass: '@',
@@ -43,10 +46,6 @@ export class DVLoadingButton implements IDirective {
         buttonClick: '&',
         inputId: '@'
     };
-    template = template;
-    controller = DVLoadingButtonController;
-    controllerAs = 'vm';
-    bindToController = true;
 
     static factory(): IDirectiveFactory {
         const directive = () => new DVLoadingButton();

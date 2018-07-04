@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,8 +35,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.Validate;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
@@ -43,10 +42,8 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.WizardStepService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -72,8 +69,8 @@ public class WizardStepResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<JaxWizardStep> findWizardStepsFromGesuch(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) throws EbeguException {
-		Validate.notNull(gesuchJAXPId.getId());
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Objects.requireNonNull(gesuchJAXPId.getId());
 
 		final String gesuchID = converter.toEntityId(gesuchJAXPId);
 
@@ -95,8 +92,8 @@ public class WizardStepResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxWizardStep> createWizardStepList(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) throws EbeguException {
-		Validate.notNull(gesuchJAXPId.getId());
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Objects.requireNonNull(gesuchJAXPId.getId());
 
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchJAXPId.getId());
 		if (gesuch.isPresent()) {
@@ -112,7 +109,7 @@ public class WizardStepResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxWizardStep saveWizardStep(
-		@Nonnull @NotNull @Valid JaxWizardStep wizardStepJAXP) throws EbeguException {
+		@Nonnull @NotNull @Valid JaxWizardStep wizardStepJAXP) {
 
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(wizardStepJAXP.getGesuchId());
 		if (gesuch.isPresent()) {
@@ -136,7 +133,7 @@ public class WizardStepResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxWizardStep setWizardStepMutiert(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId wizardStepJAXPId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId wizardStepJAXPId) {
 
 		Optional<WizardStep> optional = wizardStepService.findWizardStep(wizardStepJAXPId.getId());
 		final WizardStep wizardStep = optional.orElse(new WizardStep());

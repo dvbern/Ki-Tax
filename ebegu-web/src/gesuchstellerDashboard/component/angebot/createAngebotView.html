@@ -15,7 +15,7 @@
 
 <gesuch-toolbar-gesuchsteller flex="nogrow"
                               class="gesuch-toolbar-gesuchsteller"
-                              fallid="{{vm.fallId}}"
+                              dossier-id="{{vm.gesuchModelManager.getGesuch().dossier.id}}"
                               is-dashboard-screen="{{true}}">
 </gesuch-toolbar-gesuchsteller>
 <div layout="row" flex="auto" class="overflow-auto ng-scope layout-row flex-auto">
@@ -183,10 +183,12 @@
                                                 </betreuung-ferieninsel-view>
                                             </div>
                                         </div>
-                                        <div class="nav-row-betreuung">
-                                            <dv-loading-button button-click="vm.backToHome()"
+                                        <div class="dv-navigation">
+                                            <dv-loading-button class="dv-navigation-item"
+                                                               button-click="vm.backToHome()"
                                                                ng-if="!vm.institution"
-                                                               button-class="cancel-button" type="reset">
+                                                               button-class="cancel-button"
+                                                               type="reset">
                                                 <span data-translate="ABBRECHEN_UPPER"></span>
                                             </dv-loading-button>
                                         </div>

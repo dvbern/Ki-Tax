@@ -112,8 +112,8 @@ export default class GesuchsperiodeRS {
         return this.$q.when(this.nichtAbgeschlosseneGesuchsperiodenList); // we need to return a promise
     }
 
-    public getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(fallId: string): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(this.serviceURL + '/unclosed/' + fallId).then((response: any) => {
+    public getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId: string): IPromise<TSGesuchsperiode[]> {
+        return this.http.get(this.serviceURL + '/unclosed/' + dossierId).then((response: any) => {
             return this.ebeguRestUtil.parseGesuchsperioden(response.data);
         });
     }

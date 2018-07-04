@@ -20,7 +20,7 @@ import TSUser from '../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
 import './benutzerListView.less';
-import IStateService = angular.ui.IStateService;
+import {StateService} from '@uirouter/core';
 
 let template = require('./benutzerListView.html');
 let style = require('./benutzerListView.less');
@@ -42,7 +42,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
 
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'UserRS'];
 
-    constructor(private $state: IStateService, private $log: ILogService, authServiceRS: AuthServiceRS, private userRS: UserRS) {
+    constructor(private $state: StateService, private $log: ILogService, authServiceRS: AuthServiceRS, private userRS: UserRS) {
         super(authServiceRS);
     }
 

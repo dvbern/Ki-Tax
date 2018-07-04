@@ -14,9 +14,8 @@
  */
 
 import {IComponentOptions, IFilterService} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
-import BerechnungsManager from '../../gesuch/service/berechnungsManager';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -24,7 +23,6 @@ import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
-import IQService = angular.IQService;
 import SearchRS from '../../gesuch/service/searchRS.rest';
 let template = require('./faelleListView.html');
 require('./faelleListView.less');
@@ -45,7 +43,7 @@ export class FaelleListViewController {
     static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
     constructor(private $filter: IFilterService, private gesuchModelManager: GesuchModelManager,
-                private $state: IStateService, private $log: ILogService,
+                private $state: StateService, private $log: ILogService,
                 private authServiceRS: AuthServiceRS, private searchRS: SearchRS) {
         this.initViewModel();
     }
@@ -83,29 +81,29 @@ export class FaelleListViewController {
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since last time
                 this.gesuchModelManager.clearGesuch();
                 if (isAnyStatusOfVerfuegt(antrag.status)) {
-                    this.openGesuch(antrag.antragId, 'gesuch.verfuegen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.verfuegen', isCtrlKeyPressed);
                 } else {
-                    this.openGesuch(antrag.antragId, 'gesuch.betreuungen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.betreuungen', isCtrlKeyPressed);
                 }
             } else {
-                this.openGesuch(antrag.antragId, 'gesuch.fallcreation', isCtrlKeyPressed);
+                this.openGesuch(antrag, 'gesuch.fallcreation', isCtrlKeyPressed);
             }
         }
     }
 
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
-     * @param antragId
+     * @param antrag
      * @param urlToGoTo
      * @param isCtrlKeyPressed true if user pressed ctrl when clicking
      */
-    private openGesuch(antragId: string, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
-        if (antragId) {
+    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
+        if (antrag) {
             if (isCtrlKeyPressed) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antragId});
+                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antragId});
+                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

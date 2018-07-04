@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
@@ -53,7 +53,7 @@ export class CreateAngebotListViewController {
 
     static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS', 'DvDialog'];
 
-    constructor(private $state: IStateService, private $log: ILogService,
+    constructor(private $state: StateService, private $log: ILogService,
                 private gesuchModelManager: GesuchModelManager, private $stateParams: IAngebotStateParams,
                 private betreuungRS: BetreuungRS, private dvDialog: DvDialog) {
     }

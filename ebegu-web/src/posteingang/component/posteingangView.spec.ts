@@ -22,14 +22,17 @@ import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import {TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../models/enums/TSRole';
+import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSUser from '../../models/TSUser';
 import EbeguUtil from '../../utils/EbeguUtil';
+import {StateService} from '@uirouter/core';
 
 import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
+
 describe('posteingangView', function () {
 
     let authServiceRS: AuthServiceRS;
@@ -43,7 +46,7 @@ describe('posteingangView', function () {
     let $httpBackend: angular.IHttpBackendService;
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $log: any;
     let CONSTANTS: any;
     let wizardStepManager: WizardStepManager;
@@ -89,9 +92,11 @@ describe('posteingangView', function () {
     function mockGetMitteilung(): TSMitteilung {
         let mockFall: TSFall = new TSFall();
         mockFall.fallNummer = 123;
+        let mockDossier: TSDossier = new TSDossier();
+        mockDossier.fall = mockFall;
         let gesuchsteller: TSUser = new TSUser();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
-        let mockMitteilung: TSMitteilung = new TSMitteilung(mockFall, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
+        let mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
             gesuchsteller, undefined, 'Frage', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, undefined);
         let dtoList: Array<TSMitteilung> = [mockMitteilung];
         let totalSize: number = 1;

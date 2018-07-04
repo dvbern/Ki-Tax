@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import {DownloadRS} from '../../service/downloadRS.rest';
 
@@ -34,7 +34,7 @@ export class DvDownloadmenuController {
     static $inject: any[] = ['$state', 'DownloadRS'];
     display: boolean = false;
 
-    constructor(private $state: IStateService, private downloadRS: DownloadRS) {
+    constructor(private $state: StateService, private downloadRS: DownloadRS) {
     }
 
     public toggleDisplay(): void {

@@ -125,7 +125,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungWithMitteilungTest() {
 		prepareDependentObjects();
 		Gesuch dagmarGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
-		Mitteilung mitteilung = TestDataUtil.createMitteilung(dagmarGesuch.getFall(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		Mitteilung mitteilung = TestDataUtil.createMitteilung(dagmarGesuch.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		Betreuung betreuungUnderTest = dagmarGesuch.extractAllBetreuungen().get(0);
 		mitteilung.setBetreuung(betreuungUnderTest);
@@ -159,7 +159,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		loginAsSachbearbeiterInst("sainst", betreuungUnderTest.getInstitutionStammdaten().getInstitution());
 
 		//create a first mitteilung
-		final Betreuungsmitteilung betmitteilung = TestDataUtil.createBetreuungmitteilung(gesuch.getFall(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+		final Betreuungsmitteilung betmitteilung = TestDataUtil.createBetreuungmitteilung(gesuch.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.INSTITUTION);
 		betmitteilung.setBetreuung(betreuungUnderTest);
 		final Betreuungsmitteilung persistedFirstMitteilung = mitteilungService.sendBetreuungsmitteilung(betmitteilung);
@@ -222,14 +222,16 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	private void prepareDependentObjects() {
 		mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		empfaengerJA = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant);
+		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja",
+			null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
 
 		final Traegerschaft traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
-		Benutzer empfaengerINST = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti", traegerschaft, null, mandant);
+		Benutzer empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti",
+			traegerschaft, null, mandant, persistence);
 		persistence.persist(empfaengerINST);
 
-		sender = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, "gsst", null, null, mandant);
+		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, "gsst", null, null, mandant, persistence);
 		persistence.persist(sender);
 	}
 

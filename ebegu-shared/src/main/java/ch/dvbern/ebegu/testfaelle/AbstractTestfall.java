@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
@@ -40,6 +41,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -73,6 +75,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractTestfall {
 
+	public static final String ID_GEMEINDE_BERN = "ea02b313-e7c3-4b26-9ef7-e413f4046db2";
+	public static final String ID_GEMEINDE_OSTERMUNDIGEN = "80a8e496-b73c-4a4a-a163-a0b2caf76487";
+
 	public static final String ID_INSTITUTION_WEISSENSTEIN = "ab353df1-47ca-4618-b849-2265cf1c356a";
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "945e3eef-8f43-43d2-a684-4aa61089684b";
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_TAGI = "3304040a-3eb7-426c-a838-51981df87cec";
@@ -91,15 +96,24 @@ public abstract class AbstractTestfall {
 
 	protected String fixId = null;
 	protected Fall fall = null;
+	protected Gemeinde gemeinde = null;
+	protected Dossier dossier = null;
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
 
-	public AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+	protected AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
 		boolean betreuungenBestaetigt) {
 		this.gesuchsperiode = gesuchsperiode;
 		this.institutionStammdatenList = institutionStammdatenList;
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
 	}
+
+	protected AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+		boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+		this(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
+		this.gemeinde = gemeinde;
+	}
+
 
 	public abstract Gesuch fillInGesuch();
 
@@ -107,15 +121,42 @@ public abstract class AbstractTestfall {
 
 	public abstract String getVorname();
 
-	public Fall createFall(Benutzer verantwortlicher) {
+	public Fall createFall(@Nullable Benutzer verantwortlicher) {
 		fall = new Fall();
-		fall.setVerantwortlicher(verantwortlicher);
 		fall.setTimestampErstellt(LocalDateTime.now().minusDays(7));
+		createDossier(fall, verantwortlicher);
 		return fall;
 	}
 
 	public Fall createFall() {
-		return new Fall();
+		fall = new Fall();
+		createDossier(fall);
+		return fall;
+	}
+
+	private Dossier createDossier(@Nonnull Fall fall, @Nullable Benutzer verantwortlicher) {
+		dossier = createDossier(fall);
+		dossier.setVerantwortlicherBG(verantwortlicher);
+		dossier.setTimestampErstellt(LocalDateTime.now().minusDays(7));
+		return dossier;
+	}
+
+	private Dossier createDossier(@Nonnull Fall fall) {
+		dossier = new Dossier();
+		dossier.setFall(fall);
+		if (gemeinde != null) {
+			dossier.setGemeinde(gemeinde);
+		} else {
+			dossier.setGemeinde(createGemeinde());
+		}
+		return dossier;
+	}
+
+	private Gemeinde createGemeinde() {
+		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setEnabled(true);
+		gemeinde.setName("Testgemeinde");
+		return gemeinde;
 	}
 
 	public void createGesuch(@Nullable LocalDate eingangsdatum, AntragStatus status) {
@@ -126,7 +167,7 @@ public abstract class AbstractTestfall {
 	public void createGesuch(@Nullable LocalDate eingangsdatum) {
 		// Fall
 		if (fall == null) {
-			fall = createFall(null);
+			fall = createFall();
 		}
 		// Gesuch
 		gesuch = new Gesuch();
@@ -134,7 +175,7 @@ public abstract class AbstractTestfall {
 			gesuch.setId(fixId);
 		}
 		gesuch.setGesuchsperiode(gesuchsperiode);
-		gesuch.setFall(fall);
+		gesuch.setDossier(dossier);
 		gesuch.setEingangsdatum(eingangsdatum);
 		if (eingangsdatum != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -273,13 +314,14 @@ public abstract class AbstractTestfall {
 		return betreuung;
 	}
 
+	@Nonnull
 	protected InstitutionStammdaten createInstitutionStammdaten(BetreuungsangebotTyp betreuungsangebotTyp, String institutionsId) {
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
 			if (institutionStammdaten.getBetreuungsangebotTyp() == betreuungsangebotTyp && institutionStammdaten.getInstitution().getId().equals(institutionsId)) {
 				return institutionStammdaten;
 			}
 		}
-		return null;
+		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden: " + institutionsId);
 	}
 
 	protected BetreuungspensumContainer createBetreuungspensum(int pensum) {
@@ -318,6 +360,7 @@ public abstract class AbstractTestfall {
 		return ekvContainer;
 	}
 
+	@Nonnull
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(boolean erstesJahr, boolean zweitesJahr) {
 		EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
 		if (erstesJahr) {
@@ -346,7 +389,8 @@ public abstract class AbstractTestfall {
 		ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfoJA);
 	}
 
-	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(LocalDate stichtagEKV1, LocalDate stichtagEKV2) {
+	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(
+			@Nullable LocalDate stichtagEKV1, @Nullable LocalDate stichtagEKV2) {
 		EinkommensverschlechterungInfoContainer infoContainer = new EinkommensverschlechterungInfoContainer();
 		EinkommensverschlechterungInfo info = new EinkommensverschlechterungInfo();
 		info.setEkvFuerBasisJahrPlus1(stichtagEKV1 != null);
@@ -372,6 +416,14 @@ public abstract class AbstractTestfall {
 
 	public void setFall(Fall fall) {
 		this.fall = fall;
+	}
+
+	public Dossier getDossier() {
+		return dossier;
+	}
+
+	public void setDossier(Dossier dossier) {
+		this.dossier = dossier;
 	}
 
 	public Gesuch getGesuch() {

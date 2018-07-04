@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
@@ -86,7 +86,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, gesuchModelManager: GesuchModelManager, private ebeguUtil: EbeguUtil, private CONSTANTS: any,
+    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, private ebeguUtil: EbeguUtil, private CONSTANTS: any,
                 $scope: IScope, berechnungsManager: BerechnungsManager, private errorService: ErrorService,
                 private authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private $stateParams: IBetreuungStateParams,
                 private mitteilungRS: MitteilungRS, dvDialog: DvDialog, private $log: ILogService,
@@ -235,7 +235,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public setErsterSchultag(): void {
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
         let ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
-        if (!this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(ersterSchultag)) {
+        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(ersterSchultag)) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
     }
@@ -389,7 +389,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getGesuch().fall, this.getBetreuungModel());
+        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(), this.getBetreuungModel());
         let $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
@@ -690,7 +690,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 parentController: undefined,
                 elementID: undefined
             }).then(() => {   //User confirmed removal
-                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getGesuch().fall,
+                this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
                     this.mutationsmeldungModel).then((response) => {
 
                     this.form.$setUntouched();
@@ -731,7 +731,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public openExistingBetreuungsmitteilung(): void {
         this.$state.go('gesuch.mitteilung', {
-            fallId: this.gesuchModelManager.getGesuch().fall.id,
+            dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
             mitteilungId: this.existingMutationsMeldung.id

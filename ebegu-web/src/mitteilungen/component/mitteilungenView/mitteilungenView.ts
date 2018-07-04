@@ -15,13 +15,12 @@
 
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
-import IStateService = angular.ui.IStateService;
 import ITimeoutService = angular.ITimeoutService;
-import {IMitteilungenStateParams} from '../../mitteilungen.route';
-import TSFall from '../../../models/TSFall';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IMitteilungenStateParams} from '../../mitteilungen.route';
 
 let template = require('./mitteilungenView.html');
 require('./mitteilungenView.less');
@@ -36,20 +35,19 @@ export class MitteilungenViewComponentConfig implements IComponentOptions {
 export class MitteilungenViewController {
 
     form: IFormController;
-    fall: TSFall;
-    fallId: string;
+    dossierId: string;
     TSRoleUtil = TSRoleUtil;
 
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, private $stateParams: IMitteilungenStateParams,
+    constructor(private $state: StateService, private $stateParams: IMitteilungenStateParams,
                 private authServiceRS: AuthServiceRS, private $timeout: ITimeoutService) {
     }
 
     $onInit() {
-        if (this.$stateParams.fallId) {
-            this.fallId = this.$stateParams.fallId;
+        if (this.$stateParams.dossierId) {
+            this.dossierId = this.$stateParams.dossierId;
         }
     }
 

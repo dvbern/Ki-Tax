@@ -77,7 +77,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @EntityListeners({ GesuchStatusListener.class , GesuchGueltigListener.class})
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
+	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )
 public class Gesuch extends AbstractEntity implements Searchable {
@@ -86,21 +86,24 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuch_fall_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuch_dossier_id"))
 	@IndexedEmbedded
-	private Fall fall;
+	private Dossier dossier;
 
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_antrag_gesuchsperiode_id"))
 	private Gesuchsperiode gesuchsperiode;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate eingangsdatum;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate freigabeDatum;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate eingangsdatumSTV;
 
@@ -211,16 +214,20 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Column(nullable = false)
 	private boolean gesperrtWegenBeschwerde = false;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumGewarntNichtFreigegeben;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumGewarntFehlendeQuittung;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDateTime timestampVerfuegt;
 
 	// Es muss nullable sein koennen, damit man ein UNIQUE_KEY machen kann
+	@Nullable
 	@Column(nullable = true)
 	private Boolean gueltig = null;
 
@@ -328,11 +335,15 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public Fall getFall() {
-		return fall;
+		return dossier.getFall();
 	}
 
-	public final void setFall(Fall fall) {
-		this.fall = fall;
+	public Dossier getDossier() {
+		return dossier;
+	}
+
+	public void setDossier(Dossier dossier) {
+		this.dossier = dossier;
 	}
 
 	public Gesuchsperiode getGesuchsperiode() {
@@ -343,6 +354,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
+	@Nullable
 	public LocalDate getEingangsdatum() {
 		return eingangsdatum;
 	}
@@ -351,11 +363,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.eingangsdatum = eingangsdatum;
 	}
 
+	@Nullable
 	public LocalDate getEingangsdatumSTV() {
 		return eingangsdatumSTV;
 	}
 
-	public void setEingangsdatumSTV(LocalDate eingangsdatumSTV) {
+	public void setEingangsdatumSTV(@Nullable LocalDate eingangsdatumSTV) {
 		this.eingangsdatumSTV = eingangsdatumSTV;
 	}
 
@@ -368,11 +381,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.freigabeDatum = freigabeDatum;
 	}
 
+	@Nonnull
 	public AntragStatus getStatus() {
 		return status;
 	}
 
-	public final void setStatus(AntragStatus status) {
+	public final void setStatus(@Nonnull AntragStatus status) {
 		this.status = status;
 	}
 
@@ -466,6 +480,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.finanzDatenDTO_zuZweit = finanzDatenDTO_zuZweit;
 	}
 
+	@Nullable
 	public LocalDate getDatumGewarntNichtFreigegeben() {
 		return datumGewarntNichtFreigegeben;
 	}
@@ -474,6 +489,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.datumGewarntNichtFreigegeben = datumGewarntNichtFreigegeben;
 	}
 
+	@Nullable
 	public LocalDate getDatumGewarntFehlendeQuittung() {
 		return datumGewarntFehlendeQuittung;
 	}
@@ -482,6 +498,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.datumGewarntFehlendeQuittung = datumGewarntFehlendeQuittung;
 	}
 
+	@Nullable
 	public LocalDateTime getTimestampVerfuegt() {
 		return timestampVerfuegt;
 	}
@@ -538,7 +555,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		}
 		final Gesuch otherAntrag = (Gesuch) other;
 		return Objects.equals(this.getEingangsdatum(), otherAntrag.getEingangsdatum())
-			&& Objects.equals(this.getFall(), otherAntrag.getFall())
+			&& Objects.equals(this.getDossier(), otherAntrag.getDossier())
 			&& Objects.equals(this.getGesuchsperiode(), otherAntrag.getGesuchsperiode());
 	}
 
@@ -692,7 +709,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public Gesuch copyForMutation(@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsart) {
 		super.copyForMutation(mutation);
 		mutation.setEingangsart(eingangsart);
-		mutation.setFall(this.getFall());
+		mutation.setDossier(this.getDossier());
 		mutation.setGesuchsperiode(this.getGesuchsperiode());
 		mutation.setEingangsdatum(null);
 		mutation.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
@@ -738,7 +755,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public Gesuch copyForErneuerung(@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
 		super.copyForErneuerung(folgegesuch);
 		folgegesuch.setEingangsart(eingangsart);
-		folgegesuch.setFall(this.getFall());
+		folgegesuch.setDossier(this.getDossier());
 		folgegesuch.setGesuchsperiode(gesuchsperiode);
 		folgegesuch.setEingangsdatum(null);
 		folgegesuch.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
@@ -799,6 +816,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		return getFall().getId();
 	}
 
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return getDossier().getId();
+	}
+
 	@Nonnull
 	public Optional<Betreuung> extractBetreuungsFromBetreuungNummer(@NotNull Integer kindNummer, @NotNull Integer betreuungNummer) {
 		final List<Betreuung> allBetreuungen = extractAllBetreuungen();
@@ -811,7 +834,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public String getEingangsdatumFormated() {
-		return Constants.DATE_FORMATTER.format(eingangsdatum);
+		if (eingangsdatum != null) {
+			return Constants.DATE_FORMATTER.format(eingangsdatum);
+		}
+		return "";
 	}
 
 	public String getFreigabedatumFormated() {

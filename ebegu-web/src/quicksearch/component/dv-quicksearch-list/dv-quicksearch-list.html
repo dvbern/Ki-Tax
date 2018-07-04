@@ -51,9 +51,9 @@
                         data-translate="DOKUMENTE_HOCHGELADEN_UPPER"></th>
                     <th st-sort="angebote" class="sortable row-angebot" data-translate="ANGEBOT_UPPER"></th>
                     <th st-sort="institutionen[0]" class="sortable row-inst" data-translate="INSTITUTION_UPPER"></th>
-                    <th st-sort="verantwortlicherSCH" class="sortable row-ver"
+                    <th st-sort="verantwortlicherTS" class="sortable row-ver"
                         data-translate="VERANTWORTLICHER_SCHULAMT"></th>
-                    <th st-sort="verantwortlicher" class="sortable row-ver"
+                    <th st-sort="verantwortlicherBG" class="sortable row-ver"
                         data-translate="VERANTWORTLICHER_JUGENDAMT"></th>
                 </tr>
                 <!--Filterspalten-->
@@ -128,16 +128,16 @@
                         </div>
                     </th>
                     <th>
-                        <dv-userselect input-id="verantwortlicherSCH" dv-usersearch="verantwortlicherSCH"
+                        <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
                                        initial-all="vm.initialAll" show-selection-all="vm.showSelectionAll"
                                        on-user-changed="vm.userChanged(user)" schulamt="true"
-                                       selected-user="vm.selectedVerantwortlicherSCH"></dv-userselect>
+                                       selected-user="vm.selectedVerantwortlicherTS"></dv-userselect>
                     </th>
                     <th>
-                        <dv-userselect input-id="verantwortlicher" dv-usersearch="verantwortlicher"
+                        <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
                                        initial-all="vm.initialAll" show-selection-all="vm.showSelectionAll"
                                        on-user-changed="vm.userChanged(user)"
-                                       selected-user="vm.selectedVerantwortlicher"></dv-userselect>
+                                       selected-user="vm.selectedVerantwortlicherBG"></dv-userselect>
                     </th>
                 </tr>
                 </thead>
@@ -168,10 +168,10 @@
                         ng-bind="vm.translateBetreuungsangebotTypList(row.angebote)">
                     </td>
                     <td class="ellipsis" title="{{row.institutionen | arrayToString}}" ng-bind="row.institutionen | arrayToString"></td>
-                    <td class="ellipsis" title="{{row.verantwortlicherSCH}}"
-                        ng-bind="row.verantwortlicherSCH"></td>
-                    <td class="ellipsis" title="{{row.verantwortlicher}}"
-                        ng-bind="row.verantwortlicher"></td>
+                    <td class="ellipsis" title="{{row.verantwortlicherTS}}"
+                        ng-bind="row.verantwortlicherTS"></td>
+                    <td class="ellipsis" title="{{row.verantwortlicherBG}}"
+                        ng-bind="row.verantwortlicherBG"></td>
                 </tr>
                 </tbody>
                 <tfoot>

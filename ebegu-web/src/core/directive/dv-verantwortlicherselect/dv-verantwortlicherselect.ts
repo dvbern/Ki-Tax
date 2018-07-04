@@ -27,13 +27,13 @@ let template = require('./dv-verantwortlicherselect.html');
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
     require: any = {};
-    scope = {
+    scope = {};
+    controller = VerantwortlicherselectController;
+    controllerAs = 'vm';
+    bindToController = {
         schulamt: '<',
         antragList: '<'
     };
-    controller = VerantwortlicherselectController;
-    controllerAs = 'vm';
-    bindToController = true;
     template = template;
 
     static factory(): IDirectiveFactory {
@@ -97,12 +97,12 @@ export class VerantwortlicherselectController {
     }
 
     public getVerantwortlicherFullName(): string {
-        if (this.getGesuch() && this.getGesuch().fall) {
-            if (this.schulamt && this.getGesuch().fall.verantwortlicherSCH) {
-                return this.getGesuch().fall.verantwortlicherSCH.getFullName();
+        if (this.getGesuch() && this.getGesuch().dossier) {
+            if (this.schulamt && this.getGesuch().dossier.verantwortlicherTS) {
+                return this.getGesuch().dossier.verantwortlicherTS.getFullName();
             }
-            if (!this.schulamt && this.getGesuch().fall.verantwortlicher) {
-                return this.getGesuch().fall.verantwortlicher.getFullName();
+            if (!this.schulamt && this.getGesuch().dossier.verantwortlicherBG) {
+                return this.getGesuch().dossier.verantwortlicherBG.getFullName();
             }
         }
         return this.$translate.instant('NO_VERANTWORTLICHER_SELECTED');
@@ -119,18 +119,18 @@ export class VerantwortlicherselectController {
 
     private setVerantwortlicherGesuchModelManager(verantwortlicher: TSUser) {
         if (this.schulamt) {
-            this.gesuchModelManager.setUserAsFallVerantwortlicherSCH(verantwortlicher);
+            this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
-            this.gesuchModelManager.setUserAsFallVerantwortlicher(verantwortlicher);
+            this.gesuchModelManager.setUserAsFallVerantwortlicherBG(verantwortlicher);
         }
     }
 
     public setUserAsFallVerantwortlicherLocal(user: TSUser) {
-        if (user && this.getGesuch() && this.getGesuch().fall) {
+        if (user && this.getGesuch() && this.getGesuch().dossier) {
             if (this.schulamt) {
-                this.getGesuch().fall.verantwortlicherSCH = user;
+                this.getGesuch().dossier.verantwortlicherTS = user;
             } else {
-                this.getGesuch().fall.verantwortlicher = user;
+                this.getGesuch().dossier.verantwortlicherBG = user;
             }
         }
     }
@@ -138,7 +138,7 @@ export class VerantwortlicherselectController {
     /**
      *
      * @param user
-     * @returns {boolean} true if the given user is already the verantwortlicher of the current fall
+     * @returns {boolean} true if the given user is already the verantwortlicherBG of the current fall
      */
     public isCurrentVerantwortlicher(user: TSUser): boolean {
         return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
@@ -146,9 +146,9 @@ export class VerantwortlicherselectController {
 
     public getFallVerantwortlicher(): TSUser {
         if (this.schulamt) {
-            return this.gesuchModelManager.getFallVerantwortlicherSCH();
+            return this.gesuchModelManager.getFallVerantwortlicherTS();
         } else {
-            return this.gesuchModelManager.getFallVerantwortlicher();
+            return this.gesuchModelManager.getFallVerantwortlicherBG();
         }
     }
 }

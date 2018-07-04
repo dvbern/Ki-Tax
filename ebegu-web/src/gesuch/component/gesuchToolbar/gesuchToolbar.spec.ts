@@ -21,11 +21,12 @@ import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {IGesuchStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
-import FallRS from '../../service/fallRS.rest';
+import DossierRS from '../../service/dossierRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {GesuchToolbarController} from './gesuchToolbar';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {StateService} from '@uirouter/core';
 
 describe('gesuchToolbar', function () {
 
@@ -35,14 +36,14 @@ describe('gesuchToolbar', function () {
     let ebeguUtil: EbeguUtil;
     let gesuchRS: GesuchRS;
     let berechnungsManager: BerechnungsManager;
-    let $state: angular.ui.IStateService;
+    let $state: StateService;
     let $stateParams: IGesuchStateParams;
     let $scope: angular.IScope;
     let $rootScope: angular.IRootScopeService;
     let user: TSUser;
     let $mdSidenav: angular.material.ISidenavService;
     let gesuchsperiodeRS: GesuchsperiodeRS;
-    let fallRS: FallRS;
+    let dossierRS: DossierRS;
     let dvDialog: DvDialog;
     let mitteilungRS: MitteilungRS;
 
@@ -63,13 +64,13 @@ describe('gesuchToolbar', function () {
         user = new TSUser('Emiliano', 'Camacho');
         $stateParams.gesuchId = '123456789';
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
-        fallRS = $injector.get('FallRS');
+        dossierRS = $injector.get('DossierRS');
         dvDialog = $injector.get('DvDialog');
         mitteilungRS = $injector.get('MitteilungRS');
 
         gesuchToolbarController = new GesuchToolbarController(ebeguUtil,
             gesuchRS, $state, $scope, gesuchModelManager,
-            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, fallRS, dvDialog, mitteilungRS, undefined);
+            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, mitteilungRS, undefined, dossierRS);
     }));
 
 });

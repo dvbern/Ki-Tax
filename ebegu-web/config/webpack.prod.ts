@@ -39,105 +39,110 @@ const BundleAnalyzer = require('webpack-bundle-analyzer');
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 80;
-METADATA.ENV = ENV;
-METADATA.HOST = HOST;
-METADATA.PORT = PORT;
 
-export default (env: any): webpack.Configuration => webpackMerge(commonConfig(env), {
-    devtool: 'source-map',
-    output: {
-        // Specifies the name of each output file on disk.
-        // IMPORTANT: You must not specify an absolute path here!
-        //
-        // See: https://webpack.js.org/configuration/output/#output-filename
-        filename: '[name].[chunkhash].bundle.js',
 
-        // The filename of the SourceMaps for the JavaScript files.
-        // They are inside the output.path directory.
-        //
-        // See: https://webpack.js.org/configuration/output/#output-sourcemapfilename
-        sourceMapFilename: '[file].map',
+export default (env: any): webpack.Configuration => {
 
-        // The filename of non-entry chunks as relative path
-        // inside the output.path directory.
-        //
-        // See: https://webpack.js.org/configuration/output/#output-chunkfilename
-        chunkFilename: '[id].[chunkhash].chunk.js',
+    METADATA.ENV = ENV;
+    METADATA.HOST = HOST;
+    METADATA.PORT = PORT;
 
-    },
-    plugins: [
-        // Sets these variables on each loader.
-        new LoaderOptionsPlugin({
-            debug: false,
-            minimize: true
-        }),
+    return webpackMerge(commonConfig(env), {
+        devtool: 'source-map',
+        output: {
+            // Specifies the name of each output file on disk.
+            // IMPORTANT: You must not specify an absolute path here!
+            //
+            // See: https://webpack.js.org/configuration/output/#output-filename
+            filename: '[name].[chunkhash].bundle.js',
 
-        new ExtractTextPlugin('[name].[hash].css'),
+            // The filename of the SourceMaps for the JavaScript files.
+            // They are inside the output.path directory.
+            //
+            // See: https://webpack.js.org/configuration/output/#output-sourcemapfilename
+            sourceMapFilename: '[file].map',
 
-        // Cause hashes to be based on the relative path of the module, generating a string as the module id.
-        new HashedModuleIdsPlugin({
-            hashFunction: 'md5',
-            hashDigest: 'base64',
-            hashDigestLength: 4,
-        }),
+            // The filename of non-entry chunks as relative path
+            // inside the output.path directory.
+            //
+            // See: https://webpack.js.org/configuration/output/#output-chunkfilename
+            chunkFilename: '[id].[chunkhash].chunk.js',
 
-        // Plugin: DefinePlugin
-        // Description: Define free variables.
-        // Useful for having development builds with debug logging or adding global constants.
-        //
-        // Environment helpers
-        //
-        // See: https://webpack.github.io/docs/list-of-plugins.html#defineplugin
-        // NOTE: when adding more properties make sure you include them in custom-typings.d.ts
-        new DefinePlugin({
-            'ENV': JSON.stringify(METADATA.ENV),
-            'HMR': METADATA.HMR,
-            // 'VERSION': JSON.stringify(METADATA.version),
-            'BUILDTSTAMP': JSON.stringify(METADATA.buildtstamp),
-            'process.env': {
+        },
+        plugins: [
+            // Sets these variables on each loader.
+            new LoaderOptionsPlugin({
+                debug: false,
+                minimize: true
+            }),
+
+            new ExtractTextPlugin('[name].[hash].css'),
+
+            // Cause hashes to be based on the relative path of the module, generating a string as the module id.
+            new HashedModuleIdsPlugin({
+                hashFunction: 'md5',
+                hashDigest: 'base64',
+                hashDigestLength: 4,
+            }),
+
+            // Plugin: DefinePlugin
+            // Description: Define free variables.
+            // Useful for having development builds with debug logging or adding global constants.
+            //
+            // Environment helpers
+            //
+            // See: https://webpack.github.io/docs/list-of-plugins.html#defineplugin
+            // NOTE: when adding more properties make sure you include them in custom-typings.d.ts
+            new DefinePlugin({
                 'ENV': JSON.stringify(METADATA.ENV),
-                'NODE_ENV': JSON.stringify(METADATA.ENV),
                 'HMR': METADATA.HMR,
-            }
-        }),
+                // 'VERSION': JSON.stringify(METADATA.version),
+                'BUILDTSTAMP': JSON.stringify(METADATA.buildtstamp),
+                'process.env': {
+                    'ENV': JSON.stringify(METADATA.ENV),
+                    'NODE_ENV': JSON.stringify(METADATA.ENV),
+                    'HMR': METADATA.HMR,
+                }
+            }),
 
-        // Create bundle report
-        // See https://github.com/th0r/webpack-bundle-analyzer
-        new BundleAnalyzer.BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-            openAnalyzer: false,
-            reportFilename: 'bundle-report.html',
-        }),
+            // Create bundle report
+            // See https://github.com/th0r/webpack-bundle-analyzer
+            new BundleAnalyzer.BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                openAnalyzer: false,
+                reportFilename: 'bundle-report.html',
+            }),
 
-        // Minimize all JavaScript output of chunks.
-        new UglifyJsPlugin({
-            beautify: false,
-            mangle: {
-                screw_ie8: true,
-                keep_fnames: true
-            },
-            compress: {
-                screw_ie8: true,
-                // warnings are from vendor libraries that are safely to ignore
-                warnings: false,
-            },
-            comments: false,
-            sourceMap: true,
-        }),
+            // Minimize all JavaScript output of chunks.
+            new UglifyJsPlugin({
+                beautify: false,
+                mangle: {
+                    screw_ie8: true,
+                    keep_fnames: true
+                },
+                compress: {
+                    screw_ie8: true,
+                    // warnings are from vendor libraries that are safely to ignore
+                    warnings: false,
+                },
+                comments: false,
+                sourceMap: true,
+            }),
 
-        // Plugin: CompressionPlugin
-        // Description: Prepares compressed versions of assets to serve
-        // them with Content-Encoding
-        //
-        // See: https://github.com/webpack/compression-webpack-plugin
-        new CompressionPlugin({
-            regExp: /\.css$|\.html$|\.js$|\.map$/,
-            threshold: 2 * 1024
-        }),
-        //copy swagger-ui to dist
+            // Plugin: CompressionPlugin
+            // Description: Prepares compressed versions of assets to serve
+            // them with Content-Encoding
+            //
+            // See: https://github.com/webpack/compression-webpack-plugin
+            new CompressionPlugin({
+                regExp: /\.css$|\.html$|\.js$|\.map$/,
+                threshold: 2 * 1024
+            }),
+            //copy swagger-ui to dist
 //        new CopyWebpackPlugin([
 //            {from: 'node_modules/swagger-ui/dist/', to: 'swagger-ui/'}
 //        ])
 
-    ],
-});
+        ],
+    });
+};

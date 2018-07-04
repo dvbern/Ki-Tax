@@ -59,8 +59,7 @@ public class EinkommensverschlechterungResourceTest extends AbstractEbeguRestLog
 
 	@Test
 	public void createAndFindEinkommensverschlechterungsContainerTest() throws EbeguException {
-		Gesuch testGesuch = TestDataUtil.createDefaultGesuch();
-		TestDataUtil.persistEntities(testGesuch, persistence);
+		Gesuch testGesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		JaxGesuchstellerContainer testJaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
 		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(new JaxId(testGesuch.getId()), 1, false, testJaxGesuchsteller, uri, null);
 		Assert.assertNotNull(jaxGesuchsteller);

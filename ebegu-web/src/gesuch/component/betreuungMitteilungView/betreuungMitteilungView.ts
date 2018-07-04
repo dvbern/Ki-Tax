@@ -20,7 +20,7 @@ import TSBetreuung from '../../../models/TSBetreuung';
 import BerechnungsManager from '../../service/berechnungsManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {IStateService} from 'angular-ui-router';
+import {StateService} from '@uirouter/core';
 import IScope = angular.IScope;
 import IFormController = angular.IFormController;
 import ITimeoutService = angular.ITimeoutService;
@@ -42,7 +42,7 @@ export class BetreuungMitteilungViewController extends AbstractGesuchViewControl
     static $inject = ['$state', 'GesuchModelManager', '$scope', 'BerechnungsManager', 'WizardStepManager', '$timeout'];
 
     /* @ngInject */
-    constructor(private $state: IStateService, gesuchModelManager: GesuchModelManager, $scope: IScope,
+    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, $scope: IScope,
                 berechnungsManager: BerechnungsManager, wizardStepManager: WizardStepManager, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
     }

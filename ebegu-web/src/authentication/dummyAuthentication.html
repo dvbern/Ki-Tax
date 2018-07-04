@@ -17,18 +17,172 @@
     <h3 class="col-md-5 col-md-offset-3">
         Wählen Sie bitte einen Benutzer aus.
     </h3>
-    <div class="col-md-5 col-md-offset-3">
-
-        <div class="first-row panel panel-default mark-hover panel-body" ng-click="vm.logIn(vm.superadmin)" ng-hide="!vm.devMode"
-             ng-bind="vm.superadmin.vorname + ' ' + vm.superadmin.nachname + ', ' + vm.superadmin.email + ', ' + 'Rolle ' + (vm.superadmin.getRoleKey() | translate) + ' '
-                          + vm.superadmin.currentBerechtigung.institution.name + vm.superadmin.currentBerechtigung.traegerschaft.name"></div>
-
-        <div class="first-row panel panel-default" ng-repeat="user in vm.usersList">
-            <div class="mark-hover panel-body" ng-click="vm.logIn(user)"
-                 ng-bind="user.vorname + ' ' + user.nachname + ', ' + user.email + ', ' + 'Rolle ' + (user.getRoleKey() | translate) + ' '
-                          + user.currentBerechtigung.institution.name + user.currentBerechtigung.traegerschaft.name"></div>
-        </div>
 
 
+    <div class="col-md-12 col-md-offset-1">
+        <table>
+            <th colspan="3"><h2>Allgemeine Rollen</h2></th>
+
+            <tr [hidden]="!devMode">
+                <td>Superadmin</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + superadmin.vorname  + ' ' + superadmin.nachname"
+                         (click)="logIn(superadmin)"></div></td>
+            </tr>
+            <!-- Institutionen / Traegerschaften -->
+            <tr>
+                <td>Sachbearbeiter Institution: Kita Brünnen</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterInstitutionKitaBruennen.vorname  + ' ' + sachbearbeiterInstitutionKitaBruennen.nachname"
+                         (click)="logIn(sachbearbeiterInstitutionKitaBruennen)"></div></td>
+            </tr>
+            <tr>
+                <td>Sachbearbeiter Tägerschaft: Stadt Bern</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTraegerschaftStadtBern.vorname  + ' ' + sachbearbeiterTraegerschaftStadtBern.nachname"
+                         (click)="logIn(sachbearbeiterTraegerschaftStadtBern)"></div></td>
+            </tr>
+            <tr>
+                <td>Sachbearbeiter Tägerschaft: LeoLea</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTraegerschaftLeoLea.vorname  + ' ' + sachbearbeiterTraegerschaftLeoLea.nachname"
+                         (click)="logIn(sachbearbeiterTraegerschaftLeoLea)"></div></td>
+            </tr>
+            <tr>
+                <td>Sachbearbeiter Tägerschaft: SGF</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTraegerschaftSGF.vorname  + ' ' + sachbearbeiterTraegerschaftSGF.nachname"
+                         (click)="logIn(sachbearbeiterTraegerschaftSGF)"></div></td>
+            </tr>
+            <!-- Gesuchsteller -->
+            <tr>
+                <td>Gesuchsteller</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + gesuchstellerEmmaGerber.vorname  + ' ' + gesuchstellerEmmaGerber.nachname"
+                         (click)="logIn(gesuchstellerEmmaGerber)"></div></td>
+            </tr>
+            <tr>
+                <td>Gesuchsteller</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + gesuchstellerHeinrichMueller.vorname  + ' ' + gesuchstellerHeinrichMueller.nachname"
+                         (click)="logIn(gesuchstellerHeinrichMueller)"></div></td>
+            </tr>
+            <tr>
+                <td>Gesuchsteller</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + gesuchstellerMichaelBerger.vorname  + ' ' + gesuchstellerMichaelBerger.nachname"
+                         (click)="logIn(gesuchstellerMichaelBerger)"></div></td>
+            </tr>
+            <tr>
+                <td>Gesuchsteller</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + gesuchstellerHansZimmermann.vorname  + ' ' + gesuchstellerHansZimmermann.nachname"
+                         (click)="logIn(gesuchstellerHansZimmermann)"></div></td>
+            </tr>
+
+            <th><h2>Gemeinde:</h2></th>
+            <th><h2>Bern</h2></th>
+            <th><h2>Ostermundigen</h2></th>
+            <th><h2>Bern&Ostermundigen</h2></th>
+
+            <!-- Admin BG -->
+            <tr>
+                <td>Administrator BG</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorBGBern.vorname + ' ' + administratorBGBern.nachname"
+                         (click)="logIn(administratorBGBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorBGOstermundigen.vorname + ' ' + administratorBGOstermundigen.nachname"
+                         (click)="logIn(administratorBGOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorBGBernOstermundigen.vorname + ' ' + administratorBGBernOstermundigen.nachname"
+                         (click)="logIn(administratorBGBernOstermundigen)"></div></td>
+            </tr>
+            <!-- Sachbearbeiter BG -->
+            <tr>
+                <td>Sachbearbeiter BG</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterBGBern.vorname + ' ' + sachbearbeiterBGBern.nachname"
+                         (click)="logIn(sachbearbeiterBGBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterBGOstermundigen.vorname + ' ' + sachbearbeiterBGOstermundigen.nachname"
+                         (click)="logIn(sachbearbeiterBGOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterBGBernOstermundigen.vorname + ' ' + sachbearbeiterBGBernOstermundigen.nachname"
+                         (click)="logIn(sachbearbeiterBGBernOstermundigen)"></div></td>
+            </tr>
+            <!-- Admin TS -->
+            <tr>
+                <td>Administrator TS</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorTSBern.vorname + ' ' + administratorTSBern.nachname"
+                         (click)="logIn(administratorTSBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorTSOstermundigen.vorname + ' ' + administratorTSOstermundigen.nachname"
+                         (click)="logIn(administratorTSOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorTSBernOstermundigen.vorname + ' ' + administratorTSBernOstermundigen.nachname"
+                         (click)="logIn(administratorTSBernOstermundigen)"></div></td>
+            </tr>
+            <!-- Sachbearbeiter TS -->
+            <tr>
+                <td>Sachbearbeiter TS</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTSBern.vorname + ' ' + sachbearbeiterTSBern.nachname"
+                         (click)="logIn(sachbearbeiterTSBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTSOstermundigen.vorname + ' ' + sachbearbeiterTSOstermundigen.nachname"
+                         (click)="logIn(sachbearbeiterTSOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTSBernOstermundigen.vorname + ' ' + sachbearbeiterTSBernOstermundigen.nachname"
+                         (click)="logIn(sachbearbeiterTSBernOstermundigen)"></div></td>
+            </tr>
+            <!-- Divese -->
+            <tr>
+                <td>Steueramt</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + steueramtBern.vorname + ' ' + steueramtBern.nachname"
+                         (click)="logIn(steueramtBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + steueramtOstermundigen.vorname + ' ' + steueramtOstermundigen.nachname"
+                         (click)="logIn(steueramtOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + steueramtBernOstermundigen.vorname + ' ' + steueramtBernOstermundigen.nachname"
+                         (click)="logIn(steueramtBernOstermundigen)"></div></td>
+            </tr>
+            <tr>
+                <td>Revisor</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + revisorBern.vorname + ' ' + revisorBern.nachname"
+                         (click)="logIn(revisorBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + revisorOstermundigen.vorname + ' ' + revisorOstermundigen.nachname"
+                         (click)="logIn(revisorOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + revisorBernOstermundigen.vorname + ' ' + revisorBernOstermundigen.nachname"
+                         (click)="logIn(revisorBernOstermundigen)"></div></td>
+            </tr>
+            <tr>
+                <td>Jurist</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + juristBern.vorname + ' ' + juristBern.nachname"
+                         (click)="logIn(juristBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + juristOstermundigen.vorname + ' ' + juristOstermundigen.nachname"
+                         (click)="logIn(juristOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + juristBernOstermundigen.vorname + ' ' + juristBernOstermundigen.nachname"
+                         (click)="logIn(juristBernOstermundigen)"></div></td>
+            </tr>
+        </table>
     </div>
 </div>

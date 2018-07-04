@@ -55,4 +55,11 @@ public interface Searchable {
 	@Nullable
 	String getOwningFallId();
 
+	/**
+	 *  @return Liefert die Unique_ID des Dossiers zu dem dieses Entity gehoert. Kann null sein wenn es keine direkte
+	 * verknuepfung gibt.
+	 */
+	@Nullable
+	String getOwningDossierId();
+
 }

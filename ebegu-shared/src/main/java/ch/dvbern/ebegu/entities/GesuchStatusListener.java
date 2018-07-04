@@ -28,8 +28,6 @@ import ch.dvbern.ebegu.statemachine.StateMachineConfigProducer;
 import ch.dvbern.ebegu.statemachine.StateMachineFactory;
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.statemachine.GesuchEventWithParam.getTrigger;
 
@@ -39,8 +37,6 @@ import static ch.dvbern.ebegu.statemachine.GesuchEventWithParam.getTrigger;
  * TODO: This part of the code must replaced be events!
  */
 public class GesuchStatusListener {
-
-	private static final Logger LOG = LoggerFactory.getLogger(GesuchStatusListener.class);
 
 	private StateMachineConfig<AntragStatus, AntragEvents> config;
 
@@ -71,8 +67,8 @@ public class GesuchStatusListener {
 				stateMachine = StateMachineFactory.getStateMachine(gesuch, getConfig());
 			}
 
-			LOG.error("State Machine received unhandled transition from {} for current state {}", preStatus, postStatus);
-			throw new EbeguRuntimeException("handleFSMEvent", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, postStatus);
+			String message = String.format("State Machine received unhandled transition from %s for current state %s", preStatus, postStatus);
+			throw new EbeguRuntimeException("handleFSMEvent", message, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, postStatus);
 		}
 	}
 
