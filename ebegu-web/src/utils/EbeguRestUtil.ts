@@ -1593,6 +1593,7 @@ export default class EbeguRestUtil {
         antragTS.eingangsart = antragFromServer.eingangsart;
         antragTS.besitzerUsername = antragFromServer.besitzerUsername;
         antragTS.dokumenteHochgeladen = antragFromServer.dokumenteHochgeladen;
+        antragTS.gemeinde = antragFromServer.gemeinde;
         return antragTS;
     }
 

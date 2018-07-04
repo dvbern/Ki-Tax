@@ -67,6 +67,7 @@ export class DVAntragListController {
     selectedInstitution: TSInstitution;
     selectedGesuchsperiode: string;
     selectedFallNummer: string;
+    selectedGemeinde: string;
     selectedFamilienName: string;
     selectedKinder: string;
     selectedAenderungsdatum: string;

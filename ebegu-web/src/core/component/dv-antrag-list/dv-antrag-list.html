@@ -14,7 +14,8 @@
   -->
 
 <div class="dv-antrag-list">
-    <div class="row" dv-st-persist-antraege="{{vm.tableId}}" st-table="vm.displayedCollection" st-delay="20" st-pipe="vm.callServer">
+    <div class="row" dv-st-persist-antraege="{{vm.tableId}}" st-table="vm.displayedCollection" st-delay="20"
+         st-pipe="vm.callServer">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-10">
@@ -38,6 +39,7 @@
                 <!--Sortierspalten-->
                 <tr id="antraegeHeadRow">
                     <th st-sort="fallNummer" class="sortable row-fallnr" data-translate="FALL_UPPER"></th>
+                    <th st-sort="gemeinde" class="sortable row-name" data-translate="GEMEINDE_UPPER"></th>
                     <th st-sort="familienName" class="sortable row-name" data-translate="FAMILIE_UPPER"></th>
                     <th st-sort="kinder" class="sortable row-name" data-translate="KINDER_UPPER"
                         dv-display-element
@@ -60,7 +62,8 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
                     </th>
                     <th st-sort="status" class="sortable row-status" data-translate="STATUS_UPPER"></th>
-                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen" data-translate="DOKUMENTE_HOCHGELADEN_UPPER"
+                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen"
+                        data-translate="DOKUMENTE_HOCHGELADEN_UPPER"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
                     </th>
@@ -76,7 +79,8 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="verantwortlicherBG" class="sortable row-ver" data-translate="VERANTWORTLICHER_JUGENDAMT"
+                    <th st-sort="verantwortlicherBG" class="sortable row-ver"
+                        data-translate="VERANTWORTLICHER_JUGENDAMT"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
@@ -86,6 +90,8 @@
                 <tr>
                     <th><input st-search="fallNummer" class="form-control" type="text" max="999999"
                                ng-model="vm.selectedFallNummer"/></th>
+                    <th><input st-search="gemeinde" class="form-control" type="text" max="999999"
+                               ng-model="vm.selectedGemeinde"/></th>
                     <th><input st-search="familienName" class="form-control" type="text"
                                ng-model="vm.selectedFamilienName"/></th>
                     <th dv-display-element
@@ -141,9 +147,10 @@
                         </div>
                     </th>
                     <th dv-display-element
-                         dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
                         <div class="dv-select-style">
-                            <select st-input-event="change" name="dokumenteHochgeladen" id="dokumenteHochgeladen" st-search="dokumenteHochgeladen"
+                            <select st-input-event="change" name="dokumenteHochgeladen" id="dokumenteHochgeladen"
+                                    st-search="dokumenteHochgeladen"
                                     class="form-control"
                                     ng-model="vm.selectedDokumenteHochgeladen">
                                 <option value="">{{"ALLE" | translate}}</option>
@@ -176,14 +183,17 @@
                     </th>
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS" initial-all="true"
+                        <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
+                                       initial-all="true"
                                        show-selection-all="true" selected-user="vm.selectedVerantwortlicherTS"
                                        schulamt="true"></dv-userselect>
                     </th>
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG" initial-all="true"
-                                       show-selection-all="true" selected-user="vm.selectedVerantwortlicherBG"></dv-userselect>
+                        <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
+                                       initial-all="true"
+                                       show-selection-all="true"
+                                       selected-user="vm.selectedVerantwortlicherBG"></dv-userselect>
                     </th>
                     <th ng-if="vm.isActionsVisible()"></th>
                 </tr>
@@ -194,6 +204,7 @@
                     ng-click="vm.editClicked(row, $event)">
                     <td class="ellipsis" title="{{vm.addZerosToFallnummer(row.fallNummer)}}"
                         ng-bind="vm.addZerosToFallnummer(row.fallNummer)"></td>
+                    <td class="ellipsis" title="{{row.gemeinde}}" ng-bind="row.gemeinde"></td>
                     <td class="ellipsis" title="{{row.familienName}}" ng-bind="row.familienName"></td>
                     <td class="ellipsis" title="{{row.kinder | arrayToString}}" ng-bind="row.kinder | arrayToString"
                         dv-display-element
@@ -202,7 +213,7 @@
                     <td class="ellipsis" title="{{row.antragTyp | translate}}">
                         <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer()"></i>
                         <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer()"></i>
-                        <span  ng-bind="row.antragTyp | translate"   class="marginLeft5"></span>
+                        <span ng-bind="row.antragTyp | translate" class="marginLeft5"></span>
                     </td>
                     <td class="ellipsis"
                         title="{{row.gesuchsperiodeString}}"
@@ -250,9 +261,11 @@
                     </td>
 
 
-                    <td class="ellipsis" ng-if="vm.isActionsVisible()" role="cell" tabindex="-1" ng-click="$event.stopPropagation()">
+                    <td class="ellipsis" ng-if="vm.isActionsVisible()" role="cell" tabindex="-1"
+                        ng-click="$event.stopPropagation()">
                         <dv-loading-button type="button" button-click="vm.removeClicked(row)"
-                                           button-class="dv-btn-sm" title="{{'EINTRAG_DELETE' | translate}}" aria-label="{{'EINTRAG_DELETE' | translate}}">
+                                           button-class="dv-btn-sm" title="{{'EINTRAG_DELETE' | translate}}"
+                                           aria-label="{{'EINTRAG_DELETE' | translate}}">
                             <i class="fa fa-minus">
                             </i>
                         </dv-loading-button>
