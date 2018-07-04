@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 
@@ -84,7 +85,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private String kindFachstelle;
 	private Boolean kindErwBeduerfnisse;
 	private Boolean kindDeutsch;
-	private Boolean kindEingeschult;
+	private EinschulungTyp kindEingeschult;
 
 	private LocalDate zeitabschnittVon;
 	private LocalDate zeitabschnittBis;
@@ -532,13 +533,9 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.kindDeutsch = kindDeutsch;
 	}
 
-	public Boolean getKindEingeschult() {
-		return kindEingeschult;
-	}
+	public EinschulungTyp getKindEingeschult() { return kindEingeschult; }
 
-	public void setKindEingeschult(Boolean kindEingeschult) {
-		this.kindEingeschult = kindEingeschult;
-	}
+	public void setKindEingeschult(EinschulungTyp kindEingeschult) { this.kindEingeschult = kindEingeschult; }
 
 	public LocalDate getZeitabschnittVon() {
 		return zeitabschnittVon;
