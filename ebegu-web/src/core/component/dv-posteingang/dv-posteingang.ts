@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
@@ -27,10 +29,11 @@ import MitteilungRS from '../../service/mitteilungRS.rest';
     selector: 'dv-posteingang',
     template: require('./dv-posteingang.html'),
 })
-export class DvPosteingangController implements OnInit {
+export class DvPosteingangController implements OnInit, OnDestroy {
 
     private log: Log = Log.createLog(AuthLifeCycleService);
 
+    private readonly unsubscribe$ = new Subject<void>();
     amountMitteilungen: number = 0;
     reloadAmountMitteilungenInterval: number;
 
@@ -46,23 +49,31 @@ export class DvPosteingangController implements OnInit {
         this.getAmountNewMitteilungen();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => {clearInterval(this.reloadAmountMitteilungenInterval); },
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
             );
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => {this.handleLogIn(); },
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
             );
 
         this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MAY_CHANGED)
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => {
                     this.getAmountNewMitteilungen(); },
                 error => this.log.info(`the received TSPostEingangEvent ${event} threw an error ${error}`),
             );
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private handleLogIn() {
