@@ -14,6 +14,9 @@
  */
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,6 +39,9 @@ public class JaxBerechtigung extends JaxAbstractDateRangedDTO {
 
 	@Nullable
 	private JaxInstitution institution;
+
+	@Nonnull
+	private Set<JaxGemeinde> gemeindeList = new TreeSet<>();
 
 
 	@Nonnull
@@ -63,5 +69,14 @@ public class JaxBerechtigung extends JaxAbstractDateRangedDTO {
 
 	public void setInstitution(@Nullable JaxInstitution institution) {
 		this.institution = institution;
+	}
+
+	@Nonnull
+	public Set<JaxGemeinde> getGemeindeList() {
+		return gemeindeList;
+	}
+
+	public void setGemeindeList(@Nonnull Set<JaxGemeinde> gemeindeList) {
+		this.gemeindeList = gemeindeList;
 	}
 }

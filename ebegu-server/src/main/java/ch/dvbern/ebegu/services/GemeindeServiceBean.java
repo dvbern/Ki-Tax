@@ -66,7 +66,12 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 			LOG.error("Wir erwarten, dass mindestens eine Gemeinde bereits in der DB existiert");
 			throw new EbeguRuntimeException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-
 		return gemeinden.iterator().next();
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getAllGemeinden() {
+		return criteriaQueryHelper.getAll(Gemeinde.class);
 	}
 }

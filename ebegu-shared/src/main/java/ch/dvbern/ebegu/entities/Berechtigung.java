@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,14 +29,18 @@ import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BerechtigungChangedEntityListener;
-import ch.dvbern.ebegu.validators.CheckBerechtigung;
+import ch.dvbern.ebegu.validators.CheckBerechtigungGemeinde;
+import ch.dvbern.ebegu.validators.CheckBerechtigungInstitutionTraegerschaft;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
@@ -44,7 +50,8 @@ import org.hibernate.envers.Audited;
 @Entity
 @EntityListeners(BerechtigungChangedEntityListener.class)
 @Audited
-@CheckBerechtigung
+@CheckBerechtigungInstitutionTraegerschaft
+@CheckBerechtigungGemeinde
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Berechtigung extends AbstractDateRangedEntity implements Comparable<Berechtigung> {
@@ -60,6 +67,19 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@Column(nullable = false)
 	@NotNull
 	private UserRole role;
+
+	@NotNull
+	@ManyToMany
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "berechtigung_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_berechtigung_gemeinde_gemeinde_id"),
+		indexes = {
+			@Index(name = "IX_berechtigung_gemeinde_berechtigung_id", columnList = "berechtigung_id"),
+			@Index(name = "IX_berechtigung_gemeinde_gemeinde_id", columnList = "gemeinde_id"),
+		}
+	)
+	private Set<Gemeinde> gemeindeList = new TreeSet<>();
 
 	@Nullable
 	@ManyToOne(optional = true)
@@ -86,6 +106,15 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 
 	public void setRole(UserRole role) {
 		this.role = role;
+	}
+
+	@Nonnull
+	public Set<Gemeinde> getGemeindeList() {
+		return gemeindeList;
+	}
+
+	public void setGemeindeList(@Nonnull Set<Gemeinde> gemeindeList) {
+		this.gemeindeList = gemeindeList;
 	}
 
 	@Nullable

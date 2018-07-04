@@ -102,9 +102,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Before
 	public void init() {
 		mandant = getDummySuperadmin().getMandant();
-		empfaengerJA = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant);
+		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
-		empfaengerSCH = TestDataUtil.createBenutzer(UserRole.SCHULAMT, "scju", null, null, mandant);
+		empfaengerSCH = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SCHULAMT, "scju", null, null, mandant, persistence);
 		persistence.persist(empfaengerSCH);
 
 		dossier = TestDataUtil.createDefaultDossier();
@@ -115,7 +115,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		fall = persistence.persist(fall);
 
 		traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
-		empfaengerINST = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti", traegerschaft, null, mandant);
+		empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti", traegerschaft, null, mandant, persistence);
 		persistence.persist(empfaengerINST);
 
 		// Default-Verantwortliche setzen, damit beim Senden der Message automatisch der Empfaenger ermittelt werden kann
@@ -489,7 +489,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	// HELP METHODS
 
 	private void prepareDependentObjects(String gesuchstellerUserName) {
-		sender = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, gesuchstellerUserName, null, null, mandant);
+		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, gesuchstellerUserName, null, null, mandant, persistence);
 		persistence.persist(sender);
 		dossier = dossierService.saveDossier(dossier);
 	}

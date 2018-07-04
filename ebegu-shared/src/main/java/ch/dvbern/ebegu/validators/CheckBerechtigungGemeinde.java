@@ -13,35 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.validators;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import javax.annotation.Nonnull;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Service zum Verwalten von Gemeinden
- */
-public interface GemeindeService {
+@Target({ TYPE, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Constraint(validatedBy = CheckBerechtigungGemeindeValidator.class)
+@Documented
+public @interface CheckBerechtigungGemeinde {
 
-	/**
-	 * Gibt die Gemeinde mit der uebergebenen ID zurueck.
-	 */
-	@Nonnull
-	Optional<Gemeinde> findGemeinde(@Nonnull String id);
+	String message() default "{invalid_berechtigung_gemeinde_rules}";
 
-	/**
-	 * Gibt die erste (und aktuell einzige) Gemeinde aus der DB zurueck
-	 */
-	@Nonnull
-	Gemeinde getFirst();
+	Class<?>[] groups() default {};
 
-	/**
-	 * Gibt alle Gemeinden zurück
-	 */
-	@Nonnull
-	Collection<Gemeinde> getAllGemeinden();
+	Class<? extends Payload>[] payload() default {};
+
 }

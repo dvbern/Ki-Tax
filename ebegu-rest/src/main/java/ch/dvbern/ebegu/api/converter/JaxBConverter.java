@@ -808,6 +808,25 @@ public class JaxBConverter {
 		return jaxFall;
 	}
 
+	@Nonnull
+	private Set<Gemeinde> gemeindeListToEntity(@Nonnull Set<JaxGemeinde> jaxGemeindeList, @Nonnull Set<Gemeinde> gemeindeList) {
+		final Set<Gemeinde> transformedGemeindeList = new TreeSet<>();
+		for (final JaxGemeinde jaxGemeinde : jaxGemeindeList) {
+			final Gemeinde gemeindeToMergeWith = gemeindeList
+				.stream()
+				.filter(existingGemeinde -> existingGemeinde.getId().equalsIgnoreCase(jaxGemeinde.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElse(new Gemeinde());
+			final Gemeinde gemeindeToAdd = gemeindeToEntity(jaxGemeinde, gemeindeToMergeWith);
+			final boolean added = transformedGemeindeList.add(gemeindeToAdd);
+			if (!added) {
+				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", gemeindeToAdd);
+			}
+		}
+		return transformedGemeindeList;
+	}
+
+	@Nonnull
 	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde gemeindeJax, @Nonnull final Gemeinde gemeinde) {
 		Objects.requireNonNull(gemeinde);
 		Objects.requireNonNull(gemeindeJax);
@@ -2479,8 +2498,15 @@ public class JaxBConverter {
 		} else {
 			berechtigung.setTraegerschaft(null);
 		}
+
+		// Gemeinden
+		final Set<Gemeinde> gemeindeListe = gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList());
+		berechtigung.setGemeindeList(gemeindeListe);
+
 		return berechtigung;
 	}
+
+
 
 	public JaxBerechtigung berechtigungToJax(Berechtigung berechtigung) {
 		JaxBerechtigung jaxBerechtigung = new JaxBerechtigung();
@@ -2492,6 +2518,9 @@ public class JaxBConverter {
 		if (berechtigung.getTraegerschaft() != null) {
 			jaxBerechtigung.setTraegerschaft(traegerschaftToJAX(berechtigung.getTraegerschaft()));
 		}
+		// Gemeinden
+		final Set<JaxGemeinde> jaxGemeinden = new TreeSet<>(berechtigung.getGemeindeList().stream().map(this::gemeindeToJAX).collect(Collectors.toList()));
+		jaxBerechtigung.setGemeindeList(jaxGemeinden);
 		return jaxBerechtigung;
 	}
 

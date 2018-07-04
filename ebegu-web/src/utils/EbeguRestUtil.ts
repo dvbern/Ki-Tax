@@ -378,7 +378,7 @@ export default class EbeguRestUtil {
      * Nimmt den eingegebenen Code und erzeugt ein TSLand Objekt mit dem Code und
      * seine Uebersetzung.
      * @param landCode
-     * @returns {any}
+     * @returns {TSLand}
      */
     public landCodeToTSLand(landCode: string): TSLand {
         if (landCode) {
@@ -391,7 +391,7 @@ export default class EbeguRestUtil {
     /**
      * Fügt das 'Land_' dem eingegebenen Landcode hinzu.
      * @param landCode
-     * @returns {any}
+     * @returns {string}
      */
     public landCodeToTSLandCode(landCode: string): string {
         if (landCode) {
@@ -641,6 +641,16 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    private gemeindeListToRestObject(gemeindeListTS: Array<TSGemeinde>): Array<any> {
+        let list: any[] = [];
+        if (gemeindeListTS) {
+            for (let i = 0; i < gemeindeListTS.length; i++) {
+                list[i] = this.gemeindeToRestObject({}, gemeindeListTS[i]);
+            }
+        }
+        return list;
+    }
+
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
         if (gemeinde) {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
@@ -649,6 +659,18 @@ export default class EbeguRestUtil {
             return restGemeinde;
         }
         return undefined;
+    }
+
+    public parseGemeindeList(data: any): TSGemeinde[] {
+        let gemeindeListTS: TSGemeinde[] = [];
+        if (data && Array.isArray(data)) {
+            for (let i = 0; i < data.length; i++) {
+                gemeindeListTS[i] = this.parseGemeinde(new TSGemeinde(), data[i]);
+            }
+        } else {
+            gemeindeListTS[0] = this.parseGemeinde(new TSGemeinde(), data);
+        }
+        return gemeindeListTS;
     }
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
@@ -1752,6 +1774,8 @@ export default class EbeguRestUtil {
             berechtigung.role = berechtigungTS.role;
             berechtigung.traegerschaft = this.traegerschaftToRestObject({}, berechtigungTS.traegerschaft);
             berechtigung.institution = this.institutionToRestObject({}, berechtigungTS.institution);
+            // Gemeinden
+            berechtigung.gemeindeList = this.gemeindeListToRestObject(berechtigungTS.gemeindeList);
             return berechtigung;
         }
         return undefined;
@@ -1763,6 +1787,8 @@ export default class EbeguRestUtil {
             berechtigungTS.role = berechtigungFromServer.role;
             berechtigungTS.traegerschaft = this.parseTraegerschaft(new TSTraegerschaft(), berechtigungFromServer.traegerschaft);
             berechtigungTS.institution = this.parseInstitution(new TSInstitution(), berechtigungFromServer.institution);
+            // Gemeinden
+            berechtigungTS.gemeindeList = this.parseGemeindeList(berechtigungFromServer.gemeindeList);
             return berechtigungTS;
         }
         return undefined;

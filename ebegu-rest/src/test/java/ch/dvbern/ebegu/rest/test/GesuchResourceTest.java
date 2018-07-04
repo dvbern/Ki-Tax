@@ -275,7 +275,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 
 	private Benutzer persistUser(final UserRole role, final String username, final Institution institution, final Traegerschaft traegerschaft) {
 		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
-		Benutzer benutzer = TestDataUtil.createBenutzer(role, username, traegerschaft, institution, mandant);
+		Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(role, username, traegerschaft, institution, mandant, persistence);
 		persistence.persist(benutzer);
 		try {
 			JBossLoginContextFactory.createLoginContext(username, username).login();

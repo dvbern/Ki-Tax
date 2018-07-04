@@ -225,7 +225,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		//traegerschaftbenutzer setzten
 		Traegerschaft traegerschaft = institutionToSet.getTraegerschaft();
 		Assert.assertNotNull("Unser testaufbau sieht vor, dass die institution zu einer traegerschaft gehoert", traegerschaft);
-		Benutzer verantwortlicherUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "anonymous", traegerschaft, null, TestDataUtil.createDefaultMandant());
+		Benutzer verantwortlicherUser = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "anonymous", traegerschaft,
+			null, TestDataUtil.createDefaultMandant(), persistence);
 		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren
@@ -355,6 +356,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	private Dossier addVerantwortlicherTSToDossier(@Nonnull Dossier dossier) {
 		// mit 2 Verantwortlichen wird zu Mischgesuch
 		Benutzer verantSCH = TestDataUtil.createBenutzerSCH();
+		verantSCH.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		persistence.persist(verantSCH.getMandant());
 		persistence.persist(verantSCH);
 		dossier.setVerantwortlicherTS(verantSCH);
