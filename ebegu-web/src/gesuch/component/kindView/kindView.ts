@@ -14,6 +14,8 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {IKindStateParams} from '../../gesuch.route';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import TSKind from '../../../models/TSKind';
@@ -49,6 +51,7 @@ export class KindViewComponentConfig implements IComponentOptions {
 export class KindViewController extends AbstractGesuchViewController<TSKindContainer> {
     geschlechter: Array<string>;
     kinderabzugValues: Array<TSKinderabzug>;
+    einschulungTypValues: Array<TSEinschulungTyp>;
     showFachstelle: boolean;
     showFachstelleGS: boolean;
     fachstelleId: string; //der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
@@ -81,6 +84,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private initViewModel(): void {
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
+        this.einschulungTypValues = getTSEinschulungTypValues();
+
         this.showFachstelle = (this.model.kindJA.pensumFachstelle) ? true : false;
         this.showFachstelleGS = (this.model.kindGS && this.model.kindGS.pensumFachstelle) ? true : false;
         if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {

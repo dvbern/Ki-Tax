@@ -1178,7 +1178,7 @@ export default class EbeguRestUtil {
         restKind.wohnhaftImGleichenHaushalt = kind.wohnhaftImGleichenHaushalt;
         restKind.kinderabzug = kind.kinderabzug;
         restKind.mutterspracheDeutsch = kind.mutterspracheDeutsch;
-        restKind.einschulung = kind.einschulung;
+        restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
@@ -1241,7 +1241,7 @@ export default class EbeguRestUtil {
             kindTS.wohnhaftImGleichenHaushalt = kindFromServer.wohnhaftImGleichenHaushalt;
             kindTS.kinderabzug = kindFromServer.kinderabzug;
             kindTS.mutterspracheDeutsch = kindFromServer.mutterspracheDeutsch;
-            kindTS.einschulung = kindFromServer.einschulung;
+            kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             if (kindFromServer.pensumFachstelle) {
                 kindTS.pensumFachstelle = this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
@@ -1323,7 +1323,7 @@ export default class EbeguRestUtil {
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
-        restAngebot.einschulung = angebotDTO.einschulung;
+        restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;
         restAngebot.mutterspracheDeutsch = angebotDTO.mutterspracheDeutsch;
         restAngebot.wohnhaftImGleichenHaushalt = angebotDTO.wohnhaftImGleichenHaushalt;

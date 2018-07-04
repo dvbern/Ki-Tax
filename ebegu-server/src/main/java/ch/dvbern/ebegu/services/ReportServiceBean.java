@@ -916,7 +916,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setKindFachstelle(kind.getPensumFachstelle() != null ? kind.getPensumFachstelle().getFachstelle().getName() : StringUtils.EMPTY);
 		row.setKindErwBeduerfnisse(betreuung.getErweiterteBeduerfnisse());
 		row.setKindDeutsch(kind.getMutterspracheDeutsch());
-		row.setKindEingeschult(kind.getEinschulung());
+		row.setKindEinschulungTyp(kind.getEinschulungTyp());
 	}
 
 	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(GesuchstellerKinderBetreuungDataRow row, VerfuegungZeitabschnitt zeitabschnitt, Betreuung betreuung) {

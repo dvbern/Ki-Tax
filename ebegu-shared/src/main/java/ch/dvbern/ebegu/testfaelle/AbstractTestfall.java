@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Geschlecht;
@@ -290,7 +291,7 @@ public abstract class AbstractTestfall {
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
 			kind.setMutterspracheDeutsch(Boolean.TRUE);
-			kind.setEinschulung(Boolean.TRUE);
+			kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		}
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
