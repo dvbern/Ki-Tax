@@ -135,16 +135,16 @@ public abstract class AbstractTestfall {
 		return fall;
 	}
 
-	private Dossier createDossier(@Nonnull Fall fall, @Nullable Benutzer verantwortlicher) {
-		dossier = createDossier(fall);
+	private Dossier createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
+		dossier = createDossier(fallParam);
 		dossier.setVerantwortlicherBG(verantwortlicher);
 		dossier.setTimestampErstellt(LocalDateTime.now().minusDays(7));
 		return dossier;
 	}
 
-	private Dossier createDossier(@Nonnull Fall fall) {
+	private Dossier createDossier(@Nonnull Fall fallParam) {
 		dossier = new Dossier();
-		dossier.setFall(fall);
+		dossier.setFall(fallParam);
 		if (gemeinde != null) {
 			dossier.setGemeinde(gemeinde);
 		} else {
@@ -154,10 +154,10 @@ public abstract class AbstractTestfall {
 	}
 
 	private Gemeinde createGemeinde() {
-		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setEnabled(true);
-		gemeinde.setName("Testgemeinde");
-		return gemeinde;
+		Gemeinde testGemeinde = new Gemeinde();
+		testGemeinde.setEnabled(true);
+		testGemeinde.setName("Testgemeinde");
+		return testGemeinde;
 	}
 
 	public void createGesuch(@Nullable LocalDate eingangsdatum, AntragStatus status) {

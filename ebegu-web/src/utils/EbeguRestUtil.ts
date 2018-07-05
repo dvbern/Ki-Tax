@@ -620,7 +620,6 @@ export default class EbeguRestUtil {
         if (fall) {
             this.abstractEntityToRestObject(restFall, fall);
             restFall.fallNummer = fall.fallNummer;
-            restFall.nextNumberKind = fall.nextNumberKind;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
             return restFall;
         }
@@ -790,7 +789,6 @@ export default class EbeguRestUtil {
         if (mandant) {
             this.abstractEntityToRestObject(restMandant, mandant);
             restMandant.name = mandant.name;
-            restMandant.nextNumberGemeinde = mandant.nextNumberGemeinde;
             return restMandant;
         }
         return undefined;
@@ -1168,7 +1166,6 @@ export default class EbeguRestUtil {
         }
         restKindContainer.betreuungen = this.betreuungListToRestObject(kindContainer.betreuungen);
         restKindContainer.kindNummer = kindContainer.kindNummer;
-        restKindContainer.nextNumberBetreuung = kindContainer.nextNumberBetreuung;
         restKindContainer.kindMutiert = kindContainer.kindMutiert;
         return restKindContainer;
     }

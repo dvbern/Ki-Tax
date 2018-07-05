@@ -39,7 +39,10 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Entity
 @Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name")
+	uniqueConstraints = {
+		@UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name"),
+		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
+	}
 )
 public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 

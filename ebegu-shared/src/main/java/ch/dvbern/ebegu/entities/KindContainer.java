@@ -138,11 +138,12 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		this.kindNummer = kindNummer;
 	}
 
+	@Nonnull
 	public Integer getNextNumberBetreuung() {
 		return nextNumberBetreuung;
 	}
 
-	public void setNextNumberBetreuung(Integer nextNumberBetreuung) {
+	public void setNextNumberBetreuung(@Nonnull Integer nextNumberBetreuung) {
 		this.nextNumberBetreuung = nextNumberBetreuung;
 	}
 

@@ -150,7 +150,7 @@ public class AbstractEntityListener {
 			if (!gesuchDeletionLogByGesuch.isPresent()) {
 				GesuchDeletionLog gesuchDeletionLog = getGesuchDeletionLogService().saveGesuchDeletionLog(
 					new GesuchDeletionLog((Gesuch) entity, GesuchDeletionCause.UNBEKANNT));
-				LOGGER.error("Achtung, es wurde ein Gesuch geloescht, welches noch keinen GesuchDeletionLog-Eintrag hat! Erstelle diesen. ID=" +
+				LOGGER.error("Achtung, es wurde ein Gesuch geloescht, welches noch keinen GesuchDeletionLog-Eintrag hat! Erstelle diesen. ID={}",
 					gesuchDeletionLog.getId());
 			}
 		}
