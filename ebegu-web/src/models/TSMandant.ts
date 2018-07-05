@@ -18,10 +18,12 @@ import TSAbstractEntity from './TSAbstractEntity';
 export class TSMandant extends TSAbstractEntity {
 
     private _name: string;
+    private _nextNumberGemeinde: number;
 
-    constructor(name?: string) {
+    constructor(name?: string, nextNumberGemeinde?: number) {
         super();
         this._name = name;
+        this._nextNumberGemeinde = nextNumberGemeinde;
     }
 
     public get name(): string {
@@ -30,5 +32,13 @@ export class TSMandant extends TSAbstractEntity {
 
     public set name(value: string) {
         this._name = value;
+    }
+
+    public get nextNumberGemeinde(): number {
+        return this._nextNumberGemeinde;
+    }
+
+    public set nextNumberGemeinde(value: number) {
+        this._nextNumberGemeinde = value;
     }
 }

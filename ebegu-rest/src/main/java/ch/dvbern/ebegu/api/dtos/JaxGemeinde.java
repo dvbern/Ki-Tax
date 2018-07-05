@@ -33,6 +33,8 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
+	private long gemeindeNummer;
+
 	private boolean enabled;
 
 
@@ -43,6 +45,14 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setName(@Nonnull String name) {
 		this.name = name;
+	}
+
+	public long getGemeindeNummer() {
+		return gemeindeNummer;
+	}
+
+	public void setGemeindeNummer(long gemeindeNummer) {
+		this.gemeindeNummer = gemeindeNummer;
 	}
 
 	public boolean isEnabled() {

@@ -14,6 +14,7 @@
  */
 import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
@@ -45,6 +46,7 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
 export class CreateAngebotListViewController {
 
     form: IFormController;
+    einschulungTypValues: Array<TSEinschulungTyp>;
     private ts: boolean;
     private fi: boolean;
     private kindContainer: TSKindContainer;
@@ -60,6 +62,7 @@ export class CreateAngebotListViewController {
 
     $onInit() {
         this.anmeldungDTO = new TSAnmeldungDTO();
+        this.einschulungTypValues = getTSEinschulungTypValues();
         if (this.$stateParams.type === 'TS') {
             this.ts = true;
         } else if (this.$stateParams.type === 'FI') {

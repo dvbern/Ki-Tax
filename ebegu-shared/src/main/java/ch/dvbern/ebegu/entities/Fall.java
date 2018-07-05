@@ -85,11 +85,6 @@ public class Fall extends AbstractEntity implements HasMandant {
 	private Integer nextNumberKind = 1;
 
 	@NotNull
-	@Min(1)
-	@Column(nullable = false)
-	private Integer nextNumberDossier = 1;
-
-	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_mandant_id"))
 	private Mandant mandant;
@@ -117,14 +112,6 @@ public class Fall extends AbstractEntity implements HasMandant {
 
 	public void setNextNumberKind(Integer nextNumberKind) {
 		this.nextNumberKind = nextNumberKind;
-	}
-
-	public Integer getNextNumberDossier() {
-		return nextNumberDossier;
-	}
-
-	public void setNextNumberDossier(Integer nextNumberDossier) {
-		this.nextNumberDossier = nextNumberDossier;
 	}
 
 	@Override

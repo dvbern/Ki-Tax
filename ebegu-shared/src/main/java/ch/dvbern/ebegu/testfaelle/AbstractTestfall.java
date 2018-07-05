@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Geschlecht;
@@ -75,6 +76,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractTestfall {
 
+	public static final String ID_MANDANT_KANTON_BERN = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
 	public static final String ID_GEMEINDE_BERN = "ea02b313-e7c3-4b26-9ef7-e413f4046db2";
 	public static final String ID_GEMEINDE_OSTERMUNDIGEN = "80a8e496-b73c-4a4a-a163-a0b2caf76487";
 
@@ -134,16 +136,16 @@ public abstract class AbstractTestfall {
 		return fall;
 	}
 
-	private Dossier createDossier(@Nonnull Fall fall, @Nullable Benutzer verantwortlicher) {
-		dossier = createDossier(fall);
+	private Dossier createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
+		dossier = createDossier(fallParam);
 		dossier.setVerantwortlicherBG(verantwortlicher);
 		dossier.setTimestampErstellt(LocalDateTime.now().minusDays(7));
 		return dossier;
 	}
 
-	private Dossier createDossier(@Nonnull Fall fall) {
+	private Dossier createDossier(@Nonnull Fall fallParam) {
 		dossier = new Dossier();
-		dossier.setFall(fall);
+		dossier.setFall(fallParam);
 		if (gemeinde != null) {
 			dossier.setGemeinde(gemeinde);
 		} else {
@@ -153,10 +155,10 @@ public abstract class AbstractTestfall {
 	}
 
 	private Gemeinde createGemeinde() {
-		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setEnabled(true);
-		gemeinde.setName("Testgemeinde");
-		return gemeinde;
+		Gemeinde testGemeinde = new Gemeinde();
+		testGemeinde.setEnabled(true);
+		testGemeinde.setName("Testgemeinde");
+		return testGemeinde;
 	}
 
 	public void createGesuch(@Nullable LocalDate eingangsdatum, AntragStatus status) {
@@ -290,7 +292,7 @@ public abstract class AbstractTestfall {
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
 			kind.setMutterspracheDeutsch(Boolean.TRUE);
-			kind.setEinschulung(Boolean.TRUE);
+			kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		}
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);

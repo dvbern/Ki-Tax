@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
@@ -37,11 +36,8 @@ import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherTS;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.bridge.builtin.LongBridge;
 
 @Audited
 @Entity
@@ -71,11 +67,6 @@ public class Dossier extends AbstractEntity implements Searchable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_gemeinde_id"))
 	private Gemeinde gemeinde;
 
-	@NotNull
-	@Column(nullable = false)
-	@Field(bridge = @FieldBridge(impl = LongBridge.class))
-	private long dossierNummer = 0;
-
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_verantwortlicher_bg_id"))
@@ -102,14 +93,6 @@ public class Dossier extends AbstractEntity implements Searchable {
 
 	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
-	}
-
-	public long getDossierNummer() {
-		return dossierNummer;
-	}
-
-	public void setDossierNummer(long dossierNummer) {
-		this.dossierNummer = dossierNummer;
 	}
 
 	@Nullable
@@ -143,8 +126,7 @@ public class Dossier extends AbstractEntity implements Searchable {
 			return false;
 		}
 		Dossier dossier = (Dossier) other;
-		return dossierNummer == dossier.dossierNummer &&
-			Objects.equals(fall, dossier.fall) &&
+		return Objects.equals(fall, dossier.fall) &&
 			Objects.equals(gemeinde, dossier.gemeinde);
 	}
 

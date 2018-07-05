@@ -620,8 +620,6 @@ export default class EbeguRestUtil {
         if (fall) {
             this.abstractEntityToRestObject(restFall, fall);
             restFall.fallNummer = fall.fallNummer;
-            restFall.nextNumberKind = fall.nextNumberKind;
-            restFall.nextNumberDossier = fall.nextNumberDossier;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
             return restFall;
         }
@@ -634,7 +632,6 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(fallTS, fallFromServer);
             fallTS.fallNummer = fallFromServer.fallNummer;
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
-            fallTS.nextNumberDossier = fallFromServer.nextNumberDossier;
             fallTS.besitzer = this.parseUser(new TSUser(), fallFromServer.besitzer);
             return fallTS;
         }
@@ -656,6 +653,7 @@ export default class EbeguRestUtil {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.enabled = gemeinde.enabled;
+            restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             return restGemeinde;
         }
         return undefined;
@@ -678,6 +676,7 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;
             gemeindeTS.enabled = gemeindeFromServer.enabled;
+            gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
             return gemeindeTS;
         }
         return undefined;
@@ -688,7 +687,6 @@ export default class EbeguRestUtil {
             this.abstractEntityToRestObject(restDossier, dossier);
             restDossier.fall = this.fallToRestObject({}, dossier.fall);
             restDossier.gemeinde = this.gemeindeToRestObject({}, dossier.gemeinde);
-            restDossier.dossierNummer = dossier.dossierNummer;
             restDossier.verantwortlicherBG = this.userToRestObject({}, dossier.verantwortlicherBG);
             restDossier.verantwortlicherTS = this.userToRestObject({}, dossier.verantwortlicherTS);
             return restDossier;
@@ -701,7 +699,6 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(dossierTS, dossierFromServer);
             dossierTS.fall = this.parseFall(new TSFall(), dossierFromServer.fall);
             dossierTS.gemeinde = this.parseGemeinde(new TSGemeinde(), dossierFromServer.gemeinde);
-            dossierTS.dossierNummer = dossierFromServer.dossierNummer;
             dossierTS.verantwortlicherBG = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherBG);
             dossierTS.verantwortlicherTS = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherTS);
             return dossierTS;
@@ -801,6 +798,7 @@ export default class EbeguRestUtil {
         if (mandantFromServer) {
             this.parseAbstractEntity(mandantTS, mandantFromServer);
             mandantTS.name = mandantFromServer.name;
+            mandantTS.nextNumberGemeinde = mandantFromServer.nextNumberGemeinde;
             return mandantTS;
         }
         return undefined;
@@ -1168,7 +1166,6 @@ export default class EbeguRestUtil {
         }
         restKindContainer.betreuungen = this.betreuungListToRestObject(kindContainer.betreuungen);
         restKindContainer.kindNummer = kindContainer.kindNummer;
-        restKindContainer.nextNumberBetreuung = kindContainer.nextNumberBetreuung;
         restKindContainer.kindMutiert = kindContainer.kindMutiert;
         return restKindContainer;
     }
@@ -1178,7 +1175,7 @@ export default class EbeguRestUtil {
         restKind.wohnhaftImGleichenHaushalt = kind.wohnhaftImGleichenHaushalt;
         restKind.kinderabzug = kind.kinderabzug;
         restKind.mutterspracheDeutsch = kind.mutterspracheDeutsch;
-        restKind.einschulung = kind.einschulung;
+        restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
@@ -1241,7 +1238,7 @@ export default class EbeguRestUtil {
             kindTS.wohnhaftImGleichenHaushalt = kindFromServer.wohnhaftImGleichenHaushalt;
             kindTS.kinderabzug = kindFromServer.kinderabzug;
             kindTS.mutterspracheDeutsch = kindFromServer.mutterspracheDeutsch;
-            kindTS.einschulung = kindFromServer.einschulung;
+            kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             if (kindFromServer.pensumFachstelle) {
                 kindTS.pensumFachstelle = this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
@@ -1323,7 +1320,7 @@ export default class EbeguRestUtil {
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
-        restAngebot.einschulung = angebotDTO.einschulung;
+        restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;
         restAngebot.mutterspracheDeutsch = angebotDTO.mutterspracheDeutsch;
         restAngebot.wohnhaftImGleichenHaushalt = angebotDTO.wohnhaftImGleichenHaushalt;

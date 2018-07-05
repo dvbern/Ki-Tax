@@ -217,7 +217,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	private void removeDossierIfEmpty(@Nonnull Dossier dossier, @Nonnull GesuchDeletionCause cause) {
 		List<String> allGesuchIDsForDossier = gesuchService.getAllGesuchIDsForDossier(dossier.getId());
 		if (allGesuchIDsForDossier.isEmpty()) {
-			LOGGER.info("This was the last Gesuch of Dossier, deleting Dossier {}", dossier.getDossierNummer());
+			LOGGER.info("This was the last Gesuch of Dossier, deleting Dossier of Fall {} and Gemeinde {}", dossier.getFall(), dossier.getGemeinde());
 			dossierService.removeDossier(dossier.getId(), cause);
 		}
 	}

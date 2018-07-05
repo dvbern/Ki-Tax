@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.enums;
 
-import javax.annotation.Nonnull;
+/**
+ * Enum fuer Feld EinschulungTyp
+ */
+public enum EinschulungTyp {
 
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Sequence;
-import ch.dvbern.ebegu.enums.SequenceType;
-
-public interface SequenceService {
-
-	Long createNumberTransactional(@Nonnull SequenceType seq, @Nonnull Mandant mandant);
-
-	Sequence initFallNrSeqMandant(@Nonnull Mandant mandant);
+	VORSCHULALTER,
+	KINDERGARTEN1,
+	KINDERGARTEN2,
+	KLASSE1,
+	KLASSE2,
+	KLASSE3,
+	KLASSE4,
+	KLASSE5,
+	KLASSE6,
+	KLASSE7,
+	KLASSE8,
+	KLASSE9,
 }

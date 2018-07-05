@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 
 /**
@@ -43,7 +44,7 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private Boolean mutterspracheDeutsch;
 
 	@Nullable
-	private Boolean einschulung;
+	private EinschulungTyp einschulungTyp;
 
 	@Nullable
 	private JaxPensumFachstelle pensumFachstelle;
@@ -92,11 +93,12 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	}
 
 	@Nullable
-	public Boolean getEinschulung() {
-		return einschulung;
+	public EinschulungTyp getEinschulungTyp() {
+		return einschulungTyp;
 	}
 
-	public void setEinschulung(@Nullable Boolean einschulung) {
-		this.einschulung = einschulung;
+	public void setEinschulungTyp(@Nullable EinschulungTyp einschulungTyp) {
+		this.einschulungTyp = einschulungTyp;
 	}
+
 }

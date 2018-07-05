@@ -86,21 +86,24 @@
                                         </div>
                                     </div>
 
-                                    <!--Das Kind ist per 1.8.XX eingeschult (auch Kindergarten)-->
+                                    <!--Welche Klasse wird Ihr Kind am 01.08.XXXX besuchen?-->
                                     <div class="row">
                                         <div class="col-xs-12 dv-input-container-question">
                                             <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
                                                 <span class="ebeguH1 required">
                                                     <span data-translate="EINSCHULUNG"
-                                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}"> </span>
-                                                    <dv-tooltip input-id="einschulung"
-                                                                text="'EINSCHULUNG_HELP' | translate"></dv-tooltip>
+                                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
+                                                    </span>
                                                 </span>
-                                                <dv-radio-container name="einschulung" class="input-element"
-                                                                    ng-required="vm.anmeldungDTO.additionalKindQuestions"
-                                                                    ng-model="vm.anmeldungDTO.einschulung"
-                                                                    aria-described-by="einschulung-error">
-                                                </dv-radio-container>
+                                                <div class="dv-select-style">
+                                                    <select name="einschulungTyp" id="einschulungTyp"
+                                                            class="form-control"
+                                                            aria-describedby="einschulung-error"
+                                                            ng-model="vm.anmeldungDTO.einschulungTyp"
+                                                            ng-options="typ | translate for typ in vm.einschulungTypValues track by typ"
+                                                            ng-required="vm.anmeldungDTO.additionalKindQuestions">
+                                                    </select>
+                                                </div>
                                                 <dv-error-messages input-id="einschulung"
                                                                    for="vm.form.einschulung.$error"
                                                                    class="error"></dv-error-messages>
