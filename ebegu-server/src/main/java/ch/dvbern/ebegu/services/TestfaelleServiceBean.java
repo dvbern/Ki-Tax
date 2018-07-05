@@ -519,9 +519,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			fall.setBesitzer(besitzer);
 		}
 
-		fall.setNextNumberDossier(1);
-
-
 		final Fall persistedFall = fallService.saveFall(fall);
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 

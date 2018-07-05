@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,11 +33,23 @@ public class JaxMandant extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
+	@Min(1)
+	private Integer nextNumberGemeinde = 1;
+
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getNextNumberGemeinde() {
+		return nextNumberGemeinde;
+	}
+
+	public void setNextNumberGemeinde(Integer nextNumberGemeinde) {
+		this.nextNumberGemeinde = nextNumberGemeinde;
 	}
 }

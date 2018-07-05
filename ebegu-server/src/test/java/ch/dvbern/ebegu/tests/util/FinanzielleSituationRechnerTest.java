@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.services.EbeguParameterService;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -50,13 +49,10 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN_2 = new BigDecimal("79000");
 
 	@Inject
-	private EbeguParameterService ebeguParameterService;
-
-	@Inject
 	private FinanzielleSituationRechner finSitRechner;
 
 	@Test
-	public void testPositiverDurschnittlicherGewinn() throws Exception {
+	public void testPositiverDurschnittlicherGewinn() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -72,7 +68,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void testNegativerDurschnittlicherGewinn() throws Exception {
+	public void testNegativerDurschnittlicherGewinn() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -89,7 +85,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void testKeineEinkommensverschlechterung() throws Exception {
+	public void testKeineEinkommensverschlechterung() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);

@@ -195,7 +195,6 @@ public final class TestJaxDataUtil {
 
 	public static JaxDossier createTestJaxDossier() {
 		JaxDossier jaxDossier = new JaxDossier();
-		jaxDossier.setDossierNummer(1);
 		jaxDossier.setVerantwortlicherBG(createTestJaxBenutzer());
 		jaxDossier.setFall(createTestJaxFall());
 		return jaxDossier;
@@ -380,6 +379,7 @@ public final class TestJaxDataUtil {
 	public static JaxGemeinde createTestGemeinde() {
 		JaxGemeinde gemeinde = new JaxGemeinde();
 		gemeinde.setName("TestGemeinde");
+		gemeinde.setGemeindeNummer(1);
 		return gemeinde;
 	}
 

@@ -188,7 +188,6 @@ describe('EbeguRestUtil', function () {
                 myGesuch.einkommensverschlechterungInfoContainer = undefined;
                 let fall: TSFall = new TSFall();
                 TestDataUtil.setAbstractFieldsUndefined(fall);
-                fall.nextNumberKind = 2;
                 let dossier = new TSDossier();
                 TestDataUtil.setAbstractFieldsUndefined(dossier);
                 myGesuch.dossier = dossier;

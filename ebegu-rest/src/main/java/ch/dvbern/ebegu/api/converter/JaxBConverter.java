@@ -778,13 +778,7 @@ public class JaxBConverter {
 		Objects.requireNonNull(fall);
 		Objects.requireNonNull(fallJAXP);
 		convertAbstractFieldsToEntity(fallJAXP, fall);
-		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
-		if (fallJAXP.getNextNumberKind() != null) {
-			fall.setNextNumberKind(fallJAXP.getNextNumberKind());
-		}
-		if (fallJAXP.getNextNumberDossier() != null) {
-			fall.setNextNumberDossier(fallJAXP.getNextNumberDossier());
-		}
+		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
 			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
 			if (besitzer.isPresent()) {
@@ -801,7 +795,6 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(persistedFall, jaxFall);
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
-		jaxFall.setNextNumberDossier(persistedFall.getNextNumberDossier());
 		if (persistedFall.getBesitzer() != null) {
 			jaxFall.setBesitzer(benutzerToAuthLoginElement(persistedFall.getBesitzer()));
 		}
@@ -833,6 +826,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToEntity(gemeindeJax, gemeinde);
 		gemeinde.setName(gemeindeJax.getName());
 		gemeinde.setEnabled(gemeindeJax.isEnabled());
+		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
 		return gemeinde;
 	}
 
@@ -841,6 +835,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setEnabled(persistedGemeinde.isEnabled());
+		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		return jaxGemeinde;
 	}
 
@@ -866,7 +861,6 @@ public class JaxBConverter {
 				throw new EbeguEntityNotFoundException(DOSSIER_TO_ENTITY, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
 			}
 		}
-		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
 		if (dossierJAX.getVerantwortlicherBG() != null) {
 			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
 			if (verantwortlicher.isPresent()) {
@@ -895,7 +889,6 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(this.gemeindeToJAX(persistedDossier.getGemeinde()));
-		jaxDossier.setDossierNummer(persistedDossier.getDossierNummer());
 		if (persistedDossier.getVerantwortlicherBG() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherBG()));
 		}
@@ -1148,6 +1141,7 @@ public class JaxBConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
+		jaxMandant.setNextNumberGemeinde(persistedMandant.getNextNumberGemeinde());
 		return jaxMandant;
 	}
 
@@ -1568,9 +1562,7 @@ public class JaxBConverter {
 			}
 			kindContainer.setKindJA(kindToEntity(kindContainerJAXP.getKindJA(), kindJA));
 		}
-		if (kindContainerJAXP.getNextNumberBetreuung() != null) {
-			kindContainer.setNextNumberBetreuung(kindContainerJAXP.getNextNumberBetreuung());
-		}
+		// nextNumberBetreuung wird nur im Server gesetzt, darf aus dem Client nicht uebernommen werden
 		return kindContainer;
 	}
 

@@ -286,12 +286,25 @@ public final class TestDataUtil {
 	public static Dossier createDefaultDossier() {
 		Dossier dossier = new Dossier();
 		dossier.setFall(createDefaultFall());
+		dossier.setGemeinde(createGemeindeBern());
 		return dossier;
 	}
 
 	public static Mandant createDefaultMandant() {
 		Mandant mandant = new Mandant();
 		mandant.setName("Mandant1");
+		return mandant;
+	}
+
+	@Nonnull
+	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
+		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
+		if (mandant == null) {
+			mandant = new Mandant();
+			mandant.setNextNumberGemeinde(1);
+			mandant.setName("Kanton Bern");
+			return persistence.persist(mandant);
+		}
 		return mandant;
 	}
 
@@ -302,20 +315,24 @@ public final class TestDataUtil {
 			gemeinde.setId(GEMEINDE_ID);
 			gemeinde.setName("Testgemeinde");
 			gemeinde.setEnabled(true);
+			gemeinde.setMandant(getMandantKantonBern(persistence));
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
 	}
 
+	@Nonnull
 	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_BERN);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeBern();
+			persistence.persist(gemeinde.getMandant());
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
 	}
 
+	@Nonnull
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
 		if (gemeinde == null) {
@@ -330,6 +347,8 @@ public final class TestDataUtil {
 		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_BERN);
 		gemeinde.setName("Bern");
 		gemeinde.setEnabled(true);
+		gemeinde.setGemeindeNummer(1);
+		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
 	}
 

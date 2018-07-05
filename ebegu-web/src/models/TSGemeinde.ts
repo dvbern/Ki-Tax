@@ -18,6 +18,7 @@ import TSAbstractEntity from './TSAbstractEntity';
 export default class TSGemeinde extends TSAbstractEntity {
 
     private _name: string;
+    private _gemeindeNummer: number;
     private _enabled: boolean;
 
     public get name(): string {
@@ -26,6 +27,14 @@ export default class TSGemeinde extends TSAbstractEntity {
 
     public set name(value: string) {
         this._name = value;
+    }
+
+    public get gemeindeNummer(): number {
+        return this._gemeindeNummer;
+    }
+
+    public set gemeindeNummer(value: number) {
+        this._gemeindeNummer = value;
     }
 
     public get enabled(): boolean {

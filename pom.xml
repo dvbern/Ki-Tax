@@ -500,18 +500,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-controller-client</artifactId>
-                <version>2.2.1.Final</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jboss.threads</groupId>
                 <artifactId>jboss-threads</artifactId>
-                <version>2.2.1.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-protocol</artifactId>
                 <version>2.2.1.Final</version>
             </dependency>
 

@@ -17,8 +17,10 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -41,15 +43,30 @@ public class Mandant extends AbstractEntity {
 	@NotNull
 	private String name;
 
+	@NotNull
+	@Min(1)
+	@Column(nullable = false)
+	private Integer nextNumberGemeinde = 1;
+
 	public Mandant() {
 	}
 
+	@Nonnull
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(@Nonnull String name) {
 		this.name = name;
+	}
+
+	@Nonnull
+	public Integer getNextNumberGemeinde() {
+		return nextNumberGemeinde;
+	}
+
+	public void setNextNumberGemeinde(Integer nextNumberGemeinde) {
+		this.nextNumberGemeinde = nextNumberGemeinde;
 	}
 
 	@Override
