@@ -778,10 +778,7 @@ public class JaxBConverter {
 		Objects.requireNonNull(fall);
 		Objects.requireNonNull(fallJAXP);
 		convertAbstractFieldsToEntity(fallJAXP, fall);
-		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
-		if (fallJAXP.getNextNumberKind() != null) {
-			fall.setNextNumberKind(fallJAXP.getNextNumberKind());
-		}
+		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
 			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
 			if (besitzer.isPresent()) {
@@ -1162,7 +1159,6 @@ public class JaxBConverter {
 		Objects.requireNonNull(mandantJAXP);
 		convertAbstractFieldsToEntity(mandantJAXP, mandant);
 		mandant.setName(mandantJAXP.getName());
-		mandant.setNextNumberGemeinde(mandantJAXP.getNextNumberGemeinde());
 		return mandant;
 	}
 
@@ -1467,7 +1463,7 @@ public class JaxBConverter {
 		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
-		jaxKind.setEinschulung(persistedKind.getEinschulung());
+		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		return jaxKind;
 	}
@@ -1536,7 +1532,7 @@ public class JaxBConverter {
 		kind.setKinderabzug(kindJAXP.getKinderabzug());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setMutterspracheDeutsch(kindJAXP.getMutterspracheDeutsch());
-		kind.setEinschulung(kindJAXP.getEinschulung());
+		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 
 		PensumFachstelle updtPensumFachstelle = null;
 		if (kindJAXP.getPensumFachstelle() != null) {
@@ -1566,9 +1562,7 @@ public class JaxBConverter {
 			}
 			kindContainer.setKindJA(kindToEntity(kindContainerJAXP.getKindJA(), kindJA));
 		}
-		if (kindContainerJAXP.getNextNumberBetreuung() != null) {
-			kindContainer.setNextNumberBetreuung(kindContainerJAXP.getNextNumberBetreuung());
-		}
+		// nextNumberBetreuung wird nur im Server gesetzt, darf aus dem Client nicht uebernommen werden
 		return kindContainer;
 	}
 

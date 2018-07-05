@@ -34,6 +34,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
@@ -72,9 +73,11 @@ public class Kind extends AbstractPersonEntity {
 
 	@Column(nullable = true)
 	@Nullable
-	private Boolean einschulung;
+	@Enumerated(EnumType.STRING)
+	private EinschulungTyp einschulungTyp;
 
 	@Valid
+	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_pensum_fachstelle_id"), nullable = true)
 	private PensumFachstelle pensumFachstelle;
@@ -117,6 +120,15 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Nullable
+	public EinschulungTyp getEinschulungTyp() {
+		return einschulungTyp;
+	}
+
+	public void setEinschulungTyp(@Nullable EinschulungTyp einschulungTyp) {
+		this.einschulungTyp = einschulungTyp;
+	}
+
+	@Nullable
 	public PensumFachstelle getPensumFachstelle() {
 		return pensumFachstelle;
 	}
@@ -125,21 +137,13 @@ public class Kind extends AbstractPersonEntity {
 		this.pensumFachstelle = pensumFachstelle;
 	}
 
-	@Nullable
-	public Boolean getEinschulung() {
-		return einschulung;
-	}
-
-	public void setEinschulung(@Nullable Boolean einschulung) {
-		this.einschulung = einschulung;
-	}
-
 	@Nonnull
 	public Kind copyForMutation(@Nonnull Kind mutation) {
 		super.copyForMutation(mutation);
 		if (this.getPensumFachstelle() != null) {
 			mutation.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
 		}
+		mutation.setEinschulungTyp(this.getEinschulungTyp());
 		return copyForMutationOrErneuerung(mutation);
 	}
 
@@ -153,6 +157,7 @@ public class Kind extends AbstractPersonEntity {
 				folgegesuchKind.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
 			}
 		}
+		// Beim Erneuerungsgesuch wird der EinschulungTyp NICHT kopiert
 		return copyForMutationOrErneuerung(folgegesuchKind);
 	}
 
@@ -162,7 +167,6 @@ public class Kind extends AbstractPersonEntity {
 		mutation.setKinderabzug(this.getKinderabzug());
 		mutation.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		mutation.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
-		mutation.setEinschulung(this.getEinschulung());
 		return mutation;
 	}
 
@@ -186,7 +190,7 @@ public class Kind extends AbstractPersonEntity {
 			getKinderabzug() == otherKind.getKinderabzug() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getMutterspracheDeutsch(), otherKind.getMutterspracheDeutsch()) &&
-			Objects.equals(getEinschulung(), otherKind.getEinschulung()) &&
+			Objects.equals(getEinschulungTyp(), otherKind.getEinschulungTyp()) &&
 			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle());
 	}
 }

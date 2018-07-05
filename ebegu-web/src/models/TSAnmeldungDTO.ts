@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import TSBetreuung from './TSBetreuung';
 
 export default class TSAnmeldungDTO {
@@ -22,7 +23,7 @@ export default class TSAnmeldungDTO {
     private _additionalKindQuestions: boolean;
     private _wohnhaftImGleichenHaushalt: number;
     private _mutterspracheDeutsch: boolean;
-    private _einschulung: boolean;
+    private _einschulungTyp: TSEinschulungTyp;
 
     public get kindContainerId(): string {
         return this._kindContainerId;
@@ -64,11 +65,11 @@ export default class TSAnmeldungDTO {
         this._mutterspracheDeutsch = value;
     }
 
-    public get einschulung(): boolean {
-        return this._einschulung;
+    get einschulungTyp(): TSEinschulungTyp {
+        return this._einschulungTyp;
     }
 
-    public set einschulung(value: boolean) {
-        this._einschulung = value;
+    set einschulungTyp(value: TSEinschulungTyp) {
+        this._einschulungTyp = value;
     }
 }

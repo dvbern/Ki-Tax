@@ -26,3 +26,6 @@ ALTER TABLE gemeinde
 	ADD CONSTRAINT FK_gemeinde_mandant_id
 FOREIGN KEY (mandant_id)
 REFERENCES mandant (id);
+
+ALTER TABLE gemeinde
+	ADD CONSTRAINT UK_gemeinde_gemeindeNummer_mandant UNIQUE (gemeinde_nummer, mandant_id);
