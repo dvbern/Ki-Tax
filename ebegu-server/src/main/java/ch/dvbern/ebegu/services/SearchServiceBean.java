@@ -220,7 +220,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 				predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
 			}
-			if(predicateObjectDto.getGemeinde() != null) {
+			if (predicateObjectDto.getGemeinde() != null) {
 				Expression<String> gemeindeExpression = dossier.get(Dossier_.gemeinde).get(Gemeinde_.name);
 				String gemeindeWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getGemeinde());
 				predicates.add(cb.like(gemeindeExpression, gemeindeWithWildcards));

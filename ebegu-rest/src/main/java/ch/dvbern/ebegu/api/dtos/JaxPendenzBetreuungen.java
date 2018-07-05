@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -67,7 +68,7 @@ public class JaxPendenzBetreuungen {
 	@NotNull
 	private JaxGesuchsperiode gesuchsperiode;
 
-	@NotNull
+	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eingangsdatum = null;
 
@@ -157,11 +158,12 @@ public class JaxPendenzBetreuungen {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
+	@Nullable
 	public LocalDate getEingangsdatum() {
 		return eingangsdatum;
 	}
 
-	public void setEingangsdatum(LocalDate eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 

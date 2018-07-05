@@ -151,7 +151,7 @@ public class SearchResource {
 			pendenz.setName(betreuung.getKind().getKindJA().getNachname());
 			pendenz.setVorname(betreuung.getKind().getKindJA().getVorname());
 			pendenz.setGeburtsdatum(betreuung.getKind().getKindJA().getGeburtsdatum());
-			pendenz.setEingangsdatum(Objects.requireNonNull(betreuung.extractGesuch().getEingangsdatum()));
+			pendenz.setEingangsdatum(betreuung.extractGesuch().getEingangsdatum());
 			pendenz.setGesuchsperiode(converter.gesuchsperiodeToJAX(betreuung.extractGesuchsperiode()));
 			pendenz.setBetreuungsangebotTyp(Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()));
 			pendenz.setInstitution(converter.institutionToJAX(betreuung.getInstitutionStammdaten().getInstitution()));
