@@ -82,11 +82,8 @@ public class PrintUtil {
 	 * @param gesuch das Gesuch
 	 * @return Fallnummer
 	 */
-	public static String createFallNummerString(Gesuch gesuch) {
-
-		return Integer.toString(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear()).substring(2, 4) + '.'
-			+ gesuch.getFall().getPaddedFallnummer() + '.'
-			+ gesuch.getDossier().getGemeinde().getPaddedGemeindeNummer();
+	public static String createFallNummerString(@Nonnull Gesuch gesuch) {
+		return gesuch.getJahrFallAndGemeindenummer();
 	}
 
 	/**
