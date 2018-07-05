@@ -143,7 +143,7 @@ public class PDFServiceBeanTest {
 
 		byte[] bytes = pdfService.generateFreigabequittung(gesuch_2GS, writeProtectPDF);
 		assertNotNull(bytes);
-		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Jugendamt(" + gesuch_2GS.getJahrAndFallnummer() + ").pdf");
+		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Jugendamt(" + gesuch_2GS.getJahrFallAndGemeindenummer() + ").pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
@@ -157,7 +157,7 @@ public class PDFServiceBeanTest {
 
 		byte[] bytes = pdfService.generateFreigabequittung(gesuch_Schulamt, writeProtectPDF);
 		assertNotNull(bytes);
-		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Schulamt(" + gesuch_Schulamt.getJahrAndFallnummer() + ").pdf");
+		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Schulamt(" + gesuch_Schulamt.getJahrFallAndGemeindenummer() + ").pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);

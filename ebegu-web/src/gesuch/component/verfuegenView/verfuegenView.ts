@@ -254,8 +254,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public getBetreuungNumber(): string {
         if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
-            return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(), this.getFall(), this.gesuchModelManager.getKindToWorkWith().kindNummer,
-                this.getBetreuung().betreuungNummer);
+            return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(), this.getFall(), this.gesuchModelManager.getDossier().gemeinde,
+                this.gesuchModelManager.getKindToWorkWith().kindNummer, this.getBetreuung().betreuungNummer);
         }
         return undefined;
     }

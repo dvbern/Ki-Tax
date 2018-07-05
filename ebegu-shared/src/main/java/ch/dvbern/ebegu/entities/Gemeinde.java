@@ -24,10 +24,13 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.util.Constants;
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -128,5 +131,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 		builder.append(this.isEnabled(), o.isEnabled());
 		builder.append(this.getId(), o.getId());
 		return builder.toComparison();
+	}
+
+	@Transient
+	public String getPaddedGemeindeNummer() {
+		return Strings.padStart(Long.toString(getGemeindeNummer()), Constants.GEMEINDENUMMER_LENGTH, '0');
 	}
 }
