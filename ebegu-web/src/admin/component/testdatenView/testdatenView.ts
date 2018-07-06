@@ -15,6 +15,8 @@
 
 import {Component, OnInit} from '@angular/core';
 import {IComponentOptions, IPromise} from 'angular';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSGemeinde from '../../../models/TSGemeinde';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
@@ -56,13 +58,16 @@ export class TestdatenViewComponent implements OnInit {
     selectedGesuchsperiode: TSGesuchsperiode;
     gesuchsperiodeList: Array<TSGesuchsperiode>;
 
+    selectedGemeinde: TSGemeinde;
+    gemeindeList: Array<TSGemeinde>;
+
     devMode: boolean;
 
     constructor(testFaelleRS: TestFaelleRS, private dvDialog: DvDialog, private userRS: UserRS,
                 private errorService: ErrorService, private reindexRS: ReindexRS,
                 private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
                 private zahlungRS: ZahlungRS, private applicationPropertyRS: ApplicationPropertyRS,
-                private gesuchRS: GesuchRS, private dailyBatchRS: DailyBatchRS) {
+                private gesuchRS: GesuchRS, private dailyBatchRS: DailyBatchRS, private gemeindeRS: GemeindeRS) {
         this.testFaelleRS = testFaelleRS;
     }
 
@@ -75,6 +80,9 @@ export class TestdatenViewComponent implements OnInit {
         });
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             this.devMode = response;
+        });
+        this.gemeindeRS.getAllGemeinden().then((response: Array<TSGemeinde>) => {
+            this.gemeindeList = response;
         });
     }
 
@@ -94,14 +102,14 @@ export class TestdatenViewComponent implements OnInit {
             verfuegen = true;
         }
         if (this.selectedBesitzer) {
-            return this.createTestFallGS(testFall, this.selectedGesuchsperiode.id, bestaetigt, verfuegen, this.selectedBesitzer.username);
+            return this.createTestFallGS(testFall, this.selectedGesuchsperiode.id, this.selectedGemeinde.id, bestaetigt, verfuegen, this.selectedBesitzer.username);
         } else {
-            return this.createTestFall(testFall, this.selectedGesuchsperiode.id, bestaetigt, verfuegen);
+            return this.createTestFall(testFall, this.selectedGesuchsperiode.id, this.selectedGemeinde.id, bestaetigt, verfuegen);
         }
     }
 
-    private createTestFall(testFall: string, gesuchsperiodeId: string, bestaetigt: boolean, verfuegen: boolean): IPromise<any> {
-        return this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, bestaetigt, verfuegen).then((response) => {
+    private createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): IPromise<any> {
+        return this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then((response) => {
             //einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
             let uuidPartOfString = response.data ? response.data.slice(-36) : '';
             return this.dvDialog.showDialog(linkDialogTempl, LinkDialogController, {
@@ -113,8 +121,8 @@ export class TestdatenViewComponent implements OnInit {
         });
     }
 
-    private createTestFallGS(testFall: string, gesuchsperiodeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IPromise<any> {
-        return this.testFaelleRS.createTestFallGS(testFall, gesuchsperiodeId, bestaetigt, verfuegen, username).then((response) => {
+    private createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IPromise<any> {
+        return this.testFaelleRS.createTestFallGS(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen, username).then((response) => {
             //einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
             let uuidPartOfString = response.data ? response.data.slice(-36) : '';
             return this.dvDialog.showDialog(linkDialogTempl, LinkDialogController, {

@@ -23,14 +23,14 @@
 
             <!--selecton fuer parameter die bestimmen wie die testfaelle erzeugt werden-->
             <div class="row marginTop10">
-                <div class="col-sm-4 ">
+                <div class="col-sm-3">
                     <mat-radio-group name="creationType" [(ngModel)]="creationType" required>
                         <mat-radio-button value="warten">Betreuungen mit Zustand &#034;warten&#034;</mat-radio-button>
                         <mat-radio-button value="bestaetigt">Betreuungen mit Zustand &#034;bestätigt&#034;</mat-radio-button>
                         <mat-radio-button value="verfuegt">Verfügte Erstgesuche</mat-radio-button>
                     </mat-radio-group>
                 </div>
-                <div class="col-sm-4 ">
+                <div class="col-sm-3">
                     <label class="md-no-float" for="besitzer">
                         Gesuchsteller wenn gewünscht
                     </label>
@@ -40,7 +40,17 @@
                         </mat-option>
                     </mat-select>
                 </div>
-                <div class="col-sm-4 ">
+                <div class="col-sm-3">
+                    <label class="md-no-float" for="periode">
+                        Gemeinde
+                    </label>
+                    <mat-select [(ngModel)]="selectedGemeinde" id="gemeinde" name="gemeinde" class="input-testfall">
+                        <mat-option *ngFor="let gem of gemeindeList" [value]="gem">
+                            {{gem.name}}
+                        </mat-option>
+                    </mat-select>
+                </div>
+                <div class="col-sm-3">
                     <label class="md-no-float" for="periode">
                         Gesuchsperiode
                     </label>

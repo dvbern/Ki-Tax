@@ -25,6 +25,7 @@ import GesuchsperiodeRS from '../core/service/gesuchsperiodeRS.rest';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
 import UserRS from '../core/service/userRS.rest';
 import ZahlungRS from '../core/service/zahlungRS.rest';
+import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../gesuch/service/gesuchRS.rest';
 
 // AuthServiceRS
@@ -167,5 +168,16 @@ export function dailyBatchRSProviderServiceFactory(i: any) {
 export const dailyBatchRSProvider = {
     provide: DailyBatchRS,
     useFactory: dailyBatchRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// GemeindeRS
+export function gemeindeRSProviderServiceFactory(i: any) {
+    return i.get('GemeindeRS');
+}
+
+export const gemeindeRSProvider = {
+    provide: GemeindeRS,
+    useFactory: gemeindeRSProviderServiceFactory,
     deps: ['$injector']
 };

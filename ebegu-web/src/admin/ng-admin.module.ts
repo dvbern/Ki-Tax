@@ -23,7 +23,8 @@ import {TranslateModule} from '@ngx-translate/core';
 import {
     dailyBatchRSProvider,
     databaseMigrationRSProvider,
-    dvDialogProvider, errorServiceProvider, gesuchRSProvider, gesuchsperiodeRSProvider, reindexRSProvider, testFaelleRSProvider, traegerschaftRSProvider,
+    dvDialogProvider, errorServiceProvider, gemeindeRSProvider, gesuchRSProvider, gesuchsperiodeRSProvider, reindexRSProvider, testFaelleRSProvider,
+    traegerschaftRSProvider,
     userRSProvider, zahlungRSProvider
 } from '../hybridTools/ajs-upgraded-providers';
 import {NgSharedModule} from '../shared/ng-shared.module';
@@ -69,6 +70,7 @@ import {MatTableModule} from '@angular/material/table';
         dvDialogProvider,
         gesuchsperiodeRSProvider,
         {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
+        gemeindeRSProvider
     ],
 })
 export class NgAdminModule {

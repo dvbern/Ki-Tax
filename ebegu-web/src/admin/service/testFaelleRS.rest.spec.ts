@@ -44,7 +44,7 @@ describe('TestFaelleRS', function () {
         describe('createTestFall', () => {
             it('should call createTestFall', () => {
                 $httpBackend.expectGET(testFaelleRS.serviceURL + '/testfall/' + encodeURIComponent('1') + '/null/false/false').respond({});
-                testFaelleRS.createTestFall('1', null, false, false);
+                testFaelleRS.createTestFall('1', null, null, false, false);
                 $httpBackend.flush();
             });
         });
