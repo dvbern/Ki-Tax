@@ -248,7 +248,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			throw new EbeguRuntimeException("getFinSitDokumentAccessTokenGeneratedDokument", ErrorCodeEnum.ERROR_FIN_SIT_IS_NOT_REQUIRED);
 		}
 
-		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrAndFallnummer());
+		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrFallAndGemeindenummer());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected = getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
 		if (documentIfExistsAndIsWriteProtected != null) {
@@ -282,7 +282,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Nonnull
 	@Override
 	public WriteProtectedDokument getBegleitschreibenDokument(@Nonnull final Gesuch gesuch, @Nonnull Boolean forceCreation) throws MimeTypeParseException, MergeDocException {
-		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.BEGLEITSCHREIBEN, gesuch.getJahrAndFallnummer());
+		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.BEGLEITSCHREIBEN, gesuch.getJahrFallAndGemeindenummer());
 
 		// Das Begleitschreiben wird per Definition immer erst nach dem Verfügen erstellt, da die Verfügungen bzw. Nicht-Eintretensverfügungen als
 		// Anhang im Brief erwähnt werden! Sollte das Gesuch ein Status von Verfuegt haben, wird es als writeprotected gespeichert
@@ -325,7 +325,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	private void addFinanzielleSituationDoc(Gesuch gesuch, List<InputStream> docsToMerge) throws MergeDocException {
 		if (gesuch.isHasFSDokument()) {
-			byte[] finanzielleSituation = readFileIfExists(GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrAndFallnummer(), gesuch);
+			byte[] finanzielleSituation = readFileIfExists(GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrFallAndGemeindenummer(), gesuch);
 			if (finanzielleSituation.length > 0) {
 				docsToMerge.add(new ByteArrayInputStream(finanzielleSituation));
 			}
@@ -351,7 +351,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	}
 
 	private void addBegleitschreibenDoc(Gesuch gesuch, List<InputStream> docsToMerge) throws MergeDocException {
-		byte[] begleitschreiben = readFileIfExists(GeneratedDokumentTyp.BEGLEITSCHREIBEN, gesuch.getJahrAndFallnummer(), gesuch);
+		byte[] begleitschreiben = readFileIfExists(GeneratedDokumentTyp.BEGLEITSCHREIBEN, gesuch.getJahrFallAndGemeindenummer(), gesuch);
 		if (begleitschreiben.length > 0) {
 			docsToMerge.add(new ByteArrayInputStream(begleitschreiben));
 		}
@@ -377,7 +377,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	public WriteProtectedDokument getFreigabequittungAccessTokenGeneratedDokument(@Nonnull final Gesuch gesuch,
 		@Nonnull Boolean forceCreation) throws MimeTypeParseException, MergeDocException {
 
-		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.FREIGABEQUITTUNG, gesuch.getJahrAndFallnummer());
+		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.FREIGABEQUITTUNG, gesuch.getJahrFallAndGemeindenummer());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected = getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
 		if (documentIfExistsAndIsWriteProtected != null) {
@@ -393,7 +393,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			authorizer.checkReadAuthorizationFinSit(gesuch);
 
 			if (!gesuch.getStatus().inBearbeitung() && !forceCreation) {
-				LOGGER.error("{} für Gesuch {} nicht gefunden.", GeneratedDokumentTyp.FREIGABEQUITTUNG.name(), gesuch.getJahrAndFallnummer());
+				LOGGER.error("{} für Gesuch {} nicht gefunden.", GeneratedDokumentTyp.FREIGABEQUITTUNG.name(), gesuch.getJahrFallAndGemeindenummer());
 			}
 
 			gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);

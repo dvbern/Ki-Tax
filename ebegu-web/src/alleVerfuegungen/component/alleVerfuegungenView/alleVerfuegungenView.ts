@@ -48,12 +48,13 @@ export class AlleVerfuegungenViewController {
     TSRoleUtil = TSRoleUtil;
 
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
-        'DownloadRS', '$log', '$timeout', 'DossierRS'];
+        'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
 
     /* @ngInject */
     constructor(private $state: StateService, private $stateParams: IAlleVerfuegungenStateParams,
                 private authServiceRS: AuthServiceRS, private betreuungRS: BetreuungRS, private downloadRS: DownloadRS,
-                private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS) {
+                private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS,
+                private ebeguUtil: EbeguUtil) {
     }
 
     $onInit() {
@@ -109,7 +110,7 @@ export class AlleVerfuegungenViewController {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
@@ -122,10 +123,15 @@ export class AlleVerfuegungenViewController {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
+    }
+
+    public getBetreuungsId(betreuung: TSBetreuung): string {
+        return this.ebeguUtil.calculateBetreuungsId(betreuung.gesuchsperiode, this.dossier.fall, this.dossier.gemeinde,
+            betreuung.kindNummer, betreuung.betreuungNummer);
     }
 
     $postLink() {
