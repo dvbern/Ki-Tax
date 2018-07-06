@@ -132,8 +132,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		jaxGesuch.getGesuchsperiode().setStatus(GesuchsperiodeStatus.INAKTIV);
 		gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
-		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, gesuchsperiode.getStatus());
+		Gesuchsperiode loadedGesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
+		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, loadedGesuchsperiode.getStatus());
 	}
 
 	@Test
@@ -141,7 +141,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
 		traegerschaft = persistence.persist(traegerschaft);
-		Assert.assertEquals("Mandant1", mandant.getName());
+		Assert.assertEquals("TestMandantDBUnit", mandant.getName());
 		Assert.assertEquals("Traegerschaft1", traegerschaft.getName());
 
 		Institution institution = TestDataUtil.createDefaultInstitution();
@@ -152,14 +152,14 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		jaxInstitution.getMandant().setName("ChangedMandant");
 		institutionResource.createInstitution(jaxInstitution, DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
-		traegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
-		Assert.assertEquals("Mandant1", mandant.getName());
-		Assert.assertEquals("Traegerschaft1", traegerschaft.getName());
+		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
+		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
+		Assert.assertEquals("Mandant1", loadedMandant.getName());
+		Assert.assertEquals("Traegerschaft1", loadedTraegerschaft.getName());
 	}
 
 	@Test
-	public void institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten() throws Exception {
+	public void institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten() {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
 		persistence.persist(gesuchsperiode1718);
@@ -192,8 +192,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		jaxBetreuung.getInstitutionStammdaten().setGueltigAb(LocalDate.now());
 		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		kitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
-		Assert.assertEquals(Constants.START_OF_TIME, kitaBruennen.getGueltigkeit().getGueltigAb());
+		InstitutionStammdaten loadedKitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
+		Assert.assertEquals(Constants.START_OF_TIME, loadedKitaBruennen.getGueltigkeit().getGueltigAb());
 	}
 
 	@Test
@@ -216,7 +216,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName("FachstelleChanged");
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		fachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
-		Assert.assertEquals("Fachstelle1", fachstelle.getName());
+		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
+		Assert.assertEquals("Fachstelle1", loadedFachstelle.getName());
 	}
 }
