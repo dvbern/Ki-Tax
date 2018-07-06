@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {Component, OnInit} from '@angular/core';
 import {IComponentOptions, IPromise} from 'angular';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
@@ -36,23 +37,17 @@ let template = require('./testdatenView.html');
 let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 let linkDialogTempl = require('../../../gesuch/dialog/linkDialogTemplate.html');
 
-export class TestdatenViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    template: string = template;
-    controller: any = TestdatenViewController;
-    controllerAs: string = 'vm';
-}
-
-export class TestdatenViewController {
-    static $inject = ['TestFaelleRS', 'DvDialog', 'UserRS', 'ErrorService', 'ReindexRS', 'GesuchsperiodeRS',
-        'DatabaseMigrationRS', 'ZahlungRS', 'ApplicationPropertyRS', 'GesuchRS', 'DailyBatchRS'];
+@Component({
+    selector: 'testdaten-view',
+    template: require('./testdatenView.html'),
+})
+export class TestdatenViewComponent implements OnInit {
 
     testFaelleRS: TestFaelleRS;
     dossierid: string;
     verfuegenGesuchid: string;
-    mutationsdatum: moment.Moment;
-    aenderungperHeirat: moment.Moment;
-    aenderungperScheidung: moment.Moment;
+    eingangsdatum: moment.Moment;
+    ereignisdatum: moment.Moment;
 
     creationType: string = 'verfuegt';
     selectedBesitzer: TSUser;
@@ -63,7 +58,6 @@ export class TestdatenViewController {
 
     devMode: boolean;
 
-    /* @ngInject */
     constructor(testFaelleRS: TestFaelleRS, private dvDialog: DvDialog, private userRS: UserRS,
                 private errorService: ErrorService, private reindexRS: ReindexRS,
                 private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
@@ -72,7 +66,7 @@ export class TestdatenViewController {
         this.testFaelleRS = testFaelleRS;
     }
 
-    $onInit() {
+    public ngOnInit(): void {
         this.userRS.getAllGesuchsteller().then((result: Array<TSUser>) => {
             this.gesuchstellerList = result;
         });
@@ -146,7 +140,7 @@ export class TestdatenViewController {
 
     public mutiereFallHeirat(): IPromise<any> {
         return this.testFaelleRS.mutiereFallHeirat(this.dossierid, this.selectedGesuchsperiode.id,
-            this.mutationsdatum, this.aenderungperHeirat).then((response) => {
+            this.eingangsdatum, this.ereignisdatum).then((response) => {
             return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
                 title: response.data
             }).then(() => {
@@ -157,7 +151,7 @@ export class TestdatenViewController {
 
     public mutiereFallScheidung(): IPromise<any> {
         return this.testFaelleRS.mutiereFallScheidung(this.dossierid, this.selectedGesuchsperiode.id,
-            this.mutationsdatum, this.aenderungperScheidung).then((respone) => {
+            this.eingangsdatum, this.ereignisdatum).then((respone) => {
             return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
                 title: respone.data
             }).then(() => {
@@ -236,5 +230,4 @@ export class TestdatenViewController {
             });
         });
     }
-
 }

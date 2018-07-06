@@ -55,11 +55,6 @@ function getStates(): Ng1StateDeclaration[] {
             }
         },
         {
-            name: 'testdaten',
-            template: '<dv-testdaten-view flex="auto" class="overflow-scroll"></dv-testdaten-view>',
-            url: '/testdaten'
-        },
-        {
             name: 'benutzerlist',
             template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
             url: '/benutzerlist',
