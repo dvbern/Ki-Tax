@@ -51,7 +51,16 @@
                     <!-- Filterspalten -->
                     <tr>
                         <th><input st-search="betreuungsNummer" class="form-control" type="text"/></th>
-                        <th><input st-search="gemeinde" class="form-control" type="text"/></th>
+                        <th>
+                            <div class="dv-select-style">
+                                <select st-input-event="change" name="gemeinde" id="gemeinde"
+                                        st-search="gemeinde" class="form-control"
+                                        ng-options="gemeinde.name for gemeinde in vm.gemeindenList | orderBy: 'name'  track by gemeinde.name"
+                                        ng-model="vm.selectedGemeinde">
+                                    <option value="">{{"ALLE" | translate}}</option>
+                                </select>
+                            </div>
+                        </th>
                         <th><input st-search="name" class="form-control" type="text"/></th>
                         <th><input st-search="vorname" class="form-control" type="text"/></th>
                         <th><input st-search="geburtsdatum" class="form-control" type="text"/></th>
