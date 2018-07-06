@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpService, ILogService} from 'angular';
 import {IEntityRS} from '../../core/service/iEntityRS.rest';
 import TSGemeinde from '../../models/TSGemeinde';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -23,6 +23,8 @@ export default class GemeindeRS implements IEntityRS {
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
 
+    allGemeindenCache: Array<TSGemeinde>;
+
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
@@ -31,11 +33,18 @@ export default class GemeindeRS implements IEntityRS {
         this.ebeguRestUtil = ebeguRestUtil;
     }
 
-    public getAllGemeinden(): IPromise<Array<TSGemeinde>> {
-        return this.http.get(this.serviceURL + '/all')
+    public getAllGemeinden(): Array<TSGemeinde> {
+        if (this.allGemeindenCache === undefined) {
+            this.allGemeindenCache = []; // init empty while we wait for promise
+            this.updateGemeindeCache();
+        }
+        return this.allGemeindenCache;
+    }
+
+    public updateGemeindeCache(): void {
+        this.http.get(this.serviceURL + '/all')
             .then((response: any) => {
-                this.$log.debug('PARSING gemeinde REST object ', response.data);
-                return this.ebeguRestUtil.parseGemeindeList(response.data);
+                this.allGemeindenCache = response;
             });
     }
 }

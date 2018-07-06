@@ -81,9 +81,7 @@ export class TestdatenViewComponent implements OnInit {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             this.devMode = response;
         });
-        this.gemeindeRS.getAllGemeinden().then((response: Array<TSGemeinde>) => {
-            this.gemeindeList = response;
-        });
+        this.gemeindeList = this.gemeindeRS.getAllGemeinden();
     }
 
     public createTestFallType(testFall: string): IPromise<any> {

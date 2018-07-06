@@ -42,8 +42,8 @@ export const testdatenState: Ng2StateDeclaration = {
     resolve: [
         {
             token: 'testdaten',
-            deps: [TraegerschaftRS],
-            resolveFn: getTraegerschaften,
+            deps: [],
+            resolveFn: undefined,
         }
     ]
 };

@@ -18,6 +18,7 @@ import {StateService, Transition, TransitionService} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
 import GlobalCacheService from '../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
@@ -38,7 +39,7 @@ import ITimeoutService = angular.ITimeoutService;
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', '$rootScope', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions'];
+    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
 /* @ngInject */
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
@@ -46,7 +47,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
                        authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
                        $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService) {
+                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
     // navigationLogger.toggle();
 
     $transitions.onStart({}, transition => {
@@ -98,6 +99,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
                 institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
             }
         });
+        gemeindeRS.updateGemeindeCache();
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
         gesuchModelManager.updateFachstellenList();
     });
