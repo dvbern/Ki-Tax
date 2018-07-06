@@ -499,6 +499,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			case "dokumenteHochgeladen":
 				expression = root.get(Gesuch_.dokumenteHochgeladen);
 				break;
+			case "gemeinde":
+				expression = root.get(Gesuch_.dossier).get(Dossier_.gemeinde).get(Gemeinde_.name);
+				break;
 			default:
 				LOG.warn("Using default sort by FallNummer because there is no specific clause for predicate {}",
 					antragTableFilterDto.getSort().getPredicate());
