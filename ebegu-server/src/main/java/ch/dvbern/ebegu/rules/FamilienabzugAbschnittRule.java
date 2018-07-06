@@ -174,7 +174,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (gesuch.extractFamiliensituation().hasSecondGesuchsteller() ? 2 : 1);
 				}
 			} else {
-				LOG.warn("Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig ausgefuellt ist. Antragnummer: {}", gesuch.getJahrAndFallnummer());
+				LOG.warn("Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig ausgefuellt ist. Antragnummer: {}", gesuch.getJahrFallAndGemeindenummer());
 			}
 			// es gibt keine 'halben' Eltern, deswegen sind die Werte hier gleich.
 			famGrAnzahlPersonen = famGrBeruecksichtigungAbzug.intValue();
@@ -229,7 +229,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse4;
 		} else if (famGrAnzahlPersonen == 5) {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse5;
-		} else if (famGrAnzahlPersonen >= 6) {
+		} else {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse6;
 		}
 

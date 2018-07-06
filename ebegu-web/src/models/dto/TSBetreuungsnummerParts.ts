@@ -20,12 +20,14 @@ export default class TSBetreuungsnummerParts {
 
     private _jahr: string;
     private _fallId: string;
+    private _gemeindeNr: string;
     private _kindnummer: string;
     private _betreuungsnummer: string;
 
-    constructor(jahr: string, fallId: string, kindnummer: string, betreuungsnummer: string) {
+    constructor(jahr: string, fallId: string, gemeindeNr: string, kindnummer: string, betreuungsnummer: string) {
         this._jahr = jahr;
         this._fallId = fallId;
+        this._gemeindeNr = gemeindeNr;
         this._kindnummer = kindnummer;
         this._betreuungsnummer = betreuungsnummer;
     }
@@ -44,6 +46,14 @@ export default class TSBetreuungsnummerParts {
 
     set fallId(value: string) {
         this._fallId = value;
+    }
+
+    get gemeindeNr(): string {
+        return this._gemeindeNr;
+    }
+
+    set gemeindeNr(value: string) {
+        this._gemeindeNr = value;
     }
 
     get kindnummer(): string {

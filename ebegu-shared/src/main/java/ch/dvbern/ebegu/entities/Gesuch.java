@@ -563,12 +563,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	 * Gibt das Startjahr der Gesuchsperiode (zweistellig) gefolgt von Fall-Nummer als String zurück.
 	 * Achtung, entspricht NICHT der Antragsnummer! (siehe Antrag.laufnummer)
 	 */
-	public String getJahrAndFallnummer() {
+	public String getJahrFallAndGemeindenummer() {
 		if (getGesuchsperiode() == null) {
 			return "-";
 		}
 		return Integer.toString(getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear()).substring(2)
-			+ '.' + getFall().getPaddedFallnummer();
+			+ '.' + getFall().getPaddedFallnummer() + '.' + getDossier().getGemeinde().getPaddedGemeindeNummer();
 	}
 
 	@Transient
@@ -797,7 +797,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Nonnull
 	@Override
 	public String getSearchResultSummary() {
-		return getJahrAndFallnummer();
+		return getJahrFallAndGemeindenummer();
 	}
 
 	@Nullable

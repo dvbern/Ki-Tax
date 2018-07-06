@@ -389,7 +389,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(), this.getBetreuungModel());
+        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
+            this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());
         let $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
