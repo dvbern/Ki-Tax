@@ -222,8 +222,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			}
 			if (predicateObjectDto.getGemeinde() != null) {
 				Expression<String> gemeindeExpression = dossier.get(Dossier_.gemeinde).get(Gemeinde_.name);
-				String gemeindeWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getGemeinde());
-				predicates.add(cb.like(gemeindeExpression, gemeindeWithWildcards));
+				predicates.add(cb.like(gemeindeExpression, predicateObjectDto.getGemeinde()));
 			}
 			if (predicateObjectDto.getFamilienName() != null) {
 				Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);

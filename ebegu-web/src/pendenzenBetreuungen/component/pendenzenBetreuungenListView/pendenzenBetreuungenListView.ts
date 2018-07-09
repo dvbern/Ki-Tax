@@ -54,8 +54,7 @@ export class PendenzenBetreuungenListViewController {
     numberOfPages: number = 1;
 
     static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS',
-        'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
 
     constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
                 private ebeguUtil: EbeguUtil,
