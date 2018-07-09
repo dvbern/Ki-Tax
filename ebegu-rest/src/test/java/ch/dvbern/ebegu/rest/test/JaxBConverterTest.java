@@ -154,7 +154,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
-		Assert.assertEquals("Mandant1", loadedMandant.getName());
+		Assert.assertEquals("TestMandantDBUnit", loadedMandant.getName());
 		Assert.assertEquals("Traegerschaft1", loadedTraegerschaft.getName());
 	}
 

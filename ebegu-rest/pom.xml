@@ -280,7 +280,7 @@
 
     <profiles>
         <profile>
-            <id>wildfly10-embedded</id>
+            <id>wildfly13-embedded</id>
             <build>
                 <plugins>
                     <plugin>
@@ -297,13 +297,13 @@
         </profile>
 
         <profile>
-            <activation>
-                <property>
-                    <!-- hiermit wird getestet ob ein property disable-managed-wildfly existiert, wenn nicht lauft
-                    arquillian mit embedded container-->
-                    <name>!disable-managed-wildfly</name>
-                </property>
-            </activation>
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--&lt;!&ndash; hiermit wird getestet ob ein property disable-managed-wildfly existiert, wenn nicht lauft-->
+                    <!--arquillian mit embedded container&ndash;&gt;-->
+                    <!--<name>!disable-managed-wildfly</name>-->
+                <!--</property>-->
+            <!--</activation>-->
             <id>test-wildfly-managed</id>
             <build>
                 <plugins>

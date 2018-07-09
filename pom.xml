@@ -46,7 +46,7 @@
 
         <version.flyway>3.2.1</version.flyway>
         <version.slf4j>1.7.10</version.slf4j>
-        <version.wildfly-arquillian-containers>2.1.0.Final</version.wildfly-arquillian-containers>
+        <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
         <version.wildfly.container>13.0.0.Final</version.wildfly.container>
 
         <maven-checkstyle-plugin.version>2.15</maven-checkstyle-plugin.version>
@@ -428,12 +428,12 @@
             <dependency>
                 <groupId>org.jboss.xnio</groupId>
                 <artifactId>xnio-nio</artifactId>
-                <version>3.6.2.Final</version>
+                <version>3.5.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.xnio</groupId>
                 <artifactId>xnio-api</artifactId>
-                <version>3.6.2.Final</version>
+                <version>3.5.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss</groupId>
@@ -543,11 +543,6 @@
                 <version>1.0-2</version>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>stax2-api</artifactId>
-                <version>3.1.4</version>
-            </dependency>
-            <dependency>
                 <groupId>org.reactivestreams</groupId>
                 <artifactId>reactive-streams</artifactId>
                 <version>1.0.2</version>
@@ -642,6 +637,33 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>2.9.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-embedded</artifactId>
+                <version>5.0.0.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-controller-client</artifactId>
+                <version>5.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.modules</groupId>
+                <artifactId>jboss-modules</artifactId>
+                <version>1.8.5.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-protocol</artifactId>
+                <version>5.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.protocol</groupId>
+                <artifactId>arquillian-protocol-servlet</artifactId>
+                <version>1.4.0.Final</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
 
@@ -743,7 +765,7 @@
         </profile>
 
         <profile>
-            <id>wildfly10-embedded</id>
+            <id>wildfly13-embedded</id>
             <properties>
                 <!--embedded wird ans gleiche ort enpackt wie managed-->
                 <jbossHome>${project.build.directory}/wildfly-${version.wildfly.container}</jbossHome>
@@ -762,20 +784,20 @@
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-embedded</artifactId>
-                    <version>2.0.10.Final</version>
+                    <version>5.0.0.Final</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>
 
         <profile>
-            <activation>
-                <property>
-                    <!-- hiermit wird getestet ob ein property disable-managed-wildfly existiert, wenn nicht lauft
-                    arquillian mit embedded container-->
-                    <name>!disable-managed-wildfly</name>
-                </property>
-            </activation>
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--&lt;!&ndash; hiermit wird getestet ob ein property disable-managed-wildfly existiert, wenn nicht lauft-->
+                    <!--arquillian mit embedded container&ndash;&gt;-->
+                    <!--<name>!disable-managed-wildfly</name>-->
+                <!--</property>-->
+            <!--</activation>-->
             <id>test-wildfly-managed</id>
             <properties>
                 <jbossHome>${project.build.directory}/wildfly-${version.wildfly.container}</jbossHome>
