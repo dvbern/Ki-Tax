@@ -38,11 +38,13 @@ public class ClientResponseLogger implements ClientResponseFilter {
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
 		LOG.info("ClientResponse Header: ");
 		Joiner.MapJoiner mapJoiner = Joiner.on(SEPARATOR).withKeyValueSeparator("=");
-		LOG.info(mapJoiner.join(responseContext.getHeaders()));
-
+		LOG.info("TEST: mapJoiner" + mapJoiner);
+		LOG.info("TEST: responseContext.getHeaders()" + responseContext.getHeaders());
+		if (mapJoiner != null && responseContext.getHeaders() != null) {
+			LOG.info(mapJoiner.join(responseContext.getHeaders()));
+		}
 		LOG.info("ClientResponse Body: ");
 		LOG.info("Status: " + responseContext.getStatus() + "; StatusInfo: " + responseContext.getStatusInfo());
 		LOG.info("EntityTag: " + responseContext.getEntityTag() + "; length: " + responseContext.getLength());
-
 	}
 }
