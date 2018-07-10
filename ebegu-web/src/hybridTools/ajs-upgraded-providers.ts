@@ -105,17 +105,6 @@ export const userRSProvider = {
     deps: ['$injector']
 };
 
-// ReindexRS
-export function reindexRSProviderServiceFactory(i: any) {
-    return i.get('ReindexRS');
-}
-
-export const reindexRSProvider = {
-    provide: ReindexRS,
-    useFactory: reindexRSProviderServiceFactory,
-    deps: ['$injector']
-};
-
 // GesuchsperiodeRS
 export function gesuchsperiodeRSProviderServiceFactory(i: any) {
     return i.get('GesuchsperiodeRS');

@@ -173,7 +173,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
 
-		StringBuilder responseString = new StringBuilder("");
+		StringBuilder responseString = new StringBuilder();
 		for (int i = 0; i < iterationCount; i++) {
 
 			if (WAELTI_DAGMAR.equals(fallid)) {

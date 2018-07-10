@@ -119,8 +119,7 @@ public class GesuchsperiodeResource {
 		return optional.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode)).orElse(null);
 	}
 
-	@ApiOperation(value = "Loescht die Gesuchsperiode mit der uebergebenen Id in der Datenbank",
-		response = Void.class)
+	@ApiOperation("Loescht die Gesuchsperiode mit der uebergebenen Id in der Datenbank")
 	@Nullable
 	@DELETE
 	@Path("/{gesuchsperiodeId}")

@@ -14,7 +14,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {IComponentOptions, IPromise} from 'angular';
+import {IPromise} from 'angular';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
@@ -25,7 +25,6 @@ import {LinkDialogController} from '../../../gesuch/dialog/LinkDialogController'
 import TSUser from '../../../models/TSUser';
 import UserRS from '../../../core/service/userRS.rest';
 import ErrorService from '../../../core/errors/service/ErrorService';
-import {ReindexRS} from '../../service/reindexRS.rest';
 import * as moment from 'moment';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
@@ -35,7 +34,6 @@ import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 
 require('./testdatenView.less');
-let template = require('./testdatenView.html');
 let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 let linkDialogTempl = require('../../../gesuch/dialog/linkDialogTemplate.html');
 
@@ -64,8 +62,7 @@ export class TestdatenViewComponent implements OnInit {
     devMode: boolean;
 
     constructor(testFaelleRS: TestFaelleRS, private dvDialog: DvDialog, private userRS: UserRS,
-                private errorService: ErrorService, private reindexRS: ReindexRS,
-                private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
+                private errorService: ErrorService, private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
                 private zahlungRS: ZahlungRS, private applicationPropertyRS: ApplicationPropertyRS,
                 private gesuchRS: GesuchRS, private dailyBatchRS: DailyBatchRS, private gemeindeRS: GemeindeRS) {
         this.testFaelleRS = testFaelleRS;
@@ -188,10 +185,6 @@ export class TestdatenViewComponent implements OnInit {
         });
     }
 
-    public startReindex() {
-        return this.reindexRS.reindex();
-    }
-
     public processScript(script: string): void {
         this.databaseMigrationRS.processScript(script);
     }
@@ -199,6 +192,7 @@ export class TestdatenViewComponent implements OnInit {
     public zahlungenKontrollieren(): void {
         this.zahlungRS.zahlungenKontrollieren();
     }
+
     public deleteAllZahlungsauftraege(): void {
         this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
             deleteText: 'ZAHLUNG_LOESCHEN_DIALOG_TEXT',

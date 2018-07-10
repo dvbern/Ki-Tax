@@ -29,19 +29,15 @@ import UserRS from '../../../core/service/userRS.rest';
 import ZahlungRS from '../../../core/service/zahlungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import TSUser from '../../../models/TSUser';
 import {createTranslateLoader} from '../../../ngApp/ng-app.module';
 import {NgSharedModule} from '../../../shared/ng-shared.module';
-import {NgAdminRoutingModule} from '../../ng-admin-routing.module';
 import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
-import {ReindexRS} from '../../service/reindexRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
-import {TraegerschaftViewComponent} from '../traegerschaftView/traegerschaftView';
 import {TestdatenViewComponent} from './testdatenView';
 
-fdescribe('testdatenView', function () {
+describe('testdatenView', function () {
 
     let component: TestdatenViewComponent;
     let fixture: ComponentFixture<TestdatenViewComponent>;
@@ -52,16 +48,18 @@ fdescribe('testdatenView', function () {
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
         const dvDialogSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
         const userRSSpy = jasmine.createSpyObj('UserRS', ['getAllGesuchsteller']);
-        userRSSpy.getAllGesuchsteller.and.returnValue([]);
+        userRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
         const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['addMesageAsInfo']);
-        const reindexRSSpy = jasmine.createSpyObj('ReindexRS', ['reindex']);
         const gesuchsperiodeRSSpy = jasmine.createSpyObj('GesuchsperiodeRS', ['getAllGesuchsperioden', 'removeGesuchsperiode']);
+        gesuchsperiodeRSSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve(true));
         const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
         const zahlungRSSpy = jasmine.createSpyObj('ZahlungRS', ['zahlungenKontrollieren', 'deleteAllZahlungsauftraege']);
         const applicationPropertyRSSpy = jasmine.createSpyObj('ApplicationPropertyRS', ['isDevMode']);
+        applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
         const gesuchRSSpy = jasmine.createSpyObj('GesuchRS', ['gesuchVerfuegen']);
         const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);
         const gemeindeRSSpy = jasmine.createSpyObj('GemeindeRS', ['getAllGemeinden']);
+        gemeindeRSSpy.getAllGemeinden.and.returnValue(Promise.resolve(true));
 
         TestBed.configureTestingModule({
             imports: [
@@ -79,7 +77,6 @@ fdescribe('testdatenView', function () {
                 NoopAnimationsModule, // we don't want material animations in the project yet
                 NgSharedModule,
                 CommonModule,
-                NgAdminRoutingModule,
                 MatRadioModule,
                 MatDatepickerModule,
                 MatMomentDateModule,
@@ -90,7 +87,6 @@ fdescribe('testdatenView', function () {
                 {provide: DvDialog, useValue: dvDialogSpy},
                 {provide: UserRS, useValue: userRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: ReindexRS, useValue: reindexRSSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
                 {provide: ZahlungRS, useValue: zahlungRSSpy},
@@ -100,7 +96,7 @@ fdescribe('testdatenView', function () {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
             ],
-            declarations: [TestdatenViewComponent, TraegerschaftViewComponent]
+            declarations: [TestdatenViewComponent]
         })
             .compileComponents();
     }));

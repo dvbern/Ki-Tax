@@ -25,7 +25,6 @@ export default class GemeindeRS implements IEntityRS {
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
 
-    allGemeindenCache: Array<TSGemeinde>;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
     /* @ngInject */
