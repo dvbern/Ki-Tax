@@ -35,6 +35,7 @@ public class AntragPredicateObjectDTO implements Serializable {
 	private static final long serialVersionUID = -2248051428962150142L;
 
 	private String fallNummer;     //Fall.fallnummer
+	private String gemeinde;       //Gesuch.dossier.gemeinde
 	private String familienName;   //Gesuch.Gesuchsteller1.nachname bzw Gesuch.gesuchsteller2.nachname
 	private String antragTyp;      //Gesuch.antragtyp
 	private String gesuchsperiodeString; //Gesuch.gesuchperiode.gueltigAb nach jahr
@@ -63,6 +64,14 @@ public class AntragPredicateObjectDTO implements Serializable {
 
 	public void setFallNummer(String fallNummer) {
 		this.fallNummer = fallNummer;
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	public String getFamilienName() {
@@ -165,6 +174,7 @@ public class AntragPredicateObjectDTO implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("fallNummer", fallNummer)
+			.append("gemeinde", gemeinde)
 			.append("familienName", familienName)
 			.append("antragTyp", antragTyp)
 			.append("gesuchsperiodeString", gesuchsperiodeString)

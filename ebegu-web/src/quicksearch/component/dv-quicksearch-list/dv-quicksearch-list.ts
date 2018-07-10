@@ -14,9 +14,11 @@
  */
 
 import {IComponentOptions, IFilterService} from 'angular';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSInstitution from '../../../models/TSInstitution';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -72,20 +74,27 @@ export class DVQuicksearchListController {
     selectedAntragStatus: string;
     selectedInstitution: TSInstitution;
     selectedGesuchsperiode: string;
+    selectedGemeinde: TSGemeinde;
     selectedDokumenteHochgeladen: string;
 
     institutionenList: Array<TSInstitution>;
     gesuchsperiodenList: Array<string>;
+    gemeindenList: Array<TSGemeinde>;
     onUserChanged: (user: any) => void;
 
-
     static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS'];
+        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
 
-    constructor(private ebeguUtil: EbeguUtil, private $filter: IFilterService,
-                private institutionRS: InstitutionRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $state: StateService, private CONSTANTS: any, private authServiceRS: AuthServiceRS) {
+    constructor(private ebeguUtil: EbeguUtil,
+                private $filter: IFilterService,
+                private institutionRS: InstitutionRS,
+                private gesuchsperiodeRS: GesuchsperiodeRS,
+                private $state: StateService,
+                private CONSTANTS: any,
+                private authServiceRS: AuthServiceRS,
+                private gemeindeRS: GemeindeRS) {
     }
+
     $onInit() {
         this.initViewModel();
     }
@@ -97,6 +106,7 @@ export class DVQuicksearchListController {
     private initViewModel() {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
+        this.updateGemeinden();
     }
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -123,6 +133,12 @@ export class DVQuicksearchListController {
     public updateInstitutionenList(): void {
         this.institutionRS.getAllInstitutionen().then((response: any) => {
             this.institutionenList = angular.copy(response);
+        });
+    }
+
+    public updateGemeinden(): void {
+        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+            this.gemeindenList = angular.copy(response);
         });
     }
 
