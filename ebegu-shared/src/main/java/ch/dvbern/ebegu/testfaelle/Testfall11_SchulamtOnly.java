@@ -18,11 +18,13 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -46,6 +48,10 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 
 	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
 		super(gesuchsperiode, institutionStammdatenList, false);
+	}
+
+	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 
 	@Override

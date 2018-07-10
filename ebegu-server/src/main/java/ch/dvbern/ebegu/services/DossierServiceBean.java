@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -78,9 +77,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Inject
 	private GesuchService gesuchService;
-
-	@Inject
-	private GemeindeService gemeindeService;
 
 	@Inject
 	private MitteilungService mitteilungService;
@@ -125,15 +121,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
-		Gemeinde bern = gemeindeService.getFirst();
-		if (dossier.isNew()) {
-			Optional<Dossier> dossierByGemeindeAndFall = findDossierByGemeindeAndFall(bern.getId(), dossier.getFall().getId());
-			if (dossierByGemeindeAndFall.isPresent()) {
-				dossier = dossierByGemeindeAndFall.get();
-			}
-		}
-		//TODO (KIBON-6) Wir setzen im Moment fix die Gemeinde Bern
-		dossier.setGemeinde(bern);
+		Objects.requireNonNull(dossier.getGemeinde());
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
 	}
@@ -172,7 +160,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		}
 		//noinspection ConstantConditions
 		Objects.requireNonNull(fallOptional.get());
-		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall("TODO", fallOptional.get().getId());
+		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeindeId, fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}

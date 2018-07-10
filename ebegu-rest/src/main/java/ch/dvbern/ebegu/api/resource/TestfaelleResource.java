@@ -63,38 +63,40 @@ public class TestfaelleResource {
 
 
 	@ApiOperation(value = "Erstellt einen Testfall aus mehreren vordefinierten Testfaellen. Folgende Einstellungen " +
-		"sind moeglich: Gesuchsperiode, Status der Betreuungen, Gesuch verfuegen", response = String.class)
+		"sind moeglich: Gesuchsperiode, Gemeinde, Status der Betreuungen, Gesuch verfuegen", response = String.class)
 	@GET
-	@Path("/testfall/{fallid}/{gesuchsperiodeId}/{betreuungenBestaetigt}/{verfuegen}")
+	@Path("/testfall/{fallid}/{gesuchsperiodeId}/{gemeindeId}/{betreuungenBestaetigt}/{verfuegen}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getTestFall(
 		@PathParam("fallid") String fallid,
 		@PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@PathParam("gemeindeId") String gemeindeId,
 		@PathParam("betreuungenBestaetigt") boolean betreuungenBestaetigt,
 		@PathParam("verfuegen") boolean verfuegen) {
 
 		assertTestfaelleAccessAllowed();
-		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(fallid, betreuungenBestaetigt, verfuegen, gesuchsperiodeId);
+		StringBuilder responseString = testfaelleService.createAndSaveTestfaelle(fallid, betreuungenBestaetigt, verfuegen, gesuchsperiodeId, gemeindeId);
 		return Response.ok(responseString.toString()).build();
 	}
 
 	@ApiOperation(value = "Erstellt einen Testfall aus mehreren vordefinierten Testfaellen fuer einen Gesuchsteller " +
-		"(Online Gesuch). Folgende Einstellungen sind moeglich: Gesuchsperiode, Status der Betreuungen, Gesuch " +
+		"(Online Gesuch). Folgende Einstellungen sind moeglich: Gesuchsperiode, Gemeinde, Status der Betreuungen, Gesuch " +
 		"verfuegen, gewuenschter Gesuchsteller", response = String.class)
 	@GET
-	@Path("/testfallgs/{fallid}/{gesuchsperiodeId}/{betreuungenBestaetigt}/{verfuegen}/{username}")
+	@Path("/testfallgs/{fallid}/{gesuchsperiodeId}/{gemeindeId}/{betreuungenBestaetigt}/{verfuegen}/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getTestFallGS(
 		@PathParam("fallid") String fallid,
 		@PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@PathParam("gemeindeId") String gemeindeId,
 		@PathParam("betreuungenBestaetigt") boolean betreuungenBestaetigt,
 		@PathParam("verfuegen") boolean verfuegen,
 		@PathParam("username") String username) {
 
 		assertTestfaelleAccessAllowed();
-		StringBuilder responseString = testfaelleService.createAndSaveAsOnlineGesuch(fallid, betreuungenBestaetigt, verfuegen, username, gesuchsperiodeId);
+		StringBuilder responseString = testfaelleService.createAndSaveAsOnlineGesuch(fallid, betreuungenBestaetigt, verfuegen, username, gesuchsperiodeId, gemeindeId);
 		return Response.ok(responseString.toString()).build();
 	}
 

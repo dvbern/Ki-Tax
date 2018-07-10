@@ -32,7 +32,7 @@ import {EbeguParameterRS} from './service/ebeguParameterRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
 import {ReindexRS} from './service/reindexRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
-import {TestdatenViewComponentConfig} from './component/testdatenView/testdatenView';
+import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {FerieninselStammdatenRS} from './service/ferieninselStammdatenRS.rest';
 import {FerieninselViewComponentConfig} from './component/ferieninselView/ferieninselView';
 import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
@@ -57,7 +57,10 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
         'dvTraegerschaftView',
         downgradeComponent({component: TraegerschaftViewComponent}) as angular.IDirectiveFactory
     )
-    .component('dvTestdatenView', new TestdatenViewComponentConfig())
+    .directive(
+        'testdatenView',
+        downgradeComponent({component: TestdatenViewComponent}) as angular.IDirectiveFactory
+    )
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())
     .run(adminRun);
