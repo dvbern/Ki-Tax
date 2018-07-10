@@ -23,6 +23,8 @@ import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 
 export default class TSAntragDTO extends TSAbstractAntragDTO {
 
+    private static YEAR_2000 = 2000;
+
     private _antragId: string;
     private _antragTyp: TSAntragTyp;
     private _eingangsart: TSEingangsart;
@@ -45,15 +47,34 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     private _laufnummer: number;
     private _gesuchBetreuungenStatus: TSGesuchBetreuungenStatus;
     private _dokumenteHochgeladen: boolean;
+    private _gemeinde: string;
 
-
-    constructor(antragId?: string, fallNummer?: number, familienName?: string, antragTyp?: TSAntragTyp,
-                eingangsdatum?: moment.Moment, eingangsdatumSTV?: moment.Moment, aenderungsdatum?: moment.Moment, angebote?: Array<TSBetreuungsangebotTyp>,
-                institutionen?: Array<string>, verantwortlicherBG?: string, verantwortlicherTS?: string, status?: TSAntragStatus,
-                gesuchsperiodeGueltigAb?: moment.Moment, gesuchsperiodeGueltigBis?: moment.Moment,
-                verfuegt?: boolean, laufnummer?: number, besitzerUsername?: string, eingangsart?: TSEingangsart, beschwerdeHaengig?: boolean,
-                kinder?: Array<string>, gesuchBetreuungenStatus?: TSGesuchBetreuungenStatus, dokumenteHochgeladen?: boolean,
-                verantwortlicherUsernameBG?: string, verantwortlicherUsernameTS?: string, dossierId?: string) {
+    constructor(antragId?: string,
+                fallNummer?: number,
+                familienName?: string,
+                antragTyp?: TSAntragTyp,
+                eingangsdatum?: moment.Moment,
+                eingangsdatumSTV?: moment.Moment,
+                aenderungsdatum?: moment.Moment,
+                angebote?: Array<TSBetreuungsangebotTyp>,
+                institutionen?: Array<string>,
+                verantwortlicherBG?: string,
+                verantwortlicherTS?: string,
+                status?: TSAntragStatus,
+                gesuchsperiodeGueltigAb?: moment.Moment,
+                gesuchsperiodeGueltigBis?: moment.Moment,
+                verfuegt?: boolean,
+                laufnummer?: number,
+                besitzerUsername?: string,
+                eingangsart?: TSEingangsart,
+                beschwerdeHaengig?: boolean,
+                kinder?: Array<string>,
+                gesuchBetreuungenStatus?: TSGesuchBetreuungenStatus,
+                dokumenteHochgeladen?: boolean,
+                verantwortlicherUsernameBG?: string,
+                verantwortlicherUsernameTS?: string,
+                dossierId?: string,
+                gemeinde?: string) {
 
         super(fallNummer, dossierId, familienName);
         this._antragId = antragId;
@@ -78,6 +99,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         this._dokumenteHochgeladen = dokumenteHochgeladen;
         this._verantwortlicherUsernameBG = verantwortlicherUsernameBG;
         this._verantwortlicherUsernameTS = verantwortlicherUsernameTS;
+        this._gemeinde = gemeinde;
     }
 
     get antragId(): string {
@@ -211,7 +233,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     get gesuchsperiodeString(): string {
         if (this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis) {
             return this._gesuchsperiodeGueltigAb.year() + '/'
-                + (this._gesuchsperiodeGueltigBis.year() - 2000);
+                + (this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000);
         }
         return undefined;
     }
@@ -258,6 +280,14 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
 
     set dokumenteHochgeladen(value: boolean) {
         this._dokumenteHochgeladen = value;
+    }
+
+    get gemeinde(): string {
+        return this._gemeinde;
+    }
+
+    set gemeinde(value: string) {
+        this._gemeinde = value;
     }
 
     public canBeFreigegeben(): boolean {

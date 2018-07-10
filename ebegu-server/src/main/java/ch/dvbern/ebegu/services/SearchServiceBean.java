@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -218,6 +219,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				Expression<String> fallNummerAsString = fall.get(Fall_.fallNummer).as(String.class);
 				String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 				predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
+			}
+			if (predicateObjectDto.getGemeinde() != null) {
+				Expression<String> gemeindeExpression = dossier.get(Dossier_.gemeinde).get(Gemeinde_.name);
+				predicates.add(cb.like(gemeindeExpression, predicateObjectDto.getGemeinde()));
 			}
 			if (predicateObjectDto.getFamilienName() != null) {
 				Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
@@ -492,6 +497,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				break;
 			case "dokumenteHochgeladen":
 				expression = root.get(Gesuch_.dokumenteHochgeladen);
+				break;
+			case "gemeinde":
+				expression = root.get(Gesuch_.dossier).get(Dossier_.gemeinde).get(Gemeinde_.name);
 				break;
 			default:
 				LOG.warn("Using default sort by FallNummer because there is no specific clause for predicate {}",

@@ -90,27 +90,30 @@ public class JaxMitteilung extends JaxAbstractDTO {
 		this.betreuung = betreuung;
 	}
 
+	@Nullable
 	public MitteilungTeilnehmerTyp getSenderTyp() {
 		return senderTyp;
 	}
 
-	public void setSenderTyp(MitteilungTeilnehmerTyp senderTyp) {
+	public void setSenderTyp(@Nullable MitteilungTeilnehmerTyp senderTyp) {
 		this.senderTyp = senderTyp;
 	}
 
+	@Nullable
 	public MitteilungTeilnehmerTyp getEmpfaengerTyp() {
 		return empfaengerTyp;
 	}
 
-	public void setEmpfaengerTyp(MitteilungTeilnehmerTyp empfaengerTyp) {
+	public void setEmpfaengerTyp(@Nullable MitteilungTeilnehmerTyp empfaengerTyp) {
 		this.empfaengerTyp = empfaengerTyp;
 	}
 
+	@Nullable
 	public JaxAuthLoginElement getSender() {
 		return sender;
 	}
 
-	public void setSender(JaxAuthLoginElement sender) {
+	public void setSender(@Nullable JaxAuthLoginElement sender) {
 		this.sender = sender;
 	}
 

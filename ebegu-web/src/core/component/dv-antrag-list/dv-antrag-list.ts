@@ -14,10 +14,16 @@
  */
 
 import {IComponentOptions, IFilterService, ILogService, IPromise} from 'angular';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSAbstractAntragEntity from '../../../models/TSAbstractAntragEntity';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus
+} from '../../../models/enums/TSAntragStatus';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSInstitution from '../../../models/TSInstitution';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -60,6 +66,7 @@ export class DVAntragListController {
     pagination: any;
     gesuchsperiodenList: Array<string>;
     institutionenList: Array<TSInstitution>;
+    gemeindenList: Array<TSGemeinde>;
 
     selectedBetreuungsangebotTyp: string;
     selectedAntragTyp: string;
@@ -67,6 +74,7 @@ export class DVAntragListController {
     selectedInstitution: TSInstitution;
     selectedGesuchsperiode: string;
     selectedFallNummer: string;
+    selectedGemeinde: TSGemeinde;
     selectedFamilienName: string;
     selectedKinder: string;
     selectedAenderungsdatum: string;
@@ -89,12 +97,15 @@ export class DVAntragListController {
     onAdd: () => void;
     TSRoleUtil: any;
 
-    static $inject: any[] = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS', 'AuthServiceRS',
-        '$window'];
+    static $inject: any[] = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
+        'AuthServiceRS',
+        '$window', 'GemeindeRS'];
+
     /* @ngInject */
     constructor(private ebeguUtil: EbeguUtil, private $filter: IFilterService, private $log: ILogService,
                 private institutionRS: InstitutionRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private CONSTANTS: any, private authServiceRS: AuthServiceRS, private $window: ng.IWindowService) {
+                private CONSTANTS: any, private authServiceRS: AuthServiceRS, private $window: ng.IWindowService,
+                private gemeindeRS: GemeindeRS) {
 
         this.initViewModel();
         this.TSRoleUtil = TSRoleUtil;
@@ -104,6 +115,7 @@ export class DVAntragListController {
         //statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
+        this.updateGemeindenList();
     }
 
     $onInit() {
@@ -130,6 +142,12 @@ export class DVAntragListController {
             response.forEach((gesuchsperiode: TSGesuchsperiode) => {
                 this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
             });
+        });
+    }
+
+    public updateGemeindenList(): void {
+        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+            this.gemeindenList = angular.copy(response);
         });
     }
 

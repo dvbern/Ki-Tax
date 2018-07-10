@@ -153,6 +153,9 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	@Nullable
 	private FinSitStatus finSitStatus;
 
+	@NotNull
+	private String gemeinde;
+
 
 	public String getAntragId() {
 		return antragId;
@@ -344,5 +347,13 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	public void setFinSitStatus(@Nullable FinSitStatus finSitStatus) {
 		this.finSitStatus = finSitStatus;
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }
