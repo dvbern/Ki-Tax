@@ -39,13 +39,6 @@ export const testdatenState: Ng2StateDeclaration = {
     name: 'testdaten',
     url: '/testdaten',
     component: TestdatenViewComponent,
-    resolve: [
-        {
-            token: 'testdaten',
-            deps: [],
-            resolveFn: undefined,
-        }
-    ]
 };
 
 

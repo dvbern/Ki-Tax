@@ -81,7 +81,9 @@ export class TestdatenViewComponent implements OnInit {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             this.devMode = response;
         });
-        this.gemeindeList = this.gemeindeRS.getAllGemeinden();
+        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+            this.gemeindeList = angular.copy(response);
+        });
     }
 
     public createTestFallType(testFall: string): IPromise<any> {

@@ -99,7 +99,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
                 institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
             }
         });
-        gemeindeRS.updateGemeindeCache();
+        gemeindeRS.getAllGemeinden();
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
         gesuchModelManager.updateFachstellenList();
     });
