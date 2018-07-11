@@ -16,6 +16,7 @@
 import {NgModule} from '@angular/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 
@@ -34,10 +35,16 @@ export const traegerschaftState: Ng2StateDeclaration = {
     ]
 };
 
+export const testdatenState: Ng2StateDeclaration = {
+    name: 'testdaten',
+    url: '/testdaten',
+    component: TestdatenViewComponent,
+};
+
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({ states: [ traegerschaftState ] })
+        UIRouterUpgradeModule.forChild({ states: [ traegerschaftState, testdatenState ] })
     ],
     exports: [],
 })

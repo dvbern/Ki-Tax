@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -128,11 +130,12 @@ public final class FreigabeCopyUtil {
 		kindGS.setMutterspracheDeutsch(kindJA.getMutterspracheDeutsch());
 		if (kindJA.getPensumFachstelle() != null) {
 			kindGS.setPensumFachstelle(new PensumFachstelle());
+			Objects.requireNonNull(kindGS.getPensumFachstelle());
 			kindGS.getPensumFachstelle().setFachstelle(kindJA.getPensumFachstelle().getFachstelle());
 			kindGS.getPensumFachstelle().setPensum(kindJA.getPensumFachstelle().getPensum());
 			kindGS.getPensumFachstelle().setGueltigkeit(kindJA.getPensumFachstelle().getGueltigkeit());
 		}
-		kindGS.setEinschulung(kindJA.getEinschulung());
+		kindGS.setEinschulungTyp(kindJA.getEinschulungTyp());
 		kindGS.setFamilienErgaenzendeBetreuung(kindJA.getFamilienErgaenzendeBetreuung());
 		kindGS.setKinderabzug(kindJA.getKinderabzug());
 		kindGS.setWohnhaftImGleichenHaushalt(kindJA.getWohnhaftImGleichenHaushalt());

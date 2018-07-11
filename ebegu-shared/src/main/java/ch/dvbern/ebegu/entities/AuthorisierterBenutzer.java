@@ -77,7 +77,7 @@ public class AuthorisierterBenutzer extends AbstractEntity {
 	 * Wiederholung von benutzer.role damit wir nicht joinen muessen
 	 */
 	@NotNull
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@Column(updatable = false, nullable = false)
 	private UserRole role;
 

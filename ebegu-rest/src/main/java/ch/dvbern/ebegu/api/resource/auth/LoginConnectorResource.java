@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.api.resource.auth;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -39,7 +38,6 @@ import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -180,6 +178,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 		checkLocalAccessOnly();
 
+
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
 		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser);
 		return convertToJaxExternalAuthAccessElement(loginDataForCookie);
@@ -218,25 +217,10 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		authUser.setUsername(jaxExtAuthBen.getUsername());
 		authUser.setAuthToken(jaxExtAuthBen.getAuthToken());
 		authUser.setLastLogin(jaxExtAuthBen.getLastLogin());
-		authUser.setRole(convertRoleString(jaxExtAuthBen.getRole()));
 		authUser.setSamlIDPEntityID(jaxExtAuthBen.getSamlIDPEntityID());
 		authUser.setSamlSPEntityID(jaxExtAuthBen.getSamlSPEntityID());
 		authUser.setSamlNameId(jaxExtAuthBen.getSamlNameId());
 		authUser.setSessionIndex(jaxExtAuthBen.getSessionIndex());
 		return authUser;
-	}
-
-	@Nonnull
-	private UserRole convertRoleString(@Nullable String roleString) {
-		if (roleString == null) {
-			String msg = "Null Value for role, Could not convert to a valid UserRole";
-			throw new IllegalArgumentException(msg);
-		}
-		try {
-			return UserRole.valueOf(roleString);
-		} catch (IllegalArgumentException e) {
-			LOG.error("Invalid Value for role, Could not convert {} to a valid UserRole", roleString);
-			throw e;
-		}
 	}
 }

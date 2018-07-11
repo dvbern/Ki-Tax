@@ -13,7 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IPromise} from 'angular';
+import {Component, OnInit} from '@angular/core';
+import {IPromise} from 'angular';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSGemeinde from '../../../models/TSGemeinde';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
@@ -22,7 +25,6 @@ import {LinkDialogController} from '../../../gesuch/dialog/LinkDialogController'
 import TSUser from '../../../models/TSUser';
 import UserRS from '../../../core/service/userRS.rest';
 import ErrorService from '../../../core/errors/service/ErrorService';
-import {ReindexRS} from '../../service/reindexRS.rest';
 import * as moment from 'moment';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
@@ -32,27 +34,20 @@ import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 
 require('./testdatenView.less');
-let template = require('./testdatenView.html');
 let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 let linkDialogTempl = require('../../../gesuch/dialog/linkDialogTemplate.html');
 
-export class TestdatenViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    template: string = template;
-    controller: any = TestdatenViewController;
-    controllerAs: string = 'vm';
-}
-
-export class TestdatenViewController {
-    static $inject = ['TestFaelleRS', 'DvDialog', 'UserRS', 'ErrorService', 'ReindexRS', 'GesuchsperiodeRS',
-        'DatabaseMigrationRS', 'ZahlungRS', 'ApplicationPropertyRS', 'GesuchRS', 'DailyBatchRS'];
+@Component({
+    selector: 'testdaten-view',
+    template: require('./testdatenView.html'),
+})
+export class TestdatenViewComponent implements OnInit {
 
     testFaelleRS: TestFaelleRS;
     dossierid: string;
     verfuegenGesuchid: string;
-    mutationsdatum: moment.Moment;
-    aenderungperHeirat: moment.Moment;
-    aenderungperScheidung: moment.Moment;
+    eingangsdatum: moment.Moment;
+    ereignisdatum: moment.Moment;
 
     creationType: string = 'verfuegt';
     selectedBesitzer: TSUser;
@@ -61,18 +56,19 @@ export class TestdatenViewController {
     selectedGesuchsperiode: TSGesuchsperiode;
     gesuchsperiodeList: Array<TSGesuchsperiode>;
 
+    selectedGemeinde: TSGemeinde;
+    gemeindeList: Array<TSGemeinde>;
+
     devMode: boolean;
 
-    /* @ngInject */
     constructor(testFaelleRS: TestFaelleRS, private dvDialog: DvDialog, private userRS: UserRS,
-                private errorService: ErrorService, private reindexRS: ReindexRS,
-                private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
+                private errorService: ErrorService, private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
                 private zahlungRS: ZahlungRS, private applicationPropertyRS: ApplicationPropertyRS,
-                private gesuchRS: GesuchRS, private dailyBatchRS: DailyBatchRS) {
+                private gesuchRS: GesuchRS, private dailyBatchRS: DailyBatchRS, private gemeindeRS: GemeindeRS) {
         this.testFaelleRS = testFaelleRS;
     }
 
-    $onInit() {
+    public ngOnInit(): void {
         this.userRS.getAllGesuchsteller().then((result: Array<TSUser>) => {
             this.gesuchstellerList = result;
         });
@@ -81,6 +77,9 @@ export class TestdatenViewController {
         });
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             this.devMode = response;
+        });
+        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+            this.gemeindeList = angular.copy(response);
         });
     }
 
@@ -100,14 +99,14 @@ export class TestdatenViewController {
             verfuegen = true;
         }
         if (this.selectedBesitzer) {
-            return this.createTestFallGS(testFall, this.selectedGesuchsperiode.id, bestaetigt, verfuegen, this.selectedBesitzer.username);
+            return this.createTestFallGS(testFall, this.selectedGesuchsperiode.id, this.selectedGemeinde.id, bestaetigt, verfuegen, this.selectedBesitzer.username);
         } else {
-            return this.createTestFall(testFall, this.selectedGesuchsperiode.id, bestaetigt, verfuegen);
+            return this.createTestFall(testFall, this.selectedGesuchsperiode.id, this.selectedGemeinde.id, bestaetigt, verfuegen);
         }
     }
 
-    private createTestFall(testFall: string, gesuchsperiodeId: string, bestaetigt: boolean, verfuegen: boolean): IPromise<any> {
-        return this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, bestaetigt, verfuegen).then((response) => {
+    private createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): IPromise<any> {
+        return this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then((response) => {
             //einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
             let uuidPartOfString = response.data ? response.data.slice(-36) : '';
             return this.dvDialog.showDialog(linkDialogTempl, LinkDialogController, {
@@ -119,8 +118,8 @@ export class TestdatenViewController {
         });
     }
 
-    private createTestFallGS(testFall: string, gesuchsperiodeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IPromise<any> {
-        return this.testFaelleRS.createTestFallGS(testFall, gesuchsperiodeId, bestaetigt, verfuegen, username).then((response) => {
+    private createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IPromise<any> {
+        return this.testFaelleRS.createTestFallGS(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen, username).then((response) => {
             //einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
             let uuidPartOfString = response.data ? response.data.slice(-36) : '';
             return this.dvDialog.showDialog(linkDialogTempl, LinkDialogController, {
@@ -146,7 +145,7 @@ export class TestdatenViewController {
 
     public mutiereFallHeirat(): IPromise<any> {
         return this.testFaelleRS.mutiereFallHeirat(this.dossierid, this.selectedGesuchsperiode.id,
-            this.mutationsdatum, this.aenderungperHeirat).then((response) => {
+            this.eingangsdatum, this.ereignisdatum).then((response) => {
             return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
                 title: response.data
             }).then(() => {
@@ -157,7 +156,7 @@ export class TestdatenViewController {
 
     public mutiereFallScheidung(): IPromise<any> {
         return this.testFaelleRS.mutiereFallScheidung(this.dossierid, this.selectedGesuchsperiode.id,
-            this.mutationsdatum, this.aenderungperScheidung).then((respone) => {
+            this.eingangsdatum, this.ereignisdatum).then((respone) => {
             return this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
                 title: respone.data
             }).then(() => {
@@ -186,10 +185,6 @@ export class TestdatenViewController {
         });
     }
 
-    public startReindex() {
-        return this.reindexRS.reindex();
-    }
-
     public processScript(script: string): void {
         this.databaseMigrationRS.processScript(script);
     }
@@ -197,6 +192,7 @@ export class TestdatenViewController {
     public zahlungenKontrollieren(): void {
         this.zahlungRS.zahlungenKontrollieren();
     }
+
     public deleteAllZahlungsauftraege(): void {
         this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
             deleteText: 'ZAHLUNG_LOESCHEN_DIALOG_TEXT',
@@ -236,5 +232,4 @@ export class TestdatenViewController {
             });
         });
     }
-
 }

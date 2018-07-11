@@ -15,24 +15,28 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService, private globalCacheService: GlobalCacheService) {
         this.serviceURL = REST_API + 'gemeinde';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public getAllGemeinden(): IPromise<Array<TSGemeinde>> {
-        return this.http.get(this.serviceURL + '/all')
+        let cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
+        return this.http.get(this.serviceURL + '/all', {cache: cache})
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeindeList(response.data);

@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2018.1.0</version>
+        <version>2018.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -190,7 +190,7 @@
 
     <profiles>
         <profile>
-            <id>wildfly10-embedded</id>
+            <id>wildfly13-embedded</id>
             <build>
                 <plugins>
                     <plugin>
@@ -207,13 +207,6 @@
         </profile>
 
         <profile>
-            <activation>
-                <property>
-                    <!-- hiermit wird getestet ob ein property disable-managed-wildfly existiert, wenn nicht lauft
-                    arquillian mit embedded container-->
-                    <name>!disable-managed-wildfly</name>
-                </property>
-            </activation>
             <id>test-wildfly-managed</id>
             <build>
                 <plugins>
@@ -226,7 +219,6 @@
                         <artifactId>maven-resources-plugin</artifactId>
                     </plugin>
                 </plugins>
-
             </build>
         </profile>
     </profiles>

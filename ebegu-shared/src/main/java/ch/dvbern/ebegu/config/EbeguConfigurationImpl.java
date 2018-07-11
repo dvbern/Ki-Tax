@@ -44,7 +44,6 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_MAIL_SMTP_PORT = "ebegu.mail.smtp.port";
 	private static final String EBEGU_HOSTNAME = "ebegu.hostname";
 	private static final String EBEGU_DUMMY_LOGIN_ENABLED = "ebegu.dummy.login.enabled";
-	public static final String EBEGU_DUMP_DBUNIT_XML = "ebegu.dump.dbunit.xml";
 	private static final String EBEGU_ZAHLUNGEN_TEST_MODE = "ebegu.zahlungen.test.mode";
 	private static final String EBEGU_PERSONENSUCHE_DISABLED = "ebegu.personensuche.disabled";
 	private static final String EBEGU_PERSONENSUCHE_ENDPOINT = "ebegu.personensuche.endpoint";

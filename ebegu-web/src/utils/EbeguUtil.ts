@@ -14,8 +14,9 @@
  */
 
 import TSDossier from '../models/TSDossier';
+import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
-import {IFilterService} from 'angular';
+import {IFilterService, ILogService} from 'angular';
 import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSFall from '../models/TSFall';
 import DateUtil from './DateUtil';
@@ -32,10 +33,11 @@ import TSBetreuung from '../models/TSBetreuung';
  */
 export default class EbeguUtil {
 
-    static $inject = ['$filter', 'CONSTANTS', '$translate'];
+    static $inject = ['$filter', 'CONSTANTS', '$translate', '$log'];
 
     /* @ngInject */
-    constructor(private $filter: IFilterService, private CONSTANTS: any, private $translate: ITranslateService) {
+    constructor(private $filter: IFilterService, private CONSTANTS: any, private $translate: ITranslateService,
+                private $log: ILogService) {
     }
 
     /**
@@ -128,12 +130,13 @@ export default class EbeguUtil {
     }
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
-    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode, fall: TSFall, kindContainerNumber: number, betreuungNumber: number): string {
+    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode, fall: TSFall, gemeinde: TSGemeinde, kindContainerNumber: number, betreuungNumber: number): string {
         let betreuungsId: string = '';
         if (gesuchsperiode && fall) {
             betreuungsId =
                 gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
                 + '.' + this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH)
+                + '.' + this.addZerosToNumber(gemeinde.gemeindeNummer, this.CONSTANTS.GEMEINDENUMMER_LENGTH)
                 + '.' + kindContainerNumber
                 + '.' + betreuungNumber;
         }
@@ -141,12 +144,13 @@ export default class EbeguUtil {
     }
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
-    public calculateBetreuungsIdFromBetreuung(fall: TSFall, betreuung: TSBetreuung): string {
+    public calculateBetreuungsIdFromBetreuung(fall: TSFall, gemeinde: TSGemeinde, betreuung: TSBetreuung): string {
         let betreuungsId: string = '';
         if (betreuung && fall) {
             betreuungsId =
                 betreuung.gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
                 + '.' + this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH)
+                + '.' + this.addZerosToNumber(gemeinde.gemeindeNummer, this.CONSTANTS.GEMEINDENUMMER_LENGTH)
                 + '.' + betreuung.kindNummer
                 + '.' + betreuung.betreuungNummer;
         }
@@ -155,14 +159,15 @@ export default class EbeguUtil {
 
     /**
      * hilfsmethode um die betreuungsnummer in ihre einzelteile zu zerlegen. gibt ein objekt zurueck welches die werte einzeln enthaelt
-     * @param betreuungsnummer im format JJ.Fallnr.kindnr.betrnr
+     * @param betreuungsnummer im format JJ.Fallnr.GemeindeNr.kindnr.betrnr
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
         let parts: Array<string> = betreuungsnummer.split('.');
-        if (!parts || parts.length !== 4) {
+        if (!parts || parts.length !== this.CONSTANTS.PARTS_OF_BETREUUNGSNUMMER) {
+            this.$log.error('A Betreuungsnummer must always have ' + this.CONSTANTS.PARTS_OF_BETREUUNGSNUMMER + ' parts. The given one had ' + parts.length);
             return undefined;
         }
-        return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3]);
+        return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3], parts[4]);
     }
 
     public static handleSmarttablesUpdateBug(aList: any[]) {

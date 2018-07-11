@@ -179,7 +179,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER);
 		query.where(predicateActive, predicateRole);
-		query.orderBy(cb.asc(root.get(Benutzer_.username)));
+		query.orderBy(cb.asc(root.get(Benutzer_.vorname)), cb.asc(root.get(Benutzer_.nachname)));
 		return persistence.getCriteriaResults(query);
 	}
 

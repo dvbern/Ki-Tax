@@ -17,6 +17,7 @@ import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
 import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
@@ -40,6 +41,7 @@ describe('pendenzenBetreuungenListView', function () {
     let berechnungsManager: BerechnungsManager;
     let $state: StateService;
     let CONSTANTS: any;
+    let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
 
@@ -55,6 +57,7 @@ describe('pendenzenBetreuungenListView', function () {
         berechnungsManager = $injector.get('BerechnungsManager');
         $state = $injector.get('$state');
         CONSTANTS = $injector.get('CONSTANTS');
+        gemeindeRS = $injector.get('GemeindeRS');
     }));
 
     describe('API Usage', function () {
@@ -64,7 +67,7 @@ describe('pendenzenBetreuungenListView', function () {
                 mockRestCalls();
                 spyOn(gesuchsperiodeRS, 'getAllActiveGesuchsperioden').and.returnValue($q.when([TestDataUtil.createGesuchsperiode20162017()]));
                 pendenzBetreuungenListViewController = new PendenzenBetreuungenListViewController(pendenzBetreuungenRS, undefined,
-                    institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state);
+                    institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state, gemeindeRS);
                 pendenzBetreuungenListViewController.$onInit();
 
                 $scope.$apply();
