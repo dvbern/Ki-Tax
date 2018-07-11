@@ -31,7 +31,7 @@ public class BGRechnerFactory {
 		if (BetreuungsangebotTyp.TAGI.equals(betreuungsangebotTyp)) {
 			return new TagiRechner();
 		}
-		if (betreuungsangebotTyp.isTageseltern()) {
+		if (betreuungsangebotTyp.isTagesfamilien()) {
 			return new TageselternRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet

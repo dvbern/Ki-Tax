@@ -76,7 +76,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTageselternGSWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESELTERN_KLEINKIND, 19, 19);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, 19, 19);
 		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
 		// wir nicht weiter und betreuungspensumJA wirft keine Violation
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
@@ -85,7 +85,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTageselternJAWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESELTERN_KLEINKIND, 20, 19);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, 20, 19);
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
@@ -93,7 +93,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTageselternRightValues() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESELTERN_KLEINKIND, 20, 20);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, 20, 20);
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
 	}

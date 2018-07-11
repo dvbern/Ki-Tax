@@ -498,7 +498,7 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testGeneriereVerfuegungTageselternKleinkinder() throws Exception {
 
-		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESELTERN_KLEINKIND);
+		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 
 		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
 
@@ -508,24 +508,6 @@ public class PDFServiceBeanTest {
 		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
 		Assert.assertNotNull(verfuegungsPDF);
 		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_TageselternKleinkinder.pdf");
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	@Test
-	public void testGeneriereVerfuegung_TageselternSchulkinder() throws Exception {
-
-		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESELTERN_SCHULKIND);
-
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
-
-		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
-
-		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
-		Assert.assertNotNull(verfuegungsPDF);
-		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_TageselternSchulkinder.pdf");
 	}
 
 	/**

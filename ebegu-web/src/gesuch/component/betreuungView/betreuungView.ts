@@ -614,8 +614,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isTageseltern(): boolean {
-        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND) ||
-            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESELTERN_SCHULKIND);
+        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN);
     }
 
     public isSchulamt(): boolean {
