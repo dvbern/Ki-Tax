@@ -280,77 +280,83 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		return this.createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, benutzer, gesuchsPeriodeId, gemeindeId);
 	}
 
-	@Override
 	@Nonnull
-	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid,
-		boolean betreuungenBestaetigt,
-		boolean verfuegen) {
+	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
+	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId) {
+		Gemeinde gemeinde;
+		if (StringUtils.isNotEmpty(gemeindeId)) {
+			gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		} else {
+			gemeinde = gemeindeService.getFirst();
+		}
 
 		Gesuchsperiode gesuchsperiode = getNeuesteGesuchsperiode();
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
 
 		if (WAELTI_DAGMAR.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (FEUTZ_IVONNE.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (PERREIRA_MARCIA.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall03_PerreiraMarcia(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall03_PerreiraMarcia(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (WALTHER_LAURA.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall04_WaltherLaura(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall04_WaltherLaura(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (LUETHI_MERET.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall05_LuethiMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall05_LuethiMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (BECKER_NORA.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (MEIER_MERET.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall07_MeierMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall07_MeierMeret(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (UMZUG_AUS_IN_AUS_BERN.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall08_UmzugAusInAusBern(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall08_UmzugAusInAusBern(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (ABWESENHEIT.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall09_Abwesenheit(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall09_Abwesenheit(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (UMZUG_VOR_GESUCHSPERIODE.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall10_UmzugVorGesuchsperiode(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall10_UmzugVorGesuchsperiode(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (SCHULAMT_ONLY.equals(fallid)) {
-			return createAndSaveGesuch(new Testfall11_SchulamtOnly(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt), verfuegen, null);
+			return createAndSaveGesuch(new Testfall11_SchulamtOnly(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde), verfuegen, null);
 		}
 		if (ASIV1.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_01(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV2.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_02(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV3.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_03(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV4.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_04(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV5.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_05(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV6.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_06(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV7.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_07(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV8.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_08(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV9.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_09(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		if (ASIV10.equals(fallid)) {
-			return createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true), verfuegen, null);
+			return createAndSaveAsivGesuch(new Testfall_ASIV_10(gesuchsperiode, institutionStammdatenList, true, gemeinde), verfuegen, null);
 		}
 		throw new IllegalArgumentException("Unbekannter Testfall: " + fallid);
 	}

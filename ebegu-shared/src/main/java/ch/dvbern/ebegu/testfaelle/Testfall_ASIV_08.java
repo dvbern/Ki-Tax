@@ -41,12 +41,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall_ASIV_08 extends AbstractASIVTestfall {
 
-	public Testfall_ASIV_08(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
-	}
-
-	public Testfall_ASIV_08(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt,
+	public Testfall_ASIV_08(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt,
 			Gemeinde gemeinde) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}

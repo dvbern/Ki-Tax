@@ -65,7 +65,7 @@ public interface TestfaelleService {
 		boolean verfuegen, @Nonnull String username, @Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId);
 
 	@Nonnull
-	Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen);
+	Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,  @Nonnull String gemeindeId);
 
 	@Nullable
 	Gesuch mutierenHeirat(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
