@@ -14,26 +14,25 @@
  */
 
 import {IComponentOptions, IFilterService, ILogService, IPromise} from 'angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSAbstractAntragEntity from '../../../models/TSAbstractAntragEntity';
-import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {
     getTSAntragStatusPendenzValues,
     getTSAntragStatusValuesByRole,
     TSAntragStatus
 } from '../../../models/enums/TSAntragStatus';
+import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSAbstractAntragEntity from '../../../models/TSAbstractAntragEntity';
+import TSAntragDTO from '../../../models/TSAntragDTO';
+import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSInstitution from '../../../models/TSInstitution';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
-import {InstitutionRS} from '../../service/institutionRS.rest';
-import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSUser from '../../../models/TSUser';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../service/institutionRS.rest';
 
 let template = require('./dv-antrag-list.html');
 require('./dv-antrag-list.less');
@@ -131,22 +130,22 @@ export class DVAntragListController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then((response: any) => {
+        this.institutionRS.getInstitutionenForCurrentBenutzer().then(response => {
             this.institutionenList = angular.copy(response);
         });
     }
 
     public updateGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: any) => {
+        this.gesuchsperiodeRS.getAllGesuchsperioden().then(response => {
             this.gesuchsperiodenList = [];
-            response.forEach((gesuchsperiode: TSGesuchsperiode) => {
+            response.forEach(gesuchsperiode => {
                 this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
             });
         });
     }
 
     public updateGemeindenList(): void {
-        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+        this.gemeindeRS.getAllGemeinden().then(response => {
             this.gemeindenList = angular.copy(response);
         });
     }
