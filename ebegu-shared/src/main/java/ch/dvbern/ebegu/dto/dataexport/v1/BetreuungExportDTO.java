@@ -56,8 +56,10 @@ public class BetreuungExportDTO {
 			return false;
 		}
 		BetreuungExportDTO that = (BetreuungExportDTO) o;
-		return getBetreuungsArt() == that.getBetreuungsArt() &&
-			Objects.equals(getInstitution(), that.getInstitution());
+		boolean BetreuungsArtEqual = getBetreuungsArt() == that.getBetreuungsArt();
+		boolean InstitutionEqual = Objects.equals(getInstitution(), that.getInstitution());
+		return BetreuungsArtEqual && InstitutionEqual;
+
 	}
 
 	@Override
