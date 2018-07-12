@@ -64,9 +64,9 @@ describe('DVQuicksearchList', function () {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
                     institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
-                let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND];
+                let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
-                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tageseltern für Kleinkinder');
+                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,

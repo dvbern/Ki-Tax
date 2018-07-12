@@ -1413,8 +1413,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	public void setBetreuungsangebotValues(@Nonnull BenutzerDataRow row, @Nonnull EnumSet<BetreuungsangebotTyp> angebote) {
 		row.setKita(angebote.stream().anyMatch(BetreuungsangebotTyp::isKita));
-		row.setTageselternKleinkind(angebote.stream().anyMatch(BetreuungsangebotTyp::isTageselternKleinkind));
-		row.setTageselternSchulkind(angebote.stream().anyMatch(BetreuungsangebotTyp::isTageselternSchulkind));
+		row.setTagesfamilien(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesfamilien));
 		row.setTagi(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagi));
 		row.setTagesschule(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesschule));
 		row.setFerieninsel(angebote.stream().anyMatch(BetreuungsangebotTyp::isFerieninsel));

@@ -57,9 +57,6 @@ public class EbeguVorlageServiceMock extends EbeguVorlageServiceBean {
 		case VORLAGE_FINANZIELLE_SITUATION:
 			vorlage.setFilepfad("vorlagen/Berechnungsgrundlagen.docx");
 			break;
-		case VORLAGE_BRIEF_TAGESELTERN_SCHULKINDER:
-			vorlage.setFilepfad("vorlagen/Verfuegungsmuster_tageseltern_schulkinder.docx");
-			break;
 		case VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER:
 			vorlage.setFilepfad("vorlagen/Verfuegungsmuster_tagesstaette_schulkinder.docx");
 			break;

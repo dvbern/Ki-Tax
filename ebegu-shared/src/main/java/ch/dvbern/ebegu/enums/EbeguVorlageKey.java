@@ -41,9 +41,6 @@ public enum EbeguVorlageKey {
 	// Verfügung (Brief) des Angebots Tagesstaette Schulkinder
 	VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER("/vorlagen/Verfuegungsmuster_tagesstaette_schulkinder.docx"),
 
-	// Verfügung (Brief) des Angebots Tageseltern Schulkinder
-	VORLAGE_BRIEF_TAGESELTERN_SCHULKINDER("/vorlagen/Verfuegungsmuster_tageseltern_schulkinder.docx"),
-
 	// Die Freigabequittung die der Gesuchsteller ausdruckt
 	VORLAGE_FREIGABEQUITTUNG("/vorlagen/Freigabequittung.docx"),
 
@@ -142,7 +139,6 @@ public enum EbeguVorlageKey {
 			VORLAGE_INFOSCHREIBEN_MAXIMALTARIF,
 			VORLAGE_VERFUEGUNG_TAGESELTERN_KLEINKINDER,
 			VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER,
-			VORLAGE_BRIEF_TAGESELTERN_SCHULKINDER,
 			VORLAGE_FREIGABEQUITTUNG,
 			VORLAGE_FINANZIELLE_SITUATION,
 			VORLAGE_BEGLEITSCHREIBEN };

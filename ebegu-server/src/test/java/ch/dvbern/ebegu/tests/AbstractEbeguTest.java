@@ -131,7 +131,6 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("reporting/GesuchstellerKinderBetreuung.xlsx", "reporting/GesuchstellerKinderBetreuung.xlsx")
 			.addAsResource("vorlagen/Verfuegungsmuster_kita.docx", "vorlagen/Verfuegungsmuster_kita.docx")
 			.addAsResource("vorlagen/Verfuegungsmuster_tageseltern_kleinkinder.docx", "vorlagen/Verfuegungsmuster_tageseltern_kleinkinder.docx")
-			.addAsResource("vorlagen/Verfuegungsmuster_tageseltern_schulkinder.docx", "vorlagen/Verfuegungsmuster_tageseltern_schulkinder.docx")
 			.addAsResource("vorlagen/Verfuegungsmuster_tagesstaette_schulkinder.docx", "vorlagen/Verfuegungsmuster_tagesstaette_schulkinder.docx")
 			.addAsResource("vorlagen/Berechnungsgrundlagen.docx", "vorlagen/Berechnungsgrundlagen.docx")
 			.addAsResource("vorlagen/Begleitschreiben.docx", "vorlagen/Begleitschreiben.docx")
