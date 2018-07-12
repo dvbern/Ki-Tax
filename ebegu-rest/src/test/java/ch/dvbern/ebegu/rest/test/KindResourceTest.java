@@ -84,6 +84,7 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
+		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);
 		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(jaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		jaxGesuch.setDossier(returnedDossier);
 

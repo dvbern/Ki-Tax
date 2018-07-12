@@ -93,6 +93,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 
 		JaxGesuch testJaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToAuthLoginElement(verantwortlicher));
+		testJaxGesuch.getDossier().setGemeinde(converter.gemeindeToJAX(persistedGemeinde));
 
 		JaxFall returnedFall = fallResource.saveFall(testJaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		testJaxGesuch.getDossier().setFall(returnedFall);
