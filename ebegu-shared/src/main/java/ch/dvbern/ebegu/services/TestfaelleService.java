@@ -57,34 +57,27 @@ public interface TestfaelleService {
 	String heirat = "1";
 
 	@Nonnull
-	StringBuilder createAndSaveTestfaelle(@Nonnull String fallid,
-		boolean betreuungenBestaetigt,
-		boolean verfuegen, @Nullable String gesuchsPeriodeId);
+	StringBuilder createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt,
+		boolean verfuegen, @Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId);
 
 	@Nonnull
-	StringBuilder createAndSaveAsOnlineGesuch(@Nonnull String fallid,
-		boolean betreuungenBestaetigt,
-		boolean verfuegen,
-		@Nonnull String username, @Nullable String gesuchsPeriodeId);
+	StringBuilder createAndSaveAsOnlineGesuch(@Nonnull String fallid, boolean betreuungenBestaetigt,
+		boolean verfuegen, @Nonnull String username, @Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId);
 
 	@Nonnull
-	Gesuch createAndSaveTestfaelle(@Nonnull String fallid,
-		boolean betreuungenBestaetigt,
-		boolean verfuegen);
+	Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,  @Nonnull String gemeindeId);
 
 	@Nullable
-	Gesuch mutierenHeirat(@Nonnull String dossierId,
-		@Nonnull String gesuchsperiodeId,
+	Gesuch mutierenHeirat(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen);
 
 	@Nonnull
 	Gesuch mutierenFinSit(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
-							@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen,
-							BigDecimal nettoLohn, boolean ignorieren);
+		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen,
+		BigDecimal nettoLohn, boolean ignorieren);
 
 	@Nullable
-	Gesuch mutierenScheidung(@Nonnull String dossierId,
-		@Nonnull String gesuchsperiodeId,
+	Gesuch mutierenScheidung(@Nonnull String dossierId, @Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate aenderungPer, boolean verfuegen);
 
 	/**

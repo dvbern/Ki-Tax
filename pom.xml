@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2018.2.0-SNAPSHOT</version>
+    <version>2018.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -41,13 +41,13 @@
         <database.jdbc.pwd>ebegu</database.jdbc.pwd>
 
         <version.mysqldriver>1.3.7</version.mysqldriver>
-        <version.hibernate>5.1.0.Final</version.hibernate>
-        <hibernate-search.version>5.5.4.Final</hibernate-search.version>
+        <version.hibernate>5.1.14.Final</version.hibernate>
+        <hibernate-search.version>5.5.8.Final</hibernate-search.version>
 
         <version.flyway>3.2.1</version.flyway>
         <version.slf4j>1.7.10</version.slf4j>
-        <version.wildfly-arquillian-containers>2.0.2.Final</version.wildfly-arquillian-containers>
-        <version.wildfly.container>10.0.0.Final</version.wildfly.container>
+        <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
+        <version.wildfly.container>13.0.0.Final</version.wildfly.container>
 
         <maven-checkstyle-plugin.version>2.15</maven-checkstyle-plugin.version>
         <maven-checkstyle.version>6.1.1</maven-checkstyle.version>
@@ -68,8 +68,8 @@
         <dependencies>
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>jboss-javaee-7.0-wildfly</artifactId>
-                <version>10.0.0.CR2</version>
+                <artifactId>wildfly-javaee7-with-tools</artifactId>
+                <version>13.0.0.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -284,7 +284,7 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
-                <version>1.1.11.Final</version>
+                <version>1.1.13.Final</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -301,7 +301,8 @@
                 <artifactId>swagger-jaxrs</artifactId>
                 <version>1.5.9</version>
             </dependency>
-            <!--hibernate 5 mit java 8 support-->
+            <!--hibernate 5.1 mit java 8 support, nicht mehr noetig ab 5.2-->
+            <!--https://github.com/hibernate/hibernate-orm/wiki/Migration-Guide-5.2-->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-java8</artifactId>
@@ -426,25 +427,19 @@
                 <version>2.5.3</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.remoting</groupId>
-                <artifactId>jboss-remoting</artifactId>
-                <version>4.0.9.Final</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jboss.xnio</groupId>
                 <artifactId>xnio-nio</artifactId>
-                <version>3.3.2.Final</version>
+                <version>3.5.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.xnio</groupId>
                 <artifactId>xnio-api</artifactId>
-                <version>3.3.2.Final</version>
+                <version>3.5.1.Final</version>
             </dependency>
-
             <dependency>
                 <groupId>org.jboss</groupId>
                 <artifactId>jandex</artifactId>
-                <version>2.0.0.Final</version>
+                <version>2.0.3.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.common</groupId>
@@ -480,7 +475,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-client</artifactId>
-                <version>3.0.13.Final</version>
+                <version>3.5.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -498,17 +493,60 @@
                 <artifactId>javassist</artifactId>
                 <version>3.20.0-GA</version>
             </dependency>
-
             <dependency>
                 <groupId>org.jboss.threads</groupId>
                 <artifactId>jboss-threads</artifactId>
-                <version>2.2.1.Final</version>
+                <version>2.3.2.Final</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>2.2.11</version>
+            </dependency>
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
-                <version>2.2.7</version>
+                <version>2.2.11</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.2.11</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-rt</artifactId>
+                <version>2.2.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.mimepull</groupId>
+                <artifactId>mimepull</artifactId>
+                <version>1.9.4</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.staxex</groupId>
+                <artifactId>stax-ex</artifactId>
+                <version>1.7.7</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.soap</groupId>
+                <artifactId>javax.xml.soap-api</artifactId>
+                <version>1.3.7</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.stream</groupId>
+                <artifactId>stax-api</artifactId>
+                <version>1.0-2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reactivestreams</groupId>
+                <artifactId>reactive-streams</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.github.oxo42</groupId>
@@ -601,6 +639,33 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>2.9.5</version>
             </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-embedded</artifactId>
+                <version>5.0.0.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-controller-client</artifactId>
+                <version>5.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.modules</groupId>
+                <artifactId>jboss-modules</artifactId>
+                <version>1.8.5.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-protocol</artifactId>
+                <version>5.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.protocol</groupId>
+                <artifactId>arquillian-protocol-servlet</artifactId>
+                <version>1.4.0.Final</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -674,7 +739,7 @@
         <dependency>
             <groupId>org.eu.ingwar.tools</groupId>
             <artifactId>arquillian-suite-extension</artifactId>
-            <version>1.1.2</version>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -701,7 +766,7 @@
         </profile>
 
         <profile>
-            <id>wildfly10-embedded</id>
+            <id>wildfly13-embedded</id>
             <properties>
                 <!--embedded wird ans gleiche ort enpackt wie managed-->
                 <jbossHome>${project.build.directory}/wildfly-${version.wildfly.container}</jbossHome>
@@ -720,20 +785,13 @@
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-embedded</artifactId>
-                    <version>2.0.10.Final</version>
+                    <version>5.0.0.Final</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>
 
         <profile>
-            <activation>
-                <property>
-                    <!-- hiermit wird getestet ob ein property disable-managed-wildfly existiert, wenn nicht lauft
-                    arquillian mit embedded container-->
-                    <name>!disable-managed-wildfly</name>
-                </property>
-            </activation>
             <id>test-wildfly-managed</id>
             <properties>
                 <jbossHome>${project.build.directory}/wildfly-${version.wildfly.container}</jbossHome>

@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungExportDTO;
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungenExportDTO;
 import ch.dvbern.ebegu.dto.dataexport.v1.ZeitabschnittExportDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -70,9 +71,12 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private TestfaelleService testfaelleService;
 
+	private Gemeinde gemeinde;
+
 	@Before
 	public void init() {
 		final Gesuchsperiode gesuchsperiode = createGesuchsperiode(true);
+		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode.getGueltigkeit(), persistence);
@@ -104,7 +108,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void exportTestVorVerfuegt() {
 
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde.getId());
 		Assert.assertNotNull(gesuch.getKindContainers().stream().findFirst());
 		Assert.assertTrue(gesuch.getKindContainers().stream().findFirst().isPresent());
 		KindContainer container = gesuch.getKindContainers().stream().findFirst().get();

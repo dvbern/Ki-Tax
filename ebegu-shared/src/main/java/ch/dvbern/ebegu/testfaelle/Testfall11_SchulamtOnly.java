@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -40,12 +41,12 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Schmid";
 
-	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
-	}
-
 	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
 		super(gesuchsperiode, institutionStammdatenList, false);
+	}
+
+	public Testfall11_SchulamtOnly(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 
 	@Override

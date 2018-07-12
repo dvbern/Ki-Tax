@@ -103,14 +103,14 @@ public abstract class AbstractTestfall {
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
 
-	protected AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+	public AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
 		boolean betreuungenBestaetigt) {
 		this.gesuchsperiode = gesuchsperiode;
 		this.institutionStammdatenList = institutionStammdatenList;
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
 	}
 
-	protected AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+	public AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
 		boolean betreuungenBestaetigt, Gemeinde gemeinde) {
 		this(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
 		this.gemeinde = gemeinde;

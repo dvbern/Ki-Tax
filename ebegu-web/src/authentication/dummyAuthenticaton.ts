@@ -282,7 +282,6 @@ export class DummyAuthenticationListViewComponent {
     }
 
     public logIn(user: TSUser): void {
-        console.log('loginnnnnnnnn', user);
         this.authServiceRS.loginRequest(user).then(() => {
             AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
         });
