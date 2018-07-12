@@ -317,6 +317,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(WizardStepStatus.PLATZBESTAETIGUNG, findStepByName(wizardSteps, WizardStepName.BETREUUNG).getWizardStepStatus());
 	}
 
+	/* TODO kann man den entfernen?
 	@Test
 	public void updateWizardStepErwerbspensumOKNotRequired() {
 		updateStatus(betreuungStep, WizardStepStatus.IN_BEARBEITUNG);
@@ -340,6 +341,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 
 		Assert.assertEquals(WizardStepStatus.OK, findStepByName(wizardSteps, WizardStepName.ERWERBSPENSUM).getWizardStepStatus());
 	}
+	*/
 
 	@Test
 	public void updateWizardStepErwerbspensumNOKWhenRequired() {
