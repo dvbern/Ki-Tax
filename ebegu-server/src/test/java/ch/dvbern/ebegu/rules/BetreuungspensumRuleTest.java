@@ -87,7 +87,8 @@ public class BetreuungspensumRuleTest {
 	@Test
 	public void testZweiKitas() {
 		Betreuung betreuung1 = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 60);
-		Betreuung betreuung2 = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 40);
+		Betreuung betreuung2 = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.TAGESFAMILIEN, 40);
+		Betreuung betreuung3 = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 40);
 		betreuung1.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80, 0));
 		List<VerfuegungZeitabschnitt> result = calculate(betreuung1);
 
@@ -104,9 +105,18 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(20, abschnForNxtBetr.get(0).getAnspruchspensumRest());
 		Assert.assertEquals(0, abschnForNxtBetr.get(0).getAnspruchberechtigtesPensum());
 
-		// Kita 2: Reicht nicht mehr ganz
+		//Tagesfamilien, Restanspruch bleibt gleich
 		betreuung2.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80, 0));
-		List<VerfuegungZeitabschnitt> resultBetr2 = calculateWithRemainingRestanspruch(betreuung2, 20);
+		result = calculateWithRemainingRestanspruch(betreuung2, 20);
+		Assert.assertEquals(20, result.get(0).getAnspruchspensumRest());  //restanspruch ist immer noch 20%
+		// Anspruchsrest fuer naechste Betreuung setzten
+		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung2, result);
+		//Nach dem Berechnen des Rests ist dieser immer noch gleich gross da Tagi fuer Schulkinder keinen Einfluss hat
+		Assert.assertEquals(20, result.get(0).getAnspruchspensumRest());
+
+		// Kita 2: Reicht nicht mehr ganz
+		betreuung3.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80, 0));
+		List<VerfuegungZeitabschnitt> resultBetr2 = calculateWithRemainingRestanspruch(betreuung3, 20);
 
 		Assert.assertNotNull(resultBetr2);
 		Assert.assertEquals(1, resultBetr2.size());
@@ -115,7 +125,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(20, resultBetr2.get(0).getAnspruchberechtigtesPensum()); // Nach der Berechnung des Anspruchs kann der Anspruch nicht hoeher sein als der Restanspruch (20)
 		Assert.assertEquals(20, resultBetr2.get(0).getBgPensum());
 		Assert.assertEquals(20, resultBetr2.get(0).getAnspruchspensumRest()); //Restanspruch wurde noch nicht neu berechnet fuer naechste betreuung
-		resultBetr2 = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung2, resultBetr2);
+		resultBetr2 = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung3, resultBetr2);
 		Assert.assertEquals(0, resultBetr2.get(0).getAnspruchspensumRest()); // Nach dem initialisieren fuer das nachste Betreuungspensum ist der noch verbleibende restanspruch 0
 	}
 
