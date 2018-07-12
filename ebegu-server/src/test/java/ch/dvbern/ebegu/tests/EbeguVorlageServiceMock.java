@@ -63,7 +63,7 @@ public class EbeguVorlageServiceMock extends EbeguVorlageServiceBean {
 		case VORLAGE_VERFUEGUNG_KITA:
 			vorlage.setFilepfad("vorlagen/Verfuegungsmuster_kita.docx");
 			break;
-		case VORLAGE_VERFUEGUNG_TAGESELTERN_KLEINKINDER:
+		case VORLAGE_VERFUEGUNG_TAGESFAMILIEN:
 			vorlage.setFilepfad("vorlagen/Verfuegungsmuster_tageseltern_kleinkinder.docx");
 			break;
 		default:

@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
-import ch.dvbern.ebegu.enums.Zustelladresse;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.types.DateRange;
@@ -93,10 +92,9 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 		BetreuungsangebotTyp angebotTyp = betreuung.getBetreuungsangebotTyp();
 
-		if (angebotTyp.isAngebotJugendamtKleinkind()) {
+		if (angebotTyp == BetreuungsangebotTyp.KITA || angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
 			vorlageKey = EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-		} else if (angebotTyp.isAngebotJugendamtSchulkind()
-			|| angebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
+		} else if (angebotTyp == BetreuungsangebotTyp.TAGI || angebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
 			vorlageKey = EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
 		} else {
 			throw new MergeDocException("generateNichteintreten()",
@@ -271,7 +269,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 		}
 		switch (betreuung.getBetreuungsangebotTyp()) {
 		case TAGESFAMILIEN:
-			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_TAGESELTERN_KLEINKINDER;
+			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_TAGESFAMILIEN;
 		case TAGI:
 			return EbeguVorlageKey.VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER;
 		case KITA:

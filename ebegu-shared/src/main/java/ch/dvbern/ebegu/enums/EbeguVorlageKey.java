@@ -35,8 +35,8 @@ public enum EbeguVorlageKey {
 	// Vorlage fuer Nicht-Eintreten bei Schulkindern
 	VORLAGE_INFOSCHREIBEN_MAXIMALTARIF("/vorlagen/Infoschreiben_Maxtarif.docx"),
 
-	// Verfügung des Angebots Tageseltern Kleinkinder
-	VORLAGE_VERFUEGUNG_TAGESELTERN_KLEINKINDER("/vorlagen/Verfuegungsmuster_tageseltern_kleinkinder.docx"),
+	// Verfügung des Angebots Tagesfamilien
+	VORLAGE_VERFUEGUNG_TAGESFAMILIEN("/vorlagen/Verfuegungsmuster_tagesfamilien.docx"),
 
 	// Verfügung (Brief) des Angebots Tagesstaette Schulkinder
 	VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER("/vorlagen/Verfuegungsmuster_tagesstaette_schulkinder.docx"),
@@ -137,7 +137,7 @@ public enum EbeguVorlageKey {
 			VORLAGE_VERFUEGUNG_KITA,
 			VORLAGE_NICHT_EINTRETENSVERFUEGUNG,
 			VORLAGE_INFOSCHREIBEN_MAXIMALTARIF,
-			VORLAGE_VERFUEGUNG_TAGESELTERN_KLEINKINDER,
+			VORLAGE_VERFUEGUNG_TAGESFAMILIEN,
 			VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER,
 			VORLAGE_FREIGABEQUITTUNG,
 			VORLAGE_FINANZIELLE_SITUATION,
