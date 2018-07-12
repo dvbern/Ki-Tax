@@ -15,8 +15,6 @@
 
 export enum TSBetreuungsangebotTyp {
     KITA = <any> 'KITA',
-    //TAGESELTERN_KLEINKIND = <any> 'TAGESELTERN_KLEINKIND',
-    //TAGESELTERN_SCHULKIND = <any> 'TAGESELTERN_SCHULKIND',
     TAGESFAMILIEN = <any> 'TAGESFAMILIEN',
     TAGI = <any> 'TAGI',
     TAGESSCHULE = <any> 'TAGESSCHULE',
