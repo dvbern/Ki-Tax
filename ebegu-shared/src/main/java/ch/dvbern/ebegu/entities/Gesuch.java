@@ -101,6 +101,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	@Nullable
 	@Column(nullable = true)
+	private LocalDate regelnGultigAb;
+
+	@Nullable
+	@Column(nullable = true)
 	private LocalDate freigabeDatum;
 
 	@Nullable
@@ -362,6 +366,11 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public final void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
+
+	@Nullable
+	public LocalDate getRegelnGultigAb() { return regelnGultigAb; }
+
+	public void setRegelnGultigAb(@Nullable LocalDate regelnGultigAb) { this.regelnGultigAb = regelnGultigAb; }
 
 	@Nullable
 	public LocalDate getEingangsdatumSTV() {

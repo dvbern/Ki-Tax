@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -43,6 +44,9 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eintrittsdatum;
 
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate regelnGultigAb = null;
 
 	public List<JaxModulTagesschule> getModuleTagesschule() {
 		return moduleTagesschule;
@@ -60,4 +64,14 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 	public void setEintrittsdatum(@NotNull LocalDate eintrittsdatum) {
 		this.eintrittsdatum = eintrittsdatum;
 	}
+
+	@Nullable
+	public LocalDate getRegelnGultigAb() {
+		return regelnGultigAb;
+	}
+
+	public void setRegelnGultigAb(@Nullable LocalDate regelnGultigAb) {
+		this.regelnGultigAb = regelnGultigAb;
+	}
+
 }

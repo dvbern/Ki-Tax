@@ -80,6 +80,23 @@
                         </div>
                     </div>
 
+                    <!-- Regeln gültig ab (Datum) -->
+                    <div class="row" dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="REGELN_GUELTIG_AB" for="regelnGultigAb_ID">
+                                </label>
+                                <dv-datepicker input-id="regelnGultigAb_ID" name="regelnGultigAb"
+                                               ng-model="vm.getGesuchModel().regelnGultigAb" ng-required="false"
+                                               class="input-element">
+                                </dv-datepicker>
+                                <dv-error-messages input-id="regelnGultigAb_ID" for="vm.form.regelnGultigAb.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
                     <!-- Gesuchsperiode: Auswahl -->
                     <div ng-if="vm.canChangeGesuchsperiode()">
                         <div class="row">

@@ -1543,6 +1543,7 @@ export default class EbeguRestUtil {
         restPendenz.angebote = pendenz.angebote;
         restPendenz.antragTyp = pendenz.antragTyp;
         restPendenz.eingangsdatum = DateUtil.momentToLocalDate(pendenz.eingangsdatum);
+        restPendenz.regelnGultigAb = DateUtil.momentToLocalDate(pendenz.regelnGultigAb);
         restPendenz.eingangsdatumSTV = DateUtil.momentToLocalDate(pendenz.eingangsdatumSTV);
         restPendenz.aenderungsdatum = DateUtil.momentToLocalDateTime(pendenz.aenderungsdatum);
         restPendenz.gesuchsperiodeGueltigAb = DateUtil.momentToLocalDate(pendenz.gesuchsperiodeGueltigAb);
@@ -1573,6 +1574,7 @@ export default class EbeguRestUtil {
         antragTS.kinder = antragFromServer.kinder;
         antragTS.antragTyp = antragFromServer.antragTyp;
         antragTS.eingangsdatum = DateUtil.localDateToMoment(antragFromServer.eingangsdatum);
+        antragTS.regelnGultigAb = DateUtil.localDateToMoment(antragFromServer.regelnGultigAb);
         antragTS.eingangsdatumSTV = DateUtil.localDateToMoment(antragFromServer.eingangsdatumSTV);
         antragTS.aenderungsdatum = DateUtil.localDateTimeToMoment(antragFromServer.aenderungsdatum);
         antragTS.gesuchsperiodeGueltigAb = DateUtil.localDateToMoment(antragFromServer.gesuchsperiodeGueltigAb);
@@ -2628,6 +2630,7 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(belegungTS, belegungFromServer);
             belegungTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungFromServer.moduleTagesschule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
+            belegungTS.regelnGultigAb = DateUtil.localDateToMoment(belegungFromServer.regelnGultigAb);
             return belegungTS;
         }
         return undefined;
@@ -2638,6 +2641,7 @@ export default class EbeguRestUtil {
             this.abstractEntityToRestObject(restBelegung, belegungTS);
             restBelegung.moduleTagesschule = this.moduleTagesschuleArrayToRestObject(belegungTS.moduleTagesschule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
+            restBelegung.regelnGultigAb = DateUtil.momentToLocalDate(belegungTS.regelnGultigAb);
             return restBelegung;
         }
         return undefined;

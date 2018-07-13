@@ -925,6 +925,7 @@ public class JaxBConverter {
 		}
 
 		antrag.setEingangsdatum(antragJAXP.getEingangsdatum());
+		antrag.setRegelnGultigAb(antragJAXP.getRegelnGultigAb());
 		antrag.setFreigabeDatum(antragJAXP.getFreigabeDatum());
 		antrag.setStatus(AntragStatusConverterUtil.convertStatusToEntity(antragJAXP.getStatus()));
 		if (antragJAXP.getTyp() != null) {
@@ -1099,6 +1100,7 @@ public class JaxBConverter {
 			jaxGesuch.setGesuchsperiode(gesuchsperiodeToJAX(persistedGesuch.getGesuchsperiode()));
 		}
 		jaxGesuch.setEingangsdatum(persistedGesuch.getEingangsdatum());
+		jaxGesuch.setRegelnGultigAb(persistedGesuch.getRegelnGultigAb());
 		jaxGesuch.setFreigabeDatum(persistedGesuch.getFreigabeDatum());
 		jaxGesuch.setStatus(AntragStatusConverterUtil.convertStatusToDTO(persistedGesuch, persistedGesuch.getStatus()));
 		jaxGesuch.setTyp(persistedGesuch.getTyp());
@@ -1916,6 +1918,7 @@ public class JaxBConverter {
 			}
 
 			belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
+			belegungTagesschule.setRegelnGultigAb(belegungTagesschuleJAXP.getRegelnGultigAb());
 			return belegungTagesschule;
 		}
 		return null;
@@ -2138,6 +2141,7 @@ public class JaxBConverter {
 			convertAbstractFieldsToJAX(belegungFromServer, jaxBelegungTagesschule);
 			jaxBelegungTagesschule.setModuleTagesschule(moduleTagesschuleListToJax(belegungFromServer.getModuleTagesschule()));
 			jaxBelegungTagesschule.setEintrittsdatum(belegungFromServer.getEintrittsdatum());
+			jaxBelegungTagesschule.setRegelnGultigAb(belegungFromServer.getRegelnGultigAb());
 			return jaxBelegungTagesschule;
 		}
 		return null;
@@ -2822,6 +2826,7 @@ public class JaxBConverter {
 		antrag.setDossierId(gesuch.getDossier().getId());
 		antrag.setFamilienName(gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractNachname() : "");
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
+		antrag.setRegelnGultigAb(gesuch.getRegelnGultigAb());
 		antrag.setEingangsdatumSTV(gesuch.getEingangsdatumSTV());
 		antrag.setAenderungsdatum(gesuch.getTimestampMutiert());
 		antrag.setAntragTyp(gesuch.getTyp());

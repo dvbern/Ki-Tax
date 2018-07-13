@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -48,6 +49,10 @@ public class BelegungTagesschule extends AbstractEntity {
 	@NotNull
 	@Column(nullable = false)
 	private LocalDate eintrittsdatum;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDate regelnGultigAb;
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -82,6 +87,11 @@ public class BelegungTagesschule extends AbstractEntity {
 	public void setEintrittsdatum(@NotNull LocalDate eintrittsdatum) {
 		this.eintrittsdatum = eintrittsdatum;
 	}
+
+	@Nullable
+	public LocalDate getRegelnGultigAb() { return regelnGultigAb; }
+
+	public void setRegelnGultigAb(@Nullable LocalDate regelnGultigAb) { this.regelnGultigAb = regelnGultigAb; }
 
 	@Nonnull
 	public BelegungTagesschule copyForMutation(@Nonnull BelegungTagesschule mutation, @Nonnull Betreuung parentBetreuung) {

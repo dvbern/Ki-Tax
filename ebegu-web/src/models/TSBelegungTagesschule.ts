@@ -21,6 +21,7 @@ export default class TSBelegungTagesschule extends TSAbstractEntity {
 
     private _moduleTagesschule: TSModulTagesschule[] = [];
     private _eintrittsdatum: moment.Moment;
+    private _regelnGultigAb: moment.Moment;
 
     constructor(moduleTagesschule?: TSModulTagesschule[], eintrittsdatum?: moment.Moment) {
         super();
@@ -43,4 +44,13 @@ export default class TSBelegungTagesschule extends TSAbstractEntity {
     public set eintrittsdatum(value: moment.Moment) {
         this._eintrittsdatum = value;
     }
+
+    get regelnGultigAb(): moment.Moment {
+        return this._regelnGultigAb;
+    }
+
+    set regelnGultigAb(value: moment.Moment) {
+        this._regelnGultigAb = value;
+    }
+
 }

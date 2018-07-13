@@ -55,6 +55,10 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate regelnGultigAb = null;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eingangsdatumSTV = null;
 
 	@Nullable
@@ -298,6 +302,15 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
+	}
+
+	@Nullable
+	public LocalDate getRegelnGultigAb() {
+		return regelnGultigAb;
+	}
+
+	public void setRegelnGultigAb(@Nullable LocalDate regelnGultigAb) {
+		this.regelnGultigAb = regelnGultigAb;
 	}
 
 	@Nullable

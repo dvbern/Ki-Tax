@@ -23,8 +23,8 @@
             <!-- Modulauswahl Tagesschule -->
             <div ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.isTageschulenAnmeldungAktiv() && vm.isTagesschuleAlreadySelected()">
 
-                <!-- Eintrittsdatum -->
                 <div class="row">
+                    <!-- Eintrittsdatum -->
                     <div class="col-sm-12 dv-input-container-small form-group">
                         <label class="md-no-float required" data-translate="EINTRITTSDATUM"
                                for="eintrittsdatum_ID"></label>
@@ -36,6 +36,20 @@
                         </dv-datepicker>
                         <dv-error-messages input-id="eintrittsdatum"
                                            for="vm.form.eintrittsdatum.$error"></dv-error-messages>
+                    </div>
+
+                    <!-- Regeln gültig ab (Datum) -->
+                    <div class="col-sm-12 dv-input-container-small form-group">
+                        <label class="md-no-float" data-translate="REGELN_GUELTIG_AB"
+                               for="regelnGultigAb_ID"></label>
+                        <dv-datepicker input-id="regelnGultigAb_ID" name="regelnGultigAb"
+                                       ng-model="vm.betreuung.belegungTagesschule.regelnGultigAb"
+                                       ng-required="false"
+                                       class="input-element"
+                                       dv-min-date="vm.datumErsterSchultag">
+                        </dv-datepicker>
+                        <dv-error-messages input-id="regelnGultigAb"
+                                           for="vm.form.regelnGultigAb.$error"></dv-error-messages>
                     </div>
                 </div>
 
