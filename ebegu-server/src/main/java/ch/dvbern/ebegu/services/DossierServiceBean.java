@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -83,6 +84,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Nonnull
 	@Override
@@ -158,15 +162,20 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (!fallOptional.isPresent()) {
 			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		}
+		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId!
+		Gemeinde gemeinde = null;
+		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
+		gemeinde = gemeindeOptional.orElseGet(() -> gemeindeService.getFirst());
 		//noinspection ConstantConditions
 		Objects.requireNonNull(fallOptional.get());
-		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeindeId, fallOptional.get().getId());
+		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}
 		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen
 		Dossier dossier = new Dossier();
 		dossier.setFall(fallOptional.get());
+		dossier.setGemeinde(gemeinde);
 		return saveDossier(dossier);
 	}
 
