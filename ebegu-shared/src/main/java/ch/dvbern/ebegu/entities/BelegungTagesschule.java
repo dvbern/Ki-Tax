@@ -50,10 +50,6 @@ public class BelegungTagesschule extends AbstractEntity {
 	@Column(nullable = false)
 	private LocalDate eintrittsdatum;
 
-	@Nullable
-	@Column(nullable = true)
-	private LocalDate regelnGultigAb;
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -87,11 +83,6 @@ public class BelegungTagesschule extends AbstractEntity {
 	public void setEintrittsdatum(@NotNull LocalDate eintrittsdatum) {
 		this.eintrittsdatum = eintrittsdatum;
 	}
-
-	@Nullable
-	public LocalDate getRegelnGultigAb() { return regelnGultigAb; }
-
-	public void setRegelnGultigAb(@Nullable LocalDate regelnGultigAb) { this.regelnGultigAb = regelnGultigAb; }
 
 	@Nonnull
 	public BelegungTagesschule copyForMutation(@Nonnull BelegungTagesschule mutation, @Nonnull Betreuung parentBetreuung) {

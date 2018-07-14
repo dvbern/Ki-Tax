@@ -300,6 +300,7 @@ export default class EbeguRestUtil {
         restObj.dossier = this.dossierToRestObject({}, antragEntity.dossier);
         restObj.gesuchsperiode = this.gesuchsperiodeToRestObject({}, antragEntity.gesuchsperiode);
         restObj.eingangsdatum = DateUtil.momentToLocalDate(antragEntity.eingangsdatum);
+        restObj.regelnGultigAb = DateUtil.momentToLocalDate(antragEntity.regelnGultigAb);
         restObj.freigabeDatum = DateUtil.momentToLocalDate(antragEntity.freigabeDatum);
         restObj.status = antragEntity.status;
         restObj.typ = antragEntity.typ;
@@ -311,6 +312,7 @@ export default class EbeguRestUtil {
         antragTS.dossier = this.parseDossier(new TSDossier(), antragFromServer.dossier);
         antragTS.gesuchsperiode = this.parseGesuchsperiode(new TSGesuchsperiode(), antragFromServer.gesuchsperiode);
         antragTS.eingangsdatum = DateUtil.localDateToMoment(antragFromServer.eingangsdatum);
+        antragTS.regelnGultigAb = DateUtil.localDateToMoment(antragFromServer.regelnGultigAb);
         antragTS.freigabeDatum = DateUtil.localDateToMoment(antragFromServer.freigabeDatum);
         antragTS.status = antragFromServer.status;
         antragTS.typ = antragFromServer.typ;
@@ -2630,7 +2632,6 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(belegungTS, belegungFromServer);
             belegungTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungFromServer.moduleTagesschule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
-            belegungTS.regelnGultigAb = DateUtil.localDateToMoment(belegungFromServer.regelnGultigAb);
             return belegungTS;
         }
         return undefined;
@@ -2641,7 +2642,6 @@ export default class EbeguRestUtil {
             this.abstractEntityToRestObject(restBelegung, belegungTS);
             restBelegung.moduleTagesschule = this.moduleTagesschuleArrayToRestObject(belegungTS.moduleTagesschule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
-            restBelegung.regelnGultigAb = DateUtil.momentToLocalDate(belegungTS.regelnGultigAb);
             return restBelegung;
         }
         return undefined;
