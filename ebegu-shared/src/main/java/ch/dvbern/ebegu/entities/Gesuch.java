@@ -693,6 +693,14 @@ public class Gesuch extends AbstractEntity implements Searchable {
 			});
 	}
 
+	@Transient
+	public LocalDate getRegelStartDatum() {
+		if (null != getRegelnGultigAb()) {
+			return getRegelnGultigAb();
+		}
+		return getEingangsdatum();
+	}
+
 	@Nullable
 	public Familiensituation extractFamiliensituation() {
 		if (familiensituationContainer != null) {
