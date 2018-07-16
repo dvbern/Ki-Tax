@@ -990,10 +990,6 @@ public class JaxBConverter {
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
 		antrag.setHasFSDokument(antragJAXP.isHasFSDokument());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
-		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
-		antrag.setDatumGewarntNichtFreigegeben(antragJAXP.getDatumGewarntNichtFreigegeben());
-		antrag.setDatumGewarntFehlendeQuittung(antragJAXP.getDatumGewarntFehlendeQuittung());
-		antrag.setTimestampVerfuegt(antragJAXP.getTimestampVerfuegt());
 		antrag.setGueltig(antragJAXP.isGueltig());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -2090,9 +2086,7 @@ public class JaxBConverter {
 	 */
 	public Collection<JaxBetreuung> betreuungListToJax(Collection<Betreuung> betreuungList) {
 		Collection<JaxBetreuung> returnList = new ArrayList<>();
-		betreuungList.forEach(betreuung -> {
-			returnList.add(betreuungToJAX(betreuung));
-		});
+		betreuungList.forEach(betreuung -> returnList.add(betreuungToJAX(betreuung)));
 		return returnList;
 	}
 
@@ -2897,39 +2891,28 @@ public class JaxBConverter {
 	 */
 	private Set<BetreuungsangebotTyp> createAngeboteList(Set<KindContainer> kindContainers) {
 		Set<BetreuungsangebotTyp> resultSet = new HashSet<>();
-		kindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				resultSet.add(betreuung.getBetreuungsangebotTyp());
-			});
-		});
+		kindContainers.forEach(kindContainer
+			-> kindContainer.getBetreuungen().forEach(betreuung -> resultSet.add(betreuung.getBetreuungsangebotTyp())));
 		return resultSet;
 	}
 
 	private Set<String> createKinderList(Set<KindContainer> kindContainers) {
 		Set<String> resultSet = new HashSet<>();
-		kindContainers.forEach(kindContainer -> {
-			resultSet.add(kindContainer.getKindJA().getVorname());
-		});
+		kindContainers.forEach(kindContainer -> resultSet.add(kindContainer.getKindJA().getVorname()));
 		return resultSet;
 	}
 
 	private Set<BetreuungsangebotTyp> createAngeboteList(Collection<JaxKindContainer> jaxKindContainers) {
 
 		Set<BetreuungsangebotTyp> resultSet = new HashSet<>();
-		jaxKindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				resultSet.add(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp());
-			});
-		});
+		jaxKindContainers.forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> resultSet.add(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp())));
 		return resultSet;
 	}
 
 	private Set<String> createKinderList(Collection<JaxKindContainer> jaxKindContainers) {
 
 		Set<String> resultSet = new HashSet<>();
-		jaxKindContainers.forEach(kindContainer -> {
-			resultSet.add(kindContainer.getKindJA().getVorname());
-		});
+		jaxKindContainers.forEach(kindContainer -> resultSet.add(kindContainer.getKindJA().getVorname()));
 		return resultSet;
 	}
 
@@ -2939,25 +2922,21 @@ public class JaxBConverter {
 	 */
 	private Set<String> createInstitutionenList(Set<KindContainer> kindContainers) {
 		Set<String> resultSet = new HashSet<>();
-		kindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
-					resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
-				}
-			});
-		});
+		kindContainers.forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
+			if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
+				resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
+			}
+		}));
 		return resultSet;
 	}
 
 	private Set<String> createInstitutionenList(Collection<JaxKindContainer> jaxKindContainers) {
 		Set<String> resultSet = new HashSet<>();
-		jaxKindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
-					resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
-				}
-			});
-		});
+		jaxKindContainers.forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
+			if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
+				resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
+			}
+		}));
 		return resultSet;
 	}
 
@@ -3236,9 +3215,7 @@ public class JaxBConverter {
 
 	public List<JaxBelegungFerieninselTag> belegungFerieninselTageListToJAX(Collection<BelegungFerieninselTag> persistedFerieninselTageList) {
 		List<JaxBelegungFerieninselTag> returnList = new ArrayList<>();
-		persistedFerieninselTageList.forEach(ferieninselTag -> {
-			returnList.add(belegungFerieninselTagToJAX(ferieninselTag));
-		});
+		persistedFerieninselTageList.forEach(ferieninselTag -> returnList.add(belegungFerieninselTagToJAX(ferieninselTag)));
 		return returnList;
 	}
 
