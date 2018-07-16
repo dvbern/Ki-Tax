@@ -100,6 +100,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         this._verantwortlicherUsernameBG = verantwortlicherUsernameBG;
         this._verantwortlicherUsernameTS = verantwortlicherUsernameTS;
         this._gemeinde = gemeinde;
+        this._regelnGueltigAb = undefined;
     }
 
     get antragId(): string {
