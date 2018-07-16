@@ -149,7 +149,7 @@ public class AuthServiceBean implements AuthService {
 					return new EbeguEntityNotFoundException("createLoginFromIam", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, authorisierterBenutzer.getUsername());
 				});
 			authorisierterBenutzer.setBenutzer(benutzerFromDB);
-
+			authorisierterBenutzer.setRole(benutzerFromDB.getRole());
 			entityManager.persist(authorisierterBenutzer);
 		} catch (RuntimeException ex) {
 			LOG.error("Could not create Login from IAM for user {}", authorisierterBenutzer, ex);
