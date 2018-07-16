@@ -66,7 +66,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Max(100)
 	@Min(0)
 	@NotNull
-	private int anspruchberechtigtesPensum; // = Anpsruch für diese Kita, bzw. Tageseltern Kleinkinder
+	private int anspruchberechtigtesPensum; // = Anpsruch für diese Kita, bzw. Tagesfamilien
 
 	private boolean zuSpaetEingereicht;
 

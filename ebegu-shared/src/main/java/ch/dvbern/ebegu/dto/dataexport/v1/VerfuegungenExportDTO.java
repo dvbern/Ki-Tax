@@ -57,9 +57,8 @@ public class VerfuegungenExportDTO {
 			return false;
 		}
 		VerfuegungenExportDTO that = (VerfuegungenExportDTO) o;
-		boolean SchemaVersionEqual = Objects.equals(getSchemaVersion(), that.getSchemaVersion());
-		boolean VerfuegungenEqual = Objects.equals(getVerfuegungen(), that.getVerfuegungen());
-		return  SchemaVersionEqual && VerfuegungenEqual;
+		return Objects.equals(getSchemaVersion(), that.getSchemaVersion()) &&
+			Objects.equals(getVerfuegungen(), that.getVerfuegungen());
 	}
 
 	@Override

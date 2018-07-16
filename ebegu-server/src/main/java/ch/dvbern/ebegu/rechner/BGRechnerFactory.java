@@ -21,17 +21,20 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 /**
  * Factory, welche für eine Betreuung den richtigen BG-Rechner ermittelt
  */
-public class BGRechnerFactory {
+public final class BGRechnerFactory {
+
+	private BGRechnerFactory() {
+	}
 
 	public static AbstractBGRechner getRechner(Betreuung betreuung) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
-		if (BetreuungsangebotTyp.KITA.equals(betreuungsangebotTyp)) {
+		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaRechner();
 		}
-		if (BetreuungsangebotTyp.TAGI.equals(betreuungsangebotTyp)) {
+		if (BetreuungsangebotTyp.TAGI == betreuungsangebotTyp) {
 			return new TagiRechner();
 		}
-		if (betreuungsangebotTyp.isTagesfamilien()) {
+		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
 			return new TageselternRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
