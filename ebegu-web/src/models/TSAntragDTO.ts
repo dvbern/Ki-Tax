@@ -28,7 +28,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     private _antragTyp: TSAntragTyp;
     private _eingangsart: TSEingangsart;
     private _eingangsdatum: moment.Moment;
-    private _regelnGultigAb: moment.Moment;
+    private _regelnGueltigAb: moment.Moment;
     private _eingangsdatumSTV: moment.Moment;
     private _aenderungsdatum: moment.Moment;
     private _verantwortlicherBG: string;
@@ -126,12 +126,12 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         this._eingangsdatum = value;
     }
 
-    get regelnGultigAb(): moment.Moment {
-        return this._regelnGultigAb;
+    get regelnGueltigAb(): moment.Moment {
+        return this._regelnGueltigAb;
     }
 
-    set regelnGultigAb(value: moment.Moment) {
-        this._regelnGultigAb = value;
+    set regelnGueltigAb(value: moment.Moment) {
+        this._regelnGueltigAb = value;
     }
 
     get eingangsdatumSTV(): moment.Moment {

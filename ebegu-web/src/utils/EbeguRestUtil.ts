@@ -300,7 +300,7 @@ export default class EbeguRestUtil {
         restObj.dossier = this.dossierToRestObject({}, antragEntity.dossier);
         restObj.gesuchsperiode = this.gesuchsperiodeToRestObject({}, antragEntity.gesuchsperiode);
         restObj.eingangsdatum = DateUtil.momentToLocalDate(antragEntity.eingangsdatum);
-        restObj.regelnGultigAb = DateUtil.momentToLocalDate(antragEntity.regelnGultigAb);
+        restObj.regelnGueltigAb = DateUtil.momentToLocalDate(antragEntity.regelnGueltigAb);
         restObj.freigabeDatum = DateUtil.momentToLocalDate(antragEntity.freigabeDatum);
         restObj.status = antragEntity.status;
         restObj.typ = antragEntity.typ;
@@ -312,7 +312,7 @@ export default class EbeguRestUtil {
         antragTS.dossier = this.parseDossier(new TSDossier(), antragFromServer.dossier);
         antragTS.gesuchsperiode = this.parseGesuchsperiode(new TSGesuchsperiode(), antragFromServer.gesuchsperiode);
         antragTS.eingangsdatum = DateUtil.localDateToMoment(antragFromServer.eingangsdatum);
-        antragTS.regelnGultigAb = DateUtil.localDateToMoment(antragFromServer.regelnGultigAb);
+        antragTS.regelnGueltigAb = DateUtil.localDateToMoment(antragFromServer.regelnGueltigAb);
         antragTS.freigabeDatum = DateUtil.localDateToMoment(antragFromServer.freigabeDatum);
         antragTS.status = antragFromServer.status;
         antragTS.typ = antragFromServer.typ;
@@ -1545,7 +1545,7 @@ export default class EbeguRestUtil {
         restPendenz.angebote = pendenz.angebote;
         restPendenz.antragTyp = pendenz.antragTyp;
         restPendenz.eingangsdatum = DateUtil.momentToLocalDate(pendenz.eingangsdatum);
-        restPendenz.regelnGultigAb = DateUtil.momentToLocalDate(pendenz.regelnGultigAb);
+        restPendenz.regelnGueltigAb = DateUtil.momentToLocalDate(pendenz.regelnGueltigAb);
         restPendenz.eingangsdatumSTV = DateUtil.momentToLocalDate(pendenz.eingangsdatumSTV);
         restPendenz.aenderungsdatum = DateUtil.momentToLocalDateTime(pendenz.aenderungsdatum);
         restPendenz.gesuchsperiodeGueltigAb = DateUtil.momentToLocalDate(pendenz.gesuchsperiodeGueltigAb);
@@ -1576,7 +1576,7 @@ export default class EbeguRestUtil {
         antragTS.kinder = antragFromServer.kinder;
         antragTS.antragTyp = antragFromServer.antragTyp;
         antragTS.eingangsdatum = DateUtil.localDateToMoment(antragFromServer.eingangsdatum);
-        antragTS.regelnGultigAb = DateUtil.localDateToMoment(antragFromServer.regelnGultigAb);
+        antragTS.regelnGueltigAb = DateUtil.localDateToMoment(antragFromServer.regelnGueltigAb);
         antragTS.eingangsdatumSTV = DateUtil.localDateToMoment(antragFromServer.eingangsdatumSTV);
         antragTS.aenderungsdatum = DateUtil.localDateTimeToMoment(antragFromServer.aenderungsdatum);
         antragTS.gesuchsperiodeGueltigAb = DateUtil.localDateToMoment(antragFromServer.gesuchsperiodeGueltigAb);
