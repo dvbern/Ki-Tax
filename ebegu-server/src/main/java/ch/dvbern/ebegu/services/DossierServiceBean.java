@@ -80,13 +80,13 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	private GesuchService gesuchService;
 
 	@Inject
-	private GemeindeService gemeindeService;
-
-	@Inject
 	private MitteilungService mitteilungService;
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Nonnull
 	@Override
@@ -120,20 +120,19 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		return Optional.empty();
 	}
 
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
-		Gemeinde bern = gemeindeService.getFirst();
-		if (dossier.isNew()) {
-			Optional<Dossier> dossierByGemeindeAndFall = findDossierByGemeindeAndFall(bern.getId(), dossier.getFall().getId());
-			if (dossierByGemeindeAndFall.isPresent()) {
-				dossier = dossierByGemeindeAndFall.get();
-			}
+		//TODO Imanol: entfernen
+		Gemeinde gemeinde = dossier.getGemeinde();
+		//noinspection ConstantConditions:
+		if (gemeinde == null) {
+			gemeinde = gemeindeService.getFirst();
+			dossier.setGemeinde(gemeinde);
 		}
-		//TODO (KIBON-6) Wir setzen im Moment fix die Gemeinde Bern
-		dossier.setGemeinde(bern);
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
 	}
@@ -170,15 +169,20 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (!fallOptional.isPresent()) {
 			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		}
+		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId!
+		Gemeinde gemeinde = null;
+		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
+		gemeinde = gemeindeOptional.orElseGet(() -> gemeindeService.getFirst());
 		//noinspection ConstantConditions
 		Objects.requireNonNull(fallOptional.get());
-		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall("TODO", fallOptional.get().getId());
+		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}
 		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen
 		Dossier dossier = new Dossier();
 		dossier.setFall(fallOptional.get());
+		dossier.setGemeinde(gemeinde);
 		return saveDossier(dossier);
 	}
 

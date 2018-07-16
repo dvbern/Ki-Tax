@@ -24,8 +24,7 @@ import java.util.List;
 public enum BetreuungsangebotTyp {
 	KITA,
 	TAGESSCHULE,
-	TAGESELTERN_KLEINKIND,
-	TAGESELTERN_SCHULKIND,
+	TAGESFAMILIEN,
 	TAGI,
 	FERIENINSEL;
 
@@ -37,13 +36,7 @@ public enum BetreuungsangebotTyp {
 		return TAGESSCHULE == this;
 	}
 
-	public boolean isTageselternKleinkind() {
-		return TAGESELTERN_KLEINKIND == this;
-	}
-
-	public boolean isTageselternSchulkind() {
-		return TAGESELTERN_SCHULKIND == this;
-	}
+	public boolean isTagesfamilien() { return TAGESFAMILIEN == this; }
 
 	public boolean isTagi() {
 		return TAGI == this;
@@ -57,17 +50,9 @@ public enum BetreuungsangebotTyp {
 		return TAGESSCHULE == this || FERIENINSEL == this;
 	}
 
-	public boolean isTageseltern() {
-		return TAGESELTERN_KLEINKIND == this || TAGESELTERN_SCHULKIND == this;
-	}
+	public boolean isAngebotJugendamtKleinkind() { return KITA == this || TAGESFAMILIEN == this; }
 
-	public boolean isAngebotJugendamtKleinkind() {
-		return KITA == this || TAGESELTERN_KLEINKIND == this;
-	}
-
-	public boolean isAngebotJugendamtSchulkind() {
-		return TAGI == this || TAGESELTERN_SCHULKIND == this;
-	}
+	public boolean isAngebotJugendamtSchulkind() { return TAGI == this; }
 
 	public boolean isJugendamt() {
 		return !isSchulamt();

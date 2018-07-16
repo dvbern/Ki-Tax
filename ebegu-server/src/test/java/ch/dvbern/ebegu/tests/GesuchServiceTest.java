@@ -184,11 +184,12 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void removeGesuchTest() {
 		Assert.assertNotNull(gesuchService);
+		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
-		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten), true, null);
+		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
 		final GeneratedDokument generatedDokument = TestDataUtil.createGeneratedDokument(gesuch);
 		persistence.persist(generatedDokument);
 		final DokumentGrund dokumentGrund = TestDataUtil.createDefaultDokumentGrund();

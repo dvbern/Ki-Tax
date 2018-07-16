@@ -34,8 +34,7 @@ public class BenutzerDataRow {
 	private String traegerschaft;
 	private Boolean gesperrt;
 	private Boolean isKita;
-	private Boolean isTageselternKleinkind;
-	private Boolean isTageselternSchulkind;
+	private Boolean isTagesfamilien;
 	private Boolean isTagi;
 	private Boolean isTagesschule;
 	private Boolean isFerieninsel;
@@ -127,22 +126,6 @@ public class BenutzerDataRow {
 		this.isKita = isKita;
 	}
 
-	public Boolean isTageselternKleinkind() {
-		return isTageselternKleinkind;
-	}
-
-	public void setTageselternKleinkind(Boolean tageselternKleinkind) {
-		isTageselternKleinkind = tageselternKleinkind;
-	}
-
-	public Boolean isTageselternSchulkind() {
-		return isTageselternSchulkind;
-	}
-
-	public void setTageselternSchulkind(Boolean tageselternSchulkind) {
-		isTageselternSchulkind = tageselternSchulkind;
-	}
-
 	public Boolean isTagi() {
 		return isTagi;
 	}
@@ -167,10 +150,13 @@ public class BenutzerDataRow {
 		isFerieninsel = ferieninsel;
 	}
 
+	public Boolean isTagesfamilien() { return isTagesfamilien; }
+
+	public void setTagesfamilien(Boolean tagesfamilien) { isTagesfamilien = tagesfamilien; }
+
 	public Boolean isJugendamt() {
 		return (this.isKita != null && this.isKita)
-			|| (this.isTageselternKleinkind != null && this.isTageselternKleinkind)
-			|| (this.isTageselternSchulkind != null && this.isTageselternSchulkind)
+			|| (this.isTagesfamilien != null && this.isTagesfamilien)
 			|| (this.isTagi != null && this.isTagi);
 	}
 

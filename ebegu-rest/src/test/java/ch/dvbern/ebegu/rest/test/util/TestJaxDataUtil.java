@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -194,7 +195,6 @@ public final class TestJaxDataUtil {
 
 	public static JaxDossier createTestJaxDossier() {
 		JaxDossier jaxDossier = new JaxDossier();
-		jaxDossier.setDossierNummer(1);
 		jaxDossier.setVerantwortlicherBG(createTestJaxBenutzer());
 		jaxDossier.setFall(createTestJaxFall());
 		return jaxDossier;
@@ -251,7 +251,7 @@ public final class TestJaxDataUtil {
 		jaxKind.setGeschlecht(Geschlecht.WEIBLICH);
 		jaxKind.setPensumFachstelle(createTestJaxPensumFachstelle());
 		jaxKind.setMutterspracheDeutsch(false);
-		jaxKind.setEinschulung(false);
+		jaxKind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		jaxKind.setFamilienErgaenzendeBetreuung(true);
 		jaxKind.setKinderabzug(Kinderabzug.GANZER_ABZUG);
 		return jaxKind;
@@ -379,6 +379,7 @@ public final class TestJaxDataUtil {
 	public static JaxGemeinde createTestGemeinde() {
 		JaxGemeinde gemeinde = new JaxGemeinde();
 		gemeinde.setName("TestGemeinde");
+		gemeinde.setGemeindeNummer(1);
 		return gemeinde;
 	}
 

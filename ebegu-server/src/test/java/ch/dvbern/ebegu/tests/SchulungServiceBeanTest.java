@@ -81,12 +81,13 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Persistence persistence;
 
 	@Test
-	public void resetSchulungsdaten() throws Exception {
+	public void resetSchulungsdaten() {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(TestDataUtil.createCurrentGesuchsperiode());
 		createAndSaveInstitutionStammdatenForTestfaelle();
 		TestDataUtil.prepareParameters(gesuchsperiode.getGueltigkeit(), persistence);
 
 		assertEmpty();
+		TestDataUtil.getGemeindeBern(persistence);
 		schulungService.createSchulungsdaten();
 
 		Assert.assertEquals(94, adresseService.getAllAdressen().size());

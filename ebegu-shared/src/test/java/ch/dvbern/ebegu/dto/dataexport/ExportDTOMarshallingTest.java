@@ -126,7 +126,7 @@ public class ExportDTOMarshallingTest {
 		BetreuungExportDTO betreuungExportDTO = new BetreuungExportDTO();
 		betreuungExportDTO.setBetreuungsArt(BetreuungsangebotTyp.KITA);
 		AdresseExportDTO adr = new AdresseExportDTO("Nussbaumstrasse", "21", null, "Bern", "3006", Land.CH);
-		InstitutionExportDTO inst = new InstitutionExportDTO("545b8d2d-da72-4232-b562-0ff64706feea", "Brürnnen", "LeoLea", adr);
+		InstitutionExportDTO inst = new InstitutionExportDTO("545b8d2d-da72-4232-b562-0ff64706feea", "Bruennen", "LeoLea", adr);
 
 		betreuungExportDTO.setInstitution(inst);
 		verfuegungExportDTO.setBetreuung(betreuungExportDTO);

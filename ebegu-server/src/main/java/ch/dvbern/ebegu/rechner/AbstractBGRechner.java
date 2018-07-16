@@ -73,7 +73,7 @@ public abstract class AbstractBGRechner {
 	}
 
 	/**
-	 * Berechnet die Kosten einer Betreuungsstunde (Tagi und Tageseltern)
+	 * Berechnet die Kosten einer Betreuungsstunde (Tagi und Tagesfamilien)
 	 */
 	protected BigDecimal calculateKostenBetreuungsstunde(BigDecimal kostenProStundeMaximal, BigDecimal massgebendesEinkommen, BigDecimal anspruch, BGRechnerParameterDTO parameterDTO) {
 		// Massgebendes Einkommen: Minimum und Maximum berücksichtigen

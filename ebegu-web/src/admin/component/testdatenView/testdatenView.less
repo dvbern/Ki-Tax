@@ -12,8 +12,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+@import '../../../style/variables.less';
 
-.adminView {
+.testdatenView {
 
     #propName.smallfont, #propVal.smallfont {
         font-size: 1.2rem;
@@ -22,9 +23,47 @@
         background: rgb(240, 240, 240);
     }
 
+    .btn-testfall {
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+
+    .input-testfall {
+        background: #F0F0F0;
+        padding: 1rem;
+        .md-input-focused & {
+            padding: 1rem;
+        }
+        &--datepicker {
+            width: calc(100% - 30px);
+        }
+    }
+    mat-datepicker-toggle.testfall-datepicker {
+        background: @contrast-light;
+        display: block;
+        width: 4rem;
+        float: right;
+        height: 4rem;
+        button.mat-icon-button {
+            height: 4rem;
+            width: 4rem;
+            line-height: 2.0rem;
+            font-size: 1rem;
+        }
+    }
+    .testfall-button {
+        margin-top: 3rem;
+
+    }
+    .testfall-button-duo + .testfall-button-duo {
+        margin-left: 32px;
+    }
+    label {
+        color: @black;
+    }
+    table {
+        min-width: 0 !important;
+    }
+
 }
 
-.btn-testfall {
-    padding-bottom: 0;
-    padding-top: 0;
-}

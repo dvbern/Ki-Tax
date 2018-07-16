@@ -19,6 +19,7 @@ import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
 import GlobalCacheService from '../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
@@ -38,7 +39,7 @@ import ITimeoutService = angular.ITimeoutService;
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions'];
+    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
 /* @ngInject */
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
@@ -46,7 +47,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
                        authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
                        $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService) {
+                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
     // navigationLogger.toggle();
 
     $transitions.onStart({}, transition => {
@@ -86,20 +87,21 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     // not used anymore?
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe((value: TSAuthEvent) => {
-            if (ENV !== 'test') {
-                listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
-                mandantRS.getFirst();
+        if (ENV !== 'test') {
+            listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
+            mandantRS.getFirst();
+        }
+        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
+        //since we will need these lists anyway we already load on login
+        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
+            if (gesuchsperioden.length > 0) {
+                let newestGP = gesuchsperioden[0];
+                institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
             }
-            globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
-            //since we will need these lists anyway we already load on login
-            gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
-                if (gesuchsperioden.length > 0) {
-                    let newestGP = gesuchsperioden[0];
-                    institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
-                }
-            });
-            gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-            gesuchModelManager.updateFachstellenList();
+        });
+        gemeindeRS.getAllGemeinden();
+        gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
+        gesuchModelManager.updateFachstellenList();
     });
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)

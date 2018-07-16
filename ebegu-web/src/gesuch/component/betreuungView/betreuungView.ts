@@ -389,7 +389,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(), this.getBetreuungModel());
+        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
+            this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());
         let $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
@@ -613,8 +614,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isTageseltern(): boolean {
-        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND) ||
-            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESELTERN_SCHULKIND);
+        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN);
     }
 
     public isSchulamt(): boolean {

@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -27,6 +28,8 @@ import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
 import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts';
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+
 let template = require('./pendenzenBetreuungenListView.html');
 require('./pendenzenBetreuungenListView.less');
 
@@ -46,17 +49,22 @@ export class PendenzenBetreuungenListViewController {
     institutionenList: Array<TSInstitution>;
     betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>;
     activeGesuchsperiodenList: Array<string> = [];
+    gemeindenList: Array<TSGemeinde>;
     itemsByPage: number = 20;
     numberOfPages: number = 1;
 
+    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
 
-    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS', 'GesuchsperiodeRS',
-        'GesuchModelManager', 'BerechnungsManager', '$state'];
-
-    constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS, private ebeguUtil: EbeguUtil, private institutionRS: InstitutionRS,
-                private institutionStammdatenRS: InstitutionStammdatenRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private gesuchModelManager: GesuchModelManager, private berechnungsManager: BerechnungsManager,
-                private $state: StateService) {
+    constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
+                private ebeguUtil: EbeguUtil,
+                private institutionRS: InstitutionRS,
+                private institutionStammdatenRS: InstitutionStammdatenRS,
+                private gesuchsperiodeRS: GesuchsperiodeRS,
+                private gesuchModelManager: GesuchModelManager,
+                private berechnungsManager: BerechnungsManager,
+                private $state: StateService,
+                private gemeindeRS: GemeindeRS) {
     }
 
     $onInit() {
@@ -64,6 +72,7 @@ export class PendenzenBetreuungenListViewController {
         this.updateInstitutionenList();
         this.updateBetreuungsangebotTypList();
         this.updateActiveGesuchsperiodenList();
+        this.updateGemeindenList();
     }
 
     public getTotalResultCount(): number {
@@ -104,6 +113,12 @@ export class PendenzenBetreuungenListViewController {
         });
     }
 
+    public updateGemeindenList(): void {
+        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+            this.gemeindenList = angular.copy(response);
+        });
+    }
+
     public getPendenzenList(): Array<TSPendenzBetreuung> {
         return this.pendenzenList;
     }
@@ -123,7 +138,8 @@ export class PendenzenBetreuungenListViewController {
             if (betreuungNumber > 0) {
                 this.berechnungsManager.clear(); // nur um sicher zu gehen, dass alle alte Werte geloescht sind
 
-                // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since last time
+                // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
+                // last time
                 this.gesuchModelManager.clearGesuch();
                 let navObj: any = {
                     betreuungNumber: betreuungNumber,

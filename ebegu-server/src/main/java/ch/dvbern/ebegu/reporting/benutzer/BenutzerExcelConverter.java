@@ -59,8 +59,7 @@ public class BenutzerExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldBenutzer.gesperrt, dataRow.isGesperrt());
 
 			excelRowGroup.addValue(MergeFieldBenutzer.isKita, dataRow.isKita());
-			excelRowGroup.addValue(MergeFieldBenutzer.isTageselternKleinkind, dataRow.isTageselternKleinkind());
-			excelRowGroup.addValue(MergeFieldBenutzer.isTageselternSchulkind, dataRow.isTageselternSchulkind());
+			excelRowGroup.addValue(MergeFieldBenutzer.isTagesfamilien, dataRow.isTagesfamilien());
 			excelRowGroup.addValue(MergeFieldBenutzer.isTagi, dataRow.isTagi());
 			excelRowGroup.addValue(MergeFieldBenutzer.isTagesschule, dataRow.isTagesschule());
 			excelRowGroup.addValue(MergeFieldBenutzer.isFerieninsel, dataRow.isFerieninsel());

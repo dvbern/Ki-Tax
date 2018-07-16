@@ -14,11 +14,19 @@
  */
 
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
+import {DailyBatchRS} from '../admin/service/dailyBatchRS.rest';
+import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
+import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../core/errors/service/ErrorService';
+import GesuchsperiodeRS from '../core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../core/service/mitteilungRS.rest';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import UserRS from '../core/service/userRS.rest';
+import ZahlungRS from '../core/service/zahlungRS.rest';
+import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
+import GesuchRS from '../gesuch/service/gesuchRS.rest';
 
 // AuthServiceRS
 export function authServiceRSServiceFactory(i: any) {
@@ -72,6 +80,94 @@ export function dvDialogProviderServiceFactory(i: any) {
 export const dvDialogProvider = {
     provide: DvDialog,
     useFactory: dvDialogProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// TestFaelleRS
+export function testFaelleRSProviderServiceFactory(i: any) {
+    return i.get('TestFaelleRS');
+}
+
+export const testFaelleRSProvider = {
+    provide: TestFaelleRS,
+    useFactory: testFaelleRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// UserRS
+export function userRSProviderServiceFactory(i: any) {
+    return i.get('UserRS');
+}
+
+export const userRSProvider = {
+    provide: UserRS,
+    useFactory: userRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// GesuchsperiodeRS
+export function gesuchsperiodeRSProviderServiceFactory(i: any) {
+    return i.get('GesuchsperiodeRS');
+}
+
+export const gesuchsperiodeRSProvider = {
+    provide: GesuchsperiodeRS,
+    useFactory: gesuchsperiodeRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// DatabaseMigrationRS
+export function databaseMigrationRSProviderServiceFactory(i: any) {
+    return i.get('DatabaseMigrationRS');
+}
+
+export const databaseMigrationRSProvider = {
+    provide: DatabaseMigrationRS,
+    useFactory: databaseMigrationRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// ZahlungRS
+export function zahlungRSProviderServiceFactory(i: any) {
+    return i.get('ZahlungRS');
+}
+
+export const zahlungRSProvider = {
+    provide: ZahlungRS,
+    useFactory: zahlungRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// GesuchRS
+export function gesuchRSProviderServiceFactory(i: any) {
+    return i.get('GesuchRS');
+}
+
+export const gesuchRSProvider = {
+    provide: GesuchRS,
+    useFactory: gesuchRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// DailyBatchRS
+export function dailyBatchRSProviderServiceFactory(i: any) {
+    return i.get('DailyBatchRS');
+}
+
+export const dailyBatchRSProvider = {
+    provide: DailyBatchRS,
+    useFactory: dailyBatchRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// GemeindeRS
+export function gemeindeRSProviderServiceFactory(i: any) {
+    return i.get('GemeindeRS');
+}
+
+export const gemeindeRSProvider = {
+    provide: GemeindeRS,
+    useFactory: gemeindeRSProviderServiceFactory,
     deps: ['$injector']
 };
 

@@ -22,7 +22,6 @@ export default class TSDossier extends TSAbstractEntity {
 
     private _fall: TSFall;
     private _gemeinde: TSGemeinde;
-    private _dossierNummer: number;
     private _verantwortlicherBG: TSUser;
     private _verantwortlicherTS: TSUser;
 
@@ -41,14 +40,6 @@ export default class TSDossier extends TSAbstractEntity {
 
     public set gemeinde(value: TSGemeinde) {
         this._gemeinde = value;
-    }
-
-    public get dossierNummer(): number {
-        return this._dossierNummer;
-    }
-
-    public set dossierNummer(value: number) {
-        this._dossierNummer = value;
     }
 
     public get verantwortlicherBG(): TSUser {

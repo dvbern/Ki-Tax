@@ -16,14 +16,16 @@
 @import '../../../style/variables.less';
 @import "../../../style/mixins.less";
 
+mitteilungen-view {
+    height: 100%;
+}
 .mitteilungenView, .betreuungMitteilungView {
     h1 {
         font-size: 2rem;
     }
     padding: 5rem 2rem 5rem;
     background: @contrast-light;
-    overflow-x: auto;
-    overflow-y: scroll;
+    height: 100%;
     .message-textarea {
         height: 25rem;
         resize: none;

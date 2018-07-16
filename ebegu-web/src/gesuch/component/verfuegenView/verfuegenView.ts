@@ -254,8 +254,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public getBetreuungNumber(): string {
         if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
-            return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(), this.getFall(), this.gesuchModelManager.getKindToWorkWith().kindNummer,
-                this.getBetreuung().betreuungNummer);
+            return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(), this.getFall(), this.gesuchModelManager.getDossier().gemeinde,
+                this.gesuchModelManager.getKindToWorkWith().kindNummer, this.getBetreuung().betreuungNummer);
         }
         return undefined;
     }
@@ -435,7 +435,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public exportXmlSchema() {
         // ACHTUNG popup blocker muss deaktiviert sein
         this.exportRS.getXmlSchemaString().then((result) => {
-            this.$window.open('data:text/xml;charset=utf-8,' + result, '', '_blank');
+            this.$window.open('data:application/octet-streem;charset=utf-8,' + result, '', '');
         });
     }
 

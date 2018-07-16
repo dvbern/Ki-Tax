@@ -74,6 +74,7 @@ public interface Constants {
 	long MAX_SHORT_TEMP_DOWNLOAD_AGE_MINUTES = 3L;
 	long MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES = 1440L; //24 * 60
 	int FALLNUMMER_LENGTH = 6;
+	int GEMEINDENUMMER_LENGTH = 3;
 	long MAX_LUCENE_QUERY_RUNTIME = 500L;
 
 	int MAX_LUCENE_QUICKSEARCH_RESULTS = 25; // hier gibt es ein Problem, wenn wir fuer keines der Resultate berechtigt sind wird unser resultset leer sein auf client
@@ -85,4 +86,7 @@ public interface Constants {
 	String TEMP_REPORT_FOLDERNAME = "tempReports";
 
 	String SYSTEM_USER_USERNAME = "System";
+
+
+
 }

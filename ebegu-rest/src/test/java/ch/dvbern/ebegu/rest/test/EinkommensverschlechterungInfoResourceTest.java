@@ -85,7 +85,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	}
 
 	private JaxGesuch crateJaxGesuch() {
-		Gemeinde persistedGemeinde = persistence.persist(converter.gemeindeToEntity(TestJaxDataUtil.createTestGemeinde(), new Gemeinde()));
+		Gemeinde persistedGemeinde = TestDataUtil.getGemeindeBern(persistence);
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
 		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
 		persistence.persist(verantwortlicher.getMandant());
@@ -93,6 +93,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 
 		JaxGesuch testJaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToAuthLoginElement(verantwortlicher));
+		testJaxGesuch.getDossier().setGemeinde(converter.gemeindeToJAX(persistedGemeinde));
 
 		JaxFall returnedFall = fallResource.saveFall(testJaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		testJaxGesuch.getDossier().setFall(returnedFall);

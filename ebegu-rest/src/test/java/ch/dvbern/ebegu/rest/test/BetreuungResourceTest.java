@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.api.resource.KindResource;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -172,14 +171,14 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	private KindContainer persistKindAndDependingObjects() {
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(persistence.persist(converter.gemeindeToEntity(TestJaxDataUtil.createTestGemeinde(),
-			new Gemeinde())));
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		jaxGesuch.getDossier().getVerantwortlicherBG().getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
 		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
+		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);
 		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(jaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		jaxGesuch.setGesuchsperiode(saveGesuchsperiodeInStatusAktiv(jaxGesuch.getGesuchsperiode()));
 		jaxGesuch.setDossier(returnedDossier);

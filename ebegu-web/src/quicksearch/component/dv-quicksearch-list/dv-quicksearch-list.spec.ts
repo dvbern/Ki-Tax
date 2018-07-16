@@ -63,14 +63,14 @@ describe('DVQuicksearchList', function () {
         describe('translateBetreuungsangebotTypList', () => {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined);
-                let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND];
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
+                let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
-                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tageseltern für Kleinkinder');
+                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
@@ -83,7 +83,7 @@ describe('DVQuicksearchList', function () {
                 spyOn($state, 'go');
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
 
                 let tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));

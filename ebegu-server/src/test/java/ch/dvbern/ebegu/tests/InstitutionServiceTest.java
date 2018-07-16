@@ -81,14 +81,14 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
 		Assert.assertTrue(institutionOpt.isPresent());
 		Institution inavtiveInst = institutionService.setInstitutionInactive(institutionOpt.get().getId());
-		Optional<Institution> institutionOpt2 = institutionService.findInstitution(institution.getId());
+		institutionService.findInstitution(institution.getId());
 		Assert.assertFalse(inavtiveInst.getActive());
 	}
 
 	@Test
 	public void getAllInstitutionenTest() {
 		Assert.assertNotNull(institutionService);
-		Institution institution = insertInstitution();
+		insertInstitution();
 
 		Collection<Institution> allInstitutionen = institutionService.getAllInstitutionen();
 		Assert.assertFalse(allInstitutionen.isEmpty());

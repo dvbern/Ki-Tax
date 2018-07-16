@@ -53,7 +53,7 @@ public class SequenceServiceBean implements SequenceService {
 	// Damit die Nummer bei wiederholtem aufruf in derselben (parent-) Transaktion nicht immer dieselbe ist,
 	// muss dieser Aufruf in einer neuen Transaktion ausgeführt werden.
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Long createNumberTransactional(@Nonnull SequenceType seq, @Nonnull Mandant existingMandant) {
+	public Long createNumberTransactional(@Nonnull SequenceType seq, @Nonnull Mandant mandant) {
 		checkNotNull(seq);
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -69,7 +69,7 @@ public class SequenceServiceBean implements SequenceService {
 		query.where(mandantPredicate, typePredicate);
 
 		TypedQuery<Sequence> q = persistence.getEntityManager().createQuery(query)
-			.setParameter(mandantParam, existingMandant)
+			.setParameter(mandantParam, mandant)
 			.setParameter(typeParam, seq)
 			.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
@@ -77,7 +77,7 @@ public class SequenceServiceBean implements SequenceService {
 		Sequence sequence;
 		if (resultList.isEmpty()) {
 			//wir sind hier mal liberal und initialisieren automatisch wenn noch nicht gemacht
-			sequence = initFallNrSeqMandant(existingMandant);
+			sequence = initFallNrSeqMandant(mandant);
 		} else if (resultList.size() == 1) {
 			sequence = resultList.get(0);
 		} else {

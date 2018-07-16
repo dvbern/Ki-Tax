@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -44,15 +43,11 @@ public class Testfall04_WaltherLaura extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Walther";
 
-	public Testfall04_WaltherLaura(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
-	}
-
 	public Testfall04_WaltherLaura(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
 		super(gesuchsperiode, institutionStammdatenList, false);
 	}
 
-	public Testfall04_WaltherLaura(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+	public Testfall04_WaltherLaura(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 

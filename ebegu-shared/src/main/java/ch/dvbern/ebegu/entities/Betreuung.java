@@ -399,8 +399,8 @@ public class Betreuung extends AbstractEntity implements Comparable<Betreuung>, 
 	}
 
 	@Transient
-	public boolean isAngebotTageselternKleinkinder() {
-		return BetreuungsangebotTyp.TAGESELTERN_KLEINKIND == getBetreuungsangebotTyp();
+	public boolean isAngebotTagesfamilien() {
+		return BetreuungsangebotTyp.TAGESFAMILIEN == getBetreuungsangebotTyp();
 	}
 
 	@Transient
@@ -432,13 +432,13 @@ public class Betreuung extends AbstractEntity implements Comparable<Betreuung>, 
 		if (getKind() != null && getKind().getGesuch() != null) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
-			return getKind().getGesuch().getJahrAndFallnummer() + '.' + kindNumberAsString + '.' + betreuung;
+			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
 		}
 		return "";
 	}
 
 	@Override
-	public int compareTo(Betreuung other) {
+	public int compareTo(@Nonnull Betreuung other) {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
 		compareToBuilder.append(this.getBetreuungNummer(), other.getBetreuungNummer());
 		compareToBuilder.append(this.getId(), other.getId());

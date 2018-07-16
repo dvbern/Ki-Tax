@@ -778,13 +778,7 @@ public class JaxBConverter {
 		Objects.requireNonNull(fall);
 		Objects.requireNonNull(fallJAXP);
 		convertAbstractFieldsToEntity(fallJAXP, fall);
-		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
-		if (fallJAXP.getNextNumberKind() != null) {
-			fall.setNextNumberKind(fallJAXP.getNextNumberKind());
-		}
-		if (fallJAXP.getNextNumberDossier() != null) {
-			fall.setNextNumberDossier(fallJAXP.getNextNumberDossier());
-		}
+		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
 			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername());
 			if (besitzer.isPresent()) {
@@ -801,7 +795,6 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(persistedFall, jaxFall);
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
-		jaxFall.setNextNumberDossier(persistedFall.getNextNumberDossier());
 		if (persistedFall.getBesitzer() != null) {
 			jaxFall.setBesitzer(benutzerToAuthLoginElement(persistedFall.getBesitzer()));
 		}
@@ -833,6 +826,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToEntity(gemeindeJax, gemeinde);
 		gemeinde.setName(gemeindeJax.getName());
 		gemeinde.setEnabled(gemeindeJax.isEnabled());
+		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
 		return gemeinde;
 	}
 
@@ -841,6 +835,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setEnabled(persistedGemeinde.isEnabled());
+		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		return jaxGemeinde;
 	}
 
@@ -866,7 +861,6 @@ public class JaxBConverter {
 				throw new EbeguEntityNotFoundException(DOSSIER_TO_ENTITY, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAX.getFall());
 			}
 		}
-		// Dossiernummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt
 		if (dossierJAX.getVerantwortlicherBG() != null) {
 			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername());
 			if (verantwortlicher.isPresent()) {
@@ -895,7 +889,6 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(this.gemeindeToJAX(persistedDossier.getGemeinde()));
-		jaxDossier.setDossierNummer(persistedDossier.getDossierNummer());
 		if (persistedDossier.getVerantwortlicherBG() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherBG()));
 		}
@@ -997,10 +990,6 @@ public class JaxBConverter {
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
 		antrag.setHasFSDokument(antragJAXP.isHasFSDokument());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
-		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
-		antrag.setDatumGewarntNichtFreigegeben(antragJAXP.getDatumGewarntNichtFreigegeben());
-		antrag.setDatumGewarntFehlendeQuittung(antragJAXP.getDatumGewarntFehlendeQuittung());
-		antrag.setTimestampVerfuegt(antragJAXP.getTimestampVerfuegt());
 		antrag.setGueltig(antragJAXP.isGueltig());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -1148,6 +1137,7 @@ public class JaxBConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
+		jaxMandant.setNextNumberGemeinde(persistedMandant.getNextNumberGemeinde());
 		return jaxMandant;
 	}
 
@@ -1469,7 +1459,7 @@ public class JaxBConverter {
 		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
-		jaxKind.setEinschulung(persistedKind.getEinschulung());
+		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		return jaxKind;
 	}
@@ -1538,7 +1528,7 @@ public class JaxBConverter {
 		kind.setKinderabzug(kindJAXP.getKinderabzug());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setMutterspracheDeutsch(kindJAXP.getMutterspracheDeutsch());
-		kind.setEinschulung(kindJAXP.getEinschulung());
+		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 
 		PensumFachstelle updtPensumFachstelle = null;
 		if (kindJAXP.getPensumFachstelle() != null) {
@@ -1568,9 +1558,7 @@ public class JaxBConverter {
 			}
 			kindContainer.setKindJA(kindToEntity(kindContainerJAXP.getKindJA(), kindJA));
 		}
-		if (kindContainerJAXP.getNextNumberBetreuung() != null) {
-			kindContainer.setNextNumberBetreuung(kindContainerJAXP.getNextNumberBetreuung());
-		}
+		// nextNumberBetreuung wird nur im Server gesetzt, darf aus dem Client nicht uebernommen werden
 		return kindContainer;
 	}
 
@@ -2098,9 +2086,7 @@ public class JaxBConverter {
 	 */
 	public Collection<JaxBetreuung> betreuungListToJax(Collection<Betreuung> betreuungList) {
 		Collection<JaxBetreuung> returnList = new ArrayList<>();
-		betreuungList.forEach(betreuung -> {
-			returnList.add(betreuungToJAX(betreuung));
-		});
+		betreuungList.forEach(betreuung -> returnList.add(betreuungToJAX(betreuung)));
 		return returnList;
 	}
 
@@ -2836,6 +2822,7 @@ public class JaxBConverter {
 		antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(gesuch, gesuch.getStatus()));
 		antrag.setGesuchsperiodeGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 		antrag.setGesuchsperiodeGueltigBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+		antrag.setGemeinde(gesuch.getDossier().getGemeinde().getName());
 		Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
 		if (verantwortlicherBG != null) {
 			setVerantwortlicherBGToAntragDTO(antrag, verantwortlicherBG);
@@ -2904,39 +2891,28 @@ public class JaxBConverter {
 	 */
 	private Set<BetreuungsangebotTyp> createAngeboteList(Set<KindContainer> kindContainers) {
 		Set<BetreuungsangebotTyp> resultSet = new HashSet<>();
-		kindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				resultSet.add(betreuung.getBetreuungsangebotTyp());
-			});
-		});
+		kindContainers.forEach(kindContainer
+			-> kindContainer.getBetreuungen().forEach(betreuung -> resultSet.add(betreuung.getBetreuungsangebotTyp())));
 		return resultSet;
 	}
 
 	private Set<String> createKinderList(Set<KindContainer> kindContainers) {
 		Set<String> resultSet = new HashSet<>();
-		kindContainers.forEach(kindContainer -> {
-			resultSet.add(kindContainer.getKindJA().getVorname());
-		});
+		kindContainers.forEach(kindContainer -> resultSet.add(kindContainer.getKindJA().getVorname()));
 		return resultSet;
 	}
 
 	private Set<BetreuungsangebotTyp> createAngeboteList(Collection<JaxKindContainer> jaxKindContainers) {
 
 		Set<BetreuungsangebotTyp> resultSet = new HashSet<>();
-		jaxKindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				resultSet.add(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp());
-			});
-		});
+		jaxKindContainers.forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> resultSet.add(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp())));
 		return resultSet;
 	}
 
 	private Set<String> createKinderList(Collection<JaxKindContainer> jaxKindContainers) {
 
 		Set<String> resultSet = new HashSet<>();
-		jaxKindContainers.forEach(kindContainer -> {
-			resultSet.add(kindContainer.getKindJA().getVorname());
-		});
+		jaxKindContainers.forEach(kindContainer -> resultSet.add(kindContainer.getKindJA().getVorname()));
 		return resultSet;
 	}
 
@@ -2946,32 +2922,30 @@ public class JaxBConverter {
 	 */
 	private Set<String> createInstitutionenList(Set<KindContainer> kindContainers) {
 		Set<String> resultSet = new HashSet<>();
-		kindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
-					resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
-				}
-			});
-		});
+		kindContainers.forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
+			if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
+				resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
+			}
+		}));
 		return resultSet;
 	}
 
 	private Set<String> createInstitutionenList(Collection<JaxKindContainer> jaxKindContainers) {
 		Set<String> resultSet = new HashSet<>();
-		jaxKindContainers.forEach(kindContainer -> {
-			kindContainer.getBetreuungen().forEach(betreuung -> {
-				if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
-					resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
-				}
-			});
-		});
+		jaxKindContainers.forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
+			if (betreuung.getInstitutionStammdaten() != null && betreuung.getInstitutionStammdaten().getInstitution() != null) {
+				resultSet.add(betreuung.getInstitutionStammdaten().getInstitution().getName());
+			}
+		}));
 		return resultSet;
 	}
 
 	public Mitteilung mitteilungToEntity(JaxMitteilung mitteilungJAXP, Mitteilung mitteilung) {
 		Objects.requireNonNull(mitteilung);
 		Objects.requireNonNull(mitteilungJAXP);
+		Objects.requireNonNull(mitteilungJAXP.getEmpfaengerTyp());
 		Objects.requireNonNull(mitteilungJAXP.getDossier());
+		Objects.requireNonNull(mitteilungJAXP.getSenderTyp());
 		Objects.requireNonNull(mitteilungJAXP.getDossier().getId());
 
 		convertAbstractFieldsToEntity(mitteilungJAXP, mitteilung);
@@ -3241,9 +3215,7 @@ public class JaxBConverter {
 
 	public List<JaxBelegungFerieninselTag> belegungFerieninselTageListToJAX(Collection<BelegungFerieninselTag> persistedFerieninselTageList) {
 		List<JaxBelegungFerieninselTag> returnList = new ArrayList<>();
-		persistedFerieninselTageList.forEach(ferieninselTag -> {
-			returnList.add(belegungFerieninselTagToJAX(ferieninselTag));
-		});
+		persistedFerieninselTageList.forEach(ferieninselTag -> returnList.add(belegungFerieninselTagToJAX(ferieninselTag)));
 		return returnList;
 	}
 

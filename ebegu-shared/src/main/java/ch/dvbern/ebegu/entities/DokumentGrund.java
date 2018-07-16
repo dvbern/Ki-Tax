@@ -57,7 +57,7 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dokumentGrund_gesuch_id"), nullable = false)
 	private Gesuch gesuch;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	private DokumentGrundTyp dokumentGrundTyp;
 
@@ -71,14 +71,14 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	@Nullable
 	private String tag;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@Nullable
 	private DokumentGrundPersonType personType;
 
 	@Nullable
 	private Integer personNumber;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	private DokumentTyp dokumentTyp;
 

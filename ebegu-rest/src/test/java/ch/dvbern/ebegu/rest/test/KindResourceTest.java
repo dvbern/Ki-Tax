@@ -31,12 +31,12 @@ import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
 import ch.dvbern.ebegu.api.resource.KindResource;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
+import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -77,14 +77,14 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void createKindTest() {
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(persistence.persist(converter.gemeindeToEntity(TestJaxDataUtil.createTestGemeinde(),
-			new Gemeinde())));
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		jaxGesuch.getDossier().getVerantwortlicherBG().getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
 		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
+		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);
 		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(jaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		jaxGesuch.setDossier(returnedDossier);
 
