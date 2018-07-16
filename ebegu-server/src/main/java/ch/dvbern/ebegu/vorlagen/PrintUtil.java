@@ -39,8 +39,6 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class PrintUtil {
 
-	private static final int FALLNUMMER_MAXLAENGE = 6;
-
 	private PrintUtil() {
 	}
 
@@ -146,7 +144,7 @@ public final class PrintUtil {
 			Optional<GesuchstellerAdresseContainer> gesuchstellerAdresse = getGesuchstellerAdresse(gesuchsteller1.get());
 			if (gesuchstellerAdresse.isPresent()) {
 				final GesuchstellerAdresseContainer gsAdresseCont = gesuchstellerAdresse.get();
-				return gsAdresseCont.extractPlz() + " " + gsAdresseCont.extractOrt();
+				return gsAdresseCont.extractPlz() + ' ' + gsAdresseCont.extractOrt();
 			}
 		}
 		return "";
@@ -219,7 +217,7 @@ public final class PrintUtil {
 			Optional<GesuchstellerAdresseContainer> gsa = getGesuchstellerAdresse(gesuchsteller);
 			if (gsa.isPresent()) {
 				if (StringUtils.isNotEmpty(gsa.get().extractHausnummer())) {
-					adresse += newlineMSWord + gsa.get().extractStrasse() + " " + gsa.get().extractHausnummer();
+					adresse += newlineMSWord + gsa.get().extractStrasse() + ' ' + gsa.get().extractHausnummer();
 				} else {
 					adresse += newlineMSWord + gsa.get().extractStrasse();
 				}
@@ -251,7 +249,7 @@ public final class PrintUtil {
 				if (dokumentGrund.getTag() != null) {
 					bemerkungenBuilder.append(" / ").append(dokumentGrund.getTag());
 				}
-				bemerkungenBuilder.append(")");
+				bemerkungenBuilder.append(')');
 			}
 		}
 		return bemerkungenBuilder;

@@ -16,7 +16,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MAT_DATE_LOCALE, MatButtonModule, MatDatepickerModule, MatInputModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
+import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
@@ -48,8 +48,6 @@ import {MatTableModule} from '@angular/material/table';
         MatTableModule,
         MatSortModule,
         MatRadioModule,
-        MatButtonModule,
-        MatInputModule,
         MatDatepickerModule,
         MatMomentDateModule,
         MatSelectModule,
