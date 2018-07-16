@@ -131,12 +131,9 @@ describe('fachstelleRS', function () {
 
                 let returnedFachstellen: Array<TSFachstelle>;
                 fachstelleRS.getAllFachstellen().then((result) => {
-                    console.log('returneddddd:_', result);
                     returnedFachstellen = result;
                 });
                 $httpBackend.flush();
-                console.log('continueeee1111:_', returnedFachstellen);
-                console.log('continueeee2222:_', fachstelleRS.getAllFachstellen());
                 expect(returnedFachstellen).toBeDefined();
                 expect(returnedFachstellen.length).toEqual(2);
                 checkFieldValues(returnedFachstellen[0], fachstellenRestArray[0]);

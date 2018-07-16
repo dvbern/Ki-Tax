@@ -35,8 +35,13 @@ export class AuthLifeCycleService {
     constructor() {}
 
     public changeAuthStatus(status: TSAuthEvent, message?: string): void {
-        this.LOG.info(`An Auth Event has been thrown ${status}. Message: ${message}`);
-        this._authLifeCycleSubject.next(status);
+        if (status) {
+            this.LOG.info(`An Auth Event has been thrown ${status}. Message: ${message}`);
+            this._authLifeCycleSubject.next(status);
+
+        } else {
+            this.LOG.error(`An undefined AuthEvent is not allowed. No event thrown. Message: ${message}`);
+        }
     }
 
     public getAll$(): Observable<TSAuthEvent> {

@@ -157,7 +157,6 @@ export const EbeguWebCore: angular.IModule = angular
     .run(appRun)
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
-    .constant('MAX_LENGTH', 255)
     .constant('CONSTANTS', CONSTANTS)
     .service('EbeguRestUtil', EbeguRestUtil)
     .service('EbeguUtil', EbeguUtil)
