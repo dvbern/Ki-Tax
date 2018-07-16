@@ -23,16 +23,21 @@ import {TranslateModule} from '@ngx-translate/core';
 import {
     dailyBatchRSProvider,
     databaseMigrationRSProvider,
-    dvDialogProvider, errorServiceProvider, gemeindeRSProvider, gesuchRSProvider, gesuchsperiodeRSProvider, testFaelleRSProvider,
+    dvDialogProvider,
+    errorServiceProvider,
+    gemeindeRSProvider,
+    gesuchRSProvider,
+    gesuchsperiodeRSProvider,
+    testFaelleRSProvider,
     traegerschaftRSProvider,
-    userRSProvider, zahlungRSProvider
+    userRSProvider,
+    zahlungRSProvider
 } from '../hybridTools/ajs-upgraded-providers';
 import {NgSharedModule} from '../shared/ng-shared.module';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 import {MatTableModule} from '@angular/material/table';
-
 
 @NgModule({
     imports: [
