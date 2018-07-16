@@ -120,12 +120,19 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		return Optional.empty();
 	}
 
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
-		Objects.requireNonNull(dossier.getGemeinde());
+		//TODO Imanol: entfernen
+		Gemeinde gemeinde = dossier.getGemeinde();
+		//noinspection ConstantConditions:
+		if (gemeinde == null) {
+			gemeinde = gemeindeService.getFirst();
+			dossier.setGemeinde(gemeinde);
+		}
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
 	}
