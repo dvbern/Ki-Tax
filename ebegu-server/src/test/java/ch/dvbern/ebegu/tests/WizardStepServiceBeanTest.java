@@ -324,12 +324,12 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		final Iterator<Betreuung> betreuungIterator = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator();
 		InstitutionStammdaten institutionStammdaten1 = betreuungIterator.next().getInstitutionStammdaten();
 		institutionStammdaten1 = persistence.find(InstitutionStammdaten.class, institutionStammdaten1.getId());
-		institutionStammdaten1.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESELTERN_SCHULKIND);
+		institutionStammdaten1.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		persistence.merge(institutionStammdaten1);
 
 		InstitutionStammdaten institutionStammdaten2 = betreuungIterator.next().getInstitutionStammdaten();
 		institutionStammdaten2 = persistence.find(InstitutionStammdaten.class, institutionStammdaten2.getId());
-		institutionStammdaten2.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESELTERN_SCHULKIND);
+		institutionStammdaten2.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		persistence.merge(institutionStammdaten2);
 
 		ErwerbspensumContainer erwerbspensumContainer = gesuch.getGesuchsteller1().getErwerbspensenContainers().iterator().next();

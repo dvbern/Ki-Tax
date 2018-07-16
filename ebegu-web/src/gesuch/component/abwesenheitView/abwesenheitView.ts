@@ -97,7 +97,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             betreuungenFromKind.forEach((betreuung) => {
                 if (betreuung.institutionStammdaten && betreuung.institutionStammdaten.betreuungsangebotTyp &&
                     (betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
-                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND)) {
+                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN)) {
                     this.betreuungList.push({betreuung, kind});
                 }
             });

@@ -48,12 +48,12 @@ describe('quicksearchFilter', function () {
         quicksearchArray.push(antrag1);
 
         antrag2 = new TSAntragDTO('id2', 2, 'Perez', TSAntragTyp.ERSTGESUCH, ab, ab, undefined,
-            [TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND], ['Instit2'], 'Antonio Jimenez', 'Antonio Jimenez', TSAntragStatus.IN_BEARBEITUNG_JA,
+            [TSBetreuungsangebotTyp.TAGESFAMILIEN], ['Instit2'], 'Antonio Jimenez', 'Antonio Jimenez', TSAntragStatus.IN_BEARBEITUNG_JA,
             gesuchsperiode.gueltigkeit.gueltigAb, gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag2);
 
         antrag3 = new TSAntragDTO('id3', 3, 'Dominguez', TSAntragTyp.MUTATION, ab, ab, undefined,
-            [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND], ['Instit1', 'Instit2'],
+            [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN], ['Instit1', 'Instit2'],
             'Eustaquio Romualdo', 'Eustaquio Romualdo', TSAntragStatus.IN_BEARBEITUNG_JA,
             gesuchsperiode.gueltigkeit.gueltigAb, gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag3);
@@ -91,7 +91,7 @@ describe('quicksearchFilter', function () {
         });
         it('should return an array with only the elements of the given angebotstyp', function () {
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.KITA})).toEqual([antrag1, antrag3]);
-            expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND})).toEqual([antrag2, antrag3]);
+            expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESFAMILIEN})).toEqual([antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESSCHULE})).toEqual([]);
             expect(quicksearchFilter(quicksearchArray, {angebote: ''})).toEqual([antrag1, antrag2, antrag3]);
         });

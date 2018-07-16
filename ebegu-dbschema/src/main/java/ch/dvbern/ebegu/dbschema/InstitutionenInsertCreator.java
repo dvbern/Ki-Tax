@@ -153,9 +153,7 @@ public class InstitutionenInsertCreator {
 			writeInstitutionStammdaten(row, institutionsId, adresseId, betreuungsangebotTyp);
 		} catch (IllegalArgumentException iae) {
 			if ("TAGESELTERN".equalsIgnoreCase(angebot)) {
-				// Tageseltern muessen fuer Schulkinder und Kleinkinder erstellt werden!
-				writeInstitutionStammdaten(row, institutionsId, adresseId, BetreuungsangebotTyp.TAGESELTERN_KLEINKIND);
-				writeInstitutionStammdaten(row, institutionsId, adresseId, BetreuungsangebotTyp.TAGESELTERN_SCHULKIND);
+				writeInstitutionStammdaten(row, institutionsId, adresseId, BetreuungsangebotTyp.TAGESFAMILIEN);
 			} else {
 				LOG.warn("Unbekannter Betreuungsangebot-Typ: " + angebot);
 			}
