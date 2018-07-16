@@ -51,10 +51,10 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
 		Gesuch gesuch = betreuung.extractGesuch();
-		LocalDate eingangsdatum = gesuch.getEingangsdatum();
-		if (gesuch.getTyp().isGesuch() && eingangsdatum != null) {
+		LocalDate startDatum = gesuch.getRegelStartDatum();
+		if (gesuch.getTyp().isGesuch() && startDatum != null) {
 			Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
-			LocalDate firstOfMonthDesEinreichungsMonats = LocalDate.of(eingangsdatum.getYear(), eingangsdatum.getMonth(), 1);
+			LocalDate firstOfMonthDesEinreichungsMonats = LocalDate.of(startDatum.getYear(), startDatum.getMonth(), 1);
 			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
 				if (betreuungspensum.getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {

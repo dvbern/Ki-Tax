@@ -22,13 +22,13 @@ import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 
 export default class TSAntragDTO extends TSAbstractAntragDTO {
-
     private static YEAR_2000 = 2000;
 
     private _antragId: string;
     private _antragTyp: TSAntragTyp;
     private _eingangsart: TSEingangsart;
     private _eingangsdatum: moment.Moment;
+    private _regelnGueltigAb: moment.Moment;
     private _eingangsdatumSTV: moment.Moment;
     private _aenderungsdatum: moment.Moment;
     private _verantwortlicherBG: string;
@@ -100,6 +100,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         this._verantwortlicherUsernameBG = verantwortlicherUsernameBG;
         this._verantwortlicherUsernameTS = verantwortlicherUsernameTS;
         this._gemeinde = gemeinde;
+        this._regelnGueltigAb = undefined;
     }
 
     get antragId(): string {
@@ -124,6 +125,14 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
 
     set eingangsdatum(value: moment.Moment) {
         this._eingangsdatum = value;
+    }
+
+    get regelnGueltigAb(): moment.Moment {
+        return this._regelnGueltigAb;
+    }
+
+    set regelnGueltigAb(value: moment.Moment) {
+        this._regelnGueltigAb = value;
     }
 
     get eingangsdatumSTV(): moment.Moment {
