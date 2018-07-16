@@ -14,6 +14,7 @@
  */
 
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSBetreuung from '../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../models/TSDossier';
@@ -34,6 +35,8 @@ describe('MitteilungRS', function () {
     let betreuung: TSBetreuung;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         mitteilungRS = $injector.get('MitteilungRS');

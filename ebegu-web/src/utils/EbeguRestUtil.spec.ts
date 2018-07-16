@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import {EbeguWebCore} from '../core/core.module';
+import {CONSTANTS} from '../core/constants/CONSTANTS';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
@@ -48,24 +48,26 @@ import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
 import {TSDateRange} from '../models/types/TSDateRange';
-import {EbeguWebPendenzen} from '../pendenzen/pendenzen.module';
 import DateUtil from './DateUtil';
 import EbeguRestUtil from './EbeguRestUtil';
+import EbeguUtil from './EbeguUtil';
 import TestDataUtil from './TestDataUtil';
 import Moment = moment.Moment;
 
 describe('EbeguRestUtil', function () {
 
     let ebeguRestUtil: EbeguRestUtil;
-    let filter: angular.IFilterService;
     let today: moment.Moment;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
-    beforeEach(angular.mock.module(EbeguWebPendenzen.name));
+    beforeEach(angular.mock.module('pascalprecht.translate'));
+
+    beforeEach(angular.mock.module(function ($provide: angular.auto.IProvideService) {
+        $provide.value('CONSTANTS', CONSTANTS);
+        $provide.service('EbeguUtil', EbeguUtil);
+    }));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        filter = $injector.get('$filter');
+        ebeguRestUtil = new EbeguRestUtil($injector.get('EbeguUtil'));
         today = DateUtil.today();
     }));
 

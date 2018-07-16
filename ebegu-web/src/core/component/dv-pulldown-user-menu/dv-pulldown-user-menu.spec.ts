@@ -14,6 +14,7 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebCore} from '../../core.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import {StateService} from '@uirouter/core';
@@ -27,6 +28,8 @@ describe('DvPulldownUserMenuController', function () {
     let scope: angular.IScope;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         authServiceRS = $injector.get('AuthServiceRS');

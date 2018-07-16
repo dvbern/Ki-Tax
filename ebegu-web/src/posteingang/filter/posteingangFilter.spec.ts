@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehmerTyp';
 import TSDossier from '../../models/TSDossier';
@@ -33,6 +34,8 @@ describe('posteingangFilter', function () {
     let mitteilung5: TSMitteilung;
 
     beforeEach(angular.mock.module(EbeguWebPosteingang.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         posteingangFilter = $injector.get('$filter')('posteingangFilter');

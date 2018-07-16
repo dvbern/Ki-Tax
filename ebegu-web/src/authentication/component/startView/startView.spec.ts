@@ -14,6 +14,7 @@
  */
 
 import {EbeguWebCore} from '../../../core/core.module';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSUser from '../../../models/TSUser';
@@ -28,6 +29,8 @@ describe('startView', function () {
     //evtl ist modulaufteilung hier nicht ganz sauber, wir brauchen sowohl core als auch auth modul
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguAuthentication.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let authLifeCycleService: AuthLifeCycleService;
     let scope: angular.IScope;

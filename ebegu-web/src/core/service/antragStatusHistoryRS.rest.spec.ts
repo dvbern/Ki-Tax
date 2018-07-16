@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import TSAntragStatusHistory from '../../models/TSAntragStatusHistory';
 import TSGesuch from '../../models/TSGesuch';
@@ -29,6 +30,8 @@ describe('antragStatusHistoryRS', function () {
     let ebeguRestUtil: EbeguRestUtil;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');

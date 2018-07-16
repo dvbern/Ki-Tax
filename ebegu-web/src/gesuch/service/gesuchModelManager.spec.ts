@@ -19,6 +19,7 @@ import AntragStatusHistoryRS from '../../core/service/antragStatusHistoryRS.rest
 import BetreuungRS from '../../core/service/betreuungRS.rest';
 import KindRS from '../../core/service/kindRS.rest';
 import VerfuegungRS from '../../core/service/verfuegungRS.rest';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
@@ -59,6 +60,8 @@ describe('gesuchModelManager', function () {
     let antragStatusHistoryRS: AntragStatusHistoryRS;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');

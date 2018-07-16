@@ -14,6 +14,7 @@
  */
 
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSGesuchsteller from '../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -32,6 +33,8 @@ describe('GesuchstellerRS', function () {
     let wizardStepManager: WizardStepManager;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchstellerRS = $injector.get('GesuchstellerRS');

@@ -65,6 +65,7 @@ import {DvTooltipComponentConfig} from './component/dv-tooltip/dv-tooltip';
 import {DVVersionComponentConfig} from './component/dv-version/dv-version';
 import {DVVorlageListConfig} from './component/dv-vorlage-list/dv-vorlage-list';
 import {configure} from './config';
+import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
 import './core.module.less';
 import {appRun} from './core.route';
@@ -157,20 +158,7 @@ export const EbeguWebCore: angular.IModule = angular
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
     .constant('MAX_LENGTH', 255)
-    .constant('CONSTANTS', {
-        name: 'EBEGU',
-        REST_API: '/ebegu/api/v1/',
-        MAX_LENGTH: 255,
-        FALLNUMMER_LENGTH: 6,
-        GEMEINDENUMMER_LENGTH: 3,
-        PATTERN_BETRAG: '([0-9]{0,12})',
-        PATTERN_PERCENTAGE: '^[0-9][0-9]?$|^100$',
-        PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
-        PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
-        PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
-        INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE: '199ac4a1-448f-4d4c-b3a6-5aee21f89613',
-        PARTS_OF_BETREUUNGSNUMMER: 5,
-    })
+    .constant('CONSTANTS', CONSTANTS)
     .service('EbeguRestUtil', EbeguRestUtil)
     .service('EbeguUtil', EbeguUtil)
     .service('GesuchstellerRS', GesuchstellerRS)

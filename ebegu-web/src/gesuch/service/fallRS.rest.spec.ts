@@ -14,6 +14,7 @@
  */
 
 import {EbeguWebCore} from '../../core/core.module';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSFall from '../../models/TSFall';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import FallRS from './fallRS.rest';
@@ -28,6 +29,8 @@ describe('fallRS', function () {
     let mockFallRest: any;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         fallRS = $injector.get('FallRS');

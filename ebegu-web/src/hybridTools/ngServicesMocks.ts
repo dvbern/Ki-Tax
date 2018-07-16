@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,26 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import AdresseRS from './adresseRS.rest';
+import {Observable} from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of';
+import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 
-describe('AdresseRS', function () {
+ngServicesMock.$inject = ['$provide'];
 
-    let adresseRS: AdresseRS;
-
-    beforeEach(angular.mock.module('ebeguWeb.core'));
-
-    beforeEach(angular.mock.module(ngServicesMock));
-
-    beforeEach(angular.mock.inject(function (_adresseRS_: AdresseRS) {
-        adresseRS = _adresseRS_;
-    }));
-
-    describe('Public API', function () {
-
+export function ngServicesMock($provide: angular.auto.IProvideService) {
+    $provide.service('AuthLifeCycleService', function() {
+        this.get$ = function(event: TSAuthEvent): Observable<TSAuthEvent> { return of(event); };
+        this.changeAuthStatus =  function(status: TSAuthEvent, message?: string): void {};
     });
-
-    describe('API Usage', function () {
-
-    });
-});
+}

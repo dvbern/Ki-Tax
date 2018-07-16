@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import TSPendenzBetreuung from '../../models/TSPendenzBetreuung';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -28,6 +29,8 @@ describe('pendenzBetreuungenRS', function () {
     let mockPendenzBetreuungenRest: any;
 
     beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');
@@ -52,7 +55,7 @@ describe('pendenzBetreuungenRS', function () {
 
     describe('API Usage', function () {
         describe('findBetreuung', () => {
-            it('should return all pending Antraege', () => {
+            it('should return all pending Betreuungen', () => {
                 let arrayResult: Array<any> = [mockPendenzBetreuungenRest];
                 $httpBackend.expectGET(pendenzBetreuungenRS.serviceURL).respond(arrayResult);
 

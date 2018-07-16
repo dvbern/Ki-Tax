@@ -14,6 +14,7 @@
  */
 
 import {EbeguWebCore} from '../../../core/core.module';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSGesuch from '../../../models/TSGesuch';
@@ -39,6 +40,8 @@ describe('verfuegenListViewTest', function () {
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');

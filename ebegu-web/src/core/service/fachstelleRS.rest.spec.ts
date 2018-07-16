@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSFachstelle} from '../../models/TSFachstelle';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
@@ -27,6 +28,8 @@ describe('fachstelleRS', function () {
     let mockFachstelleRest: any;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         fachstelleRS = $injector.get('FachstelleRS');
@@ -128,9 +131,12 @@ describe('fachstelleRS', function () {
 
                 let returnedFachstellen: Array<TSFachstelle>;
                 fachstelleRS.getAllFachstellen().then((result) => {
+                    console.log('returneddddd:_', result);
                     returnedFachstellen = result;
                 });
                 $httpBackend.flush();
+                console.log('continueeee1111:_', returnedFachstellen);
+                console.log('continueeee2222:_', fachstelleRS.getAllFachstellen());
                 expect(returnedFachstellen).toBeDefined();
                 expect(returnedFachstellen.length).toEqual(2);
                 checkFieldValues(returnedFachstellen[0], fachstellenRestArray[0]);

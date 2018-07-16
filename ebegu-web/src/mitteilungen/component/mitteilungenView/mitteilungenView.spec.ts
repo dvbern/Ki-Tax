@@ -19,6 +19,7 @@ import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import FallRS from '../../../gesuch/service/fallRS.rest';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
@@ -51,6 +52,8 @@ describe('mitteilungenView', function () {
     let postEingangService: PosteingangService;
 
     beforeEach(angular.mock.module(EbeguWebMitteilungen.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         mitteilungRS = $injector.get('MitteilungRS');

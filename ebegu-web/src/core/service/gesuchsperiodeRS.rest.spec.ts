@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../models/types/TSDateRange';
@@ -33,6 +34,8 @@ describe('gesuchsperiodeRS', function () {
     let date: moment.Moment;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
