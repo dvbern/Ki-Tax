@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSApplicationProperty from '../../models/TSApplicationProperty';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebAdmin} from '../admin.module';
@@ -34,6 +35,8 @@ describe('ApplicationPropertyRS', function () {
     };
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');

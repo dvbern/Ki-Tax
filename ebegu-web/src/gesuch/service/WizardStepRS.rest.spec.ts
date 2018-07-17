@@ -14,6 +14,7 @@
  */
 
 import {EbeguWebCore} from '../../core/core.module';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSWizardStep from '../../models/TSWizardStep';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TestDataUtil from '../../utils/TestDataUtil';
@@ -31,6 +32,8 @@ describe('WizardStepRS', function () {
     let gesuchId: string = '123123123123';
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         wizardStepRS = $injector.get('WizardStepRS');

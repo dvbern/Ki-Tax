@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpService} from 'angular';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSFachstelle} from '../../models/TSFachstelle';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
@@ -25,13 +27,17 @@ describe('fachstelleRS', function () {
     let ebeguRestUtil: EbeguRestUtil;
     let mockFachstelle: TSFachstelle;
     let mockFachstelleRest: any;
+    let $http: IHttpService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         fachstelleRS = $injector.get('FachstelleRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
+        $http = $injector.get('$http');
     }));
 
     beforeEach(() => {
@@ -125,16 +131,13 @@ describe('fachstelleRS', function () {
             it('should return all Fachstellen', () => {
                 let fachstellenRestArray: Array<any> = [mockFachstelleRest, mockFachstelleRest];
                 $httpBackend.expectGET(fachstelleRS.serviceURL).respond(fachstellenRestArray);
+                spyOn($http, 'get').and.callThrough();
+                spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
 
-                let returnedFachstellen: Array<TSFachstelle>;
-                fachstelleRS.getAllFachstellen().then((result) => {
-                    returnedFachstellen = result;
-                });
+                fachstelleRS.getAllFachstellen();
                 $httpBackend.flush();
-                expect(returnedFachstellen).toBeDefined();
-                expect(returnedFachstellen.length).toEqual(2);
-                checkFieldValues(returnedFachstellen[0], fachstellenRestArray[0]);
-                checkFieldValues(returnedFachstellen[1], fachstellenRestArray[1]);
+                expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL);
+                expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });
         });
 

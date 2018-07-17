@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {TSSTPersistObject} from '../../models/TSSTPersistObject';
-import {IRootScopeService} from 'angular';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 
 /**
@@ -26,13 +26,13 @@ export class DVsTPersistService {
 
     persistedData: TSSTPersistObject[];
 
-    static $inject: any = ['$rootScope'];
+    static $inject: any = ['AuthLifeCycleService'];
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService) {
+    constructor(private authLifeCycleService: AuthLifeCycleService) {
         this.clearAll();
-        this.$rootScope.$on(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], () => {
-            this.clearAll();
-        });
+
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .subscribe(value => this.clearAll());
     }
 
     private clearAll() {

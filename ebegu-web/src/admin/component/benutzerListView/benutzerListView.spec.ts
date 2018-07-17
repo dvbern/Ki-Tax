@@ -1,3 +1,5 @@
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2018 City of Bern Switzerland
@@ -17,6 +19,8 @@ import {EbeguWebAdmin} from '../../admin.module';
 describe('BenutzerListView', function () {
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

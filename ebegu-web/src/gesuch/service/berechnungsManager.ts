@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import TSGesuch from '../../models/TSGesuch';
 import {IPromise} from 'angular';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -23,7 +24,6 @@ import TSDokumenteDTO from '../../models/dto/TSDokumenteDTO';
 import DokumenteRS from './dokumenteRS.rest';
 import TSFinanzModel from '../../models/TSFinanzModel';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import IRootScopeService = angular.IRootScopeService;
 
 export default class BerechnungsManager {
     finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
@@ -31,16 +31,16 @@ export default class BerechnungsManager {
     einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;
     dokumente: TSDokumenteDTO;
 
-    static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', '$rootScope'];
+    static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
     /* @ngInject */
     constructor(private finanzielleSituationRS: FinanzielleSituationRS, private ebeguRestUtil: EbeguRestUtil,
                 private einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
-                private dokumenteRS: DokumenteRS, private $rootScope: IRootScopeService) {
+                private dokumenteRS: DokumenteRS, private authLifeCycleService: AuthLifeCycleService) {
+
         this.initValues();
 
-        $rootScope.$on(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], () => {
-            this.initValues();
-        });
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .subscribe(value => this.initValues());
     }
 
     private initValues() {

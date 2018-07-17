@@ -19,7 +19,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import AuthenticationUtil from '../../../utils/AuthenticationUtil';
 import TSUser from '../../../models/TSUser';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import IRootScopeService = angular.IRootScopeService;
+import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
 let template = require('./startView.html');
 require('./startView.less');
 
@@ -33,9 +33,9 @@ export class StartComponentConfig implements IComponentOptions {
 export class StartViewController {
 
 
-    static $inject: string[] = ['$state', '$rootScope', 'AuthServiceRS'];
+    static $inject: string[] = ['$state', 'AuthLifeCycleService', 'AuthServiceRS'];
 
-    constructor(private $state: StateService, private $rootScope: IRootScopeService, private authService: AuthServiceRS) {
+    constructor(private $state: StateService, private authLifeCycleService: AuthLifeCycleService, private authService: AuthServiceRS) {
 
 
     }
@@ -46,7 +46,7 @@ export class StartViewController {
             AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
         } else {
             //wenn wir noch nicht eingeloggt sind werden wir das event welches das login prozedere anstoesst
-            this.$rootScope.$broadcast(TSAuthEvent[TSAuthEvent.NOT_AUTHENTICATED], 'not logged in on startpage');
+            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, 'not logged in on startpage');
         }
     }
 }

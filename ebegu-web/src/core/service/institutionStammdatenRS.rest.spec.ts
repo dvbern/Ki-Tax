@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import TSAdresse from '../../models/TSAdresse';
 import TSInstitution from '../../models/TSInstitution';
@@ -36,6 +37,8 @@ describe('institutionStammdatenRS', function () {
     let today: moment.Moment;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');

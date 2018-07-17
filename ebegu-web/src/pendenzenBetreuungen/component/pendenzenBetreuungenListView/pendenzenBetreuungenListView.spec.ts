@@ -19,6 +19,7 @@ import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdat
 import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
 import TestDataUtil from '../../../utils/TestDataUtil';
@@ -44,6 +45,8 @@ describe('pendenzenBetreuungenListView', function () {
     let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');

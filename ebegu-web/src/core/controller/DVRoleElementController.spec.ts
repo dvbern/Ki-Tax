@@ -15,6 +15,7 @@
 
 import {EbeguAuthentication} from '../../authentication/authentication.module';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import {EbeguWebCore} from '../core.module';
 import {DVRoleElementController} from './DVRoleElementController';
@@ -26,6 +27,8 @@ describe('DVElementController', function () {
 
     beforeEach(angular.mock.module(EbeguAuthentication.name));
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         authServiceRS = <AuthServiceRS>$injector.get('AuthServiceRS');

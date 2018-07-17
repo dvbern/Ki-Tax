@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {DvRadioContainerComponentConfig} from './dv-radio-container';
 
 describe('dvRadioContainer', function () {
 
     beforeEach(angular.mock.module('ebeguWeb.core'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: DvRadioContainerComponentConfig;
     let scope: angular.IScope;

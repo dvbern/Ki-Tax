@@ -30,6 +30,7 @@ import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../models/TSDossier';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSUser from '../../../models/TSUser';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
@@ -75,7 +76,7 @@ export class DVMitteilungListController {
 
     static $inject: any[] = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
         '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
-        'DossierRS'];
+        'DossierRS', 'PosteingangService'];
     /* @ngInject */
     constructor(private $stateParams: IMitteilungenStateParams, private mitteilungRS: MitteilungRS,
                 private authServiceRS: AuthServiceRS,
@@ -85,7 +86,8 @@ export class DVMitteilungListController {
                 private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager, private $scope: IScope,
                 private $timeout: ITimeoutService,
-                private dossierRS: DossierRS) {
+                private dossierRS: DossierRS,
+                private posteingangService: PosteingangService) {
         this.TSRole = TSRole;
         this.TSRoleUtil = TSRoleUtil;
         this.ebeguUtil = ebeguUtil;
@@ -111,8 +113,8 @@ export class DVMitteilungListController {
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
                         this.setAllMitteilungenGelesen().then((response) => {
                             this.loadAllMitteilungen();
-                            if (this.$rootScope) {
-                                this.$rootScope.$emit('POSTEINGANG_MAY_CHANGED', null);
+                            if (this.posteingangService) {
+                                this.posteingangService.posteingangChanged();
                             }
                         });
                     } else {

@@ -13,38 +13,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {downgradeComponent} from '@angular/upgrade/static';
 import 'angular';
-import './gesuch.module.less';
+import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
 import {EbeguWebCore} from '../core/core.module';
-import {gesuchRun} from './gesuch.route';
-import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
-import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
-import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
-import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
-import {KindViewComponentConfig} from './component/kindView/kindView';
+import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
+import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
+import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitteilungView/betreuungMitteilungView';
+import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
 import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungView';
-import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
-import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
-import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
-import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituationResultateView/finanzielleSituationResultateView';
-import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
-import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
-import {GesuchToolbarComponentConfig, GesuchToolbarGesuchstellerComponentConfig} from './component/gesuchToolbar/gesuchToolbar';
+import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
+import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
+import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungSteuernViewComponentConfig} from './component/einkommensverschlechterungSteuernView/einkommensverschlechterungSteuernView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterungView/einkommensverschlechterungView';
-import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
-import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
-import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
-import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
-import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
-import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
+import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
+import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
+import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
+import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
+import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituationResultateView/finanzielleSituationResultateView';
+import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
+import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
-import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitteilungView/betreuungMitteilungView';
-import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
-import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
-import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
+import {GesuchToolbarComponentConfig, GesuchToolbarGesuchstellerComponentConfig} from './component/gesuchToolbar/gesuchToolbar';
+import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
+import {KindViewComponentConfig} from './component/kindView/kindView';
+import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
+import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
+import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
+import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
+import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
+import './gesuch.module.less';
+import {gesuchRun} from './gesuch.route';
 
 export const EbeguWebGesuch =
     angular.module('ebeguWeb.gesuch', [EbeguWebCore.name])
@@ -77,5 +79,9 @@ export const EbeguWebGesuch =
         .component('dokumenteView', new DokumenteViewComponentConfig())
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
-        .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig());
+        .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
+        .directive(
+            'dvNgNavbar',
+            downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
+        );
 

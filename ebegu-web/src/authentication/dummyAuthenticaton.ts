@@ -208,6 +208,7 @@ export class DummyAuthenticationListViewComponent {
         let bern = new TSGemeinde();
         bern.name = 'Bern';
         bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+        bern.gemeindeNummer = 0;
         bern.enabled = true;
         return bern;
     }
@@ -220,6 +221,7 @@ export class DummyAuthenticationListViewComponent {
         let ostermundigen = new TSGemeinde();
         ostermundigen.name = 'Ostermundigen';
         ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
+        ostermundigen.gemeindeNummer = 2;
         ostermundigen.enabled = true;
         return ostermundigen;
     }

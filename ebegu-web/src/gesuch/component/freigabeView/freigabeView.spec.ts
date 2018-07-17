@@ -18,6 +18,7 @@ import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyR
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSDownloadFile from '../../../models/TSDownloadFile';
@@ -47,6 +48,8 @@ describe('freigabeView', function () {
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));  //to inject applicationPropertyRS
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         $scope = $injector.get('$rootScope');

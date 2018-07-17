@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -26,6 +27,8 @@ describe('kinderListView', function () {
     let kinderListViewController: KinderListViewController;
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         let wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');

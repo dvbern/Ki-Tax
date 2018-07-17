@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
@@ -21,7 +22,8 @@ import {TSDateRange} from '../../models/types/TSDateRange';
 import * as moment from 'moment';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
-import {EbeguWebQuicksearch} from '../quicksearch.module';
+import EbeguUtil from '../../utils/EbeguUtil';
+import {QuicksearchFilter} from './quicksearchFilter';
 
 describe('quicksearchFilter', function () {
 
@@ -32,7 +34,14 @@ describe('quicksearchFilter', function () {
     let antrag3: TSAntragDTO;
     let gesuchsperiode: TSGesuchsperiode;
 
-    beforeEach(angular.mock.module(EbeguWebQuicksearch.name));
+
+    beforeEach(angular.mock.module('pascalprecht.translate'));
+
+    beforeEach(angular.mock.module(function ($provide: angular.auto.IProvideService) {
+        $provide.value('CONSTANTS', CONSTANTS);
+        $provide.service('EbeguUtil', EbeguUtil);
+        $provide.service('quicksearchFilterFilter', QuicksearchFilter);
+    }));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         quicksearchFilter = $injector.get('$filter')('quicksearchFilter');

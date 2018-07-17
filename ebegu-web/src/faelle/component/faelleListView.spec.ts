@@ -15,6 +15,7 @@
 
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import TSAntragDTO from '../../models/TSAntragDTO';
@@ -46,6 +47,8 @@ describe('faelleListView', function () {
     let mockAntrag: TSAntragDTO;
 
     beforeEach(angular.mock.module(EbeguWebFaelle.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         authServiceRS = $injector.get('AuthServiceRS');

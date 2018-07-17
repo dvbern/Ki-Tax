@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {EbeguWebAdmin} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
@@ -22,6 +23,8 @@ describe('TestFaelleRS', function () {
     let $httpBackend: angular.IHttpBackendService;
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         testFaelleRS = $injector.get('TestFaelleRS');
