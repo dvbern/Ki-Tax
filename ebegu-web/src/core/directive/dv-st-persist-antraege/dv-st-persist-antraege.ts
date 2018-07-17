@@ -127,7 +127,6 @@ export default class DVSTPersistAntraege implements IDirective {
      * filter. This is needed because the filter saves the name and not the object.
      */
     private setInstitutionFromName(antragListController: DVAntragListController, institution: string): void {
-        // TODO eventuell müssen wir das künftig auf dem Backend machen? Ist der Name eindeutig?
         if (institution && antragListController) {
             this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
                 if (institutionList) {
@@ -143,7 +142,6 @@ export default class DVSTPersistAntraege implements IDirective {
     }
 
     private setGemeindeFromName(antragListController: DVAntragListController, gemeinde: string): void {
-        // TODO eventuell müssen wir das künftig auf dem Backend machen? Ist der Name eindeutig?
         if (gemeinde && antragListController) {
             this.gemeindeRS.getAllGemeinden().then(gemeindeList => {
                 antragListController.selectedGemeinde = gemeindeList.find(g => g.name === gemeinde);
@@ -158,6 +156,7 @@ export default class DVSTPersistAntraege implements IDirective {
                            dVsTPersistService: any,
                            gemeindeRS: any) =>
             new DVSTPersistAntraege(userRS, institutionRS, authServiceRS, dVsTPersistService, gemeindeRS);
+
         directive.$inject = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS'];
         return directive;
     }

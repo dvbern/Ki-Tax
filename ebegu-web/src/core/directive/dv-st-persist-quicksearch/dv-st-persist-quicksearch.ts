@@ -123,7 +123,6 @@ export default class DVSTPersistQuicksearch implements IDirective {
      * filter. This is needed because the filter saves the name and not the object.
      */
     private setInstitutionFromName(quicksearchListController: DVQuicksearchListController, institution: string): void {
-        // TODO eventuell müssen wir das künftig auf dem Backend machen? Ist der Name eindeutig?
         if (institution && quicksearchListController) {
             this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
                 quicksearchListController.selectedInstitution = institutionList.find(i => i.name === institution);
@@ -132,7 +131,6 @@ export default class DVSTPersistQuicksearch implements IDirective {
     }
 
     private setGemeindeFromName(quicksearchListController: DVQuicksearchListController, gemeinde: string): void {
-        // TODO eventuell müssen wir das künftig auf dem Backend machen? Ist der Name eindeutig?
         if (gemeinde && quicksearchListController) {
             this.gemeindeRS.getAllGemeinden().then(gemeindeList => {
                 quicksearchListController.selectedGemeinde = gemeindeList.find(g => g.name === gemeinde);
