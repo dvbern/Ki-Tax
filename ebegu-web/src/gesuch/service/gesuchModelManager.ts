@@ -104,7 +104,8 @@ export default class GesuchModelManager {
     static $inject = ['FamiliensituationRS', 'FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', 'GesuchsperiodeRS', 'EbeguRestUtil', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'EinkommensverschlechterungInfoRS',
-        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService', 'DossierRS'];
+        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
+        'DossierRS', 'GemeindeRS'];
     /* @ngInject */
     constructor(private familiensituationRS: FamiliensituationRS, private fallRS: FallRS, private gesuchRS: GesuchRS, private gesuchstellerRS: GesuchstellerRS,
                 private finanzielleSituationRS: FinanzielleSituationRS, private kindRS: KindRS, private fachstelleRS: FachstelleRS, private erwerbspensumRS: ErwerbspensumRS,

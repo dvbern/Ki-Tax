@@ -42,7 +42,7 @@
                 </li>
                 <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <a uiSref="gesuch.fallcreation({createNew: true, gesuchId: null, dossierId: null, eingangsart: 'PAPIER'})"
+                    <a uiSref="gesuch.fallcreation" [uiParams]="{createNew: true, gesuchId: null, dossierId: null, eingangsart: 'PAPIER'}"
                        [textContent]="'MENU_FALL_EROEFFNEN' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
