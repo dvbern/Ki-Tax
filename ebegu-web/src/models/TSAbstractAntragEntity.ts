@@ -26,6 +26,7 @@ export default class TSAbstractAntragEntity extends TSAbstractEntity {
     private _dossier: TSDossier;
     private _gesuchsperiode: TSGesuchsperiode;
     private _eingangsdatum: moment.Moment;
+    private _regelnGueltigAb: moment.Moment;
     private _freigabeDatum: moment.Moment;
     private _status: TSAntragStatus;
     private _typ: TSAntragTyp;
@@ -53,6 +54,14 @@ export default class TSAbstractAntragEntity extends TSAbstractEntity {
 
     set eingangsdatum(value: moment.Moment) {
         this._eingangsdatum = value;
+    }
+
+    get regelnGueltigAb(): moment.Moment {
+        return this._regelnGueltigAb;
+    }
+
+    set regelnGueltigAb(value: moment.Moment) {
+        this._regelnGueltigAb = value;
     }
 
     get freigabeDatum(): moment.Moment {
