@@ -118,6 +118,7 @@ import UserRS from './service/userRS.rest';
 import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
+import {DvOnboardingComponentConfig} from './component/dv-onboarding/dv-onboarding.component';
 
 let dynamicDependencies = function (): string[] {
 
@@ -247,6 +248,7 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvVersion', new DVVersionComponentConfig())
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvBenutzer', new DVBenutzerConfig())
+    .component('dvOnboarding', new DvOnboardingComponentConfig())
     .directive(
         'dvHelpmenu',
         downgradeComponent({component: DvHelpmenuComponent}) as angular.IDirectiveFactory

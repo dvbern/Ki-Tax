@@ -69,11 +69,18 @@ function getStates(): Ng1StateDeclaration[] {
         new EbeguEinkommensverschlechterungResultateState(),
         new EbeguDokumenteState(),
         new EbeguFreigabeState(),
-        new EbeguBetreuungMitteilungState()
+        new EbeguBetreuungMitteilungState(),
+        new OnboardingTest()
     ];
 }
 
 //STATES
+
+export class OnboardingTest implements Ng1StateDeclaration {
+    name = 'onboarding';
+    template = '<dv-onboarding>';
+    url = '/onboarding';
+}
 
 export class EbeguGesuchState implements Ng1StateDeclaration {
     name = 'gesuch';
