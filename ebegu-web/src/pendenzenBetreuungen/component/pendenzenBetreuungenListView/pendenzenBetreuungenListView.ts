@@ -46,6 +46,7 @@ export class PendenzenBetreuungenListViewController {
     selectedBetreuungsangebotTyp: string;
     selectedInstitution: string;
     selectedGesuchsperiode: string;
+    selectedGemeinde: TSGemeinde;
     institutionenList: Array<TSInstitution>;
     betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>;
     activeGesuchsperiodenList: Array<string> = [];
@@ -83,39 +84,39 @@ export class PendenzenBetreuungenListViewController {
     }
 
     private updatePendenzenList() {
-        this.pendenzBetreuungenRS.getPendenzenBetreuungenList().then((response: any) => {
-            this.pendenzenList = angular.copy(response);
+        this.pendenzBetreuungenRS.getPendenzenBetreuungenList().then(response => {
+            this.pendenzenList = response;
             this.numberOfPages = this.pendenzenList.length / this.itemsByPage;
         });
     }
 
     public updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneGesuchsperioden().then((response: TSGesuchsperiode[]) => {
+        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneGesuchsperioden().then(response => {
             this.extractGesuchsperiodeStringList(response);
         });
     }
 
     private extractGesuchsperiodeStringList(allActiveGesuchsperioden: TSGesuchsperiode[]) {
-        allActiveGesuchsperioden.forEach((gesuchsperiode: TSGesuchsperiode) => {
+        allActiveGesuchsperioden.forEach(gesuchsperiode => {
             this.activeGesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
         });
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then((response: any) => {
-            this.institutionenList = angular.copy(response);
+        this.institutionRS.getInstitutionenForCurrentBenutzer().then(response => {
+            this.institutionenList = response;
         });
     }
 
     public updateBetreuungsangebotTypList(): void {
-        this.institutionStammdatenRS.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer().then((response: any) => {
-            this.betreuungsangebotTypList = angular.copy(response);
+        this.institutionStammdatenRS.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer().then(response => {
+            this.betreuungsangebotTypList = response;
         });
     }
 
     public updateGemeindenList(): void {
-        this.gemeindeRS.getAllGemeinden().then((response: any) => {
-            this.gemeindenList = angular.copy(response);
+        this.gemeindeRS.getAllGemeinden().then(response => {
+            this.gemeindenList = response;
         });
     }
 
