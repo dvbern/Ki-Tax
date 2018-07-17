@@ -171,7 +171,7 @@ export const gemeindeRSProvider = {
     deps: ['$injector']
 };
 
-// AuthServiceRS
+// MitteilungRS
 export function mitteilungRSServiceFactory(i: any) {
     return i.get('MitteilungRS');
 }

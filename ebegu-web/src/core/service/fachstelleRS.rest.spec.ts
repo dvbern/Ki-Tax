@@ -134,7 +134,7 @@ describe('fachstelleRS', function () {
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
 
-                fachstelleRS.getAllFachstellen()
+                fachstelleRS.getAllFachstellen();
                 $httpBackend.flush();
                 expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL);
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
