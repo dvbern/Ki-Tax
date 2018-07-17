@@ -16,19 +16,26 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,7 +45,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("gemeinde")
 @Stateless
-@Api(description = "Resource für Dossier (Fall in einer Gemeinde)")
+@Api(description = "Resource für Gemeinden")
 public class GemeindeResource {
 
 	@Inject
@@ -58,5 +65,21 @@ public class GemeindeResource {
 		return gemeindeService.getAllGemeinden().stream()
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns the Gemeinde with the given Id.", response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/id/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeinde findGemeinde(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		Objects.requireNonNull(gemeindeJAXPId.getId());
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
+
+		return gemeindeOptional.map(gemeinde -> converter.gemeindeToJAX(gemeinde)).orElse(null);
 	}
 }

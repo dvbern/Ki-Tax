@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFamiliensituation from '../../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
@@ -29,6 +30,8 @@ describe('finanzielleSituationResultateView', function () {
     let berechnungsManager: BerechnungsManager;
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

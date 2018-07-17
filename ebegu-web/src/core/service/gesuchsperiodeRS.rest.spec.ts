@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpService} from 'angular';
 import * as moment from 'moment';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../models/types/TSDateRange';
@@ -31,13 +33,17 @@ describe('gesuchsperiodeRS', function () {
     let mockGesuchsperiode: TSGesuchsperiode;
     let mockGesuchsperiodeRest: any;
     let date: moment.Moment;
+    let $http: IHttpService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
+        $http = $injector.get('$http');
     }));
 
     beforeEach(() => {
@@ -88,17 +94,11 @@ describe('gesuchsperiodeRS', function () {
             it('should return all active Gesuchsperiode by id', () => {
                 let gesuchsperiodenList: Array<any> = [mockGesuchsperiodeRest];
                 $httpBackend.expectGET(gesuchsperiodeRS.serviceURL + '/active').respond(gesuchsperiodenList);
+                spyOn($http, 'get').and.callThrough();
 
-                let foundGesuchsperioden: Array<TSGesuchsperiode>;
-                gesuchsperiodeRS.getAllActiveGesuchsperioden().then((result) => {
-                    foundGesuchsperioden = result;
-                });
+                gesuchsperiodeRS.getAllActiveGesuchsperioden();
                 $httpBackend.flush();
-                expect(foundGesuchsperioden).toBeDefined();
-                expect(foundGesuchsperioden.length).toBe(1);
-                expect(foundGesuchsperioden[0].status).toBe(TSGesuchsperiodeStatus.AKTIV);
-                TestDataUtil.checkGueltigkeitAndSetIfSame(foundGesuchsperioden[0], mockGesuchsperiode);
-                expect(foundGesuchsperioden[0]).toEqual(mockGesuchsperiode);
+                expect($http.get).toHaveBeenCalledWith(gesuchsperiodeRS.serviceURL + '/active');
             });
         });
         describe('createGesuchsperiode', () => {

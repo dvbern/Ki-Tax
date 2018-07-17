@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {ErwerbspensumListViewComponentConfig} from './erwerbspensumListView';
 
 describe('erwerbspensumListView', function () {
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: ErwerbspensumListViewComponentConfig;
     let scope: angular.IScope;

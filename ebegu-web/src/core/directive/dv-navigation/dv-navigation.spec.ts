@@ -16,6 +16,7 @@
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -40,6 +41,8 @@ describe('dvNavigation', function () {
     let isStatusVerfuegen: boolean;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));

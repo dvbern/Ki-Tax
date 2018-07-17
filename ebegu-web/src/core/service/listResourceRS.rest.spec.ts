@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import ListResourceRS from './listResourceRS.rest';
 
 describe('ListResourceRS', function () {
@@ -20,6 +21,8 @@ describe('ListResourceRS', function () {
     let listResourceRS: ListResourceRS;
 
     beforeEach(angular.mock.module('ebeguWeb.core'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         listResourceRS = $injector.get('ListResourceRS');

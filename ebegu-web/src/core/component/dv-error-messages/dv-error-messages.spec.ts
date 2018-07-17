@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebCore} from '../../core.module';
 
 describe('dvErrorMessages', function () {
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

@@ -19,6 +19,7 @@ import BerechnungsManager from '../../gesuch/service/berechnungsManager';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../models/enums/TSRole';
@@ -53,6 +54,8 @@ describe('posteingangView', function () {
     let mockMitteilung: TSMitteilung;
 
     beforeEach(angular.mock.module(EbeguWebPosteingang.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         authServiceRS = $injector.get('AuthServiceRS');

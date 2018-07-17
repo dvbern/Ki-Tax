@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebAdmin} from '../../admin.module';
 
 describe('InstitutionView', function () {
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

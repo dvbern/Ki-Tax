@@ -14,15 +14,17 @@
  */
 
 import {EbeguWebCore} from '../../core/core.module';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {EbeguAuthentication} from '../authentication.module';
+import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpAuthInterceptor from './HttpAuthInterceptor';
 
 describe('HttpAuthInterceptor', function () {
 
     let httpAuthInterceptor: HttpAuthInterceptor;
-    let $rootScope: angular.IRootScopeService;
     let $window: angular.IWindowService;
+    let authLifeCycleService: AuthLifeCycleService;
 
     let authErrorResponse: any = {
         status: 401,
@@ -33,12 +35,14 @@ describe('HttpAuthInterceptor', function () {
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguAuthentication.name));
 
+    beforeEach(angular.mock.module(ngServicesMock));
+
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         httpAuthInterceptor = $injector.get('HttpAuthInterceptor');
-        $rootScope = $injector.get('$rootScope');
         $window = $injector.get('$window');
+        authLifeCycleService = $injector.get('AuthLifeCycleService');
         window.onbeforeunload = () => 'Oh no!';
-        spyOn($rootScope, '$broadcast').and.callFake(() => {
+        spyOn(authLifeCycleService, 'changeAuthStatus').and.callFake(() => {
         });
     }));
 
@@ -53,7 +57,7 @@ describe('HttpAuthInterceptor', function () {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', function () {
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
+            expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
         });
     });
 });

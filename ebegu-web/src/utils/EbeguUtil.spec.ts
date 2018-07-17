@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import {EbeguWebCore} from '../core/core.module';
+import {CONSTANTS} from '../core/constants/CONSTANTS';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
@@ -26,8 +26,6 @@ import TestDataUtil from './TestDataUtil';
 describe('EbeguUtil', function () {
 
     let ebeguUtil: EbeguUtil;
-
-    beforeEach(angular.mock.module(EbeguWebCore.name));
 
     // Das wird nur fuer tests gebraucht in denen etwas uebersetzt wird. Leider muss man dieses erstellen
     // bevor man den Injector erstellt hat. Deshalb muss es fuer alle Tests definiert werden
@@ -42,10 +40,11 @@ describe('EbeguUtil', function () {
             return value;
         };
         $provide.value('translateFilter', mockTranslateFilter);
+        $provide.value('CONSTANTS', CONSTANTS);
     }));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
-        ebeguUtil = $injector.get('EbeguUtil');
+        ebeguUtil = new EbeguUtil($injector.get('$filter'), $injector.get('CONSTANTS'), undefined, undefined);
     }));
 
     describe('translateStringList', () => {
@@ -100,7 +99,8 @@ describe('EbeguUtil', function () {
         });
         it('it returns empty string for undefined daterange in the Gesuchsperiode', () => {
             let gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, undefined);
-            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(undefined)).toBe('');
+            gesuchsperiode.gueltigkeit = undefined;
+            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns empty string for undefined gueltigAb', () => {
             let daterange: TSDateRange = new TSDateRange(undefined, moment('31.07.2017', 'DD.MM.YYYY'));
@@ -123,7 +123,7 @@ describe('EbeguUtil', function () {
         it('it returns a string with 52 characters', () => {
             expect(EbeguUtil.generateRandomName(52).length).toBe(52);
         });
-        it('it returns a string with 0 characters', () => {
+        it('it returns a string with 0 characters, for negative sizes', () => {
             expect(EbeguUtil.generateRandomName(-1).length).toBe(0);
         });
     });

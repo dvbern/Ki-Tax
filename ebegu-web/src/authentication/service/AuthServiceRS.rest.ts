@@ -17,27 +17,27 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSUser from '../../models/TSUser';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
 import ICookiesService = angular.cookies.ICookiesService;
 import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IRequestConfig = angular.IRequestConfig;
-import IRootScopeService = angular.IRootScopeService;
 import ITimeoutService = angular.ITimeoutService;
 
 export default class AuthServiceRS {
 
     private principal: TSUser;
 
-    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'base64', 'EbeguRestUtil', 'httpBuffer', '$rootScope'];
+    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'base64', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService'];
 
     /* @ngInject */
     constructor(private $http: IHttpService, private CONSTANTS: any, private $q: IQService,
                 private $timeout: ITimeoutService,
                 private $cookies: ICookiesService, private base64: any, private ebeguRestUtil: EbeguRestUtil,
                 private httpBuffer: HttpBuffer,
-                private $rootScope: IRootScopeService) {
+                private authLifeCycleService: AuthLifeCycleService) {
     }
 
     public getPrincipal(): TSUser {
@@ -62,7 +62,7 @@ export default class AuthServiceRS {
                     });
                     //ensure that there is ALWAYS a logout-event before the login-event by throwing it right before
                     // login
-                    this.$rootScope.$broadcast(TSAuthEvent[TSAuthEvent.LOGOUT_SUCCESS], 'logged out before logging in in');
+                    this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in in');
                     return this.$timeout((): any => { // Response cookies are not immediately accessible, so lets wait for a bit
                         try {
                             this.initWithCookie();
@@ -88,7 +88,7 @@ export default class AuthServiceRS {
                     let authData = angular.fromJson(this.base64.decode(authIdbase64));
                     this.principal = new TSUser(authData.vorname, authData.nachname, authData.authId, '', authData.email, authData.mandant, authData.role);
                     this.$timeout(() => {
-                        this.$rootScope.$broadcast(TSAuthEvent[TSAuthEvent.LOGIN_SUCCESS], 'logged in');
+                        this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
                     }); //bei login muessen wir warten bis angular alle componenten erstellt hat bevor wir das event werfen
 
                     return true;
@@ -103,7 +103,7 @@ export default class AuthServiceRS {
     public logoutRequest() {
         return this.$http.post(this.CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
             this.principal = undefined;
-            this.$rootScope.$broadcast(TSAuthEvent[TSAuthEvent.LOGOUT_SUCCESS], 'logged out');
+            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             return res;
         });
     }

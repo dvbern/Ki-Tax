@@ -16,12 +16,12 @@
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
-import {ReindexRS} from '../admin/service/reindexRS.rest';
 import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../core/service/gesuchsperiodeRS.rest';
+import MitteilungRS from '../core/service/mitteilungRS.rest';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
 import UserRS from '../core/service/userRS.rest';
 import ZahlungRS from '../core/service/zahlungRS.rest';
@@ -168,5 +168,16 @@ export function gemeindeRSProviderServiceFactory(i: any) {
 export const gemeindeRSProvider = {
     provide: GemeindeRS,
     useFactory: gemeindeRSProviderServiceFactory,
+    deps: ['$injector']
+};
+
+// MitteilungRS
+export function mitteilungRSServiceFactory(i: any) {
+    return i.get('MitteilungRS');
+}
+
+export const mitteilungRSProvider = {
+    provide: MitteilungRS,
+    useFactory: mitteilungRSServiceFactory,
     deps: ['$injector']
 };

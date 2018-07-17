@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situation-require';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -23,6 +24,8 @@ describe('finanzielleSituationRequire', function () {
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

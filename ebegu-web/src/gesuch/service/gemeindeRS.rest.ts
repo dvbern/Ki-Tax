@@ -42,4 +42,12 @@ export default class GemeindeRS implements IEntityRS {
                 return this.ebeguRestUtil.parseGemeindeList(response.data);
             });
     }
+
+    public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
+        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(gemeindeId))
+            .then((response: any) => {
+                this.$log.debug('PARSING gemeinde REST object ', response.data);
+                return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
+            });
+    }
 }

@@ -32,6 +32,22 @@ export class TSRoleUtil {
         );
     }
 
+    public static getAllRolesForMenuAlleFaelle(): Array<TSRole> {
+        return TSRoleUtil.getAllRoles().filter(element =>
+            element !== TSRole.GESUCHSTELLER && element !== TSRole.STEUERAMT
+        );
+    }
+
+    public static getAllRolesForZahlungen(): Array<TSRole> {
+        return [TSRole.ADMIN, TSRole.SUPER_ADMIN, TSRole.SACHBEARBEITER_JA, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+            TSRole.REVISOR, TSRole.JURIST];
+    }
+
+    public static getAllRolesForStatistik(): Array<TSRole> {
+        return [TSRole.ADMIN, TSRole.SUPER_ADMIN,  TSRole.SACHBEARBEITER_JA, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMINISTRATOR_SCHULAMT, TSRole.SCHULAMT, TSRole.REVISOR];
+    }
+
     public static getAllRoles(): Array<TSRole> {
         return getTSRoleValues();
     }
@@ -180,6 +196,10 @@ export class TSRoleUtil {
 
     public static getRevisorOnlyRoles(): Array<TSRole> {
         return [TSRole.REVISOR];
+    }
+
+    public static getSteueramtRoles(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.STEUERAMT];
     }
 
     public static getReadOnlyRoles(): Array<TSRole> {

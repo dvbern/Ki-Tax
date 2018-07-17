@@ -15,6 +15,7 @@
 
 import {EbeguWebCore} from '../../core/core.module';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSUser from '../../models/TSUser';
 import TestDataUtil from '../../utils/TestDataUtil';
@@ -35,6 +36,8 @@ describe('AuthServiceRS', function () {
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguAuthentication.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         authServiceRS = $injector.get('AuthServiceRS');

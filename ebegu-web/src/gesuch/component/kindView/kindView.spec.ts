@@ -13,9 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+
 describe('kindView', function () {
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

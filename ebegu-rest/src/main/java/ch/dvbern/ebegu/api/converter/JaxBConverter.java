@@ -2946,9 +2946,7 @@ public class JaxBConverter {
 	public Mitteilung mitteilungToEntity(JaxMitteilung mitteilungJAXP, Mitteilung mitteilung) {
 		Objects.requireNonNull(mitteilung);
 		Objects.requireNonNull(mitteilungJAXP);
-		Objects.requireNonNull(mitteilungJAXP.getEmpfaengerTyp());
 		Objects.requireNonNull(mitteilungJAXP.getDossier());
-		Objects.requireNonNull(mitteilungJAXP.getSenderTyp());
 		Objects.requireNonNull(mitteilungJAXP.getDossier().getId());
 
 		convertAbstractFieldsToEntity(mitteilungJAXP, mitteilung);

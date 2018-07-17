@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import TSAntragDTO from '../../models/TSAntragDTO';
@@ -30,6 +31,8 @@ describe('searchRS', function () {
     let mockPendenzRest: any;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         searchRS = $injector.get('SearchRS');
@@ -53,7 +56,7 @@ describe('searchRS', function () {
     });
 
     describe('API Usage', function () {
-        describe('findBetreuung', () => {
+        describe('getPendenzenList', () => {
             it('should return all pending Antraege', () => {
                 let tsAntragDTO: TSAntragDTO = new TSAntragDTO();
                 tsAntragDTO.fallNummer = 1234;

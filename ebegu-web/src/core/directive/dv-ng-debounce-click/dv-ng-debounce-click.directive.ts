@@ -85,6 +85,7 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+        this.clicks.complete();
     }
 
     @HostListener('click', ['$event'])
