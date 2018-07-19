@@ -384,7 +384,8 @@ export class NavigatorController {
                 eingangsart: this.gesuchModelManager.getGesuch().eingangsart,
                 gesuchId: gesuchId,
                 gesuchsperiodeId: this.gesuchModelManager.getGesuch().gesuchsperiode.id,
-                dossierId: this.gesuchModelManager.getDossier().id
+                dossierId: this.gesuchModelManager.getDossier().id,
+                gemeindeId: this.gesuchModelManager.getDossier().gemeinde.id,
             });
 
         } else if (stepName === TSWizardStepName.FAMILIENSITUATION) {

@@ -1303,5 +1303,6 @@
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT": "Mit dieser Rolle weisen Sie dem Benutzer weitgehende Rechte zu. Sind Sie sicher, dass Sie fortfahren wollen?",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE": "Admin-Rechte",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT": "Mit diesem Schritt geben Sie dem Benutzer Administrationsrechte in Ki-Tax. Wollen Sie fortfahren?",
-    "BENUTZER_STATISTIK": "BENUTZER"
+    "BENUTZER_STATISTIK": "BENUTZER",
+    "GEMEINDE_PAPIERGESUCH_AUSWAEHLEN": "Gemeinde für das Papiergesuch auswählen"
 }

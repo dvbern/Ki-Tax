@@ -15,6 +15,7 @@
 
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {GesuchRouteController} from './gesuch';
 import GesuchModelManager from './service/gesuchModelManager';
 import TSGesuch from '../models/TSGesuch';
@@ -85,12 +86,13 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
+    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
     params = {
         eingangsart: '',
         gesuchsperiodeId: '',
         gesuchId: '',
         dossierId: '',
+        gemeindeId: '',
     };
 
     views: { [name: string]: Ng1StateDeclaration } = {
@@ -597,6 +599,7 @@ export class INewFallStateParams {
     gesuchsperiodeId: string;
     gesuchId: string;
     dossierId: string;
+    gemeindeId: string;
 }
 
 export class IErwerbspensumStateParams {
@@ -668,19 +671,21 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
                                          $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        if ($stateParams.createNew !== 'true') {
+        if ($stateParams.createNew === 'true') {
+            let eingangsart = $stateParams.eingangsart;
+            let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
+            let dossierId = $stateParams.dossierId;
+            let gemeindeId = $stateParams.gemeindeId;
+            //initialize gesuch
+            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId);
+
+        } else {
             let gesuchIdParam = $stateParams.gesuchId;
             if (!gesuchIdParam) {
                 $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
             }
             berechnungsManager.clear();
             return gesuchModelManager.openGesuch(gesuchIdParam);
-        } else {
-            let eingangsart = $stateParams.eingangsart;
-            let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            let dossierId = $stateParams.dossierId;
-            //initialize gesuch
-            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId);
         }
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
@@ -705,28 +710,31 @@ export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQServi
 createEmptyMutation.$inject = ['GesuchModelManager', '$stateParams', '$q'];
 
 export function createEmptyMutation(gesuchModelManager: GesuchModelManager, $stateParams: INewFallStateParams, $q: any): IPromise<TSGesuch> {
-    if ($stateParams) {
-        let gesuchId = $stateParams.gesuchId;
-        let eingangsart = $stateParams.eingangsart;
-        let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let dossierId = $stateParams.dossierId;
-        if (gesuchId && eingangsart) {
-            gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
-        }
-    }
-    return $q.defer(gesuchModelManager.getGesuch());
+    return createEmptyGesuchFromGesuch($stateParams, gesuchModelManager, $q, TSAntragTyp.MUTATION);
 }
 
 createEmptyErneuerungsgesuch.$inject = ['GesuchModelManager', '$stateParams', '$q'];
 
 export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelManager, $stateParams: INewFallStateParams, $q: any): IPromise<TSGesuch> {
+    return createEmptyGesuchFromGesuch($stateParams, gesuchModelManager, $q, TSAntragTyp.ERNEUERUNGSGESUCH);
+}
+
+
+function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchModelManager: GesuchModelManager,
+                                     $q: any, antragtyp: TSAntragTyp): IPromise<TSGesuch> {
     if ($stateParams) {
         let gesuchId = $stateParams.gesuchId;
         let eingangsart = $stateParams.eingangsart;
         let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
         let dossierId = $stateParams.dossierId;
+
         if (gesuchId && eingangsart) {
-            gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+            if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
+                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+
+            } else if (antragtyp === TSAntragTyp.MUTATION) {
+                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+            }
         }
     }
     return $q.defer(gesuchModelManager.getGesuch());
