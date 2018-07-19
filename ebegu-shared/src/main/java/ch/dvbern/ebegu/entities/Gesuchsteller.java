@@ -159,7 +159,10 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		mutation.setEwkPersonId(this.getEwkPersonId());
 		mutation.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
 		mutation.setDiplomatenstatus(this.isDiplomatenstatus());
-		mutation.setKorrespondenzSprachen(this.getKorrespondenzSprachen());
+		Set<Sprache> currentSprachen = this.getKorrespondenzSprachen();
+		if (currentSprachen != null && !currentSprachen.isEmpty()) {
+			mutation.setKorrespondenzSprachen(new TreeSet<>(currentSprachen));
+		}
 		return mutation;
 	}
 
