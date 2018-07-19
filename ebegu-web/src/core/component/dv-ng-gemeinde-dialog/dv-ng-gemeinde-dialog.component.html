@@ -17,7 +17,13 @@
 
 <mat-dialog-content>
 
-    hola
+    <mat-form-field>
+        <mat-select placeholder="gemeinde" [(ngModel)]="selectedGemeinde" name="gemeinde">
+            <mat-option *ngFor="let gemeinde of gemeindeList" [value]="gemeinde">
+                {{gemeinde.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 
 </mat-dialog-content>
 

@@ -16,7 +16,6 @@
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
-import {IOnDestroy} from 'angular';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {filter} from 'rxjs/operators';
@@ -32,7 +31,7 @@ require('./dv-ng-navbar.less');
     selector: 'dv-ng-topmenu',
     template: require('./dv-ng-navbar.html'),
 })
-export class DvNgNavbar implements IOnDestroy {
+export class DvNgNavbar {
 
     TSRoleUtil: any = TSRoleUtil;
 
@@ -40,20 +39,17 @@ export class DvNgNavbar implements IOnDestroy {
                 private $state: StateService) {
     }
 
-    public $onDestroy(): void {
-        // todo ?????
-    }
-
     public getGemeindeIDFromUser(): Observable<string> {
         if (this.authServiceRS.getPrincipal().hasJustOneGemeinde()) {
-            // TODO return this.authServiceRS.getPrincipal().extractCurrentGemeinde().id;
-            // return '80a8e496-b73c-4a4a-a163-a0b2caf76487'; // ostermundigen
-            return of('ea02b313-e7c3-4b26-9ef7-e413f4046db2'); // bern
+            return of(this.authServiceRS.getPrincipal().extractCurrentGemeindeId());
 
         } else {
             const dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = false; // dialog is canceled by clicking outside
             dialogConfig.autoFocus = true;
+            dialogConfig.data = {
+                gemeindeList: this.authServiceRS.getPrincipal().extractCurrentGemeinden()
+            };
 
             return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
         }

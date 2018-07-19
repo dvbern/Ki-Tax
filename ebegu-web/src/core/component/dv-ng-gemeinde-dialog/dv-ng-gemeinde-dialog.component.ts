@@ -13,35 +13,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import TSGemeinde from '../../../models/TSGemeinde';
 
+/**
+ * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
+ * Keine Gemeinde wird by default ausgewaehlt, damit der Benutzer nicht aus Versehen die falsche Gemeinde auswaehlt.
+ * Die GemeindeListe wird von aussen gegeben, damit dieser Component von nichts abhaengt. Die ausgewaehlte Gemeinde
+ * wird dann beim Close() zurueckgegeben
+ */
 @Component({
     selector: 'dv-ng-gemeinde-dialog',
     template: require('./dv-ng-gemeinde-dialog.component.html'),
 })
-export class DvNgGemeindeDialogComponent implements OnInit {
+export class DvNgGemeindeDialogComponent {
 
-    // form: FormGroup;
+    selectedGemeinde: TSGemeinde;
+    gemeindeList: TSGemeinde[];
 
     constructor(
         // private fb: FormBuilder,
         private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
-    }
-
-    ngOnInit() {
-        // this.form = fb.group({
-        //     description: [description, []],
-        //     ...
-        // });
+        this.gemeindeList = data.gemeindeList;
     }
 
     save() {
-        // this.dialogRef.close(this.form.gemeinde);
-        this.dialogRef.close('80a8e496-b73c-4a4a-a163-a0b2caf76487'); // ostermundigen
-        // this.dialogRef.close('ea02b313-e7c3-4b26-9ef7-e413f4046db2'); // bern
+        this.dialogRef.close(this.selectedGemeinde ? this.selectedGemeinde.id : undefined);
     }
 
     close() {

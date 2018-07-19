@@ -297,6 +297,7 @@ describe('dvNavigation', function () {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
             let dossier = new TSDossier();
+            dossier.gemeinde = TestDataUtil.createGemeinde();
             dossier.id = '123';
             spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
             mockGesuch();
@@ -309,6 +310,7 @@ describe('dvNavigation', function () {
                     gesuchId: '123',
                     gesuchsperiodeId: '123',
                     dossierId: dossier.id,
+                    gemeindeId: dossier.gemeinde.id,
                 });
         });
         it('moves to gesuch.stammdaten when coming from GESUCHSTELLER from 2GS', () => {

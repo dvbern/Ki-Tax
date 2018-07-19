@@ -157,13 +157,15 @@ export default class TSUser {
      * Returns the currentGemeinde for users with only 1 Gemeinde.
      * For a user with more than 1 Gemeinde undefined is returned
      */
-    public extractCurrentGemeinde(): TSGemeinde {
-        console.log('principalGEMMMM1:', this.currentBerechtigung);
+    public extractCurrentGemeindeId(): string {
         if (this.hasJustOneGemeinde()) {
-            console.log('principalGEMMMM2:', this.currentBerechtigung.gemeindeList);
-            return this.currentBerechtigung.gemeindeList[0];
+            return this.currentBerechtigung.gemeindeList[0].id;
         }
         return undefined;
+    }
+
+    public extractCurrentGemeinden(): TSGemeinde[] {
+        return this.currentBerechtigung.gemeindeList;
     }
 
     getFullName(): string {
@@ -199,7 +201,6 @@ export default class TSUser {
     }
 
     public hasJustOneGemeinde() {
-        // todo implement
-        return false;
+        return this.extractCurrentGemeinden().length === 1;
     }
 }

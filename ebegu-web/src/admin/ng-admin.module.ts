@@ -44,7 +44,7 @@ import {MatTableModule} from '@angular/material/table';
         CommonModule,
         TranslateModule,
         NgAdminRoutingModule,
-        FormsModule,
+        FormsModule, //todo remove
         MatTableModule,
         MatSortModule,
         MatRadioModule,
