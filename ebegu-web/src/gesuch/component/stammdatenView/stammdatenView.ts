@@ -333,6 +333,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
     }
 
+    /**
+     * Spezifischer Text fuer die "Bisher"-Texte
+     */
     public getTextKorrespondenzSprachenKorrektur(): string {
         let result: string = '';
         if (this.isKorrekturModusJugendamt()) {

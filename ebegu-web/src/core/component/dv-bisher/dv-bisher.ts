@@ -14,14 +14,13 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {TSSprache} from '../../../models/enums/TSSprache';
-import DateUtil from '../../../utils/DateUtil';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import * as moment from 'moment';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import ITranslateService = angular.translate.ITranslateService;
+import DateUtil from '../../../utils/DateUtil';
 import ILogService = angular.ILogService;
+import ITranslateService = angular.translate.ITranslateService;
 
 let template = require('./dv-bisher.html');
 require('./dv-bisher.less');
