@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -167,7 +168,7 @@ public class BenutzerResource {
 	@Path("/username/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, ADMINISTRATOR_SCHULAMT})
+	@PermitAll
 	public JaxAuthLoginElement findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 

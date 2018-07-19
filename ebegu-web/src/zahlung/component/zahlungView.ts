@@ -14,6 +14,10 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import TSZahlung from '../../models/TSZahlung';
 import ZahlungRS from '../../core/service/zahlungRS.rest';
 import {IZahlungsauftragStateParams} from '../zahlung.route';
@@ -37,22 +41,26 @@ export class ZahlungViewComponentConfig implements IComponentOptions {
 
 export class ZahlungViewController {
 
+    private readonly unsubscribe$ = new Subject<void>();
     private zahlungen: Array<TSZahlung>;
 
     itemsByPage: number = 20;
 
     static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
-        'AuthServiceRS', 'EbeguUtil'];
+        'AuthServiceRS', 'EbeguUtil', 'AuthLifeCycleService'];
 
     constructor(private zahlungRS: ZahlungRS, private CONSTANTS: any,
                 private $stateParams: IZahlungsauftragStateParams, private $state: StateService,
                 private downloadRS: DownloadRS, private reportRS: ReportRS, private authServiceRS: AuthServiceRS,
-                private ebeguUtil: EbeguUtil) {
-        this.initViewModel();
+                private ebeguUtil: EbeguUtil, private authLifeCycleService: AuthLifeCycleService) {
+
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
     }
 
     private initViewModel() {
-        if (this.$stateParams.zahlungsauftragId) {
+        if (this.$stateParams.zahlungsauftragId && this.authServiceRS.getPrincipal()) {
             switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
                 case TSRole.SACHBEARBEITER_INSTITUTION:
                 case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
@@ -75,6 +83,11 @@ export class ZahlungViewController {
                     break;
             }
         }
+    }
+
+    $onDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private gotToUebersicht(): void {

@@ -14,9 +14,11 @@
  */
 
 import {EbeguWebCore} from '../../core/core.module';
+import UserRS from '../../core/service/userRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
+import TSBerechtigung from '../../models/TSBerechtigung';
 import TSUser from '../../models/TSUser';
 import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguAuthentication} from '../authentication.module';
@@ -33,6 +35,7 @@ describe('AuthServiceRS', function () {
     let $cookies: angular.cookies.ICookiesService;
     let base64: any;
     let gesuchModelManager: GesuchModelManager;
+    let userRS: UserRS;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguAuthentication.name));
@@ -48,6 +51,7 @@ describe('AuthServiceRS', function () {
         $timeout = $injector.get('$timeout');
         $cookies = $injector.get('$cookies');
         base64 = $injector.get('base64');
+        userRS = $injector.get('UserRS');
         gesuchModelManager = $injector.get('GesuchModelManager');
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
     }));
@@ -62,26 +66,29 @@ describe('AuthServiceRS', function () {
         });
         it('receives a loginRequest and handles the incoming cookie', function () {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSUser sein. Deswegen machen wir hier ein Objekt mit dem Inhalt, den die Cookie braucht
+            let user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
+            user.currentBerechtigung = new TSBerechtigung(undefined, TSRole.GESUCHSTELLER);
             let cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
             let encodedUser = base64.encode(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
+            spyOn(userRS, 'findBenutzer').and.returnValue($q.when(user));
 
             let cookieUser: TSUser;
             //if we can decode the cookie the client application assumes the user is logged in for ui purposes
             TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
-            let user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
             authServiceRS.loginRequest(user).then((response: TSUser) => {
                 cookieUser = response;
             });
             $rootScope.$apply();
             $timeout.flush();
+            $httpBackend.flush();
 
             expect($http.post).toHaveBeenCalled();
-            expect(cookieUser.vorname).toEqual(cookieContent.vorname);
-            expect(cookieUser.nachname).toEqual(cookieContent.nachname);
-            expect(cookieUser.password).toEqual('');
-            expect(cookieUser.email).toEqual(cookieContent.email);
-            expect(cookieUser.currentBerechtigung.role).toEqual(cookieContent.role);
+            expect(cookieUser.vorname).toEqual(user.vorname);
+            expect(cookieUser.nachname).toEqual(user.nachname);
+            expect(cookieUser.password).toEqual(user.password);
+            expect(cookieUser.email).toEqual(user.email);
+            expect(cookieUser.currentBerechtigung.role).toEqual(user.currentBerechtigung.role);
         });
         it('sends a logrequest to server', () => {
             authServiceRS.logoutRequest();
