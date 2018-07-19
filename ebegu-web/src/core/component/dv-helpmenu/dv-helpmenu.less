@@ -16,35 +16,12 @@
 @import '../../../style/variables.less';
 @import '../../../style/mixins.less';
 
-dv-downloadmenu {
+dv-helpmenu {
     position: relative;
     z-index: (@z-index-error + 1);
 }
 
-.dv-downloadmenu-inner {
-    background: transparent;
-    transform-origin: top right;
-    width: 20rem;
-
-    overflow: hidden;
-    top: @navbar-height;
-
-    box-sizing: border-box;
-    padding: 1rem;
-
-    height: (17rem - @navbar-height);
-    background: @contrast-light;
-
-    &.ng-hide-add {
-        animation: 0.5s dv-downloadmenu-show reverse ease;
-    }
-
-    &.ng-hide-remove {
-        animation: 0.5s dv-downloadmenu-show ease;
-    }
-}
-
-.dv-downloadmenu-question {
+.dv-helpmenu-question {
     top: 0;
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -66,30 +43,7 @@ dv-downloadmenu {
     background: @contrast-lightest;
 }
 
-.dv-downloadmenu-inner, .dv-downloadmenu-question {
-    position: absolute;
+.dv-helpmenu-question {
+    padding-left: 2rem;
     right: 0;
-}
-
-.dv-downloadmenu-question--active {
-    background: @contrast-light;
-}
-
-@keyframes dv-downloadmenu-show {
-    0% {
-        transform: scaleY(0);
-        width: @navbar-height;
-        padding-right: -200rem;
-    }
-    50% {
-        transform: scaleY(1);
-        width: @navbar-height;
-        padding-right: -200rem;
-    }
-
-    100% {
-        transform: scaleY(1);
-        width: 20rem;
-        padding-right: 1rem;
-    }
 }

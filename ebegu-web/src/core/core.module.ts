@@ -49,7 +49,7 @@ import {DVBenutzerConfig} from './component/dv-benutzer/dv-benutzer';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
-import {DvDownloadmenuComponentConfig} from './component/dv-downloadmenu/dv-downloadmenu';
+import {DvHelpmenuComponentConfig} from './component/dv-helpmenu/dv-helpmenu';
 import {DvErrorMessagesComponentConfig} from './component/dv-error-messages/dv-error-messages';
 import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-erwerbspensum-list';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
@@ -234,7 +234,7 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvMobileNavigationToggle', new DvMobileNavigationToggleComponentConfig())
     .component('dvHomeIcon', new DvHomeIconComponentConfig())
     .component('dvSkiplinks', new DvSkiplinksComponentConfig())
-    .component('dvDownloadmenu', new DvDownloadmenuComponentConfig())
+    .component('dvHelpmenu', new DvHelpmenuComponentConfig())
     .component('dvCountdown', new DvCountdownComponentConfig())
     .component('dvBisher', new DvBisherComponentConfig())
     .component('dvDokumenteList', new DVDokumenteListConfig())

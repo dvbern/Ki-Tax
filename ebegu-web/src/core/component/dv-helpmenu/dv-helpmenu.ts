@@ -13,43 +13,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import {DownloadRS} from '../../service/downloadRS.rest';
+import {IComponentOptions} from 'angular';
+import {ShowHelpDialogController} from '../../../gesuch/dialog/ShowHelpDialogController';
+import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 
-require('./dv-downloadmenu.less');
-let template = require('./dv-downloadmenu.html');
+require('./dv-helpmenu.less');
+let template = require('./dv-helpmenu.html');
+let showHelpDialogTemplate = require('../../../gesuch/dialog/showHelpDialogTemplate.html');
 
-export class DvDownloadmenuComponentConfig implements IComponentOptions {
+export class DvHelpmenuComponentConfig implements IComponentOptions {
     transclude = false;
     bindings: any = {};
     template = template;
-    controller = DvDownloadmenuController;
+    controller = DvHelpmenuController;
     controllerAs = 'vm';
 }
 
-export class DvDownloadmenuController {
+export class DvHelpmenuController {
 
-    static $inject: any[] = ['$state', 'DownloadRS'];
+    static $inject: any[] = ['$state', 'DvDialog'];
     display: boolean = false;
 
-    constructor(private $state: StateService, private downloadRS: DownloadRS) {
+    constructor(private $state: StateService, private dvDialog: DvDialog) {
     }
 
     public toggleDisplay(): void {
         this.display = !this.display;
     }
 
-    public download(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenBenutzerhandbuch()
-            .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-                this.display = false;
-            })
-            .catch((ex) => {
-                win.close();
-            });
+    public showDialog(): void {
+        this.dvDialog.showDialog(showHelpDialogTemplate, ShowHelpDialogController, {});
     }
+
 }

@@ -13,15 +13,5 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-downloadmenu-inner" ng-show="vm.display">
-
-    <span data-translate="BENUTZERHANDBUCH"></span>
-
-    <dv-loading-button type="button" button-click="vm.download()"
-                       button-class="dv-btn marginTop10">
-        <span data-translate="DOWNLOAD"></span>
-    </dv-loading-button>
-</div>
-<div ng-click="vm.toggleDisplay()" class="fa fa-question-circle dv-downloadmenu-question"
-     ng-class="{'dv-downloadmenu-question--active' : vm.display}">
+<div ng-click="vm.showDialog()" class="fa fa-question-circle dv-helpmenu-question">
 </div>
