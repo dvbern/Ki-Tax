@@ -15,7 +15,6 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -44,7 +43,6 @@ import {MatTableModule} from '@angular/material/table';
         CommonModule,
         TranslateModule,
         NgAdminRoutingModule,
-        FormsModule, //todo remove
         MatTableModule,
         MatSortModule,
         MatRadioModule,

@@ -15,6 +15,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {Observable} from 'rxjs/Observable';
 import TSGemeinde from '../../../models/TSGemeinde';
 
 /**
@@ -30,7 +31,7 @@ import TSGemeinde from '../../../models/TSGemeinde';
 export class DvNgGemeindeDialogComponent {
 
     selectedGemeinde: TSGemeinde;
-    gemeindeList: TSGemeinde[];
+    gemeindeList: Observable<TSGemeinde[]>;
 
     constructor(
         // private fb: FormBuilder,

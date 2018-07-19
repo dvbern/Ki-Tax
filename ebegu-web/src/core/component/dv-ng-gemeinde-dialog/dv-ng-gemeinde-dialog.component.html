@@ -19,7 +19,7 @@
 
     <mat-form-field>
         <mat-select placeholder="gemeinde" [(ngModel)]="selectedGemeinde" name="gemeinde">
-            <mat-option *ngFor="let gemeinde of gemeindeList" [value]="gemeinde">
+            <mat-option *ngFor="let gemeinde of gemeindeList | async" [value]="gemeinde">
                 {{gemeinde.name}}
             </mat-option>
         </mat-select>
