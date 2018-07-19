@@ -13,8 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import TSUser from '../../../models/TSUser';
 import {EbeguWebCore} from '../../core.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import {StateService} from '@uirouter/core';
@@ -22,6 +24,7 @@ import {StateService} from '@uirouter/core';
 describe('DvPulldownUserMenuController', function () {
 
     let authServiceRS: AuthServiceRS;
+    let authLifeCycleService: AuthLifeCycleService;
     let $state: StateService;
     let controller: DvPulldownUserMenuController;
     let $q: angular.IQService;
@@ -33,13 +36,14 @@ describe('DvPulldownUserMenuController', function () {
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         authServiceRS = $injector.get('AuthServiceRS');
+        authLifeCycleService = $injector.get('AuthLifeCycleService');
         scope = $injector.get('$rootScope').$new();
         $q = $injector.get('$q');
         $state = $injector.get('$state');
     }));
 
     beforeEach(() => {
-        controller = new DvPulldownUserMenuController($state, authServiceRS);
+        controller = new DvPulldownUserMenuController($state, authServiceRS, authLifeCycleService);
     });
 
     describe('API Usage', function () {
@@ -51,6 +55,18 @@ describe('DvPulldownUserMenuController', function () {
                 scope.$apply();
                 //actual logout happens on login page
                 expect($state.go).toHaveBeenCalledWith('login', {type: 'logout'});
+            });
+        });
+        describe('change Principal', () => {
+            it('just after the controller is created Principal is undefined', () => {
+                expect(controller.principal).toBeUndefined();
+            });
+            it('When the user logs in the principal must be updated', () => {
+                let user: TSUser = new TSUser('pedro');
+                spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
+                controller.$onInit();
+
+                expect(controller.principal).toBe(user);
             });
         });
     });

@@ -66,7 +66,6 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
     function stateChangeStart(transition: Transition) {
         //Normale Benutzer duefen nicht auf admin Seite
-        let principal: TSUser = authServiceRS.getPrincipal();
         let forbiddenPlaces = ['admin', 'institution', 'parameter', 'traegerschaft'];
         let isAdmin: boolean = authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRevisorRole());
         if (forbiddenPlaces.indexOf(transition.to().name) !== -1 && authServiceRS.getPrincipal() && !isAdmin) {
@@ -124,9 +123,9 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     });
 
     // Attempt to restore a user session upon startup
-    if (authServiceRS.initWithCookie()) {
+    authServiceRS.initWithCookie().then(() => {
         $log.debug('logged in from cookie');
-    }
+    });
 
     if (ENV !== 'test') {
         //Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
