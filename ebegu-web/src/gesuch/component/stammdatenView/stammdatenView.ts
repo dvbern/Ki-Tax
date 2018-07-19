@@ -17,10 +17,12 @@ import {IComponentOptions} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import EwkRS from '../../../core/service/ewkRS.rest';
+import TSGesuchstellerSprache from '../../../models/dto/TSSelectableSprache';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
 import {TSRole} from '../../../models/enums/TSRole';
+import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSAdresse from '../../../models/TSAdresse';
@@ -36,12 +38,12 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import './stammdatenView.less';
-import IQService = angular.IQService;
 import IPromise = angular.IPromise;
-import IScope = angular.IScope;
-import ITranslateService = angular.translate.ITranslateService;
+import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
+import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 let template = require('./stammdatenView.html');
 require('./stammdatenView.less');
@@ -65,6 +67,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     gesuchstellerNumber: number;
     private initialModel: TSGesuchstellerContainer;
     private isLastVerfuegtesGesuch: boolean = false;
+    private selectedSprachenMap: Map<TSSprache, TSGesuchstellerSprache> = new Map();
+    private korrespondenzSprachenError: boolean = false;
 
     static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
         'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
@@ -108,6 +112,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 this.form.$dirty = true;
             }
         });
+        // Sprachen-Map initialisieren
+        for (let sprache of this.getSprachen()) {
+            let index: number = this.getModelJA().korrespondenzSprachen.indexOf(sprache);
+            this.selectedSprachenMap.set(sprache, new TSGesuchstellerSprache(sprache, index > -1));
+        }
     }
 
     korrespondenzAdrClicked() {
@@ -135,7 +144,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private save(): IPromise<TSGesuchstellerContainer> {
-        if (this.isGesuchValid()) {
+        if (this.isGesuchValid() && this.isKorrespondenzSpracheValid()) {
             this.gesuchModelManager.setStammdatenToWorkWith(this.model);
             if (!this.form.$dirty) {
                 // If there are no changes in form we don't need anything to update on Server and we could return the
@@ -293,5 +302,57 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             }
             // }
         }
+    }
+
+    /**
+     * Gibt alle Sprachen zurueck
+     */
+    public getSprachen(): Array<TSSprache> {
+        return getTSSpracheValues();
+    }
+
+    /**
+     * Gibt fuer einen Sprachen-Wert ein (selektierbares) GesuchstellerSprache-Objekt zurueck
+     * @param {TSSprache} sprache
+     * @returns {TSGesuchstellerSprache}
+     */
+    public getGesuchstellerSprache(sprache: TSSprache): TSGesuchstellerSprache {
+        return this.selectedSprachenMap.get(sprache);
+    }
+
+    /**
+     * Wird bei einer Änderung einer Sprachselektion aufgerufen und schreibt diese ins Model
+     * @param {TSSprache} sprache
+     */
+    public spracheChanged(sprache: TSSprache): void {
+        if (this.selectedSprachenMap.get(sprache).selected) {
+            this.getModelJA().korrespondenzSprachen.push(sprache);
+        } else {
+            let index: number = this.getModelJA().korrespondenzSprachen.indexOf(sprache);
+            this.getModelJA().korrespondenzSprachen.splice(index, 1);
+        }
+    }
+
+    public getTextKorrespondenzSprachenKorrektur(): string {
+        let result: string = '';
+        if (this.isKorrekturModusJugendamt()) {
+            for (let obj of this.getModel().gesuchstellerGS.korrespondenzSprachen) {
+                result = result + this.$translate.instant('' + obj) + ' ';
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Spezialvalidierung fuer die Korrespondenzsprache: Es muss mindestens eine Sprache ausgewählt werden.
+     */
+    public isKorrespondenzSpracheValid() {
+        let valid: boolean = true;
+        // Wird nur bei GS 1 validiert
+        if (this.gesuchstellerNumber === 1) {
+            valid = this.getModelJA().korrespondenzSprachen.length > 0;
+        }
+        this.form['korrespondenzSprachenValidation'].$setValidity('korrespondenzSprachenError', valid);
+        return valid;
     }
 }

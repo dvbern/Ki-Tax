@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import DateUtil from '../../../utils/DateUtil';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import * as moment from 'moment';
@@ -115,6 +116,9 @@ export class DvBisher {
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
             return this.equals(DateUtil.momentToLocalDateFormat(gs, 'DD.MM.YYYY'), DateUtil.momentToLocalDateFormat(ja, 'DD.MM.YYYY'));
+        }
+        if (gs instanceof Array) {
+            return JSON.stringify(gs) === JSON.stringify(ja);
         }
         return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); //either they are equal or both are a form of empty
     }

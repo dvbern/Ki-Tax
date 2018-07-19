@@ -128,6 +128,7 @@
     "TELEFON": "Telefon",
     "GEBURTSDATUM": "Geburtsdatum",
     "GEBURTSDATUM_UPPER": "GEBURTSTAG",
+    "KORRESPONDENZSPRACHE": "Korrespondenzsprache",
     "DUBLETTEN": "Dubletten",
     "UMZUG": "geplanter Umzug",
     "NICHT_IN_BERN_WOHNHAFT": "Nicht in Bern wohnhaft",
@@ -1303,5 +1304,8 @@
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT": "Mit dieser Rolle weisen Sie dem Benutzer weitgehende Rechte zu. Sind Sie sicher, dass Sie fortfahren wollen?",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE": "Admin-Rechte",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT": "Mit diesem Schritt geben Sie dem Benutzer Administrationsrechte in Ki-Tax. Wollen Sie fortfahren?",
-    "BENUTZER_STATISTIK": "BENUTZER"
+    "BENUTZER_STATISTIK": "BENUTZER",
+    "DEUTSCH": "Deutsch",
+    "FRANZOESISCH": "Französisch",
+    "ERROR_KORRESPONDENZSPRACHE_MIN1": "Mindestens 1 Sprache auswählen"
 }
