@@ -146,7 +146,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now());
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 		final Betreuung betreuung = kind.getBetreuungen().iterator().next();
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESELTERN_KLEINKIND);
+		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		persistence.merge(betreuung.getInstitutionStammdaten());
 
 		Assert.assertTrue(erwerbspensumService.isErwerbspensumRequired(gesuch));

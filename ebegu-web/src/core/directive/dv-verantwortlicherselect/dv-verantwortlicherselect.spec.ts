@@ -15,6 +15,7 @@
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSDossier from '../../../models/TSDossier';
 import TSGesuch from '../../../models/TSGesuch';
 import TSUser from '../../../models/TSUser';
@@ -34,6 +35,8 @@ describe('dvVerantwortlicherSelect', function () {
     let $translate: ITranslateService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import AdresseRS from './adresseRS.rest';
 
 describe('AdresseRS', function () {
@@ -20,6 +21,8 @@ describe('AdresseRS', function () {
     let adresseRS: AdresseRS;
 
     beforeEach(angular.mock.module('ebeguWeb.core'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function (_adresseRS_: AdresseRS) {
         adresseRS = _adresseRS_;

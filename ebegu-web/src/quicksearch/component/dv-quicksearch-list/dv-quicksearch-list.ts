@@ -13,23 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFilterService} from 'angular';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSInstitution from '../../../models/TSInstitution';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFilterService} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSUser from '../../../models/TSUser';
+import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
+import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSFallAntragDTO from '../../../models/TSFallAntragDTO';
+import TSGemeinde from '../../../models/TSGemeinde';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSInstitution from '../../../models/TSInstitution';
+import TSUser from '../../../models/TSUser';
+import EbeguUtil from '../../../utils/EbeguUtil';
 
 let template = require('./dv-quicksearch-list.html');
 require('./dv-quicksearch-list.less');
@@ -137,7 +137,7 @@ export class DVQuicksearchListController {
     }
 
     public updateGemeinden(): void {
-        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+        this.gemeindeRS.getAllGemeinden().then(response => {
             this.gemeindenList = angular.copy(response);
         });
     }

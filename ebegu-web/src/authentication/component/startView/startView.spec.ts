@@ -14,10 +14,12 @@
  */
 
 import {EbeguWebCore} from '../../../core/core.module';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSUser from '../../../models/TSUser';
 import {EbeguAuthentication} from '../../authentication.module';
+import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
 import AuthServiceRS from '../../service/AuthServiceRS.rest';
 import {StartViewController} from './startView';
 import {StateService} from '@uirouter/core';
@@ -28,7 +30,9 @@ describe('startView', function () {
     beforeEach(angular.mock.module(EbeguWebCore.name));
     beforeEach(angular.mock.module(EbeguAuthentication.name));
 
-    let $rootScope: angular.IRootScopeService;
+    beforeEach(angular.mock.module(ngServicesMock));
+
+    let authLifeCycleService: AuthLifeCycleService;
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
     let startViewController: StartViewController;
@@ -38,11 +42,10 @@ describe('startView', function () {
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         $componentController = $injector.get('$componentController');
-        $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
+        authLifeCycleService = $injector.get('AuthLifeCycleService');
         authService = $injector.get('AuthServiceRS');
         state = $injector.get('$state');
-        startViewController = new StartViewController(state, $rootScope, authService);
+        startViewController = new StartViewController(state, authLifeCycleService, authService);
 
     }));
     beforeEach(function () {
@@ -61,7 +64,7 @@ describe('startView', function () {
     });
 
     it('should  broadcast "AUTH_EVENTS.notAuthenticated" if no principal is available', function () {
-        let broadcast = spyOn($rootScope, '$broadcast');
+        let broadcast = spyOn(authLifeCycleService, 'changeAuthStatus');
         startViewController.$onInit();
         expect(broadcast).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, 'not logged in on startpage');
     });

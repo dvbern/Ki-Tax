@@ -66,6 +66,9 @@
             "check-operator",
             "check-separator",
             "check-type"
-        ]
+        ],
+        "rxjs-no-unsafe-takeuntil": {
+            "severity": "error"
+        }
     }
 }

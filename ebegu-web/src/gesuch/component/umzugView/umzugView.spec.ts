@@ -16,6 +16,7 @@
 import {EbeguWebCore} from '../../../core/core.module';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import TSAdresseContainer from '../../../models/TSAdresseContainer';
@@ -41,6 +42,8 @@ describe('umzugView', function () {
     let $timeout: angular.ITimeoutService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');

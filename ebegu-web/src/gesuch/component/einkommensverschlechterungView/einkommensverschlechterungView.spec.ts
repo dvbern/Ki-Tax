@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
@@ -26,6 +27,8 @@ describe('einkommensverschlechterungView', function () {
     let gesuchModelManager: GesuchModelManager;
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

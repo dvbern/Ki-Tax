@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
-import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -42,15 +41,11 @@ public class Testfall06_BeckerNora extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Becker";
 
-	public Testfall06_BeckerNora(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
-	}
-
 	public Testfall06_BeckerNora(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList) {
 		super(gesuchsperiode, institutionStammdatenList, false);
 	}
 
-	public Testfall06_BeckerNora(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde
+	public Testfall06_BeckerNora(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde
 		gemeinde) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSKind from '../../models/TSKind';
 import TSKindContainer from '../../models/TSKindContainer';
 import TSVerfuegung from '../../models/TSVerfuegung';
@@ -32,6 +33,8 @@ describe('VerfuegungRS', function () {
     let betreuungId: string = '321123';
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         verfuegungRS = $injector.get('VerfuegungRS');

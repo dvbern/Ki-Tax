@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -52,6 +53,10 @@ public class JaxGesuch extends JaxAbstractDTO {
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eingangsdatum = null;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate regelnGueltigAb = null;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -114,7 +119,7 @@ public class JaxGesuch extends JaxAbstractDTO {
 	private LocalDate datumGewarntFehlendeQuittung;
 
 	@Nullable
-	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime timestampVerfuegt;
 
 	private boolean gueltig;
@@ -298,6 +303,15 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
+	}
+
+	@Nullable
+	public LocalDate getRegelnGueltigAb() {
+		return regelnGueltigAb;
+	}
+
+	public void setRegelnGueltigAb(@Nullable LocalDate regelnGueltigAb) {
+		this.regelnGueltigAb = regelnGueltigAb;
 	}
 
 	@Nullable

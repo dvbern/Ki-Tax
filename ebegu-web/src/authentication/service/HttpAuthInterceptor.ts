@@ -13,16 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpInterceptor, IHttpResponse, IPromise, IQService, IRootScopeService} from 'angular';
+import {IHttpInterceptor, IHttpResponse, IPromise, IQService} from 'angular';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
 
 export default class HttpAuthInterceptor implements IHttpInterceptor {
 
-    static $inject = ['$rootScope', '$q', 'CONSTANTS', 'httpBuffer'];
+    static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
 
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService, private $q: IQService, private CONSTANTS: any,
+    constructor(private authLifeCycleService: AuthLifeCycleService, private $q: IQService, private CONSTANTS: any,
                 private httpBuffer: HttpBuffer) {
     }
 
@@ -42,10 +43,10 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
                 // to submit them.
                 let deferred = this.$q.defer();
                 this.httpBuffer.append(response.config, deferred);
-                this.$rootScope.$broadcast(TSAuthEvent[TSAuthEvent.NOT_AUTHENTICATED], response);
+                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, response);
                 return deferred.promise as IPromise<IHttpResponse<T>>;
             case 403:
-                this.$rootScope.$broadcast(TSAuthEvent[TSAuthEvent.NOT_AUTHORISED], response);
+                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, response);
                 return this.$q.reject(response);
         }
         return this.$q.reject(response);

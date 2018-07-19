@@ -55,21 +55,11 @@ public class BetreuungsangebotTypCalcRuleTest {
 
 	@Test
 	public void testAngebotTageselternKleinkind() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(BetreuungsangebotTyp.TAGESELTERN_KLEINKIND));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(BetreuungsangebotTyp.TAGESFAMILIEN));
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
-	}
-
-	@Test
-	public void testAngebotTageselternSchulkind() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(BetreuungsangebotTyp.TAGESELTERN_SCHULKIND));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
 	}
 

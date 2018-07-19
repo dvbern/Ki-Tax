@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -167,6 +168,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	private WizardStepService wizardStepService;
 
 	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
 	private Persistence persistence;
 
 	@Override
@@ -223,12 +227,13 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	@Override
 	public void createSchulungsdaten() {
+		Gemeinde gemeinde = gemeindeService.getFirst();
 		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
 		Institution institutionForelle = createtInstitution(INSTITUTION_FORELLE_ID, "Forelle", traegerschaftFisch);
 		Institution institutionHecht = createtInstitution(INSTITUTION_HECHT_ID, "Hecht", traegerschaftFisch);
 
 		InstitutionStammdaten kitaForelle = createInstitutionStammdaten(KITA_FORELLE_ID, institutionForelle, BetreuungsangebotTyp.KITA);
-		InstitutionStammdaten tageselternForelle = createInstitutionStammdaten(TAGESELTERN_FORELLE_ID, institutionForelle, BetreuungsangebotTyp.TAGESELTERN_KLEINKIND);
+		InstitutionStammdaten tageselternForelle = createInstitutionStammdaten(TAGESELTERN_FORELLE_ID, institutionForelle, BetreuungsangebotTyp.TAGESFAMILIEN);
 		InstitutionStammdaten kitaHecht = createInstitutionStammdaten(KITA_HECHT_ID, institutionHecht, BetreuungsangebotTyp.KITA);
 		List<InstitutionStammdaten> institutionenForSchulung = new LinkedList<>();
 		institutionenForSchulung.add(kitaForelle);
@@ -241,7 +246,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		for (int i = 0; i < GESUCHSTELLER_LIST.length; i++) {
 			createGesuchsteller(GESUCHSTELLER_LIST[i], getUsername(i + 1));
 		}
-		createFaelleForSuche(institutionenForSchulung);
+		createFaelleForSuche(institutionenForSchulung, gemeinde);
 	}
 
 	@Override
@@ -361,43 +366,43 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		removeBenutzer(getUsername(position));
 	}
 
-	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung) {
+	private void createFaelleForSuche(@Nonnull List<InstitutionStammdaten> institutionenForSchulung, @Nonnull Gemeinde gemeinde) {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getAllActiveGesuchsperioden().iterator().next();
 		List<InstitutionStammdaten> institutionenForTestfall = testfaelleService.getInstitutionsstammdatenForTestfaelle();
 
-		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, "01", null, null, institutionenForSchulung, true);
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, "02", null, null, institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, "03", null, null, institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, "04", null, null, institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, "05", null, null, institutionenForSchulung);
-		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, "06", null, null, institutionenForSchulung);
-		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, "07", null, null, institutionenForSchulung);
+		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "01", null, null, institutionenForSchulung, true);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "02", null, null, institutionenForSchulung);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "03", null, null, institutionenForSchulung);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "04", null, null, institutionenForSchulung);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "05", null, null, institutionenForSchulung);
+		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, gemeinde, "06", null, null, institutionenForSchulung);
+		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "07", null, null, institutionenForSchulung);
 
-		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, "08", "Gerber", "Milena", institutionenForSchulung);
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, "09", "Bernasconi", "Claudia", institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, "10", "Odermatt", "Yasmin", institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, "11", "Hefti", "Sarah", institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, "12", "Schmid", "Natalie", institutionenForSchulung);
-		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, "13", "Kälin", "Judith", institutionenForSchulung);
-		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, "14", "Werlen", "Franziska", institutionenForSchulung);
+		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "08", "Gerber", "Milena", institutionenForSchulung);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "09", "Bernasconi", "Claudia", institutionenForSchulung);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "10", "Odermatt", "Yasmin", institutionenForSchulung);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "11", "Hefti", "Sarah", institutionenForSchulung);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "12", "Schmid", "Natalie", institutionenForSchulung);
+		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, gemeinde, "13", "Kälin", "Judith", institutionenForSchulung);
+		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "14", "Werlen", "Franziska", institutionenForSchulung);
 
-		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, "15", "Iten", "Joy", institutionenForSchulung);
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, "16", "Keller", "Birgit", institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, "17", "Hofer", "Melanie", institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, "18", "Steiner", "Stefanie", institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, "19", "Widmer", "Ursula", institutionenForSchulung);
-		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, "20", "Graf", "Anna", institutionenForSchulung);
-		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, "21", "Zimmermann", "Katrin", institutionenForSchulung);
+		createFall(Testfall01_WaeltiDagmar.class, gesuchsperiode, institutionenForTestfall, gemeinde, "15", "Iten", "Joy", institutionenForSchulung);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "16", "Keller", "Birgit", institutionenForSchulung);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "17", "Hofer", "Melanie", institutionenForSchulung);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "18", "Steiner", "Stefanie", institutionenForSchulung);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "19", "Widmer", "Ursula", institutionenForSchulung);
+		createFall(Testfall06_BeckerNora.class, gesuchsperiode, institutionenForTestfall, gemeinde, "20", "Graf", "Anna", institutionenForSchulung);
+		createFall(Testfall07_MeierMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "21", "Zimmermann", "Katrin", institutionenForSchulung);
 
-		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, "22", "Hofstetter", "Anneliese", institutionenForSchulung);
-		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, "23", "Arnold", "Madeleine", institutionenForSchulung);
-		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, "24", "Schneebeli", "Janine", institutionenForSchulung);
-		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, "25", "Weber", "Marianne", institutionenForSchulung);
+		createFall(Testfall02_FeutzYvonne.class, gesuchsperiode, institutionenForTestfall, gemeinde, "22", "Hofstetter", "Anneliese", institutionenForSchulung);
+		createFall(Testfall03_PerreiraMarcia.class, gesuchsperiode, institutionenForTestfall, gemeinde, "23", "Arnold", "Madeleine", institutionenForSchulung);
+		createFall(Testfall04_WaltherLaura.class, gesuchsperiode, institutionenForTestfall, gemeinde, "24", "Schneebeli", "Janine", institutionenForSchulung);
+		createFall(Testfall05_LuethiMeret.class, gesuchsperiode, institutionenForTestfall, gemeinde, "25", "Weber", "Marianne", institutionenForSchulung);
 	}
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
 	private void createFall(@Nonnull Class<? extends AbstractTestfall> classTestfall,
-		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<InstitutionStammdaten> institutionenForTestfall,
+		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<InstitutionStammdaten> institutionenForTestfall, @Nonnull Gemeinde gemeinde,
 		@Nonnull String id, @Nullable String nachname, @Nullable String vorname,
 		@Nonnull List<InstitutionStammdaten> institutionenForSchulung, boolean noRandom) {
 
@@ -408,7 +413,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		}
 		AbstractTestfall testfall = null;
 		try {
-			testfall = classTestfall.getConstructor(Gesuchsperiode.class, Collection.class, Boolean.TYPE).newInstance(gesuchsperiode, institutionenForTestfall, verfuegen);
+			testfall = classTestfall.getConstructor(Gesuchsperiode.class, Collection.class, Boolean.TYPE, Gemeinde.class).newInstance(gesuchsperiode,
+				institutionenForTestfall, verfuegen, gemeinde);
 			testfall.setFixId(XX.matcher(GESUCH_ID).replaceAll(id));
 			Gesuch gesuch = createFallForSuche(testfall, nachname, vorname, institutionenForSchulung, verfuegen, noRandom);
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
@@ -420,11 +426,11 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	private void createFall(@Nonnull Class<? extends AbstractTestfall> classTestfall,
-		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<InstitutionStammdaten> institutionenForTestfall,
+		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<InstitutionStammdaten> institutionenForTestfall, @Nonnull Gemeinde gemeinde,
 		@Nonnull String id, @Nullable String nachname, @Nullable String vorname,
 		@Nonnull List<InstitutionStammdaten> institutionenForSchulung) {
 
-		createFall(classTestfall, gesuchsperiode, institutionenForTestfall, id, nachname, vorname, institutionenForSchulung, false);
+		createFall(classTestfall, gesuchsperiode, institutionenForTestfall, gemeinde, id, nachname, vorname, institutionenForSchulung, false);
 	}
 
 	@SuppressWarnings("ConstantConditions")

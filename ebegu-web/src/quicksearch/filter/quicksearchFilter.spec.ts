@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
@@ -21,7 +22,8 @@ import {TSDateRange} from '../../models/types/TSDateRange';
 import * as moment from 'moment';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
-import {EbeguWebQuicksearch} from '../quicksearch.module';
+import EbeguUtil from '../../utils/EbeguUtil';
+import {QuicksearchFilter} from './quicksearchFilter';
 
 describe('quicksearchFilter', function () {
 
@@ -32,7 +34,14 @@ describe('quicksearchFilter', function () {
     let antrag3: TSAntragDTO;
     let gesuchsperiode: TSGesuchsperiode;
 
-    beforeEach(angular.mock.module(EbeguWebQuicksearch.name));
+
+    beforeEach(angular.mock.module('pascalprecht.translate'));
+
+    beforeEach(angular.mock.module(function ($provide: angular.auto.IProvideService) {
+        $provide.value('CONSTANTS', CONSTANTS);
+        $provide.service('EbeguUtil', EbeguUtil);
+        $provide.service('quicksearchFilterFilter', QuicksearchFilter);
+    }));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         quicksearchFilter = $injector.get('$filter')('quicksearchFilter');
@@ -48,12 +57,12 @@ describe('quicksearchFilter', function () {
         quicksearchArray.push(antrag1);
 
         antrag2 = new TSAntragDTO('id2', 2, 'Perez', TSAntragTyp.ERSTGESUCH, ab, ab, undefined,
-            [TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND], ['Instit2'], 'Antonio Jimenez', 'Antonio Jimenez', TSAntragStatus.IN_BEARBEITUNG_JA,
+            [TSBetreuungsangebotTyp.TAGESFAMILIEN], ['Instit2'], 'Antonio Jimenez', 'Antonio Jimenez', TSAntragStatus.IN_BEARBEITUNG_JA,
             gesuchsperiode.gueltigkeit.gueltigAb, gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag2);
 
         antrag3 = new TSAntragDTO('id3', 3, 'Dominguez', TSAntragTyp.MUTATION, ab, ab, undefined,
-            [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND], ['Instit1', 'Instit2'],
+            [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN], ['Instit1', 'Instit2'],
             'Eustaquio Romualdo', 'Eustaquio Romualdo', TSAntragStatus.IN_BEARBEITUNG_JA,
             gesuchsperiode.gueltigkeit.gueltigAb, gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag3);
@@ -91,7 +100,7 @@ describe('quicksearchFilter', function () {
         });
         it('should return an array with only the elements of the given angebotstyp', function () {
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.KITA})).toEqual([antrag1, antrag3]);
-            expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND})).toEqual([antrag2, antrag3]);
+            expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESFAMILIEN})).toEqual([antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESSCHULE})).toEqual([]);
             expect(quicksearchFilter(quicksearchArray, {angebote: ''})).toEqual([antrag1, antrag2, antrag3]);
         });

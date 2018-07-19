@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
@@ -23,10 +24,11 @@ import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import TSFamiliensituation from '../../models/TSFamiliensituation';
 import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
+import GemeindeRS from './gemeindeRS.rest';
 import GesuchRS from './gesuchRS.rest';
 import GesuchstellerRS from '../../core/service/gesuchstellerRS.rest';
 import FamiliensituationRS from './familiensituationRS.rest';
-import {ILogService, IPromise, IQService, IRootScopeService} from 'angular';
+import {ILogService, IPromise, IQService} from 'angular';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
 import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
@@ -102,7 +104,8 @@ export default class GesuchModelManager {
     static $inject = ['FamiliensituationRS', 'FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', 'GesuchsperiodeRS', 'EbeguRestUtil', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'EinkommensverschlechterungInfoRS',
-        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', '$rootScope', 'EwkRS', 'GlobalCacheService', 'DossierRS'];
+        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
+        'DossierRS', 'GemeindeRS'];
     /* @ngInject */
     constructor(private familiensituationRS: FamiliensituationRS, private fallRS: FallRS, private gesuchRS: GesuchRS, private gesuchstellerRS: GesuchstellerRS,
                 private finanzielleSituationRS: FinanzielleSituationRS, private kindRS: KindRS, private fachstelleRS: FachstelleRS, private erwerbspensumRS: ErwerbspensumRS,
@@ -111,14 +114,15 @@ export default class GesuchModelManager {
                 private einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS, private verfuegungRS: VerfuegungRS,
                 private wizardStepManager: WizardStepManager, private einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
                 private antragStatusHistoryRS: AntragStatusHistoryRS, private ebeguUtil: EbeguUtil, private errorService: ErrorService,
-                private adresseRS: AdresseRS, private $q: IQService, private CONSTANTS: any, private $rootScope: IRootScopeService, private ewkRS: EwkRS,
-                private globalCacheService: GlobalCacheService, private dossierRS: DossierRS) {
+                private adresseRS: AdresseRS, private $q: IQService, private CONSTANTS: any, private authLifeCycleService: AuthLifeCycleService, private ewkRS: EwkRS,
+                private globalCacheService: GlobalCacheService, private dossierRS: DossierRS, private gemeindeRS: GemeindeRS) {
 
-
-        $rootScope.$on(TSAuthEvent[TSAuthEvent.LOGOUT_SUCCESS], () => {
-            this.setGesuch(undefined);
-            this.log.debug('Cleared gesuch on logout');
-        });
+        this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
+            .subscribe(value => {
+                    this.setGesuch(undefined);
+                    this.log.debug('Cleared gesuch on logout');
+                },
+            );
     }
 
     /**

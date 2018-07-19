@@ -15,6 +15,7 @@
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../../core/core.module';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -51,6 +52,8 @@ describe('betreuungView', function () {
     let $timeout: angular.ITimeoutService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');
@@ -137,7 +140,7 @@ describe('betreuungView', function () {
             beforeEach(function () {
                 gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('1', TSBetreuungsangebotTyp.KITA));
                 gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('2', TSBetreuungsangebotTyp.KITA));
-                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('3', TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND));
+                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('3', TSBetreuungsangebotTyp.TAGESFAMILIEN));
                 gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('4', TSBetreuungsangebotTyp.TAGESSCHULE));
             });
             it('should return an empty list if betreuungsangebot is not yet defined', () => {

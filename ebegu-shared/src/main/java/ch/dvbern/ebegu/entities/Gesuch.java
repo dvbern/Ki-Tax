@@ -101,6 +101,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	@Nullable
 	@Column(nullable = true)
+	private LocalDate regelnGueltigAb;
+
+	@Nullable
+	@Column(nullable = true)
 	private LocalDate freigabeDatum;
 
 	@Nullable
@@ -362,6 +366,11 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public final void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
+
+	@Nullable
+	public LocalDate getRegelnGueltigAb() { return regelnGueltigAb; }
+
+	public void setRegelnGueltigAb(@Nullable LocalDate regelnGueltigAb) { this.regelnGueltigAb = regelnGueltigAb; }
 
 	@Nullable
 	public LocalDate getEingangsdatumSTV() {
@@ -684,6 +693,14 @@ public class Gesuch extends AbstractEntity implements Searchable {
 			});
 	}
 
+	@Transient
+	public LocalDate getRegelStartDatum() {
+		if (null != getRegelnGueltigAb()) {
+			return getRegelnGueltigAb();
+		}
+		return getEingangsdatum();
+	}
+
 	@Nullable
 	public Familiensituation extractFamiliensituation() {
 		if (familiensituationContainer != null) {
@@ -712,6 +729,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		mutation.setDossier(this.getDossier());
 		mutation.setGesuchsperiode(this.getGesuchsperiode());
 		mutation.setEingangsdatum(null);
+		mutation.setRegelnGueltigAb(null);
 		mutation.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setLaufnummer(this.getLaufnummer() + 1);
@@ -758,6 +776,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		folgegesuch.setDossier(this.getDossier());
 		folgegesuch.setGesuchsperiode(gesuchsperiode);
 		folgegesuch.setEingangsdatum(null);
+		folgegesuch.setRegelnGueltigAb(null);
 		folgegesuch.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
 		folgegesuch.setTyp(AntragTyp.ERNEUERUNGSGESUCH);
 		folgegesuch.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an

@@ -14,6 +14,7 @@
  */
 
 import {EbeguWebCore} from '../../core/core.module';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import GesuchRS from './gesuchRS.rest';
 
@@ -25,6 +26,8 @@ describe('gesuch', function () {
     let REST_API: string;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchRS = $injector.get('GesuchRS');

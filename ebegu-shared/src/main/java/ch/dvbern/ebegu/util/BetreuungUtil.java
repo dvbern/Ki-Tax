@@ -52,8 +52,7 @@ public final class BetreuungUtil {
 			key = EbeguParameterKey.PARAM_PENSUM_TAGI_MIN;
 		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
 			key = EbeguParameterKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESELTERN_KLEINKIND ||
-			betreuungsangebotTyp == BetreuungsangebotTyp.TAGESELTERN_SCHULKIND) {
+		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
 			key = EbeguParameterKey.PARAM_PENSUM_TAGESELTERN_MIN;
 		}
 		if (key != null) {

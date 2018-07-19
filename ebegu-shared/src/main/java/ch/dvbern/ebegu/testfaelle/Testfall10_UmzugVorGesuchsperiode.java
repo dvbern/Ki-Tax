@@ -46,12 +46,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall10_UmzugVorGesuchsperiode extends AbstractTestfall {
 
-	public Testfall10_UmzugVorGesuchsperiode(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
-	}
-
-	public Testfall10_UmzugVorGesuchsperiode(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+	public Testfall10_UmzugVorGesuchsperiode(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 

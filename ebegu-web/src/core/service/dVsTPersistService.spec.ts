@@ -13,10 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {EbeguWebCore} from '../core.module';
 import {DVsTPersistService} from './dVsTPersistService';
 
-describe('betreuungRS', function () {
+describe('stPersistService', function () {
 
     let dVsTPersistService: DVsTPersistService;
     let object1: any;
@@ -25,6 +26,8 @@ describe('betreuungRS', function () {
     let namespace_two: string;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         dVsTPersistService = $injector.get('DVsTPersistService');

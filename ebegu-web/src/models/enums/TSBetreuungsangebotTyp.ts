@@ -15,8 +15,7 @@
 
 export enum TSBetreuungsangebotTyp {
     KITA = <any> 'KITA',
-    TAGESELTERN_KLEINKIND = <any> 'TAGESELTERN_KLEINKIND',
-    TAGESELTERN_SCHULKIND = <any> 'TAGESELTERN_SCHULKIND',
+    TAGESFAMILIEN = <any> 'TAGESFAMILIEN',
     TAGI = <any> 'TAGI',
     TAGESSCHULE = <any> 'TAGESSCHULE',
     FERIENINSEL = <any> 'FERIENINSEL'
@@ -26,8 +25,7 @@ export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp>
     return [
         TSBetreuungsangebotTyp.KITA,
         TSBetreuungsangebotTyp.TAGI,
-        TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND,
-        TSBetreuungsangebotTyp.TAGESELTERN_SCHULKIND,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
         TSBetreuungsangebotTyp.TAGESSCHULE,
         TSBetreuungsangebotTyp.FERIENINSEL
     ];
@@ -40,8 +38,7 @@ export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array
     return [
         TSBetreuungsangebotTyp.KITA,
         TSBetreuungsangebotTyp.TAGI,
-        TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND,
-        TSBetreuungsangebotTyp.TAGESELTERN_SCHULKIND,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
         TSBetreuungsangebotTyp.TAGESSCHULE
     ];
 }

@@ -19,6 +19,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
 import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
 import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module';
+import {AuthLifeCycleService} from './service/authLifeCycle.service';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module'
     providers: [
         authServiceRSProvider,
         applicationPropertyRSProvider,
+        AuthLifeCycleService,
     ],
 })
 

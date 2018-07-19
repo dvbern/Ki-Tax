@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -46,6 +47,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -84,6 +86,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
+	@Inject
+	private GemeindeService gemeindeService;
+
 	@Nonnull
 	@Override
 	public Optional<Dossier> findDossier(@Nonnull String id) {
@@ -116,12 +121,20 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		return Optional.empty();
 	}
 
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE") // TODO Imanol brauchts dann auch nicht mehr...
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
-		Objects.requireNonNull(dossier.getGemeinde());
+		//TODO Imanol: entfernen
+		Gemeinde gemeinde = dossier.getGemeinde();
+		//noinspection ConstantConditions:
+		if (gemeinde == null) {
+			gemeinde = gemeindeService.getFirst();
+			dossier.setGemeinde(gemeinde);
+		}
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
 	}
@@ -158,15 +171,20 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (!fallOptional.isPresent()) {
 			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		}
+		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId!
+		Gemeinde gemeinde = null;
+		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
+		gemeinde = gemeindeOptional.orElseGet(() -> gemeindeService.getFirst());
 		//noinspection ConstantConditions
 		Objects.requireNonNull(fallOptional.get());
-		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeindeId, fallOptional.get().getId());
+		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}
 		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen
 		Dossier dossier = new Dossier();
 		dossier.setFall(fallOptional.get());
+		dossier.setGemeinde(gemeinde);
 		return saveDossier(dossier);
 	}
 

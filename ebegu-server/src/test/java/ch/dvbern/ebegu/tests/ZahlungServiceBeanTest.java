@@ -95,6 +95,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	private AntragStatusHistoryService antragStatusHistoryService;
 
 	private Gesuchsperiode gesuchsperiode;
+	private String gemeinde;
 
 	private static final LocalDateTime DATUM_GENERIERT = LocalDateTime.of(2017, Month.JUNE, 20, 0, 0);
 	private static final LocalDate DATUM_FAELLIG = DATUM_GENERIERT.plusDays(3).toLocalDate();
@@ -108,6 +109,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchsperiode = createGesuchsperiode(true);
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode.getGueltigkeit(), persistence);
+		gemeinde = TestDataUtil.getGemeindeBern(persistence).getId();
 	}
 
 	@Test
@@ -374,9 +376,13 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
-		Assert.assertEquals(ZahlungauftragStatus.ENTWURF, zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).get().getStatus());
+		Optional<Zahlungsauftrag> zahlungsauftrag1 = zahlungService.findZahlungsauftrag(zahlungsauftrag.getId());
+		Assert.assertTrue(zahlungsauftrag1.isPresent());
+		Assert.assertEquals(ZahlungauftragStatus.ENTWURF, zahlungsauftrag1.get().getStatus());
 		zahlungService.zahlungsauftragAusloesen(zahlungsauftrag.getId());
-		Assert.assertEquals(ZahlungauftragStatus.AUSGELOEST, zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).get().getStatus());
+		Optional<Zahlungsauftrag> zahlungsauftrag2 = zahlungService.findZahlungsauftrag(zahlungsauftrag.getId());
+		Assert.assertTrue(zahlungsauftrag2.isPresent());
+		Assert.assertEquals(ZahlungauftragStatus.AUSGELOEST, zahlungsauftrag2.get().getStatus());
 	}
 
 	@Test
@@ -451,7 +457,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeinde);
 	}
 
 	@Nullable
@@ -489,6 +495,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 			testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
 			verfuegungService.calculateVerfuegung(mutation);
 			for (Betreuung betreuung : betreuungs) {
+				Assert.assertNotNull(betreuung.getVerfuegung());
 				verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
 			}
 			return mutation;
@@ -570,7 +577,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	private BigDecimal getBetragAugustFromGesuch(@Nullable Gesuch gesuch) {
 		Assert.assertNotNull(gesuch);
 		BigDecimal betrag =  gesuch.extractAllBetreuungen().stream()
-			.filter(betreuung -> betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA)
+			.filter(betreuung -> betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA
+				&& betreuung.getVerfuegung() != null)
 			.map(Betreuung::getVerfuegung)
 			.map(Verfuegung::getZeitabschnitte)
 			.flatMap(Collection::stream)

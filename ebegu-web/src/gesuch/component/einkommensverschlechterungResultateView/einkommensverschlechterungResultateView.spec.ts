@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFinanzModel from '../../../models/TSFinanzModel';
@@ -23,16 +24,16 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {EinkommensverschlechterungResultateViewController} from './einkommensverschlechterungResultateView';
-import {StateService} from '@uirouter/core';
 
 describe('einkommensverschlechterungResultateView', function () {
 
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
     let ekvrvc: EinkommensverschlechterungResultateViewController;
-    let $state: StateService;
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
     let scope: angular.IScope;

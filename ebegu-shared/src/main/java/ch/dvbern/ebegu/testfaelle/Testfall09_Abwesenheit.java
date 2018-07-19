@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,12 +46,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall09_Abwesenheit extends AbstractTestfall {
 
-	public Testfall09_Abwesenheit(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt) {
-		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
-	}
-
-	public Testfall09_Abwesenheit(Gesuchsperiode gesuchsperiode, List<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+	public Testfall09_Abwesenheit(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList, boolean betreuungenBestaetigt, Gemeinde gemeinde) {
 		super(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt, gemeinde);
 	}
 

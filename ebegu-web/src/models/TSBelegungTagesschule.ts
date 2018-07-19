@@ -43,4 +43,5 @@ export default class TSBelegungTagesschule extends TSAbstractEntity {
     public set eintrittsdatum(value: moment.Moment) {
         this._eintrittsdatum = value;
     }
+
 }

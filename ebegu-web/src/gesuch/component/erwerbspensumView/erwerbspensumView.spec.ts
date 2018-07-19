@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -22,6 +23,8 @@ describe('erwerbspensumView', function () {
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
     beforeEach(angular.mock.module('ebeguWeb.admin'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     let gesuchModelManager: GesuchModelManager;
     let component: ErwerbspensumViewComponentConfig;

@@ -36,9 +36,8 @@ export class AdminViewComponentConfig implements IComponentOptions {
 }
 
 export class AdminViewController extends AbstractAdminViewController {
-    static $inject = ['ApplicationPropertyRS', 'MAX_LENGTH', 'EbeguRestUtil', 'ReindexRS', 'AuthServiceRS'];
+    static $inject = ['ApplicationPropertyRS', 'EbeguRestUtil', 'ReindexRS', 'AuthServiceRS'];
 
-    length: number;
     applicationProperty: TSApplicationProperty;
     applicationPropertyRS: ApplicationPropertyRS;
     applicationProperties: TSApplicationProperty[];
@@ -46,10 +45,9 @@ export class AdminViewController extends AbstractAdminViewController {
 
 
     /* @ngInject */
-    constructor(applicationPropertyRS: ApplicationPropertyRS, MAX_LENGTH: number, ebeguRestUtil: EbeguRestUtil,
+    constructor(applicationPropertyRS: ApplicationPropertyRS, ebeguRestUtil: EbeguRestUtil,
                 private reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
-        this.length = MAX_LENGTH;
         this.applicationProperty = undefined;
         this.applicationPropertyRS = applicationPropertyRS;
         this.ebeguRestUtil = ebeguRestUtil;

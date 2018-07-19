@@ -14,6 +14,7 @@
  */
 
 import EwkRS from '../../../core/service/ewkRS.rest';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
@@ -35,6 +36,8 @@ describe('stammdatenView', function () {
     let $timeout: angular.ITimeoutService;
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');

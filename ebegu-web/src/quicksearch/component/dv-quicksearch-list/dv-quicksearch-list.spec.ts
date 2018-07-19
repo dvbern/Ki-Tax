@@ -13,19 +13,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {EbeguWebCore} from '../../../core/core.module';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSGesuch from '../../../models/TSGesuch';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
-import {StateService} from '@uirouter/core';
 
 describe('DVQuicksearchList', function () {
 
@@ -43,6 +44,8 @@ describe('DVQuicksearchList', function () {
     let wizardStepManager: WizardStepManager;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         searchRS = $injector.get('SearchRS');
@@ -64,9 +67,9 @@ describe('DVQuicksearchList', function () {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
                     institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
-                let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESELTERN_KLEINKIND];
+                let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
-                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tageseltern für Kleinkinder');
+                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,

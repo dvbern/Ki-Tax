@@ -14,6 +14,7 @@
  */
 
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSDokumentGrundPersonType} from '../../../models/enums/TSDokumentGrundPersonType';
 import TSDokumentGrund from '../../../models/TSDokumentGrund';
 import TSGesuch from '../../../models/TSGesuch';
@@ -29,6 +30,8 @@ describe('dvDokumenteList', function () {
     let gesuchModelManager: GesuchModelManager;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
+
+    beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
         gesuchModelManager = $injector.get('GesuchModelManager');

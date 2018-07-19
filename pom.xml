@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2018.2.0</version>
+    <version>2018.3.0</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -41,8 +41,8 @@
         <database.jdbc.pwd>ebegu</database.jdbc.pwd>
 
         <version.mysqldriver>1.3.7</version.mysqldriver>
-        <version.hibernate>5.1.0.Final</version.hibernate>
-        <hibernate-search.version>5.5.4.Final</hibernate-search.version>
+        <version.hibernate>5.1.14.Final</version.hibernate>
+        <hibernate-search.version>5.5.8.Final</hibernate-search.version>
 
         <version.flyway>3.2.1</version.flyway>
         <version.slf4j>1.7.10</version.slf4j>
@@ -69,7 +69,7 @@
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
                 <artifactId>wildfly-javaee7-with-tools</artifactId>
-                <version>13.0.0.Final</version>
+                <version>12.0.0.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -301,7 +301,8 @@
                 <artifactId>swagger-jaxrs</artifactId>
                 <version>1.5.9</version>
             </dependency>
-            <!--hibernate 5 mit java 8 support-->
+            <!--hibernate 5.1 mit java 8 support, nicht mehr noetig ab 5.2-->
+            <!--https://github.com/hibernate/hibernate-orm/wiki/Migration-Guide-5.2-->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-java8</artifactId>
@@ -664,6 +665,11 @@
                 <artifactId>arquillian-protocol-servlet</artifactId>
                 <version>1.4.0.Final</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.remoting</groupId>
+                <artifactId>jboss-remoting</artifactId>
+                <version>5.0.7.Final</version>
             </dependency>
         </dependencies>
 

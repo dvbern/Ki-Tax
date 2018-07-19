@@ -120,6 +120,10 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate regelnGueltigAb = null;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eingangsdatumSTV = null;
 
 	@Nullable
@@ -240,6 +244,15 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	public void setEingangsdatumSTV(@Nullable LocalDate eingangsdatumSTV) {
 		this.eingangsdatumSTV = eingangsdatumSTV;
+	}
+
+	@Nullable
+	public LocalDate getRegelnGueltigAb() {
+		return regelnGueltigAb;
+	}
+
+	public void setRegelnGueltigAb(@Nullable LocalDate regelnGueltigAb) {
+		this.regelnGueltigAb = regelnGueltigAb;
 	}
 
 	@Nullable
