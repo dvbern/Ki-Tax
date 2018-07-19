@@ -13,10 +13,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-menu-bar ng-if="vm.getPrincipal()" class="user-menu">
+<md-menu-bar ng-if="vm.principal" class="user-menu">
     <md-menu>
-        <button ng-click="$mdMenu.open()" aria-label="{{vm.getPrincipal().getFullName()}}" id="usermenu">
-            <span ng-bind="vm.getPrincipal().getFullName()"></span>
+        <button ng-click="$mdMenu.open()" aria-label="{{vm.principal.getFullName()}}" id="usermenu">
+            <span ng-bind="vm.principal.getFullName()"></span>
             <i class="fa fa-angle-down"></i>
         </button>
 

@@ -15,7 +15,12 @@
 
 import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import TSUser from '../../../models/TSUser';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 require('./dv-pulldown-user-menu.less');
@@ -31,19 +36,32 @@ export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
 
 export class DvPulldownUserMenuController {
 
-    static $inject: any[] = ['$state', 'AuthServiceRS'];
+    private readonly unsubscribe$ = new Subject<void>();
     TSRoleUtil = TSRoleUtil;
+    principal: TSUser;
 
-    constructor(private $state: StateService, private authServiceRS: AuthServiceRS) {
+    static $inject: any[] = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
+
+    constructor(private $state: StateService, private authServiceRS: AuthServiceRS,
+                private authLifeCycleService: AuthLifeCycleService) {
+
         this.TSRoleUtil = TSRoleUtil;
+    }
+
+    $onInit() {
+        this.principal = this.authServiceRS.getPrincipal();
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => { this.principal = this.authServiceRS.getPrincipal(); });
+    }
+
+    $onDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public logout(): void {
         this.$state.go('login', {type: 'logout'});
-    }
-
-    public getPrincipal() {
-        return this.authServiceRS.getPrincipal();
     }
 
     public getVersion(): string {
