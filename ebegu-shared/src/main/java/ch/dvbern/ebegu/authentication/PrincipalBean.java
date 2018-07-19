@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.authentication;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -141,6 +142,11 @@ public class PrincipalBean {
 	public boolean isCallerInAnyOfRole(@Nonnull UserRole... role) {
 		checkNotNull(role);
 		return Arrays.stream(role).map(Enum::name).anyMatch(this::isCallerInRole);
+	}
+
+	public boolean isCallerInAnyOfRole(@Nonnull List<UserRole> roles) {
+		checkNotNull(roles);
+		return roles.stream().anyMatch(this::isCallerInRole);
 	}
 
 	public boolean isCallerInRole(@Nonnull UserRole role) {

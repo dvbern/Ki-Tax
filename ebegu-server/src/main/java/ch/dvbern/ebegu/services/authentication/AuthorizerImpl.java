@@ -32,6 +32,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -304,6 +305,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		boolean allowed = isReadAuthorized(betr);
 		if (!allowed) {
 			throwViolation(betr);
+		}
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
+		if (!principalBean.isCallerInAnyOfRole(UserRole.getAdminSuperAdminRoles())
+				&& !principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getUsername())) {
+			throwViolation(benutzer);
 		}
 	}
 
