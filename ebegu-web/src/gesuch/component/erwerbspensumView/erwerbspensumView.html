@@ -151,7 +151,7 @@
                     </div>
 
                     <!--Zuschlagsgrund-->
-                    <div class="row" ng-if="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum">
+                    <div class="row" ng-if="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum && vm.isZuschlagErwerbspensumConfigured()">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
                                 <label class="md-no-float required" data-translate="ZUSCHLAGSGRUND_WAEHLEN" for="zuschlagsgrund">
@@ -192,7 +192,7 @@
                     </div>
 
                     <!--Zuschlagsprozent-->
-                    <div class="row" ng-if="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum">
+                    <div class="row" ng-if="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum && vm.isZuschlagErwerbspensumConfigured()">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="ZUSCHLAGSPROZENT"  data-translate-value-max="{{vm.maxZuschlagsprozent}}"
