@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
@@ -43,6 +45,8 @@ describe('pendenzenBetreuungenListView', function () {
     let $state: StateService;
     let CONSTANTS: any;
     let gemeindeRS: GemeindeRS;
+    let authServiceRS: AuthServiceRS;
+    let authLifeCycleService: AuthLifeCycleService;
 
     beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
 
@@ -61,6 +65,8 @@ describe('pendenzenBetreuungenListView', function () {
         $state = $injector.get('$state');
         CONSTANTS = $injector.get('CONSTANTS');
         gemeindeRS = $injector.get('GemeindeRS');
+        authServiceRS = $injector.get('AuthServiceRS');
+        authLifeCycleService = $injector.get('AuthLifeCycleService');
     }));
 
     describe('API Usage', function () {
@@ -70,8 +76,9 @@ describe('pendenzenBetreuungenListView', function () {
                 mockRestCalls();
                 spyOn(gesuchsperiodeRS, 'getAllActiveGesuchsperioden').and.returnValue($q.when([TestDataUtil.createGesuchsperiode20162017()]));
                 pendenzBetreuungenListViewController = new PendenzenBetreuungenListViewController(pendenzBetreuungenRS, undefined,
-                    institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state, gemeindeRS);
-                pendenzBetreuungenListViewController.$onInit();
+                    institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state, gemeindeRS,
+                    authServiceRS, authLifeCycleService);
+                pendenzBetreuungenListViewController.initViewModel();
 
                 $scope.$apply();
                 expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toHaveBeenCalled();

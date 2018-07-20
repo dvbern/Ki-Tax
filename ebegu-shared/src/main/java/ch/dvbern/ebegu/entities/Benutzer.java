@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -226,5 +227,12 @@ public class Benutzer extends AbstractEntity {
 
 	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
 		getCurrentBerechtigung().setTraegerschaft(traegerschaft);
+	}
+
+	public Set<Gemeinde> extractGemeindenForUser() {
+		if (this.currentBerechtigung != null) {
+			return this.currentBerechtigung.getGemeindeList();
+		}
+		return Collections.EMPTY_SET;
 	}
 }

@@ -15,12 +15,16 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFilterService} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
 import TSAntragDTO from '../../../models/TSAntragDTO';
@@ -55,6 +59,7 @@ export class DVQuicksearchListConfig implements IComponentOptions {
 
 export class DVQuicksearchListController {
 
+    private readonly unsubscribe$ = new Subject<void>();
     antraege: Array<TSAntragDTO> = []; //muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
 
     itemsByPage: number;
@@ -83,7 +88,7 @@ export class DVQuicksearchListController {
     onUserChanged: (user: any) => void;
 
     static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
+        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS', 'AuthLifeCycleService'];
 
     constructor(private ebeguUtil: EbeguUtil,
                 private $filter: IFilterService,
@@ -92,11 +97,12 @@ export class DVQuicksearchListController {
                 private $state: StateService,
                 private CONSTANTS: any,
                 private authServiceRS: AuthServiceRS,
-                private gemeindeRS: GemeindeRS) {
-    }
+                private gemeindeRS: GemeindeRS,
+                private authLifeCycleService: AuthLifeCycleService) {
 
-    $onInit() {
-        this.initViewModel();
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
     }
 
     public userChanged(selectedUser: TSUser): void {
@@ -106,7 +112,7 @@ export class DVQuicksearchListController {
     private initViewModel() {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
-        this.updateGemeinden();
+        this.updateGemeindenList();
     }
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -136,10 +142,9 @@ export class DVQuicksearchListController {
         });
     }
 
-    public updateGemeinden(): void {
-        this.gemeindeRS.getAllGemeinden().then(response => {
-            this.gemeindenList = angular.copy(response);
-        });
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
+            .then(gemeinden => { this.gemeindenList = gemeinden; });
     }
 
     public getQuicksearchList(): Array<TSAntragDTO> {

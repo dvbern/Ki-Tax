@@ -209,4 +209,13 @@ export class TSRoleUtil {
     public static getAllRolesForKommentarSpalte(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN, TSRole.SACHBEARBEITER_JA, TSRole.STEUERAMT, TSRole.ADMINISTRATOR_SCHULAMT, TSRole.SCHULAMT, TSRole.JURIST, TSRole.REVISOR];
     }
+
+    public static isGemeindeabhaengig(role: TSRole): boolean {
+        return !!this.getAllGemeindeabhaengigeRoles().find(value => value === role);
+    }
+
+    public static getAllGemeindeabhaengigeRoles(): Array<TSRole> {
+        return [TSRole.ADMIN, TSRole.SACHBEARBEITER_JA, TSRole.STEUERAMT, TSRole.ADMINISTRATOR_SCHULAMT,
+            TSRole.SCHULAMT, TSRole.JURIST, TSRole.REVISOR];
+    }
 }

@@ -40,8 +40,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -139,12 +140,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	private Pair<Long, List<Gesuch>> searchAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, @Nonnull SearchMode mode, boolean searchForPendenzen) {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 		UserRole role = user.getRole();
-		Set<AntragStatus> allowedAntragStatus;
-		if (searchForPendenzen) {
-			allowedAntragStatus = AntragStatus.pendenzenForRole(role);
-		} else {
-			allowedAntragStatus = AntragStatus.allowedforRole(role);
-		}
+
+		Set<AntragStatus> allowedAntragStatus = getAntragStatuses(searchForPendenzen, role);
+
 		if (allowedAntragStatus.isEmpty()) {
 			return new ImmutablePair<>(0L, Collections.emptyList());
 		}
@@ -158,17 +156,18 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		@SuppressWarnings("unchecked") // Je nach Abfrage ist das Query String oder Long
 		Root<Gesuch> root = query.from(Gesuch.class);
 		// Join all the relevant relations (except gesuchsteller join, which is only done when needed)
-		Join<Gesuch, Dossier> dossier = root.join(Gesuch_.dossier, JoinType.INNER);
-		Join<Dossier, Fall> fall = dossier.join(Dossier_.fall, JoinType.INNER);
-		Join<Dossier, Benutzer> verantwortlicherBG = dossier.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
-		Join<Dossier, Benutzer> verantwortlicherTS = dossier.join(Dossier_.verantwortlicherTS, JoinType.LEFT);
-		Join<Gesuch, Gesuchsperiode> gesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);
+		Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.INNER);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.INNER);
+		Join<Dossier, Benutzer> joinVerantwortlicherBG = joinDossier.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
+		Join<Dossier, Benutzer> joinVerantwortlicherTS = joinDossier.join(Dossier_.verantwortlicherTS, JoinType.LEFT);
+		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
+		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);
 
-		SetJoin<Gesuch, KindContainer> kindContainers = root.join(Gesuch_.kindContainers, JoinType.LEFT);
-		SetJoin<KindContainer, Betreuung> betreuungen = kindContainers.join(KindContainer_.betreuungen, JoinType.LEFT);
-		Join<KindContainer, Kind> kinder = kindContainers.join(KindContainer_.kindJA, JoinType.LEFT);
-		Join<Betreuung, InstitutionStammdaten> institutionstammdaten = betreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
-		Join<InstitutionStammdaten, Institution> institution = institutionstammdaten.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		SetJoin<Gesuch, KindContainer> joinKindContainers = root.join(Gesuch_.kindContainers, JoinType.LEFT);
+		SetJoin<KindContainer, Betreuung> joinBetreuungen = joinKindContainers.join(KindContainer_.betreuungen, JoinType.LEFT);
+		Join<KindContainer, Kind> joinKinder = joinKindContainers.join(KindContainer_.kindJA, JoinType.LEFT);
+		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdaten = joinBetreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitution = joinInstitutionstammdaten.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 
 		//prepare predicates
 		List<Predicate> predicates = new ArrayList<>();
@@ -176,6 +175,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		// General role based predicates
 		Predicate inClauseStatus = root.get(Gesuch_.status).in(allowedAntragStatus);
 		predicates.add(inClauseStatus);
+
+		filterGemeinde(user, joinGemeinde, predicates);
 
 		// Special role based predicates
 		switch (role) {
@@ -185,24 +186,24 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		case REVISOR:
 		case JURIST:
 			if (searchForPendenzen) {
-				predicates.add(createPredicateJAOrMischGesuche(cb, dossier));
+				predicates.add(createPredicateJAOrMischGesuche(cb, joinDossier));
 			}
 			break;
 		case STEUERAMT:
 			break;
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			predicates.add(cb.equal(institution.get(Institution_.traegerschaft), user.getTraegerschaft()));
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, betreuungen, institutionstammdaten));
+			predicates.add(cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft()));
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
 			break;
 		case SACHBEARBEITER_INSTITUTION:
-			// es geht hier nicht um die institution des zugewiesenen benutzers sondern um die institution des eingeloggten benutzers
-			predicates.add(cb.equal(institution, user.getInstitution()));
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, betreuungen, institutionstammdaten));
+			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des eingeloggten benutzers
+			predicates.add(cb.equal(joinInstitution, user.getInstitution()));
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
 			break;
 		case SCHULAMT:
 		case ADMINISTRATOR_SCHULAMT:
 			if (searchForPendenzen) {
-				predicates.add(createPredicateSCHOrMischGesuche(cb, root, dossier));
+				predicates.add(createPredicateSCHOrMischGesuche(cb, root, joinDossier));
 			}
 			break;
 		default:
@@ -216,12 +217,12 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		if (predicateObjectDto != null) {
 			if (predicateObjectDto.getFallNummer() != null) {
 				// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114" kommen
-				Expression<String> fallNummerAsString = fall.get(Fall_.fallNummer).as(String.class);
+				Expression<String> fallNummerAsString = joinFall.get(Fall_.fallNummer).as(String.class);
 				String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 				predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
 			}
 			if (predicateObjectDto.getGemeinde() != null) {
-				Expression<String> gemeindeExpression = dossier.get(Dossier_.gemeinde).get(Gemeinde_.name);
+				Expression<String> gemeindeExpression = joinDossier.get(Dossier_.gemeinde).get(Gemeinde_.name);
 				predicates.add(cb.like(gemeindeExpression, predicateObjectDto.getGemeinde()));
 			}
 			if (predicateObjectDto.getFamilienName() != null) {
@@ -243,8 +244,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				String[] years = ensureYearFormat(predicateObjectDto.getGesuchsperiodeString());
 				predicates.add(
 					cb.and(
-						cb.equal(cb.function("year", Integer.class, gesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigAb)), years[0]),
-						cb.equal(cb.function("year", Integer.class, gesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigBis)), years[1]))
+						cb.equal(cb.function("year", Integer.class, joinGesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigAb)), years[0]),
+						cb.equal(cb.function("year", Integer.class, joinGesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigBis)), years[1]))
 				);
 			}
 			if (predicateObjectDto.getEingangsdatum() != null) {
@@ -286,28 +287,28 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				predicates.add(cb.equal(root.get(Gesuch_.dokumenteHochgeladen), predicateObjectDto.getDokumenteHochgeladen()));
 			}
 			if (predicateObjectDto.getAngebote() != null) {
-				predicates.add(cb.equal(institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+				predicates.add(cb.equal(joinInstitutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
 			}
 			if (predicateObjectDto.getInstitutionen() != null) {
-				predicates.add(cb.equal(institution.get(Institution_.name), predicateObjectDto.getInstitutionen()));
+				predicates.add(cb.equal(joinInstitution.get(Institution_.name), predicateObjectDto.getInstitutionen()));
 			}
 			if (predicateObjectDto.getKinder() != null) {
-				predicates.add(cb.like(kinder.get(Kind_.vorname), predicateObjectDto.getKindNameForLike()));
+				predicates.add(cb.like(joinKinder.get(Kind_.vorname), predicateObjectDto.getKindNameForLike()));
 			}
 			if (predicateObjectDto.getVerantwortlicherBG() != null) {
 				String[] strings = predicateObjectDto.getVerantwortlicherBG().split(" ");
 				predicates.add(
 					cb.and(
-						cb.equal(verantwortlicherBG.get(Benutzer_.vorname), strings[0]),
-						cb.equal(verantwortlicherBG.get(Benutzer_.nachname), strings[1])
+						cb.equal(joinVerantwortlicherBG.get(Benutzer_.vorname), strings[0]),
+						cb.equal(joinVerantwortlicherBG.get(Benutzer_.nachname), strings[1])
 					));
 			}
 			if (predicateObjectDto.getVerantwortlicherTS() != null) {
 				String[] strings = predicateObjectDto.getVerantwortlicherTS().split(" ");
 				predicates.add(
 					cb.and(
-						cb.equal(verantwortlicherTS.get(Benutzer_.vorname), strings[0]),
-						cb.equal(verantwortlicherTS.get(Benutzer_.nachname), strings[1])
+						cb.equal(joinVerantwortlicherTS.get(Benutzer_.vorname), strings[0]),
+						cb.equal(joinVerantwortlicherTS.get(Benutzer_.nachname), strings[1])
 					));
 			}
 		}
@@ -317,7 +318,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
 			query.select(root.get(Gesuch_.id))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-			constructOrderByClause(antragTableFilterDto, cb, query, root, kinder, gesuchsperiode, institutionstammdaten, institution);
+			constructOrderByClause(antragTableFilterDto, cb, query, root, joinKinder, joinGesuchsperiode, joinInstitutionstammdaten, joinInstitution);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
@@ -348,6 +349,21 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		}
 		return result;
+	}
+
+	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
+		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			Collection<Gemeinde> gemeindenForUser = user.extractGemeindenForUser();
+			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
+			predicates.add(inGemeinde);
+		}
+	}
+
+	private Set<AntragStatus> getAntragStatuses(boolean searchForPendenzen, UserRole role) {
+		if (searchForPendenzen) {
+			return AntragStatus.pendenzenForRole(role);
+		}
+		return AntragStatus.allowedforRole(role);
 	}
 
 	/**

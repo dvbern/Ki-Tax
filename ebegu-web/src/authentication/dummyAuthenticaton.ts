@@ -208,7 +208,7 @@ export class DummyAuthenticationListViewComponent {
         let bern = new TSGemeinde();
         bern.name = 'Bern';
         bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
-        bern.gemeindeNummer = 0;
+        bern.gemeindeNummer = 1;
         bern.enabled = true;
         return bern;
     }
