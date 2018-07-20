@@ -16,6 +16,7 @@
 import {NgModule} from '@angular/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {Ng2StateDeclaration} from '@uirouter/angular';
@@ -41,10 +42,16 @@ export const testdatenState: Ng2StateDeclaration = {
     component: TestdatenViewComponent,
 };
 
+export const batchjobTriggerState: Ng2StateDeclaration = {
+    name: 'batchjobTrigger',
+    url: '/batchjobTrigger',
+    component: BatchjobTriggerViewComponent,
+};
+
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({ states: [ traegerschaftState, testdatenState ] })
+        UIRouterUpgradeModule.forChild({ states: [ traegerschaftState, testdatenState, batchjobTriggerState ] })
     ],
     exports: [],
 })

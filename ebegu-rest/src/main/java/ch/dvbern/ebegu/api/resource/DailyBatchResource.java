@@ -29,9 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.DailyBatch;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,7 +42,7 @@ import org.slf4j.LoggerFactory;
 @Path("dailybatch")
 @Stateless
 @Api(description = "Resource für die DailyBatch Jobs")
-@RolesAllowed({ UserRoleName.SUPER_ADMIN })
+@RolesAllowed(UserRoleName.SUPER_ADMIN)
 public class DailyBatchResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DailyBatchResource.class);
@@ -52,18 +50,32 @@ public class DailyBatchResource {
 	@Inject
 	private DailyBatch dailyBatch;
 
-	@ApiOperation(value = "Führt den Job runBatchMahnungFristablauf aus.", response = JaxGesuch.class)
+	@ApiOperation(value = "Führt den Job runBatchCleanDownloadFiles aus.", response = String.class)
+	@Nullable
+	@GET
+	@Path("/cleanDownloadFiles")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response runBatchCleanDownloadFiles() {
+		dailyBatch.runBatchCleanDownloadFiles();
+		String info = "Manuelle ausführung! Batchjob CleanDownloadFiles durchgefuehrt";
+		LOGGER.info(info);
+		return Response.ok(info).build();
+	}
+
+	@ApiOperation(value = "Führt den Job runBatchMahnungFristablauf aus.", response = String.class)
 	@Nullable
 	@GET
 	@Path("/mahnungFristAblauf")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response runBatchMahnungFristablauf() throws EbeguException {
+	public Response runBatchMahnungFristablauf() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchMahnungFristablauf();
 		try {
 			Boolean resultat = booleanFuture.get();
-			LOGGER.info("Manuelle ausführung! Batchjob MahnungFristablauf durchgefuehrt mit Resultat: {}", resultat);
-			return Response.ok().build();
+			String info = String.format("Manuelle ausführung! Batchjob MahnungFristablauf durchgefuehrt mit Resultat: {%s}", resultat);
+			LOGGER.info(info);
+			return Response.ok(info).build();
 		} catch (InterruptedException | ExecutionException e) {
 			LOGGER.error("Manuelle ausführung! Batch-Job Mahnung Fristablauf konnte nicht durchgefuehrt werden!", e);
 			return Response.serverError().build();

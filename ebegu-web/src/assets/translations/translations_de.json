@@ -711,6 +711,7 @@
     "GANZER_ABZUG": "100%",
     "AUSLOGGEN": "Ausloggen",
     "PARAMETER": "Parameter",
+    "BATCHJOBTRIGGER": "Batchjobs manuell auslösen",
     "TSRole_SUPER_ADMIN": "System",
     "TSRole_ADMIN": "Administrator",
     "TSRole_SACHBEARBEITER_JA": "Sachbearbeiter Jugendamt",
