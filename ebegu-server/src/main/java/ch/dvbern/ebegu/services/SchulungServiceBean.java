@@ -227,6 +227,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	@Override
 	public void createSchulungsdaten() {
+		// TODO wir sollten fuer die Schulung auch eine Gemeinde auswaehlen (sollte bei der Umsetzung von Schulung geaendert werden)
 		Gemeinde gemeinde = gemeindeService.getFirst();
 		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
 		Institution institutionForelle = createtInstitution(INSTITUTION_FORELLE_ID, "Forelle", traegerschaftFisch);

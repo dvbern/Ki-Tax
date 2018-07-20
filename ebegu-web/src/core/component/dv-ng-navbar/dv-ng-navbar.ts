@@ -14,7 +14,21 @@
  */
 
 import {Component} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {StateService} from '@uirouter/core';
+import {Observable} from 'rxjs/Observable';
+import {fromPromise} from 'rxjs/observable/fromPromise';
+import {of} from 'rxjs/observable/of';
+import {filter} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {INewFallStateParams} from '../../../gesuch/gesuch.route';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+
 require('./dv-ng-navbar.less');
 
 @Component({
@@ -25,7 +39,59 @@ export class DvNgNavbar {
 
     TSRoleUtil: any = TSRoleUtil;
 
-    constructor() {
+    constructor(private authServiceRS: AuthServiceRS,
+                private dialog: MatDialog,
+                private $state: StateService,
+                private gemeindeRS: GemeindeRS) {
     }
 
+    public getGemeindeIDFromUser(): Observable<string> {
+        if (this.authServiceRS.getPrincipal().hasJustOneGemeinde()) {
+            return of(this.authServiceRS.getPrincipal().extractCurrentGemeindeId());
+
+        } else {
+            const dialogConfig = new MatDialogConfig();
+            dialogConfig.disableClose = false; // dialog is canceled by clicking outside
+            dialogConfig.autoFocus = true;
+            dialogConfig.data = {
+                gemeindeList: this.getListOfGemeinden()
+            };
+
+            return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+        }
+
+    }
+
+    /**
+     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert aber alles
+     * machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
+     */
+    private getListOfGemeinden(): Observable<TSGemeinde[]> {
+        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
+            return fromPromise(this.gemeindeRS.getAllGemeinden());
+        } else {
+            return of(this.authServiceRS.getPrincipal().extractCurrentGemeinden());
+        }
+    }
+
+    public createNewFall(): void {
+        this.getGemeindeIDFromUser()
+            .pipe(
+                filter(gemeindeId => !!gemeindeId)
+            )
+            .subscribe(
+                (gemeindeId) => {
+                    let params: INewFallStateParams = {
+                        gesuchsperiodeId: null,
+                        createMutation: null,
+                        createNew: 'true',
+                        gesuchId: null,
+                        dossierId: null,
+                        gemeindeId: gemeindeId,
+                        eingangsart: TSEingangsart.PAPIER,
+                    };
+                    this.$state.go('gesuch.fallcreation', params);
+                }
+            );
+    }
 }
