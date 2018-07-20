@@ -223,11 +223,14 @@ export default class DVSTPersistAntraege implements IDirective {
     }
 
     private extractVerantwortlicherFullName() {
-        let berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
-        if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
-            return {verantwortlicherTS: this.authServiceRS.getPrincipal().getFullName()};
-        } else { //JA
-            return {verantwortlicherBG: this.authServiceRS.getPrincipal().getFullName()};
+        if (this.authServiceRS.getPrincipal()) {
+            let berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
+            if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
+                return {verantwortlicherTS: this.authServiceRS.getPrincipal().getFullName()};
+            } else { //JA
+                return {verantwortlicherBG: this.authServiceRS.getPrincipal().getFullName()};
+            }
         }
+        return '';
     }
 }

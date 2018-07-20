@@ -41,11 +41,6 @@
                     <a uiSref="faelle" [textContent]="'MENU_ALL_FAELLE' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <a uiSref="gesuch.fallcreation" [uiParams]="{createNew: true, gesuchId: null, dossierId: null, eingangsart: 'PAPIER'}"
-                       [textContent]="'MENU_FALL_EROEFFNEN' | translate"></a>
-                </li>
-                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForZahlungen()">
                     <a uiSref="zahlungsauftrag" [textContent]="'MENU_ZAHLUNG' | translate"></a>
                 </li>
@@ -59,5 +54,18 @@
                 </li>
             </ul>
         </div> <!--/.nav-collapse -->
+
+        <!-- TODO ramon move div to the right-->
+        <div id="navbar_falleroeffnen" class="navbar-header">
+            <ul>
+                <li uiSrefActive="active"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    <i class="fa fa-plus-square"></i>
+                    <button (click)="createNewFall()"
+                            [textContent]="'MENU_FALL_EROEFFNEN' | translate">
+                    </button>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>

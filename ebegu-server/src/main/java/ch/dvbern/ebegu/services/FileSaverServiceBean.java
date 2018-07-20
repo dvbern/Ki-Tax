@@ -192,9 +192,9 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	private void deleteFileIfTokenExpired(Path path) {
-		long l = path.toFile().lastModified();
+		long lastModified = path.toFile().lastModified();
 		long now = System.currentTimeMillis();
-		if (Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES < now-l) {
+		if (Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES < now-lastModified) {
 			LOG.info("Deleting File {}",  path.getFileName());
 			try {
 				Files.delete(path);

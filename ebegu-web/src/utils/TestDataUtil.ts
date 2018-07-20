@@ -16,6 +16,7 @@
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
+import TSGemeinde from '../models/TSGemeinde';
 import DateUtil from './DateUtil';
 import {IHttpBackendService} from 'angular';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -191,5 +192,13 @@ export default class TestDataUtil {
                 argumentList: null,
             }
         };
+    }
+
+    public static createGemeinde(): TSGemeinde {
+        let gemeinde: TSGemeinde = new TSGemeinde();
+        gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
+        gemeinde.name = 'Ostermundigen';
+        gemeinde.gemeindeNummer = 2;
+        return gemeinde;
     }
 }
