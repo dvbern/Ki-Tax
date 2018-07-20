@@ -96,11 +96,11 @@
                         <td title="{{row.sender.getFullName()}}"
                             ng-bind="row.sender.getFullName()"></td>
                         <!-- Fall-Nummer -->
-                        <td class="ellipsis" title="{{vm.addZerosToFallNummer(row.fall.fallNummer)}}"
-                            ng-bind="vm.addZerosToFallNummer(row.fall.fallNummer)"></td>
+                        <td class="ellipsis" title="{{vm.addZerosToFallNummer(row.dossier.fall.fallNummer)}}"
+                            ng-bind="vm.addZerosToFallNummer(row.dossier.fall.fallNummer)"></td>
                         <!-- Familie -->
-                        <td class="ellipsis" title="{{row.fall.besitzer.getFullName()}}"
-                            ng-bind="row.fall.besitzer.getFullName()"></td>
+                        <td class="ellipsis" title="{{row.dossier.fall.besitzer.getFullName()}}"
+                            ng-bind="row.dossier.fall.besitzer.getFullName()"></td>
                         <!-- Betreff -->
                         <td class="ellipsis" title="{{row.subject}}"
                             ng-bind="row.subject"></td>
