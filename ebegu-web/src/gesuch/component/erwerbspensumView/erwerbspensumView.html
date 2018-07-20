@@ -131,7 +131,7 @@
                     </div>
 
                     <!--Zuschlag zu Erwerbspensum-->
-                    <div class="row" ng-show="vm.isZuschlagErwerbspensumConfigured()">
+                    <div class="row" ng-if="vm.isZuschlagErwerbspensumConfigured()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum"
