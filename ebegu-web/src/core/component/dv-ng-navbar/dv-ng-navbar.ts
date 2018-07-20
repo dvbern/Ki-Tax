@@ -69,7 +69,6 @@ export class DvNgNavbar {
     private getListOfGemeinden(): Observable<TSGemeinde[]> {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
             return fromPromise(this.gemeindeRS.getAllGemeinden());
-
         } else {
             return of(this.authServiceRS.getPrincipal().extractCurrentGemeinden());
         }

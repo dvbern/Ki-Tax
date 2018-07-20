@@ -76,7 +76,6 @@ public class JaxGemeinde extends JaxAbstractDTO {
 			builder.append(this.isEnabled(), parsedEntity.isEnabled());
 			return builder.toComparison();
 		}
-
 		return builder.toComparison();
 	}
 }

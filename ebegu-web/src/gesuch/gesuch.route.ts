@@ -678,7 +678,6 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
             let gemeindeId = $stateParams.gemeindeId;
             //initialize gesuch
             return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId);
-
         } else {
             let gesuchIdParam = $stateParams.gesuchId;
             if (!gesuchIdParam) {
@@ -719,7 +718,6 @@ export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelMana
     return createEmptyGesuchFromGesuch($stateParams, gesuchModelManager, $q, TSAntragTyp.ERNEUERUNGSGESUCH);
 }
 
-
 function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchModelManager: GesuchModelManager,
                                      $q: any, antragtyp: TSAntragTyp): IPromise<TSGesuch> {
     if ($stateParams) {
@@ -731,7 +729,6 @@ function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchMo
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
                 gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
-
             } else if (antragtyp === TSAntragTyp.MUTATION) {
                 gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
             }
