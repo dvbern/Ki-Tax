@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 
 public interface DailyBatch {
 
-	void runBatchCleanDownloadFiles();
+	Future<Boolean> runBatchCleanDownloadFiles();
 
 	Future<Boolean> runBatchMahnungFristablauf();
 

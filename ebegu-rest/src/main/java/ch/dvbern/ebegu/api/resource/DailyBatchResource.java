@@ -55,12 +55,19 @@ public class DailyBatchResource {
 	@GET
 	@Path("/cleanDownloadFiles")
 	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchCleanDownloadFiles() {
-		dailyBatch.runBatchCleanDownloadFiles();
-		String info = "Manuelle ausführung! Batchjob CleanDownloadFiles durchgefuehrt";
-		LOGGER.info(info);
-		return Response.ok(info).build();
+		Future<Boolean> booleanFuture = dailyBatch.runBatchCleanDownloadFiles();
+		try {
+			Boolean resultat = booleanFuture.get();
+			dailyBatch.runBatchCleanDownloadFiles();
+			String info = String.format("Manuelle ausführung! Batchjob CleanDownloadFiles durchgefuehrt mit Resultat: {%s}", resultat);
+			LOGGER.info(info);
+			return Response.ok(info).build();
+		} catch (InterruptedException | ExecutionException e) {
+			LOGGER.error("Manuelle ausführung! Batch-Job Mahnung CleanDownloadFiles konnte nicht durchgefuehrt werden!", e);
+			return Response.serverError().build();
+		}
 	}
 
 	@ApiOperation(value = "Führt den Job runBatchMahnungFristablauf aus.", response = String.class)
@@ -68,7 +75,7 @@ public class DailyBatchResource {
 	@GET
 	@Path("/mahnungFristAblauf")
 	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchMahnungFristablauf() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchMahnungFristablauf();
 		try {

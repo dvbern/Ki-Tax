@@ -21,7 +21,6 @@ import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 
 require('./batchjobTrigger.less');
 let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
-let linkDialogTempl = require('../../../gesuch/dialog/linkDialogTemplate.html');
 
 @Component({
     selector: 'batchjob-trigger-view',
@@ -30,6 +29,7 @@ let linkDialogTempl = require('../../../gesuch/dialog/linkDialogTemplate.html');
 export class BatchjobTriggerViewComponent implements OnInit {
 
     constructor(private dvDialog: DvDialog, private databaseMigrationRS: DatabaseMigrationRS, private dailyBatchRS: DailyBatchRS) {
+        //todo use our newer dialog for ng
     }
 
     public ngOnInit(): void {
