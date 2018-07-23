@@ -15,23 +15,21 @@
 
 import {Component, OnInit} from '@angular/core';
 import {IPromise} from 'angular';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
-import {TestFaelleRS} from '../../service/testFaelleRS.rest';
-import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
-import {LinkDialogController} from '../../../gesuch/dialog/LinkDialogController';
-import TSUser from '../../../models/TSUser';
-import UserRS from '../../../core/service/userRS.rest';
-import ErrorService from '../../../core/errors/service/ErrorService';
 import * as moment from 'moment';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import UserRS from '../../../core/service/userRS.rest';
 import ZahlungRS from '../../../core/service/zahlungRS.rest';
-import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
+import {LinkDialogController} from '../../../gesuch/dialog/LinkDialogController';
+import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
+import TSGemeinde from '../../../models/TSGemeinde';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSUser from '../../../models/TSUser';
+import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
+import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 
 require('./testdatenView.less');
 let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
@@ -62,9 +60,9 @@ export class TestdatenViewComponent implements OnInit {
     devMode: boolean;
 
     constructor(testFaelleRS: TestFaelleRS, private dvDialog: DvDialog, private userRS: UserRS,
-                private errorService: ErrorService, private gesuchsperiodeRS: GesuchsperiodeRS, private databaseMigrationRS: DatabaseMigrationRS,
+                private errorService: ErrorService, private gesuchsperiodeRS: GesuchsperiodeRS,
                 private zahlungRS: ZahlungRS, private applicationPropertyRS: ApplicationPropertyRS,
-                private gesuchRS: GesuchRS, private dailyBatchRS: DailyBatchRS, private gemeindeRS: GemeindeRS) {
+                private gesuchRS: GesuchRS, private gemeindeRS: GemeindeRS) {
         this.testFaelleRS = testFaelleRS;
     }
 
@@ -185,10 +183,6 @@ export class TestdatenViewComponent implements OnInit {
         });
     }
 
-    public processScript(script: string): void {
-        this.databaseMigrationRS.processScript(script);
-    }
-
     public zahlungenKontrollieren(): void {
         this.zahlungRS.zahlungenKontrollieren();
     }
@@ -215,21 +209,5 @@ export class TestdatenViewComponent implements OnInit {
             .then(() => {   //User confirmed removal
                 this.gesuchRS.gesuchVerfuegen(this.verfuegenGesuchid);
             });
-    }
-
-    public runBatchMahnungFristablauf(): void {
-        this.dailyBatchRS.runBatchMahnungFristablauf().then((response) => {
-            let text: string = '';
-            if (response) {
-                text = 'MAHNUNG_BATCH_EXECUTED_OK';
-            } else {
-                text = 'MAHNUNG_BATCH_EXECUTED_ERROR';
-            }
-            this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
-                title: text
-            }).then(() => {
-                //do nothing
-            });
-        });
     }
 }

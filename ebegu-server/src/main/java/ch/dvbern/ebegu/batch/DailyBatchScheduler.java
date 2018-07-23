@@ -40,7 +40,13 @@ public class DailyBatchScheduler {
 
 	@Schedule(second = "59", minute = "59", hour = "23", persistent = false)
 	public void runBatchCleanDownloadFiles() {
-		dailyBatch.runBatchCleanDownloadFiles();
+		Future<Boolean> booleanFuture = dailyBatch.runBatchCleanDownloadFiles();
+		try {
+			Boolean resultat = booleanFuture.get();
+			LOGGER.info("Batchjob CleanDownloadFiles durchgefuehrt mit Resultat: {}", resultat);
+		} catch (InterruptedException | ExecutionException e) {
+			LOGGER.error("Batch-Job CleanDownloadFiles konnte nicht durchgefuehrt werden!", e);
+		}
 	}
 
 	@Schedule(second = "59", minute = "58", hour = "23", persistent = false)
