@@ -21,6 +21,7 @@ import {InstitutionRS} from '../core/service/institutionRS.rest';
 import './admin.module.less';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
 import {InstitutionenListViewComponentConfig} from './component/institutionenListView/institutionenListView';
 import {InstitutionStammdatenViewComponentConfig} from './component/institutionStammdatenView/institutionStammdatenView';
@@ -60,6 +61,10 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .directive(
         'testdatenView',
         downgradeComponent({component: TestdatenViewComponent}) as angular.IDirectiveFactory
+    )
+    .directive(
+        'batchjobTriggerView',
+        downgradeComponent({component: BatchjobTriggerViewComponent}) as angular.IDirectiveFactory
     )
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())

@@ -15,8 +15,11 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatDialogModule, MatSelectModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
+import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 
@@ -24,19 +27,27 @@ import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click
     imports: [
         TranslateModule,
         CommonModule,
+        MatDialogModule,
+        MatSelectModule,
+        FormsModule,
     ],
     declarations: [
         DvNgDebounceClickDirective,
         DvNgErrorMessages,
         DvNgShowElementDirective,
+        DvNgGemeindeDialogComponent,
     ],
     entryComponents: [
         DvNgErrorMessages,
+        DvNgGemeindeDialogComponent,
     ],
     exports: [
         DvNgDebounceClickDirective,
         DvNgErrorMessages,
         DvNgShowElementDirective,
+        DvNgGemeindeDialogComponent,
+        MatSelectModule,
+        FormsModule,
     ],
 })
 export class NgSharedModule {

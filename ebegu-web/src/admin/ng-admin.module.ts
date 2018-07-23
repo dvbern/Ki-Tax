@@ -15,7 +15,6 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -34,6 +33,7 @@ import {
     zahlungRSProvider
 } from '../hybridTools/ajs-upgraded-providers';
 import {NgSharedModule} from '../shared/ng-shared.module';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
@@ -44,7 +44,6 @@ import {MatTableModule} from '@angular/material/table';
         CommonModule,
         TranslateModule,
         NgAdminRoutingModule,
-        FormsModule,
         MatTableModule,
         MatSortModule,
         MatRadioModule,
@@ -56,11 +55,13 @@ import {MatTableModule} from '@angular/material/table';
     ],
     declarations: [
         TraegerschaftViewComponent,
-        TestdatenViewComponent
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent
     ],
     entryComponents: [
         TraegerschaftViewComponent,
-        TestdatenViewComponent
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent
     ],
     providers: [
         traegerschaftRSProvider,

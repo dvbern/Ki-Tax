@@ -14,10 +14,14 @@
  */
 
 import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {ISubscription} from 'rxjs/Subscription';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
@@ -25,22 +29,50 @@ import UserRS from '../../service/userRS.rest';
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
- * The information will be stored in an angular-service, whi
+ * The information will be stored in an angular-service.
  */
 export default class DVSTPersistAntraege implements IDirective {
-    static $inject: string[] = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS'];
 
     restrict = 'A';
     require = ['^stTable', '^dvAntragList'];
     link: IDirectiveLinkFn;
+    obss: ISubscription;
+
+    static $inject: string[] = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
+        'AuthLifeCycleService'];
 
     /* @ngInject */
     constructor(private userRS: UserRS,
                 private institutionRS: InstitutionRS,
                 private authServiceRS: AuthServiceRS,
                 private dVsTPersistService: DVsTPersistService,
-                private gemeindeRS: GemeindeRS) {
+                private gemeindeRS: GemeindeRS,
+                private authLifeCycleService: AuthLifeCycleService) {
+
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrlArray: any) => {
+            this.obss = this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+                .subscribe(() => this.loadData(attrs, ctrlArray, scope, dVsTPersistService));
+
+            scope.$on('$destroy', () => {
+                this.destroy();
+            });
+        };
+    }
+
+    /**
+     * Die Directive wird nicht destroyed, daher muss man beim destroyen vom Scope die observables unsubscriben. Sollte dies nicht
+     * gemacht werden, bleibt die Directive aktiv und der Code wird immer wieder ausfgefuehrt
+     *
+     * INFO: wir speichern die Observables in eine ISubscription die beim destroyen von scope unsubscribed werden muss. Die Alternative
+     * mit takeUntil ist in diesem Fall (fuer eine Directive) nicht so gut weil es nicht completen kann. Da die Directive nur einmal erstellt
+     * wird, wird der Constructor nur einmal ausgefuehrt und die unsubscription$ object deshalb nur einmal erstellt.
+     */
+    private destroy() {
+        this.obss.unsubscribe();
+    }
+
+    private loadData(attrs: angular.IAttributes, ctrlArray: any, scope: angular.IScope, dVsTPersistService: DVsTPersistService) {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) { // just to be sure that the user has the required role
             let nameSpace: string = attrs.dvStPersistAntraege;
             let stTableCtrl: any = ctrlArray[0];
             let antragListController: DVAntragListController = ctrlArray[1];
@@ -89,7 +121,7 @@ export default class DVSTPersistAntraege implements IDirective {
                 stTableCtrl.pipe();
 
             }
-        };
+        }
     }
 
     /**
@@ -154,10 +186,11 @@ export default class DVSTPersistAntraege implements IDirective {
                            institutionRS: any,
                            authServiceRS: any,
                            dVsTPersistService: any,
-                           gemeindeRS: any) =>
-            new DVSTPersistAntraege(userRS, institutionRS, authServiceRS, dVsTPersistService, gemeindeRS);
+                           gemeindeRS: any,
+                           authLifeCycleService: any) =>
+            new DVSTPersistAntraege(userRS, institutionRS, authServiceRS, dVsTPersistService, gemeindeRS, authLifeCycleService);
 
-        directive.$inject = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS'];
+        directive.$inject = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS', 'AuthLifeCycleService'];
         return directive;
     }
 
@@ -190,11 +223,14 @@ export default class DVSTPersistAntraege implements IDirective {
     }
 
     private extractVerantwortlicherFullName() {
-        let berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
-        if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
-            return {verantwortlicherTS: this.authServiceRS.getPrincipal().getFullName()};
-        } else { //JA
-            return {verantwortlicherBG: this.authServiceRS.getPrincipal().getFullName()};
+        if (this.authServiceRS.getPrincipal()) {
+            let berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
+            if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
+                return {verantwortlicherTS: this.authServiceRS.getPrincipal().getFullName()};
+            } else { //JA
+                return {verantwortlicherBG: this.authServiceRS.getPrincipal().getFullName()};
+            }
         }
+        return '';
     }
 }

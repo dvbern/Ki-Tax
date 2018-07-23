@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
@@ -80,6 +82,9 @@ public class BenutzerResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private Authorizer authorizer;
 
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN oder SACHBEARBEITER_JA zurueck", responseContainer = "List", response = JaxAuthLoginElement.class)
@@ -167,12 +172,13 @@ public class BenutzerResource {
 	@Path("/username/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, ADMINISTRATOR_SCHULAMT})
+	@PermitAll
 	public JaxAuthLoginElement findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
 		Objects.requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
+		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
 		return benutzerOptional
 			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))

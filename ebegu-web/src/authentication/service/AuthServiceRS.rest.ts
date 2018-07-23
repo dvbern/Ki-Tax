@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import UserRS from '../../core/service/userRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSUser from '../../models/TSUser';
@@ -30,14 +31,16 @@ export default class AuthServiceRS {
 
     private principal: TSUser;
 
-    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'base64', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService'];
+    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'base64', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
+        'UserRS'];
 
     /* @ngInject */
     constructor(private $http: IHttpService, private CONSTANTS: any, private $q: IQService,
                 private $timeout: ITimeoutService,
                 private $cookies: ICookiesService, private base64: any, private ebeguRestUtil: EbeguRestUtil,
                 private httpBuffer: HttpBuffer,
-                private authLifeCycleService: AuthLifeCycleService) {
+                private authLifeCycleService: AuthLifeCycleService,
+                private userRS: UserRS) {
     }
 
     public getPrincipal(): TSUser {
@@ -65,9 +68,10 @@ export default class AuthServiceRS {
                     this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in in');
                     return this.$timeout((): any => { // Response cookies are not immediately accessible, so lets wait for a bit
                         try {
-                            this.initWithCookie();
+                            return this.initWithCookie().then(() => {
+                                return this.principal;
+                            });
 
-                            return this.principal;
                         } catch (e) {
                             return this.$q.reject();
                         }
@@ -79,25 +83,25 @@ export default class AuthServiceRS {
         return undefined;
     }
 
-    public initWithCookie(): boolean {
+    public initWithCookie(): IPromise<TSUser> {
         let authIdbase64 = this.$cookies.get('authId');
         if (authIdbase64) {
             authIdbase64 = decodeURIComponent(authIdbase64);
             if (authIdbase64) {
                 try {
                     let authData = angular.fromJson(this.base64.decode(authIdbase64));
-                    this.principal = new TSUser(authData.vorname, authData.nachname, authData.authId, '', authData.email, authData.mandant, authData.role);
-                    this.$timeout(() => {
+                    // we take the complete user from Server and store it in principal
+                    return this.userRS.findBenutzer(authData.authId).then((response) => {
+                        this.principal = response;
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
-                    }); //bei login muessen wir warten bis angular alle componenten erstellt hat bevor wir das event werfen
-
-                    return true;
+                        return this.principal;
+                    });
                 } catch (e) {
                     console.log('cookie decoding failed', e);
                 }
             }
         }
-        return false;
+        return this.$q.when(undefined);
     }
 
     public logoutRequest() {

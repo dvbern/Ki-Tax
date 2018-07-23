@@ -186,4 +186,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         });
     }
 
+    public isZuschlagErwerbspensumConfigured(): boolean {
+        // Wird aktuell ausgeblendet. Koennte aber spaeter von spezifischen Gemeinden einschaltet werden
+        return false;
+    }
 }

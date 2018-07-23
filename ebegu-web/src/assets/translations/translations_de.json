@@ -711,6 +711,7 @@
     "GANZER_ABZUG": "100%",
     "AUSLOGGEN": "Ausloggen",
     "PARAMETER": "Parameter",
+    "BATCHJOBTRIGGER": "Batchjobs manuell auslösen",
     "TSRole_SUPER_ADMIN": "System",
     "TSRole_ADMIN": "Administrator",
     "TSRole_SACHBEARBEITER_JA": "Sachbearbeiter Jugendamt",
@@ -747,7 +748,7 @@
     "EKVI_MONAT_DES_EREIGNISSES_1_HELP": "Bitte wählen Sie in der Drop-down-Liste den Monat, in dem sich Ihr Einkommen verschlechtert hat.",
     "EKVI_MONAT_DES_EREIGNISSES_2_HELP": "Bitte wählen Sie in der Drop-down-Liste den Monat, in dem sich Ihr Einkommen verschlechtert hat. Hat sich Ihr Einkommen bereits im letzten Jahr verschlechtert, wählen Sie bitte «Vorjahr». Ihre Einkommensverschlechterung wird dann ab Januar berücksichtigt.",
     "EKVI_GRUND_DES_EREIGNISSES": "Grund des Ereignisses",
-    "EKVI_ZUSAETZLICHE_FRAGEN": "Zusätzliche Fragen für die Einkommensberschlechterung zum Jahr {{basisjahr}}",
+    "EKVI_ZUSAETZLICHE_FRAGEN": "Zusätzliche Fragen für die Einkommensverschlechterung zum Jahr {{basisjahr}}",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensverschlechterung {{gesuchsteller}} {{basisjahr}}",
     "EKVI_NETTOLOHN_JANUARY": "Nettoeinkommen Januar ",
     "EKVI_NETTOLOHN_FEBRUARY": "Nettoeinkommen Februar",
@@ -910,6 +911,7 @@
     "VORLAGE_FINANZIELLE_SITUATION": "Vorlage finanzielle Situation ",
     "VORLAGE_BEGLEITSCHREIBEN": "Vorlage Deckblatt",
     "VORLAGE_VERFUEGUNG_KITA": "Vorlage Verfügung Kita",
+    "VORLAGE_VERFUEGUNG_TAGESFAMILIEN": "Vorlage Verfügung Tagesfamilie",
     "VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER": "Vorlage Brief Tagesstätte Schulkinder",
     "TOOLBAR_ERSTGESUCH": "Erstgesuch",
     "TOOLBAR_ERSTGESUCH_NO_DATE": "Erstgesuch",
@@ -1237,6 +1239,8 @@
     "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "Die BetreuungsId wurde ins Clipboard übernommen, bitte übernehmen Sie die Daten in Scolaris, bevor Sie okay klicken",
     "AKZEPTIERT": "Finanzielle Situation akzeptiert",
     "ABGELEHNT": "Finanzielle Situation abgelehnt",
+    "CLEANDOWNLOADFILES_BATCH_EXECUTED_OK": "Abgelaufene Download Files wurden erfolgreich gelöscht",
+    "CLEANDOWNLOADFILES_EXECUTED_ERROR": "Ein Fehler ist beim Löschen der Download Files aufgetreten",
     "MAHNUNG_BATCH_EXECUTED_OK": "Die Prüfung der Mahnungen wurde erfolgreich durchgeführt",
     "MAHNUNG_BATCH_EXECUTED_ERROR": "Ein Fehler ist bei der Prüfung der Mahnungen aufgetreten",
     "BGNUMMER": "BG-Nummer",
@@ -1306,5 +1310,6 @@
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT": "Mit dieser Rolle weisen Sie dem Benutzer weitgehende Rechte zu. Sind Sie sicher, dass Sie fortfahren wollen?",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE": "Admin-Rechte",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT": "Mit diesem Schritt geben Sie dem Benutzer Administrationsrechte in Ki-Tax. Wollen Sie fortfahren?",
-    "BENUTZER_STATISTIK": "BENUTZER"
+    "BENUTZER_STATISTIK": "BENUTZER",
+    "GEMEINDE_PAPIERGESUCH_AUSWAEHLEN": "Gemeinde für das Papiergesuch auswählen"
 }

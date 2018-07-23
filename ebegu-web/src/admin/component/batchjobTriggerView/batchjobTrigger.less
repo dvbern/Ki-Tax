@@ -1,0 +1,69 @@
+/*
+ * Ki-Tax: System for the management of external childcare subsidies
+ * Copyright (C) 2017 City of Bern Switzerland
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+@import '../../../style/variables.less';
+
+.batchjobTriggerView {
+
+    #propName.smallfont, #propVal.smallfont {
+        font-size: 1.2rem;
+    }
+    input[type="text"], select {
+        background: rgb(240, 240, 240);
+    }
+
+    .btn-testfall {
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+
+    .input-testfall {
+        background: #F0F0F0;
+        padding: 1rem;
+        .md-input-focused & {
+            padding: 1rem;
+        }
+        &--datepicker {
+            width: calc(100% - 30px);
+        }
+    }
+    mat-datepicker-toggle.testfall-datepicker {
+        background: @contrast-light;
+        display: block;
+        width: 4rem;
+        float: right;
+        height: 4rem;
+        button.mat-icon-button {
+            height: 4rem;
+            width: 4rem;
+            line-height: 2.0rem;
+            font-size: 1rem;
+        }
+    }
+    .testfall-button {
+        margin-top: 3rem;
+
+    }
+    .testfall-button-duo + .testfall-button-duo {
+        margin-left: 32px;
+    }
+    label {
+        color: @black;
+    }
+    table {
+        min-width: 0 !important;
+    }
+
+}
+

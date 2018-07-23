@@ -14,6 +14,10 @@
  */
 
 import {IDirective, IDirectiveFactory} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import TSUser from '../../../models/TSUser';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import UserRS from '../../service/userRS.rest';
@@ -49,6 +53,8 @@ export class DVUserselect implements IDirective {
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
 export class UserselectController {
+
+    private readonly unsubscribe$ = new Subject<void>();
     selectedUser: TSUser;
     smartTable: any;
     userList: Array<TSUser>;
@@ -59,9 +65,10 @@ export class UserselectController {
     onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     schulamt: string;
 
-    static $inject: string[] = ['UserRS', 'AuthServiceRS'];
+    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'AuthLifeCycleService'];
     /* @ngInject */
-    constructor(private userRS: UserRS, private authService: AuthServiceRS) {
+    constructor(private userRS: UserRS, private authServiceRS: AuthServiceRS,
+                private authLifeCycleService: AuthLifeCycleService) {
 
     }
 
@@ -69,7 +76,10 @@ export class UserselectController {
     $onInit() {
         this.updateUserList();
         if (!this.initialAll) { //tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
-            this.selectedUser = this.authService.getPrincipal();
+            this.selectedUser = this.authServiceRS.getPrincipal();
+            this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+                .pipe(takeUntil(this.unsubscribe$))
+                .subscribe(() => { this.selectedUser = this.authServiceRS.getPrincipal(); });
         }
         //initial nach aktuell eingeloggtem filtern
         if (this.smartTable && !this.initialAll && this.selectedUser) {
@@ -78,6 +88,11 @@ export class UserselectController {
         this.valueChanged = () => {
             this.onUserChanged({user: this.selectedUser});
         };
+    }
+
+    $onDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private updateUserList(): void {

@@ -15,13 +15,17 @@
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
 import {ApplicationPropertyRS} from '../../admin/service/applicationPropertyRS.rest';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {ReportRS} from '../../core/service/reportRS.rest';
 import ZahlungRS from '../../core/service/zahlungRS.rest';
 import {RemoveDialogController} from '../../gesuch/dialog/RemoveDialogController';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
@@ -47,6 +51,7 @@ export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
 
 export class ZahlungsauftragViewController {
 
+    private readonly unsubscribe$ = new Subject<void>();
     form: IFormController;
     private zahlungsauftragen: Array<TSZahlungsauftrag>;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
@@ -59,14 +64,18 @@ export class ZahlungsauftragViewController {
     minDateForTestlauf: Moment;
 
     static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
-        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
+        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate', 'AuthLifeCycleService'];
 
     constructor(private zahlungRS: ZahlungRS, private CONSTANTS: any,
                 private $state: StateService, private downloadRS: DownloadRS,
                 private applicationPropertyRS: ApplicationPropertyRS,
                 private reportRS: ReportRS, private authServiceRS: AuthServiceRS, private ebeguUtil: EbeguUtil,
-                private dvDialog: DvDialog, private $translate: ITranslateService) {
-        this.initViewModel();
+                private dvDialog: DvDialog, private $translate: ITranslateService,
+                private authLifeCycleService: AuthLifeCycleService) {
+
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
     }
 
     public getZahlungsauftragen() {
@@ -81,31 +90,37 @@ export class ZahlungsauftragViewController {
         });
     }
 
+    $onDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     private updateZahlungsauftrag() {
+        if (this.authServiceRS.getPrincipal()) {
+            switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
 
-        switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
+                case TSRole.SACHBEARBEITER_INSTITUTION:
+                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
+                    this.zahlungRS.getAllZahlungsauftraegeInstitution().then((response: any) => {
+                        this.zahlungsauftragen = angular.copy(response);
 
-            case TSRole.SACHBEARBEITER_INSTITUTION:
-            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
-                this.zahlungRS.getAllZahlungsauftraegeInstitution().then((response: any) => {
-                    this.zahlungsauftragen = angular.copy(response);
+                    });
+                    break;
+                }
+                case TSRole.SUPER_ADMIN:
+                case TSRole.ADMIN:
+                case TSRole.SACHBEARBEITER_JA:
+                case TSRole.JURIST:
+                case TSRole.REVISOR: {
+                    this.zahlungRS.getAllZahlungsauftraege().then((response: any) => {
+                        this.zahlungsauftragen = angular.copy(response);
 
-                });
-                break;
+                    });
+                    break;
+                }
+                default:
+                    break;
             }
-            case TSRole.SUPER_ADMIN:
-            case TSRole.ADMIN:
-            case TSRole.SACHBEARBEITER_JA:
-            case TSRole.JURIST:
-            case TSRole.REVISOR: {
-                this.zahlungRS.getAllZahlungsauftraege().then((response: any) => {
-                    this.zahlungsauftragen = angular.copy(response);
-
-                });
-                break;
-            }
-            default:
-                break;
         }
     }
 

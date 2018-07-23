@@ -548,9 +548,12 @@ export default class GesuchModelManager {
      * @param eingangsart
      * @param gesuchsperiodeId
      * @param dossierId
+     * @param gemeindeId
      * @return a void promise that is resolved once all subpromises are done
      */
-    public initGesuchWithEingangsart(forced: boolean, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string): IPromise<TSGesuch> {
+    public initGesuchWithEingangsart(forced: boolean, eingangsart: TSEingangsart, gesuchsperiodeId: string,
+                                     dossierId: string, gemeindeId: string): IPromise<TSGesuch> {
+
         this.initGesuch(forced, eingangsart);
         let setGesuchsperiodeProm: IPromise<void>;
         if (gesuchsperiodeId) {
@@ -563,6 +566,13 @@ export default class GesuchModelManager {
         if (dossierId) {
             setDossierPromise = this.dossierRS.findDossier(dossierId).then(foundDossier => {
                 this.gesuch.dossier = foundDossier;
+            });
+        }
+
+        let setGemeindePromise: angular.IPromise<void>;
+        if (gemeindeId) {
+            setGemeindePromise = this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
+                this.gesuch.dossier.gemeinde = foundGemeinde;
             });
         }
 
@@ -580,7 +590,7 @@ export default class GesuchModelManager {
         }
 
         // this creates a list of promises and resolves them all. once all promises are resolved the .then function is triggered
-        return this.$q.all([setGesuchsperiodeProm, setDossierPromise]).then(() => {
+        return this.$q.all([setGesuchsperiodeProm, setDossierPromise, setGemeindePromise]).then(() => {
             this.log.debug('initialized new gesuch ', this.gesuch);
             return this.gesuch;
 
@@ -592,10 +602,6 @@ export default class GesuchModelManager {
      * das ID des Gesuchs aus dem sie erstellt wurde. Wenn der Benutzer auf speichern klickt, wird der Service "antragMutieren"
      * mit dem ID des alten Gesuchs aufgerufen. Das Objekt das man zurueckbekommt, wird dann diese Fake-Mutation mit den richtigen
      * Daten ueberschreiben
-     * @param gesuchID
-     * @param eingangsart
-     * @param gesuchsperiodeId
-     * @param dossierId
      */
     public initMutation(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string): void {
         this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.MUTATION);

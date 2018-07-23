@@ -13,10 +13,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-menu-bar ng-if="vm.getPrincipal()" class="user-menu">
+<md-menu-bar ng-if="vm.principal" class="user-menu">
     <md-menu>
-        <button ng-click="$mdMenu.open()" aria-label="{{vm.getPrincipal().getFullName()}}" id="usermenu">
-            <span ng-bind="vm.getPrincipal().getFullName()"></span>
+        <button ng-click="$mdMenu.open()" aria-label="{{vm.principal.getFullName()}}" id="usermenu">
+            <span ng-bind="vm.principal.getFullName()"></span>
             <i class="fa fa-angle-down"></i>
         </button>
 
@@ -24,6 +24,11 @@
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
                 <md-button ui-sref-active="active" ui-sref="testdaten" aria-label="{{'ADMIN' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="TESTDATEN"></a>
+                </md-button>
+            </md-menu-item>
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                <md-button ui-sref-active="active" ui-sref="batchjobTrigger" aria-label="{{'BATCHJOBTRIGGER' | translate}}">
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="BATCHJOBTRIGGER"></a>
                 </md-button>
             </md-menu-item>
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorRoles()">
