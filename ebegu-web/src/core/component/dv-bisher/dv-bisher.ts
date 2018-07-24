@@ -14,13 +14,13 @@
  */
 
 import {IComponentOptions} from 'angular';
-import DateUtil from '../../../utils/DateUtil';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import * as moment from 'moment';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import ITranslateService = angular.translate.ITranslateService;
+import DateUtil from '../../../utils/DateUtil';
 import ILogService = angular.ILogService;
+import ITranslateService = angular.translate.ITranslateService;
 
 let template = require('./dv-bisher.html');
 require('./dv-bisher.less');
@@ -115,6 +115,9 @@ export class DvBisher {
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
             return this.equals(DateUtil.momentToLocalDateFormat(gs, 'DD.MM.YYYY'), DateUtil.momentToLocalDateFormat(ja, 'DD.MM.YYYY'));
+        }
+        if (gs instanceof Array) {
+            return JSON.stringify(gs) === JSON.stringify(ja);
         }
         return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); //either they are equal or both are a form of empty
     }

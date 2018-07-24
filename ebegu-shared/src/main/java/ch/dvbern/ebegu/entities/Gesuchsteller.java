@@ -17,14 +17,23 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
@@ -65,6 +74,13 @@ public class Gesuchsteller extends AbstractPersonEntity {
 
 	@NotNull
 	private boolean diplomatenstatus;
+
+	@Nullable
+	@ElementCollection(targetClass = Sprache.class, fetch = FetchType.EAGER)
+	@Enumerated(EnumType.STRING)
+	@CollectionTable(name="gesuchsteller_korrespondenz_sprachen")
+	private Set<Sprache> korrespondenzSprachen = new TreeSet<>();
+
 
 	public Gesuchsteller() {
 	}
@@ -125,6 +141,15 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		this.diplomatenstatus = diplomatenstatus;
 	}
 
+	@Nullable
+	public Set<Sprache> getKorrespondenzSprachen() {
+		return korrespondenzSprachen;
+	}
+
+	public void setKorrespondenzSprachen(@Nullable Set<Sprache> korrespondenzSprachen) {
+		this.korrespondenzSprachen = korrespondenzSprachen;
+	}
+
 	@Nonnull
 	private Gesuchsteller copyForMutationOrErneuerung(@Nonnull Gesuchsteller mutation) {
 		mutation.setMail(this.getMail());
@@ -134,6 +159,10 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		mutation.setEwkPersonId(this.getEwkPersonId());
 		mutation.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
 		mutation.setDiplomatenstatus(this.isDiplomatenstatus());
+		Set<Sprache> currentSprachen = this.getKorrespondenzSprachen();
+		if (currentSprachen != null && !currentSprachen.isEmpty()) {
+			mutation.setKorrespondenzSprachen(new TreeSet<>(currentSprachen));
+		}
 		return mutation;
 	}
 
@@ -170,7 +199,7 @@ public class Gesuchsteller extends AbstractPersonEntity {
 			Objects.equals(getTelefon(), otherGesuchsteller.getTelefon()) &&
 			Objects.equals(getTelefonAusland(), otherGesuchsteller.getTelefonAusland()) &&
 			EbeguUtil.isSameOrNullStrings(getEwkPersonId(), otherGesuchsteller.getEwkPersonId()) &&
-			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus());
+			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus()) &&
+			Objects.equals(getKorrespondenzSprachen(), otherGesuchsteller.getKorrespondenzSprachen());
 	}
-
 }
