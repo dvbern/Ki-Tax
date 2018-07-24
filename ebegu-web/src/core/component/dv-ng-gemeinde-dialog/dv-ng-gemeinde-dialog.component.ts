@@ -34,7 +34,6 @@ export class DvNgGemeindeDialogComponent {
     gemeindeList: Observable<TSGemeinde[]>;
 
     constructor(
-        // private fb: FormBuilder,
         private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 

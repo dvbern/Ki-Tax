@@ -19,9 +19,12 @@ import {FormsModule} from '@angular/forms';
 import {MatDialogModule, MatSelectModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
+import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
+import {DvNgHelpDialogComponent} from '../gesuch/dialog/dv-ng-help-dialog.component';
+import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 @NgModule({
     imports: [
@@ -36,19 +39,27 @@ import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click
         DvNgErrorMessages,
         DvNgShowElementDirective,
         DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
+        DvHelpmenuComponent,
     ],
     entryComponents: [
         DvNgErrorMessages,
         DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
+        DvHelpmenuComponent,
     ],
     exports: [
         DvNgDebounceClickDirective,
         DvNgErrorMessages,
         DvNgShowElementDirective,
         DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
         MatSelectModule,
         FormsModule,
     ],
+    providers: [
+        downloadRSProvider,
+    ]
 })
 export class NgSharedModule {
 }

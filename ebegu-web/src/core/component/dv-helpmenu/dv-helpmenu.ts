@@ -13,37 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
-import {ShowHelpDialogController} from '../../../gesuch/dialog/ShowHelpDialogController';
-import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {Component} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {DvNgHelpDialogComponent} from '../../../gesuch/dialog/dv-ng-help-dialog.component';
 
 require('./dv-helpmenu.less');
-let template = require('./dv-helpmenu.html');
-let showHelpDialogTemplate = require('../../../gesuch/dialog/showHelpDialogTemplate.html');
 
-export class DvHelpmenuComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings: any = {};
-    template = template;
-    controller = DvHelpmenuController;
-    controllerAs = 'vm';
-}
+@Component({
+    selector: 'dv-helpmenu',
+    template: require('./dv-helpmenu.html'),
+})
+export class DvHelpmenuComponent {
 
-export class DvHelpmenuController {
-
-    static $inject: any[] = ['$state', 'DvDialog'];
     display: boolean = false;
 
-    constructor(private $state: StateService, private dvDialog: DvDialog) {
-    }
-
-    public toggleDisplay(): void {
-        this.display = !this.display;
+    constructor(private dialog: MatDialog) {
     }
 
     public showDialog(): void {
-        this.dvDialog.showDialog(showHelpDialogTemplate, ShowHelpDialogController, {});
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
+        dialogConfig.autoFocus = true;
+
+        this.dialog.open(DvNgHelpDialogComponent, dialogConfig);
     }
 
 }

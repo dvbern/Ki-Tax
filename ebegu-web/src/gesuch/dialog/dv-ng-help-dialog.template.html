@@ -13,34 +13,34 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-dialog md-theme="default" ng-class="vm.css" aria-label="Erweiterte Informationen"
-           class="md-default-theme md-transition-in dv-tooltip-dialog" tabindex="-1">
-    <md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialogContent">
-        <h2 data-translate="FACHLICHE_HILFE"></h2>
+<mat-dialog-content role="document" tabindex="-1" id="dialogContent">
+
+    <div>
+        <h2 [textContent]="'FACHLICHE_HILFE' | translate"></h2>
         <p>Gesundheits- und Fürsorgedirektion des Kantons Bern</p>
         <p>Sozialamt</p>
         <p>Rathausgasse 1</p>
         <p>3011 Bern</p>
-        <p><a href="emailto:kibon@gef.be.ch">kibon@gef.be.ch</a></p>
+        <p><a href="mailto:kibon@gef.be.ch">kibon@gef.be.ch</a></p>
         <p><a href="tel:+41 31 123 45 67">+41 31 123 45 67</a></p>
+    </div>
 
-        <h2 data-translate="TECHNISCHE_HILFE"></h2>
+    <div class="marginTop40">
+        <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
         <p>DV Bern AG</p>
         <p>Nussbaumstrasse 21</p>
         <p>3021 Bern</p>
-        <p><a href="emailto:kibon@dvbern.ch">kibon@dvbern.ch</a></p>
+        <p><a href="mailto:kibon@dvbern.ch">kibon@dvbern.ch</a></p>
         <p><a href="tel:+41 31 123 45 67">+41 31 123 45 67</a></p>
+    </div>
 
-        <h2 data-translate="SCHNELLHILFE"></h2>
-        <p><a href="" ng-click="vm.download()"><i class="fa fa-file-pdf-o" aria-label="PDF"></i> PDF</a></p>
-    </md-dialog-content>
+    <div class="marginTop40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p><a href="" (click)="download()"><i class="fa fa-file-pdf-o" aria-label="PDF"></i> PDF</a></p>
+    </div>
 
-    <md-dialog-actions layout-align="center center" style="border:none!important;">
-        <button class=" dv-btn text-uppercase" type="button"
-                ng-click="vm.cancel()"
-                aria-label="{{'SCHLIESSEN' | translate}}">
-            <span class="ng-binding ng-scope" data-translate="SCHLIESSEN"></span>
-        </button>
-    </md-dialog-actions>
+</mat-dialog-content>
 
-</md-dialog>
+<mat-dialog-actions  class="marginTop40" layout-align="center center">
+    <button class="mat-raised-button mat-primary" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+</mat-dialog-actions>

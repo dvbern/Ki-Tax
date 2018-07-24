@@ -20,6 +20,7 @@ import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../core/errors/service/ErrorService';
+import {DownloadRS} from '../core/service/downloadRS.rest';
 import GesuchsperiodeRS from '../core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../core/service/mitteilungRS.rest';
 import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
@@ -179,5 +180,16 @@ export function mitteilungRSServiceFactory(i: any) {
 export const mitteilungRSProvider = {
     provide: MitteilungRS,
     useFactory: mitteilungRSServiceFactory,
+    deps: ['$injector']
+};
+
+// DownloadRS
+export function downloadRSServiceFactory(i: any) {
+    return i.get('DownloadRS');
+}
+
+export const downloadRSProvider = {
+    provide: DownloadRS,
+    useFactory: downloadRSServiceFactory,
     deps: ['$injector']
 };

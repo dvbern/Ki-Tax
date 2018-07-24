@@ -15,7 +15,7 @@
 
 import 'angular';
 import 'ng-file-upload';
-import {downgradeInjectable} from '@angular/upgrade/static';
+import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
 import {EbeguAuthentication} from '../authentication/authentication.module';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
@@ -49,9 +49,9 @@ import {DVBenutzerConfig} from './component/dv-benutzer/dv-benutzer';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
-import {DvHelpmenuComponentConfig} from './component/dv-helpmenu/dv-helpmenu';
 import {DvErrorMessagesComponentConfig} from './component/dv-error-messages/dv-error-messages';
 import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-erwerbspensum-list';
+import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
@@ -234,7 +234,6 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvMobileNavigationToggle', new DvMobileNavigationToggleComponentConfig())
     .component('dvHomeIcon', new DvHomeIconComponentConfig())
     .component('dvSkiplinks', new DvSkiplinksComponentConfig())
-    .component('dvHelpmenu', new DvHelpmenuComponentConfig())
     .component('dvCountdown', new DvCountdownComponentConfig())
     .component('dvBisher', new DvBisherComponentConfig())
     .component('dvDokumenteList', new DVDokumenteListConfig())
@@ -248,6 +247,10 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvVersion', new DVVersionComponentConfig())
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvBenutzer', new DVBenutzerConfig())
+    .directive(
+        'dvHelpmenu',
+        downgradeComponent({component: DvHelpmenuComponent}) as angular.IDirectiveFactory
+    )
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)

@@ -13,26 +13,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IPromise} from 'angular';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {DvNgGemeindeDialogComponent} from '../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import TSDownloadFile from '../../models/TSDownloadFile';
-import IDialogService = angular.material.IDialogService;
 
-export class ShowHelpDialogController {
+/**
+ * This component shows a Help Dialog with all contact details and a Link to the user manual
+ */
+@Component({
+    selector: 'dv-ng-help-dialog',
+    template: require('./dv-ng-help-dialog.template.html'),
+})
+export class DvNgHelpDialogComponent {
 
-    static $inject = ['$mdDialog', 'DownloadRS'];
-
-    constructor(private $mdDialog: IDialogService, private downloadRS: DownloadRS) {
+    constructor(
+        private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
+        private downloadRS: DownloadRS,
+        @Inject(MAT_DIALOG_DATA) data: any) {
     }
 
-    public hide(): IPromise<any> {
-        return this.$mdDialog.hide();
+    close() {
+        this.dialogRef.close();
     }
-
-    public cancel(): void {
-        this.$mdDialog.cancel();
-    }
-
 
     public download(): void {
         let win: Window = this.downloadRS.prepareDownloadWindow();
@@ -40,7 +44,7 @@ export class ShowHelpDialogController {
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
             });
     }
