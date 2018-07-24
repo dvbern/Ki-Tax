@@ -17,26 +17,32 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
 /**
- * This component shows a Help Dialog with all contact details and a Link to the user manual
+ * This Dialog should be used for asking the user to remove an object
  */
 @Component({
-    selector: 'dv-ng-ok-dialog',
-    template: require('./dv-ng-ok-dialog.template.html'),
+    selector: 'dv-ng-remove-dialog',
+    template: require('./dv-ng-remove-dialog.template.html'),
 })
-export class DvNgOkDialogComponent {
+export class DvNgRemoveDialogComponent {
 
     title: string = '';
+    text: string = '';
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgOkDialogComponent>,
+        private dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
         if (data) {
             this.title = data.title;
+            this.text = data.text;
         }
     }
 
-    close() {
+    ok() {
+        this.dialogRef.close(true);
+    }
+
+    cancel() {
         this.dialogRef.close();
     }
 }

@@ -21,6 +21,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgHelpDialogComponent} from '../gesuch/dialog/dv-ng-help-dialog.component';
@@ -42,6 +43,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
         DvHelpmenuComponent,
     ],
     entryComponents: [
@@ -49,6 +51,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
         DvHelpmenuComponent,
     ],
     exports: [
@@ -58,6 +61,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
         MatSelectModule,
         FormsModule,
     ],
