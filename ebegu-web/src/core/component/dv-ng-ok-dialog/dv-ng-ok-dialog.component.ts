@@ -15,33 +15,26 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
-import TSGemeinde from '../../../models/TSGemeinde';
+import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
 /**
- * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
- * Keine Gemeinde wird by default ausgewaehlt, damit der Benutzer nicht aus Versehen die falsche Gemeinde auswaehlt.
- * Die GemeindeListe wird von aussen gegeben, damit dieser Component von nichts abhaengt. Die ausgewaehlte Gemeinde
- * wird dann beim Close() zurueckgegeben
+ * This component shows a Help Dialog with all contact details and a Link to the user manual
  */
 @Component({
-    selector: 'dv-ng-gemeinde-dialog',
-    template: require('./dv-ng-gemeinde-dialog.template.html'),
+    selector: 'dv-ng-ok-dialog',
+    template: require('./dv-ng-ok-dialog.template.html'),
 })
-export class DvNgGemeindeDialogComponent {
+export class DvNgOkDialogComponent {
 
-    selectedGemeinde: TSGemeinde;
-    gemeindeList: Observable<TSGemeinde[]>;
+    title: string = '';
 
     constructor(
         private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
-        this.gemeindeList = data.gemeindeList;
-    }
-
-    save() {
-        this.dialogRef.close(this.selectedGemeinde ? this.selectedGemeinde.id : undefined);
+        if (data) {
+            this.title = data.title;
+        }
     }
 
     close() {

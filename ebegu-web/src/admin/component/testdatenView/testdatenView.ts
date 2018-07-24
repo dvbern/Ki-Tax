@@ -63,6 +63,7 @@ export class TestdatenViewComponent implements OnInit {
                 private errorService: ErrorService, private gesuchsperiodeRS: GesuchsperiodeRS,
                 private zahlungRS: ZahlungRS, private applicationPropertyRS: ApplicationPropertyRS,
                 private gesuchRS: GesuchRS, private gemeindeRS: GemeindeRS) {
+        // todo remove dependency of DvDialog. Use MatDialog instead
         this.testFaelleRS = testFaelleRS;
     }
 

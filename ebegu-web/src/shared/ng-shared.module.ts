@@ -24,6 +24,7 @@ import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dial
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgHelpDialogComponent} from '../gesuch/dialog/dv-ng-help-dialog.component';
+import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 @NgModule({
@@ -40,12 +41,14 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
         DvNgShowElementDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
+        DvNgOkDialogComponent,
         DvHelpmenuComponent,
     ],
     entryComponents: [
         DvNgErrorMessages,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
+        DvNgOkDialogComponent,
         DvHelpmenuComponent,
     ],
     exports: [
@@ -54,6 +57,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
         DvNgShowElementDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
+        DvNgOkDialogComponent,
         MatSelectModule,
         FormsModule,
     ],

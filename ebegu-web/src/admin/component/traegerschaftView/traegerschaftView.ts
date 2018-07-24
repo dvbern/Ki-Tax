@@ -27,8 +27,6 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
 let style = require('./traegerschaftView.less');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
-let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 
@@ -50,6 +48,7 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
 
     constructor(private traegerschaftRS: TraegerschaftRS, private errorService: ErrorService, private dvDialog: DvDialog,
                 authServiceRS: AuthServiceRS) {
+        // todo remove dependency of DvDialog. Use MatDialog instead
         super(authServiceRS);
     }
 

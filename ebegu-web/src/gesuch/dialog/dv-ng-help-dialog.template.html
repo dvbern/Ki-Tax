@@ -36,7 +36,12 @@
 
     <div class="marginTop40">
         <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
-        <p><a href="" (click)="download()"><i class="fa fa-file-pdf-o" aria-label="PDF"></i> PDF</a></p>
+        <p>
+            <a href="" (click)="download()">
+                <i class="fa fa-file-pdf-o" aria-label="PDF"></i>
+                <span>&nbsp;PDF</span>
+            </a>
+        </p>
     </div>
 
 </mat-dialog-content>
