@@ -17,22 +17,24 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
 /**
- * This component shows a Dialog with a title and an OK-Button. Nothing is returned and nothing is executed
+ * This component shows a Dialog with a title and a link. Nothing is returned
  */
 @Component({
-    selector: 'dv-ng-ok-dialog',
-    template: require('./dv-ng-ok-dialog.template.html'),
+    selector: 'dv-ng-link-dialog',
+    template: require('./dv-ng-link-dialog.template.html'),
 })
-export class DvNgOkDialogComponent {
+export class DvNgLinkDialogComponent {
 
     title: string = '';
+    link: string = '';
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgOkDialogComponent>,
+        private dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
         if (data) {
             this.title = data.title;
+            this.link = data.link;
         }
     }
 

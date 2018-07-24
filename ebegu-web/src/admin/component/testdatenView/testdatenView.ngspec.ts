@@ -46,7 +46,6 @@ describe('testdatenView', function () {
         const testFaelleRSSpy = jasmine.createSpyObj('TestFaelleRS', ['createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
-        const dvDialogSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
         const userRSSpy = jasmine.createSpyObj('UserRS', ['getAllGesuchsteller']);
         userRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
         const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['addMesageAsInfo']);
@@ -82,7 +81,6 @@ describe('testdatenView', function () {
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
-                {provide: DvDialog, useValue: dvDialogSpy},
                 {provide: UserRS, useValue: userRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},

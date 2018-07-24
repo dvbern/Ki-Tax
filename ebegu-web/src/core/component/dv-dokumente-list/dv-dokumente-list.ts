@@ -203,7 +203,7 @@ export class DVDokumenteListController {
         });
     }
 
-    getWidth(): String {
+    getWidth(): string {
         if (this.sonstige) {
             return '95%';
         } else {

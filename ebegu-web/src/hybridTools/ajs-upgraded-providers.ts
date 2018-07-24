@@ -18,7 +18,6 @@ import {DailyBatchRS} from '../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
 import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../core/errors/service/ErrorService';
 import {DownloadRS} from '../core/service/downloadRS.rest';
 import GesuchsperiodeRS from '../core/service/gesuchsperiodeRS.rest';
@@ -70,17 +69,6 @@ export function errorServiceProviderServiceFactory(i: any) {
 export const errorServiceProvider = {
     provide: ErrorService,
     useFactory: errorServiceProviderServiceFactory,
-    deps: ['$injector']
-};
-
-// DvDialog
-export function dvDialogProviderServiceFactory(i: any) {
-    return i.get('DvDialog');
-}
-
-export const dvDialogProvider = {
-    provide: DvDialog,
-    useFactory: dvDialogProviderServiceFactory,
     deps: ['$injector']
 };
 

@@ -22,7 +22,6 @@ import {TranslateModule} from '@ngx-translate/core';
 import {
     dailyBatchRSProvider,
     databaseMigrationRSProvider,
-    dvDialogProvider,
     errorServiceProvider,
     gemeindeRSProvider,
     gesuchRSProvider,
@@ -72,7 +71,6 @@ import {MatTableModule} from '@angular/material/table';
         gesuchRSProvider,
         dailyBatchRSProvider,
         errorServiceProvider,
-        dvDialogProvider,
         gesuchsperiodeRSProvider,
         {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
         gemeindeRSProvider
