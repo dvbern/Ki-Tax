@@ -15,7 +15,6 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {DvNgGemeindeDialogComponent} from '../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import TSDownloadFile from '../../models/TSDownloadFile';
 
@@ -29,7 +28,7 @@ import TSDownloadFile from '../../models/TSDownloadFile';
 export class DvNgHelpDialogComponent {
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
+        private dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
         private downloadRS: DownloadRS,
         @Inject(MAT_DIALOG_DATA) data: any) {
     }
