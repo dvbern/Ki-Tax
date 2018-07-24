@@ -13,26 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
+import {Component} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {DvNgOkDialogComponent} from '../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 
 require('./batchjobTrigger.less');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 
 @Component({
     selector: 'batchjob-trigger-view',
     template: require('./batchjobTriggerView.html'),
 })
-export class BatchjobTriggerViewComponent implements OnInit {
+export class BatchjobTriggerViewComponent {
 
-    constructor(private dvDialog: DvDialog, private databaseMigrationRS: DatabaseMigrationRS, private dailyBatchRS: DailyBatchRS) {
-        //todo use our newer dialog for ng
-    }
-
-    public ngOnInit(): void {
+    constructor(private dialog: MatDialog,
+                private databaseMigrationRS: DatabaseMigrationRS,
+                private dailyBatchRS: DailyBatchRS) {
     }
 
     public processScript(script: string): void {
@@ -41,33 +38,36 @@ export class BatchjobTriggerViewComponent implements OnInit {
 
     public runBatchCleanDownloadFiles(): void {
         this.dailyBatchRS.runBatchCleanDownloadFiles().then((response) => {
-            let text: string = '';
+            let title: string = '';
             if (response) {
-                text = 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK';
+                title = 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK';
             } else {
-                text = 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
+                title = 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
             }
-            this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
-                title: text
-            }).then(() => {
-                //do nothing
-            });
+            this.createAndOpenDialog(title);
         });
     }
 
     public runBatchMahnungFristablauf(): void {
         this.dailyBatchRS.runBatchMahnungFristablauf().then((response) => {
-            let text: string = '';
+            let title: string = '';
             if (response) {
-                text = 'MAHNUNG_BATCH_EXECUTED_OK';
+                title = 'MAHNUNG_BATCH_EXECUTED_OK';
             } else {
-                text = 'MAHNUNG_BATCH_EXECUTED_ERROR';
+                title = 'MAHNUNG_BATCH_EXECUTED_ERROR';
             }
-            this.dvDialog.showDialog(okDialogTempl, OkDialogController, {
-                title: text
-            }).then(() => {
-                //do nothing
-            });
+            this.createAndOpenDialog(title);
         });
+    }
+
+    private createAndOpenDialog(title: string): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            title: title,
+        };
+
+        this.dialog.open(DvNgOkDialogComponent, dialogConfig);
     }
 }

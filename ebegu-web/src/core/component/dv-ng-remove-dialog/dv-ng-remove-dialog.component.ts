@@ -15,36 +15,34 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
-import TSGemeinde from '../../../models/TSGemeinde';
 
 /**
- * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
- * Keine Gemeinde wird by default ausgewaehlt, damit der Benutzer nicht aus Versehen die falsche Gemeinde auswaehlt.
- * Die GemeindeListe wird von aussen gegeben, damit dieser Component von nichts abhaengt. Die ausgewaehlte Gemeinde
- * wird dann beim Close() zurueckgegeben
+ * This Dialog should be used for asking the user to remove an object
  */
 @Component({
-    selector: 'dv-ng-gemeinde-dialog',
-    template: require('./dv-ng-gemeinde-dialog.template.html'),
+    selector: 'dv-ng-remove-dialog',
+    template: require('./dv-ng-remove-dialog.template.html'),
 })
-export class DvNgGemeindeDialogComponent {
+export class DvNgRemoveDialogComponent {
 
-    selectedGemeinde: TSGemeinde;
-    gemeindeList: Observable<TSGemeinde[]>;
+    title: string = '';
+    text: string = '';
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
+        private dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
-        this.gemeindeList = data.gemeindeList;
+        if (data) {
+            this.title = data.title;
+            this.text = data.text;
+        }
     }
 
-    save() {
-        this.dialogRef.close(this.selectedGemeinde ? this.selectedGemeinde.id : undefined);
+    ok() {
+        this.dialogRef.close(true);
     }
 
-    close() {
+    cancel() {
         this.dialogRef.close();
     }
 }

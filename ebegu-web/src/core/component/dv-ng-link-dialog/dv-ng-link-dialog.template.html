@@ -1,6 +1,6 @@
 <!--
   ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2018 City of Bern Switzerland
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
@@ -13,15 +13,14 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-downloadmenu-inner" ng-show="vm.display">
+<h2 mat-dialog-title [textContent]="title | translate"></h2>
 
-    <span data-translate="BENUTZERHANDBUCH"></span>
+<mat-dialog-content>
+    <a class="md-default-theme" (click)="close()" href="{{link}}">
+        <span class="ng-binding ng-scope" [textContent]="link"></span>
+    </a>
+</mat-dialog-content>
 
-    <dv-loading-button type="button" button-click="vm.download()"
-                       button-class="dv-btn marginTop10">
-        <span data-translate="DOWNLOAD"></span>
-    </dv-loading-button>
-</div>
-<div ng-click="vm.toggleDisplay()" class="fa fa-question-circle dv-downloadmenu-question"
-     ng-class="{'dv-downloadmenu-question--active' : vm.display}">
-</div>
+<mat-dialog-actions>
+    <button class="mat-raised-button mat-primary" (click)="close()" [textContent]="'LABEL_OK' | translate"></button>
+</mat-dialog-actions>

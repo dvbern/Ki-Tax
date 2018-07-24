@@ -22,8 +22,6 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 require('./adminView.less');
 let template = require('./adminView.html');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
-let linkDialogTempl = require('../../../gesuch/dialog/linkDialogTemplate.html');
 
 export class AdminViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;

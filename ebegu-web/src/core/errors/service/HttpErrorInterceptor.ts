@@ -150,7 +150,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     }
 
-    private isFileUploadException(response: String) {
+    private isFileUploadException(response: string) {
         if (!response) {
             return false;
         }

@@ -1118,6 +1118,9 @@
     "FOLGEGESUCH_HINT": "Die Stammdaten wurden aus dem letztjährigen Gesuch übernommen: Bitte prüfen Sie die übernommenen Daten.",
     "KEIN_ANGEBOT": "Kein Angebot",
     "HINT_BETREUUNGEN_LOESCHEN": "Bitte löschen Sie das abgewiesene Betreuungsangebot (rot markiert), um Ihr Gesuch freigeben zu können.",
+    "FACHLICHE_HILFE": "Fachliche Hilfe",
+    "TECHNISCHE_HILFE": "Technische Hilfe",
+    "SCHNELLHILFE": "Schnellhilfe",
     "BENUTZERHANDBUCH": "Benutzerhandbuch",
     "VORLAGE_BENUTZERHANDBUCH_ADMIN": "Benutzerhandbuch Administrator",
     "VORLAGE_BENUTZERHANDBUCH_INSTITUTION": "Benutzerhandbuch Institutionen",
@@ -1308,5 +1311,6 @@
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE": "Admin-Rechte",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT": "Mit diesem Schritt geben Sie dem Benutzer Administrationsrechte in Ki-Tax. Wollen Sie fortfahren?",
     "BENUTZER_STATISTIK": "BENUTZER",
-    "GEMEINDE_PAPIERGESUCH_AUSWAEHLEN": "Gemeinde für das Papiergesuch auswählen"
+    "GEMEINDE_PAPIERGESUCH_AUSWAEHLEN": "Gemeinde für das Papiergesuch auswählen",
+    "AUSWAEHLEN": "Auswählen"
 }
