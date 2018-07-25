@@ -16,8 +16,7 @@
 
 <nav class="navbar navbar-default"
      *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()">
-    <div flex layout="row" layout-align="center center">
-
+    <div class="dv-ng-navbar-wrapper">
         <div id="navbar" class="navbar-header">
             <ul class="nav navbar-nav noMargin">
                 <li uiSrefActive="active"
@@ -55,17 +54,13 @@
             </ul>
         </div> <!--/.nav-collapse -->
 
-        <!-- TODO ramon move div to the right-->
-        <div id="navbar_falleroeffnen" class="navbar-header">
-            <ul>
-                <li uiSrefActive="active"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <i class="fa fa-plus-square"></i>
-                    <button (click)="createNewFall()"
-                            [textContent]="'MENU_FALL_EROEFFNEN' | translate">
+
+        <div id="navbar_falleroeffnen" class="dv-ng-navbar-pull-right dv-ng-navbar-element"  uiSrefActive="active"
+             *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
+                    <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button">
+                        <i class="fa fa-plus-square"></i>
+                        <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
                     </button>
-                </li>
-            </ul>
         </div>
     </div>
 </nav>
