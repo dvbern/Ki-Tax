@@ -17,7 +17,7 @@
 <nav class="navbar navbar-default"
      *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()">
     <div class="dv-ng-navbar-wrapper">
-        <div id="navbar" class="navbar-header">
+        <div id="navbar" class="navbar-header dv-navbar-header">
             <ul class="nav navbar-nav noMargin">
                 <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
@@ -55,7 +55,7 @@
         </div> <!--/.nav-collapse -->
 
 
-        <div id="navbar_falleroeffnen" class="dv-ng-navbar-pull-right dv-ng-navbar-element"  uiSrefActive="active"
+        <div id="navbar_falleroeffnen" class="dv-ng-navbar-pull-right dv-ng-navbar-element" uiSrefActive="active"
              *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                     <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button">
                         <i class="fa fa-plus-square"></i>
