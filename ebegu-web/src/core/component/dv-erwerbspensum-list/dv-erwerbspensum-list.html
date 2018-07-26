@@ -25,7 +25,7 @@
                     <th data-translate="AB"></th>
                     <th data-translate="BIS"></th>
                     <th data-translate="PENSUM"></th>
-                    <th data-translate="ZUSCHLAG"></th>
+                    <th data-translate="ZUSCHLAG" ng-if="vm.isZuschlagErwerbspensumConfigured()"></th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -39,7 +39,8 @@
                     <td ng-bind="row.erwerbspensumJA.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                     <td ng-bind="(row.erwerbspensumJA.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY')== '31.12.9999' ? '': row.erwerbspensumJA.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                     <td ng-bind="row.erwerbspensumJA.pensum + '%'"></td>
-                    <td ng-bind="row.erwerbspensumJA.zuschlagZuErwerbspensum ?  row.erwerbspensumJA.zuschlagsprozent+'%' : ''"></td>
+                    <td ng-bind="row.erwerbspensumJA.zuschlagZuErwerbspensum ?  row.erwerbspensumJA.zuschlagsprozent+'%' : ''"
+                        ng-if="vm.isZuschlagErwerbspensumConfigured()"></td>
                     <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()">
                         <dv-loading-button type="button" button-click="vm.editClicked(row);"
                                            button-class="dv-btn-operation dv-btn-row"

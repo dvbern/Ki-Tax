@@ -414,6 +414,7 @@ export default class EbeguRestUtil {
             restGesuchsteller.diplomatenstatus = gesuchsteller.diplomatenstatus;
             restGesuchsteller.ewkPersonId = gesuchsteller.ewkPersonId;
             restGesuchsteller.ewkAbfrageDatum = DateUtil.momentToLocalDate(gesuchsteller.ewkAbfrageDatum);
+            restGesuchsteller.korrespondenzSprachen = gesuchsteller.korrespondenzSprachen;
             return restGesuchsteller;
         }
         return undefined;
@@ -429,6 +430,7 @@ export default class EbeguRestUtil {
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.ewkPersonId = gesuchstellerFromServer.ewkPersonId;
             gesuchstellerTS.ewkAbfrageDatum = DateUtil.localDateToMoment(gesuchstellerFromServer.ewkAbfrageDatum);
+            gesuchstellerTS.korrespondenzSprachen = gesuchstellerFromServer.korrespondenzSprachen;
             return gesuchstellerTS;
         }
         return undefined;

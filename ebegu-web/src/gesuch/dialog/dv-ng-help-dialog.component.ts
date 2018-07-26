@@ -13,32 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
-import {StateService} from '@uirouter/core';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import {DownloadRS} from '../../service/downloadRS.rest';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
+import TSDownloadFile from '../../models/TSDownloadFile';
 
-require('./dv-downloadmenu.less');
-let template = require('./dv-downloadmenu.html');
+/**
+ * This component shows a Help Dialog with all contact details and a Link to the user manual
+ */
+@Component({
+    selector: 'dv-ng-help-dialog',
+    template: require('./dv-ng-help-dialog.template.html'),
+})
+export class DvNgHelpDialogComponent {
 
-export class DvDownloadmenuComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings: any = {};
-    template = template;
-    controller = DvDownloadmenuController;
-    controllerAs = 'vm';
-}
-
-export class DvDownloadmenuController {
-
-    static $inject: any[] = ['$state', 'DownloadRS'];
-    display: boolean = false;
-
-    constructor(private $state: StateService, private downloadRS: DownloadRS) {
+    constructor(
+        private dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
+        private downloadRS: DownloadRS,
+        @Inject(MAT_DIALOG_DATA) data: any) {
     }
 
-    public toggleDisplay(): void {
-        this.display = !this.display;
+    close() {
+        this.dialogRef.close();
     }
 
     public download(): void {
@@ -46,9 +42,8 @@ export class DvDownloadmenuController {
         this.downloadRS.getAccessTokenBenutzerhandbuch()
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-                this.display = false;
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
             });
     }

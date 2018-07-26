@@ -46,18 +46,15 @@ describe('testdatenView', function () {
         const testFaelleRSSpy = jasmine.createSpyObj('TestFaelleRS', ['createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
-        const dvDialogSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
         const userRSSpy = jasmine.createSpyObj('UserRS', ['getAllGesuchsteller']);
         userRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
         const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['addMesageAsInfo']);
         const gesuchsperiodeRSSpy = jasmine.createSpyObj('GesuchsperiodeRS', ['getAllGesuchsperioden', 'removeGesuchsperiode']);
         gesuchsperiodeRSSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve(true));
-        const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
         const zahlungRSSpy = jasmine.createSpyObj('ZahlungRS', ['zahlungenKontrollieren', 'deleteAllZahlungsauftraege']);
         const applicationPropertyRSSpy = jasmine.createSpyObj('ApplicationPropertyRS', ['isDevMode']);
         applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
         const gesuchRSSpy = jasmine.createSpyObj('GesuchRS', ['gesuchVerfuegen']);
-        const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);
         const gemeindeRSSpy = jasmine.createSpyObj('GemeindeRS', ['getAllGemeinden']);
         gemeindeRSSpy.getAllGemeinden.and.returnValue(Promise.resolve(true));
 
@@ -84,15 +81,12 @@ describe('testdatenView', function () {
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
-                {provide: DvDialog, useValue: dvDialogSpy},
                 {provide: UserRS, useValue: userRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
-                {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
                 {provide: ZahlungRS, useValue: zahlungRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
                 {provide: GesuchRS, useValue: gesuchRSSpy},
-                {provide: DailyBatchRS, useValue: dailyBatchRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
             ],

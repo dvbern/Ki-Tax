@@ -31,7 +31,7 @@ export default class TSErwerbspensum extends TSAbstractPensumEntity {
 
     private _zuschlagsprozent: number;
 
-    private _bezeichnung: String;
+    private _bezeichnung: string;
 
     constructor(pensum?: number, gueltigkeit?: TSDateRange, taetigkeit?: TSTaetigkeit, zuschlagZuErwerbspensum?: boolean,
                 zuschlagsgrund?: TSZuschlagsgrund, zuschlagsprozent?: number) {
@@ -74,11 +74,11 @@ export default class TSErwerbspensum extends TSAbstractPensumEntity {
         this._zuschlagsprozent = value;
     }
 
-    get bezeichnung(): String {
+    get bezeichnung(): string {
         return this._bezeichnung;
     }
 
-    set bezeichnung(value: String) {
+    set bezeichnung(value: string) {
         this._bezeichnung = value;
     }
 }

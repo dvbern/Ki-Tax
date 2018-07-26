@@ -16,20 +16,16 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import './traegerschaftView.less';
 import {NgForm} from '@angular/forms';
-import {MatSort, MatSortable, MatTableDataSource} from '@angular/material';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {MatDialog, MatDialogConfig, MatSort, MatSortable, MatTableDataSource} from '@angular/material';
+import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
 let style = require('./traegerschaftView.less');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
-let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 
 @Component({
@@ -48,8 +44,10 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     @ViewChild(MatSort) sort: MatSort;
 
 
-    constructor(private traegerschaftRS: TraegerschaftRS, private errorService: ErrorService, private dvDialog: DvDialog,
+    constructor(private traegerschaftRS: TraegerschaftRS, private errorService: ErrorService,
+                private dialog: MatDialog,
                 authServiceRS: AuthServiceRS) {
+
         super(authServiceRS);
     }
 
@@ -74,21 +72,25 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     }
 
     removeTraegerschaft(traegerschaft: any): void {
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            deleteText: '',
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE',
-            parentController: undefined,
-            elementID: undefined
-        })
-            .then(() => {   //User confirmed removal
-                this.traegerschaft = undefined;
-                this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then((response) => {
-                    let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                    if (index > -1) {
-                        this.traegerschaften.splice(index, 1);
-                        this.refreshTraegerschaftenList();
-                    }
-                });
+        };
+
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe((userAccepted) => {   //User confirmed removal
+                if (userAccepted) {
+                    this.traegerschaft = undefined;
+                    this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
+                        let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                        if (index > -1) {
+                            this.traegerschaften.splice(index, 1);
+                            this.refreshTraegerschaftenList();
+                        }
+                    });
+                }
             });
     }
 

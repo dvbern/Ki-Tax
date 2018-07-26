@@ -16,7 +16,10 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -24,6 +27,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
@@ -56,6 +60,10 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	private LocalDate ewkAbfrageDatum;
 
 	private boolean diplomatenstatus;
+
+	@Nullable
+	private Set<Sprache> korrespondenzSprachen = new TreeSet<>();
+
 
 	public String getMail() {
 		return mail;
@@ -113,4 +121,12 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 		this.diplomatenstatus = diplomatenstatus;
 	}
 
+	@Nullable
+	public Set<Sprache> getKorrespondenzSprachen() {
+		return korrespondenzSprachen;
+	}
+
+	public void setKorrespondenzSprachen(@Nullable Set<Sprache> korrespondenzSprachen) {
+		this.korrespondenzSprachen = korrespondenzSprachen;
+	}
 }

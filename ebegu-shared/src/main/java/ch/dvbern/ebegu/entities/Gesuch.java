@@ -101,7 +101,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	@Nullable
 	@Column(nullable = true)
-	private LocalDate regelnGueltigAb;
+	private LocalDate regelnGueltigAb; //Alternatives Eingangsdatum für Regelwerk
 
 	@Nullable
 	@Column(nullable = true)

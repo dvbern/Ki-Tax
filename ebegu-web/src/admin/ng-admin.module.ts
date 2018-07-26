@@ -22,7 +22,6 @@ import {TranslateModule} from '@ngx-translate/core';
 import {
     dailyBatchRSProvider,
     databaseMigrationRSProvider,
-    dvDialogProvider,
     errorServiceProvider,
     gemeindeRSProvider,
     gesuchRSProvider,
@@ -33,6 +32,7 @@ import {
     zahlungRSProvider
 } from '../hybridTools/ajs-upgraded-providers';
 import {NgSharedModule} from '../shared/ng-shared.module';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
@@ -54,11 +54,13 @@ import {MatTableModule} from '@angular/material/table';
     ],
     declarations: [
         TraegerschaftViewComponent,
-        TestdatenViewComponent
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent
     ],
     entryComponents: [
         TraegerschaftViewComponent,
-        TestdatenViewComponent
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent
     ],
     providers: [
         traegerschaftRSProvider,
@@ -69,7 +71,6 @@ import {MatTableModule} from '@angular/material/table';
         gesuchRSProvider,
         dailyBatchRSProvider,
         errorServiceProvider,
-        dvDialogProvider,
         gesuchsperiodeRSProvider,
         {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
         gemeindeRSProvider

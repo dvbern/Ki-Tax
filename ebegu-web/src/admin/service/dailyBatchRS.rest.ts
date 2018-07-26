@@ -31,6 +31,13 @@ export class DailyBatchRS {
         return 'DailyBatchRS';
     }
 
+    public runBatchCleanDownloadFiles(): IPromise<Boolean> {
+        return this.http.get(this.serviceURL + '/cleanDownloadFiles')
+            .then((response: any) => {
+                return response;
+            });
+    }
+
     public runBatchMahnungFristablauf(): IPromise<Boolean> {
         return this.http.get(this.serviceURL + '/mahnungFristAblauf')
             .then((response: any) => {

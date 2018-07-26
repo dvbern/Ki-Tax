@@ -30,7 +30,6 @@
 @import 'style/mixins.less';
 @import 'style/typography.less';
 
-
 /*Add them for ng2Material*/
 @import 'ebegu-theme.css';
 
@@ -462,6 +461,36 @@ dv-quicksearchbox {
         color: @contrast-lightest;
         text-decoration: none;
     }
+}
+
+mat-dialog-content.dv-dialog-content.mat-dialog-content {
+    padding-bottom: 10px;
+}
+
+.dv-dialog-text {
+    letter-spacing: normal;
+    font-size: 1.6rem;
+    line-height: 50px;
+}
+
+.dv-dialog-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100%;
+    padding: 5px 10%;
+
+    .dv-btn {
+        text-transform: uppercase;
+        flex: 1;
+        margin: 0 auto;
+        max-width:25rem;
+    }
+}
+
+html.cdk-global-scrollblock {
+    overflow-y: visible;
 }
 
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and

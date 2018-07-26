@@ -26,7 +26,7 @@ import TSGemeinde from '../../../models/TSGemeinde';
  */
 @Component({
     selector: 'dv-ng-gemeinde-dialog',
-    template: require('./dv-ng-gemeinde-dialog.component.html'),
+    template: require('./dv-ng-gemeinde-dialog.template.html'),
 })
 export class DvNgGemeindeDialogComponent {
 
@@ -34,7 +34,6 @@ export class DvNgGemeindeDialogComponent {
     gemeindeList: Observable<TSGemeinde[]>;
 
     constructor(
-        // private fb: FormBuilder,
         private dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
