@@ -85,7 +85,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
     // not used anymore?
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-        .subscribe((value: TSAuthEvent) => {
+        .subscribe(() => {
         if (ENV !== 'test') {
             listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
             mandantRS.getFirst();
@@ -104,7 +104,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     });
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
-        .subscribe((value: TSAuthEvent) => {
+        .subscribe(() => {
             //user is not yet authenticated, show loginpage
 
             let currentPath = angular.copy($location.absUrl());

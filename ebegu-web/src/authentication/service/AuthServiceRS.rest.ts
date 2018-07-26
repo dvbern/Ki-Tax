@@ -140,12 +140,9 @@ export default class AuthServiceRS {
      */
     public isOneOfRoles(roles: Array<TSRole>): boolean {
         if (roles !== undefined && roles !== null && this.principal) {
-            for (let i = 0; i < roles.length; i++) {
-                let role = roles[i];
-                if (role === this.principal.getCurrentRole()) {
-                    return true;
-                }
-            }
+            const principalRole = this.principal.getCurrentRole();
+
+            return roles.some(role => role === principalRole);
         }
         return false;
     }

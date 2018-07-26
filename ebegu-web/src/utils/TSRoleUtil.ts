@@ -211,7 +211,7 @@ export class TSRoleUtil {
     }
 
     public static isGemeindeabhaengig(role: TSRole): boolean {
-        return !!this.getAllGemeindeabhaengigeRoles().find(value => value === role);
+        return this.getAllGemeindeabhaengigeRoles().some(value => value === role);
     }
 
     public static getAllGemeindeabhaengigeRoles(): Array<TSRole> {

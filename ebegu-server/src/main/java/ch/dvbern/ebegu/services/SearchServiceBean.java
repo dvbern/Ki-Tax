@@ -36,12 +36,16 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -59,7 +63,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
-import ch.dvbern.ebegu.entities.Gesuchsteller_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -67,7 +70,6 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -79,6 +81,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -137,8 +140,14 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
-	private Pair<Long, List<Gesuch>> searchAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, @Nonnull SearchMode mode, boolean searchForPendenzen) {
-		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+	private Pair<Long, List<Gesuch>> searchAntraege(
+		@Nonnull AntragTableFilterDTO antragTableFilterDto,
+		@Nonnull SearchMode mode,
+		boolean searchForPendenzen) {
+
+		Benutzer user = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+
 		UserRole role = user.getRole();
 
 		Set<AntragStatus> allowedAntragStatus = getAntragStatuses(searchForPendenzen, role);
@@ -232,8 +241,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				Join<GesuchstellerContainer, Gesuchsteller> gesuchsteller2JA = gesuchsteller2.join(GesuchstellerContainer_.gesuchstellerJA, JoinType.LEFT);
 				predicates.add(
 					cb.or(
-						cb.like(gesuchsteller1JA.get(Gesuchsteller_.nachname), predicateObjectDto.getFamilienNameForLike()),
-						cb.like(gesuchsteller2JA.get(Gesuchsteller_.nachname), predicateObjectDto.getFamilienNameForLike())
+						cb.like(gesuchsteller1JA.get(AbstractPersonEntity_.nachname), predicateObjectDto.getFamilienNameForLike()),
+						cb.like(gesuchsteller2JA.get(AbstractPersonEntity_.nachname), predicateObjectDto.getFamilienNameForLike())
 					));
 			}
 			if (predicateObjectDto.getAntragTyp() != null) {
@@ -242,10 +251,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			}
 			if (predicateObjectDto.getGesuchsperiodeString() != null) {
 				String[] years = ensureYearFormat(predicateObjectDto.getGesuchsperiodeString());
+				Path<DateRange> dateRangePath = joinGesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit);
 				predicates.add(
 					cb.and(
-						cb.equal(cb.function("year", Integer.class, joinGesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigAb)), years[0]),
-						cb.equal(cb.function("year", Integer.class, joinGesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigBis)), years[1]))
+						cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigAb)), years[0]),
+						cb.equal(cb.function("year", Integer.class, dateRangePath.get(DateRange_.gueltigBis)), years[1]))
 				);
 			}
 			if (predicateObjectDto.getEingangsdatum() != null) {
@@ -269,7 +279,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			if (predicateObjectDto.getAenderungsdatum() != null) {
 				try {
 					// Wir wollen ohne Zeit vergleichen
-					Expression<LocalDate> timestampAsLocalDate = root.get(Gesuch_.timestampMutiert).as(LocalDate.class);
+					Expression<LocalDate> timestampAsLocalDate = root.get(AbstractEntity_.timestampMutiert).as(LocalDate.class);
 					LocalDate searchDate = LocalDate.parse(predicateObjectDto.getAenderungsdatum(), Constants.DATE_FORMATTER);
 					predicates.add(cb.equal(timestampAsLocalDate, searchDate));
 				} catch (DateTimeParseException e) {
@@ -293,7 +303,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				predicates.add(cb.equal(joinInstitution.get(Institution_.name), predicateObjectDto.getInstitutionen()));
 			}
 			if (predicateObjectDto.getKinder() != null) {
-				predicates.add(cb.like(joinKinder.get(Kind_.vorname), predicateObjectDto.getKindNameForLike()));
+				predicates.add(cb.like(joinKinder.get(AbstractPersonEntity_.vorname), predicateObjectDto.getKindNameForLike()));
 			}
 			if (predicateObjectDto.getVerantwortlicherBG() != null) {
 				String[] strings = predicateObjectDto.getVerantwortlicherBG().split(" ");
@@ -316,13 +326,13 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		switch (mode) {
 		case SEARCH:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(root.get(Gesuch_.id))
+			query.select(root.get(AbstractEntity_.id))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			constructOrderByClause(antragTableFilterDto, cb, query, root, joinKinder, joinGesuchsperiode, joinInstitutionstammdaten, joinInstitution);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
-			query.select(cb.countDistinct(root.get(Gesuch_.id)))
+			query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			break;
 		}
@@ -463,16 +473,18 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				expression = root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer);
 				break;
 			case "familienName":
-				expression = root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA).get(Gesuchsteller_.nachname);
+				expression = root.get(Gesuch_.gesuchsteller1)
+					.get(GesuchstellerContainer_.gesuchstellerJA)
+					.get(AbstractPersonEntity_.nachname);
 				break;
 			case "antragTyp":
 				expression = root.get(Gesuch_.typ);
 				break;
 			case "gesuchsperiode":
-				expression = gesuchsperiode.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigAb);
+				expression = gesuchsperiode.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb);
 				break;
 			case "aenderungsdatum":
-				expression = root.get(Gesuch_.timestampMutiert);
+				expression = root.get(AbstractEntity_.timestampMutiert);
 				break;
 			case "eingangsdatum":
 				expression = root.get(Gesuch_.eingangsdatum);
@@ -509,7 +521,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				expression = root.get(Gesuch_.dossier).get(Dossier_.verantwortlicherBG).get(Benutzer_.nachname);
 				break;
 			case "kinder":
-				expression = kinder.get(Kind_.vorname);
+				expression = kinder.get(AbstractPersonEntity_.vorname);
 				break;
 			case "dokumenteHochgeladen":
 				expression = root.get(Gesuch_.dokumenteHochgeladen);
@@ -526,7 +538,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			query.orderBy(antragTableFilterDto.getSort().getReverse() ? cb.asc(expression) : cb.desc(expression));
 		} else {
 			// Default sort when nothing is choosen
-			expression = root.get(Gesuch_.timestampMutiert);
+			expression = root.get(AbstractEntity_.timestampMutiert);
 			query.orderBy(cb.desc(expression));
 		}
 	}
@@ -559,7 +571,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 			Root<Gesuch> root = query.from(Gesuch.class);
-			Predicate predicate = root.get(Gesuch_.id).in(gesuchIds);
+			Predicate predicate = root.get(AbstractEntity_.id).in(gesuchIds);
 			Fetch<Gesuch, KindContainer> kindContainers = root.fetch(Gesuch_.kindContainers, JoinType.LEFT);
 			kindContainers.fetch(KindContainer_.betreuungen, JoinType.LEFT);
 			query.where(predicate);
