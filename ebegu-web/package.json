@@ -29,16 +29,16 @@
     "tsc": "tsc --project src/ --diagnostics",
     "build": "npm run build:dev",
     "prebuild:dev": "npm run clean:dist",
-    "build:dev": "webpack --env development --progress --colors --display-error-details --display-cached",
+    "build:dev": "check-engine && webpack --env development --progress --colors --display-error-details --display-cached",
     "prebuild:prod": "npm run clean:dist",
-    "build:prod": "webpack --env production --colors --display-error-details --display-cached --bail",
+    "build:prod": "check-engine && webpack --env production --colors --display-error-details --display-cached --bail",
     "server": "npm run server:dev",
-    "server:dev": "webpack-dev-server -d --env development --progress --public --inline --colors --watch --content-base src/",
-    "server:dev:hmr": "npm run server:dev -- --hot",
-    "server:prod": "http-server dist --cors -p 3000 --proxy http://localhost:8080/",
+    "server:dev": "check-engine && webpack-dev-server -d --env development --progress --public --inline --colors --watch --content-base src/",
+    "server:dev:hmr": "check-engine && npm run server:dev -- --hot",
+    "server:prod": "check-engine && http-server dist --cors -p 3000 --proxy http://localhost:8080/",
     "webdriver:update": "npm run webdriver-manager update",
     "webdriver:start": "npm run webdriver-manager start",
-    "lint": "npm run tslint 'src/**/*.ts'",
+    "lint": "check-engine && npm run tslint 'src/**/*.ts'",
     "pree2e": "npm run webdriver:update -- --standalone",
     "e2e": "npm run protractor",
     "e2e:live": "npm run e2e -- --elementExplorer",
@@ -81,6 +81,7 @@
     "angular-utf8-base64": "0.0.5",
     "bootstrap": "~3.3.7",
     "cache-loader": "~1.1.0",
+    "check-engine": "~1.7.0",
     "circular-dependency-plugin": "~4.2.1",
     "clean-webpack-plugin": "~0.1.17",
     "compression-webpack-plugin": "~1.0.1",
@@ -137,8 +138,8 @@
     "xml2js": "~0.4.17"
   },
   "engines": {
-    "node": ">= 6.10.0",
-    "npm": "~5.4.2"
+    "node": ">=8.0.0 <9.0.0",
+    "npm": ">=6.2.0"
   },
   "dependencies": {
     "@angular/animations": "~5.2.10",
