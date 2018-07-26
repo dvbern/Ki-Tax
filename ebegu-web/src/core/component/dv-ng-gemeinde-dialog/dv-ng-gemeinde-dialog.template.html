@@ -12,21 +12,24 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
+<mat-dialog-content class="dv-dialog-content">
+    <p [textContent]="'GEMEINDE_PAPIERGESUCH_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>
 
-<h2 mat-dialog-title [textContent]="'GEMEINDE_PAPIERGESUCH_AUSWAEHLEN' | translate"></h2>
+    <div class="dv-select-style dv-dialog-select">
+        <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="gemeinde"
+                id="gemeinde"
+                [(ngModel)]="selectedGemeinde"
+                class="form-control"
+                [required]="true">
 
-<mat-dialog-content>
-
-    <mat-form-field>
-        <mat-select placeholder="gemeinde" [(ngModel)]="selectedGemeinde" name="gemeinde">
-            <mat-option *ngFor="let gemeinde of gemeindeList | async" [value]="gemeinde">
-                {{gemeinde.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+            <option *ngFor="let gemeinde of gemeindeList | async" [ngValue]="gemeinde">{{gemeinde.name}}</option>
+        </select>
+    </div>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button class="mat-raised-button mat-primary" (click)="save()" [textContent]="'AUSWAEHLEN' | translate"></button>
+    <div class="dv-dialog-actions">
+    <button class="dv-btn" (click)="save()" [textContent]="'AUSWAEHLEN' | translate"></button>
+    </div>
 </mat-dialog-actions>

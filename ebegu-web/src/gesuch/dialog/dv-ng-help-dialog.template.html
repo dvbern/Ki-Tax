@@ -47,5 +47,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions  class="marginTop40" layout-align="center center">
-    <button class="mat-raised-button mat-primary" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+    </div>
 </mat-dialog-actions>
