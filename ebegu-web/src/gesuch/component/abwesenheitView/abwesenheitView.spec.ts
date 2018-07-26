@@ -13,11 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {AbwesenheitViewController, KindBetreuungUI} from './abwesenheitView';
 import {EbeguWebCore} from '../../../core/core.module';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
@@ -26,6 +25,7 @@ import TSKindContainer from '../../../models/TSKindContainer';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
+import {AbwesenheitViewController, KindBetreuungUI} from './abwesenheitView';
 
 describe('abwesenheitView', function () {
 
@@ -57,11 +57,12 @@ describe('abwesenheitView', function () {
         $timeout = $injector.get('$timeout');
     }));
 
+    beforeEach(function () {
+        abwesenheitController = new AbwesenheitViewController(gesuchModelManager, berechnungsManager,
+            wizardStepManager, dialog, $translate, $q, errorService, $scope, $timeout);
+    });
+
     describe('getNameFromBetroffene', function () {
-        beforeEach(function () {
-            abwesenheitController = new AbwesenheitViewController(gesuchModelManager, berechnungsManager,
-                wizardStepManager, dialog, $translate, $q, errorService, $scope, $timeout);
-        });
         it('should return empty string for undefined kindBetreuung', function () {
             let kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
             expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
@@ -90,8 +91,9 @@ describe('abwesenheitView', function () {
             expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('Pedrito Contreras - InstitutionTest');
         });
     });
+
     describe('createAbwesenheit', function () {
-        it('should return empty string for empty data', function () {
+        it('should return empty array for empty data', function () {
             expect(abwesenheitController.getAbwesenheiten().length).toBe(0);
             abwesenheitController.createAbwesenheit();
             expect(abwesenheitController.getAbwesenheiten().length).toBe(1);
