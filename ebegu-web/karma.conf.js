@@ -60,8 +60,8 @@ module.exports = function (config) {
             'src/vendor.ts': ['webpack'],
             'src/polyfills.ts': ['webpack'],
             'src/app.module.ts': ['webpack', 'sourcemap'],
-            'config/spec-bundle.ts': ['webpack'],
-            'test.ts': ['webpack'],
+            'config/spec-bundle.ts': ['webpack', 'sourcemap'],
+            'test.ts': ['webpack', 'sourcemap']
             // 'src/**/*.spec.ts': ['webpack']
         },
 
