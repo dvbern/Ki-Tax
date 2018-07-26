@@ -92,6 +92,7 @@ export default class AuthServiceRS {
                     let authData = angular.fromJson(this.base64.decode(authIdbase64));
                     // we take the complete user from Server and store it in principal
                     return this.userRS.findBenutzer(authData.authId).then((response) => {
+                        // todo KIBON-143 timeout hinzufuegen
                         this.principal = response;
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
                         return this.principal;

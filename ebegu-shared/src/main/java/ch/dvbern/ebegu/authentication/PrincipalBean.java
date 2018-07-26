@@ -29,6 +29,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -152,5 +153,14 @@ public class PrincipalBean {
 	public boolean isCallerInRole(@Nonnull UserRole role) {
 		checkNotNull(role);
 		return this.isCallerInRole(role.name());
+	}
+
+	/**
+	 * A role that is not linked to a Gemeinde can see all Gemeinden
+	 * A role that is linked to 1..n Gemeinden can see only those Gemeinden
+	 */
+	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
+		final Benutzer currentBenutzer = this.getBenutzer();
+		return currentBenutzer.belongsToGemeinde(gemeinde);
 	}
 }

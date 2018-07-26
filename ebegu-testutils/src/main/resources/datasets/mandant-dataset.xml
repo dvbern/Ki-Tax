@@ -27,5 +27,8 @@
 	<gemeinde id="4c453263-f992-48af-86b5-dc04cd7e8bb8" timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0" user_erstellt="anonym" user_mutiert="anonym" version="0"
 			  name="Stadt Bern" enabled="true" gemeinde_nummer="1" mandant_id="e3736eb8-6eef-40ef-9e52-96ab48d8f220"/>
+	<gemeinde id="4c453263-f992-48af-86b5-dc04cd7e8777" timestamp_erstellt="2016-04-25 16:22:22.0"
+			  timestamp_mutiert="2016-04-25 16:22:26.0" user_erstellt="anonym" user_mutiert="anonym" version="0"
+			  name="Ostermundigen" enabled="true" gemeinde_nummer="2" mandant_id="e3736eb8-6eef-40ef-9e52-96ab48d8f220"/>
 
 </dataset>

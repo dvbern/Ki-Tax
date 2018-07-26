@@ -227,4 +227,17 @@ public class Benutzer extends AbstractEntity {
 	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
 		getCurrentBerechtigung().setTraegerschaft(traegerschaft);
 	}
+
+	/**
+	 * A user whose role is not linked to a Gemeinde can see all Gemeinden
+	 * A user whose role is linked to 1..n Gemeinden can see only those Gemeinden
+	 */
+	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
+		if (getRole().isRoleGemeindeabhaengig()) {
+			return getCurrentBerechtigung().getGemeindeList()
+				.stream()
+				.anyMatch(gemeinde::equals);
+		}
+		return true;
+	}
 }

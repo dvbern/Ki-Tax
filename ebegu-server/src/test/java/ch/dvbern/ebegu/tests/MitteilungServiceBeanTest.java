@@ -112,7 +112,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		fall.setMandant(mandant);
 		dossier.setVerantwortlicherBG(empfaengerJA);
 		dossier.setVerantwortlicherTS(empfaengerSCH);
-		dossier.setGemeinde(TestDataUtil.getGemeindeBern(persistence));
+		dossier.setGemeinde(TestDataUtil.getTestGemeinde(persistence));
 		fall = persistence.persist(fall);
 
 		traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
@@ -318,6 +318,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		final Betreuungsmitteilung mitteilung = new Betreuungsmitteilung();
 		final Betreuung betreuung_1_1 = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		mitteilung.setBetreuung(betreuung_1_1);
+		mitteilung.setDossier(dossier);
 
 		try {
 			mitteilungService.applyBetreuungsmitteilung(mitteilung);

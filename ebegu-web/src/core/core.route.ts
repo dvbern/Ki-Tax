@@ -25,7 +25,6 @@ import GlobalCacheService from '../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../models/TSApplicationProperty';
-import TSUser from '../models/TSUser';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import ErrorService from './errors/service/ErrorService';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
@@ -53,8 +52,9 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     $transitions.onStart({}, transition => {
         stateChangeStart(transition);
         transition.promise
-            .catch(() => stateChangeError(transition))
-            .finally(() => stateChangeSuccess());
+            .then(() => stateChangeSuccess())
+            .catch(() => stateChangeError(transition));
+            // .finally(() => stateChangeSuccess());
     });
 
     // Fehler beim Navigieren ueber ui-route ins Log schreiben

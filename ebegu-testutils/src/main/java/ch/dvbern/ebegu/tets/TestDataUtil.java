@@ -171,7 +171,8 @@ public final class TestDataUtil {
 	public static final LocalDate STICHTAG_EKV_2_GUELTIG = STICHTAG_EKV_2.plusMonths(1);
 	public static final String TEST_STRASSE = "Nussbaumstrasse";
 
-	public static final String GEMEINDE_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
+	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
+	public static final String GEMEINDE_OSTERMUNDIGEN_ID = "4c453263-f992-48af-86b5-dc04cd7e8777";
 
 	private TestDataUtil() {
 	}
@@ -317,10 +318,10 @@ public final class TestDataUtil {
 	}
 
 	public static Gemeinde getTestGemeinde(Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_ID);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
 			gemeinde = new Gemeinde();
-			gemeinde.setId(GEMEINDE_ID);
+			gemeinde.setId(GEMEINDE_BERN_ID);
 			gemeinde.setName("Testgemeinde");
 			gemeinde.setEnabled(true);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
@@ -1041,7 +1042,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
-		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.getDossier().setGemeinde(gemeinde);
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
 		persistence.persist(gesuch.getFall());
 

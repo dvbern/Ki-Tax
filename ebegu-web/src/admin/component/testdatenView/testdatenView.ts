@@ -201,7 +201,7 @@ export class TestdatenViewComponent implements OnInit {
         let uuidPartOfString = response.data ? response.data.slice(-36) : '';
         this.createAndOpenLinkDialog(
             response.data,
-            '#/gesuch/fall/false///' + uuidPartOfString + '/', //nicht alle Parameter werden benoetigt, deswegen sind sie leer
+            '#/gesuch/fall/false///' + uuidPartOfString + '//', //nicht alle Parameter werden benoetigt, deswegen sind sie leer
         );
     }
 

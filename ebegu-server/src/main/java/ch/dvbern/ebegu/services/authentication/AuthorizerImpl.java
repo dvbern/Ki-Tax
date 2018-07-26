@@ -35,9 +35,11 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -54,6 +56,7 @@ import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
 import ch.dvbern.ebegu.services.FallService;
@@ -95,6 +98,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Inject
 	private InstitutionService institutionService;
 
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
 	@Override
 	public void checkReadAuthorizationGesuchId(@Nullable String gesuchId) {
 		if (gesuchId != null) {
@@ -121,16 +127,18 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkCreateAuthorizationFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation) {
+		Gesuch gesuch = extractGesuch(finanzielleSituation);
 		if (principalBean.isCallerInAnyOfRole(ADMIN, SUPER_ADMIN)) {
+			if (gesuch != null) {
+				validateGemeindeMatches(gesuch.getDossier());
+			}
 			return;
 		}
-		if (principalBean.isCallerInRole(GESUCHSTELLER)) {
+		if (principalBean.isCallerInRole(GESUCHSTELLER)
+			&& (gesuch == null || !isWriteAuthorized(() -> extractGesuch(finanzielleSituation), principalBean.getPrincipal().getName()))) {
 			//gesuchsteller darf nur welche machen wenn ihm der zugehoerige Fall gehoert
-			Gesuch gesuch = extractGesuch(finanzielleSituation);
+			throwCreateViolation();
 
-			if (gesuch == null || !isWriteAuthorized(() -> extractGesuch(finanzielleSituation), principalBean.getPrincipal().getName())) {
-				throwCreateViolation();
-			}
 		}
 	}
 
@@ -179,6 +187,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		validateMandantMatches(fall);
+
+		validateGemeindeMatches(fall);
+
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA,
 			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT, JURIST, REVISOR };
@@ -192,12 +203,42 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return false;
 	}
 
+	/**
+	 * For a Role that belongs to a Gemeinde it must be checked that at least one dossier of the fall belongs to the Gemeinde
+	 * of the principal
+	 */
+	private void validateGemeindeMatches(@Nonnull Fall fall) {
+		if (principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone().isRoleGemeindeabhaengig()) {
+			// in this case we cannot use the service dossierService.findDossiersByFall(fall.getId()) directly because it proves
+			// the rights again and we enter in an infinite loop
+			Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
+			if (!dossiers.isEmpty()) { // for no dossiers in Fall no validation is required
+				final boolean belongsToGemeinde = dossiers.stream().anyMatch(dossier -> principalBean.belongsToGemeinde(dossier.getGemeinde()));
+				if (!belongsToGemeinde) {
+					throwViolation(fall);
+				}
+			}
+		}
+	}
+
+	/**
+	 * For a Role that belongs to a Gemeinde it must be checked that the dossier belongs to the Gemeinde of the principal
+	 */
+	private void validateGemeindeMatches(@Nonnull Dossier dossier) {
+		if (!isUserAllowedForGemeinde(dossier.getGemeinde())) {
+			throwViolation(dossier);
+		}
+	}
+
 	private boolean isReadAuthorizedDossier(@Nullable final Dossier dossier) {
 		if (dossier == null) {
 			return true;
 		}
 
 		validateMandantMatches(dossier.getFall());
+
+		validateGemeindeMatches(dossier);
+
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA,
 			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT, JURIST, REVISOR };
@@ -239,7 +280,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Override
 	public void checkWriteAuthorizationDossier(@Nullable Dossier dossier) {
 		if (dossier != null) {
-			//TODO (KIBON-6): Wie muss die Berechtigung funktionieren?
 			boolean allowed = isReadAuthorizedDossier(dossier);
 			if (!allowed) {
 				throwViolation(dossier);
@@ -248,7 +288,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorization(Gesuch gesuch) throws EJBAccessException {
+	public void checkWriteAuthorization(@Nullable Gesuch gesuch) throws EJBAccessException {
 		if (gesuch == null) {
 			return;
 		}
@@ -275,9 +315,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorization(Verfuegung verfuegung) {
+	public void checkWriteAuthorization(@Nullable Verfuegung verfuegung) {
 		//nur sachbearbeiter ja und admins duefen verfuegen
-		if (!principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA)) {
+		if (verfuegung != null && !principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA)) {
 			throwViolation(verfuegung);
 		}
 	}
@@ -331,13 +371,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (betreuungen != null && !betreuungen.isEmpty()
 			&& betreuungen.stream().noneMatch(this::isReadAuthorized)) {
 			throw new EJBAccessException(
-				"Access Violation"
-					+ " user is not allowed for any of these betreuungen");
+				"Access Violation user is not allowed for any of these betreuungen");
 		}
 	}
 
 	@Override
-	public void checkReadAuthorization(Verfuegung verfuegung) {
+	public void checkReadAuthorization(@Nullable Verfuegung verfuegung) {
 		if (verfuegung != null) {
 			//an betreuung delegieren
 			checkReadAuthorization(verfuegung.getBetreuung());
@@ -352,7 +391,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationVerfuegungen(Collection<Verfuegung> verfuegungen) {
+	public void checkReadAuthorizationVerfuegungen(@Nullable Collection<Verfuegung> verfuegungen) {
 		if (verfuegungen != null) {
 			verfuegungen.forEach(this::checkReadAuthorization);
 		}
@@ -392,6 +431,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				//wenn wir keinen fall finden dann gehen wir davon aus, dass die finanzielle Situation bzw ihr Gesuchsteller noch nicht gespeichert ist
 				return;
 			}
+			validateGemeindeMatches(owningGesuch.getDossier());
 			Boolean allowedAdminOrSachbearbeiter = isAllowedAdminOrSachbearbeiter(owningGesuch);
 			Boolean allowedSchulamt = isAllowedSchulamt(owningGesuch);
 
@@ -419,6 +459,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	private boolean isReadAuthorizedFreigabe(Gesuch gesuch) {
 		if (AntragStatus.FREIGABEQUITTUNG == gesuch.getStatus()) {
+			validateGemeindeMatches(gesuch.getDossier());
 			if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMINISTRATOR_SCHULAMT)) {
 				if (gesuch.hasBetreuungOfSchulamt()) {
 					return true; //schulamt darf nur solche lesen die nur_schulamt sind
@@ -458,11 +499,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isReadAuthorized(final Betreuung betreuung) {
-		if (isAllowedAdminOrSachbearbeiter(betreuung.extractGesuch())) {
+		final Gesuch gesuch = betreuung.extractGesuch();
+		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
 		}
 
-		boolean isOwnerOrAdmin = isGSOwner(() -> betreuung.extractGesuch().getFall(), principalBean.getPrincipal().getName());
+		boolean isOwnerOrAdmin = isGSOwner(() -> gesuch.getFall(), principalBean.getPrincipal().getName());
 		if (isOwnerOrAdmin) {
 			return true;
 		}
@@ -480,7 +522,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return institutions.stream().anyMatch(instToMatch::equals);
 		}
 		if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMINISTRATOR_SCHULAMT)) {
-			return betreuung.getBetreuungsangebotTyp().isSchulamt();
+			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
+				&& betreuung.getBetreuungsangebotTyp() != null
+				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
 		}
 		return false;
 
@@ -496,31 +540,31 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	private boolean isReadAuthorized(Gesuch entity) {
-		if (isAllowedAdminOrSachbearbeiter(entity)) {
+	private boolean isReadAuthorized(Gesuch gesuch) {
+		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
 		}
-		if (isGSOwner(entity::getFall, principalBean.getPrincipal().getName())) {
+		if (isGSOwner(gesuch::getFall, principalBean.getPrincipal().getName())) {
 			return true;
 		}
 		if (principalBean.isCallerInRole(SACHBEARBEITER_INSTITUTION)) {
 			Institution institution = principalBean.getBenutzer().getInstitution();
 			Objects.requireNonNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			return entity.hasBetreuungOfInstitution(institution); //@reviewer: oder besser ueber service ?
+			return gesuch.hasBetreuungOfInstitution(institution); //@reviewer: oder besser ueber service ?
 		}
 		if (principalBean.isCallerInRole(SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
 			Objects.requireNonNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			Collection<Institution> institutions = institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
-			return institutions.stream().anyMatch(entity::hasBetreuungOfInstitution);  // irgend eine der betreuungen des gesuchs matched
+			return institutions.stream().anyMatch(gesuch::hasBetreuungOfInstitution);  // irgend eine der betreuungen des gesuchs matched
 		}
-		if (isAllowedSchulamt(entity)) {
+		if (isAllowedSchulamt(gesuch)) {
 			return true;
 		}
-		if (isAllowedSteueramt(entity)) {
+		if (isAllowedSteueramt(gesuch)) {
 			return true;
 		}
-		if (isAllowedJuristOrRevisor(entity)) {
+		if (isAllowedJuristOrRevisor(gesuch)) {
 			return true;
 		}
 		return false;
@@ -533,31 +577,43 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		//JA/SCH Benutzer duerfen nur freigegebene Gesuche anschauen
 		if (principalBean.isCallerInAnyOfRole(JA_OR_ADM_OR_SCH)) {
-			return gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt();
+			return gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt()
+				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
 		return isAllowedJuristOrRevisor(gesuch);
 	}
 
-	private boolean isAllowedSchulamt(Gesuch entity) {
+	private boolean isUserAllowedForGemeinde(Gemeinde gemeinde) {
+		if (gemeinde == null) { // all users may see a null gemeinde
+			return true;
+		}
+		return principalBean.belongsToGemeinde(gemeinde);
+	}
+
+	private boolean isAllowedSchulamt(Gesuch gesuch) {
 		if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMINISTRATOR_SCHULAMT)) {
-			return entity.getStatus().isReadableBySchulamtSachbearbeiter();
+			return gesuch.getStatus().isReadableBySchulamtSachbearbeiter()
+				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
 		return false;
 	}
 
-	private boolean isAllowedSteueramt(Gesuch entity) {
+	private boolean isAllowedSteueramt(Gesuch gesuch) {
 		if (principalBean.isCallerInRole(STEUERAMT)) {
-			return entity.getStatus().isReadableBySteueramt();
+			return gesuch.getStatus().isReadableBySteueramt()
+				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
 		return false;
 	}
 
 	private boolean isAllowedJuristOrRevisor(Gesuch gesuch) {
 		if (principalBean.isCallerInRole(JURIST)) {
-			return gesuch.getStatus().isReadableByJurist();
+			return gesuch.getStatus().isReadableByJurist()
+				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
 		if (principalBean.isCallerInRole(REVISOR)) {
-			return gesuch.getStatus().isReadableByRevisor();
+			return gesuch.getStatus().isReadableByRevisor()
+				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
 		return false;
 	}
@@ -568,6 +624,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 		Gesuch gesuch = gesuchSupplier.get();
+
+		validateGemeindeMatches(gesuch.getDossier());
+
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		if (userRole == null) {
 			return false;
@@ -586,7 +645,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return false;
 	}
 
-	private boolean isWriteAuthorized(Gesuch entity, String principalName) {
+	private boolean isWriteAuthorized(@Nullable Gesuch entity, String principalName) {
 		return isWriteAuthorized(() -> entity, principalName);
 	}
 
@@ -657,6 +716,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkWriteAuthorizationMitteilung(@Nullable Mitteilung mitteilung) {
 		if (mitteilung != null) {
 			UserRole userRole = principalBean.discoverMostPrivilegedRole();
+			validateGemeindeMatches(mitteilung.getDossier());
 			Objects.requireNonNull(userRole);
 			switch (userRole) {
 			case GESUCHSTELLER: {
@@ -702,6 +762,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (mitteilung != null) {
 			UserRole userRole = principalBean.discoverMostPrivilegedRole();
 			Objects.requireNonNull(userRole);
+			validateGemeindeMatches(mitteilung.getDossier());
 			// Beim Lesen einer Mitteilung muss der eingeloggte Benutzer
 			// - der Sender oder der Empfaenger sein (GESUCHSTELLER)
 			// - der Sender sein (INSTITUTIONEN)

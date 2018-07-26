@@ -146,6 +146,19 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		return saja;
 	}
 
+	protected Benutzer loginAsJurist() {
+		try {
+			createLoginContext("jurist", "jurist").login();
+		} catch (LoginException e) {
+			LOG.error("could not login as jurist for tests");
+		}
+
+		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
+		Benutzer jurist = createOrFindBenutzer(UserRole.JURIST, "jurist", null, null, mandant);
+		persistence.merge(jurist);
+		return jurist;
+	}
+
 	protected void loginAsAdmin() {
 		try {
 			createLoginContext("admin", "admin").login();
