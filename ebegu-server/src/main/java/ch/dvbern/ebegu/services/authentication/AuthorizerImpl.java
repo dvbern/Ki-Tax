@@ -197,20 +197,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 		//Gesuchstellereigentuemer pruefen
-		if (this.isGSOwner(() -> fall, principalBean.getPrincipal().getName())) {
-			return true;
-		}
-		return false;
+		return this.isGSOwner(() -> fall, principalBean.getPrincipal().getName());
 	}
 
 	/**
-	 * For a Role that belongs to a Gemeinde it must be checked that at least one dossier of the fall belongs to the Gemeinde
-	 * of the principal
+	 * For a Role that belongs to a Gemeinde it must be checked that at least one dossier of the fall belongs to the
+	 * Gemeinde of the principal
 	 */
 	private void validateGemeindeMatches(@Nonnull Fall fall) {
 		if (principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone().isRoleGemeindeabhaengig()) {
-			// in this case we cannot use the service dossierService.findDossiersByFall(fall.getId()) directly because it proves
-			// the rights again and we enter in an infinite loop
+			// in this case we cannot use the service dossierService.findDossiersByFall(fall.getId()) directly because
+			// it checks the rights again and we enter in an infinite loop
 			Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
 			if (!dossiers.isEmpty()) { // for no dossiers in Fall no validation is required
 				final boolean belongsToGemeinde = dossiers.stream().anyMatch(dossier -> principalBean.belongsToGemeinde(dossier.getGemeinde()));
@@ -247,10 +244,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		//TODO (team) hier muss dann spaeter die Rolle genauer geprüft werden!
 		//Gesuchstellereigentuemer pruefen
-		if (this.isGSOwner(() -> dossier.getFall(), principalBean.getPrincipal().getName())) {
-			return true;
-		}
-		return false;
+		return this.isGSOwner(dossier::getFall, principalBean.getPrincipal().getName());
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
@@ -461,12 +455,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (AntragStatus.FREIGABEQUITTUNG == gesuch.getStatus()) {
 			validateGemeindeMatches(gesuch.getDossier());
 			if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMINISTRATOR_SCHULAMT)) {
-				if (gesuch.hasBetreuungOfSchulamt()) {
-					return true; //schulamt darf nur solche lesen die nur_schulamt sind
-				}
-			} else if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
-				return true;     //nicht schulamtbenutzer duerfen keine lesen die exklusiv schulamt sind
+				//schulamt darf nur solche lesen die nur_schulamt sind
+				return gesuch.hasBetreuungOfSchulamt();
 			}
+
+			//nicht schulamtbenutzer duerfen keine lesen die exklusiv schulamt sind
+			return !gesuch.hasOnlyBetreuungenOfSchulamt();
 		}
 		return false;
 	}
@@ -481,19 +475,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 
-		if (isGSOwner(() -> gesuchSupplier.get().getFall(), principalName)) {
-			return true;
-		}
-		return false;
+		return isGSOwner(() -> gesuchSupplier.get().getFall(), principalName);
 	}
 
 	private boolean isGSOwner(Supplier<Fall> fallSupplier, String principalName) {
 		if (principalBean.isCallerInRole(GESUCHSTELLER.name())) {
 			Fall fall = fallSupplier.get();
-			if ((fall != null) && (fall.getUserErstellt() == null ||
-				(fall.getBesitzer() != null && fall.getBesitzer().getUsername().equalsIgnoreCase(principalName)))) {
-				return true;
-			}
+			return (fall != null) && (fall.getUserErstellt() == null ||
+				(fall.getBesitzer() != null && fall.getBesitzer().getUsername().equalsIgnoreCase(principalName)));
 		}
 		return false;
 	}
@@ -504,7 +493,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 
-		boolean isOwnerOrAdmin = isGSOwner(() -> gesuch.getFall(), principalBean.getPrincipal().getName());
+		boolean isOwnerOrAdmin = isGSOwner(gesuch::getFall, principalBean.getPrincipal().getName());
 		if (isOwnerOrAdmin) {
 			return true;
 		}
@@ -564,10 +553,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (isAllowedSteueramt(gesuch)) {
 			return true;
 		}
-		if (isAllowedJuristOrRevisor(gesuch)) {
-			return true;
-		}
-		return false;
+		return isAllowedJuristOrRevisor(gesuch);
 	}
 
 	@Nonnull
@@ -639,10 +625,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt() || AntragStatus.FREIGABEQUITTUNG == gesuch.getStatus();
 		}
 
-		if (isGSOwner(gesuch::getFall, principalName)) {
-			return true;
-		}
-		return false;
+		return isGSOwner(gesuch::getFall, principalName);
 	}
 
 	private boolean isWriteAuthorized(@Nullable Gesuch entity, String principalName) {

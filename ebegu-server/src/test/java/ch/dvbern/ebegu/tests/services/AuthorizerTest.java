@@ -66,7 +66,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 
 		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
-		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Admin cannot see the Gesuch because it doesnt belong to his Gemeinde");
+		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Admin cannot see the Gesuch because it doesn't belong to his Gemeinde");
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		loginAsJurist();
-		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Jurist cannot see the Gesuch because it doesnt belong to his Gemeinde");
+		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Jurist cannot see the Gesuch because it doesn't belong to his Gemeinde");
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 
 		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
-		checkReadAuthorizationGesuchNotAllowed(gesuch, "The SCH-User cannot see the Gesuch because it doesnt belong to his Gemeinde");
+		checkReadAuthorizationGesuchNotAllowed(gesuch, "The SCH-User cannot see the Gesuch because it doesn't belong to his Gemeinde");
 	}
 
 	@Test
@@ -142,7 +142,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 		gesuch.setStatus(AntragStatus.PRUEFUNG_STV);
 		persistence.merge(gesuch);
 		loginAsSteueramt();
-		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Steueramt-User cannot see the Gesuch because it doesnt belong to his Gemeinde");
+		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Steueramt-User cannot see the Gesuch because it doesn't belong to his Gemeinde");
 	}
 
 	/**
