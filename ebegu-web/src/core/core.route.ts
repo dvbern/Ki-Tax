@@ -104,11 +104,11 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     });
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
-        .subscribe((value: TSAuthEvent) => {
+        .subscribe(() => {
             //user is not yet authenticated, show loginpage
 
             let currentPath = angular.copy($location.absUrl());
-            console.log('going to login page wiht current path ', currentPath);
+            console.log('going to login page with current path ', currentPath);
 
             //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
             if (currentPath.indexOf('fedletSSOInit') === -1

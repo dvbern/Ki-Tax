@@ -27,7 +27,6 @@ ebegu-runconfig/wildfly_10.0.0.Final/build.properties
 /logstash/input/id-test2/server.log**
 /logstash/input/id-prod/server.log**
 
-ebegu-web/package-lock\.json
 ebegu-dbschema/info.txt
 ebegu-dbschema/src/main/resources/_createTables.sql
 ebegu-dbschema/src/main/resources/_nachher.txt
