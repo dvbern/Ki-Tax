@@ -24,6 +24,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.services.SequenceService;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -43,6 +44,10 @@ public class Mandant extends AbstractEntity {
 	@NotNull
 	private String name;
 
+	/**
+	 * TODO KIBON-152 das ist nicht transaktions-sicher: es kann zu unique constraint violations kommen wenn zwei
+	 * Gemeinden gleichzeitig angelegt werden. Sichere Lösung: {@link SequenceService#createNumberTransactional}
+	 */
 	@NotNull
 	@Min(1)
 	@Column(nullable = false)
