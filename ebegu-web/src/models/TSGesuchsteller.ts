@@ -27,11 +27,11 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     private _diplomatenstatus: boolean;
     private _ewkPersonId: string;
     private _ewkAbfrageDatum: moment.Moment;
-    private _korrespondenzSprachen: Array<TSSprache> = [];
+    private _korrespondenzSprache: TSSprache;
 
     constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht,
                 email?: string, mobile?: string, telefon?: string, telefonAusland?: string,
-                diplomatenstatus?: boolean, ewkPersonId?: string, ewkAbfrageDatum?: moment.Moment, korrespondenzSprachen?: Array<TSSprache>) {
+                diplomatenstatus?: boolean, ewkPersonId?: string, ewkAbfrageDatum?: moment.Moment, korrespondenzSprache?: TSSprache) {
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._mail = email;
         this._mobile = mobile;
@@ -40,7 +40,7 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
         this._diplomatenstatus = diplomatenstatus;
         this._ewkPersonId = ewkPersonId;
         this._ewkAbfrageDatum = ewkAbfrageDatum;
-        this._korrespondenzSprachen = korrespondenzSprachen;
+        this._korrespondenzSprache = korrespondenzSprache;
     }
 
     public get mail(): string {
@@ -99,12 +99,12 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
         this._ewkAbfrageDatum = value;
     }
 
-    get korrespondenzSprachen(): Array<TSSprache> {
-        return this._korrespondenzSprachen;
+    get korrespondenzSprache(): TSSprache {
+        return this._korrespondenzSprache;
     }
 
-    set korrespondenzSprachen(value: Array<TSSprache>) {
-        this._korrespondenzSprachen = value;
+    set korrespondenzSprache(value: TSSprache) {
+        this._korrespondenzSprache = value;
     }
 
     public getPhone(): string {

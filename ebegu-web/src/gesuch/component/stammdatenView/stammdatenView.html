@@ -101,34 +101,53 @@
                         </div>
                         <!-- Korrespondenz-Sprache -->
                         <div class="col-sm-12 dv-input-container-small" ng-show="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
-                            <dv-input-container class="form-group">
+                            <div class="form-group">
                                 <label class="md-no-float required" data-translate="KORRESPONDENZSPRACHE" for="korrespondenzSprache_ID">
                                 </label>
-                                <div id="korrespondenzSprache_ID"
-                                    ng-repeat="lang in vm.getSprachen()">
-                                    <md-checkbox
-                                        id="lang_{{lang}}"
-                                        name="lang_{{lang}}"
-                                        ng-model="vm.getGesuchstellerSprache(lang).selected"
-                                        ng-change="vm.spracheChanged(lang)"
-                                        aria-label="{{lang | translate}}">
-                                        <span data-translate="{{lang | translate}}"></span>
-                                    </md-checkbox>
+                                <div class="dv-select-style">
+                                    <select name="korrespondenzSprache" id="korrespondenzSprache_ID" class="form-control"
+                                            ng-model="vm.getModelJA().korrespondenzSprache"
+                                            ng-options="lang as lang for lang in vm.getSprachen() track by lang.id"
+                                            ng-required="false">
+                                        <option value=""></option>
+                                    </select>
+
+                                    <dv-error-messages for="form.korrespondenzSprache.$error"
+                                                       class="error"></dv-error-messages>
+                                    <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprache"
+                                               ja="vm.getModel().gesuchstellerJA.korrespondenzSprache"
+                                               specific-bisher-text="vm.getTextKorrespondenzSprachenKorrektur()"></dv-bisher>
                                 </div>
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprachen"
-                                           ja="vm.getModel().gesuchstellerJA.korrespondenzSprachen"
-                                           specific-bisher-text="vm.getTextKorrespondenzSprachenKorrektur()"></dv-bisher>
-                                <!-- Fehlermeldung -->
-                                <div>
-                                    <input type=hidden name="korrespondenzSprachenValidation" ng-model="vm.korrespondenzSprachenError"/>
-                                    <div title="{{'ERROR_KORRESPONDENZSPRACHE_MIN1' | translate}}"
-                                         ng-messages="vm.form.korrespondenzSprachenValidation.$error"
-                                         ng-show="vm.form.$submitted"
-                                         class="dv-error-messages">
-                                           <span ng-message="korrespondenzSprachenError" role="alert" data-translate="ERROR_KORRESPONDENZSPRACHE_MIN1"></span>
-                                    </div>
-                                </div>
-                            </dv-input-container>
+                            </div>
+
+                            <!--<dv-input-container class="form-group">-->
+                                <!--<label class="md-no-float required" data-translate="KORRESPONDENZSPRACHE" for="korrespondenzSprache_ID">-->
+                                <!--</label>-->
+                                <!--<div id="korrespondenzSprachen_ID"-->
+                                    <!--ng-repeat="lang in vm.getSprachen()">-->
+                                    <!--<md-checkbox-->
+                                        <!--id="lang_{{lang}}"-->
+                                        <!--name="lang_{{lang}}"-->
+                                        <!--ng-model="vm.getGesuchstellerSprache(lang).selected"-->
+                                        <!--ng-change="vm.spracheChanged(lang)"-->
+                                        <!--aria-label="{{lang | translate}}">-->
+                                        <!--<span data-translate="{{lang | translate}}"></span>-->
+                                    <!--</md-checkbox>-->
+                                <!--</div>-->
+                                <!--<dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprachen"-->
+                                           <!--ja="vm.getModel().gesuchstellerJA.korrespondenzSprachen"-->
+                                           <!--specific-bisher-text="vm.getTextKorrespondenzSprachenKorrektur()"></dv-bisher>-->
+                                <!--&lt;!&ndash; Fehlermeldung &ndash;&gt;-->
+                                <!--<div>-->
+                                    <!--<input type=hidden name="korrespondenzSprachenValidation" ng-model="vm.korrespondenzSprachenError"/>-->
+                                    <!--<div title="{{'ERROR_KORRESPONDENZSPRACHE_MIN1' | translate}}"-->
+                                         <!--ng-messages="vm.form.korrespondenzSprachenValidation.$error"-->
+                                         <!--ng-show="vm.form.$submitted"-->
+                                         <!--class="dv-error-messages">-->
+                                           <!--<span ng-message="korrespondenzSprachenError" role="alert" data-translate="ERROR_KORRESPONDENZSPRACHE_MIN1"></span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</dv-input-container>-->
                         </div>
                     </div>
 

@@ -75,10 +75,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     /* @ngInject */
     constructor($stateParams: IStammdatenStateParams, ebeguRestUtil: EbeguRestUtil, gesuchModelManager: GesuchModelManager,
-        berechnungsManager: BerechnungsManager, private errorService: ErrorService,
-        wizardStepManager: WizardStepManager, private CONSTANTS: any, private $q: IQService, $scope: IScope,
-        private $translate: ITranslateService, private authServiceRS: AuthServiceRS, private $rootScope: IRootScopeService,
-        private ewkRS: EwkRS, $timeout: ITimeoutService) {
+                berechnungsManager: BerechnungsManager, private errorService: ErrorService,
+                wizardStepManager: WizardStepManager, private CONSTANTS: any, private $q: IQService, $scope: IScope,
+                private $translate: ITranslateService, private authServiceRS: AuthServiceRS, private $rootScope: IRootScopeService,
+                private ewkRS: EwkRS, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCHSTELLER, $timeout);
         this.ebeguRestUtil = ebeguRestUtil;
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
@@ -112,11 +112,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 this.form.$dirty = true;
             }
         });
-        // Sprachen-Map initialisieren
-        for (let sprache of this.getSprachen()) {
-            let index: number = this.getModelJA().korrespondenzSprachen.indexOf(sprache);
-            this.selectedSprachenMap.set(sprache, new TSGesuchstellerSprache(sprache, index > -1));
-        }
     }
 
     korrespondenzAdrClicked() {
@@ -144,7 +139,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private save(): IPromise<TSGesuchstellerContainer> {
-        if (this.isGesuchValid() && this.isKorrespondenzSpracheValid()) {
+        if (this.isGesuchValid()) {
             this.gesuchModelManager.setStammdatenToWorkWith(this.model);
             if (!this.form.$dirty) {
                 // If there are no changes in form we don't need anything to update on Server and we could return the
@@ -318,44 +313,5 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      */
     public getGesuchstellerSprache(sprache: TSSprache): TSGesuchstellerSprache {
         return this.selectedSprachenMap.get(sprache);
-    }
-
-    /**
-     * Wird bei einer Änderung einer Sprachselektion aufgerufen und schreibt diese ins Model
-     * @param {TSSprache} sprache
-     */
-    public spracheChanged(sprache: TSSprache): void {
-        if (this.selectedSprachenMap.get(sprache).selected) {
-            this.getModelJA().korrespondenzSprachen.push(sprache);
-        } else {
-            let index: number = this.getModelJA().korrespondenzSprachen.indexOf(sprache);
-            this.getModelJA().korrespondenzSprachen.splice(index, 1);
-        }
-    }
-
-    /**
-     * Spezifischer Text fuer die "Bisher"-Texte
-     */
-    public getTextKorrespondenzSprachenKorrektur(): string {
-        let result: string = '';
-        if (this.isKorrekturModusJugendamt()) {
-            for (let obj of this.getModel().gesuchstellerGS.korrespondenzSprachen) {
-                result = result + this.$translate.instant('' + obj) + ' ';
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Spezialvalidierung fuer die Korrespondenzsprache: Es muss mindestens eine Sprache ausgewählt werden.
-     */
-    public isKorrespondenzSpracheValid() {
-        let valid: boolean = true;
-        // Wird nur bei GS 1 validiert
-        if (this.gesuchstellerNumber === 1) {
-            valid = this.getModelJA().korrespondenzSprachen.length > 0;
-        }
-        this.form['korrespondenzSprachenValidation'].$setValidity('korrespondenzSprachenError', valid);
-        return valid;
     }
 }
