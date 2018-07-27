@@ -92,7 +92,7 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void getMitteilungenOfDossierForCurrentRolleNormalMitteilungen() {
-		final Benutzer empfaengerJA = loginAsSachbearbeiterJA();
+		final Benutzer empfaengerJA = getDummySuperadmin();
 		final Dossier dossier = createAndPersistDossier();
 		final Benutzer sender = createAndPersistSender();
 

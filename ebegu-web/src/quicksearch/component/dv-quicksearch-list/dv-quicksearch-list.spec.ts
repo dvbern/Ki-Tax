@@ -14,9 +14,12 @@
  */
 
 import {StateService} from '@uirouter/core';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../../core/core.module';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
@@ -42,6 +45,9 @@ describe('DVQuicksearchList', function () {
     let $state: StateService;
     let CONSTANTS: any;
     let wizardStepManager: WizardStepManager;
+    let authLifeCycleService: AuthLifeCycleService;
+    let authServiceRS: AuthServiceRS;
+    let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
 
@@ -59,6 +65,9 @@ describe('DVQuicksearchList', function () {
         $state = $injector.get('$state');
         CONSTANTS = $injector.get('CONSTANTS');
         wizardStepManager = $injector.get('WizardStepManager');
+        authLifeCycleService = $injector.get('AuthLifeCycleService');
+        authServiceRS = $injector.get('AuthServiceRS');
+        gemeindeRS = $injector.get('GemeindeRS');
     }));
 
     describe('API Usage', function () {
@@ -66,14 +75,16 @@ describe('DVQuicksearchList', function () {
         describe('translateBetreuungsangebotTypList', () => {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS,
+                    authLifeCycleService);
                 let list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
                     .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS,
+                    authLifeCycleService);
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
@@ -86,7 +97,8 @@ describe('DVQuicksearchList', function () {
                 spyOn($state, 'go');
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, undefined, undefined);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS,
+                    authLifeCycleService);
 
                 let tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));

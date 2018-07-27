@@ -79,16 +79,15 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         wizardStepManager: WizardStepManager, private CONSTANTS: any, private $q: IQService, $scope: IScope,
         private $translate: ITranslateService, private authServiceRS: AuthServiceRS, private $rootScope: IRootScopeService,
         private ewkRS: EwkRS, $timeout: ITimeoutService) {
+
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCHSTELLER, $timeout);
         this.ebeguRestUtil = ebeguRestUtil;
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
-
     }
 
     $onInit() {
         this.initViewmodel();
-
     }
 
     private initViewmodel() {

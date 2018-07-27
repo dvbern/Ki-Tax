@@ -166,6 +166,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void updateGesuch() {
 		Assert.assertNotNull(gesuchService);
 		loginAsSachbearbeiterJA();

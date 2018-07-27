@@ -41,6 +41,7 @@ export class StartViewController {
     }
 
     $onInit() {
+        // todo KIBON-143 warten bis das event login_success geworfen ist
         let user: TSUser = this.authService.getPrincipal();
         if (this.authService.getPrincipal()) {  // wenn logged in
             AuthenticationUtil.navigateToStartPageForRole(user, this.$state);

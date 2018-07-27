@@ -14,6 +14,11 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -42,6 +47,7 @@ export class PendenzenBetreuungenListViewComponentConfig implements IComponentOp
 
 export class PendenzenBetreuungenListViewController {
 
+    private readonly unsubscribe$ = new Subject<void>();
     private pendenzenList: Array<TSPendenzBetreuung>;
     selectedBetreuungsangebotTyp: string;
     selectedInstitution: string;
@@ -55,7 +61,8 @@ export class PendenzenBetreuungenListViewController {
     numberOfPages: number = 1;
 
     static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS',
+        'AuthLifeCycleService'];
 
     constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
                 private ebeguUtil: EbeguUtil,
@@ -65,15 +72,26 @@ export class PendenzenBetreuungenListViewController {
                 private gesuchModelManager: GesuchModelManager,
                 private berechnungsManager: BerechnungsManager,
                 private $state: StateService,
-                private gemeindeRS: GemeindeRS) {
+                private gemeindeRS: GemeindeRS,
+                private authServiceRS: AuthServiceRS,
+                private authLifeCycleService: AuthLifeCycleService) {
+
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
     }
 
-    $onInit() {
+    initViewModel() {
         this.updatePendenzenList();
         this.updateInstitutionenList();
         this.updateBetreuungsangebotTypList();
         this.updateActiveGesuchsperiodenList();
         this.updateGemeindenList();
+    }
+
+    $onDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public getTotalResultCount(): number {
@@ -114,10 +132,9 @@ export class PendenzenBetreuungenListViewController {
         });
     }
 
-    public updateGemeindenList(): void {
-        this.gemeindeRS.getAllGemeinden().then(response => {
-            this.gemeindenList = response;
-        });
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
+            .then(gemeinden => { this.gemeindenList = gemeinden; });
     }
 
     public getPendenzenList(): Array<TSPendenzBetreuung> {

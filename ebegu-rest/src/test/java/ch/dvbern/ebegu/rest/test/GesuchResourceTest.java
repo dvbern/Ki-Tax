@@ -151,8 +151,9 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void testUpdateStatus() {
-		persistUser(UserRole.SACHBEARBEITER_JA, "saja", null, null);
+//		persistUser(UserRole.SACHBEARBEITER_JA, "saja", null, null);
 
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		Response response = gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.ERSTE_MAHNUNG);
