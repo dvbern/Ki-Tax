@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import 'angular';
 import 'ng-file-upload';
-import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
 import {EbeguAuthentication} from '../authentication/authentication.module';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
@@ -118,7 +118,6 @@ import UserRS from './service/userRS.rest';
 import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
-import {DvOnboardingComponentConfig} from './component/dv-onboarding/dv-onboarding.component';
 
 let dynamicDependencies = function (): string[] {
 

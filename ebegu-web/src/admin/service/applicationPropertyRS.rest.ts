@@ -19,16 +19,11 @@ import {IHttpPromise, IHttpResponse, IHttpService, IPromise} from 'angular';
 
 export class ApplicationPropertyRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'application-properties';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     getAllowedMimetypes(): IPromise<TSApplicationProperty> {

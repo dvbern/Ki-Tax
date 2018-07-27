@@ -50,7 +50,6 @@ export class AlleVerfuegungenViewController {
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
         'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
 
-    /* @ngInject */
     constructor(private $state: StateService, private $stateParams: IAlleVerfuegungenStateParams,
                 private authServiceRS: AuthServiceRS, private betreuungRS: BetreuungRS, private downloadRS: DownloadRS,
                 private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS,

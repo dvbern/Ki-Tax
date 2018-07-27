@@ -19,15 +19,9 @@ import {ILocationProvider, IServiceProvider} from 'angular';
 export class RouterHelper {
     static $inject = ['$stateProvider', '$uiRouterProvider'];
 
-    hasOtherwise: boolean;
-    stateProvider: StateProvider;
-    uiRouterProvider: UIRouter;
+    hasOtherwise: boolean = false;
 
-    /* @ngInject */
-    constructor($stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
-        this.hasOtherwise = false;
-        this.stateProvider = $stateProvider;
-        this.uiRouterProvider = $uiRouterProvider;
+    constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
     }
 
     public configureStates(states: Ng1StateDeclaration[], otherwisePath?: string): void {

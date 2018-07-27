@@ -18,7 +18,6 @@ import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function alleVerfuegungenRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }

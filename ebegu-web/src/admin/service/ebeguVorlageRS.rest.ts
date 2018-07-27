@@ -22,16 +22,11 @@ import IHttpPromise = angular.IHttpPromise;
 
 export class EbeguVorlageRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q', 'base64'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private upload: any,
-                private $q: IQService, private base64: any) {
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private upload: any,
+                private $q: IQService) {
         this.serviceURL = REST_API + 'ebeguVorlage';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public getEbeguVorlagenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSEbeguVorlage[]> {
@@ -46,7 +41,7 @@ export class EbeguVorlageRS {
         let restEbeguVorlage = {};
         restEbeguVorlage = this.ebeguRestUtil.ebeguVorlageToRestObject(restEbeguVorlage, ebeguVorlage);
         this.upload.json(restEbeguVorlage);
-        let encodedFilename = this.base64.encode(file.name);
+        let encodedFilename = btoa(file.name);
         return this.upload.upload({
             url: this.serviceURL,
             method: 'POST',

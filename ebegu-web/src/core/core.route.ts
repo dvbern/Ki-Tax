@@ -40,7 +40,6 @@ appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'Mand
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
     'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
-/* @ngInject */
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
                        mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
                        authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,

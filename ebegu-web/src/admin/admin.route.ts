@@ -22,7 +22,6 @@ import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
 
 adminRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function adminRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates());
 }
@@ -51,7 +50,7 @@ function getStates(): Ng1StateDeclaration[] {
             template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
             url: '/admin',
             resolve: {
-                applicationProperties: getApplicationProperties
+                applicationProperties: applicationPropertiesResolver
             }
         },
         {
@@ -71,7 +70,7 @@ function getStates(): Ng1StateDeclaration[] {
             url: '/institutionen',
 
             resolve: {
-                institutionen: getInstitutionen,
+                institutionen: institutionenResolver,
             }
         },
         {
@@ -85,8 +84,8 @@ function getStates(): Ng1StateDeclaration[] {
             },
 
             resolve: {
-                traegerschaften: getTraegerschaften,
-                mandant: getMandant
+                traegerschaften: traegerschaftenResolver,
+                mandant: mandantResolver
             }
         },
         {
@@ -99,7 +98,7 @@ function getStates(): Ng1StateDeclaration[] {
         },
         {
             name: 'parameter',
-            template: '<dv-parameter-view flex="auto" class="overflow-scroll" ebeguParameter="vm.ebeguParameter"></dv-parameter-view>',
+            template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
             url: '/parameter',
         },
         {
@@ -112,8 +111,8 @@ function getStates(): Ng1StateDeclaration[] {
             },
 
             resolve: {
-                traegerschaften: getTraegerschaften,
-                mandant: getMandant
+                traegerschaften: traegerschaftenResolver, // TODO warum werden traegerschaften resolved?
+                mandant: mandantResolver,
             }
         },
         {
@@ -124,34 +123,18 @@ function getStates(): Ng1StateDeclaration[] {
     ];
 }
 
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getApplicationProperties.$inject = ['ApplicationPropertyRS'];
+const applicationPropertiesResolver = ['ApplicationPropertyRS', function getApplicationProperties(applicationPropertyRS: ApplicationPropertyRS) {
+    return applicationPropertyRS.getAllApplicationProperties();
+}];
 
-/* @ngInject */
-function getApplicationProperties(ApplicationPropertyRS: ApplicationPropertyRS) {
-    return ApplicationPropertyRS.getAllApplicationProperties();
-}
+const institutionenResolver = ['InstitutionRS', function getInstitutionen(institutionRS: InstitutionRS) {
+    return institutionRS.getAllActiveInstitutionen();
+}];
 
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getInstitutionen.$inject = ['InstitutionRS'];
+const traegerschaftenResolver = ['TraegerschaftRS', function getTraegerschaften(traegerschaftRS: TraegerschaftRS) {
+    return traegerschaftRS.getAllActiveTraegerschaften();
+}];
 
-/* @ngInject */
-function getInstitutionen(InstitutionRS: InstitutionRS) {
-    return InstitutionRS.getAllActiveInstitutionen();
-}
-
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getTraegerschaften.$inject = ['TraegerschaftRS'];
-
-/* @ngInject */
-function getTraegerschaften(TraegerschaftRS: TraegerschaftRS) {
-    return TraegerschaftRS.getAllActiveTraegerschaften();
-}
-
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getMandant.$inject = ['MandantRS'];
-
-/* @ngInject */
-function getMandant(MandantRS: MandantRS) {
-    return MandantRS.getFirst();
-}
+const mandantResolver = ['MandantRS', function getMandant(mandantRS: MandantRS) {
+    return mandantRS.getFirst();
+}];

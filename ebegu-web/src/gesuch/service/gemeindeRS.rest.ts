@@ -24,20 +24,15 @@ import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
                 private globalCacheService: GlobalCacheService, private $q: IQService) {
         this.serviceURL = REST_API + 'gemeinde';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
-    public getAllGemeinden(): IPromise<Array<TSGemeinde>> {
+    public getAllGemeinden(): IPromise<TSGemeinde[]> {
         let cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
         return this.http.get(this.serviceURL + '/all', {cache: cache})
             .then((response: any) => {

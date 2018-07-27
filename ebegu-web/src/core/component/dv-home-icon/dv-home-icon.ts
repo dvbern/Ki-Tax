@@ -31,7 +31,7 @@ export class DvHomeIconController {
 
     TSRoleUtil: any;
 
-    static $inject: any[] = ['$state'];
+    static $inject: ReadonlyArray<string> = ['$state'];
 
     constructor(private $state: StateService) {
         this.TSRoleUtil = TSRoleUtil;

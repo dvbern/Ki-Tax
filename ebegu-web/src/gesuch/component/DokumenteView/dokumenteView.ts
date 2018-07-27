@@ -58,7 +58,6 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
         'DokumenteRS', '$log', 'WizardStepManager', 'EbeguUtil', 'GlobalCacheService', '$scope', '$timeout'];
 
-    /* @ngInject */
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private dokumenteRS: DokumenteRS, private $log: ILogService, wizardStepManager: WizardStepManager,
                 private ebeguUtil: EbeguUtil, private globalCacheService: GlobalCacheService, $scope: IScope, $timeout: ITimeoutService) {

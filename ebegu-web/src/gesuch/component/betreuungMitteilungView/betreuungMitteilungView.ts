@@ -41,7 +41,6 @@ export class BetreuungMitteilungViewController extends AbstractGesuchViewControl
 
     static $inject = ['$state', 'GesuchModelManager', '$scope', 'BerechnungsManager', 'WizardStepManager', '$timeout'];
 
-    /* @ngInject */
     constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, $scope: IScope,
                 berechnungsManager: BerechnungsManager, wizardStepManager: WizardStepManager, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);

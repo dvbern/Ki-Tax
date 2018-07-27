@@ -50,8 +50,6 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     ebeguParameterListJahr: TSEbeguParameter[]; // enthält alle Params für nur 1 Jahr
 
-
-    /* @ngInject */
     constructor(ebeguParameterRS: EbeguParameterRS, private gesuchsperiodeRS: GesuchsperiodeRS,
                 private $translate: ITranslateService, private $log: ILogService, private $state: StateService,
                 private $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {

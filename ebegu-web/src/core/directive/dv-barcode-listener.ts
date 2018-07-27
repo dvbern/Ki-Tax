@@ -54,9 +54,8 @@ export class DVBarcodeController {
     private barcodeReadtimeout: any = null;
 
 
-    static $inject: string[] = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
+    static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
 
-    /* @ngInject */
     constructor(private $document: IDocumentService, private $timeout: ITimeoutService, private dVDialog: DvDialog, private authService: AuthServiceRS,
                 private errorService: ErrorService, private $log: ILogService, private authLifeCycleService: AuthLifeCycleService) {
     }

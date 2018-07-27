@@ -36,7 +36,7 @@ export class DvSkiplinksController implements IDVFocusableController {
 
     TSRoleUtil: any;
 
-    static $inject: any[] = ['$state', 'DvDialog', 'EbeguUtil'];
+    static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
 
     constructor(private $state: StateService, private DvDialog: DvDialog, private ebeguUtil: EbeguUtil) {
         this.TSRoleUtil = TSRoleUtil;

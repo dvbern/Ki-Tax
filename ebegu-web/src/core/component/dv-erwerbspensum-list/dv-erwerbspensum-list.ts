@@ -13,10 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IOnInit} from 'angular';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 
 let template = require('./dv-erwerbspensum-list.html');
 require('./dv-erwerbspensum-list.less');
@@ -41,7 +40,7 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVErwerbspensumListController {
+export class DVErwerbspensumListController implements IOnInit {
 
     erwerbspensen: TSErwerbspensum[];
     tableId: string;
@@ -54,10 +53,7 @@ export class DVErwerbspensumListController {
     onEdit: (pensumToEdit: any) => void;
     onAdd: () => void;
 
-    static $inject: any[] = ['AuthServiceRS'];
-    /* @ngInject */
-    constructor(private authServiceRS: AuthServiceRS) {
-    }
+    static $inject: ReadonlyArray<string> = [];
 
     $onInit() {
         if (!this.addButtonText) {

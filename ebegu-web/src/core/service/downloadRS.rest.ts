@@ -22,18 +22,12 @@ import EbeguUtil from '../../utils/EbeguUtil';
 
 export class DownloadRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService, private $window: ng.IWindowService,
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private $window: ng.IWindowService,
                 private $interval: IIntervalService) {
         this.serviceURL = REST_API + 'blobs/temp';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public getAccessTokenDokument(dokumentID: string): IPromise<TSDownloadFile> {

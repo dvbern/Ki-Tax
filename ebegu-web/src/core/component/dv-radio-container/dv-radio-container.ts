@@ -49,10 +49,7 @@ export class DvRadioContainerController {
     // die Werte by default allRoles und true, sodass es immer angezeigt wird.
     allRoles: Array<TSRole>;
 
-    static $inject: any[] = [];
-    /* @ngInject */
-    constructor() {
-    }
+    static $inject: ReadonlyArray<string> = [];
 
     $onInit() {
         this.modelToPassOn = this.ngModelCtrl.$viewValue;

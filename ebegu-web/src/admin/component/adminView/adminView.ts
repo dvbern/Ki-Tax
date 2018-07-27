@@ -41,8 +41,6 @@ export class AdminViewController extends AbstractAdminViewController {
     applicationProperties: TSApplicationProperty[];
     ebeguRestUtil: EbeguRestUtil;
 
-
-    /* @ngInject */
     constructor(applicationPropertyRS: ApplicationPropertyRS, ebeguRestUtil: EbeguRestUtil,
                 private reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
         super(authServiceRS);

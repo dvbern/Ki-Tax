@@ -17,20 +17,13 @@ import {IHttpService, IPromise} from 'angular';
 import {TSFerienname} from '../../models/enums/TSFerienname';
 import TSFerieninselStammdaten from '../../models/TSFerieninselStammdaten';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import IQService = angular.IQService;
 
 export class FerieninselStammdatenRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q', 'base64'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private upload: any,
-                private $q: IQService, private base64: any) {
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'ferieninselStammdaten';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public saveFerieninselStammdaten(stammdaten: TSFerieninselStammdaten): IPromise<TSFerieninselStammdaten> {

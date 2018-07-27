@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {IComponentOptions, IFormController, ILogService, IOnInit} from 'angular';
 import {Moment} from 'moment';
 import {IBenutzerStateParams} from '../../../admin/admin.route';
 import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyRS.rest';
@@ -46,10 +46,10 @@ export class DVBenutzerConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVBenutzerController {
+export class DVBenutzerController implements IOnInit {
 
     form: IFormController;
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
     institutionenList: TSInstitution[];
     traegerschaftenList: TSTraegerschaft[];
@@ -63,15 +63,13 @@ export class DVBenutzerController {
     private _isDefaultVerantwortlicher: boolean = false;
 
 
-    static $inject: any[] = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS', '$state',
-        'DvDialog', 'ApplicationPropertyRS'];
-    /* @ngInject */
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS',
+        '$state', 'DvDialog', 'ApplicationPropertyRS'];
+
     constructor(private $log: ILogService, private institutionRS: InstitutionRS, private traegerschaftenRS: TraegerschaftRS,
                 private authServiceRS: AuthServiceRS, private $translate: ITranslateService,
                 private $stateParams: IBenutzerStateParams, private userRS: UserRS, private $state: StateService,
                 private dvDialog: DvDialog, private applicationPropertyRS: ApplicationPropertyRS) {
-
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     $onInit() {

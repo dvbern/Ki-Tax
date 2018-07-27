@@ -33,7 +33,7 @@ export class DvSearchResultController {
 
     entry: TSSearchResultEntry;
 
-    static $inject: any[] = [];
+    static $inject: ReadonlyArray<string> = [];
 
     constructor() {
 

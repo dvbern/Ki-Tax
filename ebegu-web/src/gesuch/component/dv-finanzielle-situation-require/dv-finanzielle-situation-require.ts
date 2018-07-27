@@ -43,7 +43,7 @@ export class DVFinanzielleSituationRequireController {
 
     maxMassgebendesEinkommen: string;
 
-    static $inject: any[] = ['EbeguParameterRS', 'GesuchModelManager'];
+    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
 
     /* @ngInject */
     constructor(private ebeguParameterRS: EbeguParameterRS, private gesuchModelManager: GesuchModelManager) {

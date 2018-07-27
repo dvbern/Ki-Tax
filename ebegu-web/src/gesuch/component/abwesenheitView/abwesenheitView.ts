@@ -69,7 +69,6 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'DvDialog',
         '$translate', '$q', 'ErrorService', '$scope', '$timeout'];
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 wizardStepManager: WizardStepManager, private DvDialog: DvDialog, private $translate: ITranslateService,
                 private $q: IQService, private errorService: ErrorService, $scope: IScope, $timeout: ITimeoutService) {

@@ -23,7 +23,6 @@ import {StateService} from '@uirouter/core';
 
 authenticationRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function authenticationRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(getStates(), '/start');
 }
@@ -67,7 +66,6 @@ export class IAuthenticationStateParams {
 
 readDummyLoginEnabled.$inject = ['ApplicationPropertyRS', '$state', '$q', '$log'];
 
-/* @ngInject */
 export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService, $q: IQService,
                                       $log: ILogService): IPromise<boolean> {
     return applicationPropertyRS.isDummyMode()

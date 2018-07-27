@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFilterService, ILogService, IPromise} from 'angular';
+import {IComponentOptions, IFilterService, ILogService, IOnDestroy, IOnInit, IPromise} from 'angular';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
@@ -62,7 +62,7 @@ export class DVAntragListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVAntragListController {
+export class DVAntragListController implements IOnInit, IOnDestroy {
 
     private readonly unsubscribe$ = new Subject<void>();
     totalResultCount: number;
@@ -101,10 +101,9 @@ export class DVAntragListController {
     onAdd: () => void;
     TSRoleUtil: any;
 
-    static $inject: any[] = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
+    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
         'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
-    /* @ngInject */
     constructor(private ebeguUtil: EbeguUtil, private $filter: IFilterService, private $log: ILogService,
                 private institutionRS: InstitutionRS, private gesuchsperiodeRS: GesuchsperiodeRS,
                 private CONSTANTS: any, private authServiceRS: AuthServiceRS, private $window: ng.IWindowService,

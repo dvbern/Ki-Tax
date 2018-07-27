@@ -28,7 +28,7 @@ export class DvMobileNavigationToggleComponentConfig implements IComponentOption
 
 export class DvMobileNavigationToggleController {
 
-    static $inject: any[] = ['$mdSidenav'];
+    static $inject: ReadonlyArray<string> = ['$mdSidenav'];
 
     constructor(private $mdSidenav: ng.material.ISidenavService) {
     }

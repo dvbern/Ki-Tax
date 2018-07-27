@@ -61,7 +61,6 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     static $inject: string[] = ['$state', 'GesuchModelManager', '$translate', 'DvDialog', 'EbeguUtil', 'BerechnungsManager',
         'ErrorService', 'WizardStepManager', 'AuthServiceRS', '$scope', '$log', '$timeout'];
 
-    /* @ngInject */
     constructor(private $state: StateService, gesuchModelManager: GesuchModelManager,
                 private $translate: ITranslateService,
                 private DvDialog: DvDialog, private ebeguUtil: EbeguUtil, berechnungsManager: BerechnungsManager,

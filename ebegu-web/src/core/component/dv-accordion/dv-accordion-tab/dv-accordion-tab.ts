@@ -34,11 +34,8 @@ export class DvAccordionTabComponentConfig implements IComponentOptions {
 }
 
 export class DvAccordionTabController {
+    static $inject: ReadonlyArray<string> = [];
+
     tabid: string;
     vma: DvAccordionController;
-    static $inject: any[] = [];
-
-    /* @ngInject */
-    constructor() {
-    }
 }

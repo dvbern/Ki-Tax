@@ -71,10 +71,9 @@ export class DVDokumenteListController {
     sonstige: boolean;
     allowedMimetypes: string = '';
 
-    static $inject: any[] = ['UploadRS', 'GesuchModelManager', 'EbeguUtil', 'DownloadRS', 'DvDialog', 'WizardStepManager',
+    static $inject: ReadonlyArray<string> = ['UploadRS', 'GesuchModelManager', 'EbeguUtil', 'DownloadRS', 'DvDialog', 'WizardStepManager',
         '$log', 'AuthServiceRS', '$translate', '$window', 'ApplicationPropertyRS'];
 
-    /* @ngInject */
     constructor(private uploadRS: UploadRS, private gesuchModelManager: GesuchModelManager, private ebeguUtil: EbeguUtil,
         private downloadRS: DownloadRS, private dvDialog: DvDialog, private wizardStepManager: WizardStepManager,
         private $log: ILogService, private authServiceRS: AuthServiceRS, private $translate: ITranslateService,

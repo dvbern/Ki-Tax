@@ -76,7 +76,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
         'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
 
-    /* @ngInject */
     constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
                 $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
                 authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,

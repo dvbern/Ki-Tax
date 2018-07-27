@@ -20,12 +20,9 @@ export default class AdresseRS {
     static $inject = ['$http', 'REST_API'];
 
     serviceURL: string;
-    http: IHttpService;
 
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string) {
+    constructor(public http: IHttpService, REST_API: string) {
         this.serviceURL = REST_API + 'adressen';
-        this.http = $http;
     }
 
     public create(adresse: TSAdresseContainer): IHttpPromise<any> {

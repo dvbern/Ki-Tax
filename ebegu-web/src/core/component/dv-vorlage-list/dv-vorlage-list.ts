@@ -46,9 +46,9 @@ export class DVVorlageListController {
     gesuchsperiode: TSGesuchsperiode;
     proGesuchsperiode: boolean;
 
-    static $inject: any[] = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
+    static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
         'EbeguUtil', '$scope'];
-    /* @ngInject */
+
     constructor(private downloadRS: DownloadRS, private $log: ILogService,
                 private ebeguVorlageRS: EbeguVorlageRS, private dvDialog: DvDialog,
                 private ebeguUtil: EbeguUtil, private $scope: IScope) {

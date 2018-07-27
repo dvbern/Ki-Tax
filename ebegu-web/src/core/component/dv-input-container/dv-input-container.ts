@@ -23,13 +23,9 @@ export class DvInputContainerComponentConfig implements IComponentOptions {
     template = template;
     controller = DvInputContainerController;
     controllerAs = 'vm';
-
 }
 
 export class DvInputContainerController {
 
-    static $inject: any[] = [];
-    /* @ngInject */
-    constructor() {
-    }
+    static $inject: ReadonlyArray<string> = [];
 }

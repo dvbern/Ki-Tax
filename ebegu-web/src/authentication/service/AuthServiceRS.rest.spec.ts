@@ -33,7 +33,6 @@ describe('AuthServiceRS', function () {
     let $rootScope: angular.IScope;
     let $timeout: angular.ITimeoutService;
     let $cookies: angular.cookies.ICookiesService;
-    let base64: any;
     let gesuchModelManager: GesuchModelManager;
     let userRS: UserRS;
 
@@ -50,7 +49,6 @@ describe('AuthServiceRS', function () {
         $q = $injector.get('$q');
         $timeout = $injector.get('$timeout');
         $cookies = $injector.get('$cookies');
-        base64 = $injector.get('base64');
         userRS = $injector.get('UserRS');
         gesuchModelManager = $injector.get('GesuchModelManager');
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
@@ -69,7 +67,7 @@ describe('AuthServiceRS', function () {
             let user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
             user.currentBerechtigung = new TSBerechtigung(undefined, TSRole.GESUCHSTELLER);
             let cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
-            let encodedUser = base64.encode(JSON.stringify(cookieContent).split('_').join(''));
+            let encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
             spyOn(userRS, 'findBenutzer').and.returnValue($q.when(user));
 

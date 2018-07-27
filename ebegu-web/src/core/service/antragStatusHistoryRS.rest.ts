@@ -24,21 +24,15 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 export default class AntragStatusHistoryRS {
 
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
 
     private _lastChange: TSAntragStatusHistory;
 
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService,
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService,
                 private authServiceRS: AuthServiceRS) {
         this.serviceURL = REST_API + 'antragStatusHistory';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public getServiceName(): string {

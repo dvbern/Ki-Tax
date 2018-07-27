@@ -21,18 +21,12 @@ import TSAnmeldungDTO from '../../models/TSAnmeldungDTO';
 
 export default class BetreuungRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService,
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService,
                 private wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'betreuungen';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public getServiceName(): string {

@@ -40,7 +40,7 @@ export class DvPulldownUserMenuController {
     TSRoleUtil = TSRoleUtil;
     principal: TSUser;
 
-    static $inject: any[] = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
+    static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
 
     constructor(private $state: StateService, private authServiceRS: AuthServiceRS,
                 private authLifeCycleService: AuthLifeCycleService) {

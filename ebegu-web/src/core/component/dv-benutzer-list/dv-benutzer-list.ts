@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IPromise} from 'angular';
+import {IComponentOptions, ILogService, IPromise, IOnInit} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
@@ -43,7 +43,7 @@ export class DVBenutzerListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVBenutzerListController {
+export class DVBenutzerListController implements IOnInit {
 
     totalResultCount: number;
     displayedCollection: Array<TSUser> = []; //Liste die im Gui angezeigt wird
@@ -66,10 +66,10 @@ export class DVBenutzerListController {
 
     onFilterChange: (changedTableState: any) => IPromise<any>;
     onEdit: (user: any) => void;
-    TSRoleUtil: any;
+    TSRoleUtil: TSRoleUtil;
 
-    static $inject: any[] = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window', '$translate'];
-    /* @ngInject */
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window', '$translate'];
+
     constructor(private $log: ILogService, private institutionRS: InstitutionRS, private traegerschaftenRS: TraegerschaftRS,
                private authServiceRS: AuthServiceRS, private $window: ng.IWindowService, private $translate: ITranslateService) {
 

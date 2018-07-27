@@ -19,17 +19,11 @@ import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 
 export class TraegerschaftRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService) {
         this.serviceURL = REST_API + 'traegerschaften';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public findTraegerschaft(traegerschaftID: string): IPromise<TSTraegerschaft> {

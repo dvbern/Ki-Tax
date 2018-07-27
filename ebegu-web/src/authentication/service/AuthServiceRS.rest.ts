@@ -31,13 +31,12 @@ export default class AuthServiceRS {
 
     private principal: TSUser;
 
-    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'base64', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
+    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
         'UserRS'];
 
-    /* @ngInject */
     constructor(private $http: IHttpService, private CONSTANTS: any, private $q: IQService,
                 private $timeout: ITimeoutService,
-                private $cookies: ICookiesService, private base64: any, private ebeguRestUtil: EbeguRestUtil,
+                private $cookies: ICookiesService, private ebeguRestUtil: EbeguRestUtil,
                 private httpBuffer: HttpBuffer,
                 private authLifeCycleService: AuthLifeCycleService,
                 private userRS: UserRS) {
@@ -89,7 +88,7 @@ export default class AuthServiceRS {
             authIdbase64 = decodeURIComponent(authIdbase64);
             if (authIdbase64) {
                 try {
-                    let authData = angular.fromJson(this.base64.decode(authIdbase64));
+                    let authData = angular.fromJson(atob(authIdbase64));
                     // we take the complete user from Server and store it in principal
                     return this.userRS.findBenutzer(authData.authId).then((response) => {
                         // todo KIBON-143 timeout hinzufuegen

@@ -32,7 +32,7 @@ export default class BerechnungsManager {
     dokumente: TSDokumenteDTO;
 
     static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
-    /* @ngInject */
+
     constructor(private finanzielleSituationRS: FinanzielleSituationRS, private ebeguRestUtil: EbeguRestUtil,
                 private einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
                 private dokumenteRS: DokumenteRS, private authLifeCycleService: AuthLifeCycleService) {
@@ -40,7 +40,7 @@ export default class BerechnungsManager {
         this.initValues();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(value => this.initValues());
+            .subscribe(() => this.initValues());
     }
 
     private initValues() {

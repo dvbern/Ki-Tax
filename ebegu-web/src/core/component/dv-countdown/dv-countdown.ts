@@ -42,7 +42,7 @@ export class DvCountdownController {
     timer: moment.Duration;
     timerInterval: IPromise<any>;
 
-    static $inject: any[] = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
+    static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
 
     constructor(private authServiceRS: AuthServiceRS, private $state: StateService, private $interval: IIntervalService, private $rootScope: IRootScopeService, private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager) {

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {IHttpService, IPromise} from 'angular';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSWorkJob from '../../models/TSWorkJob';
 
@@ -24,12 +24,9 @@ export default class BatchJobRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
     serviceURL: string;
-    http: IHttpService;
 
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, private ebeguRestUtil: EbeguRestUtil, $log: ILogService, private $q: IQService) {
+    constructor(public http: IHttpService, REST_API: string, private ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'admin/batch';
-        this.http = $http;
     }
 
     public getAllJobs(): IPromise<TSWorkJob[]> {

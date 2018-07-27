@@ -20,21 +20,12 @@ import IPromise = angular.IPromise;
 
 export class UploadRS {
     serviceURL: string;
-    http: IHttpService;
-    log: ILogService;
-    ebeguRestUtil: EbeguRestUtil;
-    q: IQService;
 
-    static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q', 'base64'];
+    static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
 
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, $log: ILogService, private upload: any, ebeguRestUtil: EbeguRestUtil,
-                $q: IQService, private base64: any) {
+    constructor(public http: IHttpService, REST_API: string, public log: ILogService, private upload: any, public ebeguRestUtil: EbeguRestUtil,
+                public q: IQService) {
         this.serviceURL = REST_API + 'upload';
-        this.http = $http;
-        this.log = $log;
-        this.q = $q;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public uploadFile(files: any, dokumentGrund: TSDokumentGrund, gesuchID: string): IPromise<TSDokumentGrund> {
@@ -46,7 +37,7 @@ export class UploadRS {
         let names: string [] = [];
         for (let file of files) {
             if (file) {
-                let encodedFilename = this.base64.encode(file.name);
+                let encodedFilename = btoa(file.name);
                 names.push(encodedFilename);
             }
         }

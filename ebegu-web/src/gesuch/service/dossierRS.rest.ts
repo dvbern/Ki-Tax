@@ -20,15 +20,11 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class DossierRS implements IEntityRS {
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
         this.serviceURL = REST_API + 'dossier';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public createDossier(dossier: TSDossier): IPromise<TSDossier> {

@@ -57,7 +57,6 @@ export class DvAdresseController {
     gesuchModelManager: GesuchModelManager;
     bisherLand: string;
 
-    /* @ngInject */
     constructor(adresseRS: AdresseRS, listResourceRS: ListResourceRS, gesuchModelManager: GesuchModelManager,
                 $translate: ITranslateService, private authServiceRS: AuthServiceRS) {
         this.TSRoleUtil = TSRoleUtil;

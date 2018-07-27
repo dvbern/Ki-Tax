@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IPromise} from 'angular';
+import {IComponentOptions, IOnInit, IPromise} from 'angular';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
@@ -61,7 +61,7 @@ export class DVMitteilungListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVMitteilungListController {
+export class DVMitteilungListController implements IOnInit {
 
     dossier: TSDossier;
     betreuung: TSBetreuung;
@@ -72,17 +72,16 @@ export class DVMitteilungListController {
     allMitteilungen: Array<TSMitteilung>;
     TSRole: any;
     TSRoleUtil: any;
-    ebeguUtil: EbeguUtil;
 
-    static $inject: any[] = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
+    static $inject: ReadonlyArray<string> = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
         '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
         'DossierRS', 'PosteingangService'];
-    /* @ngInject */
+
     constructor(private $stateParams: IMitteilungenStateParams, private mitteilungRS: MitteilungRS,
                 private authServiceRS: AuthServiceRS,
                 private betreuungRS: BetreuungRS, private $q: IQService,
                 private $window: IWindowService,
-                private $rootScope: IRootScopeService, private $state: StateService, ebeguUtil: EbeguUtil,
+                private $rootScope: IRootScopeService, private $state: StateService, public ebeguUtil: EbeguUtil,
                 private DvDialog: DvDialog,
                 private gesuchModelManager: GesuchModelManager, private $scope: IScope,
                 private $timeout: ITimeoutService,
@@ -90,7 +89,6 @@ export class DVMitteilungListController {
                 private posteingangService: PosteingangService) {
         this.TSRole = TSRole;
         this.TSRoleUtil = TSRoleUtil;
-        this.ebeguUtil = ebeguUtil;
     }
 
     $onInit() {

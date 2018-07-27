@@ -22,8 +22,8 @@ require('./dv-dialog.less');
 
 export class DvDialog {
 
-    static $inject: any[] = ['$mdDialog', '$log'];
-    /* @ngInject */
+    static $inject: ReadonlyArray<string> = ['$mdDialog', '$log'];
+
     constructor(private $mdDialog: IDialogService, private $log: ILogService) {
     }
 

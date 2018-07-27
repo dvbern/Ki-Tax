@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IOnChanges} from 'angular';
 
 let template = require('./dv-accordion.html');
 require('./dv-accordion.less');
@@ -29,15 +29,11 @@ export class DvAccordionComponentConfig implements IComponentOptions {
     };
 }
 
-export class DvAccordionController {
+export class DvAccordionController implements IOnChanges {
     accordion: string[] = [];
     allowMultipleSections: boolean;
     selectedTabId: string;
-    static $inject: any[] = [];
-
-    /* @ngInject */
-    constructor() {
-    }
+    static $inject: ReadonlyArray<string> = [];
 
     $onChanges() {
         // erlaubt dass man von Anfang an, ein Tab oeffnet, wenn man eine bestimmte Mitteilung oeffnen will

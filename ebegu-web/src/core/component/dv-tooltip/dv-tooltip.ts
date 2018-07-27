@@ -38,8 +38,8 @@ export class DvTooltipController implements IDVFocusableController {
 
     private inputId: string;
 
-    static $inject: any[] = ['$translate', 'DvDialog'];
-    /* @ngInject */
+    static $inject: ReadonlyArray<string> = ['$translate', 'DvDialog'];
+
     constructor(private $translate: ITranslateService, private DvDialog: DvDialog) {
     }
 
