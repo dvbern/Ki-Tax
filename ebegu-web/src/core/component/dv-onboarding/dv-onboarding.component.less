@@ -29,7 +29,7 @@
         font-weight: bold;
         line-height: 9.8rem;
         letter-spacing: 0.15rem;
-        color: white;
+        color: @white;
         padding: 4vh;
     }
 
@@ -38,7 +38,7 @@
         font-weight: bold;
         letter-spacing: 0.193rem;
         line-height: 4.9rem;
-        color: white;
+        color: @white;
         margin: 5vh;
     }
 
@@ -56,8 +56,8 @@
 
         &-label {
             height: 5rem;
-            width: 35rem;
-            color: white;
+            width: 32rem;
+            color: @white;
             font-size: 1.8rem;
             letter-spacing: 0.1rem;
             line-height: 2.3rem;
@@ -66,31 +66,33 @@
 
         &-search {
             height: 5rem;
-            width: 34rem;
+            width: 32rem;
             border: 0.5rem solid @primary;
             margin-top: 0.5vh;
-            background: white;
+            margin-right: 16rem;
+            background: @white;
             display: flex;
             align-items: center;
 
             &-input {
                 height: 4rem;
-                width: 35rem;
+                width: 100%;
                 border: 0.01rem solid @anthracite;
             }
         }
 
         &-auswaehlen {
             height: 5rem;
-            width: 35rem;
+            width: 32rem;
             background-color: @primary;
-            color: white;
+            color: @white;
             font-size: 1.8rem;
             letter-spacing: 0.05rem;
             line-height: 1.9rem;
             text-align: center;
             flex: 1;
             border: none;
+            text-transform: uppercase;
         }
     }
 }
