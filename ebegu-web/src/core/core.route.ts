@@ -85,7 +85,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
     // not used anymore?
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-        .subscribe((value: TSAuthEvent) => {
+        .subscribe(() => {
         if (ENV !== 'test') {
             listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
             mandantRS.getFirst();

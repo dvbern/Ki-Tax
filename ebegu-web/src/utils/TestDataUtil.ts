@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSRole} from '../models/enums/TSRole';
+import TSBerechtigung from '../models/TSBerechtigung';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
@@ -194,11 +196,33 @@ export default class TestDataUtil {
         };
     }
 
-    public static createGemeinde(): TSGemeinde {
+    public static createGemeindeOstermundigen(): TSGemeinde {
         let gemeinde: TSGemeinde = new TSGemeinde();
+        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         gemeinde.name = 'Ostermundigen';
         gemeinde.gemeindeNummer = 2;
+        gemeinde.enabled = true;
         return gemeinde;
+    }
+
+    public static createGemeindeBern(): TSGemeinde {
+        let gemeinde: TSGemeinde = new TSGemeinde();
+        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
+        gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+        gemeinde.name = 'Bern';
+        gemeinde.gemeindeNummer = 1;
+        gemeinde.enabled = true;
+        return gemeinde;
+    }
+
+    public static createBerechtigung(role: TSRole, createGemeinde: boolean): TSBerechtigung {
+        let berechtigung: TSBerechtigung = new TSBerechtigung();
+        if (createGemeinde) {
+            berechtigung.gemeindeList.push(TestDataUtil.createGemeindeOstermundigen());
+        }
+        berechtigung.role = role;
+        berechtigung.enabled = true;
+        return berechtigung;
     }
 }

@@ -297,7 +297,7 @@ describe('dvNavigation', function () {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
             let dossier = new TSDossier();
-            dossier.gemeinde = TestDataUtil.createGemeinde();
+            dossier.gemeinde = TestDataUtil.createGemeindeOstermundigen();
             dossier.id = '123';
             spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
             mockGesuch();
