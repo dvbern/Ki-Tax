@@ -332,7 +332,7 @@ public final class TestDataUtil {
 
 	@Nonnull
 	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_BERN);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeBern();
 			persistence.persist(gemeinde.getMandant());
@@ -343,7 +343,7 @@ public final class TestDataUtil {
 
 	@Nonnull
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeOstermundigen();
 			return persistence.persist(gemeinde);
@@ -353,7 +353,7 @@ public final class TestDataUtil {
 
 	public static Gemeinde createGemeindeBern() {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_BERN);
+		gemeinde.setId(GEMEINDE_BERN_ID);
 		gemeinde.setName("Bern");
 		gemeinde.setEnabled(true);
 		gemeinde.setGemeindeNummer(1);
@@ -363,7 +363,7 @@ public final class TestDataUtil {
 
 	public static Gemeinde createGemeindeOstermundigen() {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
+		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
 		gemeinde.setName("Ostermundigen");
 		gemeinde.setEnabled(true);
 		return gemeinde;
