@@ -16,8 +16,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;

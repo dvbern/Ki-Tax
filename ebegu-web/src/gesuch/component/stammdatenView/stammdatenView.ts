@@ -67,8 +67,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     gesuchstellerNumber: number;
     private initialModel: TSGesuchstellerContainer;
     private isLastVerfuegtesGesuch: boolean = false;
-    private selectedSprachenMap: Map<TSSprache, TSGesuchstellerSprache> = new Map();
-    private korrespondenzSprachenError: boolean = false;
 
     static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
         'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
@@ -282,10 +280,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public checkAllEwkRelevantDataPresent(): void {
         if (this.getModelJA()) {
-            // if (this.getModelJA().nachname &&
-            //     this.getModelJA().vorname &&
-            //     this.getModelJA().geschlecht &&
-            //     this.getModelJA().geburtsdatum) {
             if (this.gesuchModelManager.gesuchstellerNumber === 1) {
                 this.ewkRS.gesuchsteller1 = this.getModel();
             } else if (this.gesuchModelManager.gesuchstellerNumber === 2) {
@@ -293,7 +287,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             } else {
                 console.log('Unbekannte Gesuchstellernummer', this.gesuchstellerNumber);
             }
-            // }
         }
     }
 
@@ -302,14 +295,5 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      */
     public getSprachen(): Array<TSSprache> {
         return getTSSpracheValues();
-    }
-
-    /**
-     * Gibt fuer einen Sprachen-Wert ein (selektierbares) GesuchstellerSprache-Objekt zurueck
-     * @param {TSSprache} sprache
-     * @returns {TSGesuchstellerSprache}
-     */
-    public getGesuchstellerSprache(sprache: TSSprache): TSGesuchstellerSprache {
-        return this.selectedSprachenMap.get(sprache);
     }
 }
