@@ -83,12 +83,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.ebeguRestUtil = ebeguRestUtil;
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
-
     }
 
     $onInit() {
         this.initViewmodel();
-
     }
 
     private initViewmodel() {

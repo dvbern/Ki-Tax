@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -86,7 +87,7 @@ public class Benutzer extends AbstractEntity {
 	private String email = null;
 
 	@Transient
-	private Berechtigung currentBerechtigung;
+	private Berechtigung currentBerechtigung = null;
 
 	@Valid
 	@SortNatural
@@ -96,7 +97,7 @@ public class Benutzer extends AbstractEntity {
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_benutzer_mandant_id"))
-	private Mandant mandant;
+	private Mandant mandant = null;
 
 	@NotNull
 	@Column(nullable = false)
@@ -160,7 +161,7 @@ public class Benutzer extends AbstractEntity {
 
 	@Nonnull
 	public String getFullName() {
-		return (this.vorname != null ? this.vorname : "") + " "
+		return (this.vorname != null ? this.vorname : "") + ' '
 			+ (this.nachname != null ? this.nachname : "");
 	}
 
@@ -226,5 +227,26 @@ public class Benutzer extends AbstractEntity {
 
 	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
 		getCurrentBerechtigung().setTraegerschaft(traegerschaft);
+	}
+
+	@Nonnull
+	public Set<Gemeinde> extractGemeindenForUser() {
+		if (this.currentBerechtigung != null) {
+			return this.currentBerechtigung.getGemeindeList();
+		}
+		return Collections.emptySet();
+	}
+
+	/**
+	 * A user whose role is not linked to a Gemeinde can see all Gemeinden
+	 * A user whose role is linked to 1..n Gemeinden can see only those Gemeinden
+	 */
+	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
+		if (getRole().isRoleGemeindeabhaengig()) {
+			return getCurrentBerechtigung().getGemeindeList()
+				.stream()
+				.anyMatch(gemeinde::equals);
+		}
+		return true;
 	}
 }

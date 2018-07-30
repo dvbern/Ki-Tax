@@ -44,9 +44,7 @@ export default class WizardStepManager {
 
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(value => {
-                this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole());
-            });
+            .subscribe(() => this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole()));
     }
 
     public getCurrentStep(): TSWizardStep {

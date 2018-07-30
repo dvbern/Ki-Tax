@@ -14,6 +14,9 @@
  */
 
 import {IComponentOptions, IFilterService, ILogService, IPromise} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {
@@ -22,6 +25,7 @@ import {
     TSAntragStatus
 } from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../models/TSAntragDTO';
@@ -60,6 +64,7 @@ export class DVAntragListConfig implements IComponentOptions {
 
 export class DVAntragListController {
 
+    private readonly unsubscribe$ = new Subject<void>();
     totalResultCount: number;
     displayedCollection: Array<TSAntragDTO> = []; //Liste die im Gui angezeigt wird
     pagination: any;
@@ -97,17 +102,18 @@ export class DVAntragListController {
     TSRoleUtil: any;
 
     static $inject: any[] = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
-        'AuthServiceRS',
-        '$window', 'GemeindeRS'];
+        'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
     /* @ngInject */
     constructor(private ebeguUtil: EbeguUtil, private $filter: IFilterService, private $log: ILogService,
                 private institutionRS: InstitutionRS, private gesuchsperiodeRS: GesuchsperiodeRS,
                 private CONSTANTS: any, private authServiceRS: AuthServiceRS, private $window: ng.IWindowService,
-                private gemeindeRS: GemeindeRS) {
+                private gemeindeRS: GemeindeRS, private authLifeCycleService: AuthLifeCycleService) {
 
-        this.initViewModel();
         this.TSRoleUtil = TSRoleUtil;
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
     }
 
     private initViewModel() {
@@ -129,6 +135,11 @@ export class DVAntragListController {
         }
     }
 
+    $onDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenForCurrentBenutzer().then(response => {
             this.institutionenList = angular.copy(response);
@@ -144,10 +155,9 @@ export class DVAntragListController {
         });
     }
 
-    public updateGemeindenList(): void {
-        this.gemeindeRS.getAllGemeinden().then(response => {
-            this.gemeindenList = angular.copy(response);
-        });
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
+            .then(gemeinden => { this.gemeindenList = gemeinden; });
     }
 
     removeClicked(antragToRemove: TSAbstractAntragEntity) {

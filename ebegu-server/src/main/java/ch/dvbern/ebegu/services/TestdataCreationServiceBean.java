@@ -281,17 +281,16 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			return saveGemeindeIfNeeded(setupConfig.getGemeinde());
 		}
 		// Wir nehmen was da ist
-		return saveGemeindeIfNeeded(getFirstGemeinde());
+		return saveGemeindeIfNeeded(getGemeindeBern());
 	}
 
 	@Nonnull
-	private Gemeinde getFirstGemeinde() {
-		Collection<Gemeinde> all = criteriaQueryHelper.getAll(Gemeinde.class);
-		if (all == null || all.size() != 1) {
-			throw new IllegalStateException("Gemeinde not set up correctly");
+	private Gemeinde getGemeindeBern() {
+		Gemeinde bern = persistence.find(Gemeinde.class, "4c453263-f992-48af-86b5-dc04cd7e8bb8");
+		if (bern == null) {
+			throw new IllegalStateException("Gemeinde Bern not found");
 		}
-		Gemeinde gemeinde = all.iterator().next();
-		return gemeinde;
+		return bern;
 	}
 
 	@Nonnull
