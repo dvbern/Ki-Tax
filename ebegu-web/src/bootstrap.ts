@@ -16,30 +16,28 @@
 require('./vendor');
 import {NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {NgAppModule} from './ngApp/ng-app.module';
-import { UrlService } from '@uirouter/core';
+import {UIRouter, UrlService} from '@uirouter/core';
+import {AppModule} from './app/app.module';
 
-angular.element(document).ready(() => {
-    // platformBrowserDynamic().bootstrapModule(AppModule);
+// angular.element(document).ready(() => {
+// platformBrowserDynamic().bootstrapModule(AppModule);
 
-    platformBrowserDynamic().bootstrapModule(NgAppModule)
-        .then(platformRef => {
-            // console.log('BOOTSTRAPING AngularJS');
-            // const upgrade = platformRef.injector.get(UpgradeModule) as UpgradeModule;
-            // upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
+platformBrowserDynamic().bootstrapModule(AppModule)
+    .then(platformRef => {
+        // Intialize the Angular Module
+        // get() the UIRouter instance from DI to initialize the router
+        const urlService: UrlService = platformRef.injector.get(UIRouter).urlService;
 
-            const url: UrlService = platformRef.injector.get(UrlService);
+        // Instruct UIRouter to listen to URL changes
+        function startUIRouter() {
+            urlService.listen();
+            urlService.sync();
+        }
 
-            // Instruct UIRouter to listen to URL changes
-            function startUIRouter() {
-                url.listen();
-                url.sync();
-            }
-
-            const ngZone: NgZone = platformRef.injector.get(NgZone);
-            ngZone.run(startUIRouter);
-        });
-});
+        const ngZone = platformRef.injector.get(NgZone);
+        ngZone.run(startUIRouter);
+    });
+// });
 
 
 

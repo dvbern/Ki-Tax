@@ -23,7 +23,7 @@ import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
 adminRun.$inject = ['RouterHelper'];
 
 export function adminRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates());
+    routerHelper.configureStates(ng1States);
 }
 
 export class IGesuchsperiodeStateParams {
@@ -43,98 +43,96 @@ export class IBenutzerStateParams {
     benutzerId: string;
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        {
-            name: 'admin',
-            template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
-            url: '/admin',
-            resolve: {
-                applicationProperties: applicationPropertiesResolver
-            }
-        },
-        {
-            name: 'benutzerlist',
-            template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
-            url: '/benutzerlist',
-        },
-        {
-            name: 'benutzer',
-            template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
-            url: '/benutzerlist/benutzer/:benutzerId',
-        },
-        {
-            name: 'institutionen',
-            template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
-            + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
-            url: '/institutionen',
-
-            resolve: {
-                institutionen: institutionenResolver,
-            }
-        },
-        {
-            name: 'institution',
-            template: '<dv-institution-view flex="auto" class="overflow-scroll"'
-            + ' traegerschaften="$resolve.traegerschaften"'
-            + ' mandant="$resolve.mandant"></dv-institution-view>',
-            url: '/institutionen/institution/:institutionId',
-            params: {
-                institutionId: '',
-            },
-
-            resolve: {
-                traegerschaften: traegerschaftenResolver,
-                mandant: mandantResolver
-            }
-        },
-        {
-            name: 'institutionstammdaten',
-            template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
-            url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
-            params: {
-                institutionStammdatenId: '',
-            },
-        },
-        {
-            name: 'parameter',
-            template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
-            url: '/parameter',
-        },
-        {
-            name: 'gesuchsperiode',
-            template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
-            + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
-            url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
-            params: {
-                gesuchsperiodeId: '',
-            },
-
-            resolve: {
-                traegerschaften: traegerschaftenResolver, // TODO warum werden traegerschaften resolved?
-                mandant: mandantResolver,
-            }
-        },
-        {
-            name: 'ferieninsel',
-            template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
-            url: '/ferieninsel',
-        },
-    ];
-}
-
-const applicationPropertiesResolver = ['ApplicationPropertyRS', function getApplicationProperties(applicationPropertyRS: ApplicationPropertyRS) {
+const applicationPropertiesResolver = ['ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
     return applicationPropertyRS.getAllApplicationProperties();
 }];
 
-const institutionenResolver = ['InstitutionRS', function getInstitutionen(institutionRS: InstitutionRS) {
+const institutionenResolver = ['InstitutionRS', (institutionRS: InstitutionRS) => {
     return institutionRS.getAllActiveInstitutionen();
 }];
 
-const traegerschaftenResolver = ['TraegerschaftRS', function getTraegerschaften(traegerschaftRS: TraegerschaftRS) {
+const traegerschaftenResolver = ['TraegerschaftRS', (traegerschaftRS: TraegerschaftRS) => {
     return traegerschaftRS.getAllActiveTraegerschaften();
 }];
 
-const mandantResolver = ['MandantRS', function getMandant(mandantRS: MandantRS) {
+const mandantResolver = ['MandantRS', (mandantRS: MandantRS) => {
     return mandantRS.getFirst();
 }];
+
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        name: 'admin',
+        template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
+        url: '/admin',
+        resolve: {
+            applicationProperties: applicationPropertiesResolver
+        }
+    },
+    {
+        name: 'benutzerlist',
+        template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
+        url: '/benutzerlist',
+    },
+    {
+        name: 'benutzer',
+        template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
+        url: '/benutzerlist/benutzer/:benutzerId',
+    },
+    {
+        name: 'institutionen',
+        template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
+        + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
+        url: '/institutionen',
+
+        resolve: {
+            institutionen: institutionenResolver,
+        }
+    },
+    {
+        name: 'institution',
+        template: '<dv-institution-view flex="auto" class="overflow-scroll"'
+        + ' traegerschaften="$resolve.traegerschaften"'
+        + ' mandant="$resolve.mandant"></dv-institution-view>',
+        url: '/institutionen/institution/:institutionId',
+        params: {
+            institutionId: '',
+        },
+
+        resolve: {
+            traegerschaften: traegerschaftenResolver,
+            mandant: mandantResolver
+        }
+    },
+    {
+        name: 'institutionstammdaten',
+        template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
+        url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
+        params: {
+            institutionStammdatenId: '',
+        },
+    },
+    {
+        name: 'parameter',
+        template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
+        url: '/parameter',
+    },
+    {
+        name: 'gesuchsperiode',
+        template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
+        + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
+        url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
+        params: {
+            gesuchsperiodeId: '',
+        },
+
+        resolve: {
+            traegerschaften: traegerschaftenResolver, // TODO warum werden traegerschaften resolved?
+            mandant: mandantResolver,
+        }
+    },
+    {
+        name: 'ferieninsel',
+        template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
+        url: '/ferieninsel',
+    },
+];

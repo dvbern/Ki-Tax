@@ -19,7 +19,9 @@ import {filter} from 'rxjs/operators';
 import {TSPostEingangEvent} from '../../models/enums/TSPostEingangEvent';
 import {Log} from '../../utils/LogFactory';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class PosteingangService {
 
     private readonly LOG: Log = Log.createLog(PosteingangService);

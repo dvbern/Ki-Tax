@@ -13,19 +13,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
 import TSGesuch from '../models/TSGesuch';
-import IQService = angular.IQService;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
+import IQService = angular.IQService;
 
 gesuchstellerDashboardRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function gesuchstellerDashboardRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), [], '/start');
 }
 
 function getStates(): Ng1StateDeclaration[] {
@@ -67,7 +66,6 @@ export class IGesuchstellerDashboardStateParams {
 
 getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $stateParams: IAngebotStateParams, $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
@@ -81,16 +79,14 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $s
 
                 return gesuchModelManager.openGesuch(gesuchIdParam);
             } else {
-                const deferred = $q.defer<TSGesuch>();
-                deferred.resolve(gesuchModelManager.getGesuch());
-                return deferred.promise;
+                return $q.resolve(gesuchModelManager.getGesuch());
             }
 
         }
     }
+
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    const deferred = $q.defer<TSGesuch>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+
+    return $q.resolve(undefined);
 }
 

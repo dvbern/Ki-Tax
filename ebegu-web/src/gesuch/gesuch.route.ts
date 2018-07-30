@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {DvOnboardingComponent} from '../core/component/dv-onboarding/dv-onboarding.component';
@@ -32,25 +33,18 @@ import WizardStepManager from './service/wizardStepManager';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import {Ng2StateDeclaration} from '@uirouter/angular';
 
 const gesuchTpl = require('./gesuch.html');
 
 gesuchRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function gesuchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), ng2States, '/start');
 }
 
 //array mit allen States
-function getStates(): Array<Ng1StateDeclaration | Ng2StateDeclaration> {
+function getStates(): Ng1StateDeclaration[] {
     return [
-        {
-            name: 'onboarding',
-            url: '/onboarding',
-            component: DvOnboardingComponent,
-        },
         new EbeguGesuchState(),
         new EbeguFamiliensituationState(),
         new EbeguStammdatenState(),
@@ -83,11 +77,13 @@ function getStates(): Array<Ng1StateDeclaration | Ng2StateDeclaration> {
 
 //STATES
 
-export class OnboardingTest implements Ng1StateDeclaration {
-    name = 'onboarding';
-    template = '<dv-onboarding>';
-    url = '/onboarding';
-}
+const ng2States: Ng2StateDeclaration[] = [
+    {
+        name: 'onboarding',
+        url: '/onboarding',
+        component: DvOnboardingComponent,
+    },
+];
 
 export class EbeguGesuchState implements Ng1StateDeclaration {
     name = 'gesuch';

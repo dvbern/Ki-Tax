@@ -20,7 +20,7 @@ searchRun.$inject = ['RouterHelper'];
 
 /* @ngInject */
 export function searchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), [], '/start');
 }
 
 function getStates(): Ng1StateDeclaration[] {

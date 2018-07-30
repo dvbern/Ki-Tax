@@ -13,18 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormsModule} from '@angular/forms';
-import {MatSortModule, MatTableModule} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {SharedModule} from '../../../app/shared/shared.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
-import {createTranslateLoader} from '../../../ngApp/ng-app.module';
-import {NgSharedModule} from '../../../shared/ng-shared.module';
 
 import {TraegerschaftViewComponent} from './traegerschaftView';
 
@@ -41,19 +36,8 @@ describe('traegerschaftView', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                HttpClientModule,
-                TranslateModule.forRoot({
-                    loader: {
-                        provide: TranslateLoader,
-                        useFactory: (createTranslateLoader),
-                        deps: [HttpClient]
-                    }
-                }),
-                FormsModule,
-                MatTableModule,
-                MatSortModule,
-                NoopAnimationsModule, // we don't want material animations in the project yet
-                NgSharedModule,
+                SharedModule,
+                NoopAnimationsModule,
             ],
             providers: [
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},

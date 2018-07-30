@@ -13,26 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 
 faelleRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function faelleRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
-}
-
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguFaelleListState()
-    ];
+    routerHelper.configureStates(ng1States, ng2States, '/start');
 }
 
 //STATES
 
-export class EbeguFaelleListState implements Ng1StateDeclaration {
-    name = 'faelle';
-    template = '<faelle-list-view flex="auto" class="overflow-scroll">';
-    url = '/faelle';
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        name: 'faelle',
+        template: '<faelle-list-view flex="auto" class="overflow-scroll">',
+        url: '/faelle',
+    }
+];
+
+const ng2States: Ng2StateDeclaration[] = [];

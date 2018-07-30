@@ -13,14 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 
 mitteilungenRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function mitteilungenRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), [], '/start');
 }
 
 function getStates(): Ng1StateDeclaration[] {

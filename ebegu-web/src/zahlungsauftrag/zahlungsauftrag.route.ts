@@ -18,9 +18,8 @@ import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 zahlungsauftragRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function zahlungsauftragRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), [], '/start');
 }
 
 function getStates(): Ng1StateDeclaration[] {

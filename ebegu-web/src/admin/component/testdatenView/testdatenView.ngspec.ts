@@ -13,22 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormsModule} from '@angular/forms';
-import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
-import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import {MAT_DATE_LOCALE} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {SharedModule} from '../../../app/shared/shared.module';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import UserRS from '../../../core/service/userRS.rest';
 import ZahlungRS from '../../../core/service/zahlungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import {createTranslateLoader} from '../../../ngApp/ng-app.module';
-import {NgSharedModule} from '../../../shared/ng-shared.module';
 import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
@@ -56,24 +50,8 @@ describe('testdatenView', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                HttpClientModule,
-                TranslateModule.forRoot({
-                    loader: {
-                        provide: TranslateLoader,
-                        useFactory: (createTranslateLoader),
-                        deps: [HttpClient]
-                    }
-                }),
-                FormsModule,
-                MatTableModule,
-                MatSortModule,
-                NoopAnimationsModule, // we don't want material animations in the project yet
-                NgSharedModule,
-                CommonModule,
-                MatRadioModule,
-                MatDatepickerModule,
-                MatMomentDateModule,
-                MatSelectModule,
+                SharedModule,
+                NoopAnimationsModule,
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},

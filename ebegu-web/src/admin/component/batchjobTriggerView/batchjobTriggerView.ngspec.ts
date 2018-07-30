@@ -13,17 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormsModule} from '@angular/forms';
-import {MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
-import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {SharedModule} from '../../../app/shared/shared.module';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {createTranslateLoader} from '../../../ngApp/ng-app.module';
-import {NgSharedModule} from '../../../shared/ng-shared.module';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {BatchjobTriggerViewComponent} from './batchjobTriggerView';
@@ -40,24 +33,8 @@ describe('batchjobTriggerView', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                HttpClientModule,
-                TranslateModule.forRoot({
-                    loader: {
-                        provide: TranslateLoader,
-                        useFactory: (createTranslateLoader),
-                        deps: [HttpClient]
-                    }
-                }),
-                FormsModule,
-                MatTableModule,
-                MatSortModule,
-                NoopAnimationsModule, // we don't want material animations in the project yet
-                NgSharedModule,
-                CommonModule,
-                MatRadioModule,
-                MatDatepickerModule,
-                MatMomentDateModule,
-                MatSelectModule,
+                SharedModule,
+                NoopAnimationsModule,
             ],
             providers: [
                 {provide: DvDialog, useValue: dvDialogSpy},

@@ -18,9 +18,8 @@ import {Ng1StateDeclaration} from '@uirouter/angularjs';
 
 statistikRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function statistikRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), [], '/start');
 }
 
 function getStates(): Ng1StateDeclaration[] {

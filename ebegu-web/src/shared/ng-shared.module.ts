@@ -14,6 +14,7 @@
  */
 
 import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatDialogModule, MatSelectModule} from '@angular/material';
@@ -33,6 +34,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
     imports: [
         TranslateModule,
         CommonModule,
+        HttpClientModule,
         MatDialogModule,
         MatSelectModule,
         FormsModule,

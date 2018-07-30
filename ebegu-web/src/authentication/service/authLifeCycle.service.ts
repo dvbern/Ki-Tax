@@ -23,7 +23,9 @@ import {Log} from '../../utils/LogFactory';
  * This service can be used to throw TSAuthEvent. When a user logs in or out, throwing the right event
  * will let every class using this service know, that something happened.
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class AuthLifeCycleService {
 
     private readonly LOG: Log = Log.createLog(AuthLifeCycleService);

@@ -17,7 +17,8 @@ import {NgModule} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {DvPosteingangController} from '../core/component/dv-posteingang/dv-posteingang';
+import {DvOnboardingComponent} from '../core/component/dv-onboarding/dv-onboarding.component';
+import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NgSharedModule} from '../shared/ng-shared.module';
 
 @NgModule({
@@ -28,12 +29,10 @@ import {NgSharedModule} from '../shared/ng-shared.module';
     ],
     declarations: [
         DvNgNavbar,
-        DvPosteingangController,
+        DvOnboardingComponent,
+        DvPosteingangComponent,
     ],
-    entryComponents: [
-        DvNgNavbar,
-        DvPosteingangController,
-    ],
+    entryComponents: [],
 })
 
 export class NgGesuchModule {

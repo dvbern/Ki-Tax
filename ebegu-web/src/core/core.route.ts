@@ -53,7 +53,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         transition.promise
             .then(() => stateChangeSuccess())
             .catch(() => stateChangeError(transition));
-            // .finally(() => stateChangeSuccess());
+        // .finally(() => stateChangeSuccess());
     });
 
     // Fehler beim Navigieren ueber ui-route ins Log schreiben
@@ -78,29 +78,28 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         errorService.clearAll();
     }
 
-    routerHelper.configureStates(getStates(), '/start');
     angularMomentConfig.format = 'DD.MM.YYYY';
     // dieser call macht mit tests probleme, daher wird er fuer test auskommentiert
 
     // not used anymore?
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(() => {
-        if (ENV !== 'test') {
-            listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
-            mandantRS.getFirst();
-        }
-        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
-        //since we will need these lists anyway we already load on login
-        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
-            if (gesuchsperioden.length > 0) {
-                const newestGP = gesuchsperioden[0];
-                institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
+            if (ENV !== 'test') {
+                listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
+                mandantRS.getFirst();
             }
+            globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
+            //since we will need these lists anyway we already load on login
+            gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
+                if (gesuchsperioden.length > 0) {
+                    const newestGP = gesuchsperioden[0];
+                    institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
+                }
+            });
+            gemeindeRS.getAllGemeinden();
+            gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
+            gesuchModelManager.updateFachstellenList();
         });
-        gemeindeRS.getAllGemeinden();
-        gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-        gesuchModelManager.updateFachstellenList();
-    });
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
         .subscribe(() => {
@@ -119,7 +118,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
             } else {
                 console.log('supressing redirect to ', currentPath);
             }
-    });
+        });
 
     // Attempt to restore a user session upon startup
     authServiceRS.initWithCookie().then(() => {
@@ -147,10 +146,4 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         }
     });
 
-}
-
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        /* Add New States Above */
-    ];
 }

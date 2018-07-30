@@ -29,7 +29,7 @@ import MitteilungRS from '../../service/mitteilungRS.rest';
     selector: 'dv-posteingang',
     template: require('./dv-posteingang.html'),
 })
-export class DvPosteingangController implements OnInit, OnDestroy {
+export class DvPosteingangComponent implements OnInit, OnDestroy {
 
     private readonly log: Log = Log.createLog(AuthLifeCycleService);
 

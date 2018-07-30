@@ -13,18 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {StateService} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
-import IQService = angular.IQService;
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
-import {StateService} from '@uirouter/core';
+import IQService = angular.IQService;
 
 authenticationRun.$inject = ['RouterHelper'];
 
 export function authenticationRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(getStates(), ng2States, '/start');
 }
 
 function getStates(): Ng1StateDeclaration[] {
@@ -58,6 +59,8 @@ export class EbeguStartState implements Ng1StateDeclaration {
     template = '<start-view>';
     url = '/start';
 }
+
+const ng2States: Ng2StateDeclaration[] = [];
 
 export class IAuthenticationStateParams {
     relayPath: string;
