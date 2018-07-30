@@ -16,8 +16,6 @@
 package ch.dvbern.ebegu.util;
 
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -221,10 +219,7 @@ public final class FreigabeCopyUtil {
 		gesuchstellerGS.setEwkPersonId(gesuchstellerJA.getEwkPersonId());
 		gesuchstellerGS.setEwkAbfrageDatum(gesuchstellerJA.getEwkAbfrageDatum());
 		gesuchstellerGS.setDiplomatenstatus(gesuchstellerJA.isDiplomatenstatus());
-		Set<Sprache> korrespondenzSprachen = gesuchstellerJA.getKorrespondenzSprachen();
-		if (korrespondenzSprachen != null && !korrespondenzSprachen.isEmpty()) {
-			gesuchstellerGS.setKorrespondenzSprachen(new TreeSet<>(korrespondenzSprachen));
-		}
+		gesuchstellerGS.setKorrespondenzSprache(gesuchstellerJA.getKorrespondenzSprache());
 	}
 
 	private static void copyGesuchstellerAdresseContainer(@Nullable GesuchstellerAdresseContainer container) {

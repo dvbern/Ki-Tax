@@ -34,15 +34,15 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="md-no-float required" id="geschlecht" data-translate="GESCHLECHT"></label>
+                                <label class="md-no-float required" for="geschlecht" data-translate="GESCHLECHT"></label>
                                 <dv-radio-container name="geschlecht" class="input-element"
+                                                    id="geschlecht"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="!vm.isGesuchReadonly()"
                                                     ng-required="true" items="vm.geschlechter"
                                                     ng-model="vm.getModel().geschlecht"
-                                                    aria-described-by="geschlecht-error"
-                                >
+                                                    aria-described-by="geschlecht-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.geschlecht"
                                            ja="vm.getContainer().kindJA.geschlecht"></dv-bisher>
@@ -186,7 +186,7 @@
                     <!--Welche Klasse wird Ihr Kind am 01.08.XXXX besuchen?-->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class="form-group" ng-show="vm.getModel().familienErgaenzendeBetreuung">
+                            <div class="form-group" ng-if="vm.getModel().familienErgaenzendeBetreuung">
                                 <span class="ebeguH1 required">
                                     <span data-translate="EINSCHULUNG"
                                           data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
@@ -195,18 +195,19 @@
                                 <div class="dv-select-style">
                                     <select name="einschulungTyp" id="einschulungTyp"
                                             class="form-control"
-                                            aria-describedby="einschulung-error"
+                                            aria-describedby="einschulungTyp-error"
+                                            dv-enable-element
                                             dv-enable-allowed-roles="vm.allowedRoles"
                                             dv-enable-expression="!vm.isGesuchReadonly()"
                                             ng-model="vm.getModel().einschulungTyp"
                                             ng-options="typ | translate for typ in vm.einschulungTypValues track by typ"
                                             ng-required="vm.getModel().familienErgaenzendeBetreuung">
                                     </select>
+                                    <dv-bisher gs="vm.getContainer().kindGS.einschulungTyp"
+                                               ja="vm.getContainer().kindJA.einschulungTyp"></dv-bisher>
+                                    <dv-error-messages input-id="einschulungTyp" for="vm.form.einschulungTyp.$error">
+                                    </dv-error-messages>
                                 </div>
-                                <dv-bisher gs="vm.getContainer().kindGS.einschulungTyp"
-                                           ja="vm.getContainer().kindJA.einschulungTyp"></dv-bisher>
-                                <dv-error-messages input-id="einschulungTyp" for="vm.form.einschulung.$error"
-                                                   class="error"></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -214,7 +215,7 @@
                     <!--Wohnhaft im gleichen Haushalt-->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-question">
-                            <div class="form-group" ng-show="vm.getModel().familienErgaenzendeBetreuung">
+                            <div class="form-group" ng-if="vm.getModel().familienErgaenzendeBetreuung">
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float"
                                            for="gleichemHaushalt">
@@ -263,25 +264,23 @@
                     <!--fachstelle-->
                     <div ng-if="vm.isFachstelleRequired()">
                         <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium">
-                                <div class="form-group">
-                                    <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
-                                    </label>
-                                    <div class="dv-select-style">
-                                        <select aria-describedby="fachstelle-error" name="fachstelle" id="fachstelle" ng-model="vm.fachstelleId"
-                                                class="form-control"
-                                                ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
-                                                ng-required="vm.isFachstelleRequired()"
-                                                ng-change="vm.setSelectedFachsstelle()">
-                                        </select>
+                            <div class="col-sm-12 dv-input-container-medium form-group">
+                                <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
+                                </label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="fachstelle-error" name="fachstelle" id="fachstelle" ng-model="vm.fachstelleId"
+                                            class="form-control"
+                                            ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
+                                            ng-required="vm.isFachstelleRequired()"
+                                            ng-change="vm.setSelectedFachsstelle()">
+                                    </select>
 
-                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.fachstelle.name"
-                                                   ja="vm.getContainer().kindJA.pensumFachstelle.fachstelle.name"
-                                                   show-if-bisher-none="false"
-                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                        <dv-error-messages input-id="fachstelle" for="vm.form.fachstelle.$error"
-                                                           class="error"></dv-error-messages>
-                                    </div>
+                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.fachstelle.name"
+                                               ja="vm.getContainer().kindJA.pensumFachstelle.fachstelle.name"
+                                               show-if-bisher-none="false"
+                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                    <dv-error-messages input-id="fachstelle" for="vm.form.fachstelle.$error"
+                                                       class="error"></dv-error-messages>
                                 </div>
                             </div>
                         </div>

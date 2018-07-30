@@ -100,35 +100,25 @@
                             </dv-input-container>
                         </div>
                         <!-- Korrespondenz-Sprache -->
-                        <div class="col-sm-12 dv-input-container-small" ng-show="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" data-translate="KORRESPONDENZSPRACHE" for="korrespondenzSprache_ID">
+                        <div class="col-sm-12 dv-input-container-medium" ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
+                            <div class="form-group">
+                                <label class="md-no-float required" data-translate="KORRESPONDENZSPRACHE" for="korrespondenzSprache">
                                 </label>
-                                <div id="korrespondenzSprache_ID"
-                                    ng-repeat="lang in vm.getSprachen()">
-                                    <md-checkbox
-                                        id="lang_{{lang}}"
-                                        name="lang_{{lang}}"
-                                        ng-model="vm.getGesuchstellerSprache(lang).selected"
-                                        ng-change="vm.spracheChanged(lang)"
-                                        aria-label="{{lang | translate}}">
-                                        <span data-translate="{{lang | translate}}"></span>
-                                    </md-checkbox>
+                                <div class="dv-select-style dv-input-container-medium-select">
+                                    <select name="korrespondenzSprache" id="korrespondenzSprache" class="form-control"
+                                            aria-describedby="korrespondenzSprache-error"
+                                            ng-model="vm.getModelJA().korrespondenzSprache"
+                                            ng-options="lang | translate for lang in vm.getSprachen()"
+                                            ng-required="true">
+                                    </select>
+                                    <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprache"
+                                               ja="vm.getModel().gesuchstellerJA.korrespondenzSprache"
+                                               specific-bisher-text="vm.getTextKorrespondenzSprachenKorrektur()"></dv-bisher>
+                                    <dv-error-messages for="vm.form.korrespondenzSprache.$error"
+                                                       input-id="korrespondenzSprache"
+                                                       class="error"></dv-error-messages>
                                 </div>
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprachen"
-                                           ja="vm.getModel().gesuchstellerJA.korrespondenzSprachen"
-                                           specific-bisher-text="vm.getTextKorrespondenzSprachenKorrektur()"></dv-bisher>
-                                <!-- Fehlermeldung -->
-                                <div>
-                                    <input type=hidden name="korrespondenzSprachenValidation" ng-model="vm.korrespondenzSprachenError"/>
-                                    <div title="{{'ERROR_KORRESPONDENZSPRACHE_MIN1' | translate}}"
-                                         ng-messages="vm.form.korrespondenzSprachenValidation.$error"
-                                         ng-show="vm.form.$submitted"
-                                         class="dv-error-messages">
-                                           <span ng-message="korrespondenzSprachenError" role="alert" data-translate="ERROR_KORRESPONDENZSPRACHE_MIN1"></span>
-                                    </div>
-                                </div>
-                            </dv-input-container>
+                            </div>
                         </div>
                     </div>
 

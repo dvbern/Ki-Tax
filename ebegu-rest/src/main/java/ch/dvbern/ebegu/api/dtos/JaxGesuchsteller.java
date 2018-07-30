@@ -16,8 +16,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -62,7 +60,7 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	private boolean diplomatenstatus;
 
 	@Nullable
-	private Set<Sprache> korrespondenzSprachen = new TreeSet<>();
+	private Sprache korrespondenzSprache;
 
 
 	public String getMail() {
@@ -122,11 +120,11 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	}
 
 	@Nullable
-	public Set<Sprache> getKorrespondenzSprachen() {
-		return korrespondenzSprachen;
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
 	}
 
-	public void setKorrespondenzSprachen(@Nullable Set<Sprache> korrespondenzSprachen) {
-		this.korrespondenzSprachen = korrespondenzSprachen;
+	public void setKorrespondenzSprache(@Nullable Sprache korrespondenzSprache) {
+		this.korrespondenzSprache = korrespondenzSprache;
 	}
 }

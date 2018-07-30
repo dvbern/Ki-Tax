@@ -128,7 +128,7 @@
     "TELEFON": "Telefon",
     "GEBURTSDATUM": "Geburtsdatum",
     "GEBURTSDATUM_UPPER": "GEBURTSTAG",
-    "KORRESPONDENZSPRACHE": "Korrespondenzsprache",
+    "KORRESPONDENZSPRACHE": "Gewünschte Korrespondenzsprache",
     "DUBLETTEN": "Dubletten",
     "UMZUG": "geplanter Umzug",
     "NICHT_IN_BERN_WOHNHAFT": "Nicht in Bern wohnhaft",
@@ -1315,7 +1315,6 @@
     "BENUTZER_STATISTIK": "BENUTZER",
     "DEUTSCH": "Deutsch",
     "FRANZOESISCH": "Französisch",
-    "ERROR_KORRESPONDENZSPRACHE_MIN1": "Mindestens 1 Sprache auswählen",
     "GEMEINDE_PAPIERGESUCH_AUSWAEHLEN": "Gemeinde für das Papiergesuch auswählen",
     "AUSWAEHLEN": "Auswählen"
 }
