@@ -56,7 +56,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = persistence.find(Mandant.class, "DEFAULT_MANDANT_ID");
+		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
 		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant);
 		try {
 			loginAsSuperadmin();
