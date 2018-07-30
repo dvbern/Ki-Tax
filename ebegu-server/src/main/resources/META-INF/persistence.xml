@@ -21,7 +21,7 @@
 	<persistence-unit name="ebeguPersistenceUnit" transaction-type="JTA">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:/jdbc/ebegu</jta-data-source>
-		<mapping-file>META-INF/orm.xml</mapping-file>
+		<mapping-file>META-INF/orm-kibon.xml</mapping-file>
 		<!--<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>-->
 
 		<properties>
