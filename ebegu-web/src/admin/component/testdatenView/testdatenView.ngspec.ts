@@ -17,12 +17,10 @@ import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
-import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
+import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
-import {MatTableModule} from '@angular/material/table';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import UserRS from '../../../core/service/userRS.rest';
@@ -32,19 +30,17 @@ import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import {createTranslateLoader} from '../../../ngApp/ng-app.module';
 import {NgSharedModule} from '../../../shared/ng-shared.module';
 import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
-import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
-import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 
-describe('testdatenView', function () {
+describe('testdatenView', () => {
 
     let component: TestdatenViewComponent;
     let fixture: ComponentFixture<TestdatenViewComponent>;
 
     beforeEach(async(() => {
         const testFaelleRSSpy = jasmine.createSpyObj('TestFaelleRS', ['createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
-                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
+            'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
         const userRSSpy = jasmine.createSpyObj('UserRS', ['getAllGesuchsteller']);
         userRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));

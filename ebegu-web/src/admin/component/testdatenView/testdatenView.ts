@@ -17,7 +17,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {DvNgLinkDialogComponent} from '../../../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -59,11 +59,11 @@ export class TestdatenViewComponent implements OnInit {
 
     devMode: boolean;
 
-    constructor(testFaelleRS: TestFaelleRS, private userRS: UserRS,
-                private errorService: ErrorService, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private zahlungRS: ZahlungRS, private applicationPropertyRS: ApplicationPropertyRS,
-                private gesuchRS: GesuchRS, private gemeindeRS: GemeindeRS,
-                private dialog: MatDialog) {
+    constructor(testFaelleRS: TestFaelleRS, private readonly userRS: UserRS,
+                private readonly errorService: ErrorService, private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly zahlungRS: ZahlungRS, private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly gesuchRS: GesuchRS, private readonly gemeindeRS: GemeindeRS,
+                private readonly dialog: MatDialog) {
 
         this.testFaelleRS = testFaelleRS;
     }
@@ -160,7 +160,7 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public deleteAllZahlungsauftraege(): void {
-        this.createAndOpenRemoveDialog('ZAHLUNG_LOESCHEN_DIALOG_TITLE', 'ZAHLUNG_LOESCHEN_DIALOG_TEXT')
+        this.createAndOpenRemoveDialog$('ZAHLUNG_LOESCHEN_DIALOG_TITLE', 'ZAHLUNG_LOESCHEN_DIALOG_TEXT')
             .subscribe((acceptedByUser) => {
                 if (acceptedByUser) {
                     this.zahlungRS.deleteAllZahlungsauftraege();
@@ -169,7 +169,7 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public gesuchVerfuegen(): void {
-        this.createAndOpenRemoveDialog('GESUCH_VERFUEGEN_DIALOG_TITLE', 'GESUCH_VERFUEGEN_DIALOG_TEXT')
+        this.createAndOpenRemoveDialog$('GESUCH_VERFUEGEN_DIALOG_TITLE', 'GESUCH_VERFUEGEN_DIALOG_TEXT')
             .subscribe((acceptedByUser) => {
                 if (acceptedByUser) {
                     this.gesuchRS.gesuchVerfuegen(this.verfuegenGesuchid);
@@ -186,7 +186,7 @@ export class TestdatenViewComponent implements OnInit {
         this.dialog.open(DvNgOkDialogComponent, dialogConfig).afterClosed();
     }
 
-    private createAndOpenRemoveDialog(title: string, text: string): Observable<boolean> {
+    private createAndOpenRemoveDialog$(title: string, text: string): Observable<boolean> {
         const dialogConfig = this.createDefaultMatDialogConfig();
         dialogConfig.data = {
             title: title,
@@ -198,14 +198,14 @@ export class TestdatenViewComponent implements OnInit {
 
     private createLinkDialog(response: any) {
         //einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
-        let uuidPartOfString = response.data ? response.data.slice(-36) : '';
-        this.createAndOpenLinkDialog(
+        const uuidPartOfString = response.data ? response.data.slice(-36) : '';
+        this.createAndOpenLinkDialog$(
             response.data,
             '#/gesuch/fall/false///' + uuidPartOfString + '//', //nicht alle Parameter werden benoetigt, deswegen sind sie leer
         );
     }
 
-    private createAndOpenLinkDialog(title: string, link: string): Observable<boolean> {
+    private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
         const dialogConfig = this.createDefaultMatDialogConfig();
         dialogConfig.data = {
             title: title,

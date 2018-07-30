@@ -19,9 +19,9 @@ import {ShowTooltipController} from '../../../gesuch/dialog/ShowTooltipControlle
 import {IDVFocusableController} from '../IDVFocusableController';
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./dv-tooltip.html');
+const template = require('./dv-tooltip.html');
 require('./dv-tooltip.less');
-let showTooltipTemplate = require('../../../gesuch/dialog/showTooltipTemplate.html');
+const showTooltipTemplate = require('../../../gesuch/dialog/showTooltipTemplate.html');
 
 export class DvTooltipComponentConfig implements IComponentOptions {
     transclude = false;
@@ -36,11 +36,11 @@ export class DvTooltipComponentConfig implements IComponentOptions {
 
 export class DvTooltipController implements IDVFocusableController {
 
-    private inputId: string;
-
     static $inject: ReadonlyArray<string> = ['$translate', 'DvDialog'];
 
-    constructor(private $translate: ITranslateService, private DvDialog: DvDialog) {
+    private readonly inputId: string;
+
+    constructor(private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog) {
     }
 
     showTooltip(info: any): void {

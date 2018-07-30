@@ -24,8 +24,8 @@ import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
-let template = require('./dv-vorlage-list.html');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const template = require('./dv-vorlage-list.html');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DVVorlageListConfig implements IComponentOptions {
     transclude = false;
@@ -41,17 +41,17 @@ export class DVVorlageListConfig implements IComponentOptions {
 }
 
 export class DVVorlageListController {
+
+    static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
+        'EbeguUtil', '$scope'];
     ebeguVorlageList: TSEbeguVorlage[];
     isReadonly: () => void;
     gesuchsperiode: TSGesuchsperiode;
     proGesuchsperiode: boolean;
 
-    static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
-        'EbeguUtil', '$scope'];
-
-    constructor(private downloadRS: DownloadRS, private $log: ILogService,
-                private ebeguVorlageRS: EbeguVorlageRS, private dvDialog: DvDialog,
-                private ebeguUtil: EbeguUtil, private $scope: IScope) {
+    constructor(private readonly downloadRS: DownloadRS, private readonly $log: ILogService,
+                private readonly ebeguVorlageRS: EbeguVorlageRS, private readonly dvDialog: DvDialog,
+                private readonly ebeguUtil: EbeguUtil, private readonly $scope: IScope) {
     }
 
     $onInit() {
@@ -95,7 +95,7 @@ export class DVVorlageListController {
 
     download(ebeguVorlage: TSEbeguVorlage, attachment: boolean) {
         this.$log.debug('download vorlage ' + ebeguVorlage.vorlage.filename);
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
 
         this.downloadRS.getAccessTokenVorlage(ebeguVorlage.vorlage.id)
             .then((downloadFile: TSDownloadFile) => {
@@ -121,8 +121,8 @@ export class DVVorlageListController {
     }
 
     private addResponseToCurrentList(response: TSEbeguVorlage) {
-        let returnedDG: TSEbeguVorlage = angular.copy(response);
-        let index = this.getIndexOfElement(returnedDG, this.ebeguVorlageList);
+        const returnedDG: TSEbeguVorlage = angular.copy(response);
+        const index = this.getIndexOfElement(returnedDG, this.ebeguVorlageList);
 
         if (index > -1) {
             //this.$log.debug('add dokument to dokumentList');
@@ -132,7 +132,7 @@ export class DVVorlageListController {
     }
 
     private getIndexOfElement(entityToSearch: TSEbeguVorlage, listToSearchIn: TSEbeguVorlage[]): number {
-        let idToSearch = entityToSearch.name;
+        const idToSearch = entityToSearch.name;
         for (let i = 0; i < listToSearchIn.length; i++) {
             if (listToSearchIn[i].name === idToSearch) {
                 return i;
@@ -153,7 +153,7 @@ export class DVVorlageListController {
 
                 this.ebeguVorlageRS.deleteEbeguVorlage(ebeguVorlage.id).then((response) => {
 
-                    let index = EbeguUtil.getIndexOfElementwithID(ebeguVorlage, this.ebeguVorlageList);
+                    const index = EbeguUtil.getIndexOfElementwithID(ebeguVorlage, this.ebeguVorlageList);
                     if (index > -1) {
                         this.$log.debug('remove Vorlage in EbeguVorlage');
                         ebeguVorlage.vorlage = null;

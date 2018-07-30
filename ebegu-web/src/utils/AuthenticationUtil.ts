@@ -24,7 +24,7 @@ export default class AuthenticationUtil {
      *  Navigiert basierend auf der Rolle zu einer anderen Startseite
      */
     public static navigateToStartPageForRole(user: TSUser, $state: StateService): void {
-        let currentRole: TSRole = user.getCurrentRole();
+        const currentRole: TSRole = user.getCurrentRole();
         if (currentRole === TSRole.SUPER_ADMIN) {
             $state.go('faelle');
         } else if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(currentRole) > -1) {

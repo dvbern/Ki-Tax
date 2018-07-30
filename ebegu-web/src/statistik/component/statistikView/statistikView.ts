@@ -35,7 +35,7 @@ import ILogService = angular.ILogService;
 import Moment = moment.Moment;
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./statistikView.html');
+const template = require('./statistikView.html');
 require('./statistikView.less');
 
 export class StatistikViewComponentConfig implements IComponentOptions {
@@ -46,24 +46,32 @@ export class StatistikViewComponentConfig implements IComponentOptions {
 }
 
 export class StatistikViewController {
+
+    get statistikParameter(): TSStatistikParameter {
+        return this._statistikParameter;
+    }
+
+    get gesuchsperioden(): Array<TSGesuchsperiode> {
+        return this._gesuchsperioden;
+    }
+
+    static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS', 'BatchJobRS',
+        'ErrorService', '$translate', '$interval'];
     private polling: angular.IPromise<any>;
     private _statistikParameter: TSStatistikParameter;
     private _gesuchsperioden: Array<TSGesuchsperiode>;
     TSRole: any;
     TSRoleUtil: any;
-    private DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
+    private readonly DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
     private maxDate: Moment;
     private minDate: Moment;
     private userjobs: Array<TSWorkJob>;
     private allJobs: Array<TSBatchJobInformation>;
 
-    static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS', 'BatchJobRS',
-        'ErrorService', '$translate', '$interval'];
-
-    constructor(private $state: StateService, private gesuchsperiodeRS: GesuchsperiodeRS, private $log: ILogService,
-        private reportAsyncRS: ReportAsyncRS, private downloadRS: DownloadRS, private bachJobRS: BatchJobRS, private errorService: ErrorService,
-        private $translate: ITranslateService, private $interval: IIntervalService) {
+    constructor(private readonly $state: StateService, private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $log: ILogService,
+        private readonly reportAsyncRS: ReportAsyncRS, private readonly downloadRS: DownloadRS, private readonly bachJobRS: BatchJobRS, private readonly errorService: ErrorService,
+        private readonly $translate: ITranslateService, private readonly $interval: IIntervalService) {
     }
 
     $onInit() {
@@ -103,7 +111,7 @@ export class StatistikViewController {
 
     public generateStatistik(form: IFormController, type?: TSStatistikParameterType): void {
         if (form.$valid) {
-            let tmpType = (<any>TSStatistikParameterType)[type];
+            const tmpType = (<any>TSStatistikParameterType)[type];
             tmpType ? this.$log.debug('Statistik Type: ' + tmpType) : this.$log.debug('default, Type not recognized');
             this.$log.debug('Validated Form: ' + form.$name);
 
@@ -205,7 +213,7 @@ export class StatistikViewController {
                             this._statistikParameter.gesuchsperiode)
                             .then((batchExecutionId: string) => {
                                 this.$log.debug('executionID: ' + batchExecutionId);
-                                let startmsg = this.$translate.instant('STARTED_GENERATION');
+                                const startmsg = this.$translate.instant('STARTED_GENERATION');
                                 this.errorService.addMesageAsInfo(startmsg);
                             })
                             .catch(() => {
@@ -224,23 +232,15 @@ export class StatistikViewController {
 
     private informReportGenerationStarted(batchExecutionId: string) {
         this.$log.debug('executionID: ' + batchExecutionId);
-        let startmsg = this.$translate.instant('STARTED_GENERATION');
+        const startmsg = this.$translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
         this.refreshUserJobs();
-    }
-
-    get statistikParameter(): TSStatistikParameter {
-        return this._statistikParameter;
-    }
-
-    get gesuchsperioden(): Array<TSGesuchsperiode> {
-        return this._gesuchsperioden;
     }
 
     public rowClicked(row: TSWorkJob) {
         if (EbeguUtil.isNotNullOrUndefined(row) && EbeguUtil.isNotNullOrUndefined(row.execution)) {
             if (EbeguUtil.isNotNullOrUndefined(row.execution.batchStatus) && row.execution.batchStatus === 'COMPLETED') {
-                let win: Window = this.downloadRS.prepareDownloadWindow();
+                const win: Window = this.downloadRS.prepareDownloadWindow();
                 this.$log.debug('accessToken: ' + row.resultData);
                 this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
             } else {

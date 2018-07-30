@@ -15,13 +15,13 @@
 
 import {IDirective, IDirectiveFactory} from 'angular';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import TSUser from '../../../models/TSUser';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import UserRS from '../../service/userRS.rest';
-let template = require('./dv-userselect.html');
+const template = require('./dv-userselect.html');
 
 export class DVUserselect implements IDirective {
     restrict = 'E';
@@ -54,6 +54,8 @@ export class DVUserselect implements IDirective {
  */
 export class UserselectController {
 
+    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'AuthLifeCycleService'];
+
     private readonly unsubscribe$ = new Subject<void>();
     selectedUser: TSUser;
     smartTable: any;
@@ -64,11 +66,9 @@ export class UserselectController {
     valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
     onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     schulamt: string;
-
-    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'AuthLifeCycleService'];
     /* @ngInject */
-    constructor(private userRS: UserRS, private authServiceRS: AuthServiceRS,
-                private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly userRS: UserRS, private readonly authServiceRS: AuthServiceRS,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
     }
 

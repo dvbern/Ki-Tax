@@ -25,8 +25,8 @@ import ITranslateService = angular.translate.ITranslateService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
 
-let template = require('./parameterView.html');
-let style = require('./parameterView.less');
+const template = require('./parameterView.html');
+const style = require('./parameterView.less');
 
 export class ParameterViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
@@ -50,9 +50,9 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     ebeguParameterListJahr: TSEbeguParameter[]; // enthält alle Params für nur 1 Jahr
 
-    constructor(ebeguParameterRS: EbeguParameterRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $translate: ITranslateService, private $log: ILogService, private $state: StateService,
-                private $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+    constructor(ebeguParameterRS: EbeguParameterRS, private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $translate: ITranslateService, private readonly $log: ILogService, private readonly $state: StateService,
+                private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.ebeguParameterRS = ebeguParameterRS;
         $timeout(() => {
@@ -114,7 +114,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     public saveParameterByJahr(): void {
         if (this.ebeguParameterListJahr.length === 1) {
-            let param = this.ebeguParameterListJahr[0];
+            const param = this.ebeguParameterListJahr[0];
             this.ebeguParameterRS.saveEbeguParameter(param).then((response) => {
                 this.updateJahresabhParamList();
             });
@@ -131,7 +131,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     public jahresParamsEditable(): boolean {
         // Wenn die Periode, die in dem Jahr *endet* noch ENTWURF ist
-        for (let gp of this.gesuchsperiodenList) {
+        for (const gp of this.gesuchsperiodenList) {
             if (gp.gueltigkeit.gueltigBis.year() === this.jahr) {
                 return this.periodenParamsEditableForPeriode(gp);
             }

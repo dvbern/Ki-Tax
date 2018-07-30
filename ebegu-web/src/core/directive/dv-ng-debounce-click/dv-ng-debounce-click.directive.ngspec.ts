@@ -18,7 +18,7 @@ import {DvNgDebounceClickDirective} from './dv-ng-debounce-click.directive';
 
 describe('DebounceClickDirective', () => {
     it('should create an instance', () => {
-        let domElement = new ElementRef(undefined);
+        const domElement = new ElementRef(undefined);
         const directive = new DvNgDebounceClickDirective(domElement);
         expect(directive).toBeTruthy();
     });

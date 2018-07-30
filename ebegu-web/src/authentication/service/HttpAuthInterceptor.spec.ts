@@ -20,13 +20,13 @@ import {EbeguAuthentication} from '../authentication.module';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpAuthInterceptor from './HttpAuthInterceptor';
 
-describe('HttpAuthInterceptor', function () {
+describe('HttpAuthInterceptor', () => {
 
     let httpAuthInterceptor: HttpAuthInterceptor;
     let $window: angular.IWindowService;
     let authLifeCycleService: AuthLifeCycleService;
 
-    let authErrorResponse: any = {
+    const authErrorResponse: any = {
         status: 401,
         data: '',
         statusText: 'Unauthorized'
@@ -37,7 +37,7 @@ describe('HttpAuthInterceptor', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         httpAuthInterceptor = $injector.get('HttpAuthInterceptor');
         $window = $injector.get('$window');
         authLifeCycleService = $injector.get('AuthLifeCycleService');
@@ -46,17 +46,17 @@ describe('HttpAuthInterceptor', function () {
         });
     }));
 
-    describe('Public API', function () {
-        it('should include a responseError() function', function () {
+    describe('Public API', () => {
+        it('should include a responseError() function', () => {
             expect(httpAuthInterceptor.responseError).toBeDefined();
         });
     });
 
-    describe('API usage', function () {
-        beforeEach(function () {
+    describe('API usage', () => {
+        beforeEach(() => {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
-        it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', function () {
+        it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
             expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
         });
     });

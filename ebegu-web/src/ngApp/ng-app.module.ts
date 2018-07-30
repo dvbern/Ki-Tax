@@ -61,7 +61,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 export class NgAppModule {
 
-    constructor(@Inject(UpgradeModule) private upgrade: UpgradeModule, translate: TranslateService) {
+    constructor(@Inject(UpgradeModule) private readonly upgrade: UpgradeModule, translate: TranslateService) {
         this.initTranslateService(translate);
     }
 

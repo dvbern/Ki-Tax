@@ -21,7 +21,7 @@ import ILogService = angular.ILogService;
 import INgModelController = angular.INgModelController;
 import Moment = moment.Moment;
 
-let template = require('./dv-timepicker.html');
+const template = require('./dv-timepicker.html');
 
 export class DVTimepicker implements IDirective {
     restrict = 'E';
@@ -52,6 +52,8 @@ export class DVTimepicker implements IDirective {
 
 export class TimepickerController {
     static $inject: string[] = ['$log', '$attrs'];
+    static allowedFormats: string[] = ['HH:mm:ss', 'HH:mm'];
+    static defaultFormat: string = 'HH:mm';
     dateTime: Date;
     ngModelCtrl: INgModelController;
     dateTimeRequired: boolean;
@@ -60,10 +62,22 @@ export class TimepickerController {
     dvOnBlur: () => void;
     dvMinDateTime: any;
     dvMaxDateTime: any;
-    static allowedFormats: string[] = ['HH:mm:ss', 'HH:mm'];
-    static defaultFormat: string = 'HH:mm';
 
-    constructor(private $log: ILogService, private $attrs: IAttributes) {
+    constructor(private readonly $log: ILogService, private readonly $attrs: IAttributes) {
+    }
+
+    private static momentToString(mom: Moment): string {
+        if (mom && mom.isValid()) {
+            return mom.format(TimepickerController.defaultFormat);
+        }
+        return '';
+    }
+
+    private static stringToMoment(dateTime: string): any {
+        if (moment(dateTime, TimepickerController.allowedFormats, true).isValid()) {
+            return moment(dateTime, TimepickerController.allowedFormats, true);
+        }
+        return null;
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
@@ -84,7 +98,7 @@ export class TimepickerController {
         if (this.dvMinDateTime === undefined) {
             this.dvMinDateTime = DateUtil.localDateToMoment('1900-01-01 00:00');
         }
-        let noFuture = 'noFuture' in this.$attrs;
+        const noFuture = 'noFuture' in this.$attrs;
         //wenn kein Placeholder gesetzt wird wird der standardplaceholder verwendet. kann mit placeholder=""
         // ueberscrieben werden
         if (this.placeholder === undefined) {
@@ -114,9 +128,9 @@ export class TimepickerController {
         this.ngModelCtrl.$validators['dvMinDateTime'] = (modelValue: any, viewValue: any) => {
             let result: boolean = true;
             if (this.dvMinDateTime && viewValue) {
-                let minDateTimeAsMoment: Moment = moment(this.dvMinDateTime, TimepickerController.allowedFormats, true);
+                const minDateTimeAsMoment: Moment = moment(this.dvMinDateTime, TimepickerController.allowedFormats, true);
                 if (minDateTimeAsMoment.isValid()) {
-                    let inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
+                    const inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isBefore(minDateTimeAsMoment)) {
                         result = false;
                     }
@@ -130,8 +144,8 @@ export class TimepickerController {
             this.ngModelCtrl.$validators['dvNoFutureDateTime'] = (modelValue: any, viewValue: any) => {
                 let result: boolean = true;
                 if (viewValue) {
-                    let maxDateTimeAsMoment: Moment = moment(moment.now());
-                    let inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
+                    const maxDateTimeAsMoment: Moment = moment(moment.now());
+                    const inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isAfter(maxDateTimeAsMoment)) {
                         result = false;
                     }
@@ -143,9 +157,9 @@ export class TimepickerController {
         this.ngModelCtrl.$validators['dvMaxDateTime'] = (modelValue: any, viewValue: any) => {
             let result: boolean = true;
             if (this.dvMaxDateTime && viewValue) {
-                let maxDateTimeAsMoment: Moment = moment(this.dvMaxDateTime, TimepickerController.allowedFormats, true);
+                const maxDateTimeAsMoment: Moment = moment(this.dvMaxDateTime, TimepickerController.allowedFormats, true);
                 if (maxDateTimeAsMoment.isValid()) {
-                    let inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
+                    const inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isAfter(maxDateTimeAsMoment)) {
                         result = false;
                     }
@@ -158,8 +172,8 @@ export class TimepickerController {
     }
 
     private getInputAsMoment(modelValue: any, viewValue: any): Moment {
-        let value = modelValue || TimepickerController.stringToMoment(viewValue);
-        let inputdateTime: Moment = moment(value, TimepickerController.allowedFormats, true);
+        const value = modelValue || TimepickerController.stringToMoment(viewValue);
+        const inputdateTime: Moment = moment(value, TimepickerController.allowedFormats, true);
         return inputdateTime;
     }
 
@@ -172,19 +186,5 @@ export class TimepickerController {
 
     updateTimeModelValue() {
         this.ngModelCtrl.$setViewValue(this.dateTime);
-    }
-
-    private static momentToString(mom: Moment): string {
-        if (mom && mom.isValid()) {
-            return mom.format(TimepickerController.defaultFormat);
-        }
-        return '';
-    }
-
-    private static stringToMoment(dateTime: string): any {
-        if (moment(dateTime, TimepickerController.allowedFormats, true).isValid()) {
-            return moment(dateTime, TimepickerController.allowedFormats, true);
-        }
-        return null;
     }
 }

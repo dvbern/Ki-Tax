@@ -15,8 +15,7 @@
 
 import {Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {debounceTime, merge, throttleTime} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
-import {Subscription} from 'rxjs/Subscription';
+import {Subject, Subscription} from 'rxjs';
 
 
 /**
@@ -38,10 +37,10 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
     @Input() delay = 1000;
     @Output() debounceClick = new EventEmitter();
 
-    private clicks = new Subject();
+    private readonly clicks$ = new Subject();
     private subscription: Subscription;
 
-    constructor(private domElement: ElementRef) {
+    constructor(private readonly domElement: ElementRef) {
     }
 
     ngOnInit() {
@@ -53,9 +52,9 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
         // ---click-----click-----click--------------------------click---------------
         // ---action/disable--------------enable-----------------action/disable---enable---
 
-        this.subscription = this.clicks.pipe(
+        this.subscription = this.clicks$.pipe(
             throttleTime(this.delay),
-            merge(this.clicks.pipe(
+            merge(this.clicks$.pipe(
                 debounceTime(this.delay)
             )),
         ).subscribe(e => {
@@ -85,14 +84,14 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-        this.clicks.complete();
+        this.clicks$.complete();
     }
 
     @HostListener('click', ['$event'])
     clickEvent(event: Event) {
         event.preventDefault();
         event.stopPropagation();
-        this.clicks.next(event);
+        this.clicks$.next(event);
     }
 
 }

@@ -32,19 +32,17 @@ export default class DVSTPersistQuicksearch implements IDirective {
     link: IDirectiveLinkFn;
 
     /* @ngInject */
-    constructor(private userRS: UserRS,
-                private institutionRS: InstitutionRS,
-                private dVsTPersistService: DVsTPersistService,
-                private gemeindeRS: GemeindeRS) {
+    constructor(private readonly userRS: UserRS,
+                private readonly institutionRS: InstitutionRS,
+                private readonly dVsTPersistService: DVsTPersistService,
+                private readonly gemeindeRS: GemeindeRS) {
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrlArray: any) => {
-            let nameSpace: string = attrs.dvStPersistQuicksearch;
-            let stTableCtrl: any = ctrlArray[0];
-            let quicksearchListController: DVQuicksearchListController = ctrlArray[1];
+            const nameSpace: string = attrs.dvStPersistQuicksearch;
+            const stTableCtrl: any = ctrlArray[0];
+            const quicksearchListController: DVQuicksearchListController = ctrlArray[1];
 
             //save the table state every time it changes
-            scope.$watch(function () {
-                return stTableCtrl.tableState();
-            }, function (newValue, oldValue) {
+            scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
                 if (newValue !== oldValue) {
                     // sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
                     dVsTPersistService.saveData(nameSpace, newValue);
@@ -55,7 +53,7 @@ export default class DVSTPersistQuicksearch implements IDirective {
             // let savedState = JSON.parse(sessionStorage.getItem(nameSpace));
 
             //fetch the table state when the directive is loaded
-            let savedState = dVsTPersistService.loadData(nameSpace);
+            const savedState = dVsTPersistService.loadData(nameSpace);
             if (savedState) {
                 if (savedState.search && savedState.search.predicateObject) { //update all objects of the model for the filters
                     quicksearchListController.selectedAntragTyp = savedState.search.predicateObject.antragTyp;
@@ -77,13 +75,25 @@ export default class DVSTPersistQuicksearch implements IDirective {
                     this.setVerantwortlicherTSFromName(quicksearchListController,
                         savedState.search.predicateObject.verantwortlicherTS);
                 }
-                let tableState = stTableCtrl.tableState();
+                const tableState = stTableCtrl.tableState();
 
                 angular.extend(tableState, savedState);
                 stTableCtrl.pipe();
 
             }
         };
+    }
+
+    static factory(): IDirectiveFactory {
+        const directive = (userRS: any,
+                           institutionRS: any,
+                           dVsTPersistService: any,
+                           gemeindeRS: any) => new DVSTPersistQuicksearch(userRS,
+            institutionRS,
+            dVsTPersistService,
+            gemeindeRS);
+        directive.$inject = ['UserRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
+        return directive;
     }
 
     /**
@@ -136,18 +146,6 @@ export default class DVSTPersistQuicksearch implements IDirective {
                 quicksearchListController.selectedGemeinde = gemeindeList.find(g => g.name === gemeinde);
             });
         }
-    }
-
-    static factory(): IDirectiveFactory {
-        const directive = (userRS: any,
-                           institutionRS: any,
-                           dVsTPersistService: any,
-                           gemeindeRS: any) => new DVSTPersistQuicksearch(userRS,
-            institutionRS,
-            dVsTPersistService,
-            gemeindeRS);
-        directive.$inject = ['UserRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
-        return directive;
     }
 }
 

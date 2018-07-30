@@ -28,7 +28,7 @@ export class DvNgOkDialogComponent {
     title: string = '';
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgOkDialogComponent>,
+        private readonly dialogRef: MatDialogRef<DvNgOkDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
         if (data) {

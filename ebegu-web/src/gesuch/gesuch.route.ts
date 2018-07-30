@@ -13,26 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {TSAntragTyp} from '../models/enums/TSAntragTyp';
-import {GesuchRouteController} from './gesuch';
-import GesuchModelManager from './service/gesuchModelManager';
-import TSGesuch from '../models/TSGesuch';
-import BerechnungsManager from './service/berechnungsManager';
-import WizardStepManager from './service/wizardStepManager';
-import MahnungRS from './service/mahnungRS.rest';
-import {TSEingangsart} from '../models/enums/TSEingangsart';
-import KindRS from '../core/service/kindRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../utils/TSRoleUtil';
-import TSMahnung from '../models/TSMahnung';
+import {DvOnboardingComponent} from '../core/component/dv-onboarding/dv-onboarding.component';
+import KindRS from '../core/service/kindRS.rest';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import {TSEingangsart} from '../models/enums/TSEingangsart';
+import TSGesuch from '../models/TSGesuch';
 import TSKindDublette from '../models/TSKindDublette';
+import TSMahnung from '../models/TSMahnung';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {GesuchRouteController} from './gesuch';
+import BerechnungsManager from './service/berechnungsManager';
+import GesuchModelManager from './service/gesuchModelManager';
+import MahnungRS from './service/mahnungRS.rest';
+import WizardStepManager from './service/wizardStepManager';
+import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import ILogService = angular.ILogService;
+import {Ng2StateDeclaration} from '@uirouter/angular';
 
-let gesuchTpl = require('./gesuch.html');
+const gesuchTpl = require('./gesuch.html');
 
 gesuchRun.$inject = ['RouterHelper'];
 
@@ -42,8 +44,13 @@ export function gesuchRun(routerHelper: RouterHelper) {
 }
 
 //array mit allen States
-function getStates(): Ng1StateDeclaration[] {
+function getStates(): Array<Ng1StateDeclaration | Ng2StateDeclaration> {
     return [
+        {
+            name: 'onboarding',
+            url: '/onboarding',
+            component: DvOnboardingComponent,
+        },
         new EbeguGesuchState(),
         new EbeguFamiliensituationState(),
         new EbeguStammdatenState(),
@@ -70,7 +77,7 @@ function getStates(): Ng1StateDeclaration[] {
         new EbeguDokumenteState(),
         new EbeguFreigabeState(),
         new EbeguBetreuungMitteilungState(),
-        new OnboardingTest()
+        // new OnboardingTest()
     ];
 }
 
@@ -630,13 +637,13 @@ getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 export function getMahnungen(MahnungRS: MahnungRS, $stateParams: IGesuchStateParams, $q: IQService, $log: ILogService) {
     // return [];
     if ($stateParams) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             return MahnungRS.findMahnungen(gesuchIdParam);
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    let deferred = $q.defer<TSMahnung[]>();
+    const deferred = $q.defer<TSMahnung[]>();
     deferred.resolve(undefined);
     return deferred.promise;
 }
@@ -648,7 +655,7 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, be
                                       wizardStepManager: WizardStepManager, $stateParams: IGesuchStateParams, $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
                 || gesuchModelManager.getGesuch().emptyCopy) {
@@ -658,7 +665,7 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, be
                 berechnungsManager.clear();
                 return gesuchModelManager.openGesuch(gesuchIdParam);
             } else {
-                let deferred = $q.defer<TSGesuch>();
+                const deferred = $q.defer<TSGesuch>();
                 deferred.resolve(gesuchModelManager.getGesuch());
                 return deferred.promise;
             }
@@ -666,7 +673,7 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, be
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    let deferred = $q.defer<TSGesuch>();
+    const deferred = $q.defer<TSGesuch>();
     deferred.resolve(undefined);
     return deferred.promise;
 }
@@ -679,14 +686,14 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
                                          $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
         if ($stateParams.createNew === 'true') {
-            let eingangsart = $stateParams.eingangsart;
-            let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            let dossierId = $stateParams.dossierId;
-            let gemeindeId = $stateParams.gemeindeId;
+            const eingangsart = $stateParams.eingangsart;
+            const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
+            const dossierId = $stateParams.dossierId;
+            const gemeindeId = $stateParams.gemeindeId;
             //initialize gesuch
             return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId);
         } else {
-            let gesuchIdParam = $stateParams.gesuchId;
+            const gesuchIdParam = $stateParams.gesuchId;
             if (!gesuchIdParam) {
                 $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
             }
@@ -703,12 +710,12 @@ getKinderDubletten.$inject = ['$stateParams', '$q', '$log', 'KindRS', 'AuthServi
 
 // Die Kinderdubletten werden nur für SCH-Mitarbeiter oder JA-Mitarbeiter (inkl. Revisor und Jurist) angezeigt
 export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQService, $log: ILogService, KindRS: KindRS, authService: AuthServiceRS) {
-    let isUserAllowed: boolean = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
+    const isUserAllowed: boolean = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
     if (isUserAllowed && $stateParams && $stateParams.gesuchId) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         return KindRS.getKindDubletten(gesuchIdParam);
     }
-    let deferred = $q.defer<TSKindDublette[]>();
+    const deferred = $q.defer<TSKindDublette[]>();
     deferred.resolve(undefined);
     return deferred.promise;
 }
@@ -728,10 +735,10 @@ export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelMana
 function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchModelManager: GesuchModelManager,
                                      $q: any, antragtyp: TSAntragTyp): IPromise<TSGesuch> {
     if ($stateParams) {
-        let gesuchId = $stateParams.gesuchId;
-        let eingangsart = $stateParams.eingangsart;
-        let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let dossierId = $stateParams.dossierId;
+        const gesuchId = $stateParams.gesuchId;
+        const eingangsart = $stateParams.eingangsart;
+        const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
+        const dossierId = $stateParams.dossierId;
 
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {

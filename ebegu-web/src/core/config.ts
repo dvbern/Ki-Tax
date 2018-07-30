@@ -34,7 +34,7 @@ export function configure($translateProvider: ITranslateProvider, $injector: IIn
                           $mdThemingProvider: IThemingProvider, hotkeysProvider: any, $logProvider: ILogProvider,
                           $locationProvider: ILocationProvider, $qProvider: any) {
     //Translation Provider configuration
-    let translProp = require('../assets/translations/translations_de.json');
+    const translProp = require('../assets/translations/translations_de.json');
 
     // In case you have issues with double-escaped parameters, check out this issue: https://github.com/angular-translate/angular-translate/issues/1101
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
@@ -46,7 +46,7 @@ export function configure($translateProvider: ITranslateProvider, $injector: IIn
 
     //Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
-        let unsavedWarningsConfigProvider: any = $injector.get('unsavedWarningsConfigProvider');
+        const unsavedWarningsConfigProvider: any = $injector.get('unsavedWarningsConfigProvider');
         unsavedWarningsConfigProvider.useTranslateService = true;
         unsavedWarningsConfigProvider.logEnabled = false;
         unsavedWarningsConfigProvider.navigateMessage = 'UNSAVED_WARNING';

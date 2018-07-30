@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Log as LogImpl, Logger} from 'ng2-logger/client';
+import {Log as LogImpl, Logger} from 'ng2-logger';
 /*
  * Copyright © 2018 DV Bern AG, Switzerland
  *

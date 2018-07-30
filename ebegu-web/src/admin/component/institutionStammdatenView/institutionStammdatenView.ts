@@ -34,7 +34,7 @@ import {IInstitutionStammdatenStateParams} from '../../admin.route';
 import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 
-let template = require('./institutionStammdatenView.html');
+const template = require('./institutionStammdatenView.html');
 require('./institutionStammdatenView.less');
 
 export class InstitutionStammdatenViewComponentConfig implements IComponentOptions {
@@ -45,6 +45,8 @@ export class InstitutionStammdatenViewComponentConfig implements IComponentOptio
 }
 
 export class InstitutionStammdatenViewController extends AbstractAdminViewController {
+
+    static $inject = ['InstitutionRS', 'EbeguUtil', 'InstitutionStammdatenRS', '$state', 'ListResourceRS', 'AuthServiceRS', '$stateParams'];
 
     form: IFormController;
 
@@ -57,12 +59,10 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     hasDifferentZahlungsadresse: boolean = false;
     modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
 
-    static $inject = ['InstitutionRS', 'EbeguUtil', 'InstitutionStammdatenRS', '$state', 'ListResourceRS', 'AuthServiceRS', '$stateParams'];
-
-    constructor(private institutionRS: InstitutionRS, private ebeguUtil: EbeguUtil,
-                private institutionStammdatenRS: InstitutionStammdatenRS,
-                private $state: StateService, private listResourceRS: ListResourceRS, authServiceRS: AuthServiceRS,
-                private $stateParams: IInstitutionStammdatenStateParams) {
+    constructor(private readonly institutionRS: InstitutionRS, private readonly ebeguUtil: EbeguUtil,
+                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                private readonly $state: StateService, private readonly listResourceRS: ListResourceRS, authServiceRS: AuthServiceRS,
+                private readonly $stateParams: IInstitutionStammdatenStateParams) {
         super(authServiceRS);
     }
 
@@ -193,7 +193,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
 
     private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]) {
         getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
-            let foundmodul = modulListFromServer.filter(modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
+            const foundmodul = modulListFromServer.filter(modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
             if (foundmodul) {
                 this.modulTageschuleMap[modulname] = foundmodul;
             } else {
@@ -204,9 +204,9 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
         if (this.isTagesschule()) {
-            let definedModulTagesschule = [];
-            for (let modulname in this.modulTageschuleMap) {
-                let tempModul: TSModulTagesschule = this.modulTageschuleMap[modulname];
+            const definedModulTagesschule = [];
+            for (const modulname in this.modulTageschuleMap) {
+                const tempModul: TSModulTagesschule = this.modulTageschuleMap[modulname];
                 if (tempModul.zeitVon && tempModul.zeitBis) {
                     definedModulTagesschule.push(tempModul);
                 }

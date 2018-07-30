@@ -13,80 +13,80 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
-import TSDossier from '../../models/TSDossier';
-import TSFall from '../../models/TSFall';
-import TSGesuch from '../../models/TSGesuch';
-import TSGesuchsteller from '../../models/TSGesuchsteller';
-import TSAdresse from '../../models/TSAdresse';
-import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
-import TSFamiliensituation from '../../models/TSFamiliensituation';
-import DossierRS from './dossierRS.rest';
-import FallRS from './fallRS.rest';
-import GemeindeRS from './gemeindeRS.rest';
-import GesuchRS from './gesuchRS.rest';
-import GesuchstellerRS from '../../core/service/gesuchstellerRS.rest';
-import FamiliensituationRS from './familiensituationRS.rest';
 import {ILogService, IPromise, IQService} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
-import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
-import FinanzielleSituationRS from './finanzielleSituationRS.rest';
-import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
-import TSKindContainer from '../../models/TSKindContainer';
-import KindRS from '../../core/service/kindRS.rest';
-import {TSFachstelle} from '../../models/TSFachstelle';
-import {FachstelleRS} from '../../core/service/fachstelleRS.rest';
-import TSErwerbspensumContainer from '../../models/TSErwerbspensumContainer';
-import ErwerbspensumRS from '../../core/service/erwerbspensumRS.rest';
-import TSBetreuung from '../../models/TSBetreuung';
-import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
-import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
-import BetreuungRS from '../../core/service/betreuungRS.rest';
-import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import * as moment from 'moment';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import TSUser from '../../models/TSUser';
-import VerfuegungRS from '../../core/service/verfuegungRS.rest';
-import TSVerfuegung from '../../models/TSVerfuegung';
-import GlobalCacheService from './globalCacheService';
-import WizardStepManager from './wizardStepManager';
-import EinkommensverschlechterungInfoRS from './einkommensverschlechterungInfoRS.rest';
-import {
-    isAnyStatusOfVerfuegt,
-    isAtLeastFreigegeben,
-    isAtLeastFreigegebenOrFreigabequittung,
-    isStatusVerfuegenVerfuegt,
-    TSAntragStatus
-} from '../../models/enums/TSAntragStatus';
+import ErrorService from '../../core/errors/service/ErrorService';
+import AdresseRS from '../../core/service/adresseRS.rest';
 import AntragStatusHistoryRS from '../../core/service/antragStatusHistoryRS.rest';
+import BetreuungRS from '../../core/service/betreuungRS.rest';
+import ErwerbspensumRS from '../../core/service/erwerbspensumRS.rest';
+import EwkRS from '../../core/service/ewkRS.rest';
+import {FachstelleRS} from '../../core/service/fachstelleRS.rest';
+import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import GesuchstellerRS from '../../core/service/gesuchstellerRS.rest';
+import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
+import KindRS from '../../core/service/kindRS.rest';
+import VerfuegungRS from '../../core/service/verfuegungRS.rest';
+import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt, TSAntragStatus} from '../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
+import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import {TSEingangsart} from '../../models/enums/TSEingangsart';
+import {TSErrorLevel} from '../../models/enums/TSErrorLevel';
+import {TSErrorType} from '../../models/enums/TSErrorType';
+import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import EbeguUtil from '../../utils/EbeguUtil';
-import ErrorService from '../../core/errors/service/ErrorService';
-import TSExceptionReport from '../../models/TSExceptionReport';
-import {TSErrorType} from '../../models/enums/TSErrorType';
-import {TSErrorLevel} from '../../models/enums/TSErrorLevel';
-import AdresseRS from '../../core/service/adresseRS.rest';
-import {TSRole} from '../../models/enums/TSRole';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
-import {TSEingangsart} from '../../models/enums/TSEingangsart';
-import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
-import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
-import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
+import TSAdresse from '../../models/TSAdresse';
 import TSAdresseContainer from '../../models/TSAdresseContainer';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import * as moment from 'moment';
-import TSEWKResultat from '../../models/TSEWKResultat';
+import TSBetreuung from '../../models/TSBetreuung';
+import TSDossier from '../../models/TSDossier';
+import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
+import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
+import TSErwerbspensumContainer from '../../models/TSErwerbspensumContainer';
 import TSEWKPerson from '../../models/TSEWKPerson';
-import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
-import EwkRS from '../../core/service/ewkRS.rest';
+import TSEWKResultat from '../../models/TSEWKResultat';
+import TSExceptionReport from '../../models/TSExceptionReport';
+import {TSFachstelle} from '../../models/TSFachstelle';
+import TSFall from '../../models/TSFall';
+import TSFamiliensituation from '../../models/TSFamiliensituation';
+import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
+import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
+import TSGesuch from '../../models/TSGesuch';
+import TSGesuchsperiode from '../../models/TSGesuchsperiode';
+import TSGesuchsteller from '../../models/TSGesuchsteller';
+import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
+import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
+import TSKindContainer from '../../models/TSKindContainer';
+import TSUser from '../../models/TSUser';
+import TSVerfuegung from '../../models/TSVerfuegung';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import EbeguUtil from '../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import DossierRS from './dossierRS.rest';
+import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
+import EinkommensverschlechterungInfoRS from './einkommensverschlechterungInfoRS.rest';
+import FallRS from './fallRS.rest';
+import FamiliensituationRS from './familiensituationRS.rest';
+import FinanzielleSituationRS from './finanzielleSituationRS.rest';
+import GemeindeRS from './gemeindeRS.rest';
+import GesuchRS from './gesuchRS.rest';
+import GlobalCacheService from './globalCacheService';
+import WizardStepManager from './wizardStepManager';
 
 export default class GesuchModelManager {
+
+    static $inject = ['FamiliensituationRS', 'FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
+        'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', 'GesuchsperiodeRS', 'EbeguRestUtil', '$log', 'AuthServiceRS',
+        'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'EinkommensverschlechterungInfoRS',
+        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
+        'DossierRS', 'GemeindeRS'];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
     gesuchstellerNumber: number = 1;
@@ -101,21 +101,36 @@ export default class GesuchModelManager {
     ewkPersonGS1: TSEWKPerson;
     ewkPersonGS2: TSEWKPerson;
 
-    static $inject = ['FamiliensituationRS', 'FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
-        'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', 'GesuchsperiodeRS', 'EbeguRestUtil', '$log', 'AuthServiceRS',
-        'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'EinkommensverschlechterungInfoRS',
-        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
-        'DossierRS', 'GemeindeRS'];
     /* @ngInject */
-    constructor(private familiensituationRS: FamiliensituationRS, private fallRS: FallRS, private gesuchRS: GesuchRS, private gesuchstellerRS: GesuchstellerRS,
-                private finanzielleSituationRS: FinanzielleSituationRS, private kindRS: KindRS, private fachstelleRS: FachstelleRS, private erwerbspensumRS: ErwerbspensumRS,
-                private instStamRS: InstitutionStammdatenRS, private betreuungRS: BetreuungRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private ebeguRestUtil: EbeguRestUtil, private log: ILogService, private authServiceRS: AuthServiceRS,
-                private einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS, private verfuegungRS: VerfuegungRS,
-                private wizardStepManager: WizardStepManager, private einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
-                private antragStatusHistoryRS: AntragStatusHistoryRS, private ebeguUtil: EbeguUtil, private errorService: ErrorService,
-                private adresseRS: AdresseRS, private $q: IQService, private CONSTANTS: any, private authLifeCycleService: AuthLifeCycleService, private ewkRS: EwkRS,
-                private globalCacheService: GlobalCacheService, private dossierRS: DossierRS, private gemeindeRS: GemeindeRS) {
+    constructor(private readonly familiensituationRS: FamiliensituationRS,
+                private readonly fallRS: FallRS,
+                private readonly gesuchRS: GesuchRS,
+                private readonly gesuchstellerRS: GesuchstellerRS,
+                private readonly finanzielleSituationRS: FinanzielleSituationRS,
+                private readonly kindRS: KindRS,
+                private readonly fachstelleRS: FachstelleRS,
+                private readonly erwerbspensumRS: ErwerbspensumRS,
+                private readonly instStamRS: InstitutionStammdatenRS,
+                private readonly betreuungRS: BetreuungRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly ebeguRestUtil: EbeguRestUtil,
+                private readonly log: ILogService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
+                private readonly verfuegungRS: VerfuegungRS,
+                private readonly wizardStepManager: WizardStepManager,
+                private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
+                private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly errorService: ErrorService,
+                private readonly adresseRS: AdresseRS,
+                private readonly $q: IQService,
+                private readonly CONSTANTS: any,
+                private readonly authLifeCycleService: AuthLifeCycleService,
+                private readonly ewkRS: EwkRS,
+                private readonly globalCacheService: GlobalCacheService,
+                private readonly dossierRS: DossierRS,
+                private readonly gemeindeRS: GemeindeRS) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(value => {
@@ -360,7 +375,7 @@ export default class GesuchModelManager {
      */
     public updateGesuchsteller(umzug: boolean): IPromise<TSGesuchstellerContainer> {
         // Da showUmzug nicht im Server gespeichert wird, muessen wir den alten Wert kopieren und nach der Aktualisierung wiedersetzen
-        let tempShowUmzug: boolean = this.getStammdatenToWorkWith().showUmzug;
+        const tempShowUmzug: boolean = this.getStammdatenToWorkWith().showUmzug;
         return this.gesuchstellerRS.saveGesuchsteller(this.getStammdatenToWorkWith(), this.gesuch.id, this.gesuchstellerNumber, umzug)
             .then((gesuchstellerResponse: any) => {
                 this.setStammdatenToWorkWith(gesuchstellerResponse);
@@ -510,10 +525,10 @@ export default class GesuchModelManager {
             let gesuchsteller: TSGesuchsteller;
             // die daten die wir aus iam importiert haben werden bei gs1 abgefuellt
             if (this.gesuchstellerNumber === 1 && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                let principal: TSUser = this.authServiceRS.getPrincipal();
-                let name: string = principal ? principal.nachname : undefined;
-                let vorname: string = principal ? principal.vorname : undefined;
-                let email: string = principal ? principal.email : undefined;
+                const principal: TSUser = this.authServiceRS.getPrincipal();
+                const name: string = principal ? principal.nachname : undefined;
+                const vorname: string = principal ? principal.vorname : undefined;
+                const email: string = principal ? principal.email : undefined;
                 gesuchsteller = new TSGesuchsteller(vorname, name, undefined, undefined, email);
             } else {
                 gesuchsteller = new TSGesuchsteller();
@@ -678,7 +693,6 @@ export default class GesuchModelManager {
         return undefined;
     }
 
-
     public getBasisjahrToWorkWith(): number {
         return this.getBasisjahrPlus(this.basisJahrPlusNumber);
     }
@@ -706,8 +720,8 @@ export default class GesuchModelManager {
     }
 
     private initWohnAdresse(): Array<TSAdresseContainer> {
-        let wohnAdresseContanier: TSAdresseContainer = new TSAdresseContainer();
-        let wohnAdresse = new TSAdresse();
+        const wohnAdresseContanier: TSAdresseContainer = new TSAdresseContainer();
+        const wohnAdresse = new TSAdresse();
         wohnAdresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
         wohnAdresseContanier.showDatumVon = false;
         wohnAdresseContanier.adresseJA = wohnAdresse;
@@ -733,7 +747,6 @@ export default class GesuchModelManager {
         return listResult;
     }
 
-
     public saveBetreuung(betreuungToSave: TSBetreuung, betreuungsstatusNeu: TSBetreuungsstatus, abwesenheit: boolean): IPromise<TSBetreuung> {
         if (betreuungsstatusNeu === TSBetreuungsstatus.ABGEWIESEN) {
             return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, this.getKindToWorkWith().id, this.gesuch.id)
@@ -743,7 +756,7 @@ export default class GesuchModelManager {
                         return this.handleSavedBetreuung(storedBetreuung);
                     });
                 });
-        } else  if (betreuungsstatusNeu === TSBetreuungsstatus.BESTAETIGT) {
+        } else if (betreuungsstatusNeu === TSBetreuungsstatus.BESTAETIGT) {
             return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, this.getKindToWorkWith().id, this.gesuch.id)
                 .then((storedBetreuung: any) => {
                     return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then((betreuungenStatus) => {
@@ -751,7 +764,7 @@ export default class GesuchModelManager {
                         return this.handleSavedBetreuung(storedBetreuung);
                     });
                 });
-        } else  if (betreuungsstatusNeu === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
+        } else if (betreuungsstatusNeu === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) {
             return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.getKindToWorkWith().id, this.gesuch.id)
                 .then((storedBetreuung: any) => {
                     return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then((betreuungenStatus) => {
@@ -759,7 +772,7 @@ export default class GesuchModelManager {
                         return this.handleSavedBetreuung(storedBetreuung);
                     });
                 });
-        } else  if (betreuungsstatusNeu === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT) {
+        } else if (betreuungsstatusNeu === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT) {
             return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.getKindToWorkWith().id, this.gesuch.id)
                 .then((storedBetreuung: any) => {
                     return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then((betreuungenStatus) => {
@@ -767,7 +780,7 @@ export default class GesuchModelManager {
                         return this.handleSavedBetreuung(storedBetreuung);
                     });
                 });
-        } else  if (betreuungsstatusNeu === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION) {
+        } else if (betreuungsstatusNeu === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION) {
             return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, this.getKindToWorkWith().id, this.gesuch.id)
                 .then((storedBetreuung: any) => {
                     return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then((betreuungenStatus) => {
@@ -790,7 +803,7 @@ export default class GesuchModelManager {
     private handleSavedBetreuung(storedBetreuung: TSBetreuung): TSBetreuung {
         this.getKindFromServer();
         if (!storedBetreuung.isNew()) {   //gespeichertes kind war nicht neu
-            let i: number = EbeguUtil.getIndexOfElementwithID(storedBetreuung, this.getKindToWorkWith().betreuungen);
+            const i: number = EbeguUtil.getIndexOfElementwithID(storedBetreuung, this.getKindToWorkWith().betreuungen);
             if (i >= 0) {
                 this.getKindToWorkWith().betreuungen[i] = storedBetreuung;
                 this.setBetreuungIndex(i);
@@ -808,17 +821,16 @@ export default class GesuchModelManager {
             .then((storedKindCont: TSKindContainer) => {
                 this.getDossierFromServer();
                 if (!kindToSave.isNew()) {   //gespeichertes kind war nicht neu
-                    let i: number = EbeguUtil.getIndexOfElementwithID(kindToSave, this.gesuch.kindContainers);
-                       if (i >= 0) {
-                           this.gesuch.kindContainers[i] = storedKindCont;
-                       }
+                    const i: number = EbeguUtil.getIndexOfElementwithID(kindToSave, this.gesuch.kindContainers);
+                    if (i >= 0) {
+                        this.gesuch.kindContainers[i] = storedKindCont;
+                    }
                 } else {
                     this.gesuch.kindContainers.push(storedKindCont);  //neues kind anfuegen
                 }
                 return storedKindCont;
             });
     }
-
 
     /**
      * Sucht das KindToWorkWith im Server und aktualisiert es mit dem bekommenen Daten
@@ -984,7 +996,7 @@ export default class GesuchModelManager {
      * @returns {number}
      */
     public findBetreuungById(betreuungID: string): number {
-        let kindToWorkWith: TSKindContainer = this.getKindToWorkWith();
+        const kindToWorkWith: TSKindContainer = this.getKindToWorkWith();
         if (kindToWorkWith) {
             for (let i = 0; i < kindToWorkWith.betreuungen.length; i++) {
                 if (kindToWorkWith.betreuungen[i].id === betreuungID) {
@@ -995,7 +1007,6 @@ export default class GesuchModelManager {
         }
         return -1;
     }
-
 
     public removeBetreuung(): IPromise<void> {
         return this.betreuungRS.removeBetreuung(this.getBetreuungToWorkWith().id, this.gesuch.id).then((responseBetreuung: any) => {
@@ -1010,9 +1021,9 @@ export default class GesuchModelManager {
     public removeErwerbspensum(pensum: TSErwerbspensumContainer): void {
         let erwerbspensenOfCurrentGS: Array<TSErwerbspensumContainer>;
         erwerbspensenOfCurrentGS = this.getStammdatenToWorkWith().erwerbspensenContainer;
-        let index: number = erwerbspensenOfCurrentGS.indexOf(pensum);
+        const index: number = erwerbspensenOfCurrentGS.indexOf(pensum);
         if (index >= 0) {
-            let pensumToRemove: TSErwerbspensumContainer = this.getStammdatenToWorkWith().erwerbspensenContainer[index];
+            const pensumToRemove: TSErwerbspensumContainer = this.getStammdatenToWorkWith().erwerbspensenContainer[index];
             if (pensumToRemove.id) { //wenn id vorhanden dann aus der DB loeschen
                 this.erwerbspensumRS.removeErwerbspensum(pensumToRemove.id, this.getGesuch().id)
                     .then(() => {
@@ -1038,7 +1049,7 @@ export default class GesuchModelManager {
             return this.erwerbspensumRS.saveErwerbspensum(erwerbspensum, gesuchsteller.id, this.gesuch.id)
                 .then((response: TSErwerbspensumContainer) => {
 
-                    let i: number = EbeguUtil.getIndexOfElementwithID(erwerbspensum, gesuchsteller.erwerbspensenContainer);
+                    const i: number = EbeguUtil.getIndexOfElementwithID(erwerbspensum, gesuchsteller.erwerbspensenContainer);
                     if (i >= 0) {
                         gesuchsteller.erwerbspensenContainer[i] = erwerbspensum;
                     }
@@ -1119,33 +1130,33 @@ export default class GesuchModelManager {
 
     private updateKinderListWithCalculatedVerfuegungen(kinderWithVerfuegungen: TSKindContainer[]) {
         if (kinderWithVerfuegungen.length !== this.gesuch.kindContainers.length) {
-            let msg: string = 'ACHTUNG Ungueltiger Zustand, Anzahl zurueckgelieferter Container'
+            const msg: string = 'ACHTUNG Ungueltiger Zustand, Anzahl zurueckgelieferter Container'
                 + (kinderWithVerfuegungen.length ? kinderWithVerfuegungen.length : 'no_container')
                 + 'stimmt nicht mit erwareter ueberein ' + this.gesuch.kindContainers.length;
             this.log.error(msg);
-            let error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, kinderWithVerfuegungen);
+            const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, kinderWithVerfuegungen);
             this.errorService.addDvbError(error);
         }
         let numOfAssigned = 0;
-        for (let i = 0; i < this.gesuch.kindContainers.length; i++) {
-            for (let j = 0; j < kinderWithVerfuegungen.length; j++) {
-                if (this.gesuch.kindContainers[i].id === kinderWithVerfuegungen[j].id) {
+        this.gesuch.kindContainers.forEach(kindContainer => {
+            kinderWithVerfuegungen.forEach(kindContainerVerfuegt => {
+                if (kindContainer.id === kindContainerVerfuegt.id) {
                     numOfAssigned++;
-                    for (let k = 0; k < this.gesuch.kindContainers[i].betreuungen.length; k++) {
-                        if (this.gesuch.kindContainers[i].betreuungen.length !== kinderWithVerfuegungen[j].betreuungen.length) {
-                            let msg = 'ACHTUNG unvorhergesehener Zustand. Anzahl Betreuungen eines Kindes stimmt nicht' +
+                    for (let k = 0; k < kindContainer.betreuungen.length; k++) {
+                        if (kindContainer.betreuungen.length !== kindContainerVerfuegt.betreuungen.length) {
+                            const msg = 'ACHTUNG unvorhergesehener Zustand. Anzahl Betreuungen eines Kindes stimmt nicht' +
                                 ' mit der berechneten Anzahl Betreuungen ueberein; erwartet: ' +
-                                this.gesuch.kindContainers[i].betreuungen.length + ' erhalten: ' + kinderWithVerfuegungen[j].betreuungen.length;
-                            this.log.error(msg, this.gesuch.kindContainers[i], kinderWithVerfuegungen[j]);
+                                kindContainer.betreuungen.length + ' erhalten: ' + kindContainerVerfuegt.betreuungen.length;
+                            this.log.error(msg, kindContainer, kindContainerVerfuegt);
                             this.errorService.addMesageAsError(msg);
                         }
-                        this.gesuch.kindContainers[i].betreuungen[k] = kinderWithVerfuegungen[j].betreuungen[k];
+                        kindContainer.betreuungen[k] = kindContainerVerfuegt.betreuungen[k];
                     }
                 }
-            }
-        }
+            });
+        });
         if (numOfAssigned !== this.gesuch.kindContainers.length) {
-            let msg = 'ACHTUNG unvorhergesehener Zustand. Es konnte nicht jeder calculated Kindcontainer vom Server einem Container auf dem Client zugeordnet werden';
+            const msg = 'ACHTUNG unvorhergesehener Zustand. Es konnte nicht jeder calculated Kindcontainer vom Server einem Container auf dem Client zugeordnet werden';
             this.log.error(msg, this.gesuch.kindContainers, kinderWithVerfuegungen);
 
             this.errorService.addMesageAsError(msg);
@@ -1157,11 +1168,11 @@ export default class GesuchModelManager {
     public saveVerfuegung(ignorieren: boolean): IPromise<TSVerfuegung> {
         return this.verfuegungRS.saveVerfuegung(this.getVerfuegenToWorkWith(), this.gesuch.id, this.getBetreuungToWorkWith().id, ignorieren)
             .then((response: TSVerfuegung) => {
-            this.setVerfuegenToWorkWith(response);
-            this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-            this.calculateGesuchStatusVerfuegt();
-            return this.getVerfuegenToWorkWith();
-        });
+                this.setVerfuegenToWorkWith(response);
+                this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
+                this.calculateGesuchStatusVerfuegt();
+                return this.getVerfuegenToWorkWith();
+            });
     }
 
     private calculateGesuchStatusVerfuegt() {
@@ -1201,8 +1212,8 @@ export default class GesuchModelManager {
     }
 
     public isThereAnyKindWithBetreuungsbedarf(): boolean {
-        let kinderList: Array<TSKindContainer> = this.getKinderList();
-        for (let kind of kinderList) {
+        const kinderList: Array<TSKindContainer> = this.getKinderList();
+        for (const kind of kinderList) {
             //das kind muss schon gespeichert sein damit es zahelt
             if (kind.kindJA.familienErgaenzendeBetreuung && !kind.kindJA.isNew()) {
                 return true;
@@ -1216,9 +1227,9 @@ export default class GesuchModelManager {
      * @returns {boolean}
      */
     public isThereAnyOpenBetreuung(): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
-        for (let kind of kinderWithBetreuungList) {
-            for (let betreuung of kind.betreuungen) {
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        for (const kind of kinderWithBetreuungList) {
+            for (const betreuung of kind.betreuungen) {
                 if (betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
                     && betreuung.betreuungsstatus !== TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
@@ -1239,9 +1250,9 @@ export default class GesuchModelManager {
      * @returns {boolean}
      */
     public isThereAnyAbgewieseneBetreuung(): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
-        for (let kind of kinderWithBetreuungList) {
-            for (let betreuung of kind.betreuungen) {
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        for (const kind of kinderWithBetreuungList) {
+            for (const betreuung of kind.betreuungen) {
                 if (betreuung.betreuungsstatus === TSBetreuungsstatus.ABGEWIESEN) {
                     return true;
                 }
@@ -1288,12 +1299,12 @@ export default class GesuchModelManager {
      * Returns false also if there are no Kinder with betreuungsbedarf
      */
     public isThereAnySchulamtAngebot(): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
         }
-        for (let kind of kinderWithBetreuungList) {
-            for (let betreuung of kind.betreuungen) {
+        for (const kind of kinderWithBetreuungList) {
+            for (const betreuung of kind.betreuungen) {
                 if (isSchulamt(betreuung.institutionStammdaten.betreuungsangebotTyp)) {
                     return true;
                 }
@@ -1355,11 +1366,11 @@ export default class GesuchModelManager {
      * checks if the gesuch is readonly for a given role based on its state
      */
     public isGesuchReadonlyForRole(): boolean {
-        let periodeReadonly: boolean = this.isGesuchsperiodeReadonly();
+        const periodeReadonly: boolean = this.isGesuchsperiodeReadonly();
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles())) {
             return true;  // schulamt hat immer nur readonly zugriff
         } else if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            let gesuchReadonly: boolean = isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status); //readonly fuer gs wenn gesuch freigegeben oder weiter
+            const gesuchReadonly: boolean = isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status); //readonly fuer gs wenn gesuch freigegeben oder weiter
             return gesuchReadonly || periodeReadonly;
         }
         return periodeReadonly;
@@ -1441,7 +1452,7 @@ export default class GesuchModelManager {
                 //update data of Betreuungen
                 this.gesuch.kindContainers.forEach((kindContainer: TSKindContainer) => {
                     for (let i = 0; i < kindContainer.betreuungen.length; i++) {
-                        let indexOfUpdatedBetreuung = this.wasBetreuungUpdated(kindContainer.betreuungen[i], updatedBetreuungen);
+                        const indexOfUpdatedBetreuung = this.wasBetreuungUpdated(kindContainer.betreuungen[i], updatedBetreuungen);
                         if (indexOfUpdatedBetreuung >= 0) {
                             kindContainer.betreuungen[i] = updatedBetreuungen[indexOfUpdatedBetreuung];
                         }
@@ -1450,7 +1461,7 @@ export default class GesuchModelManager {
                 return updatedBetreuungen;
             });
         } else {
-            let defer = this.$q.defer<Array<TSBetreuung>>();
+            const defer = this.$q.defer<Array<TSBetreuung>>();
             defer.resolve();
             return defer.promise;
         }

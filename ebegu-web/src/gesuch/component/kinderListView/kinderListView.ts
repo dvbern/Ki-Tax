@@ -31,8 +31,8 @@ import ITranslateService = angular.translate.ITranslateService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./kinderListView.html');
-let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+const template = require('./kinderListView.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 require('./kinderListView.less');
 
 export class KinderListViewComponentConfig implements IComponentOptions {
@@ -47,15 +47,15 @@ export class KinderListViewComponentConfig implements IComponentOptions {
 
 export class KinderListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    kinderDubletten: TSKindDublette[] = [];
-
     static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$translate', 'DvDialog',
         'WizardStepManager', '$scope', 'CONSTANTS', '$timeout'];
 
+    kinderDubletten: TSKindDublette[] = [];
+
     /* @ngInject */
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private $translate: ITranslateService, private DvDialog: DvDialog,
-                wizardStepManager: WizardStepManager, $scope: IScope, private CONSTANTS: any, $timeout: ITimeoutService) {
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog,
+                wizardStepManager: WizardStepManager, $scope: IScope, private readonly CONSTANTS: any, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         this.initViewModel();
     }
@@ -87,19 +87,13 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     getDubletten(kindContainer: TSKindContainer): TSKindDublette[] {
         if (this.kinderDubletten) {
-            let dublettenForThisKind: TSKindDublette[] = [];
-            for (let i = 0; i < this.kinderDubletten.length; i++) {
-                if (this.kinderDubletten[i].kindNummerOriginal === kindContainer.kindNummer) {
-                    dublettenForThisKind.push(this.kinderDubletten[i]);
-                }
-            }
-            return dublettenForThisKind;
+            return this.kinderDubletten.filter(kd => kd.kindNummerOriginal === kindContainer.kindNummer);
         }
         return undefined;
     }
 
     public gotoKindDublette(dublette: TSKindDublette): void {
-        let url = this.$state.href('gesuch.kind', {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
+        const url = this.$state.href('gesuch.kind', {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
         window.open(url, '_blank');
     }
 
@@ -112,7 +106,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     removeKind(kind: any, index: any): void {
-        let remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
+        const remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
         this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
@@ -120,7 +114,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
             elementID: 'removeKindButton_' + index
         })
             .then(() => {   //User confirmed removal
-                let kindIndex: number = this.gesuchModelManager.findKind(kind);
+                const kindIndex: number = this.gesuchModelManager.findKind(kind);
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
                     this.gesuchModelManager.removeKind();

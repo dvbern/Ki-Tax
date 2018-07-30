@@ -17,7 +17,7 @@ import {IComponentOptions, IOnInit} from 'angular';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 
-let template = require('./dv-erwerbspensum-list.html');
+const template = require('./dv-erwerbspensum-list.html');
 require('./dv-erwerbspensum-list.less');
 
 export class DVErwerbspensumListConfig implements IComponentOptions {
@@ -42,6 +42,8 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
 
 export class DVErwerbspensumListController implements IOnInit {
 
+    static $inject: ReadonlyArray<string> = [];
+
     erwerbspensen: TSErwerbspensum[];
     tableId: string;
     tableTitle: string;
@@ -52,8 +54,6 @@ export class DVErwerbspensumListController implements IOnInit {
     onRemove: (pensumToRemove: any) => void;
     onEdit: (pensumToEdit: any) => void;
     onAdd: () => void;
-
-    static $inject: ReadonlyArray<string> = [];
 
     $onInit() {
         if (!this.addButtonText) {
@@ -66,8 +66,10 @@ export class DVErwerbspensumListController implements IOnInit {
             this.addButtonEnabled = true;
         }
         //clear selected
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.erwerbspensen.length; i++) {
-            let obj: any = this.erwerbspensen[i];
+            const obj: any = this.erwerbspensen[i];
+            // FIXME woher kommt dieses Property?
             obj.isSelected = false;
 
         }

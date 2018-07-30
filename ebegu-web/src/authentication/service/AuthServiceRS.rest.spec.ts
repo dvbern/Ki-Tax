@@ -24,7 +24,7 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguAuthentication} from '../authentication.module';
 import AuthServiceRS from './AuthServiceRS.rest';
 
-describe('AuthServiceRS', function () {
+describe('AuthServiceRS', () => {
 
     let authServiceRS: AuthServiceRS;
     let $http: angular.IHttpService;
@@ -41,7 +41,7 @@ describe('AuthServiceRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         $http = $injector.get('$http');
         $httpBackend = $injector.get('$httpBackend');
@@ -54,20 +54,20 @@ describe('AuthServiceRS', function () {
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
     }));
 
-    describe('API usage', function () {
+    describe('API usage', () => {
         beforeEach(() => {
             spyOn($http, 'post').and.returnValue($q.when({}));
         });
-        it('does not nothing for an undefined user', function () {
+        it('does not nothing for an undefined user', () => {
             expect(authServiceRS.loginRequest(undefined)).toBeUndefined();
             expect($http.post).not.toHaveBeenCalled();
         });
-        it('receives a loginRequest and handles the incoming cookie', function () {
+        it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSUser sein. Deswegen machen wir hier ein Objekt mit dem Inhalt, den die Cookie braucht
-            let user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
+            const user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
             user.currentBerechtigung = new TSBerechtigung(undefined, TSRole.GESUCHSTELLER);
-            let cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
-            let encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
+            const cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
+            const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
             spyOn(userRS, 'findBenutzer').and.returnValue($q.when(user));
 

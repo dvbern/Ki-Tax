@@ -22,30 +22,30 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebCore} from '../core.module';
 import VerfuegungRS from './verfuegungRS.rest';
 
-describe('VerfuegungRS', function () {
+describe('VerfuegungRS', () => {
 
     let verfuegungRS: VerfuegungRS;
     let $httpBackend: angular.IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockKindContainerListRest: Array<any> = [];
     let mockKind: TSKindContainer;
-    let gesuchId: string = '1234567789';
-    let betreuungId: string = '321123';
+    const gesuchId: string = '1234567789';
+    const betreuungId: string = '321123';
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         verfuegungRS = $injector.get('VerfuegungRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
     }));
 
     beforeEach(() => {
-        let kindGS: TSKind = new TSKind('Pedro', 'Bern');
+        const kindGS: TSKind = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractFieldsUndefined(kindGS);
-        let kindJA: TSKind = new TSKind('Pedro', 'Bern');
+        const kindJA: TSKind = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
         TestDataUtil.setAbstractFieldsUndefined(mockKind);
@@ -53,19 +53,19 @@ describe('VerfuegungRS', function () {
         mockKindContainerListRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(verfuegungRS.serviceURL).toContain('verfuegung');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(verfuegungRS.getServiceName()).toBe('VerfuegungRS');
         });
-        it('should include a findKind() function', function () {
+        it('should include a findKind() function', () => {
             expect(verfuegungRS.calculateVerfuegung).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('calculate', () => {
             it('should return all KindContainer', () => {
                 $httpBackend.expectGET(verfuegungRS.serviceURL + '/calculate/' + gesuchId).respond(mockKindContainerListRest);
@@ -82,7 +82,7 @@ describe('VerfuegungRS', function () {
         });
         describe('saveVerfuegung', () => {
             it('should save the given Verfuegung', () => {
-                let verfuegung: TSVerfuegung = TestDataUtil.createVerfuegung();
+                const verfuegung: TSVerfuegung = TestDataUtil.createVerfuegung();
                 $httpBackend.expectPUT(verfuegungRS.serviceURL + '/' + gesuchId + '/' + betreuungId + '/false').respond(ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
                 $httpBackend.expectGET('/ebegu/api/v1/wizard-steps/' + gesuchId).respond({});
 

@@ -30,6 +30,8 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  * ACHTUNG! Diese Direktive darf nicht mit ng-show zusammen benutzt werden
  */
 export class DVDisplayElement implements IDirective {
+
+    static $inject: string[] = ['ngShowDirective'];
     restrict = 'A';
     controller = DVRoleElementController;
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
@@ -37,18 +39,22 @@ export class DVDisplayElement implements IDirective {
     multiElement: any;
     ngShow: any;
 
-    static $inject: string[] = ['ngShowDirective'];
-
     /* @ngInject */
-    constructor(private ngShowDirective: any) {
+    constructor(private readonly ngShowDirective: any) {
         this.ngShow = ngShowDirective[0];
         this.multiElement = this.ngShow.multiElement;
+    }
+
+    static factory(): IDirectiveFactory {
+        const directive = (ngShowDirective: any) => new DVDisplayElement(ngShowDirective);
+        directive.$inject = ['ngShowDirective'];
+        return directive;
     }
 
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
         // Consider using a standard function expression.
-        let arguments2: Array<any> = [scope, element, attributes, controller, $transclude];
+        const arguments2: Array<any> = [scope, element, attributes, controller, $transclude];
         this.callNgShowThrough(attributes, controller, arguments2);
 
         // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen der Variable, den wir
@@ -74,11 +80,5 @@ export class DVDisplayElement implements IDirective {
             return (controller.checkValidity());
         };
         this.ngShow.link.apply(this.ngShow, arguments2);
-    }
-
-    static factory(): IDirectiveFactory {
-        const directive = (ngShowDirective: any) => new DVDisplayElement(ngShowDirective);
-        directive.$inject = ['ngShowDirective'];
-        return directive;
     }
 }

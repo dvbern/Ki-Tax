@@ -32,9 +32,9 @@ import TSBelegungFerieninsel from '../../../models/TSBelegungFerieninsel';
 import ILogService = angular.ILogService;
 import IFormController = angular.IFormController;
 
-let template = require('./createAngebotView.html');
+const template = require('./createAngebotView.html');
 require('./createAngebotView.less');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
+const okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 
 export class CreateAngebotListViewConfig implements IComponentOptions {
     transclude = false;
@@ -45,19 +45,19 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
 
 export class CreateAngebotListViewController {
 
+    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS', 'DvDialog'];
+
     form: IFormController;
     einschulungTypValues: Array<TSEinschulungTyp>;
     private ts: boolean;
     private fi: boolean;
-    private kindContainer: TSKindContainer;
-    private institution: TSInstitutionStammdaten;
+    private readonly kindContainer: TSKindContainer;
+    private readonly institution: TSInstitutionStammdaten;
     private anmeldungDTO: TSAnmeldungDTO = new TSAnmeldungDTO;
 
-    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS', 'DvDialog'];
-
-    constructor(private $state: StateService, private $log: ILogService,
-                private gesuchModelManager: GesuchModelManager, private $stateParams: IAngebotStateParams,
-                private betreuungRS: BetreuungRS, private dvDialog: DvDialog) {
+    constructor(private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly gesuchModelManager: GesuchModelManager, private readonly $stateParams: IAngebotStateParams,
+                private readonly betreuungRS: BetreuungRS, private readonly dvDialog: DvDialog) {
     }
 
     $onInit() {
@@ -78,7 +78,7 @@ export class CreateAngebotListViewController {
     }
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
-        let result: Array<TSInstitutionStammdaten> = [];
+        const result: Array<TSInstitutionStammdaten> = [];
         /*if (this.betreuungsangebot) {*/
         this.gesuchModelManager.getActiveInstitutionenList().forEach((instStamm: TSInstitutionStammdaten) => {
             if (this.ts) {
@@ -127,7 +127,7 @@ export class CreateAngebotListViewController {
                 if (!this.anmeldungDTO.betreuung.belegungTagesschule) {
                     this.anmeldungDTO.betreuung.belegungTagesschule = new TSBelegungTagesschule();
                     // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-                    let ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+                    const ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
                     if (DateUtil.today().isBefore(ersterSchultag)) {
                         this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum = ersterSchultag;
                     }

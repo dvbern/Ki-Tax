@@ -28,8 +28,8 @@ import TSDownloadFile from '../../models/TSDownloadFile';
 export class DvNgHelpDialogComponent {
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
-        private downloadRS: DownloadRS,
+        private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
+        private readonly downloadRS: DownloadRS,
         @Inject(MAT_DIALOG_DATA) data: any) {
     }
 
@@ -38,7 +38,7 @@ export class DvNgHelpDialogComponent {
     }
 
     public download(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenBenutzerhandbuch()
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);

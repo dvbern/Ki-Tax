@@ -20,7 +20,7 @@ import AuthenticationUtil from '../../../utils/AuthenticationUtil';
 import TSUser from '../../../models/TSUser';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
-let template = require('./startView.html');
+const template = require('./startView.html');
 require('./startView.less');
 
 export class StartComponentConfig implements IComponentOptions {
@@ -35,14 +35,14 @@ export class StartViewController {
 
     static $inject: string[] = ['$state', 'AuthLifeCycleService', 'AuthServiceRS'];
 
-    constructor(private $state: StateService, private authLifeCycleService: AuthLifeCycleService, private authService: AuthServiceRS) {
+    constructor(private readonly $state: StateService, private readonly authLifeCycleService: AuthLifeCycleService, private readonly authService: AuthServiceRS) {
 
 
     }
 
     $onInit() {
         // todo KIBON-143 warten bis das event login_success geworfen ist
-        let user: TSUser = this.authService.getPrincipal();
+        const user: TSUser = this.authService.getPrincipal();
         if (this.authService.getPrincipal()) {  // wenn logged in
             AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
         } else {

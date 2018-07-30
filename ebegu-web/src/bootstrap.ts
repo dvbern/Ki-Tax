@@ -19,7 +19,7 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {NgAppModule} from './ngApp/ng-app.module';
 import { UrlService } from '@uirouter/core';
 
-angular.element(document).ready(function () {
+angular.element(document).ready(() => {
     // platformBrowserDynamic().bootstrapModule(AppModule);
 
     platformBrowserDynamic().bootstrapModule(NgAppModule)

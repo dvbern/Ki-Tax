@@ -26,7 +26,7 @@ import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import ITranslateService = angular.translate.ITranslateService;
 import IInjectorService = angular.auto.IInjectorService;
-let template = require('./dv-quicksearchbox.html');
+const template = require('./dv-quicksearchbox.html');
 require('./dv-quicksearchbox.less');
 
 
@@ -40,6 +40,9 @@ export class DvQuicksearchboxComponentConfig implements IComponentOptions {
 
 export class DvQuicksearchboxController {
 
+    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$timeout', '$log', '$q', 'SearchIndexRS', 'CONSTANTS', '$filter', '$translate',
+        '$state', 'AuthServiceRS', '$injector'];
+
     noCache: boolean = true;
     delay: number = 250;
 
@@ -49,13 +52,10 @@ export class DvQuicksearchboxController {
     TSRoleUtil: TSRoleUtil;
     gesuchModelManager: GesuchModelManager;
 
-    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$timeout', '$log', '$q', 'SearchIndexRS', 'CONSTANTS', '$filter', '$translate',
-        '$state', 'AuthServiceRS', '$injector'];
-
-    constructor(private ebeguUtil: EbeguUtil, private $timeout: IFilterService, private $log: ILogService,
-                private $q: IQService, private searchIndexRS: SearchIndexRS, private CONSTANTS: any,
-                private $filter: IFilterService, private $translate: ITranslateService,
-                private $state: StateService, private authServiceRS: AuthServiceRS, private $injector: IInjectorService) {
+    constructor(private readonly ebeguUtil: EbeguUtil, private readonly $timeout: IFilterService, private readonly $log: ILogService,
+                private readonly $q: IQService, private readonly searchIndexRS: SearchIndexRS, private readonly CONSTANTS: any,
+                private readonly $filter: IFilterService, private readonly $translate: ITranslateService,
+                private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS, private readonly $injector: IInjectorService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 
@@ -67,7 +67,7 @@ export class DvQuicksearchboxController {
 
     public querySearch(query: string): IPromise<Array<TSSearchResultEntry>> {
         this.searchString = query;
-        let deferred = this.$q.defer<Array<TSSearchResultEntry>>();
+        const deferred = this.$q.defer<Array<TSSearchResultEntry>>();
         this.searchIndexRS.quickSearch(query).then((quickSearchResult: TSQuickSearchResult) => {
             this.limitResultsize(quickSearchResult);
             deferred.resolve(quickSearchResult.resultEntities);
@@ -82,15 +82,15 @@ export class DvQuicksearchboxController {
 
     private limitResultsize(quickSearchResult: TSQuickSearchResult) {
 
-        let limitedResults = this.$filter('limitTo')(quickSearchResult.resultEntities, 8);
+        const limitedResults = this.$filter('limitTo')(quickSearchResult.resultEntities, 8);
         // if (limitedResults.length < quickSearchResult.length) { //total immer anzeigen
         this.addFakeTotalResultEntry(quickSearchResult, limitedResults);
     }
 
     private addFakeTotalResultEntry(quickSearchResult: TSQuickSearchResult, limitedResults: TSSearchResultEntry[]) {
         if (angular.isArray(limitedResults) && limitedResults.length > 0) {
-            let totalResEntry: TSSearchResultEntry = new TSSearchResultEntry();
-            let alleFaelleEntry = new TSAntragDTO();
+            const totalResEntry: TSSearchResultEntry = new TSSearchResultEntry();
+            const alleFaelleEntry = new TSAntragDTO();
             alleFaelleEntry.familienName = this.$translate.instant('QUICKSEARCH_ALL_RESULTS', {totalNum: quickSearchResult.totalResultSize});
             totalResEntry.entity = 'ALL';
             totalResEntry.antragDTO = alleFaelleEntry;
@@ -141,7 +141,7 @@ export class DvQuicksearchboxController {
     private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab?: boolean): void {
         if (antrag) {
             if (inNewTab) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                const url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
                 this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});

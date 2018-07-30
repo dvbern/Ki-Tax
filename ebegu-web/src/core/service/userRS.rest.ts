@@ -21,13 +21,13 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IEntityRS} from './iEntityRS.rest';
 
 export default class UserRS implements IEntityRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'benutzer';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -78,7 +78,7 @@ export default class UserRS implements IEntityRS {
     }
 
     public inactivateBenutzer(user: TSUser): IPromise<TSUser> {
-        let userRest = this.ebeguRestUtil.userToRestObject({}, user);
+        const userRest = this.ebeguRestUtil.userToRestObject({}, user);
         return this.http.put(this.serviceURL + '/inactivate/', userRest, {
             headers: {
                 'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ export default class UserRS implements IEntityRS {
     }
 
     public reactivateBenutzer(user: TSUser): IPromise<TSUser> {
-        let userRest = this.ebeguRestUtil.userToRestObject({}, user);
+        const userRest = this.ebeguRestUtil.userToRestObject({}, user);
         return this.http.put(this.serviceURL + '/reactivate/', userRest, {
             headers: {
                 'Content-Type': 'application/json'
@@ -100,7 +100,7 @@ export default class UserRS implements IEntityRS {
     }
 
     public saveBenutzer(user: TSUser): IPromise<TSUser> {
-        let userRest = this.ebeguRestUtil.userToRestObject({}, user);
+        const userRest = this.ebeguRestUtil.userToRestObject({}, user);
         return this.http.put(this.serviceURL + '/save/', userRest, {
             headers: {
                 'Content-Type': 'application/json'

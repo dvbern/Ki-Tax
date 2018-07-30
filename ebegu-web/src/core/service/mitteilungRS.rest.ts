@@ -30,16 +30,16 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import ITranslateService = angular.translate.ITranslateService;
 
 export default class MitteilungRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager',
         'AuthServiceRS', '$translate'];
+    serviceURL: string;
+    http: IHttpService;
+    ebeguRestUtil: EbeguRestUtil;
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
-                private wizardStepManager: WizardStepManager, private authServiceRS: AuthServiceRS,
-                private $translate: ITranslateService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+                private readonly wizardStepManager: WizardStepManager, private readonly authServiceRS: AuthServiceRS,
+                private readonly $translate: ITranslateService) {
         this.serviceURL = REST_API + 'mitteilungen';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -152,8 +152,8 @@ export default class MitteilungRS {
     }
 
     public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
-        let mutationsmeldung: TSBetreuungsmitteilung = this.createBetreuungsmitteilung(dossier, betreuung);
-        let restMitteilung: any = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
+        const mutationsmeldung: TSBetreuungsmitteilung = this.createBetreuungsmitteilung(dossier, betreuung);
+        const restMitteilung: any = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         return this.http.put(this.serviceURL + '/sendbetreuungsmitteilung', restMitteilung, {
             headers: {
                 'Content-Type': 'application/json'
@@ -205,7 +205,7 @@ export default class MitteilungRS {
     }
 
     private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): TSBetreuungsmitteilung {
-        let mutationsmeldung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
+        const mutationsmeldung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
         mutationsmeldung.dossier = dossier;
         mutationsmeldung.betreuung = betreuung;
         mutationsmeldung.senderTyp = TSMitteilungTeilnehmerTyp.INSTITUTION;
@@ -225,7 +225,7 @@ export default class MitteilungRS {
     private createNachrichtForMutationsmeldung(betreuung: TSBetreuung): string {
         let message: string = '';
         let i: number = 1;
-        let betreuungspensumContainers: Array<TSBetreuungspensumContainer> = angular.copy(betreuung.betreuungspensumContainers); // to avoid changing something
+        const betreuungspensumContainers: Array<TSBetreuungspensumContainer> = angular.copy(betreuung.betreuungspensumContainers); // to avoid changing something
         betreuungspensumContainers
             .sort(
                 (a: TSBetreuungspensumContainer, b: TSBetreuungspensumContainer) => {
@@ -237,7 +237,7 @@ export default class MitteilungRS {
                 if (i > 1) {
                     message += '\n';
                 }
-                let datumAb: string = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+                const datumAb: string = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
                 let datumBis: string = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigBis, 'DD.MM.YYYY');
                 datumBis = datumBis ? datumBis : DateUtil.momentToLocalDateFormat(betreuung.gesuchsperiode.gueltigkeit.gueltigBis, 'DD.MM.YYYY'); // by default Ende der Periode
                 message += this.$translate.instant('MUTATIONSMELDUNG_PENSUM') + i
@@ -255,9 +255,9 @@ export default class MitteilungRS {
      * gibt diese zurueck. By default wird eine leere Liste zurueckgegeben
      */
     private extractPensenFromBetreuung(betreuung: TSBetreuung): Array<TSBetreuungspensum> {
-        let pensen: Array<TSBetreuungspensum> = [];
+        const pensen: Array<TSBetreuungspensum> = [];
         betreuung.betreuungspensumContainers.forEach(betpenContainer => {
-            let pensumJA = angular.copy(betpenContainer.betreuungspensumJA);
+            const pensumJA = angular.copy(betpenContainer.betreuungspensumJA);
             pensumJA.id = undefined; // the id must be set to undefined in order no to duplicate it
             pensen.push(pensumJA);
         });

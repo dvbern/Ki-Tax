@@ -19,7 +19,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import UserRS from './userRS.rest';
 
-describe('userRS', function () {
+describe('userRS', () => {
 
     let userRS: UserRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -31,7 +31,7 @@ describe('userRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         userRS = $injector.get('UserRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -42,8 +42,8 @@ describe('userRS', function () {
         mockUserRest = ebeguRestUtil.userToRestObject({}, mockUser);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(userRS.getServiceName()).toBe('UserRS');
         });
     });

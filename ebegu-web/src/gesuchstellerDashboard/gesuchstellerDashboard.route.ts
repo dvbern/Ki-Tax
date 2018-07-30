@@ -71,7 +71,7 @@ getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$l
 export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $stateParams: IAngebotStateParams, $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
                 || gesuchModelManager.getGesuch().emptyCopy) {
@@ -81,7 +81,7 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $s
 
                 return gesuchModelManager.openGesuch(gesuchIdParam);
             } else {
-                let deferred = $q.defer<TSGesuch>();
+                const deferred = $q.defer<TSGesuch>();
                 deferred.resolve(gesuchModelManager.getGesuch());
                 return deferred.promise;
             }
@@ -89,7 +89,7 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $s
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    let deferred = $q.defer<TSGesuch>();
+    const deferred = $q.defer<TSGesuch>();
     deferred.resolve(undefined);
     return deferred.promise;
 }

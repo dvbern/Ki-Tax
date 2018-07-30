@@ -15,7 +15,7 @@
 
 import {IComponentOptions, IFilterService, ILogService, IOnDestroy, IOnInit, IPromise} from 'angular';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -38,7 +38,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 
-let template = require('./dv-antrag-list.html');
+const template = require('./dv-antrag-list.html');
 require('./dv-antrag-list.less');
 
 export class DVAntragListConfig implements IComponentOptions {
@@ -63,6 +63,9 @@ export class DVAntragListConfig implements IComponentOptions {
 }
 
 export class DVAntragListController implements IOnInit, IOnDestroy {
+
+    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
+        'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     totalResultCount: number;
@@ -101,13 +104,10 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
     onAdd: () => void;
     TSRoleUtil: any;
 
-    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
-        'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
-
-    constructor(private ebeguUtil: EbeguUtil, private $filter: IFilterService, private $log: ILogService,
-                private institutionRS: InstitutionRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private CONSTANTS: any, private authServiceRS: AuthServiceRS, private $window: ng.IWindowService,
-                private gemeindeRS: GemeindeRS, private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly ebeguUtil: EbeguUtil, private readonly $filter: IFilterService, private readonly $log: ILogService,
+                private readonly institutionRS: InstitutionRS, private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly CONSTANTS: any, private readonly authServiceRS: AuthServiceRS, private readonly $window: ng.IWindowService,
+                private readonly gemeindeRS: GemeindeRS, private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.TSRoleUtil = TSRoleUtil;
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
@@ -171,8 +171,8 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
         this.onAdd();
     }
 
-    private callServer = (tableFilterState: any) => {
-        let pagination = tableFilterState.pagination;
+    private readonly callServer = (tableFilterState: any) => {
+        const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 
         // this.displaydAntraege = this.antraege;
@@ -229,8 +229,9 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
         if (betreuungsangebotTypList) {
             let prefix: string = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
+                // tslint:disable-next-line:prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
-                    let tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
+                    const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
                     result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
                     prefix = ', ';
                 }
@@ -253,7 +254,7 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
      * children but td or th
      */
     public getColumnsNumber(): number {
-        let element = this.$window.document.getElementById('antraegeHeadRow');
+        const element = this.$window.document.getElementById('antraegeHeadRow');
         return element.childElementCount;
     }
 }

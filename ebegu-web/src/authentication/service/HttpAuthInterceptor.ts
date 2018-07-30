@@ -23,8 +23,8 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
     static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
 
     /* @ngInject */
-    constructor(private authLifeCycleService: AuthLifeCycleService, private $q: IQService, private CONSTANTS: any,
-                private httpBuffer: HttpBuffer) {
+    constructor(private readonly authLifeCycleService: AuthLifeCycleService, private readonly $q: IQService, private readonly CONSTANTS: any,
+                private readonly httpBuffer: HttpBuffer) {
     }
 
     responseError = <T>(response: any): IPromise<IHttpResponse<T>> | IHttpResponse<T> => {
@@ -41,7 +41,7 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
                 }
                 // all requests that failed due to notAuthenticated are appended to httpBuffer. Use httpBuffer.retryAll
                 // to submit them.
-                let deferred = this.$q.defer();
+                const deferred = this.$q.defer();
                 this.httpBuffer.append(response.config, deferred);
                 this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, response);
                 return deferred.promise as IPromise<IHttpResponse<T>>;

@@ -18,9 +18,9 @@ import {IHttpPromise, IHttpService} from 'angular';
 
 
 export class DatabaseMigrationRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    serviceURL: string;
 
     constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'dbmigration';

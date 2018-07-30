@@ -21,7 +21,7 @@ import {EbeguWebCore} from '../../core.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import {StateService} from '@uirouter/core';
 
-describe('DvPulldownUserMenuController', function () {
+describe('DvPulldownUserMenuController', () => {
 
     let authServiceRS: AuthServiceRS;
     let authLifeCycleService: AuthLifeCycleService;
@@ -34,7 +34,7 @@ describe('DvPulldownUserMenuController', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         authLifeCycleService = $injector.get('AuthLifeCycleService');
         scope = $injector.get('$rootScope').$new();
@@ -46,7 +46,7 @@ describe('DvPulldownUserMenuController', function () {
         controller = new DvPulldownUserMenuController($state, authServiceRS, authLifeCycleService);
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('logout()', () => {
             it('must call the logout function and redirect to the login page', () => {
                 spyOn($state, 'go');
@@ -62,7 +62,7 @@ describe('DvPulldownUserMenuController', function () {
                 expect(controller.principal).toBeUndefined();
             });
             it('When the user logs in the principal must be updated', () => {
-                let user: TSUser = new TSUser('pedro');
+                const user: TSUser = new TSUser('pedro');
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
                 controller.$onInit();
 

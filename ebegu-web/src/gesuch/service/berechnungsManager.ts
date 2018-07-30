@@ -26,16 +26,16 @@ import TSFinanzModel from '../../models/TSFinanzModel';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 
 export default class BerechnungsManager {
+
+    static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
     finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
     einkommensverschlechterungResultateBjP1: TSFinanzielleSituationResultateDTO;
     einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;
     dokumente: TSDokumenteDTO;
 
-    static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
-
-    constructor(private finanzielleSituationRS: FinanzielleSituationRS, private ebeguRestUtil: EbeguRestUtil,
-                private einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
-                private dokumenteRS: DokumenteRS, private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly finanzielleSituationRS: FinanzielleSituationRS, private readonly ebeguRestUtil: EbeguRestUtil,
+                private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
+                private readonly dokumenteRS: DokumenteRS, private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.initValues();
 

@@ -22,7 +22,7 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebCore} from '../core.module';
 import KindRS from './kindRS.rest';
 
-describe('KindRS', function () {
+describe('KindRS', () => {
 
     let kindRS: KindRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -37,7 +37,7 @@ describe('KindRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         kindRS = $injector.get('KindRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -48,9 +48,9 @@ describe('KindRS', function () {
 
     beforeEach(() => {
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000feb';
-        let kindGS: TSKind = new TSKind('Pedro', 'Bern');
+        const kindGS: TSKind = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractFieldsUndefined(kindGS);
-        let kindJA: TSKind = new TSKind('Johan', 'Basel');
+        const kindJA: TSKind = new TSKind('Johan', 'Basel');
         TestDataUtil.setAbstractFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
         TestDataUtil.setAbstractFieldsUndefined(mockKind);
@@ -58,24 +58,24 @@ describe('KindRS', function () {
         mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(kindRS.serviceURL).toContain('kinder');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(kindRS.getServiceName()).toBe('KindRS');
         });
-        it('should include a findKind() function', function () {
+        it('should include a findKind() function', () => {
             expect(kindRS.findKind).toBeDefined();
         });
-        it('should include a saveKind() function', function () {
+        it('should include a saveKind() function', () => {
             expect(kindRS.saveKind).toBeDefined();
         });
-        it('should include a removeKind() function', function () {
+        it('should include a removeKind() function', () => {
             expect(kindRS.removeKind).toBeDefined();
         });
     });
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findKind', () => {
             it('should return the Kind by id', () => {
                 $httpBackend.expectGET(kindRS.serviceURL + '/find/' + mockKind.id).respond(mockKindRest);
@@ -103,7 +103,7 @@ describe('KindRS', function () {
         });
         describe('updateKind', () => {
             it('should update a Kind', () => {
-                let kindJA2: TSKind = new TSKind('Johan', 'Basel');
+                const kindJA2: TSKind = new TSKind('Johan', 'Basel');
                 TestDataUtil.setAbstractFieldsUndefined(kindJA2);
                 mockKind.kindJA = kindJA2;
                 mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);

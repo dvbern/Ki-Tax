@@ -20,7 +20,7 @@ import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
 
-let template = require('./dv-version.html');
+const template = require('./dv-version.html');
 require('./dv-version.less');
 
 export class DVVersionComponentConfig implements IComponentOptions {
@@ -33,6 +33,8 @@ export class DVVersionComponentConfig implements IComponentOptions {
 
 export class DVVersionController {
 
+    static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window', '$log'];
+
     TSRoleUtil: any;
 
     private backendVersion: string;
@@ -41,10 +43,8 @@ export class DVVersionController {
     private showSingleVersion: boolean = true;
     private currentYear: number;
 
-    static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window', '$log'];
-
-    constructor(private $rootScope: IRootScopeService, private httpVersionInterceptor: HttpVersionInterceptor, private $q: IQService,
-        private $window: IWindowService, private $log: ILogService) {
+    constructor(private readonly $rootScope: IRootScopeService, private readonly httpVersionInterceptor: HttpVersionInterceptor, private readonly $q: IQService,
+        private readonly $window: IWindowService, private readonly $log: ILogService) {
 
     }
 
@@ -58,7 +58,7 @@ export class DVVersionController {
         this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
             this.backendVersion = this.httpVersionInterceptor.getBackendVersion();
             this.updateDisplayVersion();
-            let msg = 'Der Client (' + this.frontendVersion + ') hat eine andere Version als der Server('
+            const msg = 'Der Client (' + this.frontendVersion + ') hat eine andere Version als der Server('
                 + this.backendVersion + '). Bitte laden sie die Seite komplett neu (F5)';
             this.$window.alert(msg);
 

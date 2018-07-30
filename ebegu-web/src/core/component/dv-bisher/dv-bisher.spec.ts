@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebCore} from '../../core.module';
 
-describe('dvBisher', function () {
+describe('dvBisher', () => {
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
 
@@ -26,13 +26,13 @@ describe('dvBisher', function () {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         /*
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.

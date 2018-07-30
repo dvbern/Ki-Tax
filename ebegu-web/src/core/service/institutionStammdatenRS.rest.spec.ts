@@ -25,7 +25,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import {InstitutionStammdatenRS} from './institutionStammdatenRS.rest';
 
-describe('institutionStammdatenRS', function () {
+describe('institutionStammdatenRS', () => {
 
     let institutionStammdatenRS: InstitutionStammdatenRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -40,7 +40,7 @@ describe('institutionStammdatenRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -56,31 +56,31 @@ describe('institutionStammdatenRS', function () {
         mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(institutionStammdatenRS.getServiceName()).toBe('InstitutionStammdatenRS');
         });
-        it('should include a findInstitutionStammdaten() function', function () {
+        it('should include a findInstitutionStammdaten() function', () => {
             expect(institutionStammdatenRS.findInstitutionStammdaten).toBeDefined();
         });
-        it('should include a createInstitutionStammdaten() function', function () {
+        it('should include a createInstitutionStammdaten() function', () => {
             expect(institutionStammdatenRS.createInstitutionStammdaten).toBeDefined();
         });
-        it('should include a updateInstitutionStammdaten() function', function () {
+        it('should include a updateInstitutionStammdaten() function', () => {
             expect(institutionStammdatenRS.updateInstitutionStammdaten).toBeDefined();
         });
-        it('should include a removeInstitutionStammdaten() function', function () {
+        it('should include a removeInstitutionStammdaten() function', () => {
             expect(institutionStammdatenRS.removeInstitutionStammdaten).toBeDefined();
         });
-        it('should include a getAllInstitutionStammdaten() function', function () {
+        it('should include a getAllInstitutionStammdaten() function', () => {
             expect(institutionStammdatenRS.getAllInstitutionStammdaten).toBeDefined();
         });
-        it('should include a getAllInstitutionStammdatenByDate() function', function () {
+        it('should include a getAllInstitutionStammdatenByDate() function', () => {
             expect(institutionStammdatenRS.getAllInstitutionStammdatenByDate).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findInstitutionStammdaten', () => {
             it('should return the InstitutionStammdaten by id', () => {
                 $httpBackend.expectGET(institutionStammdatenRS.serviceURL + '/id/' + encodeURIComponent(mockInstitutionStammdaten.id))
@@ -144,7 +144,7 @@ describe('institutionStammdatenRS', function () {
 
         describe('getAllInstitutionStammdaten', () => {
             it('should return all InstitutionStammdaten', () => {
-                let institutionStammdatenRestArray: Array<any> = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
+                const institutionStammdatenRestArray: Array<any> = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
                 $httpBackend.expectGET(institutionStammdatenRS.serviceURL).respond(institutionStammdatenRestArray);
 
                 let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
@@ -161,7 +161,7 @@ describe('institutionStammdatenRS', function () {
 
         describe('getAllInstitutionStammdatenByDate', () => {
             it('should return all InstitutionStammdaten im gegebenen Datum', () => {
-                let institutionStammdatenRestArray: Array<any> = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
+                const institutionStammdatenRestArray: Array<any> = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
                 $httpBackend.expectGET(institutionStammdatenRS.serviceURL + '/date?date='
                     + DateUtil.momentToLocalDate(today))
                     .respond(institutionStammdatenRestArray);

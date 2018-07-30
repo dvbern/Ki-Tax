@@ -18,12 +18,12 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSMandant} from '../../models/TSMandant';
 
 export class MandantRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
         this.serviceURL = REST_API + 'mandanten';

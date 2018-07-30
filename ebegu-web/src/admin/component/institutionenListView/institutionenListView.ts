@@ -24,9 +24,9 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import './institutionenListView.less';
 import {StateService} from '@uirouter/core';
 
-let template = require('./institutionenListView.html');
-let style = require('./institutionenListView.less');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const template = require('./institutionenListView.html');
+const style = require('./institutionenListView.less');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class InstitutionenListViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
@@ -40,13 +40,13 @@ export class InstitutionenListViewComponentConfig implements IComponentOptions {
 
 export class InstitutionenListViewController extends AbstractAdminViewController {
 
+    static $inject = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
+
     form: IFormController;
     institutionen: TSInstitution[];
     selectedInstitution: TSInstitution = undefined;
-
-    static $inject = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
     /* @ngInject */
-    constructor(private institutionRS: InstitutionRS, private dvDialog: DvDialog, authServiceRS: AuthServiceRS, private $state: StateService) {
+    constructor(private readonly institutionRS: InstitutionRS, private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS, private readonly $state: StateService) {
         super(authServiceRS);
     }
 
@@ -63,7 +63,7 @@ export class InstitutionenListViewController extends AbstractAdminViewController
         }).then(() => {   //User confirmed removal
             this.selectedInstitution = undefined;
             this.institutionRS.removeInstitution(institution.id).then((response) => {
-                let index = EbeguUtil.getIndexOfElementwithID(institution, this.institutionen);
+                const index = EbeguUtil.getIndexOfElementwithID(institution, this.institutionen);
                 if (index > -1) {
                     this.institutionen.splice(index, 1);
                 }

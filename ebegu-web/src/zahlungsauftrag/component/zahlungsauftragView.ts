@@ -16,7 +16,7 @@
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {ApplicationPropertyRS} from '../../admin/service/applicationPropertyRS.rest';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -35,12 +35,11 @@ import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
-import Moment = moment.Moment;
 import ITranslateService = angular.translate.ITranslateService;
-let template = require('./zahlungsauftragView.html');
+const template = require('./zahlungsauftragView.html');
 require('./zahlungsauftragView.less');
 
-let removeDialogTemplate = require('../../gesuch/dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../gesuch/dialog/removeDialogTemplate.html');
 
 export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -51,27 +50,27 @@ export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
 
 export class ZahlungsauftragViewController {
 
+    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
+        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate', 'AuthLifeCycleService'];
+
     private readonly unsubscribe$ = new Subject<void>();
     form: IFormController;
     private zahlungsauftragen: Array<TSZahlungsauftrag>;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
 
     beschrieb: string;
-    faelligkeitsdatum: Moment;
-    datumGeneriert: Moment;
+    faelligkeitsdatum: moment.Moment;
+    datumGeneriert: moment.Moment;
     itemsByPage: number = 12;
     testMode: boolean = false;
-    minDateForTestlauf: Moment;
+    minDateForTestlauf: moment.Moment;
 
-    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
-        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate', 'AuthLifeCycleService'];
-
-    constructor(private zahlungRS: ZahlungRS, private CONSTANTS: any,
-                private $state: StateService, private downloadRS: DownloadRS,
-                private applicationPropertyRS: ApplicationPropertyRS,
-                private reportRS: ReportRS, private authServiceRS: AuthServiceRS, private ebeguUtil: EbeguUtil,
-                private dvDialog: DvDialog, private $translate: ITranslateService,
-                private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly zahlungRS: ZahlungRS, private readonly CONSTANTS: any,
+                private readonly $state: StateService, private readonly downloadRS: DownloadRS,
+                private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly reportRS: ReportRS, private readonly authServiceRS: AuthServiceRS, private readonly ebeguUtil: EbeguUtil,
+                private readonly dvDialog: DvDialog, private readonly $translate: ITranslateService,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
@@ -148,7 +147,7 @@ export class ZahlungsauftragViewController {
     }
 
     public downloadPain(zahlungsauftrag: TSZahlungsauftrag) {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
@@ -159,7 +158,7 @@ export class ZahlungsauftragViewController {
     }
 
     public downloadAllDetails(zahlungsauftrag: TSZahlungsauftrag) {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungsauftragReportExcel(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
@@ -177,7 +176,7 @@ export class ZahlungsauftragViewController {
             elementID: undefined
         }).then(() => {   //User confirmed removal
             this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
-                let index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsauftragen);
+                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsauftragen);
                 if (index > -1) {
                     this.zahlungsauftragen[index] = response;
                 }
@@ -194,7 +193,7 @@ export class ZahlungsauftragViewController {
         if (this.isEditValid()) {
             this.zahlungRS.updateZahlungsauftrag(
                 this.zahlungsauftragToEdit.beschrieb, this.zahlungsauftragToEdit.datumFaellig, this.zahlungsauftragToEdit.id).then((response: TSZahlungsauftrag) => {
-                let index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsauftragen);
+                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsauftragen);
                 if (index > -1) {
                     this.zahlungsauftragen[index] = response;
                 }
@@ -206,17 +205,11 @@ export class ZahlungsauftragViewController {
     }
 
     public isEditable(status: TSZahlungsauftragsstatus): boolean {
-        if (status === TSZahlungsauftragsstatus.ENTWURF) {
-            return true;
-        }
-        return false;
+        return status === TSZahlungsauftragsstatus.ENTWURF;
     }
 
     public isEditMode(zahlungsauftragId: string): boolean {
-        if (this.zahlungsauftragToEdit && this.zahlungsauftragToEdit.id === zahlungsauftragId) {
-            return true;
-        }
-        return false;
+        return this.zahlungsauftragToEdit && this.zahlungsauftragToEdit.id === zahlungsauftragId;
     }
 
     public isEditValid(): boolean {

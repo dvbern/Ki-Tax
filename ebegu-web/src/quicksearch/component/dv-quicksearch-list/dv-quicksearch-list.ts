@@ -16,7 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFilterService} from 'angular';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
@@ -35,7 +35,7 @@ import TSInstitution from '../../../models/TSInstitution';
 import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
-let template = require('./dv-quicksearch-list.html');
+const template = require('./dv-quicksearch-list.html');
 require('./dv-quicksearch-list.less');
 
 export class DVQuicksearchListConfig implements IComponentOptions {
@@ -58,6 +58,9 @@ export class DVQuicksearchListConfig implements IComponentOptions {
 }
 
 export class DVQuicksearchListController {
+
+    static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
+        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS', 'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     antraege: Array<TSAntragDTO> = []; //muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
@@ -87,18 +90,15 @@ export class DVQuicksearchListController {
     gemeindenList: Array<TSGemeinde>;
     onUserChanged: (user: any) => void;
 
-    static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS', 'AuthLifeCycleService'];
-
-    constructor(private ebeguUtil: EbeguUtil,
-                private $filter: IFilterService,
-                private institutionRS: InstitutionRS,
-                private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $state: StateService,
-                private CONSTANTS: any,
-                private authServiceRS: AuthServiceRS,
-                private gemeindeRS: GemeindeRS,
-                private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly ebeguUtil: EbeguUtil,
+                private readonly $filter: IFilterService,
+                private readonly institutionRS: InstitutionRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $state: StateService,
+                private readonly CONSTANTS: any,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
@@ -165,8 +165,9 @@ export class DVQuicksearchListController {
         if (betreuungsangebotTypList) {
             let prefix: string = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
+                // tslint:disable-next-line:prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
-                    let tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
+                    const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
                     result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
                     prefix = ', ';
                 }
@@ -177,7 +178,7 @@ export class DVQuicksearchListController {
 
     public editAntrag(abstractAntrag: TSAbstractAntragDTO, event: any): void {
         if (abstractAntrag) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             if (abstractAntrag instanceof TSAntragDTO) {
                 this.navigateToGesuch(abstractAntrag, isCtrlKeyPressed);
             } else if (abstractAntrag instanceof TSFallAntragDTO) {
@@ -188,7 +189,7 @@ export class DVQuicksearchListController {
 
     private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO) {
         if (isCtrlKeyPressed) {
-            let url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
+            const url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
             this.$state.go('mitteilungen', {dossierId: fallAntrag.dossierId});
@@ -197,13 +198,13 @@ export class DVQuicksearchListController {
 
     private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean) {
         if (antragDTO.antragId) {
-            let navObj: any = {
+            const navObj: any = {
                 createNew: false,
                 gesuchId: antragDTO.antragId,
                 dossierId: antragDTO.dossierId
             };
             if (isCtrlKeyPressed) {
-                let url = this.$state.href('gesuch.fallcreation', navObj);
+                const url = this.$state.href('gesuch.fallcreation', navObj);
                 window.open(url, '_blank');
             } else {
                 this.$state.go('gesuch.fallcreation', navObj);

@@ -40,10 +40,10 @@ import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import ITranslateService = angular.translate.ITranslateService;
 import IRootScopeService = angular.IRootScopeService;
-let template = require('./kommentarView.html');
+const template = require('./kommentarView.html');
 require('./kommentarView.less');
-let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
-let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class KommentarViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -57,18 +57,18 @@ export class KommentarViewComponentConfig implements IComponentOptions {
  */
 export class KommentarViewController {
 
+    static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q', 'UploadRS',
+        'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope', '$state', '$mdSidenav'];
+
     form: IFormController;
     dokumentePapiergesuch: TSDokumentGrund;
     TSRoleUtil: any;
-
-    static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q', 'UploadRS',
-        'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope', '$state', '$mdSidenav'];
     /* @ngInject */
-    constructor(private $log: ILogService, private gesuchModelManager: GesuchModelManager, private gesuchRS: GesuchRS,
-                private dokumenteRS: DokumenteRS, private downloadRS: DownloadRS, private $q: IQService,
-                private uploadRS: UploadRS, private wizardStepManager: WizardStepManager, private globalCacheService: GlobalCacheService,
-                private dvDialog: DvDialog, private $translate: ITranslateService, private $window: ng.IWindowService, private gesuchstellerRS: GesuchstellerRS,
-                private $rootScope: IRootScopeService, private $state: StateService, private $mdSidenav: ng.material.ISidenavService) {
+    constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
+                private readonly dokumenteRS: DokumenteRS, private readonly downloadRS: DownloadRS, private readonly $q: IQService,
+                private readonly uploadRS: UploadRS, private readonly wizardStepManager: WizardStepManager, private readonly globalCacheService: GlobalCacheService,
+                private readonly dvDialog: DvDialog, private readonly $translate: ITranslateService, private readonly $window: ng.IWindowService, private readonly gesuchstellerRS: GesuchstellerRS,
+                private readonly $rootScope: IRootScopeService, private readonly $state: StateService, private readonly $mdSidenav: ng.material.ISidenavService) {
 
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
@@ -130,15 +130,15 @@ export class KommentarViewController {
     }
 
     download() {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.getPapiergesuchFromServer().then((promiseValue: any) => {
             if (!this.hasPapiergesuch()) {
                 this.$log.error('Kein Papiergesuch für Download vorhanden!');
             } else {
-                let newest: TSDokument = this.getNewest(this.dokumentePapiergesuch.dokumente);
+                const newest: TSDokument = this.getNewest(this.dokumentePapiergesuch.dokumente);
                 this.downloadRS.getAccessTokenDokument(newest.id)
                     .then((response) => {
-                        let tempDokument: TSDownloadFile = angular.copy(response);
+                        const tempDokument: TSDownloadFile = angular.copy(response);
                         this.downloadRS.startDownload(tempDokument.accessToken, newest.filename, false, win);
                     })
                     .catch((ex) => {
@@ -151,6 +151,7 @@ export class KommentarViewController {
 
     private getNewest(dokumente: Array<TSDokument>): TSDokument {
         let newest: TSDokument = dokumente[0];
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < dokumente.length; i++) {
             if (dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)) {
                 newest = dokumente[i];
@@ -165,13 +166,13 @@ export class KommentarViewController {
             if (this.hasPapiergesuch()) {
                 this.$log.error('Papiergesuch schon vorhanden');
             } else {
-                let gesuchID = this.getGesuch().id;
+                const gesuchID = this.getGesuch().id;
                 console.log('Uploading files on gesuch ' + gesuchID);
 
-                let filesTooBig: any[] = [];
-                let filesOk: any[] = [];
+                const filesTooBig: any[] = [];
+                const filesOk: any[] = [];
                 this.$log.debug('Uploading files on gesuch ' + gesuchID);
-                for (let file of files) {
+                for (const file of files) {
                     this.$log.debug('File: ' + file.name + ' size: ' + file.size);
                     if (file.size > 10000000) { // Maximale Filegrösse ist 10MB
                         filesTooBig.push(file);
@@ -184,7 +185,7 @@ export class KommentarViewController {
                     // DialogBox anzeigen für Files, welche zu gross sind!
                     let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
                     returnString += '<ul>';
-                    for (let file of filesTooBig) {
+                    for (const file of filesTooBig) {
                         returnString += '<li>';
                         returnString += file.name;
                         returnString += '</li>';

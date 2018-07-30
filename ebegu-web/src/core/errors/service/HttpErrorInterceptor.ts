@@ -27,8 +27,8 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
     static $inject = ['$rootScope', '$q', 'ErrorService', '$log'];
 
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService, private $q: IQService, private errorService: ErrorService,
-                private $log: ILogService) {
+    constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService, private readonly errorService: ErrorService,
+                private readonly $log: ILogService) {
     }
 
 
@@ -42,7 +42,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
             //here we could analyze the http status of the response. But instead we check if the  response has the format
             // of a known response such as errortypes such as violationReport or ExceptionReport and transform it
             //as such. If the response matches know expected format we create an unexpected error.
-            let errors: Array<TSExceptionReport> = this.handleErrorResponse(response);
+            const errors: Array<TSExceptionReport> = this.handleErrorResponse(response);
             this.errorService.handleErrors(errors);
             return this.$q.reject(errors);
         }
@@ -81,7 +81,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
     }
 
     private convertViolationReport(data: any): Array<TSExceptionReport> {
-        let aggregatedExceptionReports: Array<TSExceptionReport> = [];
+        const aggregatedExceptionReports: Array<TSExceptionReport> = [];
         return aggregatedExceptionReports.concat(this.convertToExceptionReport(data.parameterViolations))
             .concat(this.convertToExceptionReport(data.classViolations))
             .concat(this.convertToExceptionReport(data.fieldViolations))
@@ -91,14 +91,14 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
     }
 
     private convertToExceptionReport(violations: any): Array<TSExceptionReport> {
-        let exceptionReports: Array<TSExceptionReport> = [];
+        const exceptionReports: Array<TSExceptionReport> = [];
         if (violations) {
-            for (let violationEntry of violations) {
-                let constraintType: string = violationEntry.constraintType;
-                let message: string = violationEntry.message;
-                let path: string = violationEntry.path;
-                let value: string = violationEntry.value;
-                let report: TSExceptionReport = TSExceptionReport.createFromViolation(constraintType, message, path, value);
+            for (const violationEntry of violations) {
+                const constraintType: string = violationEntry.constraintType;
+                const message: string = violationEntry.message;
+                const path: string = violationEntry.path;
+                const value: string = violationEntry.value;
+                const report: TSExceptionReport = TSExceptionReport.createFromViolation(constraintType, message, path, value);
                 exceptionReports.push(report);
             }
         }
@@ -107,8 +107,8 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
     }
 
     private convertEbeguExceptionReport(data: any) {
-        let exceptionReport: TSExceptionReport = TSExceptionReport.createFromExceptionReport(data);
-        let exceptionReports: Array<TSExceptionReport> = [];
+        const exceptionReport: TSExceptionReport = TSExceptionReport.createFromExceptionReport(data);
+        const exceptionReports: Array<TSExceptionReport> = [];
         exceptionReports.push(exceptionReport);
         return exceptionReports;
 
@@ -123,11 +123,11 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
     private isDataViolationResponse(data: any): boolean {
         //hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport() bekommen
         if (data !== null && data !== undefined) {
-            let hasParamViol: boolean = data.hasOwnProperty('parameterViolations');
-            let hasClassViol: boolean = data.hasOwnProperty('classViolations');
-            let hasfieldViol: boolean = data.hasOwnProperty('fieldViolations');
-            let hasPropViol: boolean = data.hasOwnProperty('propertyViolations');
-            let hasRetViol: boolean = data.hasOwnProperty('returnValueViolations');
+            const hasParamViol: boolean = data.hasOwnProperty('parameterViolations');
+            const hasClassViol: boolean = data.hasOwnProperty('classViolations');
+            const hasfieldViol: boolean = data.hasOwnProperty('fieldViolations');
+            const hasPropViol: boolean = data.hasOwnProperty('propertyViolations');
+            const hasRetViol: boolean = data.hasOwnProperty('returnValueViolations');
             return hasParamViol && hasClassViol && hasfieldViol && hasPropViol && hasRetViol;
         }
         return false;
@@ -136,13 +136,13 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     private isDataEbeguExceptionReport(data: any): boolean {
         if (data !== null && data !== undefined) {
-            let hassErrorCodeEnum: boolean = data.hasOwnProperty('errorCodeEnum');
-            let hasExceptionName: boolean = data.hasOwnProperty('exceptionName');
-            let hasMethodName: boolean = data.hasOwnProperty('methodName');
-            let hasStackTrace: boolean = data.hasOwnProperty('stackTrace');
-            let hasTranslatedMessage: boolean = data.hasOwnProperty('translatedMessage');
-            let hasCustomMessage: boolean = data.hasOwnProperty('customMessage');
-            let hasArgumentList: boolean = data.hasOwnProperty('argumentList');
+            const hassErrorCodeEnum: boolean = data.hasOwnProperty('errorCodeEnum');
+            const hasExceptionName: boolean = data.hasOwnProperty('exceptionName');
+            const hasMethodName: boolean = data.hasOwnProperty('methodName');
+            const hasStackTrace: boolean = data.hasOwnProperty('stackTrace');
+            const hasTranslatedMessage: boolean = data.hasOwnProperty('translatedMessage');
+            const hasCustomMessage: boolean = data.hasOwnProperty('customMessage');
+            const hasArgumentList: boolean = data.hasOwnProperty('argumentList');
             return hassErrorCodeEnum && hasExceptionName && hasMethodName && hasStackTrace
                 && hasTranslatedMessage && hasCustomMessage && hasArgumentList;
         }

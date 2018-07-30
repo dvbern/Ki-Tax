@@ -16,8 +16,7 @@
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
-import {MatSortModule} from '@angular/material';
-import {MatTableModule} from '@angular/material/table';
+import {MatSortModule, MatTableModule} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -29,7 +28,7 @@ import {NgSharedModule} from '../../../shared/ng-shared.module';
 
 import {TraegerschaftViewComponent} from './traegerschaftView';
 
-describe('traegerschaftView', function () {
+describe('traegerschaftView', () => {
 
     let component: TraegerschaftViewComponent;
     let fixture: ComponentFixture<TraegerschaftViewComponent>;

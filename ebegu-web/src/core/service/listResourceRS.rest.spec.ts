@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import ListResourceRS from './listResourceRS.rest';
 
-describe('ListResourceRS', function () {
+describe('ListResourceRS', () => {
 
     let listResourceRS: ListResourceRS;
 
@@ -24,19 +24,19 @@ describe('ListResourceRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         listResourceRS = $injector.get('ListResourceRS');
 
     }));
 
-    describe('Public API', function () {
-        it('should include a getLaenderList() function', function () {
+    describe('Public API', () => {
+        it('should include a getLaenderList() function', () => {
             expect(listResourceRS.getLaenderList).toBeDefined();
         });
 
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
 
     });
 });

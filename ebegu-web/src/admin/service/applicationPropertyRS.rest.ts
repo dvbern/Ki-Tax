@@ -18,9 +18,9 @@ import TSApplicationProperty from '../../models/TSApplicationProperty';
 import {IHttpPromise, IHttpResponse, IHttpService, IPromise} from 'angular';
 
 export class ApplicationPropertyRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    serviceURL: string;
 
     constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'application-properties';

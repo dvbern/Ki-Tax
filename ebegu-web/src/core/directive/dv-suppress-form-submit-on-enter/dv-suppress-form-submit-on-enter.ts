@@ -59,16 +59,16 @@ export default class DVSuppressFormSubmitOnEnter implements IDirective {
  */
 export class DVSuppressFormSubmitOnEnterController {
 
-    mdRadioGroupCtrl: any; //see radioButton.js of angular material: mdRadioGroup
-
     static $inject: string[] = ['$mdConstant', '$mdUtil', '$log'];
+
+    mdRadioGroupCtrl: any; //see radioButton.js of angular material: mdRadioGroup
     /* @ngInject */
-    constructor(private $mdConstant: any, private $mdUtil: any, private $log: ILogService) {
+    constructor(private readonly $mdConstant: any, private readonly $mdUtil: any, private readonly $log: ILogService) {
 
     }
 
     keydownListener(ev: any, element: IAugmentedJQuery) {
-        let keyCode = ev.which || ev.keyCode;
+        const keyCode = ev.which || ev.keyCode;
 
         // Only listen to events that we originated ourselves
         // so that we don't trigger on things like arrow keys in
@@ -111,7 +111,7 @@ export class DVSuppressFormSubmitOnEnterController {
 
     private triggerNextButton(element: IAugmentedJQuery) {
         let nextButtons: IAugmentedJQuery;
-        let formElement: IAugmentedJQuery = angular.element(this.$mdUtil.getClosest(element[0], 'form'));
+        const formElement: IAugmentedJQuery = angular.element(this.$mdUtil.getClosest(element[0], 'form'));
         if (formElement) {
             nextButtons = formElement.children().find('input[type="submit"], button[type="submit"]');
             if (nextButtons) {

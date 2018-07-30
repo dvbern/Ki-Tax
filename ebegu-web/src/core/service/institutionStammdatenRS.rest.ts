@@ -23,15 +23,15 @@ import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export class InstitutionStammdatenRS {
+
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService, private globalCacheService: GlobalCacheService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService, private readonly globalCacheService: GlobalCacheService) {
         this.serviceURL = REST_API + 'institutionstammdaten';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -89,7 +89,7 @@ export class InstitutionStammdatenRS {
     }
 
     public getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSInstitutionStammdaten[]> {
-        let cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN);
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN);
         return this.http.get(this.serviceURL + '/gesuchsperiode/active', {params: {gesuchsperiodeId: gesuchsperiodeId}, cache: cache})
             .then((response: any) => {
                 this.log.debug('PARSING institutionStammdaten REST array object', response.data);

@@ -34,11 +34,10 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
 
-describe('posteingangView', function () {
+describe('posteingangView', () => {
 
     let authServiceRS: AuthServiceRS;
     let gesuchRS: GesuchRS;
-    let ebeguUtil: EbeguUtil;
     let mitteilungRS: MitteilungRS;
     let posteingangViewController: PosteingangViewController;
     let $q: angular.IQService;
@@ -57,7 +56,7 @@ describe('posteingangView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         mitteilungRS = $injector.get('MitteilungRS');
         gesuchRS = $injector.get('GesuchRS');
@@ -74,16 +73,16 @@ describe('posteingangView', function () {
         mockMitteilung = mockGetMitteilung();
     }));
 
-    describe('API Usage', function () {
-        describe('searchMitteilungen', function () {
-            it('should return the list of Mitteilungen', function () {
+    describe('API Usage', () => {
+        describe('searchMitteilungen', () => {
+            it('should return the list of Mitteilungen', () => {
                 mockRestCalls();
-                posteingangViewController = new PosteingangViewController(mitteilungRS, ebeguUtil, CONSTANTS, undefined, undefined, $log);
+                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, undefined, $log);
                 $rootScope.$apply();
-                let tableFilterState: any = {};
+                const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(result => {
                     expect(mitteilungRS.searchMitteilungen).toHaveBeenCalled();
-                    let list: Array<TSMitteilung> = posteingangViewController.displayedCollection;
+                    const list: Array<TSMitteilung> = posteingangViewController.displayedCollection;
                     expect(list).toBeDefined();
                     expect(list.length).toBe(1);
                     expect(list[0]).toEqual(mockMitteilung);
@@ -93,16 +92,16 @@ describe('posteingangView', function () {
     });
 
     function mockGetMitteilung(): TSMitteilung {
-        let mockFall: TSFall = new TSFall();
+        const mockFall: TSFall = new TSFall();
         mockFall.fallNummer = 123;
-        let mockDossier: TSDossier = new TSDossier();
+        const mockDossier: TSDossier = new TSDossier();
         mockDossier.fall = mockFall;
-        let gesuchsteller: TSUser = new TSUser();
+        const gesuchsteller: TSUser = new TSUser();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
-        let mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
+        const mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
             gesuchsteller, undefined, 'Frage', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, undefined);
-        let dtoList: Array<TSMitteilung> = [mockMitteilung];
-        let totalSize: number = 1;
+        const dtoList: Array<TSMitteilung> = [mockMitteilung];
+        const totalSize: number = 1;
         spyOn(mitteilungRS, 'searchMitteilungen').and.returnValue($q.when(dtoList));
         return mockMitteilung;
     }

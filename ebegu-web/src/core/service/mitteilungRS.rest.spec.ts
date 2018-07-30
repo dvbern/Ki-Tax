@@ -23,7 +23,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import MitteilungRS from './mitteilungRS.rest';
 
-describe('MitteilungRS', function () {
+describe('MitteilungRS', () => {
 
     let mitteilungRS: MitteilungRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -38,7 +38,7 @@ describe('MitteilungRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         mitteilungRS = $injector.get('MitteilungRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -51,24 +51,24 @@ describe('MitteilungRS', function () {
         betreuung.betreuungNummer = 123;
     }));
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(mitteilungRS.serviceURL).toContain('mitteilungen');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(mitteilungRS.getServiceName()).toBe('MitteilungRS');
         });
     });
-    describe('sendbetreuungsmitteilung', function () {
-        it('should create the betreuungsmitteilung and send it', function () {
-            let restMitteilung: any = {};
-            let bm: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
+    describe('sendbetreuungsmitteilung', () => {
+        it('should create the betreuungsmitteilung and send it', () => {
+            const restMitteilung: any = {};
+            const bm: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
             bm.betreuung = betreuung;
             spyOn(ebeguRestUtil, 'betreuungsmitteilungToRestObject').and.returnValue(restMitteilung);
             spyOn(ebeguRestUtil, 'parseBetreuungsmitteilung').and.returnValue(bm);
             $httpBackend.expectPUT(mitteilungRS.serviceURL + '/sendbetreuungsmitteilung', restMitteilung).respond($q.when(restMitteilung));
 
-            let result: angular.IPromise<TSBetreuungsmitteilung> = mitteilungRS.sendbetreuungsmitteilung(dossier, betreuung);
+            const result: angular.IPromise<TSBetreuungsmitteilung> = mitteilungRS.sendbetreuungsmitteilung(dossier, betreuung);
             $httpBackend.flush();
             $rootScope.$apply();
 
@@ -80,15 +80,15 @@ describe('MitteilungRS', function () {
 
         });
     });
-    describe('applybetreuungsmitteilung', function () {
-        it('should call the services to apply the betreuungsmitteilung', function () {
-            let mitteilung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
+    describe('applybetreuungsmitteilung', () => {
+        it('should call the services to apply the betreuungsmitteilung', () => {
+            const mitteilung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
             mitteilung.id = '987654321';
 
             spyOn(ebeguRestUtil, 'parseBetreuungsmitteilung').and.returnValue(betreuung);
             $httpBackend.expectPUT(mitteilungRS.serviceURL + '/applybetreuungsmitteilung/' + mitteilung.id, null).respond($q.when({id: '123456'}));
 
-            let result: angular.IPromise<any> = mitteilungRS.applyBetreuungsmitteilung(mitteilung.id);
+            const result: angular.IPromise<any> = mitteilungRS.applyBetreuungsmitteilung(mitteilung.id);
             $httpBackend.flush();
             $rootScope.$apply();
 

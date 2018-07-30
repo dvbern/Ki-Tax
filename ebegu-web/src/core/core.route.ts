@@ -65,8 +65,8 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
     function stateChangeStart(transition: Transition) {
         //Normale Benutzer duefen nicht auf admin Seite
-        let forbiddenPlaces = ['admin', 'institution', 'parameter', 'traegerschaft'];
-        let isAdmin: boolean = authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRevisorRole());
+        const forbiddenPlaces = ['admin', 'institution', 'parameter', 'traegerschaft'];
+        const isAdmin: boolean = authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRevisorRole());
         if (forbiddenPlaces.indexOf(transition.to().name) !== -1 && authServiceRS.getPrincipal() && !isAdmin) {
             errorService.addMesageAsError('ERROR_UNAUTHORIZED');
             $log.debug('prevented navigation to page because user is not admin');
@@ -93,7 +93,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         //since we will need these lists anyway we already load on login
         gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
             if (gesuchsperioden.length > 0) {
-                let newestGP = gesuchsperioden[0];
+                const newestGP = gesuchsperioden[0];
                 institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
             }
         });
@@ -106,7 +106,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         .subscribe(() => {
             //user is not yet authenticated, show loginpage
 
-            let currentPath = angular.copy($location.absUrl());
+            const currentPath = angular.copy($location.absUrl());
             console.log('going to login page with current path ', currentPath);
 
             //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
@@ -128,7 +128,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
     if (ENV !== 'test') {
         //Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
-        let applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
+        const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
         applicationPropertyRS.getBackgroundColor().then((prop: TSApplicationProperty) => {
             if (prop && prop.value !== '#FFFFFF') {
                 angular.element('#Intro').css('background-color', prop.value);
@@ -142,7 +142,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: function () {
+        callback: () => {
             $timeout(() => angular.element('.next').last().click());
         }
     });

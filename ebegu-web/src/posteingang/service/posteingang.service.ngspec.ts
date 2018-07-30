@@ -14,11 +14,10 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {Observable} from 'rxjs/Observable';
 import {TSPostEingangEvent} from '../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from './posteingang.service';
 
-describe('posteingangService', function () {
+describe('posteingangService', () => {
 
     let posteingangService: PosteingangService;
 
@@ -32,14 +31,18 @@ describe('posteingangService', function () {
         posteingangService = TestBed.get(PosteingangService);
     }));
 
-    describe('posteingangChanged', function () {
-        it('changes the status to POSTEINGANG_MAY_CHANGED', function () {
+    describe('posteingangChanged', () => {
+        it('changes the status to POSTEINGANG_MIGHT_HAVE_CHANGED', done => {
             posteingangService.posteingangChanged();
 
-            let event: Observable<TSPostEingangEvent> = posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MAY_CHANGED);
-            event.subscribe(value => {
-                expect(value).toBe(TSPostEingangEvent.POSTEINGANG_MAY_CHANGED);
-            });
+            posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
+                .subscribe(
+                    value => {
+                        expect(value).toBe(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);
+                        done();
+                    },
+                    done.fail
+                );
         });
     });
 });

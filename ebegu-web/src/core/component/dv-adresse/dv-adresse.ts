@@ -58,7 +58,7 @@ export class DvAdresseController {
     bisherLand: string;
 
     constructor(adresseRS: AdresseRS, listResourceRS: ListResourceRS, gesuchModelManager: GesuchModelManager,
-                $translate: ITranslateService, private authServiceRS: AuthServiceRS) {
+                $translate: ITranslateService, private readonly authServiceRS: AuthServiceRS) {
         this.TSRoleUtil = TSRoleUtil;
         this.adresseRS = adresseRS;
         this.gesuchModelManager = gesuchModelManager;

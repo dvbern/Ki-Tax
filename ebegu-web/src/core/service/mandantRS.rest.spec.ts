@@ -19,7 +19,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import {MandantRS} from './mandantRS.rest';
 
-describe('mandantRS', function () {
+describe('mandantRS', () => {
 
     let mandantRS: MandantRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -31,7 +31,7 @@ describe('mandantRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         mandantRS = $injector.get('MandantRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -43,17 +43,17 @@ describe('mandantRS', function () {
         mockMandantRest = ebeguRestUtil.mandantToRestObject({}, mockMandant);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(mandantRS.getServiceName()).toBe('MandantRS');
 
         });
-        it('should include a findMandant() function', function () {
+        it('should include a findMandant() function', () => {
             expect(mandantRS.findMandant).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findMandant', () => {
             it('should return the mandant by id', () => {
                 $httpBackend.expectGET(mandantRS.serviceURL + '/id/' + encodeURIComponent(mockMandant.id)).respond(mockMandantRest);

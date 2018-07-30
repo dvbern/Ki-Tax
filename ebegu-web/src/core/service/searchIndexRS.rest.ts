@@ -20,13 +20,13 @@ import IPromise = angular.IPromise;
 
 
 export class SearchIndexRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'search/';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;

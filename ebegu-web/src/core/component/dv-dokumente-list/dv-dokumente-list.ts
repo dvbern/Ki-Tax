@@ -35,10 +35,10 @@ import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyR
 import TSApplicationProperty from '../../../models/TSApplicationProperty';
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./dv-dokumente-list.html');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const template = require('./dv-dokumente-list.html');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 require('./dv-dokumente-list.less');
-let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 
 export class DVDokumenteListConfig implements IComponentOptions {
     transclude = false;
@@ -61,6 +61,9 @@ export class DVDokumenteListConfig implements IComponentOptions {
 
 export class DVDokumenteListController {
 
+    static $inject: ReadonlyArray<string> = ['UploadRS', 'GesuchModelManager', 'EbeguUtil', 'DownloadRS', 'DvDialog', 'WizardStepManager',
+        '$log', 'AuthServiceRS', '$translate', '$window', 'ApplicationPropertyRS'];
+
     dokumente: TSDokumentGrund[];
     tableId: string;
     tableTitle: string;
@@ -71,13 +74,10 @@ export class DVDokumenteListController {
     sonstige: boolean;
     allowedMimetypes: string = '';
 
-    static $inject: ReadonlyArray<string> = ['UploadRS', 'GesuchModelManager', 'EbeguUtil', 'DownloadRS', 'DvDialog', 'WizardStepManager',
-        '$log', 'AuthServiceRS', '$translate', '$window', 'ApplicationPropertyRS'];
-
-    constructor(private uploadRS: UploadRS, private gesuchModelManager: GesuchModelManager, private ebeguUtil: EbeguUtil,
-        private downloadRS: DownloadRS, private dvDialog: DvDialog, private wizardStepManager: WizardStepManager,
-        private $log: ILogService, private authServiceRS: AuthServiceRS, private $translate: ITranslateService,
-        private $window: ng.IWindowService, private applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly uploadRS: UploadRS, private readonly gesuchModelManager: GesuchModelManager, private readonly ebeguUtil: EbeguUtil,
+        private readonly downloadRS: DownloadRS, private readonly dvDialog: DvDialog, private readonly wizardStepManager: WizardStepManager,
+        private readonly $log: ILogService, private readonly authServiceRS: AuthServiceRS, private readonly $translate: ITranslateService,
+        private readonly $window: ng.IWindowService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
     }
 
@@ -92,11 +92,11 @@ export class DVDokumenteListController {
 
     uploadAnhaenge(files: any[], selectDokument: TSDokumentGrund) {
         if (this.gesuchModelManager.getGesuch()) {
-            let gesuchID = this.gesuchModelManager.getGesuch().id;
-            let filesTooBig: any[] = [];
-            let filesOk: any[] = [];
+            const gesuchID = this.gesuchModelManager.getGesuch().id;
+            const filesTooBig: any[] = [];
+            const filesOk: any[] = [];
             this.$log.debug('Uploading files on gesuch ' + gesuchID);
-            for (let file of files) {
+            for (const file of files) {
                 this.$log.debug('File: ' + file.name + ' size: ' + file.size);
                 if (file.size > 10000000) { // Maximale Filegrösse ist 10MB
                     filesTooBig.push(file);
@@ -109,7 +109,7 @@ export class DVDokumenteListController {
                 // DialogBox anzeigen für Files, welche zu gross sind!
                 let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
                 returnString += '<ul>';
-                for (let file of filesTooBig) {
+                for (const file of filesTooBig) {
                     returnString += '<li>';
                     returnString += file.name;
                     returnString += '</li>';
@@ -123,7 +123,7 @@ export class DVDokumenteListController {
 
             if (filesOk.length > 0) {
                 this.uploadRS.uploadFile(filesOk, selectDokument, gesuchID).then((response) => {
-                    let returnedDG: TSDokumentGrund = angular.copy(response);
+                    const returnedDG: TSDokumentGrund = angular.copy(response);
                     this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id).then(() => {
                         this.handleUpload(returnedDG);
                     });
@@ -136,7 +136,7 @@ export class DVDokumenteListController {
 
     hasDokuments(selectDokument: TSDokumentGrund): boolean {
         if (selectDokument.dokumente) {
-            for (let dokument of selectDokument.dokumente) {
+            for (const dokument of selectDokument.dokumente) {
                 if (dokument.filename) {
                     return true;
                 }
@@ -155,11 +155,11 @@ export class DVDokumenteListController {
         // - JA bis Verfuegen, aber nur die von JA hinzugefuegten: d.h. wenn noch nicht verfuegt: die eigenen, wenn readonly: nichts
         // - Admin: Auch nach verfuegen, aber nur die vom JA hinzugefuegten: wenn noch nicht verfuegt oder readonly: die eigenen
         // - Alle anderen Rollen: nichts
-        let readonly: boolean = this.isGesuchReadonly();
-        let roleLoggedIn: TSRole = this.authServiceRS.getPrincipalRole();
+        const readonly: boolean = this.isGesuchReadonly();
+        const roleLoggedIn: TSRole = this.authServiceRS.getPrincipalRole();
         let documentUploadedByAmt: boolean = true; // by default true in case there is no uploadUser
         if (dokument.userUploaded) {
-            let roleDocumentUpload: TSRole = dokument.userUploaded.getCurrentRole();
+            const roleDocumentUpload: TSRole = dokument.userUploaded.getCurrentRole();
             documentUploadedByAmt = (roleDocumentUpload === TSRole.SACHBEARBEITER_JA || roleDocumentUpload === TSRole.ADMIN
                 || roleDocumentUpload === TSRole.SCHULAMT || roleDocumentUpload === TSRole.ADMINISTRATOR_SCHULAMT || roleDocumentUpload === TSRole.SUPER_ADMIN);
         }
@@ -189,7 +189,7 @@ export class DVDokumenteListController {
 
     download(dokument: TSDokument, attachment: boolean) {
         this.$log.debug('download dokument ' + dokument.filename);
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
 
         this.downloadRS.getAccessTokenDokument(dokument.id)
         .then((downloadFile: TSDownloadFile) => {
@@ -222,7 +222,7 @@ export class DVDokumenteListController {
         // Dokument-Upload ist eigentlich in jedem Status möglich, aber nicht für alle Rollen. Also nicht
         // gleichbedeutend mit readonly auf dem Gesuch
         // Jedoch darf der Gesuchsteller nach der Verfuegung nichts mehr hochladen
-        let gsAndVerfuegt: boolean = isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status) && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+        const gsAndVerfuegt: boolean = isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status) && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         return gsAndVerfuegt || this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles());
     }
 
@@ -246,7 +246,7 @@ export class DVDokumenteListController {
             }
         } else if (dokumentGrund.personType === TSDokumentGrundPersonType.KIND) {
             if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().kindContainers) {
-                let kindContainer: TSKindContainer = this.gesuchModelManager.getGesuch().extractKindFromKindNumber(dokumentGrund.personNumber);
+                const kindContainer: TSKindContainer = this.gesuchModelManager.getGesuch().extractKindFromKindNumber(dokumentGrund.personNumber);
                 if (kindContainer && kindContainer.kindJA) {
                     return kindContainer.kindJA.getFullName();
                 }

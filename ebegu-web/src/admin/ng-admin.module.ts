@@ -15,7 +15,7 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
+import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
@@ -36,7 +36,6 @@ import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batc
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
-import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
     imports: [

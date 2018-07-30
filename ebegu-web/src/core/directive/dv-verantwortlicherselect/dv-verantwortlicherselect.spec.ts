@@ -24,7 +24,7 @@ import UserRS from '../../service/userRS.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;
 
-describe('dvVerantwortlicherSelect', function () {
+describe('dvVerantwortlicherSelect', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
@@ -38,7 +38,7 @@ describe('dvVerantwortlicherSelect', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
         userRS = $injector.get('UserRS');
@@ -56,8 +56,8 @@ describe('dvVerantwortlicherSelect', function () {
         });
 
         it('returns the fullname of the verantwortlicherBG', () => {
-            let verantwortlicher: TSUser = new TSUser('Emiliano', 'Camacho');
-            let gesuch: TSGesuch = new TSGesuch();
+            const verantwortlicher: TSUser = new TSUser('Emiliano', 'Camacho');
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.dossier = new TSDossier();
             gesuch.dossier.verantwortlicherBG = verantwortlicher;
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
@@ -76,15 +76,15 @@ describe('dvVerantwortlicherSelect', function () {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
-            let newUser: TSUser = new TSUser('Adolfo', 'Contreras');
+            const newUser: TSUser = new TSUser('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
             expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
         });
     });
 
     function createGesuch() {
-        let gesuch: TSGesuch = new TSGesuch();
-        let dossier: TSDossier = new TSDossier();
+        const gesuch: TSGesuch = new TSGesuch();
+        const dossier: TSDossier = new TSDossier();
         dossier.verantwortlicherBG = user;
         gesuch.dossier = dossier;
         gesuchModelManager.setGesuch(gesuch);

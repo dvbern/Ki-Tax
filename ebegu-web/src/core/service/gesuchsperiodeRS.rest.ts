@@ -18,6 +18,8 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 
 export default class GesuchsperiodeRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
@@ -25,10 +27,8 @@ export default class GesuchsperiodeRS {
 
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService, private $q: IQService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService, private readonly $q: IQService) {
         this.serviceURL = REST_API + 'gesuchsperioden';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -74,7 +74,7 @@ export default class GesuchsperiodeRS {
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
         return this.http.get(this.serviceURL + '/active').then((response: any) => {
-            let gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            const gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.activeGesuchsperiodenList;
         });
@@ -97,7 +97,7 @@ export default class GesuchsperiodeRS {
 
     public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
         return this.http.get(this.serviceURL + '/unclosed').then((response: any) => {
-            let gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            const gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.nichtAbgeschlosseneGesuchsperiodenList;
         });

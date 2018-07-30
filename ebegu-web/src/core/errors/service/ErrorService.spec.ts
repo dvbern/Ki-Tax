@@ -20,109 +20,109 @@ import TSExceptionReport from '../../../models/TSExceptionReport';
 import ErrorService from './ErrorService';
 import HttpErrorInterceptor from './HttpErrorInterceptor';
 
-describe('errorService', function () {
+describe('errorService', () => {
 
     let httpErrorInterceptor: HttpErrorInterceptor, errorService: ErrorService;
     let $rootScope: angular.IRootScopeService;
 
     beforeEach(angular.mock.module('dvbAngular.errors'));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         httpErrorInterceptor = $injector.get('HttpErrorInterceptor');
         $rootScope = $injector.get('$rootScope');
         errorService = $injector.get('ErrorService');
     }));
 
-    beforeEach(inject(function () {
+    beforeEach(inject(() => {
         spyOn($rootScope, '$broadcast').and.callThrough();
     }));
 
-    describe('Public API', function () {
-        it('should include a getErrors() function', function () {
+    describe('Public API', () => {
+        it('should include a getErrors() function', () => {
             expect(errorService.getErrors).toBeDefined();
         });
-        it('should include a addValidationError() function', function () {
+        it('should include a addValidationError() function', () => {
             expect(errorService.addValidationError).toBeDefined();
         });
-        it('should include a clearAll() function', function () {
+        it('should include a clearAll() function', () => {
             expect(errorService.clearAll).toBeDefined();
         });
-        it('should include a clearError() function', function () {
+        it('should include a clearError() function', () => {
             expect(errorService.clearError).toBeDefined();
         });
-        it('should include a handleError() function', function () {
+        it('should include a handleError() function', () => {
             expect(errorService.handleError).toBeDefined();
         });
-        it('should include a handleValidationError() function', function () {
+        it('should include a handleValidationError() function', () => {
             expect(errorService.handleValidationError).toBeDefined();
         });
     });
 
-    describe('Public API usage', function () {
-        describe('getErrors()', function () {
-            it('should return an array', function () {
+    describe('Public API usage', () => {
+        describe('getErrors()', () => {
+            it('should return an array', () => {
                 expect(errorService.getErrors()).toEqual([]);
             });
-            it('the internal error array should be immutable', function () {
-                let errors: Array<TSExceptionReport> = errorService.getErrors();
-                let length = errors.length;
+            it('the internal error array should be immutable', () => {
+                const errors: Array<TSExceptionReport> = errorService.getErrors();
+                const length = errors.length;
 
                 errors.push(TSExceptionReport.createClientSideError(TSErrorLevel.INFO, 'custom test', null));
                 expect(errorService.getErrors().length).toEqual(length);
             });
         });
 
-        describe('addValidationError()', function () {
-            it('should add a validation error to errors', function () {
-                let msgKey = 'TEST';
-                let args = {
+        describe('addValidationError()', () => {
+            it('should add a validation error to errors', () => {
+                const msgKey = 'TEST';
+                const args = {
                     fieldName: 'field',
                     minlenght: '10'
                 };
                 expect(args).toBeTruthy();
                 errorService.addValidationError(msgKey, args);
 
-                let errors: Array<TSExceptionReport> = errorService.getErrors();
+                const errors: Array<TSExceptionReport> = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
-                let error: TSExceptionReport = errors[0];
+                const error: TSExceptionReport = errors[0];
                 expect(error.severity === TSErrorLevel.SEVERE);
                 expect(error.msgKey).toBe(msgKey);
                 expect(error.argumentList).toEqual(args);
                 expect(error.type).toBe(TSErrorType.CLIENT_SIDE);
             });
 
-            it('should ignore duplicated errors', function () {
+            it('should ignore duplicated errors', () => {
                 errorService.addValidationError('TEST');
-                let length = errorService.getErrors().length;
+                const length = errorService.getErrors().length;
                 errorService.addValidationError('TEST');
                 expect(errorService.getErrors().length === length).toBeTruthy();
             });
 
-            it('should broadcast an UPDATE event', function () {
+            it('should broadcast an UPDATE event', () => {
                 errorService.addValidationError('TEST');
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
             });
         });
 
-        describe('handleValidationError', function () {
-            beforeEach(function () {
+        describe('handleValidationError', () => {
+            beforeEach(() => {
                 errorService.handleValidationError(false, 'TEST');
             });
 
-            it('should add a validation error on FALSE', function () {
+            it('should add a validation error on FALSE', () => {
                 expect(errorService.getErrors()[0].msgKey).toBe('TEST');
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
             });
 
-            it('should remove a validation error on TRUE', function () {
+            it('should remove a validation error on TRUE', () => {
                 errorService.handleValidationError(false, 'TEST');
                 expect(errorService.getErrors().length === 0);
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
             });
         });
 
-        describe('clearAll()', function () {
-            it('should clear all errors', function () {
+        describe('clearAll()', () => {
+            it('should clear all errors', () => {
                 errorService.addValidationError('foo');
                 expect(errorService.getErrors().length === 1).toBeTruthy();
                 expect($rootScope.$broadcast).not.toHaveBeenCalledWith(TSMessageEvent.CLEAR);
@@ -133,15 +133,15 @@ describe('errorService', function () {
             });
         });
 
-        describe('clearError()', function () {
-            it('should remove the specified error', function () {
+        describe('clearError()', () => {
+            it('should remove the specified error', () => {
                 errorService.addValidationError('KEEP');
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
                 errorService.addValidationError('REMOVE');
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
                 errorService.clearError('REMOVE');
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
-                let errors = errorService.getErrors();
+                const errors = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
                 expect(errors[0].msgKey).toBe('KEEP');
             });

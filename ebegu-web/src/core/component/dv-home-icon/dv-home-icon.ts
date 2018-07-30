@@ -17,7 +17,7 @@ import {IComponentOptions} from 'angular';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {StateService} from '@uirouter/core';
 
-let template = require('./dv-home-icon.html');
+const template = require('./dv-home-icon.html');
 
 export class DvHomeIconComponentConfig implements IComponentOptions {
     transclude = false;
@@ -29,11 +29,11 @@ export class DvHomeIconComponentConfig implements IComponentOptions {
 
 export class DvHomeIconController {
 
-    TSRoleUtil: any;
-
     static $inject: ReadonlyArray<string> = ['$state'];
 
-    constructor(private $state: StateService) {
+    TSRoleUtil: any;
+
+    constructor(private readonly $state: StateService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

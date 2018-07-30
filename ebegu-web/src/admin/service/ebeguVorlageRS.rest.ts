@@ -21,11 +21,11 @@ import IHttpPromise = angular.IHttpPromise;
 
 
 export class EbeguVorlageRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private upload: any,
-                private $q: IQService) {
+    serviceURL: string;
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly upload: any,
+                private readonly $q: IQService) {
         this.serviceURL = REST_API + 'ebeguVorlage';
     }
 
@@ -41,7 +41,7 @@ export class EbeguVorlageRS {
         let restEbeguVorlage = {};
         restEbeguVorlage = this.ebeguRestUtil.ebeguVorlageToRestObject(restEbeguVorlage, ebeguVorlage);
         this.upload.json(restEbeguVorlage);
-        let encodedFilename = btoa(file.name);
+        const encodedFilename = btoa(file.name);
         return this.upload.upload({
             url: this.serviceURL,
             method: 'POST',
@@ -60,9 +60,9 @@ export class EbeguVorlageRS {
             console.log('Upload File: NOT SUCCESS');
             return this.$q.reject();
         }, (evt: any) => {
-            let loaded: number = evt.loaded;
-            let total: number = evt.total;
-            let progressPercentage: number = 100.0 * loaded / total;
+            const loaded: number = evt.loaded;
+            const total: number = evt.total;
+            const progressPercentage: number = 100.0 * loaded / total;
             console.log('progress: ' + progressPercentage + '% ');
             return this.$q.defer().notify();
         });

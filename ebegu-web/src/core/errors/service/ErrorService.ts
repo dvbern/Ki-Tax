@@ -21,12 +21,12 @@ import {TSErrorType} from '../../../models/enums/TSErrorType';
 
 export default class ErrorService {
 
-    errors: Array<TSExceptionReport> = [];
-
 
     static $inject = ['$rootScope'];
+
+    errors: Array<TSExceptionReport> = [];
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService) {
+    constructor(private readonly $rootScope: IRootScopeService) {
     }
 
 
@@ -53,9 +53,7 @@ export default class ErrorService {
             return;
         }
 
-        let cleared = this.errors.filter(function (e: TSExceptionReport) {
-            return e.msgKey !== msgKey;
-        });
+        const cleared = this.errors.filter(e => e.msgKey !== msgKey);
 
         if (cleared.length !== this.errors.length) {
             this.errors = cleared;
@@ -69,21 +67,19 @@ export default class ErrorService {
      * @param {Object} [args] message parameters
      */
     addValidationError(msgKey: string, args?: any) {
-        let err: TSExceptionReport = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
+        const err: TSExceptionReport = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
         this.addDvbError(err);
     }
 
     containsError(dvbError: TSExceptionReport) {
-        return this.errors.filter(function (e: TSExceptionReport) {
-                return e.msgKey === dvbError.msgKey;
-            }).length > 0;
+        return this.errors.filter(e => e.msgKey === dvbError.msgKey).length > 0;
     }
 
     addDvbError(dvbError: TSExceptionReport) {
         if (dvbError && dvbError.isValid()) {
             if (!this.containsError(dvbError)) {
                 this.errors.push(dvbError);
-                let udateEvent: TSMessageEvent = (dvbError.severity === TSErrorLevel.INFO ) ? TSMessageEvent.INFO_UPDATE : TSMessageEvent.ERROR_UPDATE;
+                const udateEvent: TSMessageEvent = (dvbError.severity === TSErrorLevel.INFO ) ? TSMessageEvent.INFO_UPDATE : TSMessageEvent.ERROR_UPDATE;
                 this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
             }
         } else {
@@ -92,13 +88,13 @@ export default class ErrorService {
     }
 
     addMesageAsError(msg: string) {
-        let error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
+        const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
         this.addDvbError(error);
 
     }
 
     addMesageAsInfo(msg: string) {
-        let error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
+        const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
         this.addDvbError(error);
     }
 
@@ -128,7 +124,7 @@ export default class ErrorService {
      */
     handleErrors(dvbErrors: Array<TSExceptionReport>) {
         if (dvbErrors) {
-            for (let err of dvbErrors) {
+            for (const err of dvbErrors) {
                 this.addDvbError(err);
             }
         }

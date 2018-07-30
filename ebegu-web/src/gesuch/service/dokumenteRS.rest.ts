@@ -25,9 +25,9 @@ import ICacheObject = angular.ICacheObject;
 
 
 export default class DokumenteRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    serviceURL: string;
 
     constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService) {
         this.serviceURL = REST_API + 'dokumente';

@@ -25,7 +25,7 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./dv-benutzer-list.html');
+const template = require('./dv-benutzer-list.html');
 require('./dv-benutzer-list.less');
 
 export class DVBenutzerListConfig implements IComponentOptions {
@@ -44,6 +44,8 @@ export class DVBenutzerListConfig implements IComponentOptions {
 }
 
 export class DVBenutzerListController implements IOnInit {
+
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window', '$translate'];
 
     totalResultCount: number;
     displayedCollection: Array<TSUser> = []; //Liste die im Gui angezeigt wird
@@ -68,10 +70,8 @@ export class DVBenutzerListController implements IOnInit {
     onEdit: (user: any) => void;
     TSRoleUtil: TSRoleUtil;
 
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window', '$translate'];
-
-    constructor(private $log: ILogService, private institutionRS: InstitutionRS, private traegerschaftenRS: TraegerschaftRS,
-               private authServiceRS: AuthServiceRS, private $window: ng.IWindowService, private $translate: ITranslateService) {
+    constructor(private readonly $log: ILogService, private readonly institutionRS: InstitutionRS, private readonly traegerschaftenRS: TraegerschaftRS,
+               private readonly authServiceRS: AuthServiceRS, private readonly $window: ng.IWindowService, private readonly $translate: ITranslateService) {
 
         this.TSRoleUtil = TSRoleUtil;
     }
@@ -98,8 +98,8 @@ export class DVBenutzerListController implements IOnInit {
         this.onEdit({user: user, event: event});
     }
 
-    private callServer = (tableFilterState: any) => {
-        let pagination = tableFilterState.pagination;
+    private readonly callServer = (tableFilterState: any) => {
+        const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 
         if (this.onFilterChange && angular.isFunction(this.onFilterChange)) {
@@ -132,7 +132,7 @@ export class DVBenutzerListController implements IOnInit {
      * children but td or th
      */
     public getColumnsNumber(): number {
-        let element = this.$window.document.getElementById('benutzerHeadRow');
+        const element = this.$window.document.getElementById('benutzerHeadRow');
         return element.childElementCount;
     }
 }

@@ -31,8 +31,8 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
 import {StateService} from '@uirouter/core';
 
-let template = require('./gesuchsperiodeView.html');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const template = require('./gesuchsperiodeView.html');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
@@ -44,6 +44,10 @@ export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
 
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
+
+    static $inject = ['EbeguParameterRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log', '$stateParams',
+        '$state', 'AuthServiceRS'];
+
     form: IFormController;
     gesuchsperiode: TSGesuchsperiode;
     ebeguParameterListGesuchsperiode: TSEbeguParameter[];
@@ -52,13 +56,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     datumFreischaltungTagesschule: moment.Moment;
     datumFreischaltungMax: moment.Moment;
 
-
-    static $inject = ['EbeguParameterRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log', '$stateParams',
-        '$state', 'AuthServiceRS'];
-
-    constructor(private ebeguParameterRS: EbeguParameterRS, private dvDialog: DvDialog, private globalCacheService: GlobalCacheService,
-                private gesuchsperiodeRS: GesuchsperiodeRS, private $log: ILogService, private $stateParams: IGesuchsperiodeStateParams,
-                private $state: StateService, authServiceRS: AuthServiceRS) {
+    constructor(private readonly ebeguParameterRS: EbeguParameterRS, private readonly dvDialog: DvDialog, private readonly globalCacheService: GlobalCacheService,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $log: ILogService, private readonly $stateParams: IGesuchsperiodeStateParams,
+                private readonly $state: StateService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
     }
 
@@ -98,7 +98,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         if (this.form.$valid && this.statusHaveChanged()) {
             // Den Dialog nur aufrufen, wenn der Status geändert wurde (oder die GP neu ist) oder wenn es AKTIV ist
             if (this.gesuchsperiode.isNew() || this.initialStatus !== this.gesuchsperiode.status || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV) {
-                let dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
+                const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
                 this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'GESUCHSPERIODE_DIALOG_TITLE',
                     deleteText: dialogText,
@@ -161,10 +161,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        for (let i = 0; i < this.ebeguParameterListGesuchsperiode.length; i++) {
-            let param = this.ebeguParameterListGesuchsperiode[i];
-            this.ebeguParameterRS.saveEbeguParameter(param);
-        }
+        this.ebeguParameterListGesuchsperiode.forEach(param => this.ebeguParameterRS.saveEbeguParameter(param));
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_PARAMETER).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
@@ -210,7 +207,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public getDatumFreischaltungMax() {
-        let gueltigAb: moment.Moment  = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
+        const gueltigAb: moment.Moment  = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
         return gueltigAb.subtract(1, 'days');
     }
 }

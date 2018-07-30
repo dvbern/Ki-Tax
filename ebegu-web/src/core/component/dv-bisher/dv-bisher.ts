@@ -22,7 +22,7 @@ import DateUtil from '../../../utils/DateUtil';
 import ILogService = angular.ILogService;
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./dv-bisher.html');
+const template = require('./dv-bisher.html');
 require('./dv-bisher.less');
 
 /**
@@ -55,7 +55,7 @@ export class DvBisherComponentConfig implements IComponentOptions {
 
 export class DvBisher {
 
-    static $inject = ['GesuchModelManager', '$translate', '$log'];
+    static $inject = ['GesuchModelManager', '$translate'];
 
     gs: any;
     ja: any;
@@ -65,9 +65,7 @@ export class DvBisher {
     blockExisted: boolean;
 
 
-    /* @ngInject */
-    constructor(private gesuchModelManager: GesuchModelManager, private $translate: ITranslateService, private $log: ILogService) {
-
+    constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $translate: ITranslateService) {
     }
 
     $onInit() {

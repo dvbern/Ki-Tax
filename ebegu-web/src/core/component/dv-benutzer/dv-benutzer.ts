@@ -35,8 +35,8 @@ import UserRS from '../../service/userRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 import {StateService} from '@uirouter/core';
 
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-let template = require('./dv-benutzer.html');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const template = require('./dv-benutzer.html');
 require('./dv-benutzer.less');
 
 export class DVBenutzerConfig implements IComponentOptions {
@@ -47,6 +47,26 @@ export class DVBenutzerConfig implements IComponentOptions {
 }
 
 export class DVBenutzerController implements IOnInit {
+
+    public get currentBerechtigung(): TSBerechtigung {
+        return this._currentBerechtigung;
+    }
+
+    public get futureBerechtigungen(): TSBerechtigung[] {
+        return this._futureBerechtigungen;
+    }
+
+    public get isDefaultVerantwortlicher(): boolean {
+        return this._isDefaultVerantwortlicher;
+    }
+
+    public set isDefaultVerantwortlicher(value: boolean) {
+        this._isDefaultVerantwortlicher = value;
+    }
+
+
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS',
+        '$state', 'DvDialog', 'ApplicationPropertyRS'];
 
     form: IFormController;
     TSRoleUtil = TSRoleUtil;
@@ -62,20 +82,16 @@ export class DVBenutzerController implements IOnInit {
 
     private _isDefaultVerantwortlicher: boolean = false;
 
-
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS',
-        '$state', 'DvDialog', 'ApplicationPropertyRS'];
-
-    constructor(private $log: ILogService, private institutionRS: InstitutionRS, private traegerschaftenRS: TraegerschaftRS,
-                private authServiceRS: AuthServiceRS, private $translate: ITranslateService,
-                private $stateParams: IBenutzerStateParams, private userRS: UserRS, private $state: StateService,
-                private dvDialog: DvDialog, private applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly $log: ILogService, private readonly institutionRS: InstitutionRS, private readonly traegerschaftenRS: TraegerschaftRS,
+                private readonly authServiceRS: AuthServiceRS, private readonly $translate: ITranslateService,
+                private readonly $stateParams: IBenutzerStateParams, private readonly userRS: UserRS, private readonly $state: StateService,
+                private readonly dvDialog: DvDialog, private readonly applicationPropertyRS: ApplicationPropertyRS) {
     }
 
     $onInit() {
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
-        let username: string = this.$stateParams.benutzerId;
+        const username: string = this.$stateParams.benutzerId;
         if (username) {
            this.userRS.findBenutzer(username).then((result) => {
                this.selectedUser = result;
@@ -186,7 +202,7 @@ export class DVBenutzerController implements IOnInit {
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
             return true;
         }
-        for (let berechtigung of this.futureBerechtigungen) {
+        for (const berechtigung of this.futureBerechtigungen) {
             if (rolesToCheck.indexOf(berechtigung.role) > -1) {
                 return true;
             }
@@ -226,7 +242,7 @@ export class DVBenutzerController implements IOnInit {
     }
 
     addBerechtigung() {
-        let berechtigung: TSBerechtigung = new TSBerechtigung();
+        const berechtigung: TSBerechtigung = new TSBerechtigung();
         berechtigung.role = TSRole.GESUCHSTELLER;
         berechtigung.gueltigkeit = new TSDateRange();
         berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
@@ -239,7 +255,7 @@ export class DVBenutzerController implements IOnInit {
     }
 
     removeBerechtigung(berechtigung: TSBerechtigung): void {
-        let index: number = this.futureBerechtigungen.indexOf(berechtigung, 0);
+        const index: number = this.futureBerechtigungen.indexOf(berechtigung, 0);
         this.futureBerechtigungen.splice(index, 1);
     }
 
@@ -261,21 +277,5 @@ export class DVBenutzerController implements IOnInit {
 
     public isBerechtigungEnabled(berechtigung: TSBerechtigung): boolean {
         return berechtigung && berechtigung.enabled;
-    }
-
-    public get currentBerechtigung(): TSBerechtigung {
-        return this._currentBerechtigung;
-    }
-
-    public get futureBerechtigungen(): TSBerechtigung[] {
-        return this._futureBerechtigungen;
-    }
-
-    public get isDefaultVerantwortlicher(): boolean {
-        return this._isDefaultVerantwortlicher;
-    }
-
-    public set isDefaultVerantwortlicher(value: boolean) {
-        this._isDefaultVerantwortlicher = value;
     }
 }

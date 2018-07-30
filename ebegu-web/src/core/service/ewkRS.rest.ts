@@ -22,6 +22,8 @@ import DateUtil from '../../utils/DateUtil';
 import IHttpParamSerializer = angular.IHttpParamSerializer;
 
 export default class EwkRS {
+
+    static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     httpParamSerializer: IHttpParamSerializer;
@@ -29,10 +31,8 @@ export default class EwkRS {
     log: ILogService;
     gesuchsteller1: TSGesuchstellerContainer;
     gesuchsteller2: TSGesuchstellerContainer;
-
-    static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
-    constructor($http: IHttpService, private $httpParamSerializer: IHttpParamSerializer, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+    constructor($http: IHttpService, private readonly $httpParamSerializer: IHttpParamSerializer, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
         this.serviceURL = REST_API + 'gesuchsteller';
         this.http = $http;
         this.httpParamSerializer = $httpParamSerializer;
@@ -71,14 +71,14 @@ export default class EwkRS {
     }
 
     private suchePersonInEwk(gesuchstellerContainer: TSGesuchstellerContainer): IPromise<TSEWKResultat> {
-        let gs: TSGesuchsteller = gesuchstellerContainer.gesuchstellerJA;
+        const gs: TSGesuchsteller = gesuchstellerContainer.gesuchstellerJA;
         if (gs.ewkPersonId) {
             return this.http.get(this.serviceURL + '/ewk/search/id/' + gs.ewkPersonId)
                 .then((response: any) => {
                     return this.handlePersonSucheResult(response);
                 });
         } else {
-            let reportParams: string = this.httpParamSerializer({
+            const reportParams: string = this.httpParamSerializer({
                 nachname: gs.nachname,
                 vorname: gs.vorname,
                 geburtsdatum: DateUtil.momentToLocalDate(gs.geburtsdatum),
@@ -97,7 +97,7 @@ export default class EwkRS {
     }
 
     public selectPerson(n: number, ewkPersonID: string): void {
-        let gs: TSGesuchstellerContainer = this.getGesuchsteller(n);
+        const gs: TSGesuchstellerContainer = this.getGesuchsteller(n);
         gs.gesuchstellerJA.ewkPersonId = ewkPersonID;
         gs.gesuchstellerJA.ewkAbfrageDatum = DateUtil.now();
     }

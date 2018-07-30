@@ -18,7 +18,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {TSRole} from '../../../models/enums/TSRole';
 import INgModelController = angular.INgModelController;
 
-let template = require('./dv-radio-container.html');
+const template = require('./dv-radio-container.html');
 require('./dv-radio-container.less');
 
 export class DvRadioContainerComponentConfig implements IComponentOptions {
@@ -41,6 +41,8 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
 
 export class DvRadioContainerController {
 
+    static $inject: ReadonlyArray<string> = [];
+
     ngModelCtrl: INgModelController;
     modelToPassOn: any;
     // Die Direktiven duerfen nicht dynamisch gesetzt werden. https://github.com/angular/angular.js/issues/14575
@@ -48,8 +50,6 @@ export class DvRadioContainerController {
     // immer mit den Werten von dv-enable-allowed-roles und dv-enable-expression. Wenn die Direktive nicht gesetzt werden muss, bekommen diese attributen
     // die Werte by default allRoles und true, sodass es immer angezeigt wird.
     allRoles: Array<TSRole>;
-
-    static $inject: ReadonlyArray<string> = [];
 
     $onInit() {
         this.modelToPassOn = this.ngModelCtrl.$viewValue;

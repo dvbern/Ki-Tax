@@ -34,7 +34,7 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./gesuchstellerDashboardView.html');
+const template = require('./gesuchstellerDashboardView.html');
 require('./gesuchstellerDashboardView.less');
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
@@ -46,6 +46,9 @@ export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
 
 export class GesuchstellerDashboardViewController {
 
+    static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
+        '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService', 'DossierRS'];
+
     private antragList: Array<TSAntragDTO> = [];
     private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     dossier: TSDossier;
@@ -53,13 +56,10 @@ export class GesuchstellerDashboardViewController {
     amountNewMitteilungen: number;
     mapOfNewestAntraege: { [key: string]: string } = {}; // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
 
-    static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
-        '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService', 'DossierRS'];
-
-    constructor(private $state: StateService, private $log: ILogService,
-                private authServiceRS: AuthServiceRS, private searchRS: SearchRS, private ebeguUtil: EbeguUtil,
-                private gesuchsperiodeRS: GesuchsperiodeRS, private $translate: ITranslateService,
-                private mitteilungRS: MitteilungRS, private gesuchRS: GesuchRS, private errorService: ErrorService, private dossierRS: DossierRS) {
+    constructor(private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS, private readonly ebeguUtil: EbeguUtil,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $translate: ITranslateService,
+                private readonly mitteilungRS: MitteilungRS, private readonly gesuchRS: GesuchRS, private readonly errorService: ErrorService, private readonly dossierRS: DossierRS) {
     }
 
     $onInit() {
@@ -110,7 +110,7 @@ export class GesuchstellerDashboardViewController {
         this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this._activeGesuchsperiodenList = angular.copy(response);
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
-            for (let gp of this._activeGesuchsperiodenList) {
+            for (const gp of this._activeGesuchsperiodenList) {
                 this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
                 });
@@ -133,7 +133,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public displayAnsehenButton(periode: TSGesuchsperiode): boolean {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status) {
                 return false;
@@ -148,7 +148,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public openAntrag(periode: TSGesuchsperiode, ansehen: boolean): void {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
@@ -192,7 +192,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public createTagesschule(periode: TSGesuchsperiode): void {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
             this.$state.go('createAngebot', {type: 'TS', gesuchId: antrag.antragId});
@@ -202,7 +202,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public createFerieninsel(periode: TSGesuchsperiode): void {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
             this.$state.go('createAngebot', {type: 'FI', gesuchId: antrag.antragId});
@@ -212,7 +212,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
         return periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
@@ -220,7 +220,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public getButtonText(periode: TSGesuchsperiode): string {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status) {
                 // Noch nicht freigegeben -> Text BEARBEITEN
@@ -253,7 +253,7 @@ export class GesuchstellerDashboardViewController {
     private getAntragForGesuchsperiode(periode: TSGesuchsperiode): TSAntragDTO {
         // Die Antraege sind nach Laufnummer sortiert, d.h. der erste einer Periode ist immer der aktuellste
         if (this.antragList) {
-            for (let antrag of this.antragList) {
+            for (const antrag of this.antragList) {
                 if (antrag.gesuchsperiodeGueltigAb.year() === periode.gueltigkeit.gueltigAb.year()) {
                     return antrag;
                 }
@@ -266,8 +266,8 @@ export class GesuchstellerDashboardViewController {
      * Status muss speziell uebersetzt werden damit Gesuchsteller nur "In Bearbeitung" sieht und nicht in "Bearbeitung Gesuchsteller"
      */
     public translateStatus(antrag: TSAntragDTO) {
-        let status: TSAntragStatus = antrag.status;
-        let isUserGesuchsteller: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        const status: TSAntragStatus = antrag.status;
+        const isUserGesuchsteller: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         if (status === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
             if (TSGesuchBetreuungenStatus.ABGEWIESEN === antrag.gesuchBetreuungenStatus) {
                 return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]);
@@ -303,12 +303,12 @@ export class GesuchstellerDashboardViewController {
     }
 
     public gesperrtWegenMutation(periode: TSGesuchsperiode) {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
         return !!antrag && !this.isNeuestAntragOfGesuchsperiode(periode, antrag);
     }
 
     public hasOnlyFerieninsel(periode: TSGesuchsperiode) {
-        let antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
         return !!antrag && antrag.hasOnlyFerieninsel();
     }
 

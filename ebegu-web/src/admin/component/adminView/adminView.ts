@@ -21,7 +21,7 @@ import {ReindexRS} from '../../service/reindexRS.rest';
 import AbstractAdminViewController from '../../abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 require('./adminView.less');
-let template = require('./adminView.html');
+const template = require('./adminView.html');
 
 export class AdminViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
@@ -42,7 +42,7 @@ export class AdminViewController extends AbstractAdminViewController {
     ebeguRestUtil: EbeguRestUtil;
 
     constructor(applicationPropertyRS: ApplicationPropertyRS, ebeguRestUtil: EbeguRestUtil,
-                private reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
+                private readonly reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.applicationProperty = undefined;
         this.applicationPropertyRS = applicationPropertyRS;
@@ -76,7 +76,7 @@ export class AdminViewController extends AbstractAdminViewController {
     }
 
     private getIndexOfElementwithID(prop: TSApplicationProperty) {
-        let idToSearch = prop.id;
+        const idToSearch = prop.id;
         for (let i = 0; i < this.applicationProperties.length; i++) {
             if (this.applicationProperties[i].id === idToSearch) {
                 return i;

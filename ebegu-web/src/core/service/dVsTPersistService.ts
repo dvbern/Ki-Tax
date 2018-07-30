@@ -24,11 +24,11 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
  */
 export class DVsTPersistService {
 
-    persistedData: TSSTPersistObject[];
-
     static $inject: any = ['AuthLifeCycleService'];
+
+    persistedData: TSSTPersistObject[];
     /* @ngInject */
-    constructor(private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
         this.clearAll();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
@@ -40,7 +40,7 @@ export class DVsTPersistService {
     }
 
     public saveData(namespace: string, data: any): void {
-        let existingData: TSSTPersistObject = this.findNamespace(namespace);
+        const existingData: TSSTPersistObject = this.findNamespace(namespace);
         if (existingData) {
             existingData.data = JSON.stringify(data);
         } else {
@@ -49,7 +49,7 @@ export class DVsTPersistService {
     }
 
     public loadData(namespace: string): any {
-        let existingData: TSSTPersistObject = this.findNamespace(namespace);
+        const existingData: TSSTPersistObject = this.findNamespace(namespace);
         if (existingData) {
             return JSON.parse(existingData.data);
         }
@@ -71,12 +71,7 @@ export class DVsTPersistService {
     }
 
     private findNamespace(namespace: string): TSSTPersistObject {
-        for (let i = 0; i < this.persistedData.length; i++) {
-            if (this.persistedData[i].namespace === namespace) {
-                return this.persistedData[i];
-            }
-        }
-        return undefined;
+        return this.persistedData.find(pd => pd.namespace === namespace);
     }
 
 }

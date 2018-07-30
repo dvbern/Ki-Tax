@@ -24,7 +24,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
 import SearchRS from '../../gesuch/service/searchRS.rest';
-let template = require('./faelleListView.html');
+const template = require('./faelleListView.html');
 require('./faelleListView.less');
 
 export class FaelleListViewComponentConfig implements IComponentOptions {
@@ -36,15 +36,15 @@ export class FaelleListViewComponentConfig implements IComponentOptions {
 
 export class FaelleListViewController {
 
-    private antragList: Array<TSAntragDTO>;
-    totalResultCount: string = '0';
-
 
     static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
-    constructor(private $filter: IFilterService, private gesuchModelManager: GesuchModelManager,
-                private $state: StateService, private $log: ILogService,
-                private authServiceRS: AuthServiceRS, private searchRS: SearchRS) {
+    private antragList: Array<TSAntragDTO>;
+    totalResultCount: string = '0';
+
+    constructor(private readonly $filter: IFilterService, private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS) {
         this.initViewModel();
     }
 
@@ -76,7 +76,7 @@ export class FaelleListViewController {
      */
     public editFall(antrag: TSAntragDTO, event: any): void {
         if (antrag) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since last time
                 this.gesuchModelManager.clearGesuch();
@@ -100,7 +100,7 @@ export class FaelleListViewController {
     private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
         if (antrag) {
             if (isCtrlKeyPressed) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                const url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
                 this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});

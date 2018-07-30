@@ -17,7 +17,7 @@ import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, INgMo
 import ITimeoutService = angular.ITimeoutService;
 declare let require: any;
 declare let angular: any;
-let template = require('./dv-valueinput.html');
+const template = require('./dv-valueinput.html');
 
 export class DVValueinput implements IDirective {
     restrict = 'E';
@@ -50,6 +50,8 @@ export class DVValueinput implements IDirective {
     }
 }
 export class ValueinputController {
+
+    static $inject: string[] = ['$timeout'];
     valueinput: string;
     ngModelCtrl: INgModelController;
     valueRequired: boolean;
@@ -58,9 +60,34 @@ export class ValueinputController {
     float: boolean;
     fixedDecimals: number;
     dvOnBlur: () => void;
+    constructor(private readonly $timeout: ITimeoutService) {
+    }
 
-    static $inject: string[] = ['$timeout'];
-    constructor(private $timeout: ITimeoutService) {
+    private static numberToString(num: number): string {
+        if (num || num === 0) {
+            return ValueinputController.formatToNumberString(num.toString());
+        }
+        return '';
+    }
+
+    private static stringToNumber(string: string): number | undefined  | null {
+        if (string) {
+            return Number(ValueinputController.formatFromNumberString(string));
+        }
+        return null;  // null zurueckgeben und nicht undefined denn sonst wird ein ng-parse error erzeugt
+    }
+
+    private static formatToNumberString(valueString: string): string {
+        if (valueString !== null && valueString !== undefined) {
+            const parts = valueString.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+            return parts.join('.');
+        }
+        return valueString;
+    }
+
+    private static formatFromNumberString(numberString: string): string {
+        return numberString.split("'").join('').split(',').join('');
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
@@ -100,7 +127,7 @@ export class ValueinputController {
                 return true;
             }
 
-            let value = modelValue || ValueinputController.stringToNumber(viewValue);
+            const value = modelValue || ValueinputController.stringToNumber(viewValue);
 
             return !isNaN(Number(value)) && (Number(value) < 999999999999) && this.allowNegative ? true : Number(value) >= 0;
         };
@@ -122,9 +149,9 @@ export class ValueinputController {
 
         this.valueinput = this.sanitizeInputString();
         if (event) {
-            let angEle: IAugmentedJQuery = angular.element(event.target); //read raw html element
+            const angEle: IAugmentedJQuery = angular.element(event.target); //read raw html element
 
-            let element: any = angEle[0];
+            const element: any = angEle[0];
             this.$timeout(() => {
                 // If this function exists...
                 if (element.setSelectionRange) {
@@ -157,35 +184,8 @@ export class ValueinputController {
 
     }
 
-    private static numberToString(num: number): string {
-        if (num || num === 0) {
-            return ValueinputController.formatToNumberString(num.toString());
-        }
-        return '';
-    }
-
-    private static stringToNumber(string: string): number | undefined  | null {
-        if (string) {
-            return Number(ValueinputController.formatFromNumberString(string));
-        }
-        return null;  // null zurueckgeben und nicht undefined denn sonst wird ein ng-parse error erzeugt
-    }
-
-    private static formatToNumberString(valueString: string): string {
-        if (valueString !== null && valueString !== undefined) {
-            let parts = valueString.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-            return parts.join('.');
-        }
-        return valueString;
-    }
-
-    private static formatFromNumberString(numberString: string): string {
-        return numberString.split("'").join('').split(',').join('');
-    }
-
     public removeNotDigits(): void {
-        let transformedInput = this.sanitizeInputString();
+        const transformedInput = this.sanitizeInputString();
 
         //neuen wert ins model schreiben
         if (transformedInput && transformedInput !== this.ngModelCtrl.$viewValue) {
@@ -219,7 +219,7 @@ export class ValueinputController {
         // removes all chars that are not a digit or a point
         transformedInput = transformedInput.replace(/([^0-9|\.])+/g, '');
         if (transformedInput) {
-            let pointIndex = transformedInput.indexOf('.');
+            const pointIndex = transformedInput.indexOf('.');
             //only parse if there is either no floating point or the floating point is not at the end. Also dont parse
             // if 0 at end
             if (pointIndex === -1 || (pointIndex !== (transformedInput.length - 1) && transformedInput.lastIndexOf('0') !== (transformedInput.length - 1) )) {

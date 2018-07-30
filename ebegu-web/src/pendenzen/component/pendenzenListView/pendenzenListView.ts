@@ -24,7 +24,7 @@ import {StateService} from '@uirouter/core';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
-let template = require('./pendenzenListView.html');
+const template = require('./pendenzenListView.html');
 require('./pendenzenListView.less');
 
 export class PendenzenListViewComponentConfig implements IComponentOptions {
@@ -36,12 +36,12 @@ export class PendenzenListViewComponentConfig implements IComponentOptions {
 
 export class PendenzenListViewController {
 
-    totalResultCount: string = '0';
-
     static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS', 'AuthServiceRS'];
 
-    constructor(private gesuchModelManager: GesuchModelManager, private $state: StateService, private $log: ILogService,
-                private searchRS: SearchRS, private authServiceRS: AuthServiceRS) {
+    totalResultCount: string = '0';
+
+    constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly searchRS: SearchRS, private readonly authServiceRS: AuthServiceRS) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
@@ -55,7 +55,7 @@ export class PendenzenListViewController {
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {
         if (pendenz) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             this.openPendenz(pendenz, isCtrlKeyPressed);
         }
     }
@@ -63,12 +63,12 @@ export class PendenzenListViewController {
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean) {
         this.gesuchModelManager.clearGesuch();
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
-            let navObj: any = {
+            const navObj: any = {
                 gesuchId: pendenz.antragId
             };
             this.navigate('gesuch.familiensituation', navObj, isCtrlKeyPressed);
         } else {
-            let navObj: any = {
+            const navObj: any = {
                 createNew: false,
                 gesuchId: pendenz.antragId,
                 dossierId: pendenz.dossierId
@@ -79,7 +79,7 @@ export class PendenzenListViewController {
 
     private navigate(path: string, navObj: any, isCtrlKeyPressed: boolean): void {
         if (isCtrlKeyPressed) {
-            let url = this.$state.href(path, navObj);
+            const url = this.$state.href(path, navObj);
             window.open(url, '_blank');
         } else {
             this.$state.go(path, navObj);

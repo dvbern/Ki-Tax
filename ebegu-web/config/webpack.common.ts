@@ -27,14 +27,14 @@ import HtmlWebpackPlugin = require('html-webpack-plugin');
 import DefinePlugin = require('webpack/lib/DefinePlugin');
 import CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
-let contents = fs.readFileSync(__dirname + '/../pom.xml').toString();
+const contents = fs.readFileSync(__dirname + '/../pom.xml').toString();
 
-let re = new RegExp('<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>', 'im');
-let myMatchArray = re.exec(contents);
-let parsedversion = (myMatchArray === null) ? 'unknown' : myMatchArray[1];
+const re = new RegExp('<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>', 'im');
+const myMatchArray = re.exec(contents);
+const parsedversion = (myMatchArray === null) ? 'unknown' : myMatchArray[1];
 console.log('Parsed Version from pom is ' + parsedversion);
 
-let currentTime = new Date();
+const currentTime = new Date();
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);

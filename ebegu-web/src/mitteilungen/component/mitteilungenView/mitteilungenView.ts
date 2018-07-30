@@ -22,7 +22,7 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 
-let template = require('./mitteilungenView.html');
+const template = require('./mitteilungenView.html');
 require('./mitteilungenView.less');
 
 export class MitteilungenViewComponentConfig implements IComponentOptions {
@@ -34,15 +34,15 @@ export class MitteilungenViewComponentConfig implements IComponentOptions {
 
 export class MitteilungenViewController {
 
+    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
+
     form: IFormController;
     dossierId: string;
     TSRoleUtil = TSRoleUtil;
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
-
     /* @ngInject */
-    constructor(private $state: StateService, private $stateParams: IMitteilungenStateParams,
-                private authServiceRS: AuthServiceRS, private $timeout: ITimeoutService) {
+    constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
+                private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
     }
 
     $onInit() {

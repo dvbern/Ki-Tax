@@ -32,7 +32,7 @@ import {EbeguWebMitteilungen} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import ITimeoutService = angular.ITimeoutService;
 
-describe('mitteilungenView', function () {
+describe('mitteilungenView', () => {
 
     let mitteilungRS: MitteilungRS;
     let authServiceRS: AuthServiceRS;
@@ -49,13 +49,12 @@ describe('mitteilungenView', function () {
     let verantwortlicher: TSUser;
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
-    let postEingangService: PosteingangService;
 
     beforeEach(angular.mock.module(EbeguWebMitteilungen.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         mitteilungRS = $injector.get('MitteilungRS');
         authServiceRS = $injector.get('AuthServiceRS');
         fallRS = $injector.get('FallRS');
@@ -85,7 +84,7 @@ describe('mitteilungenView', function () {
         spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
     }));
 
-    let assertMitteilungContent = function () {
+    const assertMitteilungContent = () => {
         expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
         expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
         // diese Parameter muessen im Server gesetzt werden
@@ -93,9 +92,9 @@ describe('mitteilungenView', function () {
         expect(controller.getCurrentMitteilung().senderTyp).toBeUndefined();
         expect(controller.getCurrentMitteilung().empfaengerTyp).toBeUndefined();
     };
-    describe('loading initial data', function () {
-        it('should create an empty TSMItteilung for GS', function () {
-            let gesuchsteller: TSUser = new TSUser();
+    describe('loading initial data', () => {
+        it('should create an empty TSMItteilung for GS', () => {
+            const gesuchsteller: TSUser = new TSUser();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
@@ -103,8 +102,8 @@ describe('mitteilungenView', function () {
             compareCommonAttributes(gesuchsteller);
             assertMitteilungContent();
         });
-        it('should create an empty TSMItteilung for JA', function () {
-            let sachbearbeiter_ja: TSUser = new TSUser();
+        it('should create an empty TSMItteilung for JA', () => {
+            const sachbearbeiter_ja: TSUser = new TSUser();
             sachbearbeiter_ja.currentBerechtigung.role = TSRole.SACHBEARBEITER_JA;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_JA) >= 0;
@@ -115,8 +114,8 @@ describe('mitteilungenView', function () {
             compareCommonAttributes(sachbearbeiter_ja);
             assertMitteilungContent();
         });
-        it('should create an empty TSMItteilung for Institution', function () {
-            let sachbearbeiter_inst: TSUser = new TSUser();
+        it('should create an empty TSMItteilung for Institution', () => {
+            const sachbearbeiter_inst: TSUser = new TSUser();
             sachbearbeiter_inst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0;
@@ -128,16 +127,16 @@ describe('mitteilungenView', function () {
             assertMitteilungContent();
         });
     });
-    describe('sendMitteilung', function () {
-        it('should send the current mitteilung and update currentMitteilung with the new content', function () {
-            let gesuchsteller: TSUser = new TSUser();
+    describe('sendMitteilung', () => {
+        it('should send the current mitteilung and update currentMitteilung with the new content', () => {
+            const gesuchsteller: TSUser = new TSUser();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
             createMitteilungForUser(gesuchsteller);
 
             // mock saved mitteilung
-            let savedMitteilung: TSMitteilung = new TSMitteilung();
+            const savedMitteilung: TSMitteilung = new TSMitteilung();
             savedMitteilung.id = '321';
             savedMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
             spyOn(mitteilungRS, 'sendMitteilung').and.returnValue($q.when(savedMitteilung));
@@ -153,15 +152,15 @@ describe('mitteilungenView', function () {
             expect(controller.getCurrentMitteilung().id).toBeUndefined();
         });
     });
-    describe('setErledigt', function () {
-        it('should change the status from GELESEN to ERLEDIGT and save the mitteilung', function () {
-            let gesuchsteller: TSUser = new TSUser();
+    describe('setErledigt', () => {
+        it('should change the status from GELESEN to ERLEDIGT and save the mitteilung', () => {
+            const gesuchsteller: TSUser = new TSUser();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
             createMitteilungForUser(gesuchsteller);
 
-            let mitteilung: TSMitteilung = new TSMitteilung();
+            const mitteilung: TSMitteilung = new TSMitteilung();
             mitteilung.id = '123';
             spyOn(mitteilungRS, 'setMitteilungErledigt').and.returnValue($q.when(mitteilung));
 
@@ -202,7 +201,7 @@ describe('mitteilungenView', function () {
         spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.when([{}]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
             $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
-            dossierRS, postEingangService);
+            dossierRS, undefined);
         controller.$onInit();   // hack, muesste wohl eher so gehen
                                 // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();

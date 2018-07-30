@@ -21,15 +21,15 @@ import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
 
 export default class EinkommensverschlechterungInfoRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService,
-                private wizardStepManager: WizardStepManager) {
+                private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'einkommensverschlechterungInfo';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;

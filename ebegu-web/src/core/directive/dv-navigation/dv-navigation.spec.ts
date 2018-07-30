@@ -29,7 +29,7 @@ import {EbeguWebCore} from '../../core.module';
 import {NavigatorController} from './dv-navigation';
 import {StateService} from '@uirouter/core';
 
-describe('dvNavigation', function () {
+describe('dvNavigation', () => {
 
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
@@ -44,10 +44,10 @@ describe('dvNavigation', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
         $q = $injector.get('$q');
-        let $timeout = $injector.get('$timeout');
+        const $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
         wizardStepManager = $injector.get('WizardStepManager');
         $state = $injector.get('$state');
@@ -64,7 +64,7 @@ describe('dvNavigation', function () {
         });
     }));
 
-    describe('getNextButtonName', function () {
+    describe('getNextButtonName', () => {
         it('returns WEITER_UPPER if dvSave exists', () => {
             isStatusVerfuegen = false;
             expect(navController.getNextButtonName()).toEqual('SPEICHERN UND WEITER');
@@ -79,7 +79,7 @@ describe('dvNavigation', function () {
         });
     });
 
-    describe('getNextButtonName', function () {
+    describe('getNextButtonName', () => {
         it('returns ZURUECK_UPPER if dvSave exists', () => {
             isStatusVerfuegen = false;
             expect(navController.getPreviousButtonName()).toEqual('SPEICHERN UND ZURÜCK');
@@ -93,7 +93,7 @@ describe('dvNavigation', function () {
             expect(navController.getPreviousButtonName()).toEqual('ZURÜCK');
         });
     });
-    describe('nextStep', function () {
+    describe('nextStep', () => {
         it('moves to gesuch.familiensituation when coming from GESUCH_ERSTELLEN', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
             spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
@@ -247,7 +247,7 @@ describe('dvNavigation', function () {
             expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterungInfo', {gesuchId: '123'});
         });
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS required', () => {
-            let gesuch = mockGesuch();
+            const gesuch = mockGesuch();
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             spyOn(gesuch, 'extractEinkommensverschlechterungInfo').and.returnValue({einkommensverschlechterung: true});
             spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
@@ -260,7 +260,7 @@ describe('dvNavigation', function () {
             });
         });
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS NOT required', () => {
-            let gesuch = mockGesuch();
+            const gesuch = mockGesuch();
             spyOn(gesuch, 'extractEinkommensverschlechterungInfo').and.returnValue({einkommensverschlechterung: true});
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
@@ -274,7 +274,7 @@ describe('dvNavigation', function () {
             });
         });
         it('moves to gesuch.dokumente when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 without EV', () => {
-            let gesuch = mockGesuch();
+            const gesuch = mockGesuch();
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.DOKUMENTE);
             spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.when({}));
@@ -292,11 +292,11 @@ describe('dvNavigation', function () {
         });
     });
 
-    describe('previousStep', function () {
+    describe('previousStep', () => {
         it('moves to gesuch.fallcreation when coming from FAMILIENSITUATION', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
-            let dossier = new TSDossier();
+            const dossier = new TSDossier();
             dossier.gemeinde = TestDataUtil.createGemeindeOstermundigen();
             dossier.id = '123';
             spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
@@ -512,7 +512,7 @@ describe('dvNavigation', function () {
     });
 
     function mockGesuch(): TSGesuch {
-        let gesuch: TSGesuch = new TSGesuch();
+        const gesuch: TSGesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
         gesuch.eingangsart = TSEingangsart.ONLINE;
         gesuch.id = '123';

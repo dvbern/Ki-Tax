@@ -23,7 +23,7 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebCore} from '../core.module';
 import AntragStatusHistoryRS from './antragStatusHistoryRS.rest';
 
-describe('antragStatusHistoryRS', function () {
+describe('antragStatusHistoryRS', () => {
 
     let antragStatusHistoryRS: AntragStatusHistoryRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -33,31 +33,31 @@ describe('antragStatusHistoryRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
     }));
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(antragStatusHistoryRS.serviceURL).toContain('antragStatusHistory');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(antragStatusHistoryRS.getServiceName()).toBe('AntragStatusHistoryRS');
         });
-        it('should include a loadLastStatusChange() function', function () {
+        it('should include a loadLastStatusChange() function', () => {
             expect(antragStatusHistoryRS.loadLastStatusChange).toBeDefined();
         });
     });
 
     describe('loadLastStatusChange', () => {
         it('should return the last status change for the given gesuch', () => {
-            let gesuch: TSGesuch = new TSGesuch();
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.id = '123456';
-            let antragStatusHistory: TSAntragStatusHistory = new TSAntragStatusHistory(gesuch.id, undefined, DateUtil.today(), undefined, TSAntragStatus.VERFUEGEN);
+            const antragStatusHistory: TSAntragStatusHistory = new TSAntragStatusHistory(gesuch.id, undefined, DateUtil.today(), undefined, TSAntragStatus.VERFUEGEN);
             TestDataUtil.setAbstractFieldsUndefined(antragStatusHistory);
-            let restAntStatusHistory: any = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
+            const restAntStatusHistory: any = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
             $httpBackend.expectGET(antragStatusHistoryRS.serviceURL + '/' + encodeURIComponent(gesuch.id)).respond(restAntStatusHistory);
 
             let lastStatusChange: TSAntragStatusHistory;
@@ -76,7 +76,7 @@ describe('antragStatusHistoryRS', function () {
             expect(antragStatusHistoryRS.lastChange).toBeUndefined();
         });
         it('should return undefined if the gesuch id is undefined', () => {
-            let gesuch: TSGesuch = new TSGesuch();
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.id = undefined;
             antragStatusHistoryRS.loadLastStatusChange(gesuch);
             expect(antragStatusHistoryRS.lastChange).toBeUndefined();

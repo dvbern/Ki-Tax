@@ -22,8 +22,8 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import './benutzerListView.less';
 import {StateService} from '@uirouter/core';
 
-let template = require('./benutzerListView.html');
-let style = require('./benutzerListView.less');
+const template = require('./benutzerListView.html');
+require('./benutzerListView.less');
 
 export class BenutzerListViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
@@ -37,12 +37,12 @@ export class BenutzerListViewComponentConfig implements IComponentOptions {
 
 export class BenutzerListViewController extends AbstractAdminViewController {
 
-    totalResultCount: string = '0';
-
 
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'UserRS'];
 
-    constructor(private $state: StateService, private $log: ILogService, authServiceRS: AuthServiceRS, private userRS: UserRS) {
+    totalResultCount: string = '0';
+
+    constructor(private readonly $state: StateService, private readonly $log: ILogService, authServiceRS: AuthServiceRS, private readonly userRS: UserRS) {
         super(authServiceRS);
     }
 

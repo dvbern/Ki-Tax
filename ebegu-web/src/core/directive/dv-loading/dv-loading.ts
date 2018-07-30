@@ -22,6 +22,12 @@ export class DVLoading implements IDirective {
     controller = DVLoadingController;
     controllerAs = 'vm';
 
+    static factory(): IDirectiveFactory {
+        const directive = () => new DVLoading();
+        directive.$inject = [];
+        return directive;
+    }
+
     link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, controller: DVLoadingController) => {
         let promise: IPromise<any>;
         scope.$watch(controller.isLoading, (v) => {
@@ -37,12 +43,6 @@ export class DVLoading implements IDirective {
             }
         });
     }
-
-    static factory(): IDirectiveFactory {
-        const directive = () => new DVLoading();
-        directive.$inject = [];
-        return directive;
-    }
 }
 
 /**
@@ -55,7 +55,7 @@ export class DVLoadingController {
     isLoading: () => {};
 
     /* @ngInject */
-    constructor(private $http: IHttpService, public $timeout: ITimeoutService) {
+    constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService) {
         this.isLoading = (): boolean => {
             return this.$http.pendingRequests.length > 0;
         };

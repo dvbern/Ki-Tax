@@ -21,14 +21,14 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import GesuchstellerRS from './gesuchstellerRS.rest';
 
-describe('GesuchstellerRS', function () {
+describe('GesuchstellerRS', () => {
 
     let gesuchstellerRS: GesuchstellerRS;
     let $httpBackend: angular.IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockGesuchsteller: TSGesuchstellerContainer;
     let mockGesuchstellerRest: any;
-    let dummyGesuchID: string = '123';
+    const dummyGesuchID: string = '123';
     let $q: angular.IQService;
     let wizardStepManager: WizardStepManager;
 
@@ -36,7 +36,7 @@ describe('GesuchstellerRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchstellerRS = $injector.get('GesuchstellerRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -55,19 +55,19 @@ describe('GesuchstellerRS', function () {
         $httpBackend.whenGET(gesuchstellerRS.serviceURL + '/' + encodeURIComponent(mockGesuchsteller.id)).respond(mockGesuchstellerRest);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(gesuchstellerRS.getServiceName()).toBe('GesuchstellerRS');
         });
-        it('should include a findGesuchsteller() function', function () {
+        it('should include a findGesuchsteller() function', () => {
             expect(gesuchstellerRS.findGesuchsteller).toBeDefined();
         });
-        it('should include a updateGesuchsteller() function', function () {
+        it('should include a updateGesuchsteller() function', () => {
             expect(gesuchstellerRS.saveGesuchsteller).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('updateGesuchsteller', () => {
             it('should updateGesuchsteller a gesuchsteller and her adresses', () => {
                     mockGesuchsteller.gesuchstellerJA.nachname = 'changedname';

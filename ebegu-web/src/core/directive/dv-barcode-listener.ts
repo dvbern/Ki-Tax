@@ -15,7 +15,7 @@
 
 import {IDirective, IDirectiveFactory} from 'angular';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {DvDialog} from './dv-dialog/dv-dialog';
 import {FreigabeController} from '../../gesuch/dialog/FreigabeController';
@@ -27,7 +27,7 @@ import ITimeoutService = angular.ITimeoutService;
 import IDocumentService = angular.IDocumentService;
 import ILogService = angular.ILogService;
 
-let FREIGEBEN_DIALOG_TEMPLATE = require('../../gesuch/dialog/freigabe.html');
+const FREIGEBEN_DIALOG_TEMPLATE = require('../../gesuch/dialog/freigabe.html');
 
 export class DVBarcodeListener implements IDirective {
     restrict = 'A';
@@ -48,20 +48,20 @@ export class DVBarcodeListener implements IDirective {
  */
 export class DVBarcodeController {
 
+
+    static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
+
     private readonly unsubscribe$ = new Subject<void>();
     private barcodeReading: boolean = false;
     private barcodeBuffer: string[] = [];
     private barcodeReadtimeout: any = null;
 
-
-    static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
-
-    constructor(private $document: IDocumentService, private $timeout: ITimeoutService, private dVDialog: DvDialog, private authService: AuthServiceRS,
-                private errorService: ErrorService, private $log: ILogService, private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly $document: IDocumentService, private readonly $timeout: ITimeoutService, private readonly dVDialog: DvDialog, private readonly authService: AuthServiceRS,
+                private readonly errorService: ErrorService, private readonly $log: ILogService, private readonly authLifeCycleService: AuthLifeCycleService) {
     }
 
     $onInit() {
-        let keypressEvent = (e: any) => {
+        const keypressEvent = (e: any) => {
             this.barcodeOnKeyPressed(e);
         };
 
@@ -93,7 +93,7 @@ export class DVBarcodeController {
 
     public barcodeOnKeyPressed(e: any): void {
 
-        let keyPressChar: string = e.key ? e.key : String.fromCharCode(e.which);
+        const keyPressChar: string = e.key ? e.key : String.fromCharCode(e.which);
 
         if (this.barcodeReading) {
             e.preventDefault();
@@ -112,12 +112,12 @@ export class DVBarcodeController {
                 this.$log.debug('Barcode read:' + barcodeRead);
                 barcodeRead = barcodeRead.replace('§', '');
 
-                let barcodeParts: string[] = barcodeRead.split('|');
+                const barcodeParts: string[] = barcodeRead.split('|');
 
                 if (barcodeParts.length === 3) {
-                    let barcodeDocType: string = barcodeParts[0];
-                    let barcodeDocFunction: string = barcodeParts[1];
-                    let barcodeDocID: string = barcodeParts[2];
+                    const barcodeDocType: string = barcodeParts[0];
+                    const barcodeDocFunction: string = barcodeParts[1];
+                    const barcodeDocID: string = barcodeParts[2];
 
                     this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
                     this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);

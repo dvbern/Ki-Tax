@@ -21,8 +21,8 @@ import {ShowTooltipController} from '../../../gesuch/dialog/ShowTooltipControlle
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
 
-let template = require('./dv-skiplinks.html');
-let showKontaktTemplate = require('../../../gesuch/dialog/showKontaktTemplate.html');
+const template = require('./dv-skiplinks.html');
+const showKontaktTemplate = require('../../../gesuch/dialog/showKontaktTemplate.html');
 
 export class DvSkiplinksComponentConfig implements IComponentOptions {
     transclude = false;
@@ -34,11 +34,11 @@ export class DvSkiplinksComponentConfig implements IComponentOptions {
 
 export class DvSkiplinksController implements IDVFocusableController {
 
-    TSRoleUtil: any;
-
     static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
 
-    constructor(private $state: StateService, private DvDialog: DvDialog, private ebeguUtil: EbeguUtil) {
+    TSRoleUtil: any;
+
+    constructor(private readonly $state: StateService, private readonly DvDialog: DvDialog, private readonly ebeguUtil: EbeguUtil) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

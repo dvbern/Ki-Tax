@@ -30,6 +30,8 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  * ACHTUNG! Diese Direktive darf nicht mit ng-if zusammen benutzt werden
  */
 export class DVShowElement implements IDirective {
+
+    static $inject: string[] = ['ngIfDirective'];
     restrict = 'A';
     controller = DVRoleElementController;
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
@@ -38,19 +40,23 @@ export class DVShowElement implements IDirective {
     priority: number;
     ngIf: any;
 
-    static $inject: string[] = ['ngIfDirective'];
-
     /* @ngInject */
-    constructor(private ngIfDirective: any) {
+    constructor(private readonly ngIfDirective: any) {
         this.ngIf = ngIfDirective[0];
         this.transclude = this.ngIf.transclude;
         this.priority = this.ngIf.priority;
     }
 
+    static factory(): IDirectiveFactory {
+        const directive = (ngIfDirective: any) => new DVShowElement(ngIfDirective);
+        directive.$inject = ['ngIfDirective'];
+        return directive;
+    }
+
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
         // Consider using a standard function expression.
-        let arguments2: Array<any> = [scope, element, attributes, controller, $transclude];
+        const arguments2: Array<any> = [scope, element, attributes, controller, $transclude];
         this.callNgIfThrough(attributes, controller, arguments2);
 
         // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen der Variable, den wir
@@ -76,11 +82,5 @@ export class DVShowElement implements IDirective {
             return (controller.checkValidity());
         };
         this.ngIf.link.apply(this.ngIf, arguments2);
-    }
-
-    static factory(): IDirectiveFactory {
-        const directive = (ngIfDirective: any) => new DVShowElement(ngIfDirective);
-        directive.$inject = ['ngIfDirective'];
-        return directive;
     }
 }

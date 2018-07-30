@@ -29,9 +29,7 @@ export default class DVTrimEmpty implements IDirective {
     constructor() {
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ngModel: INgModelController) => {
             if (ngModel) {
-                  let emptyTrimFunc = function (value: any) {
-                    return value === '' ? null : value;
-                  };
+                  const emptyTrimFunc = (value: any) => value === '' ? null : value;
                   ngModel.$parsers.push(emptyTrimFunc);
                 }
         };

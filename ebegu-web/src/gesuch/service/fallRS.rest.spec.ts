@@ -19,7 +19,7 @@ import TSFall from '../../models/TSFall';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import FallRS from './fallRS.rest';
 
-describe('fallRS', function () {
+describe('fallRS', () => {
 
     let fallRS: FallRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -32,7 +32,7 @@ describe('fallRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         fallRS = $injector.get('FallRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -45,25 +45,25 @@ describe('fallRS', function () {
         mockFallRest = ebeguRestUtil.fallToRestObject({}, mockFall);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(fallRS.serviceURL).toContain('falle');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(fallRS.getServiceName()).toBe('FallRS');
         });
-        it('should include a createFall() function', function () {
+        it('should include a createFall() function', () => {
             expect(fallRS.createFall).toBeDefined();
         });
-        it('should include a findFall() function', function () {
+        it('should include a findFall() function', () => {
             expect(fallRS.findFall).toBeDefined();
         });
-        it('should include a updateFall() function', function () {
+        it('should include a updateFall() function', () => {
             expect(fallRS.updateFall).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findFall', () => {
             it('should return the Fall by id', () => {
                 $httpBackend.expectGET(fallRS.serviceURL + '/id/' + mockFall.id).respond(mockFallRest);

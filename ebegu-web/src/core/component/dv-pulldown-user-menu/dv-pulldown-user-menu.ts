@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IOnDestroy, IOnInit} from 'angular';
+import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
@@ -24,7 +24,7 @@ import TSUser from '../../../models/TSUser';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 require('./dv-pulldown-user-menu.less');
-let template = require('./dv-pulldown-user-menu.html');
+const template = require('./dv-pulldown-user-menu.html');
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     transclude = false;
@@ -34,28 +34,30 @@ export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DvPulldownUserMenuController {
+export class DvPulldownUserMenuController implements IOnInit, IOnDestroy {
+
+    static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     TSRoleUtil = TSRoleUtil;
     principal: TSUser;
 
-    static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
-
-    constructor(private $state: StateService, private authServiceRS: AuthServiceRS,
-                private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.TSRoleUtil = TSRoleUtil;
     }
 
-    $onInit() {
+    $onInit(): void {
         this.principal = this.authServiceRS.getPrincipal();
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => { this.principal = this.authServiceRS.getPrincipal(); });
+            .subscribe(() => {
+                this.principal = this.authServiceRS.getPrincipal();
+            });
     }
 
-    $onDestroy() {
+    $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }

@@ -28,8 +28,8 @@ import ITimeoutService = angular.ITimeoutService;
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
-let template = require('./ferieninselView.html');
-let style = require('./ferieninselView.less');
+const template = require('./ferieninselView.html');
+const style = require('./ferieninselView.less');
 
 export class FerieninselViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
@@ -52,9 +52,9 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
 
     /* @ngInject */
-    constructor(private gesuchsperiodeRS: GesuchsperiodeRS,
-                private ferieninselStammdatenRS: FerieninselStammdatenRS,
-                private $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+    constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
+                private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.TSRoleUtil = TSRoleUtil;
         this.$timeout(() => {
@@ -80,8 +80,8 @@ export class FerieninselViewController extends AbstractAdminViewController {
     private readFerieninselStammdatenByGesuchsperiode(): void {
         this.ferieninselStammdatenMap = {};
         this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiode(this.gesuchsperiode.id).then((response: TSFerieninselStammdaten[]) => {
-            let ferieninselStammdatenList: TSFerieninselStammdaten[] =  response;
-            for (let obj of ferieninselStammdatenList) {
+            const ferieninselStammdatenList: TSFerieninselStammdaten[] =  response;
+            for (const obj of ferieninselStammdatenList) {
                 this.ferieninselStammdatenMap[obj.ferienname] = obj;
             }
             this.resetErrors();
@@ -121,12 +121,12 @@ export class FerieninselViewController extends AbstractAdminViewController {
     }
 
     public removeFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten, ferieninselZeitraum: TSFerieninselZeitraum): void {
-        let index: number = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
+        const index: number = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
         ferieninselStammdaten.zeitraumList.splice(index, 1);
     }
 
     public isFerieninselStammdatenValid(ferieninselStammdaten: TSFerieninselStammdaten): boolean {
-        let fiValid: boolean = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
+        const fiValid: boolean = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigAb)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigBis));
 

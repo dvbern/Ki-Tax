@@ -19,11 +19,11 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import IPromise = angular.IPromise;
 
 export class UploadRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
+    serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public log: ILogService, private upload: any, public ebeguRestUtil: EbeguRestUtil,
+    constructor(public http: IHttpService, REST_API: string, public log: ILogService, private readonly upload: any, public ebeguRestUtil: EbeguRestUtil,
                 public q: IQService) {
         this.serviceURL = REST_API + 'upload';
     }
@@ -32,12 +32,12 @@ export class UploadRS {
 
         let restDokumentGrund = {};
         restDokumentGrund = this.ebeguRestUtil.dokumentGrundToRestObject(restDokumentGrund, dokumentGrund);
-        let restDokumentString = this.upload.json(restDokumentGrund);
+        const restDokumentString = this.upload.json(restDokumentGrund);
 
-        let names: string [] = [];
-        for (let file of files) {
+        const names: string [] = [];
+        for (const file of files) {
             if (file) {
-                let encodedFilename = btoa(file.name);
+                const encodedFilename = btoa(file.name);
                 names.push(encodedFilename);
             }
         }
@@ -59,9 +59,9 @@ export class UploadRS {
             console.log('Upload File: NOT SUCCESS');
             return this.q.reject();
         }, (evt: any) => {
-            let loaded: number = evt.loaded;
-            let total: number = evt.total;
-            let progressPercentage: number = 100.0 * loaded / total;
+            const loaded: number = evt.loaded;
+            const total: number = evt.total;
+            const progressPercentage: number = 100.0 * loaded / total;
             console.log('progress: ' + progressPercentage + '% ');
             return this.q.defer().notify();
         });

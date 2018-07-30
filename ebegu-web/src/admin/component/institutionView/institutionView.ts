@@ -32,8 +32,8 @@ import {IInstitutionStateParams} from '../../admin.route';
 import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-let template = require('./institutionView.html');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const template = require('./institutionView.html');
 require('./institutionView.less');
 import $ = require('jquery');
 
@@ -50,6 +50,8 @@ export class InstitutionViewComponentConfig implements IComponentOptions {
 
 export class InstitutionViewController extends AbstractAdminViewController {
 
+    static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
+
     form: IFormController;
 
     traegerschaften: TSTraegerschaft[];
@@ -60,12 +62,10 @@ export class InstitutionViewController extends AbstractAdminViewController {
     betreuungsangebotValues: Array<any>;
     errormessage: string = undefined;
 
-    static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
-
-    constructor(private institutionRS: InstitutionRS, private institutionStammdatenRS: InstitutionStammdatenRS,
-                private errorService: ErrorService, private dvDialog: DvDialog, private ebeguUtil: EbeguUtil,
-                authServiceRS: AuthServiceRS, private $stateParams: IInstitutionStateParams,
-                private $state: StateService) {
+    constructor(private readonly institutionRS: InstitutionRS, private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                private readonly errorService: ErrorService, private readonly dvDialog: DvDialog, private readonly ebeguUtil: EbeguUtil,
+                authServiceRS: AuthServiceRS, private readonly $stateParams: IInstitutionStateParams,
+                private readonly $state: StateService) {
         super(authServiceRS);
     }
 
@@ -139,7 +139,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
             elementID: undefined,
         }).then(() => {   //User confirmed removal
             this.institutionStammdatenRS.removeInstitutionStammdaten(institutionStammdaten.id).then((result) => {
-                let index = EbeguUtil.getIndexOfElementwithID(institutionStammdaten, this.instStammdatenList);
+                const index = EbeguUtil.getIndexOfElementwithID(institutionStammdaten, this.instStammdatenList);
                 if (index > -1) {
                     this.instStammdatenList.splice(index, 1);
                 }

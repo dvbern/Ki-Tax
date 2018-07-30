@@ -19,63 +19,6 @@ import {TSErrorAction} from './enums/TSErrorAction';
 
 export default class TSExceptionReport {
 
-    private _type: TSErrorType;
-    private _severity: TSErrorLevel;
-    private _msgKey: string;
-
-    //fields for ExceptionReport entity
-    private _exceptionName: string;
-    private _methodName: string;
-    private _translatedMessage: string;
-    private _customMessage: string;
-    private _errorCodeEnum: string;
-    private _stackTrace: string;
-    private _objectId: string;
-    private _argumentList: any;
-
-    // fields for ViolationReports
-    private _path: string;
-
-    private _action: TSErrorAction = undefined;
-
-    /**
-     *
-     * @param type Type of the Error
-     * @param severity Severity of the Error
-     * @param msgKey This is the message key of the error. can also be the message itself
-     * @param args
-     */
-    constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any) {
-        this._type = type || null;
-        this._severity = severity || null;
-        this._msgKey = msgKey || null;
-        this._argumentList = args || [];
-        this._action = undefined;
-    }
-
-    isConstantValue(constant: any, value: any) {
-        let keys = Object.keys(constant);
-        for (let i = 0; i < keys.length; i++) {
-            if (value === constant[keys[i]]) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    isValid() {
-        let validType = this.isConstantValue(TSErrorType, this.type);
-        let validSeverity = this.isConstantValue(TSErrorLevel, this.severity);
-        let validMsgKey = typeof this.msgKey === 'string' && this.msgKey.length > 0;
-
-        return validType && validSeverity && validMsgKey;
-    }
-
-    isInternal() {
-        return this.type === TSErrorType.INTERNAL;
-    }
-
     get type(): TSErrorType {
         return this._type;
     }
@@ -180,8 +123,42 @@ export default class TSExceptionReport {
         this._action = value;
     }
 
+    private _type: TSErrorType;
+    private _severity: TSErrorLevel;
+    private _msgKey: string;
+
+    //fields for ExceptionReport entity
+    private _exceptionName: string;
+    private _methodName: string;
+    private _translatedMessage: string;
+    private _customMessage: string;
+    private _errorCodeEnum: string;
+    private _stackTrace: string;
+    private _objectId: string;
+    private _argumentList: any;
+
+    // fields for ViolationReports
+    private _path: string;
+
+    private _action: TSErrorAction = undefined;
+
+    /**
+     *
+     * @param type Type of the Error
+     * @param severity Severity of the Error
+     * @param msgKey This is the message key of the error. can also be the message itself
+     * @param args
+     */
+    constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any) {
+        this._type = type || null;
+        this._severity = severity || null;
+        this._msgKey = msgKey || null;
+        this._argumentList = args || [];
+        this._action = undefined;
+    }
+
     public static createFromViolation(constraintType: string, message: string, path: string, value: string): TSExceptionReport {
-        let report: TSExceptionReport = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
+        const report: TSExceptionReport = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
         report.path = path;
         //hint: here we could also pass along the path to the Exception Report
         return report;
@@ -197,8 +174,8 @@ export default class TSExceptionReport {
      * @returns {TSExceptionReport}
      */
     public static createFromExceptionReport(data: any) {
-        let msgToDisp = data.translatedMessage || data.customMessage || 'ERROR_UNEXPECTED_EBEGU_RUNTIME';
-        let exceptionReport: TSExceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST, TSErrorLevel.SEVERE, msgToDisp, data.argumentList);
+        const msgToDisp = data.translatedMessage || data.customMessage || 'ERROR_UNEXPECTED_EBEGU_RUNTIME';
+        const exceptionReport: TSExceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST, TSErrorLevel.SEVERE, msgToDisp, data.argumentList);
         exceptionReport.errorCodeEnum = data.errorCodeEnum;
         exceptionReport.exceptionName = data.exceptionName;
         exceptionReport.methodName = data.methodName;
@@ -210,6 +187,30 @@ export default class TSExceptionReport {
         exceptionReport.addActionToMessage();
         return exceptionReport;
 
+    }
+
+    isConstantValue(constant: any, value: any) {
+        const keys = Object.keys(constant);
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < keys.length; i++) {
+            if (value === constant[keys[i]]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    isValid() {
+        const validType = this.isConstantValue(TSErrorType, this.type);
+        const validSeverity = this.isConstantValue(TSErrorLevel, this.severity);
+        const validMsgKey = typeof this.msgKey === 'string' && this.msgKey.length > 0;
+
+        return validType && validSeverity && validMsgKey;
+    }
+
+    isInternal() {
+        return this.type === TSErrorType.INTERNAL;
     }
 
     private addActionToMessage(): void {

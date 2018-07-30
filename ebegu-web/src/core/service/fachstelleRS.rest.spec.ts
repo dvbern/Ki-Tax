@@ -20,7 +20,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import {FachstelleRS} from './fachstelleRS.rest';
 
-describe('fachstelleRS', function () {
+describe('fachstelleRS', () => {
 
     let fachstelleRS: FachstelleRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -33,7 +33,7 @@ describe('fachstelleRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         fachstelleRS = $injector.get('FachstelleRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -46,31 +46,31 @@ describe('fachstelleRS', function () {
         mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(fachstelleRS.serviceURL).toContain('fachstellen');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(fachstelleRS.getServiceName()).toBe('FachstelleRS');
         });
-        it('should include a findFachstelle() function', function () {
+        it('should include a findFachstelle() function', () => {
             expect(fachstelleRS.findFachstelle).toBeDefined();
         });
-        it('should include a createFachstelle() function', function () {
+        it('should include a createFachstelle() function', () => {
             expect(fachstelleRS.createFachstelle).toBeDefined();
         });
-        it('should include a updateFachstelle() function', function () {
+        it('should include a updateFachstelle() function', () => {
             expect(fachstelleRS.updateFachstelle).toBeDefined();
         });
-        it('should include a removeFachstelle() function', function () {
+        it('should include a removeFachstelle() function', () => {
             expect(fachstelleRS.removeFachstelle).toBeDefined();
         });
-        it('should include a getAllFachstellen() function', function () {
+        it('should include a getAllFachstellen() function', () => {
             expect(fachstelleRS.getAllFachstellen).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findFachstelle', () => {
             it('should return the Fachstelle by id', () => {
                 $httpBackend.expectGET(fachstelleRS.serviceURL + '/' + mockFachstelle.id).respond(mockFachstelleRest);
@@ -129,7 +129,7 @@ describe('fachstelleRS', function () {
 
         describe('getAllFachstellen', () => {
             it('should return all Fachstellen', () => {
-                let fachstellenRestArray: Array<any> = [mockFachstelleRest, mockFachstelleRest];
+                const fachstellenRestArray: Array<any> = [mockFachstelleRest, mockFachstelleRest];
                 $httpBackend.expectGET(fachstelleRS.serviceURL).respond(fachstellenRestArray);
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();

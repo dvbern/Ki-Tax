@@ -13,20 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IIntervalService} from 'angular';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {StateService} from '@uirouter/core';
-import {TSHTTPEvent} from '../../events/TSHTTPEvent';
-import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
-import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {IComponentOptions, IIntervalService} from 'angular';
 import * as moment from 'moment';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {OkDialogController} from '../../../gesuch/dialog/OkDialogController';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {TSHTTPEvent} from '../../events/TSHTTPEvent';
 import IPromise = angular.IPromise;
 import IRootScopeService = angular.IRootScopeService;
-let template = require('./dv-countdown.html');
-let dialogTemplate = require('../../../gesuch/dialog/okDialogTemplate.html');
+
+const template = require('./dv-countdown.html');
+const dialogTemplate = require('../../../gesuch/dialog/okDialogTemplate.html');
 
 export class DvCountdownComponentConfig implements IComponentOptions {
     transclude = false;
@@ -38,28 +39,32 @@ export class DvCountdownComponentConfig implements IComponentOptions {
 
 export class DvCountdownController {
 
+    static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
+
     TSRoleUtil: any;
     timer: moment.Duration;
     timerInterval: IPromise<any>;
 
-    static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
-
-    constructor(private authServiceRS: AuthServiceRS, private $state: StateService, private $interval: IIntervalService, private $rootScope: IRootScopeService, private DvDialog: DvDialog,
-                private gesuchModelManager: GesuchModelManager) {
+    constructor(private readonly authServiceRS: AuthServiceRS,
+                private readonly $state: StateService,
+                private readonly $interval: IIntervalService,
+                private readonly $rootScope: IRootScopeService,
+                private readonly DvDialog: DvDialog,
+                private readonly gesuchModelManager: GesuchModelManager) {
     }
 
     $onInit() {
         this.TSRoleUtil = TSRoleUtil;
         this.$rootScope.$on(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], () => {
-                if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && this.isGesuchAvailableAndWritable()  && this.isOnGesuchView()) {
-                    if (this.timerInterval === undefined) {
-                        this.startTimer();
-                    } else {
-                        this.resetTimer();
-                    }
+            if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && this.isGesuchAvailableAndWritable() && this.isOnGesuchView()) {
+                if (this.timerInterval === undefined) {
+                    this.startTimer();
                 } else {
-                    this.cancelInterval();
+                    this.resetTimer();
                 }
+            } else {
+                this.cancelInterval();
+            }
 
         });
 

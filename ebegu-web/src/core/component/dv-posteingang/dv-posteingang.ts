@@ -15,7 +15,7 @@
 
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
@@ -31,17 +31,17 @@ import MitteilungRS from '../../service/mitteilungRS.rest';
 })
 export class DvPosteingangController implements OnInit, OnDestroy {
 
-    private log: Log = Log.createLog(AuthLifeCycleService);
+    private readonly log: Log = Log.createLog(AuthLifeCycleService);
 
     private readonly unsubscribe$ = new Subject<void>();
     amountMitteilungen: number = 0;
     reloadAmountMitteilungenInterval: number;
 
 
-    constructor(private mitteilungRS: MitteilungRS,
-                private authServiceRS: AuthServiceRS,
-                private authLifeCycleService: AuthLifeCycleService,
-                private posteingangService: PosteingangService) {
+    constructor(private readonly mitteilungRS: MitteilungRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly authLifeCycleService: AuthLifeCycleService,
+                private readonly posteingangService: PosteingangService) {
 
     }
 
@@ -62,7 +62,7 @@ export class DvPosteingangController implements OnInit, OnDestroy {
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
             );
 
-        this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MAY_CHANGED)
+        this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => {

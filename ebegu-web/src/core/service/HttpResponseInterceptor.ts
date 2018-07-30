@@ -23,7 +23,7 @@ export default class HttpResponseInterceptor implements IHttpInterceptor {
 
     static $inject = ['$rootScope', '$q'];
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService, private $q: IQService) {
+    constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService) {
     }
 
 

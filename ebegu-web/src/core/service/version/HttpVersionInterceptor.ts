@@ -21,12 +21,12 @@ import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
  */
 export default class HttpVersionInterceptor implements IHttpInterceptor {
 
-    private backendVersion: string;
-
     static $inject = ['$rootScope', '$q', 'CONSTANTS', '$log'];
 
+    private backendVersion: string;
+
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService, private $q: IQService, private CONSTANTS: any, private $log: ILogService) {
+    constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService, private readonly CONSTANTS: any, private readonly $log: ILogService) {
     }
 
     //interceptor methode

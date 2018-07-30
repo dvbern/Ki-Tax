@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TSLand from '../../models/types/TSLand';
 import {IHttpService} from 'angular';
+import TSLand from '../../models/types/TSLand';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class ListResourceRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
@@ -23,27 +23,24 @@ export default class ListResourceRS {
     static laenderList: TSLand[];
 
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'lists';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
         ListResourceRS.laenderList = [];
     }
 
     getLaenderList() {
-        return this.http.get(this.serviceURL + '/laender', { cache: true }).then((response: any) => {
+        return this.http.get(this.serviceURL + '/laender', {cache: true}).then((response: any) => {
             if (ListResourceRS.laenderList.length <= 0) { // wenn die Laenderliste schon ausgefuellt wurde, nichts machen
-                for (let i = 0; i < response.data.length; i++) {
-                    ListResourceRS.laenderList.push(this.ebeguRestUtil.landCodeToTSLand(response.data[i]));
+                if (Array.isArray(response.data)) {
+                    response.data
+                        .map((d: string) => this.ebeguRestUtil.landCodeToTSLand(d))
+                        .forEach((land: TSLand) => ListResourceRS.laenderList.push(land));
                 }
             }
             return ListResourceRS.laenderList;
         });
     }
 
-    }
+}
 

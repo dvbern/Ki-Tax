@@ -25,7 +25,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
-let style = require('./traegerschaftView.less');
+const style = require('./traegerschaftView.less');
 
 
 @Component({
@@ -44,8 +44,8 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     @ViewChild(MatSort) sort: MatSort;
 
 
-    constructor(private traegerschaftRS: TraegerschaftRS, private errorService: ErrorService,
-                private dialog: MatDialog,
+    constructor(private readonly traegerschaftRS: TraegerschaftRS, private readonly errorService: ErrorService,
+                private readonly dialog: MatDialog,
                 authServiceRS: AuthServiceRS) {
 
         super(authServiceRS);
@@ -84,7 +84,7 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                 if (userAccepted) {
                     this.traegerschaft = undefined;
                     this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
-                        let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                        const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
                         if (index > -1) {
                             this.traegerschaften.splice(index, 1);
                             this.refreshTraegerschaftenList();
@@ -102,12 +102,12 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     saveTraegerschaft(): void {
         if (this.form.valid) {
             this.errorService.clearAll();
-            let newTraegerschaft: boolean = this.traegerschaft.isNew();
+            const newTraegerschaft: boolean = this.traegerschaft.isNew();
             this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
                 if (newTraegerschaft) {
                     this.traegerschaften.push(traegerschaft);
                 } else {
-                    let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                    const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
                     if (index > -1) {
                         this.traegerschaften[index] = traegerschaft;
                         EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);

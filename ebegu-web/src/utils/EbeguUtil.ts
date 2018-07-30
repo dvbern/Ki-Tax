@@ -35,9 +35,110 @@ export default class EbeguUtil {
 
     static $inject = ['$filter', 'CONSTANTS', '$translate', '$log'];
 
-    /* @ngInject */
-    constructor(private $filter: IFilterService, private CONSTANTS: any, private $translate: ITranslateService,
-                private $log: ILogService) {
+    constructor(private readonly $filter: IFilterService, private readonly CONSTANTS: any, private readonly $translate: ITranslateService,
+                private readonly $log: ILogService) {
+    }
+
+    /**
+     * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als string zurueck
+     * @param number
+     * @param length
+     * @returns {any}
+     */
+    public static addZerosToNumber(number: number, length: number): string {
+        if (number != null) {
+            let fallnummerString = '' + number;
+            while (fallnummerString.length < length) {
+                fallnummerString = '0' + fallnummerString;
+            }
+            return fallnummerString;
+        }
+        return undefined;
+    }
+
+    public static getIndexOfElementwithID(entityToSearch: TSAbstractEntity, listToSearchIn: Array<any>): number {
+        const idToSearch = entityToSearch.id;
+        for (let i = 0; i < listToSearchIn.length; i++) {
+            if (listToSearchIn[i].id === idToSearch) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static handleSmarttablesUpdateBug(aList: any[]) {
+        // Ugly Fix:
+        // Because of a bug in smarttables, the table will only be refreshed if the reverence or the first element
+        // changes in table. To resolve this bug, we overwrite the first element by a copy of itself.
+        aList[0] = angular.copy(aList[0]);
+    }
+
+    /**
+     * Erzeugt einen random String mit einer Laenge von numberOfCharacters
+     * @param numberOfCharacters
+     * @returns {string}
+     */
+    public static generateRandomName(numberOfCharacters: number): string {
+        let text = '';
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        for (let i = 0; i < numberOfCharacters; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+    }
+
+    public static selectFirst(): void {
+        let tmp = angular.element('md-radio-button:not([disabled="disabled"]),'
+            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) input:not([disabled="disabled"]),'
+            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) textarea:not([disabled="disabled"]),'
+            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) select:not([disabled="disabled"]),'
+            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) md-checkbox:not([disabled="disabled"]),'
+            + '#gesuchContainer button:not([disabled="disabled"]),'
+            + '#gesuchContainer .dvb-loading-button button:not([disabled="disabled"]),'
+            + '.dv-btn-row,'
+            + '#gesuchContainer button.link-underline:not([disabled="disabled"]),'
+            + '.dv-dokumente-list a:not([disabled="disabled"])').first();
+        if (tmp) {
+            let tmpAria = tmp.attr('aria-describedby') === undefined ? '' : tmp.attr('aria-describedby') + ' ';
+            const h2 = angular.element('h2:not(.access-for-all-title)').first();
+            const h2Id = h2.attr('id') === undefined ? 'aria-describe-form-h2' : h2.attr('id');
+            h2.attr('id', h2Id);
+            tmpAria += h2Id;
+            const h3 = angular.element('h3:not(.access-for-all-title)').first();
+            const h3Id = h3.attr('id') === undefined ? 'aria-describe-form-h3' : h3.attr('id');
+            h3.attr('id', h3Id);
+            tmpAria += ' ' + h3Id;
+            tmp.attr('aria-describedby', tmpAria);
+            if (tmp.prop('tagName') === 'MD-RADIO-BUTTON') {
+                tmp = tmp.parent().first();
+            }
+            tmp.focus();
+        }
+    }
+
+    public static selectFirstInvalid(): void {
+        const tmp: any = angular.element('md-radio-group.ng-invalid,'
+            + ' .ng-invalid>input,'
+            + 'input.ng-invalid,'
+            + 'textarea.ng-invalid,'
+            + 'select.ng-invalid,'
+            + 'md-checkbox.ng-invalid').first();
+        if (tmp) {
+            tmp.focus();
+        }
+    }
+
+    public static isNullOrUndefined(data: any): boolean {
+        return data === null || data === undefined;
+    }
+
+    public static isNotNullOrUndefined(data: any): boolean {
+        return !EbeguUtil.isNullOrUndefined(data);
+    }
+
+    public static isEmptyStringNullOrUndefined(data: string): boolean {
+        return !data;
     }
 
     /**
@@ -67,7 +168,6 @@ export default class EbeguUtil {
 
     /**
      * Takes the given Gesuchsperiode and returns a string with the format "gueltigAb.year/gueltigBis.year"
-     * @returns {any}
      */
     public getBasisJahrPlusAsString(gesuchsperiode: TSGesuchsperiode, plusJahr: number): string {
         if (gesuchsperiode && gesuchsperiode.gueltigkeit) {
@@ -78,8 +178,6 @@ export default class EbeguUtil {
 
     /**
      * Translates the given string using the angular-translate filter
-     * @param toTranslate word to translate
-     * @returns {any} translated word
      */
     public translateString(toTranslate: string): string {
         return this.$filter('translate')(toTranslate).toString();
@@ -91,7 +189,7 @@ export default class EbeguUtil {
      * @returns {any} A List of Objects with key and value, where value is the translated word.
      */
     public translateStringList(translationList: Array<any>): Array<any> {
-        let listResult: Array<any> = [];
+        const listResult: Array<any> = [];
         translationList.forEach((item) => {
             listResult.push({key: item, value: this.translateString(item)});
         });
@@ -100,33 +198,6 @@ export default class EbeguUtil {
 
     public addZerosToNumber(number: number, length: number): string {
         return EbeguUtil.addZerosToNumber(number, length);
-    }
-
-    /**
-     * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als string zurueck
-     * @param number
-     * @param length
-     * @returns {any}
-     */
-    public static addZerosToNumber(number: number, length: number): string {
-        if (number != null) {
-            let fallnummerString = '' + number;
-            while (fallnummerString.length < length) {
-                fallnummerString = '0' + fallnummerString;
-            }
-            return fallnummerString;
-        }
-        return undefined;
-    }
-
-    public static getIndexOfElementwithID(entityToSearch: TSAbstractEntity, listToSearchIn: Array<any>): number {
-        let idToSearch = entityToSearch.id;
-        for (let i = 0; i < listToSearchIn.length; i++) {
-            if (listToSearchIn[i].id === idToSearch) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
@@ -162,34 +233,12 @@ export default class EbeguUtil {
      * @param betreuungsnummer im format JJ.Fallnr.GemeindeNr.kindnr.betrnr
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
-        let parts: Array<string> = betreuungsnummer.split('.');
+        const parts: Array<string> = betreuungsnummer.split('.');
         if (!parts || parts.length !== this.CONSTANTS.PARTS_OF_BETREUUNGSNUMMER) {
             this.$log.error('A Betreuungsnummer must always have ' + this.CONSTANTS.PARTS_OF_BETREUUNGSNUMMER + ' parts. The given one had ' + parts.length);
             return undefined;
         }
         return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3], parts[4]);
-    }
-
-    public static handleSmarttablesUpdateBug(aList: any[]) {
-        // Ugly Fix:
-        // Because of a bug in smarttables, the table will only be refreshed if the reverence or the first element
-        // changes in table. To resolve this bug, we overwrite the first element by a copy of itself.
-        aList[0] = angular.copy(aList[0]);
-    }
-
-    /**
-     * Erzeugt einen random String mit einer Laenge von numberOfCharacters
-     * @param numberOfCharacters
-     * @returns {string}
-     */
-    public static generateRandomName(numberOfCharacters: number): string {
-        let text = '';
-        let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-        for (let i = 0; i < numberOfCharacters; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return text;
     }
 
     /**
@@ -225,64 +274,11 @@ export default class EbeguUtil {
         return text;
     }
 
-    public static selectFirst(): void {
-        let tmp = angular.element('md-radio-button:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) input:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) textarea:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) select:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) md-checkbox:not([disabled="disabled"]),'
-            + '#gesuchContainer button:not([disabled="disabled"]),'
-            + '#gesuchContainer .dvb-loading-button button:not([disabled="disabled"]),'
-            + '.dv-btn-row,'
-            + '#gesuchContainer button.link-underline:not([disabled="disabled"]),'
-            + '.dv-dokumente-list a:not([disabled="disabled"])').first();
-        if (tmp) {
-            let tmpAria = tmp.attr('aria-describedby') === undefined ? '' : tmp.attr('aria-describedby') + ' ';
-            let h2 = angular.element('h2:not(.access-for-all-title)').first();
-            let h2Id = h2.attr('id') === undefined ? 'aria-describe-form-h2' : h2.attr('id');
-            h2.attr('id', h2Id);
-            tmpAria += h2Id;
-            let h3 = angular.element('h3:not(.access-for-all-title)').first();
-            let h3Id = h3.attr('id') === undefined ? 'aria-describe-form-h3' : h3.attr('id');
-            h3.attr('id', h3Id);
-            tmpAria += ' ' + h3Id;
-            tmp.attr('aria-describedby', tmpAria);
-            if (tmp.prop('tagName') === 'MD-RADIO-BUTTON') {
-                tmp = tmp.parent().first();
-            }
-            tmp.focus();
-        }
-    }
-
-    public static selectFirstInvalid(): void {
-        let tmp: any = angular.element('md-radio-group.ng-invalid,'
-            + ' .ng-invalid>input,'
-            + 'input.ng-invalid,'
-            + 'textarea.ng-invalid,'
-            + 'select.ng-invalid,'
-            + 'md-checkbox.ng-invalid').first();
-        if (tmp) {
-            tmp.focus();
-        }
-    }
-
-    public static isNullOrUndefined(data: any): boolean {
-        return data === null || data === undefined;
-    }
-
-    public static isNotNullOrUndefined(data: any): boolean {
-        return !EbeguUtil.isNullOrUndefined(data);
-    }
-
-    public static isEmptyStringNullOrUndefined(data: string): boolean {
-        return !data;
-    }
-
     public replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[], wasNew: boolean) {
         if (wasNew) {
             list.push(element);
         } else {
-            let index = EbeguUtil.getIndexOfElementwithID(element, list);
+            const index = EbeguUtil.getIndexOfElementwithID(element, list);
             if (index > -1) {
                 list[index] = element;
                 EbeguUtil.handleSmarttablesUpdateBug(list);

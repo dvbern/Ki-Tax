@@ -25,7 +25,7 @@ import AuthenticationUtil from '../utils/AuthenticationUtil';
 import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./schulung.html');
+const template = require('./schulung.html');
 require('./schulung.less');
 
 export class SchulungComponentConfig implements IComponentOptions {
@@ -37,19 +37,19 @@ export class SchulungComponentConfig implements IComponentOptions {
 
 export class SchulungViewController {
 
-    public usersList: Array<TSUser> = Array<TSUser>();
-    private gesuchstellerList: string[];
-    private institutionsuserList: Array<TSUser> = Array<TSUser>();
-    private amtUserList: Array<TSUser> = Array<TSUser>();
-    private mandant: TSMandant;
-    private institutionForelle: TSInstitution;
-    private traegerschaftFisch: TSTraegerschaft;
-
     static $inject: string[] = ['$state', 'AuthServiceRS', '$timeout', 'TestFaelleRS'];
 
-    constructor(private $state: StateService, private authServiceRS: AuthServiceRS,
-                private $timeout: ITimeoutService,
-                private testFaelleRS: TestFaelleRS) {
+    public usersList: Array<TSUser> = Array<TSUser>();
+    private gesuchstellerList: string[];
+    private readonly institutionsuserList: Array<TSUser> = Array<TSUser>();
+    private readonly amtUserList: Array<TSUser> = Array<TSUser>();
+    private readonly mandant: TSMandant;
+    private readonly institutionForelle: TSInstitution;
+    private readonly traegerschaftFisch: TSTraegerschaft;
+
+    constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
+                private readonly $timeout: ITimeoutService,
+                private readonly testFaelleRS: TestFaelleRS) {
 
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();
@@ -57,8 +57,8 @@ export class SchulungViewController {
         this.testFaelleRS.getSchulungBenutzer().then((response: any) => {
             this.gesuchstellerList = response;
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
-                let name = this.gesuchstellerList[i];
-                let username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
+                const name = this.gesuchstellerList[i];
+                const username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
                 this.usersList.push(new TSUser('Sandra', name, username, 'password1', 'sandra.' + name.toLocaleLowerCase() + '@example.com', this.mandant, TSRole.GESUCHSTELLER));
             }
 
@@ -86,7 +86,7 @@ export class SchulungViewController {
      * @returns {TSMandant}
      */
     private getMandant(): TSMandant {
-        let mandant = new TSMandant();
+        const mandant = new TSMandant();
         mandant.name = 'TestMandant';
         mandant.id = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
         return mandant;
@@ -96,7 +96,7 @@ export class SchulungViewController {
      * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
     private getTraegerschaftFisch(): TSTraegerschaft {
-        let traegerschaft = new TSTraegerschaft();
+        const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'Fisch';
         traegerschaft.mail = 'fisch@example.com';
         traegerschaft.id = '11111111-1111-1111-1111-111111111111';
@@ -107,7 +107,7 @@ export class SchulungViewController {
      * Die Institution wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
     private getInstitutionForelle(): TSInstitution {
-        let institution = new TSInstitution();
+        const institution = new TSInstitution();
         institution.name = 'Forelle';
         institution.id = '22222222-1111-1111-1111-111111111111';
         institution.mail = 'forelle@example.com';

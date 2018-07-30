@@ -52,9 +52,9 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 declare let require: any;
-let template = require('./betreuungView.html');
+const template = require('./betreuungView.html');
 require('./betreuungView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -64,6 +64,9 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 }
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
+
+    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
+        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
     betreuungsangebot: any;
     betreuungsangebotValues: Array<any>;
     instStammId: string; //der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende InstitutionStammdaten umgewandert
@@ -82,13 +85,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     aktuellGueltig: boolean = true;
     isDuplicated: boolean = false;
 
-    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
-
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, private ebeguUtil: EbeguUtil, private CONSTANTS: any,
-                $scope: IScope, berechnungsManager: BerechnungsManager, private errorService: ErrorService,
-                private authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private $stateParams: IBetreuungStateParams,
-                private mitteilungRS: MitteilungRS, dvDialog: DvDialog, private $log: ILogService,
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, private readonly ebeguUtil: EbeguUtil, private readonly CONSTANTS: any,
+                $scope: IScope, berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                private readonly authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private readonly $stateParams: IBetreuungStateParams,
+                private readonly mitteilungRS: MitteilungRS, dvDialog: DvDialog, private readonly $log: ILogService,
                 $timeout: ITimeoutService, $translate: ITranslateService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -98,7 +98,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     $onInit() {
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
-        let kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt(this.$stateParams.kindNumber, 10));
+        const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt(this.$stateParams.kindNumber, 10));
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -117,7 +117,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.setBetreuungsangebotTypValues();
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
-                for (let obj of this.betreuungsangebotValues) {
+                for (const obj of this.betreuungsangebotValues) {
                     if (obj.key === this.$stateParams.betreuungsangebotTyp) {
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
@@ -151,7 +151,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Thus the kindnumber must be set before this method is called.
      */
     public initEmptyBetreuung(): TSBetreuung {
-        let tsBetreuung: TSBetreuung = new TSBetreuung();
+        const tsBetreuung: TSBetreuung = new TSBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
         return tsBetreuung;
     }
@@ -233,7 +233,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public setErsterSchultag(): void {
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-        let ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+        const ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
         if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(ersterSchultag)) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
@@ -241,7 +241,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private save(newStatus: TSBetreuungsstatus, nextStep: string, params: any): void {
         this.isSavingData = true;
-        let oldStatus: TSBetreuungsstatus = this.model.betreuungsstatus;
+        const oldStatus: TSBetreuungsstatus = this.model.betreuungsstatus;
         if (this.getBetreuungModel()) {
             if (this.isSchulamt()) {
                 this.getBetreuungModel().betreuungspensumContainers = []; // fuer Tagesschule werden keine Betreuungspensum benoetigt, deswegen löschen wir sie vor dem Speichern
@@ -302,7 +302,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().institutionStammdaten && this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule
             && this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule) {
 
-            let angemeldeteModule: TSModulTagesschule[] = angular.copy(this.getBetreuungModel().belegungTagesschule.moduleTagesschule);
+            const angemeldeteModule: TSModulTagesschule[] = angular.copy(this.getBetreuungModel().belegungTagesschule.moduleTagesschule);
             this.getBetreuungModel().belegungTagesschule.moduleTagesschule = angular.copy(this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule);
             if (angemeldeteModule) {
                 angemeldeteModule.forEach(angemeldetesModul => {
@@ -388,9 +388,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        let bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
+        const bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
             this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());
-        let $temp = $('<input>');
+        const $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
         document.execCommand('copy');
@@ -425,7 +425,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
-        let result: Array<TSInstitutionStammdaten> = [];
+        const result: Array<TSInstitutionStammdaten> = [];
         if (this.betreuungsangebot) {
             this.gesuchModelManager.getActiveInstitutionenList().forEach((instStamm: TSInstitutionStammdaten) => {
                 if (instStamm.betreuungsangebotTyp === this.betreuungsangebot.key && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm)) {
@@ -468,18 +468,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
-        let position: number = this.getBetreuungspensen().indexOf(betreuungspensumToDelete);
+        const position: number = this.getBetreuungspensen().indexOf(betreuungspensumToDelete);
         if (position > -1) {
             this.getBetreuungspensen().splice(position, 1);
         }
     }
 
     public setSelectedInstitutionStammdaten(): void {
-        let instStamList = this.gesuchModelManager.getActiveInstitutionenList();
-        for (let i: number = 0; i < instStamList.length; i++) {
-            if (instStamList[i].id === this.instStammId) {
-                this.model.institutionStammdaten = instStamList[i];
-            }
+        const instStamList = this.gesuchModelManager.getActiveInstitutionenList();
+        const found = instStamList.find(i => i.id === this.instStammId);
+        if (found) {
+            this.model.institutionStammdaten = found;
         }
     }
 
@@ -751,7 +750,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public tageschuleSaveDisabled(): boolean {
         if (this.getBetreuungModel().isNew()) {
-            let gp: TSGesuchsperiode = this.gesuchModelManager.getGesuch().gesuchsperiode;
+            const gp: TSGesuchsperiode = this.gesuchModelManager.getGesuch().gesuchsperiode;
             return (this.isTagesschule() && gp.hasTagesschulenAnmeldung() && !gp.isTageschulenAnmeldungAktiv()
                 || this.isFerieninsel() && !this.getBetreuungModel().isEnabled());
         }

@@ -27,9 +27,9 @@ require('./batchjobTrigger.less');
 })
 export class BatchjobTriggerViewComponent {
 
-    constructor(private dialog: MatDialog,
-                private databaseMigrationRS: DatabaseMigrationRS,
-                private dailyBatchRS: DailyBatchRS) {
+    constructor(private readonly dialog: MatDialog,
+                private readonly databaseMigrationRS: DatabaseMigrationRS,
+                private readonly dailyBatchRS: DailyBatchRS) {
     }
 
     public processScript(script: string): void {

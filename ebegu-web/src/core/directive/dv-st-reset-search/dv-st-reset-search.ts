@@ -28,19 +28,17 @@ export default class DVSTResetSearch implements IDirective {
     link: IDirectiveLinkFn;
 
     /* @ngInject */
-    constructor(private dVsTPersistService: DVsTPersistService) {
+    constructor(private readonly dVsTPersistService: DVsTPersistService) {
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {
-            let nameSpace: string = attrs.dvStPersistAntraege;
-            return element.bind('click', function() {
-                return scope.$apply(function() {
-                    let tableState = ctrl.tableState();
-                    tableState.search.predicateObject = {};
-                    tableState.sort = {};
-                    tableState.pagination.start = 0;
-                    dVsTPersistService.deleteData(nameSpace);
-                    return ctrl.pipe();
-                });
-            });
+            const nameSpace: string = attrs.dvStPersistAntraege;
+            return element.bind('click', () => scope.$apply(() => {
+                const tableState = ctrl.tableState();
+                tableState.search.predicateObject = {};
+                tableState.sort = {};
+                tableState.pagination.start = 0;
+                dVsTPersistService.deleteData(nameSpace);
+                return ctrl.pipe();
+            }));
         };
     }
 

@@ -30,7 +30,7 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
-let template = require('./alleVerfuegungenView.html');
+const template = require('./alleVerfuegungenView.html');
 require('./alleVerfuegungenView.less');
 
 export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
@@ -42,18 +42,18 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
 
 export class AlleVerfuegungenViewController {
 
+    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
+        'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
+
     dossier: TSDossier;
     alleVerfuegungen: Array<any> = [];
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
-        'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
-
-    constructor(private $state: StateService, private $stateParams: IAlleVerfuegungenStateParams,
-                private authServiceRS: AuthServiceRS, private betreuungRS: BetreuungRS, private downloadRS: DownloadRS,
-                private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS,
-                private ebeguUtil: EbeguUtil) {
+    constructor(private readonly $state: StateService, private readonly $stateParams: IAlleVerfuegungenStateParams,
+                private readonly authServiceRS: AuthServiceRS, private readonly betreuungRS: BetreuungRS, private readonly downloadRS: DownloadRS,
+                private readonly $log: ILogService, private readonly $timeout: ITimeoutService, private readonly dossierRS: DossierRS,
+                private readonly ebeguUtil: EbeguUtil) {
     }
 
     $onInit() {
@@ -102,7 +102,7 @@ export class AlleVerfuegungenViewController {
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(betreuung.gesuchId,
             betreuung.id, false, '')
             .then((downloadFile: TSDownloadFile) => {
@@ -116,7 +116,7 @@ export class AlleVerfuegungenViewController {
     }
 
     public openNichteintretenPDF(betreuung: TSBetreuung): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(betreuung.id, false)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);

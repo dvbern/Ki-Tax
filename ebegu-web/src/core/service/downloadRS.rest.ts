@@ -21,12 +21,12 @@ import TSMahnung from '../../models/TSMahnung';
 import EbeguUtil from '../../utils/EbeguUtil';
 
 export class DownloadRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval'];
+    serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private $window: ng.IWindowService,
-                private $interval: IIntervalService) {
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private readonly $window: ng.IWindowService,
+                private readonly $interval: IIntervalService) {
         this.serviceURL = REST_API + 'blobs/temp';
     }
 
@@ -177,7 +177,7 @@ export class DownloadRS {
 
     private redirectWindowToDownloadWhenReady(win: Window, href: string, name: string) {
         //wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
-        let readyTimer: IPromise<any> = this.$interval(() => {
+        const readyTimer: IPromise<any> = this.$interval(() => {
             if (win.document.readyState !== 'complete') {
                 return;
             }
@@ -194,13 +194,13 @@ export class DownloadRS {
      */
     public  hideSpinner(win: Window) {
         this.log.debug('hiding spinner');
-        let element = win.document.getElementById('spinnerCont');
+        const element = win.document.getElementById('spinnerCont');
         if (element) {
             element.style.display = 'none';
         } else {
             console.log('element not found, can not hide spinner');
         }
-        let buttonElement = win.document.getElementById('closeButton');
+        const buttonElement = win.document.getElementById('closeButton');
         if (buttonElement) {
             buttonElement.style.display = 'block';
             this.addCloseButtonHandler(win);
@@ -208,7 +208,7 @@ export class DownloadRS {
     }
 
     public addCloseButtonHandler(win: Window) {
-        let element = win.document.getElementById('closeButton');
+        const element = win.document.getElementById('closeButton');
         if (element) {
             element.addEventListener('click', () => {
                 win.close();

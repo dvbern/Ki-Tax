@@ -14,11 +14,11 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 
-describe('authLifeCycleService', function () {
+describe('authLifeCycleService', () => {
 
     let authLifeCycleService: AuthLifeCycleService;
 
@@ -32,33 +32,33 @@ describe('authLifeCycleService', function () {
         authLifeCycleService = TestBed.get(AuthLifeCycleService);
     }));
 
-    describe('changeAuthStatus', function () {
-        it('changes the status to undefined', function () {
+    describe('changeAuthStatus', () => {
+        it('changes the status to undefined', () => {
             authLifeCycleService.changeAuthStatus(undefined, 'undefined values');
-            let all$: Observable<TSAuthEvent> = authLifeCycleService.getAll$();
+            const all$: Observable<TSAuthEvent> = authLifeCycleService.getAll$();
             all$.subscribe(() => {
                 expect(true).toBe(false); // no value should come
             });
         });
 
-        it('changes the status to a given value', function () {
+        it('changes the status to a given value', () => {
             authLifeCycleService.changeAuthStatus(TSAuthEvent.CHANGE_USER, 'user has changed');
 
-            let all$: Observable<TSAuthEvent> = authLifeCycleService.getAll$();
+            const all$: Observable<TSAuthEvent> = authLifeCycleService.getAll$();
             all$.subscribe(value => expect(value).toBe(TSAuthEvent.CHANGE_USER));
         });
     });
-    describe('get$', function () {
-        it('get$ should just return a value for the thrown event', function () {
+    describe('get$', () => {
+        it('get$ should just return a value for the thrown event', () => {
             authLifeCycleService.changeAuthStatus(TSAuthEvent.CHANGE_USER, 'user has changed');
 
-            let loginFailed: Observable<TSAuthEvent> = authLifeCycleService.get$(TSAuthEvent.LOGIN_FAILED);
-            loginFailed.subscribe(() => {
+            const loginFailed$: Observable<TSAuthEvent> = authLifeCycleService.get$(TSAuthEvent.LOGIN_FAILED);
+            loginFailed$.subscribe(() => {
                 expect(true).toBe(false); // no value should come
             });
 
-            let changeUser: Observable<TSAuthEvent> = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
-            changeUser.subscribe(value => {
+            const changeUser$: Observable<TSAuthEvent> = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
+            changeUser$.subscribe(value => {
                 expect(value).toBe((TSAuthEvent.CHANGE_USER));
             });
         });

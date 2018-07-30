@@ -25,9 +25,9 @@ import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 
-let templ = require('./dvb-error-messages-panel.html');
-let style = require('./dvb-error-messages-panel.less');
-let removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
+const templ = require('./dvb-error-messages-panel.html');
+const style = require('./dvb-error-messages-panel.less');
+const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
 
@@ -42,14 +42,14 @@ export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
  */
 export class DvErrorMessagesPanelComponent {
 
-    errors: Array<TSExceptionReport> = [];
-    TSRoleUtil: any;
-
 
     static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
+
+    errors: Array<TSExceptionReport> = [];
+    TSRoleUtil: any;
     /* @ngInject */
-    constructor(private $scope: IScope, private errorService: ErrorService, private dvDialog: DvDialog,
-                private gesuchRS: GesuchRS) {
+    constructor(private readonly $scope: IScope, private readonly errorService: ErrorService, private readonly dvDialog: DvDialog,
+                private readonly gesuchRS: GesuchRS) {
     }
 
     $onInit() {
@@ -113,7 +113,7 @@ export class DvErrorMessagesPanelComponent {
     }
 
     messageStyle(): string {
-        for (let error of this.errors) {
+        for (const error of this.errors) {
             if (error.severity !== TSErrorLevel.INFO) {
                 return '';
             }

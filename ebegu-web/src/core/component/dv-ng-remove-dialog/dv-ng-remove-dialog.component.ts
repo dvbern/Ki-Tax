@@ -29,7 +29,7 @@ export class DvNgRemoveDialogComponent {
     text: string = '';
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
+        private readonly dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
         if (data) {

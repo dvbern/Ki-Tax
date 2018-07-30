@@ -21,7 +21,7 @@ import ILogService = angular.ILogService;
 import INgModelController = angular.INgModelController;
 import Moment = moment.Moment;
 
-let template = require('./dv-datepicker.html');
+const template = require('./dv-datepicker.html');
 
 export class DVDatepicker implements IDirective {
     restrict = 'E';
@@ -52,6 +52,8 @@ export class DVDatepicker implements IDirective {
 
 export class DatepickerController {
     static $inject: string[] = ['$log', '$attrs'];
+    static allowedFormats: string[] = ['D.M.YYYY', 'DD.MM.YYYY'];
+    static defaultFormat: string = 'DD.MM.YYYY';
     date: Date;
     ngModelCtrl: INgModelController;
     dateRequired: boolean;
@@ -60,10 +62,22 @@ export class DatepickerController {
     dvOnBlur: () => void;
     dvMinDate: any;
     dvMaxDate: any;
-    static allowedFormats: string[] = ['D.M.YYYY', 'DD.MM.YYYY'];
-    static defaultFormat: string = 'DD.MM.YYYY';
 
-    constructor(private $log: ILogService, private $attrs: IAttributes) {
+    constructor(private readonly $log: ILogService, private readonly $attrs: IAttributes) {
+    }
+
+    private static momentToString(mom: Moment): string {
+        if (mom && mom.isValid()) {
+            return mom.format(DatepickerController.defaultFormat);
+        }
+        return '';
+    }
+
+    private static stringToMoment(date: string): any {
+        if (moment(date, DatepickerController.allowedFormats, true).isValid()) {
+            return moment(date, DatepickerController.allowedFormats, true);
+        }
+        return null;
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
@@ -84,7 +98,7 @@ export class DatepickerController {
         if (this.dvMinDate === undefined) {
             this.dvMinDate = DateUtil.localDateToMoment('1900-01-01');
         }
-        let noFuture = 'noFuture' in this.$attrs;
+        const noFuture = 'noFuture' in this.$attrs;
         //wenn kein Placeholder gesetzt wird wird der standardplaceholder verwendet. kann mit placeholder=""
         // ueberscrieben werden
         if (this.placeholder === undefined) {
@@ -114,9 +128,9 @@ export class DatepickerController {
         this.ngModelCtrl.$validators['dvMinDate'] = (modelValue: any, viewValue: any) => {
             let result: boolean = true;
             if (this.dvMinDate && viewValue) {
-                let minDateAsMoment: Moment = moment(this.dvMinDate, DatepickerController.allowedFormats, true);
+                const minDateAsMoment: Moment = moment(this.dvMinDate, DatepickerController.allowedFormats, true);
                 if (minDateAsMoment.isValid()) {
-                    let inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
+                    const inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isBefore(minDateAsMoment)) {
                         result = false;
                     }
@@ -130,8 +144,8 @@ export class DatepickerController {
             this.ngModelCtrl.$validators['dvNoFutureDate'] = (modelValue: any, viewValue: any) => {
                 let result: boolean = true;
                 if (viewValue) {
-                    let maxDateAsMoment: Moment = moment(moment.now());
-                    let inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
+                    const maxDateAsMoment: Moment = moment(moment.now());
+                    const inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isAfter(maxDateAsMoment)) {
                         result = false;
                     }
@@ -143,9 +157,9 @@ export class DatepickerController {
         this.ngModelCtrl.$validators['dvMaxDate'] = (modelValue: any, viewValue: any) => {
             let result: boolean = true;
             if (this.dvMaxDate && viewValue) {
-                let maxDateAsMoment: Moment = moment(this.dvMaxDate, DatepickerController.allowedFormats, true);
+                const maxDateAsMoment: Moment = moment(this.dvMaxDate, DatepickerController.allowedFormats, true);
                 if (maxDateAsMoment.isValid()) {
-                    let inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
+                    const inputAsMoment: Moment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isAfter(maxDateAsMoment)) {
                         result = false;
                     }
@@ -158,8 +172,8 @@ export class DatepickerController {
     }
 
     private getInputAsMoment(modelValue: any, viewValue: any): Moment {
-        let value = modelValue || DatepickerController.stringToMoment(viewValue);
-        let inputdate: Moment = moment(value, DatepickerController.allowedFormats, true);
+        const value = modelValue || DatepickerController.stringToMoment(viewValue);
+        const inputdate: Moment = moment(value, DatepickerController.allowedFormats, true);
         return inputdate;
     }
 
@@ -172,19 +186,5 @@ export class DatepickerController {
 
     updateModelValue() {
         this.ngModelCtrl.$setViewValue(this.date);
-    }
-
-    private static momentToString(mom: Moment): string {
-        if (mom && mom.isValid()) {
-            return mom.format(DatepickerController.defaultFormat);
-        }
-        return '';
-    }
-
-    private static stringToMoment(date: string): any {
-        if (moment(date, DatepickerController.allowedFormats, true).isValid()) {
-            return moment(date, DatepickerController.allowedFormats, true);
-        }
-        return null;
     }
 }

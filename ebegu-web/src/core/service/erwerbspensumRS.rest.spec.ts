@@ -22,7 +22,7 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebCore} from '../core.module';
 import ErwerbspensumRS from './erwerbspensumRS.rest';
 
-describe('ErwerbspensumRS', function () {
+describe('ErwerbspensumRS', () => {
 
     let erwerbspensumRS: ErwerbspensumRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -38,7 +38,7 @@ describe('ErwerbspensumRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         erwerbspensumRS = $injector.get('ErwerbspensumRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -55,24 +55,24 @@ describe('ErwerbspensumRS', function () {
         mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(erwerbspensumRS.serviceURL).toContain('erwerbspensen');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(erwerbspensumRS.getServiceName()).toBe('ErwerbspensumRS');
         });
-        it('should include a findErwerbspensum() function', function () {
+        it('should include a findErwerbspensum() function', () => {
             expect(erwerbspensumRS.findErwerbspensum).toBeDefined();
         });
-        it('should include a saveErwerbspensum() function', function () {
+        it('should include a saveErwerbspensum() function', () => {
             expect(erwerbspensumRS.saveErwerbspensum).toBeDefined();
         });
-        it('should include a removeErwerbspensum() function', function () {
+        it('should include a removeErwerbspensum() function', () => {
             expect(erwerbspensumRS.removeErwerbspensum).toBeDefined();
         });
     });
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findErwerbspensumContainer', () => {
             it('should return the Erwerbspensumcontainer by id', () => {
                 $httpBackend.expectGET(erwerbspensumRS.serviceURL + '/' + mockErwerbspensum.id).respond(mockErwerbspensumRS);
@@ -104,7 +104,7 @@ describe('ErwerbspensumRS', function () {
 
     describe('updateErwerbspensumContainer', () => {
         it('should update an ErwerbspensumContainer', () => {
-            let changedEwp: TSErwerbspensum = TestDataUtil.createErwerbspensum();
+            const changedEwp: TSErwerbspensum = TestDataUtil.createErwerbspensum();
             changedEwp.pensum = 40;
             changedEwp.zuschlagsprozent = 10;
             mockErwerbspensum.erwerbspensumJA = changedEwp;

@@ -20,15 +20,15 @@ import TSVerfuegung from '../../models/TSVerfuegung';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 
 export default class VerfuegungRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService,
-                private wizardStepManager: WizardStepManager) {
+                private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'verfuegung';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -48,7 +48,7 @@ export default class VerfuegungRS {
     }
 
     public saveVerfuegung(verfuegung: TSVerfuegung, gesuchId: string, betreuungId: string, ignorieren: boolean): IPromise<TSVerfuegung> {
-        let restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
+        const restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
         return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId) + '/' + encodeURIComponent(betreuungId) + '/' + ignorieren, restVerfuegung, {
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ export default class VerfuegungRS {
     }
 
     public nichtEintreten(verfuegung: TSVerfuegung, gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
-        let restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
+        const restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
         return this.http.put(this.serviceURL + '/nichtEintreten/' + encodeURIComponent(betreuungId), restVerfuegung, {
             headers: {
                 'Content-Type': 'application/json'

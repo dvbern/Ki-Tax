@@ -27,7 +27,7 @@ export class DvHelpmenuComponent {
 
     display: boolean = false;
 
-    constructor(private dialog: MatDialog) {
+    constructor(private readonly dialog: MatDialog) {
     }
 
     public showDialog(): void {

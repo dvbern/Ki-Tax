@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import AdresseRS from './adresseRS.rest';
 
-describe('AdresseRS', function () {
+describe('AdresseRS', () => {
 
     let adresseRS: AdresseRS;
 
@@ -24,15 +24,15 @@ describe('AdresseRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function (_adresseRS_: AdresseRS) {
+    beforeEach(angular.mock.inject(_adresseRS_ => {
         adresseRS = _adresseRS_;
     }));
 
-    describe('Public API', function () {
+    describe('Public API', () => {
 
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
 
     });
 });

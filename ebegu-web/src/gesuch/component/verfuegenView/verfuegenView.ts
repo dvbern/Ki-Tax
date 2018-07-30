@@ -37,10 +37,10 @@ import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyR
 import {ThreeButtonsDialogController} from '../../dialog/ThreeButtonsDialogController';
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./verfuegenView.html');
+const template = require('./verfuegenView.html');
 require('./verfuegenView.less');
-let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-let threeButtonsDialogTempl = require('../../dialog/threeButtonsDialog.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+const threeButtonsDialogTempl = require('../../dialog/threeButtonsDialog.html');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -51,32 +51,32 @@ export class VerfuegenViewComponentConfig implements IComponentOptions {
 
 export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
-    //this is the model...
-    public bemerkungen: string;
-
     static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', '$scope', 'WizardStepManager',
         'DvDialog', 'DownloadRS', '$log', '$stateParams', '$window', 'ExportRS', 'ApplicationPropertyRS', '$timeout'];
 
-    private verfuegungen: TSVerfuegung[] = [];
+    //this is the model...
+    public bemerkungen: string;
+
+    private readonly verfuegungen: TSVerfuegung[] = [];
     private showSchemas: boolean;
     private sameVerfuegungsdaten: boolean;
     private sameVerrechneteVerguenstigung: boolean;
 
     /* @ngInject */
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private ebeguUtil: EbeguUtil, $scope: IScope, wizardStepManager: WizardStepManager,
-                private DvDialog: DvDialog, private downloadRS: DownloadRS, private $log: ILogService, $stateParams: IBetreuungStateParams,
-                private $window: ng.IWindowService, private exportRS: ExportRS, private applicationPropertyRS: ApplicationPropertyRS,
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                private readonly ebeguUtil: EbeguUtil, $scope: IScope, wizardStepManager: WizardStepManager,
+                private readonly DvDialog: DvDialog, private readonly downloadRS: DownloadRS, private readonly $log: ILogService, $stateParams: IBetreuungStateParams,
+                private readonly $window: ng.IWindowService, private readonly exportRS: ExportRS, private readonly applicationPropertyRS: ApplicationPropertyRS,
                 $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
 
-        let kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber, 10));
+        const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber, 10));
         if (kindIndex === -1) {
             this.$log.error('Kind konnte nicht gefunden werden');
         }
         this.gesuchModelManager.setKindIndex(kindIndex);
-        let betreuungIndex: number = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(parseInt($stateParams.betreuungNumber, 10));
+        const betreuungIndex: number = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(parseInt($stateParams.betreuungNumber, 10));
         if (betreuungIndex === -1) {
             this.$log.error('Betreuung konnte nicht gefunden werden');
         }
@@ -374,7 +374,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public openVerfuegungPDF(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
             this.getBetreuung().id, false, this.bemerkungen)
             .then((downloadFile: TSDownloadFile) => {
@@ -388,7 +388,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public openExport(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getDokumentAccessTokenVerfuegungExport(this.getBetreuung().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken for export: ' + downloadFile.accessToken);
@@ -401,7 +401,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public openNichteintretenPDF(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(this.getBetreuung().id, false)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
@@ -426,7 +426,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public exportJsonSchema() {
-        let win: Window = this.$window.open('', EbeguUtil.generateRandomName(5));
+        const win: Window = this.$window.open('', EbeguUtil.generateRandomName(5));
         this.exportRS.getJsonSchemaString().then((result) => {
             win.document.write('<body><pre>' + result + '</pre></body>');
         });
@@ -440,9 +440,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showNichtEintretenPdfLink(): boolean {
-        let nichtVerfuegt = !this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT);
-        let mutation = !this.gesuchModelManager.isGesuch();
-        let nichtNichteingetreten = !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
+        const nichtVerfuegt = !this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT);
+        const mutation = !this.gesuchModelManager.isGesuch();
+        const nichtNichteingetreten = !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
         return nichtVerfuegt && !(mutation && nichtNichteingetreten);
     }
 

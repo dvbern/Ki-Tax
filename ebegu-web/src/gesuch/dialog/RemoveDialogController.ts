@@ -27,9 +27,9 @@ export class RemoveDialogController {
     deleteText: string;
     title: string;
 
-    constructor(private $mdDialog: IDialogService, $translate: ITranslateService, private $q: IQService, private $log: ILogService, title: string,
+    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, private readonly $q: IQService, private readonly $log: ILogService, title: string,
                 deleteText: string,
-                private parentController: IDVFocusableController, private elementID: string, private form: any) {
+                private readonly parentController: IDVFocusableController, private readonly elementID: string, private readonly form: any) {
         if (deleteText !== undefined && deleteText !== null) {
             this.deleteText = $translate.instant(deleteText);
         } else {

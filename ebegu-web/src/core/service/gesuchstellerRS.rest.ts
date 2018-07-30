@@ -19,15 +19,15 @@ import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 
 export default class GesuchstellerRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService,
-                private wizardStepManager: WizardStepManager) {
+                private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'gesuchsteller';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -36,7 +36,7 @@ export default class GesuchstellerRS {
     }
 
     public saveGesuchsteller(gesuchsteller: TSGesuchstellerContainer, gesuchId: string, gsNumber: number, umzug: boolean): IPromise<TSGesuchstellerContainer> {
-        let gessteller = this.ebeguRestUtil.gesuchstellerContainerToRestObject({}, gesuchsteller);
+        const gessteller = this.ebeguRestUtil.gesuchstellerContainerToRestObject({}, gesuchsteller);
         return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId) + '/gsNumber/' + gsNumber + '/' + umzug, gessteller, {
             headers: {
                 'Content-Type': 'application/json'

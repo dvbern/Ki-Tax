@@ -16,7 +16,7 @@
 import {IComponentOptions} from 'angular';
 import TSSearchResultEntry from '../../../../models/dto/TSSearchResultEntry';
 
-let template = require('./dv-search-result-icon.html');
+const template = require('./dv-search-result-icon.html');
 
 export class DvSearchResultIconComponentConfig implements IComponentOptions {
 
@@ -31,9 +31,9 @@ export class DvSearchResultIconComponentConfig implements IComponentOptions {
 
 export class DvSearchResultController {
 
-    entry: TSSearchResultEntry;
-
     static $inject: ReadonlyArray<string> = [];
+
+    entry: TSSearchResultEntry;
 
     constructor() {
 

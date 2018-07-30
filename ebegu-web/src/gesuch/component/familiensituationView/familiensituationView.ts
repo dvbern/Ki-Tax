@@ -35,9 +35,9 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./familiensituationView.html');
+const template = require('./familiensituationView.html');
 require('./familiensituationView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FamiliensituationViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -48,20 +48,20 @@ export class FamiliensituationViewComponentConfig implements IComponentOptions {
 }
 
 export class FamiliensituationViewController extends AbstractGesuchViewController<TSFamiliensituationContainer> {
+
+    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
+        'DvDialog', '$translate', '$q', '$scope', 'FamiliensituationRS', '$timeout'];
     familienstatusValues: Array<TSFamilienstatus>;
     gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     allowedRoles: Array<TSRole>;
     initialFamiliensituation: TSFamiliensituation;
     savedClicked: boolean = false;
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
-        'DvDialog', '$translate', '$q', '$scope', 'FamiliensituationRS', '$timeout'];
-
     /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private errorService: ErrorService, wizardStepManager: WizardStepManager, private DvDialog: DvDialog,
-                private $translate: ITranslateService, private $q: IQService, $scope: IScope,
-                private familiensituationRS: FamiliensituationRS, $timeout: ITimeoutService) {
+                private readonly errorService: ErrorService, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
+                private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope,
+                private readonly familiensituationRS: FamiliensituationRS, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FAMILIENSITUATION, $timeout);
         this.gesuchModelManager.initFamiliensituation();
@@ -91,7 +91,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             }
 
             if (this.isConfirmationRequired()) {
-                let descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
+                const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.gesuchModelManager.getGesuch().gesuchsteller2
                         ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : ''
                 });

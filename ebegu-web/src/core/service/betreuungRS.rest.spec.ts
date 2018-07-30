@@ -22,7 +22,7 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebCore} from '../core.module';
 import BetreuungRS from './betreuungRS.rest';
 
-describe('betreuungRS', function () {
+describe('betreuungRS', () => {
 
     let betreuungRS: BetreuungRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -38,7 +38,7 @@ describe('betreuungRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         betreuungRS = $injector.get('BetreuungRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -57,25 +57,25 @@ describe('betreuungRS', function () {
         $httpBackend.whenGET(betreuungRS.serviceURL + '/' + encodeURIComponent(mockBetreuung.id)).respond(mockBetreuungRest);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(betreuungRS.serviceURL).toContain('betreuungen');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(betreuungRS.getServiceName()).toBe('BetreuungRS');
         });
-        it('should include a findBetreuung() function', function () {
+        it('should include a findBetreuung() function', () => {
             expect(betreuungRS.findBetreuung).toBeDefined();
         });
-        it('should include a saveBetreuung() function', function () {
+        it('should include a saveBetreuung() function', () => {
             expect(betreuungRS.saveBetreuung).toBeDefined();
         });
-        it('should include a removeBetreuung() function', function () {
+        it('should include a removeBetreuung() function', () => {
             expect(betreuungRS.removeBetreuung).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findBetreuung', () => {
             it('should return the Betreuung by id', () => {
                 $httpBackend.expectGET(betreuungRS.serviceURL + '/' + mockBetreuung.id).respond(mockBetreuungRest);

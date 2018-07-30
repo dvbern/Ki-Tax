@@ -23,8 +23,8 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import ITranslateService = angular.translate.ITranslateService;
 
 declare let require: any;
-let template = require('./dv-navigation.html');
-let style = require('./dv-navigation.less');
+const template = require('./dv-navigation.html');
+const style = require('./dv-navigation.less');
 
 /**
  * Diese Direktive wird benutzt, um die Navigation Buttons darzustellen. Folgende Parameter koennen benutzt werden,
@@ -68,6 +68,8 @@ export class DVNavigation implements IDirective {
  */
 export class NavigatorController {
 
+    static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
+
     dvPrevious: () => any;
     dvNext: () => any;
     dvSave: () => any;
@@ -81,11 +83,9 @@ export class NavigatorController {
 
     performSave: boolean;
 
-    static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
-
     /* @ngInject */
-    constructor(private wizardStepManager: WizardStepManager, private state: StateService, private gesuchModelManager: GesuchModelManager,
-        private $translate: ITranslateService, private errorService: ErrorService, private $q: IQService, private $timeout: ITimeoutService) {
+    constructor(private readonly wizardStepManager: WizardStepManager, private readonly state: StateService, private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService, private readonly errorService: ErrorService, private readonly $q: IQService, private readonly $timeout: ITimeoutService) {
     }
 
     //wird von angular aufgerufen
@@ -148,7 +148,7 @@ export class NavigatorController {
         if (!this.isRequestInProgress) { //do nothing if we are already saving
             this.isRequestInProgress = true;
             if (this.isSavingEnabled() && this.dvSave) {
-                let returnValue: any = this.dvSave();  //callback ausfuehren, could return promise
+                const returnValue: any = this.dvSave();  //callback ausfuehren, could return promise
                 if (returnValue !== undefined) {
                     this.$q.when(returnValue).then(() => {
                         this.$timeout(() => {
@@ -186,7 +186,7 @@ export class NavigatorController {
     public previousStep(): void {
         if (!this.isRequestInProgress) { //do nothing if we are already saving
             if (this.isSavingEnabled() && this.dvSave) {
-                let returnValue: any = this.dvSave();  //callback ausfuehren, could return promise
+                const returnValue: any = this.dvSave();  //callback ausfuehren, could return promise
                 if (returnValue !== undefined) {
                     this.$q.when(returnValue).then(() => {
                         this.$timeout(() => {
@@ -375,7 +375,7 @@ export class NavigatorController {
      * @param gsNumber
      */
     private navigateToStep(stepName: TSWizardStepName, gsNumber?: string) {
-        let gesuchId = this.getGesuchId();
+        const gesuchId = this.getGesuchId();
 
         if (stepName === TSWizardStepName.GESUCH_ERSTELLEN) {
             this.state.go('gesuch.fallcreation', {

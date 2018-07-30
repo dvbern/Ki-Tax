@@ -30,7 +30,7 @@ import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenListView';
 import {StateService} from '@uirouter/core';
 
-describe('pendenzenBetreuungenListView', function () {
+describe('pendenzenBetreuungenListView', () => {
 
     let institutionRS: InstitutionRS;
     let gesuchsperiodeRS: GesuchsperiodeRS;
@@ -52,7 +52,7 @@ describe('pendenzenBetreuungenListView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');
         institutionRS = $injector.get('InstitutionRS');
         institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
@@ -69,10 +69,10 @@ describe('pendenzenBetreuungenListView', function () {
         authLifeCycleService = $injector.get('AuthLifeCycleService');
     }));
 
-    describe('API Usage', function () {
-        describe('initFinSit Pendenzenliste', function () {
-            it('should return the list with all pendenzen', function () {
-                let mockPendenz: TSPendenzBetreuung = mockGetPendenzenList();
+    describe('API Usage', () => {
+        describe('initFinSit Pendenzenliste', () => {
+            it('should return the list with all pendenzen', () => {
+                const mockPendenz: TSPendenzBetreuung = mockGetPendenzenList();
                 mockRestCalls();
                 spyOn(gesuchsperiodeRS, 'getAllActiveGesuchsperioden').and.returnValue($q.when([TestDataUtil.createGesuchsperiode20162017()]));
                 pendenzBetreuungenListViewController = new PendenzenBetreuungenListViewController(pendenzBetreuungenRS, undefined,
@@ -83,7 +83,7 @@ describe('pendenzenBetreuungenListView', function () {
                 $scope.$apply();
                 expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toHaveBeenCalled();
 
-                let list: Array<TSPendenzBetreuung> = pendenzBetreuungenListViewController.getPendenzenList();
+                const list: Array<TSPendenzBetreuung> = pendenzBetreuungenListViewController.getPendenzenList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(1);
                 expect(list[0]).toEqual(mockPendenz);
@@ -92,9 +92,9 @@ describe('pendenzenBetreuungenListView', function () {
     });
 
     function mockGetPendenzenList(): TSPendenzBetreuung {
-        let mockPendenz: TSPendenzBetreuung = new TSPendenzBetreuung('123.12.12.12', '123', '123', '123', 'Kind', 'Kilian', undefined,
+        const mockPendenz: TSPendenzBetreuung = new TSPendenzBetreuung('123.12.12.12', '123', '123', '123', 'Kind', 'Kilian', undefined,
             'Platzbestaetigung', undefined, undefined, undefined, TSBetreuungsangebotTyp.KITA, undefined);
-        let result: Array<TSPendenzBetreuung> = [mockPendenz];
+        const result: Array<TSPendenzBetreuung> = [mockPendenz];
         spyOn(pendenzBetreuungenRS, 'getPendenzenBetreuungenList').and.returnValue($q.when(result));
         return mockPendenz;
     }

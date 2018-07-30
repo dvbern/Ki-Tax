@@ -18,20 +18,20 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSWizardStep from '../../models/TSWizardStep';
 
 export default class WizardStepRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'wizard-steps';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public updateWizardStep(wizardStep: TSWizardStep): IPromise<any> {
-        let wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
+        const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
 
         return this.http.post(this.serviceURL, wizardStepObject, {
             headers: {

@@ -28,7 +28,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./finanzielleSituationResultateView.html');
+const template = require('./finanzielleSituationResultateView.html');
 require('./finanzielleSituationResultateView.less');
 
 export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
@@ -43,14 +43,14 @@ export class FinanzielleSituationResultateViewComponentConfig implements ICompon
  */
 export class FinanzielleSituationResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    private initialModel: TSFinanzModel;
-
     static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$scope', '$timeout'];
 
+    private readonly initialModel: TSFinanzModel;
+
     /* @ngInject */
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private errorService: ErrorService,
+                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, $scope: IScope, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
 

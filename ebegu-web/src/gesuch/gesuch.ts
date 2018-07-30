@@ -41,21 +41,21 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchRouteController {
 
+    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil', 'ErrorService',
+        'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS', '$log', '$rootScope'];
+
     TSRole: any;
     TSRoleUtil: any;
     openEwkSidenav: boolean;
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil', 'ErrorService',
-        'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS', '$log', '$rootScope'];
-
     /* @ngInject */
-    constructor(private gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private wizardStepManager: WizardStepManager, private ebeguUtil: EbeguUtil,
-                private errorService: ErrorService,
-                private antragStatusHistoryRS: AntragStatusHistoryRS, private $translate: ITranslateService,
-                private authServiceRS: AuthServiceRS, private $mdSidenav: ng.material.ISidenavService, private CONSTANTS: any,
-                private gesuchstellerRS: GesuchstellerRS, private ewkRS: EwkRS,
-                private $log: ILogService, private $rootScope: IRootScopeService) {
+    constructor(private readonly gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                private readonly wizardStepManager: WizardStepManager, private readonly ebeguUtil: EbeguUtil,
+                private readonly errorService: ErrorService,
+                private readonly antragStatusHistoryRS: AntragStatusHistoryRS, private readonly $translate: ITranslateService,
+                private readonly authServiceRS: AuthServiceRS, private readonly $mdSidenav: ng.material.ISidenavService, private readonly CONSTANTS: any,
+                private readonly gesuchstellerRS: GesuchstellerRS, private readonly ewkRS: EwkRS,
+                private readonly $log: ILogService, private readonly $rootScope: IRootScopeService) {
         //super(gesuchModelManager, berechnungsManager, wizardStepManager);
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
         this.TSRole = TSRole;
@@ -82,9 +82,9 @@ export class GesuchRouteController {
     }
 
     public getIcon(stepName: TSWizardStepName): string {
-        let step = this.wizardStepManager.getStepByName(stepName);
+        const step = this.wizardStepManager.getStepByName(stepName);
         if (step) {
-            let status = step.wizardStepStatus;
+            const status = step.wizardStepStatus;
             if (status === TSWizardStepStatus.MUTIERT) {
                 return 'fa-circle green';
             } else if (status === TSWizardStepStatus.OK) {
@@ -122,7 +122,7 @@ export class GesuchRouteController {
      * @returns {boolean} Sollte etwas schief gehen, true wird zurueckgegeben
      */
     public isWizardStepDisabled(stepName: TSWizardStepName): boolean {
-        let step = this.wizardStepManager.getStepByName(stepName);
+        const step = this.wizardStepManager.getStepByName(stepName);
         if (step) {
             return !this.wizardStepManager.isStepClickableForCurrentRole(step, this.gesuchModelManager.getGesuch());
         }
@@ -150,9 +150,9 @@ export class GesuchRouteController {
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
             toTranslate = this.gesuchModelManager.calculateNewStatus(this.gesuchModelManager.getGesuch().status);
         }
-        let isUserGesuchsteller: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
-        let isUserAmt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
-        let isUserSTV: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
+        const isUserGesuchsteller: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        const isUserAmt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
+        const isUserSTV: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
 
         if (toTranslate === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
             if (TSGesuchBetreuungenStatus.ABGEWIESEN === this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus) {
@@ -206,12 +206,12 @@ export class GesuchRouteController {
     public getGesuchErstellenStepTitle(): string {
         if (this.gesuchModelManager.isGesuch()) {
             if (this.getDateFromGesuch()) {
-                let key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH_VOM' : 'MENU_ERSTGESUCH_VOM';
+                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH_VOM' : 'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(key, {
                     date: this.getDateFromGesuch()
                 });
             } else {
-                let key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH' : 'MENU_ERSTGESUCH';
+                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH' : 'MENU_ERSTGESUCH';
                 return this.$translate.instant(key);
             }
         } else {
@@ -234,9 +234,9 @@ export class GesuchRouteController {
     }
 
     public getGesuchstellerTitle(gsnumber: number): string {
-        let gs: TSGesuchsteller = this.ewkRS.getGesuchsteller(gsnumber).gesuchstellerJA;
+        const gs: TSGesuchsteller = this.ewkRS.getGesuchsteller(gsnumber).gesuchstellerJA;
         if (gs) {
-            let title: string = gs.getFullName();
+            const title: string = gs.getFullName();
             if (gs.ewkPersonId) {
                 return title + ' (' + gs.ewkPersonId + ')';
             }
@@ -323,7 +323,7 @@ export class GesuchRouteController {
                     break;
             }
         }).catch((exception) => {
-            let bussinesExceptionMitFehlercode = (this.errorService.getErrors().filter(
+            const bussinesExceptionMitFehlercode = (this.errorService.getErrors().filter(
                     function filterForBusinessException(e) {
                         return (e.errorCodeEnum === 'ERROR_PERSONENSUCHE_BUSINESS' && e.argumentList[0]);
                     }).length) > 0;

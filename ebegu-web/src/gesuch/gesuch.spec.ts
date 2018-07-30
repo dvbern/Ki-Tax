@@ -22,7 +22,7 @@ import TestDataUtil from '../utils/TestDataUtil';
 import {GesuchRouteController} from './gesuch';
 import GesuchModelManager from './service/gesuchModelManager';
 
-describe('gesuch', function () {
+describe('gesuch', () => {
 
     let gesuchRouteController: GesuchRouteController;
     let gesuchModelManager: GesuchModelManager;
@@ -32,7 +32,7 @@ describe('gesuch', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
         gesuchRouteController = new GesuchRouteController(gesuchModelManager, $injector.get('BerechnungsManager'),
@@ -51,7 +51,7 @@ describe('gesuch', function () {
             expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Erstellen einer Mutation');
         });
         it('should return Art der Mutation', () => {
-            let gesuch: TSGesuch = new TSGesuch();
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.eingangsdatum = moment('01.07.2016', 'DD.MM.YYYY');
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
@@ -59,7 +59,7 @@ describe('gesuch', function () {
             expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Mutation vom 01.07.2016');
         });
         it('should return Erstgesuch der Periode', () => {
-            let gesuch: TSGesuch = new TSGesuch();
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.eingangsdatum = moment('01.07.2016', 'DD.MM.YYYY');
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);

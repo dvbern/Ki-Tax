@@ -35,9 +35,9 @@ import ITimeoutService = angular.ITimeoutService;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 
-let template = require('./umzugView.html');
+const template = require('./umzugView.html');
 require('./umzugView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class UmzugViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -49,15 +49,15 @@ export class UmzugViewComponentConfig implements IComponentOptions {
 
 export class UmzugViewController extends AbstractGesuchViewController<Array<TSUmzugAdresse>> {
 
-    dirty = false;
-
     static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'ErrorService', '$translate',
         'DvDialog', '$q', '$scope', '$timeout'];
 
+    dirty = false;
+
     /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private errorService: ErrorService,
-                private $translate: ITranslateService, private DvDialog: DvDialog, private $q: IQService,
+                wizardStepManager: WizardStepManager, private readonly errorService: ErrorService,
+                private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog, private readonly $q: IQService,
                 $scope: IScope, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.UMZUG, $timeout);
@@ -102,7 +102,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
      * Es koennte einen GS2 geben obwohl die neue Familiensituation "ledig" sagt
      */
     public getBetroffenenList(): Array<TSBetroffene> {
-        let betroffenenList: Array<TSBetroffene> = [];
+        const betroffenenList: Array<TSBetroffene> = [];
         if (this.gesuchModelManager.getGesuch()) {
             if (this.gesuchModelManager.getGesuch().gesuchsteller1) {
                 betroffenenList.push(TSBetroffene.GESUCHSTELLER_1);
@@ -173,7 +173,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
     }
 
     public removeUmzugAdresse(adresse: TSUmzugAdresse): void {
-        let remTitleText = this.$translate.instant('UMZUG_LOESCHEN');
+        const remTitleText = this.$translate.instant('UMZUG_LOESCHEN');
         this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: '',
@@ -181,7 +181,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
             elementID: undefined
         }).then(() => {   //User confirmed removal
             this.dirty = true;
-            let indexOf = this.model.lastIndexOf(adresse);
+            const indexOf = this.model.lastIndexOf(adresse);
             if (indexOf >= 0) {
                 this.model.splice(indexOf, 1);
             }
@@ -193,8 +193,8 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
      * Erstellt eine neue leere Adresse vom Typ WOHNADRESSE
      */
     public createUmzugAdresse(): void {
-        let adresseContainer = this.createAdressContainer();
-        let umzugAdresse: TSUmzugAdresse = new TSUmzugAdresse(undefined, adresseContainer);
+        const adresseContainer = this.createAdressContainer();
+        const umzugAdresse: TSUmzugAdresse = new TSUmzugAdresse(undefined, adresseContainer);
 
         this.model.push(umzugAdresse);
         this.dirty = true;
@@ -203,8 +203,8 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
     }
 
     private createAdressContainer() {
-        let adresseContainer: TSAdresseContainer = new TSAdresseContainer();
-        let adresse: TSAdresse = new TSAdresse();
+        const adresseContainer: TSAdresseContainer = new TSAdresseContainer();
+        const adresse: TSAdresse = new TSAdresse();
         adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
         adresseContainer.showDatumVon = true;
         adresseContainer.adresseJA = adresse;

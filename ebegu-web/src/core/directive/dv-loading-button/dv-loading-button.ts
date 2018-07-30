@@ -21,7 +21,7 @@ import IFormController = angular.IFormController;
 import IAttributes = angular.IAttributes;
 import ILogService = angular.ILogService;
 
-let template = require('./dv-loading-button.html');
+const template = require('./dv-loading-button.html');
 
 interface IDVLoadingButtonController {
     isDisabled: boolean;
@@ -83,8 +83,8 @@ export class DVLoadingButtonController implements IDVLoadingButtonController {
     buttonClick: () => void;
 
     /* @ngInject */
-    constructor(private $http: IHttpService, private $scope: any, private $timeout: ITimeoutService,
-                private $attrs: IAttributes, private $log: ILogService) {
+    constructor(private readonly $http: IHttpService, private readonly $scope: any, private readonly $timeout: ITimeoutService,
+                private readonly $attrs: IAttributes, private readonly $log: ILogService) {
     }
 
     //wird von angular aufgerufen
@@ -144,7 +144,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController {
 
     private getDelay(): number {
         if (this.delay) {
-            let parsedNum = parseInt(this.delay);
+            const parsedNum = parseInt(this.delay);
             if (parsedNum !== undefined && parsedNum !== null) {
                 return parsedNum;
             }

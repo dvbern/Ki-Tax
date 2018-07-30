@@ -23,7 +23,7 @@ import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {StateService} from '@uirouter/core';
-let template = require('./posteingangView.html');
+const template = require('./posteingangView.html');
 require('./posteingangView.less');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
@@ -34,6 +34,10 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 }
 
 export class PosteingangViewController {
+
+
+
+    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
 
     displayedCollection: Array<TSMitteilung> = []; //Liste die im Gui angezeigt wird
     pagination: any = {};
@@ -46,12 +50,8 @@ export class PosteingangViewController {
     selectedMitteilungsstatus: TSMitteilungStatus;
     includeClosed: boolean = false;
 
-
-
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
-
-    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: StateService,
-                private authServiceRS: AuthServiceRS, private $log: ILogService) {
+    constructor(private readonly mitteilungRS: MitteilungRS, private readonly ebeguUtil: EbeguUtil, private readonly CONSTANTS: any, private readonly $state: StateService,
+                private readonly authServiceRS: AuthServiceRS, private readonly $log: ILogService) {
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
@@ -65,7 +65,7 @@ export class PosteingangViewController {
     }
 
     isCurrentUserSchulamt(): boolean {
-        let isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
+        const isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
         return isUserSchulamt;
     }
 

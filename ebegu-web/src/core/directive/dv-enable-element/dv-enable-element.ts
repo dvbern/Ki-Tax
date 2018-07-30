@@ -32,6 +32,12 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
 export class DVEnableElement implements IDirective {
     restrict = 'A';
     controller = DVRoleElementController;
+
+    static factory(): IDirectiveFactory {
+        const directive = () => new DVEnableElement();
+        directive.$inject = [];
+        return directive;
+    }
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
 
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController) => {
@@ -57,11 +63,5 @@ export class DVEnableElement implements IDirective {
         } else {
             attributes.$set('disabled', 'disabled');
         }
-    }
-
-    static factory(): IDirectiveFactory {
-        const directive = () => new DVEnableElement();
-        directive.$inject = [];
-        return directive;
     }
 }

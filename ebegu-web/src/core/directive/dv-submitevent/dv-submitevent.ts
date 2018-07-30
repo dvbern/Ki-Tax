@@ -29,7 +29,7 @@ export default class DVSubmitevent implements IDirective {
     /* @ngInject */
     constructor() {
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {
-            element.on('submit', function () {
+            element.on('submit', () => {
                 scope.$broadcast(TSSubmitEvent[TSSubmitEvent.FORM_SUBMIT]);
             });
         };

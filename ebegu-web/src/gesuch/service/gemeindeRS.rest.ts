@@ -23,17 +23,17 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q'];
+    serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
-                private globalCacheService: GlobalCacheService, private $q: IQService) {
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+                private readonly globalCacheService: GlobalCacheService, private readonly $q: IQService) {
         this.serviceURL = REST_API + 'gemeinde';
     }
 
     public getAllGemeinden(): IPromise<TSGemeinde[]> {
-        let cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
         return this.http.get(this.serviceURL + '/all', {cache: cache})
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);

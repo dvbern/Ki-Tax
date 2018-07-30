@@ -15,7 +15,7 @@
 
 import {IComponentOptions} from 'angular';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
@@ -35,7 +35,7 @@ import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 
-let template = require('./pendenzenBetreuungenListView.html');
+const template = require('./pendenzenBetreuungenListView.html');
 require('./pendenzenBetreuungenListView.less');
 
 export class PendenzenBetreuungenListViewComponentConfig implements IComponentOptions {
@@ -46,6 +46,10 @@ export class PendenzenBetreuungenListViewComponentConfig implements IComponentOp
 }
 
 export class PendenzenBetreuungenListViewController {
+
+    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS',
+        'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     private pendenzenList: Array<TSPendenzBetreuung>;
@@ -60,21 +64,17 @@ export class PendenzenBetreuungenListViewController {
     itemsByPage: number = 20;
     numberOfPages: number = 1;
 
-    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS',
-        'AuthLifeCycleService'];
-
     constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
-                private ebeguUtil: EbeguUtil,
-                private institutionRS: InstitutionRS,
-                private institutionStammdatenRS: InstitutionStammdatenRS,
-                private gesuchsperiodeRS: GesuchsperiodeRS,
-                private gesuchModelManager: GesuchModelManager,
-                private berechnungsManager: BerechnungsManager,
-                private $state: StateService,
-                private gemeindeRS: GemeindeRS,
-                private authServiceRS: AuthServiceRS,
-                private authLifeCycleService: AuthLifeCycleService) {
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly institutionRS: InstitutionRS,
+                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly gesuchModelManager: GesuchModelManager,
+                private readonly berechnungsManager: BerechnungsManager,
+                private readonly $state: StateService,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
@@ -143,29 +143,29 @@ export class PendenzenBetreuungenListViewController {
 
     public editPendenzBetreuungen(pendenz: TSPendenzBetreuung, event: any): void {
         if (pendenz) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             this.openBetreuung(pendenz, isCtrlKeyPressed);
         }
     }
 
     private openBetreuung(pendenz: TSPendenzBetreuung, isCtrlKeyPressed: boolean): void {
-        let numberParts: TSBetreuungsnummerParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
+        const numberParts: TSBetreuungsnummerParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
         if (numberParts && pendenz) {
-            let kindNumber: number = parseInt(numberParts.kindnummer);
-            let betreuungNumber: number = parseInt(numberParts.betreuungsnummer);
+            const kindNumber: number = parseInt(numberParts.kindnummer);
+            const betreuungNumber: number = parseInt(numberParts.betreuungsnummer);
             if (betreuungNumber > 0) {
                 this.berechnungsManager.clear(); // nur um sicher zu gehen, dass alle alte Werte geloescht sind
 
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
                 // last time
                 this.gesuchModelManager.clearGesuch();
-                let navObj: any = {
+                const navObj: any = {
                     betreuungNumber: betreuungNumber,
                     kindNumber: kindNumber,
                     gesuchId: pendenz.gesuchId
                 };
                 if (isCtrlKeyPressed) {
-                    let url = this.$state.href('gesuch.betreuung', navObj);
+                    const url = this.$state.href('gesuch.betreuung', navObj);
                     window.open(url, '_blank');
                 } else {
                     this.$state.go('gesuch.betreuung', navObj);

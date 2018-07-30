@@ -15,7 +15,7 @@
 
 import {IComponentOptions, IOnChanges} from 'angular';
 
-let template = require('./dv-accordion.html');
+const template = require('./dv-accordion.html');
 require('./dv-accordion.less');
 
 export class DvAccordionComponentConfig implements IComponentOptions {
@@ -30,10 +30,10 @@ export class DvAccordionComponentConfig implements IComponentOptions {
 }
 
 export class DvAccordionController implements IOnChanges {
+    static $inject: ReadonlyArray<string> = [];
     accordion: string[] = [];
     allowMultipleSections: boolean;
     selectedTabId: string;
-    static $inject: ReadonlyArray<string> = [];
 
     $onChanges() {
         // erlaubt dass man von Anfang an, ein Tab oeffnet, wenn man eine bestimmte Mitteilung oeffnen will

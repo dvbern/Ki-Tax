@@ -17,9 +17,8 @@ import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
-import {MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
+import {MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
-import {MatTableModule} from '@angular/material/table';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
@@ -29,7 +28,7 @@ import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {BatchjobTriggerViewComponent} from './batchjobTriggerView';
 
-describe('batchjobTriggerView', function () {
+describe('batchjobTriggerView', () => {
 
     let component: BatchjobTriggerViewComponent;
     let fixture: ComponentFixture<BatchjobTriggerViewComponent>;

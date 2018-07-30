@@ -32,7 +32,7 @@ import TSFinanzModel from '../../../models/TSFinanzModel';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import {TSRole} from '../../../models/enums/TSRole';
 
-let template = require('./finanzielleSituationView.html');
+const template = require('./finanzielleSituationView.html');
 require('./finanzielleSituationView.less');
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
@@ -44,19 +44,19 @@ export class FinanzielleSituationViewComponentConfig implements IComponentOption
 
 export class FinanzielleSituationViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
+    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+        'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
+
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
     allowedRoles: Array<TSRole>;
 
-    private initialModel: TSFinanzModel;
-
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
+    private readonly initialModel: TSFinanzModel;
 
     /* @ngInject */
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private $q: IQService, $scope: IScope, private $translate: ITranslateService, $timeout: ITimeoutService) {
+                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
         let parsedNum: number = parseInt($stateParams.gesuchstellerNumber, 10);
         if (!parsedNum) {
@@ -153,13 +153,13 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     }
 
     public getTextSelbstaendigKorrektur() {
-        let finSitGS = this.getModel().finanzielleSituationGS;
+        const finSitGS = this.getModel().finanzielleSituationGS;
         if (finSitGS && finSitGS.isSelbstaendig()) {
 
-            let gew1 = finSitGS.geschaeftsgewinnBasisjahr;
-            let gew2 = finSitGS.geschaeftsgewinnBasisjahrMinus1;
-            let gew3 = finSitGS.geschaeftsgewinnBasisjahrMinus2;
-            let basisjahr = this.gesuchModelManager.getBasisjahr();
+            const gew1 = finSitGS.geschaeftsgewinnBasisjahr;
+            const gew2 = finSitGS.geschaeftsgewinnBasisjahrMinus1;
+            const gew3 = finSitGS.geschaeftsgewinnBasisjahrMinus2;
+            const basisjahr = this.gesuchModelManager.getBasisjahr();
             return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG',
                 {basisjahr: basisjahr, gewinn1: gew1, gewinn2: gew2, gewinn3: gew3});
 

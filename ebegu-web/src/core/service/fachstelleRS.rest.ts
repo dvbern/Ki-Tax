@@ -18,12 +18,12 @@ import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSFachstelle} from '../../models/TSFachstelle';
 
 export class FachstelleRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
     constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
         this.serviceURL = REST_API + 'fachstellen';

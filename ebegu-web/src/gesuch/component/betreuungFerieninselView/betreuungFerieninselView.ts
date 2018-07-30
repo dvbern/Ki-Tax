@@ -42,9 +42,9 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 declare let require: any;
-let template = require('./betreuungFerieninselView.html');
+const template = require('./betreuungFerieninselView.html');
 require('./betreuungFerieninselView.less');
-let dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungFerieninselViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -64,6 +64,9 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
 
 export class BetreuungFerieninselViewController extends BetreuungViewController {
 
+    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
+        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate', 'FerieninselStammdatenRS'];
+
     betreuung: TSBetreuung;
     onSave: () => void;
     form: IFormController;
@@ -74,14 +77,11 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     showMutiert: boolean = false;
     aktuellGueltig: boolean = true;
 
-    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate', 'FerieninselStammdatenRS'];
-
     constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
                 $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
                 authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,
                 mitteilungRS: MitteilungRS, dvDialog: DvDialog, $log: ILogService,
-                $timeout: ITimeoutService, $translate: ITranslateService, private ferieninselStammdatenRS: FerieninselStammdatenRS) {
+                $timeout: ITimeoutService, $translate: ITranslateService, private readonly ferieninselStammdatenRS: FerieninselStammdatenRS) {
         super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS, wizardStepManager, $stateParams,
             mitteilungRS, dvDialog, $log, $timeout, $translate);
     }
@@ -120,8 +120,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
                 this.gesuchModelManager.getGesuchsperiode().id, this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
                 this.ferieninselStammdaten = response;
                 // Bereits gespeicherte Daten wieder ankreuzen
-                for (let obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
-                    for (let tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
+                for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
+                    for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
                         if (tagAngemeldet.tag.isSame(obj.tag)) {
                             obj.angemeldet = true;
                         }
@@ -182,7 +182,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
 
     private setChosenFerientage(): void {
         this.betreuung.belegungFerieninsel.tage = [];
-        for (let tag of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
+        for (const tag of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
             if (tag.angemeldet) {
                 this.betreuung.belegungFerieninsel.tage.push(tag);
             }
@@ -201,7 +201,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public getMomentWeekdays() {
-        let weekdays = moment.weekdays();
+        const weekdays = moment.weekdays();
         weekdays.splice(0, 1);
         weekdays.splice(5, 1);
         return weekdays;

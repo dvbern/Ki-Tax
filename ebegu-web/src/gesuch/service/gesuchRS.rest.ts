@@ -28,14 +28,14 @@ import IRootScopeService = angular.IRootScopeService;
 import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
 
 export default class GesuchRS implements IEntityRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', '$rootScope'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', '$rootScope'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
-                private wizardStepManager: WizardStepManager, private $rootScope: IRootScopeService) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+                private readonly wizardStepManager: WizardStepManager, private readonly $rootScope: IRootScopeService) {
         this.serviceURL = REST_API + 'gesuche';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;
@@ -50,7 +50,7 @@ export default class GesuchRS implements IEntityRS {
             }
         }).then((response: any) => {
             this.$log.debug('PARSING gesuch REST object ', response.data);
-            let convertedGesuch: TSGesuch = this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+            const convertedGesuch: TSGesuch = this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
             return this.wizardStepManager.updateFirstWizardStep(convertedGesuch.id).then(() => {
                 return convertedGesuch;
             });

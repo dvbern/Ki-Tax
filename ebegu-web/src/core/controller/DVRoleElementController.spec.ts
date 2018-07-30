@@ -20,7 +20,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import {EbeguWebCore} from '../core.module';
 import {DVRoleElementController} from './DVRoleElementController';
 
-describe('DVElementController', function () {
+describe('DVElementController', () => {
 
     let authServiceRS: AuthServiceRS;
     let cvElementController: DVRoleElementController;
@@ -30,40 +30,40 @@ describe('DVElementController', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         authServiceRS = <AuthServiceRS>$injector.get('AuthServiceRS');
         spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.GESUCHSTELLER);
         cvElementController = new DVRoleElementController(authServiceRS);
 
     }));
 
-    describe('checkRoles', function () {
-        it('should return true for the same role as the user and no expression', function () {
+    describe('checkRoles', () => {
+        it('should return true for the same role as the user and no expression', () => {
             cvElementController.dvAllowedRoles = [TSRole.GESUCHSTELLER];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(true);
         });
-        it('should return true for the same role as the user and true expression', function () {
+        it('should return true for the same role as the user and true expression', () => {
             cvElementController.dvAllowedRoles = [TSRole.GESUCHSTELLER];
             cvElementController.dvExpression = true;
             expect(cvElementController.checkValidity()).toBe(true);
         });
-        it('should return false for the same role as the user and false expression', function () {
+        it('should return false for the same role as the user and false expression', () => {
             cvElementController.dvAllowedRoles = [TSRole.GESUCHSTELLER];
             cvElementController.dvExpression = false;
             expect(cvElementController.checkValidity()).toBe(false);
         });
-        it('should return false for a different role as the user and no expression', function () {
+        it('should return false for a different role as the user and no expression', () => {
             cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });
-        it('should return false for a different role as the user and true expression', function () {
+        it('should return false for a different role as the user and true expression', () => {
             cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });
-        it('should return false for a different role as the user and false expression', function () {
+        it('should return false for a different role as the user and false expression', () => {
             cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);

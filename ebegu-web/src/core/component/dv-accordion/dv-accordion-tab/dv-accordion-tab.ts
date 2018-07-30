@@ -16,7 +16,7 @@
 import {IComponentOptions} from 'angular';
 import {DvAccordionController} from '../dv-accordion';
 
-let template = require('./dv-accordion-tab.html');
+const template = require('./dv-accordion-tab.html');
 
 export class DvAccordionTabComponentConfig implements IComponentOptions {
     transclude: any = {

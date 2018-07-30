@@ -29,7 +29,7 @@ import {GesuchToolbarController} from './gesuchToolbar';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import {StateService} from '@uirouter/core';
 
-describe('gesuchToolbar', function () {
+describe('gesuchToolbar', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let gesuchToolbarController: GesuchToolbarController;
@@ -52,7 +52,7 @@ describe('gesuchToolbar', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
         ebeguUtil = $injector.get('EbeguUtil');

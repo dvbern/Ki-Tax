@@ -18,14 +18,14 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import TSPendenzBetreuung from '../../models/TSPendenzBetreuung';
 
 export default class PendenzBetreuungenRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
     log: ILogService;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     /* @ngInject */
-    constructor($http: IHttpService, private REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+    constructor($http: IHttpService, private readonly REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
         this.serviceURL = REST_API + 'search/pendenzenBetreuungen';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;

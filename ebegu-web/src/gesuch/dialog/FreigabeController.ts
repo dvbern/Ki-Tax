@@ -43,9 +43,9 @@ export class FreigabeController {
     private errorMessage: string;
     TSRoleUtil = TSRoleUtil;
 
-    constructor(private docID: string, private $mdDialog: IDialogService, private gesuchRS: GesuchRS,
-                private userRS: UserRS, private authService: AuthServiceRS, private ebeguUtil: EbeguUtil,
-                CONSTANTS: any, private $translate: ITranslateService, private applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly docID: string, private readonly $mdDialog: IDialogService, private readonly gesuchRS: GesuchRS,
+                private readonly userRS: UserRS, private readonly authService: AuthServiceRS, private readonly ebeguUtil: EbeguUtil,
+                CONSTANTS: any, private readonly $translate: ITranslateService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value

@@ -20,12 +20,12 @@ import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import TSAnmeldungDTO from '../../models/TSAnmeldungDTO';
 
 export default class BetreuungRS {
-    serviceURL: string;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    serviceURL: string;
 
     constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService,
-                private wizardStepManager: WizardStepManager) {
+                private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'betreuungen';
     }
 
@@ -154,7 +154,7 @@ export default class BetreuungRS {
      * damit alles in einer Transaction passiert. Z.B. fuer Abwesenheiten
      */
     public saveBetreuungen(betreuungenToUpdate: Array<TSBetreuung>, gesuchId: string, saveForAbwesenheit: boolean): IPromise<Array<TSBetreuung>> {
-        let restBetreuungen: Array<any> = [];
+        const restBetreuungen: Array<any> = [];
         betreuungenToUpdate.forEach((betreuungToUpdate: TSBetreuung) => {
             restBetreuungen.push(this.ebeguRestUtil.betreuungToRestObject({}, betreuungToUpdate));
         });
@@ -165,7 +165,7 @@ export default class BetreuungRS {
         }).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.log.debug('PARSING Betreuung REST object ', response.data);
-                let convertedBetreuungen: Array<TSBetreuung> = [];
+                const convertedBetreuungen: Array<TSBetreuung> = [];
                 response.data.forEach((returnedBetreuung: any) => {
                     convertedBetreuungen.push(this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), returnedBetreuung));
                 });

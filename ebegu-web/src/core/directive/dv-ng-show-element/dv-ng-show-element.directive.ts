@@ -43,9 +43,9 @@ export class DvNgShowElementDirective implements OnInit {
     private _roles: TSRole[];
     private _condition: boolean;
 
-    constructor(private templateRef: TemplateRef<any>,
-                private viewContainer: ViewContainerRef,
-                private authServiceRS: AuthServiceRS) {
+    constructor(private readonly templateRef: TemplateRef<any>,
+                private readonly viewContainer: ViewContainerRef,
+                private readonly authServiceRS: AuthServiceRS) {
     }
 
     public ngOnInit(): void {
@@ -69,7 +69,7 @@ export class DvNgShowElementDirective implements OnInit {
     }
 
     private handleElement() {
-        let result: boolean = this.evaluateCondition();
+        const result: boolean = this.evaluateCondition();
 
         if (result && !this.hasView) {
             this.viewContainer.createEmbeddedView(this.templateRef);

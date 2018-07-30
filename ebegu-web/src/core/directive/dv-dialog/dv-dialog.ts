@@ -24,7 +24,7 @@ export class DvDialog {
 
     static $inject: ReadonlyArray<string> = ['$mdDialog', '$log'];
 
-    constructor(private $mdDialog: IDialogService, private $log: ILogService) {
+    constructor(private readonly $mdDialog: IDialogService, private readonly $log: ILogService) {
     }
 
     /**
@@ -41,7 +41,7 @@ export class DvDialog {
             this.$log.error('You should not use showDialog() for a RemoveDialogController. Use showRemoveDialog() instead!');
             params.form = undefined;
         }
-        let confirm: IDialogOptions = {
+        const confirm: IDialogOptions = {
             template: template,
             controller: controller,
             controllerAs: 'vm',
@@ -63,7 +63,7 @@ export class DvDialog {
      */
     public showRemoveDialog(template: string, form: any, controller?: any, params?: any): IPromise<any> {
         params.form = form;
-        let confirm: IDialogOptions = {
+        const confirm: IDialogOptions = {
             template: template,
             controller: controller,
             controllerAs: 'vm',
@@ -73,7 +73,7 @@ export class DvDialog {
     }
 
     public showDialogFullscreen(template: string, controller?: any, params?: any): IPromise<any> {
-        let confirm: IDialogOptions = {
+        const confirm: IDialogOptions = {
             template: template,
             controller: controller,
             controllerAs: 'vm',

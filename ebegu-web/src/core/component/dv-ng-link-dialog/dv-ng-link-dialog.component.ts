@@ -29,7 +29,7 @@ export class DvNgLinkDialogComponent {
     link: string = '';
 
     constructor(
-        private dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
+        private readonly dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
         if (data) {

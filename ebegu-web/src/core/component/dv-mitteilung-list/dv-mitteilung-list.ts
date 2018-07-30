@@ -43,9 +43,9 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import IWindowService = angular.IWindowService;
 
-let template = require('./dv-mitteilung-list.html');
+const template = require('./dv-mitteilung-list.html');
 require('./dv-mitteilung-list.less');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DVMitteilungListConfig implements IComponentOptions {
     transclude = false;
@@ -63,6 +63,10 @@ export class DVMitteilungListConfig implements IComponentOptions {
 
 export class DVMitteilungListController implements IOnInit {
 
+    static $inject: ReadonlyArray<string> = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
+        '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
+        'DossierRS', 'PosteingangService'];
+
     dossier: TSDossier;
     betreuung: TSBetreuung;
     form: IFormController;
@@ -73,20 +77,16 @@ export class DVMitteilungListController implements IOnInit {
     TSRole: any;
     TSRoleUtil: any;
 
-    static $inject: ReadonlyArray<string> = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
-        '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
-        'DossierRS', 'PosteingangService'];
-
-    constructor(private $stateParams: IMitteilungenStateParams, private mitteilungRS: MitteilungRS,
-                private authServiceRS: AuthServiceRS,
-                private betreuungRS: BetreuungRS, private $q: IQService,
-                private $window: IWindowService,
-                private $rootScope: IRootScopeService, private $state: StateService, public ebeguUtil: EbeguUtil,
-                private DvDialog: DvDialog,
-                private gesuchModelManager: GesuchModelManager, private $scope: IScope,
-                private $timeout: ITimeoutService,
-                private dossierRS: DossierRS,
-                private posteingangService: PosteingangService) {
+    constructor(private readonly $stateParams: IMitteilungenStateParams, private readonly mitteilungRS: MitteilungRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly betreuungRS: BetreuungRS, private readonly $q: IQService,
+                private readonly $window: IWindowService,
+                private readonly $rootScope: IRootScopeService, private readonly $state: StateService, public ebeguUtil: EbeguUtil,
+                private readonly DvDialog: DvDialog,
+                private readonly gesuchModelManager: GesuchModelManager, private readonly $scope: IScope,
+                private readonly $timeout: ITimeoutService,
+                private readonly dossierRS: DossierRS,
+                private readonly posteingangService: PosteingangService) {
         this.TSRole = TSRole;
         this.TSRoleUtil = TSRoleUtil;
     }
@@ -139,9 +139,9 @@ export class DVMitteilungListController implements IOnInit {
     private loadEntwurf() {
         // Wenn der Fall keinen Besitzer hat, darf auch keine Nachricht geschrieben werden
         // Ausser wir sind Institutionsbenutzer
-        let isGesuchsteller: boolean = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        let isJugendamtOrSchulamtAndFallHasBesitzer: boolean = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
-        let isInstitutionsUser: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+        const isGesuchsteller: boolean = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+        const isJugendamtOrSchulamtAndFallHasBesitzer: boolean = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+        const isInstitutionsUser: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
         if (isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser) {
             if (this.betreuung) {
                 this.mitteilungRS.getEntwurfForCurrentRolleForBetreuung(this.betreuung.id).then((entwurf: TSMitteilung) => {
@@ -164,7 +164,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private initMitteilungForCurrentBenutzer() {
-        let currentUser: TSUser = this.authServiceRS.getPrincipal();
+        const currentUser: TSUser = this.authServiceRS.getPrincipal();
         //common attributes
         this.currentMitteilung = new TSMitteilung();
         this.currentMitteilung.dossier = this.dossier;
@@ -327,7 +327,7 @@ export class DVMitteilungListController implements IOnInit {
     public betreuungAsString(mitteilung: TSMitteilung): string {
         let betreuungAsString: string;
         if (mitteilung.betreuung) {
-            let bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall,
+            const bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall,
                 mitteilung.dossier.gemeinde, mitteilung.betreuung.kindNummer, mitteilung.betreuung.betreuungNummer);
             betreuungAsString = mitteilung.betreuung.kindFullname + ', ' + bgNummer;
         }
@@ -372,7 +372,7 @@ export class DVMitteilungListController implements IOnInit {
                 parentController: this,
                 elementID: 'Intro'
             }).then(() => {   //User confirmed message
-                let betreuungsmitteilung: TSBetreuungsmitteilung = <TSBetreuungsmitteilung>mitteilung;
+                const betreuungsmitteilung: TSBetreuungsmitteilung = <TSBetreuungsmitteilung>mitteilung;
                 this.mitteilungRS.applyBetreuungsmitteilung(betreuungsmitteilung.id).then((response: any) => { // JaxID kommt als response
                     this.loadAllMitteilungen();
                     if (response.id === this.gesuchModelManager.getGesuch().id) {
@@ -418,8 +418,8 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private isUserAndEmpfaengerSameAmt(mitteilung: TSMitteilung, amt: TSAmt): boolean {
-        let userInAmt: boolean = this.authServiceRS.getPrincipal().amt === amt;
-        let empfaengerInAmt: boolean = mitteilung.getEmpfaengerAmt() === amt;
+        const userInAmt: boolean = this.authServiceRS.getPrincipal().amt === amt;
+        const empfaengerInAmt: boolean = mitteilung.getEmpfaengerAmt() === amt;
         return userInAmt && empfaengerInAmt;
     }
 

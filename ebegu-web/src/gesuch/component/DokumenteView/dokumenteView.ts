@@ -32,7 +32,7 @@ import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./dokumenteView.html');
+const template = require('./dokumenteView.html');
 require('./dokumenteView.less');
 
 export class DokumenteViewComponentConfig implements IComponentOptions {
@@ -46,6 +46,9 @@ export class DokumenteViewComponentConfig implements IComponentOptions {
  * Controller fuer den Dokumenten Upload
  */
 export class DokumenteViewController extends AbstractGesuchViewController<any> {
+
+    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
+        'DokumenteRS', '$log', 'WizardStepManager', 'EbeguUtil', 'GlobalCacheService', '$scope', '$timeout'];
     parsedNum: number;
     dokumenteEkv: TSDokumentGrund[] = [];
     dokumenteFinSit: TSDokumentGrund[] = [];
@@ -55,12 +58,9 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     dokumenteSonst: TSDokumentGrund[] = [];
     dokumentePapiergesuch: TSDokumentGrund[] = [];
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
-        'DokumenteRS', '$log', 'WizardStepManager', 'EbeguUtil', 'GlobalCacheService', '$scope', '$timeout'];
-
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private dokumenteRS: DokumenteRS, private $log: ILogService, wizardStepManager: WizardStepManager,
-                private ebeguUtil: EbeguUtil, private globalCacheService: GlobalCacheService, $scope: IScope, $timeout: ITimeoutService) {
+                private readonly dokumenteRS: DokumenteRS, private readonly $log: ILogService, wizardStepManager: WizardStepManager,
+                private readonly ebeguUtil: EbeguUtil, private readonly globalCacheService: GlobalCacheService, $scope: IScope, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
@@ -87,12 +87,10 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
     private searchDokumente(alleDokumente: TSDokumenteDTO, dokumenteForType: TSDokumentGrund[], dokumentGrundTyp: TSDokumentGrundTyp) {
 
-        let dokumentGruende: Array<TSDokumentGrund> = alleDokumente.dokumentGruende;
-        for (let i = 0; i < dokumentGruende.length; i++) {
-            let tsDokument: TSDokumentGrund = dokumentGruende[i];
-            if (tsDokument.dokumentGrundTyp === dokumentGrundTyp) {
-                dokumenteForType.push(tsDokument);
-            }
+        const dokumentGruende: Array<TSDokumentGrund> = alleDokumente.dokumentGruende;
+        const found = dokumentGruende.find(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp);
+        if (found) {
+            dokumenteForType.push(found);
         }
         dokumenteForType.sort((n1: TSDokumentGrund, n2: TSDokumentGrund) => {
             let result: number = 0;
@@ -118,7 +116,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
     addUploadedDokuments(dokumentGrund: any, dokumente: TSDokumentGrund[]): void {
         this.$log.debug('addUploadedDokuments called');
-        let index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
+        const index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
 
         if (index > -1) {
             this.$log.debug('add dokument to dokumentList');
@@ -134,7 +132,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
     removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]) {
 
-        let index = EbeguUtil.getIndexOfElementwithID(dokument, dokumentGrund.dokumente);
+        const index = EbeguUtil.getIndexOfElementwithID(dokument, dokumentGrund.dokumente);
 
         if (index > -1) {
             this.$log.debug('add dokument to dokumentList');
@@ -143,11 +141,11 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
         this.dokumenteRS.updateDokumentGrund(dokumentGrund).then((response) => {
 
-            let returnedDG: TSDokumentGrund = angular.copy(response);
+            const returnedDG: TSDokumentGrund = angular.copy(response);
 
             if (returnedDG) {
                 // replace existing object in table with returned if returned not null
-                let index = EbeguUtil.getIndexOfElementwithID(returnedDG, dokumente);
+                const index = EbeguUtil.getIndexOfElementwithID(returnedDG, dokumente);
                 if (index > -1) {
                     this.$log.debug('update dokumentGrund in dokumentList');
                     dokumente[index] = dokumentGrund;
@@ -159,7 +157,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                 }
             } else {
                 // delete object in table with sended if returned is null
-                let index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
+                const index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
                 if (index > -1) {
                     this.$log.debug('remove dokumentGrund in dokumentList');
                     dokumente.splice(index, 1);

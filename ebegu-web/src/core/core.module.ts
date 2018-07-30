@@ -119,9 +119,9 @@ import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
 
-let dynamicDependencies = function (): string[] {
+const dynamicDependencies = (): string[] => {
 
-    let dynDep: string [] = [];
+    const dynDep: string [] = [];
     //hier kommen plugins die wir fuer dev disablen wollen
     if (ENV === 'development') {
         return [];
@@ -258,7 +258,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .filter('arrayToString', () => {
-        return function (input: Array<string>) {
+        return (input: string[]) => {
             if (input) {
                 return input.join(', ');
             }

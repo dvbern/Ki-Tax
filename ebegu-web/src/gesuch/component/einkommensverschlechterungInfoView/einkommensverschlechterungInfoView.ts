@@ -40,9 +40,9 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./einkommensverschlechterungInfoView.html');
+const template = require('./einkommensverschlechterungInfoView.html');
 require('./einkommensverschlechterungInfoView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -52,6 +52,10 @@ export class EinkommensverschlechterungInfoViewComponentConfig implements ICompo
 }
 
 export class EinkommensverschlechterungInfoViewController extends AbstractGesuchViewController<TSEinkommensverschlechterungInfoContainer> {
+
+    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
+        , 'WizardStepManager', 'DvDialog', '$q', 'EinkommensverschlechterungInfoRS', '$scope', 'AuthServiceRS',
+        'EinkommensverschlechterungContainerRS', '$timeout'];
 
     monthsStichtage: Array<TSMonth>;
     monthsStichtageWithVorjahr: Array<TSMonth>;
@@ -67,15 +71,11 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
         basisjahr: this.gesuchModelManager.getBasisjahr()
     };
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
-        , 'WizardStepManager', 'DvDialog', '$q', 'EinkommensverschlechterungInfoRS', '$scope', 'AuthServiceRS',
-        'EinkommensverschlechterungContainerRS', '$timeout'];
-
     /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private errorService: ErrorService, private ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
-                private DvDialog: DvDialog, private $q: IQService, private einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
-                $scope: IScope, private authServiceRS: AuthServiceRS, private ekvContainerRS: EinkommensverschlechterungContainerRS,
+                private readonly errorService: ErrorService, private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
+                private readonly DvDialog: DvDialog, private readonly $q: IQService, private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
+                $scope: IScope, private readonly authServiceRS: AuthServiceRS, private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
                 $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
         this.initialEinkVersInfo = angular.copy(this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer);
@@ -143,7 +143,7 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
      */
     private getStichtagFromMonat(monat: TSMonth, basisJahrPlus: number): moment.Moment {
         if (monat) {
-            let jahr: number = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
+            const jahr: number = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
             if (monat === TSMonth.VORJAHR) {
                 return moment([jahr - 1, 11]); // 1. Dezember des Vorjahres
             }

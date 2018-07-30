@@ -19,14 +19,14 @@ import WizardStepManager from './wizardStepManager';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
 
 export default class FamiliensituationRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     serviceURL: string;
     http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
-                private wizardStepManager: WizardStepManager) {
+    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+                private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'familiensituation';
         this.http = $http;
         this.ebeguRestUtil = ebeguRestUtil;

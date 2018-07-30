@@ -17,7 +17,7 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {EbeguWebCore} from '../core.module';
 import {DVsTPersistService} from './dVsTPersistService';
 
-describe('stPersistService', function () {
+describe('stPersistService', () => {
 
     let dVsTPersistService: DVsTPersistService;
     let object1: any;
@@ -29,7 +29,7 @@ describe('stPersistService', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         dVsTPersistService = $injector.get('DVsTPersistService');
         object1 = {name: 'Angelina', nachname: 'Jolie'};
         object2 = {name: 'Brad', nachname: 'Pitt'};
@@ -37,15 +37,15 @@ describe('stPersistService', function () {
         namespace_two = 'ns2';
     }));
 
-    describe('save and load Data', function () {
-        it('saves configurations in 2 different namespaces', function () {
+    describe('save and load Data', () => {
+        it('saves configurations in 2 different namespaces', () => {
             dVsTPersistService.saveData(namespace_one, object1);
             dVsTPersistService.saveData(namespace_two, object2);
 
             expect(dVsTPersistService.loadData(namespace_one)).toEqual(object1);
             expect(dVsTPersistService.loadData(namespace_two)).toEqual(object2);
         });
-        it('saves 2 configurations in the same namespace, so the second overwrite the first', function () {
+        it('saves 2 configurations in the same namespace, so the second overwrite the first', () => {
             dVsTPersistService.saveData(namespace_one, object1);
             dVsTPersistService.saveData(namespace_one, object2);
 
@@ -53,14 +53,14 @@ describe('stPersistService', function () {
             expect(dVsTPersistService.loadData(namespace_two)).toBeUndefined();
         });
     });
-    describe('delete Data', function () {
-        it('delete non-existing namespace', function () {
+    describe('delete Data', () => {
+        it('delete non-existing namespace', () => {
             dVsTPersistService.saveData(namespace_one, object1);
 
             expect(dVsTPersistService.deleteData(namespace_two)).toBe(false);
             expect(dVsTPersistService.loadData(namespace_one)).toEqual(object1);
         });
-        it('delete non-existing namespace', function () {
+        it('delete non-existing namespace', () => {
             dVsTPersistService.saveData(namespace_one, object1);
 
             expect(dVsTPersistService.deleteData(namespace_one)).toBe(true);

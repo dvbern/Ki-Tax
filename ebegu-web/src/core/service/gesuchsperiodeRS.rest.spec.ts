@@ -25,7 +25,7 @@ import TestDataUtil from '../../utils/TestDataUtil';
 import {EbeguWebCore} from '../core.module';
 import GesuchsperiodeRS from './gesuchsperiodeRS.rest';
 
-describe('gesuchsperiodeRS', function () {
+describe('gesuchsperiodeRS', () => {
 
     let gesuchsperiodeRS: GesuchsperiodeRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -39,7 +39,7 @@ describe('gesuchsperiodeRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -53,31 +53,31 @@ describe('gesuchsperiodeRS', function () {
         mockGesuchsperiodeRest = ebeguRestUtil.gesuchsperiodeToRestObject({}, mockGesuchsperiode);
     });
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(gesuchsperiodeRS.serviceURL).toContain('gesuchsperioden');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(gesuchsperiodeRS.getServiceName()).toBe('GesuchsperiodeRS');
         });
-        it('should include a findGesuchsperiode() function', function () {
+        it('should include a findGesuchsperiode() function', () => {
             expect(gesuchsperiodeRS.findGesuchsperiode).toBeDefined();
         });
-        it('should include a createGesuchsperiode() function', function () {
+        it('should include a createGesuchsperiode() function', () => {
             expect(gesuchsperiodeRS.createGesuchsperiode).toBeDefined();
         });
-        it('should include a updateGesuchsperiode() function', function () {
+        it('should include a updateGesuchsperiode() function', () => {
             expect(gesuchsperiodeRS.updateGesuchsperiode).toBeDefined();
         });
-        it('should include a removeGesuchsperiode() function', function () {
+        it('should include a removeGesuchsperiode() function', () => {
             expect(gesuchsperiodeRS.removeGesuchsperiode).toBeDefined();
         });
-        it('should include a getAllActiveGesuchsperioden() function', function () {
+        it('should include a getAllActiveGesuchsperioden() function', () => {
             expect(gesuchsperiodeRS.getAllActiveGesuchsperioden).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findGesuchsperiode', () => {
             it('should return the Gesuchsperiode by id', () => {
                 $httpBackend.expectGET(gesuchsperiodeRS.serviceURL + '/gesuchsperiode/' + encodeURIComponent(mockGesuchsperiode.id)).respond(mockGesuchsperiodeRest);
@@ -92,7 +92,7 @@ describe('gesuchsperiodeRS', function () {
         });
         describe('getAllActiveGesuchsperioden', () => {
             it('should return all active Gesuchsperiode by id', () => {
-                let gesuchsperiodenList: Array<any> = [mockGesuchsperiodeRest];
+                const gesuchsperiodenList: Array<any> = [mockGesuchsperiodeRest];
                 $httpBackend.expectGET(gesuchsperiodeRS.serviceURL + '/active').respond(gesuchsperiodenList);
                 spyOn($http, 'get').and.callThrough();
 

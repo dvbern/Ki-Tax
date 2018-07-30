@@ -18,13 +18,13 @@ import {TSRole} from '../../models/enums/TSRole';
 
 export class DVRoleElementController {
 
+    static $inject: string[] = ['AuthServiceRS'];
+
     dvAllowedRoles: Array<TSRole>;
     dvExpression: boolean;
 
-    static $inject: string[] = ['AuthServiceRS'];
-
     /* @ngInject */
-    constructor(private authServiceRS: AuthServiceRS) {
+    constructor(private readonly authServiceRS: AuthServiceRS) {
     }
 
     /**
@@ -40,7 +40,7 @@ export class DVRoleElementController {
      */
     private checkRoles(): boolean {
         if (this.dvAllowedRoles) {
-            for (let role of this.dvAllowedRoles) {
+            for (const role of this.dvAllowedRoles) {
                 if (this.authServiceRS.getPrincipalRole() === role) {
                     return true;
                 }

@@ -22,7 +22,7 @@ import UserRS from '../../service/userRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSGesuch from '../../../models/TSGesuch';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-let template = require('./dv-verantwortlicherselect.html');
+const template = require('./dv-verantwortlicherselect.html');
 
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
@@ -47,15 +47,15 @@ export class DvVerantwortlicherselect implements IDirective {
  */
 export class VerantwortlicherselectController {
 
+    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
+
     userList: Array<TSUser>;
     TSRoleUtil: any;
     antragList: Array<TSAntragDTO>;
     schulamt: boolean;
-
-    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
     /* @ngInject */
-    constructor(private userRS: UserRS, private authServiceRS: AuthServiceRS, private gesuchModelManager: GesuchModelManager,
-                private $translate: ITranslateService) {
+    constructor(private readonly userRS: UserRS, private readonly authServiceRS: AuthServiceRS, private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $translate: ITranslateService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

@@ -21,7 +21,7 @@ import EbeguUtil from '../../utils/EbeguUtil';
 import TSAbstractAntragDTO from '../../models/TSAbstractAntragDTO';
 import ILogService = angular.ILogService;
 
-let template = require('./searchListView.html');
+const template = require('./searchListView.html');
 require('./searchListView.less');
 
 export class SearchListViewComponentConfig implements IComponentOptions {
@@ -33,16 +33,16 @@ export class SearchListViewComponentConfig implements IComponentOptions {
 
 export class SearchListViewController {
 
-    private antragList: Array<TSAbstractAntragDTO>;
-    totalResultCount: string = '-';
-    private ignoreRequest: boolean = true; //we want to ignore the first filter request because the default sort triggers always a second one
-    searchString: string;
-
 
     static $inject: string[] = [ '$log', '$stateParams', 'SearchIndexRS', 'EbeguUtil'];
 
-    constructor(private $log: ILogService,  $stateParams: ISearchResultateStateParams,
-                private searchIndexRS: SearchIndexRS, private ebeguUtil: EbeguUtil) {
+    private antragList: Array<TSAbstractAntragDTO>;
+    totalResultCount: string = '-';
+    private readonly ignoreRequest: boolean = true; //we want to ignore the first filter request because the default sort triggers always a second one
+    searchString: string;
+
+    constructor(private readonly $log: ILogService,  $stateParams: ISearchResultateStateParams,
+                private readonly searchIndexRS: SearchIndexRS, private readonly ebeguUtil: EbeguUtil) {
         this.searchString = $stateParams.searchString;
         this.initViewModel();
 
@@ -51,7 +51,7 @@ export class SearchListViewController {
     private initViewModel() {
         this.searchIndexRS.globalSearch(this.searchString).then((quickSearchResult: TSQuickSearchResult) => {
             this.antragList = [];
-            for (let res of quickSearchResult.resultEntities) {
+            for (const res of quickSearchResult.resultEntities) {
                 this.antragList.push(res.antragDTO);
             }
             EbeguUtil.handleSmarttablesUpdateBug(this.antragList);

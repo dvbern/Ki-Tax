@@ -19,7 +19,7 @@ import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
 declare let require: any;
-let template = require('./dv-finanzielle-situation-require.html');
+const template = require('./dv-finanzielle-situation-require.html');
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     transclude = false;
@@ -36,6 +36,8 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
 
 export class DVFinanzielleSituationRequireController {
 
+    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
+
     finanzielleSituationRequired: boolean;
     areThereOnlySchulamtangebote: boolean;
     sozialhilfeBezueger: boolean;
@@ -43,10 +45,8 @@ export class DVFinanzielleSituationRequireController {
 
     maxMassgebendesEinkommen: string;
 
-    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
-
     /* @ngInject */
-    constructor(private ebeguParameterRS: EbeguParameterRS, private gesuchModelManager: GesuchModelManager) {
+    constructor(private readonly ebeguParameterRS: EbeguParameterRS, private readonly gesuchModelManager: GesuchModelManager) {
     }
 
     $onInit() {

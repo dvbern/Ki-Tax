@@ -19,7 +19,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
-describe('institutionStammdatenRS', function () {
+describe('institutionStammdatenRS', () => {
 
     let traegerschaftRS: TraegerschaftRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -31,7 +31,7 @@ describe('institutionStammdatenRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         traegerschaftRS = $injector.get('TraegerschaftRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -43,28 +43,28 @@ describe('institutionStammdatenRS', function () {
         mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(traegerschaftRS.getServiceName()).toBe('TraegerschaftRS');
         });
-        it('should include a findTraegerschaft() function', function () {
+        it('should include a findTraegerschaft() function', () => {
             expect(traegerschaftRS.findTraegerschaft).toBeDefined();
         });
-        it('should include a createTraegerschaft() function', function () {
+        it('should include a createTraegerschaft() function', () => {
             expect(traegerschaftRS.createTraegerschaft).toBeDefined();
         });
-        it('should include a updateTraegerschaft() function', function () {
+        it('should include a updateTraegerschaft() function', () => {
             expect(traegerschaftRS.updateTraegerschaft).toBeDefined();
         });
-        it('should include a removeTraegerschaft() function', function () {
+        it('should include a removeTraegerschaft() function', () => {
             expect(traegerschaftRS.removeTraegerschaft).toBeDefined();
         });
-        it('should include a getAllTraegerschaften() function', function () {
+        it('should include a getAllTraegerschaften() function', () => {
             expect(traegerschaftRS.getAllTraegerschaften).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findTraegerschaft', () => {
             it('should return the Traegerschaft by id', () => {
                 $httpBackend.expectGET(traegerschaftRS.serviceURL + '/id/' + encodeURIComponent(mockTraegerschaft.id)).respond(mockTraegerschaftRest);
@@ -127,7 +127,7 @@ describe('institutionStammdatenRS', function () {
 
         describe('getAllTraegerschaften', () => {
             it('should return all Traegerschaften', () => {
-                let traegerschaftenRestArray: Array<any> = [mockTraegerschaftRest, mockTraegerschaftRest];
+                const traegerschaftenRestArray: Array<any> = [mockTraegerschaftRest, mockTraegerschaftRest];
                 $httpBackend.expectGET(traegerschaftRS.serviceURL).respond(traegerschaftenRestArray);
 
                 let returnedTraegerschaften: Array<TSTraegerschaft>;

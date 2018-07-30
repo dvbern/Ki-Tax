@@ -23,7 +23,7 @@ import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 
-let template = require('./pendenzenSteueramtListView.html');
+const template = require('./pendenzenSteueramtListView.html');
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -34,14 +34,14 @@ export class PendenzenSteueramtListViewComponentConfig implements IComponentOpti
 
 export class PendenzenSteueramtListViewController {
 
-    totalResultCount: string = '0';
-    TSRoleUtil: any;
-
 
     static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
-    constructor(private gesuchModelManager: GesuchModelManager, private $state: StateService, private $log: ILogService,
-                private searchRS: SearchRS) {
+    totalResultCount: string = '0';
+    TSRoleUtil: any;
+
+    constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly searchRS: SearchRS) {
         this.TSRoleUtil = TSRoleUtil;
     }
 
@@ -51,7 +51,7 @@ export class PendenzenSteueramtListViewController {
 
     public editpendenzSteueramt(pendenz: TSAntragDTO, event: any): void {
         if (pendenz) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             this.openPendenz(pendenz, isCtrlKeyPressed);
         }
     }
@@ -67,11 +67,11 @@ export class PendenzenSteueramtListViewController {
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean) {
         this.gesuchModelManager.clearGesuch();
-        let navObj: any = {
+        const navObj: any = {
             gesuchId: pendenz.antragId
         };
         if (isCtrlKeyPressed) {
-            let url = this.$state.href('gesuch.familiensituation', navObj);
+            const url = this.$state.href('gesuch.familiensituation', navObj);
             window.open(url, '_blank');
         } else {
             this.$state.go('gesuch.familiensituation', navObj);

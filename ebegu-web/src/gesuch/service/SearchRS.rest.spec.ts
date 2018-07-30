@@ -22,7 +22,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import SearchRS from './searchRS.rest';
 import {EbeguWebCore} from '../../core/core.module';
 
-describe('searchRS', function () {
+describe('searchRS', () => {
 
     let searchRS: SearchRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -34,7 +34,7 @@ describe('searchRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         searchRS = $injector.get('SearchRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -46,26 +46,26 @@ describe('searchRS', function () {
         mockPendenzRest = ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(searchRS.getServiceName()).toBe('SearchRS');
         });
-        it('should include a getPendenzenBetreuungenList() function', function () {
+        it('should include a getPendenzenBetreuungenList() function', () => {
             expect(searchRS.getPendenzenList).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('getPendenzenList', () => {
             it('should return all pending Antraege', () => {
-                let tsAntragDTO: TSAntragDTO = new TSAntragDTO();
+                const tsAntragDTO: TSAntragDTO = new TSAntragDTO();
                 tsAntragDTO.fallNummer = 1234;
-                let searchResult: any = {
+                const searchResult: any = {
                     antragDTOs: [tsAntragDTO],
                     paginationDTO: {totalItemCount: 1}
                 };
 
-                let filter: any = {};
+                const filter: any = {};
                 $httpBackend.expectPOST(searchRS.serviceURL + '/jugendamt/', filter).respond(searchResult);
 
                 let foundPendenzen: TSAntragSearchresultDTO;
