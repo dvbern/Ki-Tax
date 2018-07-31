@@ -59,7 +59,7 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public focusToolbar(): void {
-        angular.element('.gesuch-toolbar-gesuchsteller.desktop button').first().focus();
+        angular.element('.dossier-toolbar-gesuchsteller.desktop button').first().focus();
     }
 
     public focusSidenav(): void {

@@ -41,13 +41,13 @@ import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 
-let templateX = require('./gesuchToolbar.html');
-let templateGS = require('./gesuchToolbarGesuchsteller.html');
+let templateX = require('./dossierToolbar.html');
+let templateGS = require('./dossierToolbarGesuchsteller.html');
 let showKontaktTemplate = require('../../../gesuch/dialog/showKontaktTemplate.html');
 let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-require('./gesuchToolbar.less');
+require('./dossierToolbar.less');
 
-export class GesuchToolbarComponentConfig implements IComponentOptions {
+export class DossierToolbarComponentConfig implements IComponentOptions {
     transclude = false;
     bindings: any = {
         gesuchid: '@',
@@ -58,11 +58,11 @@ export class GesuchToolbarComponentConfig implements IComponentOptions {
     };
 
     template = templateX;
-    controller = GesuchToolbarController;
+    controller = DossierToolbarController;
     controllerAs = 'vmx';
 }
 
-export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOptions {
+export class DossierToolbarGesuchstellerComponentConfig implements IComponentOptions {
     transclude = false;
     bindings: any = {
         gesuchid: '@',
@@ -72,12 +72,12 @@ export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOpti
         forceLoadingFromFall: '@'
     };
     template = templateGS;
-    controller = GesuchToolbarController;
-    // Darf, wie es scheint nicht 'vm' heissen, sonst werden im gesuchToolBarGesuchsteller.html keine Funktionen gefunden. Bug?!
+    controller = DossierToolbarController;
+    // Darf, wie es scheint nicht 'vm' heissen, sonst werden im dossierToolBarGesuchsteller.html keine Funktionen gefunden. Bug?!
     controllerAs = 'vmgs';
 }
 
-export class GesuchToolbarController implements IDVFocusableController {
+export class DossierToolbarController implements IDVFocusableController {
 
     antragList: Array<TSAntragDTO>;
     gesuchid: string;

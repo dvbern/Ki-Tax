@@ -13,8 +13,8 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!--gesuchtoolbar fuer normale Screens-->
-<div class="gesuch-toolbar-gesuchsteller desktop" flex="100" hide-sm hide-xs>
+<!--dossiertoolbar fuer normale Screens-->
+<div class="dossier-toolbar-gesuchsteller desktop" flex="100" hide-sm hide-xs>
     <md-toolbar flex="100">
         <md-menu-bar flex="100" layout="row" layout-align="start center">
             <h1 class="access-for-all-title" data-translate="AFA_TOOLBAR"></h1>
@@ -113,9 +113,9 @@
     </md-toolbar>
 </div>
 <!--Definition der Toolbar  fuer kleine Screens als Sidebar-->
-<md-sidenav md-component-id="gesuch-toolbar-mobile" class="md-sidenav-right gesuch-toolbar-mobile" flex="100"
+<md-sidenav md-component-id="dossier-toolbar-mobile" class="md-sidenav-right dossier-toolbar-mobile" flex="100"
             layout="column" layout-align="start center" hide-gt-sm>
-    <button class="gesuch-toolbar-mobile-close" ng-click="vmgs.toggleSidenav('gesuch-toolbar-mobile')"
+    <button class="dossier-toolbar-mobile-close" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile')"
             aria-label="Schliessen">
         <!--close knopf-->
         <i class="fa fa-times" aria-hidden="true"></i>
@@ -128,7 +128,7 @@
          ng-repeat="gesuchsperiodeString in vmgs.getKeys(vmgs.gesuchNavigationList)" layout="column"
          layout-align="start center">
 
-        <button ng-click="vmgs.closeSidenav('gesuch-toolbar-mobile');vmgs.setGesuchsperiode(gesuchsperiodeString)"
+        <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.setGesuchsperiode(gesuchsperiodeString)"
                 aria-label="{{gesuchsperiodeString}}" class="gesuchsperiode-button">
 			<span>
 				{{gesuchsperiodeString}}
@@ -136,7 +136,7 @@
         </button>
 
         <button
-            ng-click="vmgs.closeSidenav('gesuch-toolbar-mobile');vmgs.setAntragTypDatumMobile(gesuchsperiodeString, antragTypDatum)"
+            ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.setAntragTypDatumMobile(gesuchsperiodeString, antragTypDatum)"
             aria-label="{{antragTypDatum}}" ng-if="vmgs.showAntragTypListNavigationMenu()"
             ng-repeat="antragTypDatum in vmgs.gesuchNavigationList[gesuchsperiodeString]"
             ng-value="antragTypDatum" class="antrag-typ-datum-button">
@@ -150,7 +150,7 @@
     <span flex=""></span>
     <div dv-show-element
          dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()" class="gesuchsperioden-container">
-        <button ng-click="vmgs.closeSidenav('gesuch-toolbar-mobile');vmgs.openMitteilungen()"
+        <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.openMitteilungen()"
                 aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" class="gesuchsperiode-button">
             <span data-translate="TOOLBAR_MITTEILUNGEN"></span>
         </button>
@@ -163,7 +163,7 @@
         <a href="tel:0313215115"><span>031 321 51 15</span></a>
         <a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>
     </div>
-    <button class="mobile-logout" ng-click="vmgs.toggleSidenav('gesuch-toolbar-mobile');vmgs.logout()"
+    <button class="mobile-logout" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile');vmgs.logout()"
             aria-label="{{'AUSLOGGEN' | translate}}">
         <span data-translate="AUSLOGGEN"></span>
     </button>

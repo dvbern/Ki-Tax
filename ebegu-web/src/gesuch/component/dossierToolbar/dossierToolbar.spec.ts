@@ -25,14 +25,14 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import DossierRS from '../../service/dossierRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
-import {GesuchToolbarController} from './gesuchToolbar';
+import {DossierToolbarController} from './dossierToolbar';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import {StateService} from '@uirouter/core';
 
-describe('gesuchToolbar', function () {
+describe('dossierToolbar', function () {
 
     let gesuchModelManager: GesuchModelManager;
-    let gesuchToolbarController: GesuchToolbarController;
+    let dossierToolbarController: DossierToolbarController;
     let authServiceRS: AuthServiceRS;
     let ebeguUtil: EbeguUtil;
     let gesuchRS: GesuchRS;
@@ -71,7 +71,7 @@ describe('gesuchToolbar', function () {
         dvDialog = $injector.get('DvDialog');
         mitteilungRS = $injector.get('MitteilungRS');
 
-        gesuchToolbarController = new GesuchToolbarController(ebeguUtil,
+        dossierToolbarController = new DossierToolbarController(ebeguUtil,
             gesuchRS, $state, $scope, gesuchModelManager,
             authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, mitteilungRS, undefined, dossierRS);
     }));

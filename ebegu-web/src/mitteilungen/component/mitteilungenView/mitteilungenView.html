@@ -13,16 +13,16 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<gesuch-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
-                hide-action-buttons="{{true}}"
-                force-loading-from-fall="{{true}}"
-                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
-</gesuch-toolbar>
+<dossier-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
+                 hide-action-buttons="{{true}}"
+                 force-loading-from-fall="{{true}}"
+                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+</dossier-toolbar>
 
-<gesuch-toolbar-gesuchsteller flex="nogrow" class="gesuch-toolbar-gesuchsteller" dossier-id="{{vm.dossierId}}"
-                              hide-action-buttons="{{true}}"
-                              dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
-</gesuch-toolbar-gesuchsteller>
+<dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossierId}}"
+                               hide-action-buttons="{{true}}"
+                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+</dossier-toolbar-gesuchsteller>
 
 <div class="mitteilungenView overflow-auto" flex="auto">
     <div class="row">

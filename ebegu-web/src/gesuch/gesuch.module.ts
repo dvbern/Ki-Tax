@@ -37,7 +37,7 @@ import {FinanzielleSituationResultateViewComponentConfig} from './component/fina
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
-import {GesuchToolbarComponentConfig, GesuchToolbarGesuchstellerComponentConfig} from './component/gesuchToolbar/gesuchToolbar';
+import {DossierToolbarComponentConfig, DossierToolbarGesuchstellerComponentConfig} from './component/dossierToolbar/dossierToolbar';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
@@ -69,8 +69,8 @@ export const EbeguWebGesuch =
         .component('fallCreationView', new FallCreationViewComponentConfig())
         .component('verfuegenListView', new VerfuegenListViewComponentConfig())
         .component('verfuegenView', new VerfuegenViewComponentConfig())
-        .component('gesuchToolbar', new GesuchToolbarComponentConfig())
-        .component('gesuchToolbarGesuchsteller', new GesuchToolbarGesuchstellerComponentConfig())
+        .component('dossierToolbar', new DossierToolbarComponentConfig())
+        .component('dossierToolbarGesuchsteller', new DossierToolbarGesuchstellerComponentConfig())
         .component('einkommensverschlechterungInfoView', new EinkommensverschlechterungInfoViewComponentConfig())
         .component('einkommensverschlechterungSteuernView', new EinkommensverschlechterungSteuernViewComponentConfig())
         .component('einkommensverschlechterungView', new EinkommensverschlechterungViewComponentConfig())

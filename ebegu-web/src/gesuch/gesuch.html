@@ -13,14 +13,14 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<gesuch-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getGesuch().dossier.id}}"
-                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
-</gesuch-toolbar>
+<dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getGesuch().dossier.id}}"
+                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+</dossier-toolbar>
 
-<gesuch-toolbar-gesuchsteller flex="nogrow" class="gesuch-toolbar-gesuchsteller" gesuchid="{{vm.getGesuchId()}}"
-                              dossier-id="{{vm.getGesuch().dossier.id}}"
-                              dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
-</gesuch-toolbar-gesuchsteller>
+<dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" gesuchid="{{vm.getGesuchId()}}"
+                               dossier-id="{{vm.getGesuch().dossier.id}}"
+                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+</dossier-toolbar-gesuchsteller>
 <!--Gesuchnavigation (Uebersicht)  fuer den Gesuchsteller (mobile)-->
 <div class="mobile-sidenav-toggle mobile-open" flex="none" layout="row" layout-align="center center" dv-show-element
      dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()" hide-gt-sm>
