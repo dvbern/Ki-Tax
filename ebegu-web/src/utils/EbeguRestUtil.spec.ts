@@ -51,7 +51,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import DateUtil from './DateUtil';
 import EbeguRestUtil from './EbeguRestUtil';
 import EbeguUtil from './EbeguUtil';
-import TestDataUtil from './TestDataUtil';
+import TestDataUtilSpec from './TestDataUtil';
 import Moment = moment.Moment;
 
 describe('EbeguRestUtil', () => {

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.module';
+import {EbeguWebCore} from '../core/core.angularjs.module';
 import {PendenzenListViewComponentConfig} from './component/pendenzenListView/pendenzenListView';
 import {pendenzRun} from './pendenzen.route';
 import EllipsisTooltip from './directive/ellipsisTooltip';

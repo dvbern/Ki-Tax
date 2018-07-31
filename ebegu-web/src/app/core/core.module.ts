@@ -1,17 +1,26 @@
-import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
-import {applicationPropertyRSProvider, mitteilungRSProvider} from '../../hybridTools/ajs-upgraded-providers';
+import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
+import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
+import {DvPosteingangComponent} from '../../core/component/dv-posteingang/dv-posteingang';
+import {DEFAULT_LOCALE} from '../../core/constants/CONSTANTS';
+import {DvNgShowElementDirective} from '../../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {UPGRADED_PROVIDERS} from '../../hybridTools/upgraded-providers';
+import {NavbarComponent} from './component/navbar/navbar.component';
 
 @NgModule({
     imports: [
         // only those modules required by the providers/components of the core module (other global modules go to shared module)
+        TranslateModule,
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
-        applicationPropertyRSProvider,
-        mitteilungRSProvider,
+        ...UPGRADED_PROVIDERS,
+        TranslatePipe,
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent)
+        NavbarComponent,
+        DvNgShowElementDirective,
+        DvPosteingangComponent,
     ]
 })
 export class CoreModule {
@@ -30,6 +39,7 @@ export class CoreModule {
             ngModule: CoreModule,
             providers: [
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
+                {provide: LOCALE_ID, useValue: DEFAULT_LOCALE}
             ]
         };
     }

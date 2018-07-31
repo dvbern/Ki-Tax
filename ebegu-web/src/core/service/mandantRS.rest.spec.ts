@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSMandant} from '../../models/TSMandant';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import {MandantRS} from './mandantRS.rest';
 
 describe('mandantRS', () => {

@@ -23,7 +23,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';

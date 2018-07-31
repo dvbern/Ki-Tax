@@ -14,7 +14,7 @@
  */
 
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {EbeguWebCore} from '../../core.module';
+import {EbeguWebCore} from '../../core.angularjs.module';
 
 describe('dvVersion', () => {
 

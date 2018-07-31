@@ -24,8 +24,8 @@ import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TestDataUtil from '../../../utils/TestDataUtil';
-import {EbeguWebCore} from '../../core.module';
+import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
 import {StateService} from '@uirouter/core';
 

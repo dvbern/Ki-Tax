@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
+import {EbeguWebCore} from '../../../core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSGesuch from '../../../models/TSGesuch';
 import TSKindContainer from '../../../models/TSKindContainer';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';

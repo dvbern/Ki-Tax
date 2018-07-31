@@ -14,7 +14,7 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../core/core.module';
+import {EbeguWebCore} from '../../../core/core.angularjs.module';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';

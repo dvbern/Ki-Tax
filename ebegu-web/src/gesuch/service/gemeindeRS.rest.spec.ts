@@ -14,12 +14,12 @@
  */
 
 import {IRootScopeService} from 'angular';
-import {EbeguWebCore} from '../../core/core.module';
+import {EbeguWebCore} from '../../core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSUser from '../../models/TSUser';
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
 import GemeindeRS from './gemeindeRS.rest';
 
 describe('dossier', () => {

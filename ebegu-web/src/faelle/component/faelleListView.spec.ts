@@ -21,7 +21,7 @@ import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp'
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import TSGesuch from '../../models/TSGesuch';
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
 import {EbeguWebFaelle} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';

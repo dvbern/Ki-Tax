@@ -13,32 +13,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
-import appModule from '../app.module';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgAdminModule} from '../admin/ng-admin.module';
+import {appModuleAngularJS} from '../app.angularjs.module';
+import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
+import {DEFAULT_LOCALE} from '../core/constants/CONSTANTS';
+import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
+import {NgPosteingangModule} from '../posteingang/ng-posteingang.module';
 import {AppRoutingModule} from './app-routing.module';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
+import {UIRouterModule} from '@uirouter/angular';
+import {AppComponent} from './test/app.component';
 
 @NgModule({
     imports: [
         BrowserModule,
-        UpgradeModule,
         NoopAnimationsModule, // we don't want material animations in the project yet
+        UpgradeModule,
+
+ UIRouterUpgradeModule,
+    UIRouterModule.forChild({ states: [] }),
 
         // Core & Shared
-        CoreModule.forRoot(),
-        SharedModule,
+        // CoreModule.forRoot(),
+        // SharedModule,
 
-        AppRoutingModule,
-        //
+        // AppRoutingModule,
+        // TODO hefa only import via router
         // NgAdminModule,
         // NgAuthenticationModule,
         // NgGesuchModule,
         // NgPosteingangModule,
     ],
+    declarations: [
+        // AppComponent
+    ],
+     // bootstrap: [AppComponent]
 })
 
 export class AppModule {
@@ -47,16 +62,6 @@ export class AppModule {
     }
 
     ngDoBootstrap() {
-        // it should be possible to inject UpgradeModule and then in the entry point bootstrap.ts call
-        // platformBrowserDynamic().bootstrapModule(AppModule);
-        // so that we launch Angular from AngularJS and Angular launches the AngularJS-Module
-        // but this is not working for me. I get an error 'Can't resolve all parameters for AppModule'
-        // So I decided to bootstrap the whole thing directly in AngularJS. AngularJS calls this
-        // Angular-Module and on Promise response it botstraps the application
-
-        // EDIT -> Both versions are here. the uncommented version seems to be the newest one.
-        // I am not sure which one is better but I don't see any problem with the selected one
-
-        this.upgrade.bootstrap(document.body, [appModule.name], {strictDi: true});
+        this.upgrade.bootstrap(document.body, [appModuleAngularJS.name], {strictDi: true});
     }
 }

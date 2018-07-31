@@ -18,22 +18,22 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {from as fromPromise, Observable, of} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {INewFallStateParams} from '../../../gesuch/gesuch.route';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSGemeinde from '../../../models/TSGemeinde';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
+import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSRole} from '../../../../models/enums/TSRole';
+import TSGemeinde from '../../../../models/TSGemeinde';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {DvNgGemeindeDialogComponent} from '../../../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
-require('./dv-ng-navbar.less');
+require('./navbar.component.less');
 
 @Component({
-    selector: 'dv-ng-topmenu',
-    template: require('./dv-ng-navbar.html'),
+    selector: 'dv-navbar',
+    template: require('./navbar.component.html'),
 })
-export class DvNgNavbar {
+export class NavbarComponent {
 
     TSRoleUtil: any = TSRoleUtil;
 
@@ -41,6 +41,7 @@ export class DvNgNavbar {
                 private readonly dialog: MatDialog,
                 private readonly $state: StateService,
                 private readonly gemeindeRS: GemeindeRS) {
+        console.log('foo');
     }
 
     public getGemeindeIDFromUser$(): Observable<string> {

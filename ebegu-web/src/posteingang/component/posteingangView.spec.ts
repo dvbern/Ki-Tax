@@ -30,7 +30,7 @@ import TSUser from '../../models/TSUser';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {StateService} from '@uirouter/core';
 
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
 

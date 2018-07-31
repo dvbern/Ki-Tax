@@ -21,8 +21,8 @@ import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../models/types/TSDateRange';
 import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil';
-import {EbeguWebCore} from '../core.module';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../core.angularjs.module';
 import GesuchsperiodeRS from './gesuchsperiodeRS.rest';
 
 describe('gesuchsperiodeRS', () => {

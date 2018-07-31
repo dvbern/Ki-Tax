@@ -24,7 +24,7 @@ import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
 import {EbeguWebPendenzenBetreuungen} from '../../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenListView';

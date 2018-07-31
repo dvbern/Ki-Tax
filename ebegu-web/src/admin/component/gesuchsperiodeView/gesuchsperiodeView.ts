@@ -17,7 +17,7 @@ import {IComponentOptions, IFormController, ILogService} from 'angular';
 import AbstractAdminViewController from '../../abstractAdminView';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
-import moment = require('moment');
+import * as moment from 'moment';
 import TSEbeguParameter from '../../../models/TSEbeguParameter';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import EbeguUtil from '../../../utils/EbeguUtil';

@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import * as $ from 'jquery';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
@@ -29,13 +31,11 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IInstitutionStateParams} from '../../admin.route';
-import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 const template = require('./institutionView.html');
 require('./institutionView.less');
-import $ = require('jquery');
 
 export class InstitutionViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;

@@ -21,7 +21,7 @@ import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
-import {EbeguWebCore} from '../../core.module';
+import {EbeguWebCore} from '../../core.angularjs.module';
 import {DVDokumenteListController} from './dv-dokumente-list';
 
 describe('dvDokumenteList', () => {

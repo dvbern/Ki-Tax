@@ -18,8 +18,8 @@ import TSKind from '../../models/TSKind';
 import TSKindContainer from '../../models/TSKindContainer';
 import TSVerfuegung from '../../models/TSVerfuegung';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil';
-import {EbeguWebCore} from '../core.module';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../core.angularjs.module';
 import VerfuegungRS from './verfuegungRS.rest';
 
 describe('VerfuegungRS', () => {

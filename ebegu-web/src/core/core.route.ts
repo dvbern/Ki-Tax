@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {StateService, Transition, TransitionService} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
@@ -38,15 +37,17 @@ import ITimeoutService = angular.ITimeoutService;
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
+    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS', '$trace'];
 
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
                        mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
                        authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
                        $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
+                       $transitions: TransitionService, gemeindeRS: GemeindeRS, $trace: any) {
     // navigationLogger.toggle();
+
+    $trace.enable(1);
 
     $transitions.onStart({}, transition => {
         stateChangeStart(transition);

@@ -13,26 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'angular';
+import {StateProvider} from '@uirouter/angularjs';
+import * as angular from 'angular';
+import {IQProvider} from 'angular';
+import 'angular-hotkeys';
 import 'angular-translate';
 import 'angular-unsavedchanges';
-import 'angular-hotkeys';
-import HttpErrorInterceptor from './errors/service/HttpErrorInterceptor';
 import HttpAuthInterceptor from '../authentication/service/HttpAuthInterceptor';
+import HttpErrorInterceptor from './errors/service/HttpErrorInterceptor';
 import HttpResponseInterceptor from './service/HttpResponseInterceptor';
+import IInjectorService = angular.auto.IInjectorService;
+import IHttpProvider = angular.IHttpProvider;
+import ILocationProvider = angular.ILocationProvider;
+import ILogProvider = angular.ILogProvider;
+import IThemingProvider = angular.material.IThemingProvider;
 import ITranslateProvider = angular.translate.ITranslateProvider;
 
-import IInjectorService = angular.auto.IInjectorService;
-import IThemingProvider = angular.material.IThemingProvider;
-import IHttpProvider = angular.IHttpProvider;
-import ILogProvider = angular.ILogProvider;
-import ILocationProvider = angular.ILocationProvider;
-
-configure.$inject = ['$translateProvider', '$injector', '$httpProvider', '$mdThemingProvider', 'hotkeysProvider', '$logProvider', '$locationProvider', '$qProvider'];
+configure.$inject = ['$translateProvider', '$injector', '$httpProvider', '$mdThemingProvider', 'hotkeysProvider', '$logProvider', '$locationProvider', '$qProvider', '$stateProvider'];
 
 export function configure($translateProvider: ITranslateProvider, $injector: IInjectorService, $httpProvider: IHttpProvider,
                           $mdThemingProvider: IThemingProvider, hotkeysProvider: any, $logProvider: ILogProvider,
-                          $locationProvider: ILocationProvider, $qProvider: any) {
+                          $locationProvider: ILocationProvider, $qProvider: IQProvider, $stateProvider: StateProvider) {
     //Translation Provider configuration
     const translProp = require('../assets/translations/translations_de.json');
 
@@ -76,4 +77,19 @@ export function configure($translateProvider: ITranslateProvider, $injector: IIn
 
     // Disable "Possibly unhandled rejection:" from angular
     $qProvider.errorOnUnhandledRejections(false);
+
+    $stateProvider.state(
+        {
+            name: 'app',
+            // redirectTo: 'welcome',
+            component: 'app'
+        },
+        // {
+        //     parent: 'app',
+        //     name: 'welcome',
+        //     url: '/welcome',
+        //     component: 'welcome'
+        // }
+    )
+    ;
 }

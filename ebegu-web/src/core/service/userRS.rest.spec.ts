@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSUser from '../../models/TSUser';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import UserRS from './userRS.rest';
 
 describe('userRS', () => {

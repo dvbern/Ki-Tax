@@ -82,8 +82,7 @@ export default (env: string): webpack.Configuration => {
     return {
         entry: {
             'polyfills': root('src', 'polyfills.ts'),
-            'vendor': root('src', 'vendor.ts'),
-            'main': root('src', 'bootstrap.ts'),
+            'main': root('src', 'main.ts'),
         },
         output: {
             path: path.join(process.cwd(), 'dist'),

@@ -14,7 +14,7 @@
  */
 
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../core/core.module';
+import {EbeguWebCore} from '../../core/core.angularjs.module';
 import AntragStatusHistoryRS from '../../core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../core/service/betreuungRS.rest';
 import KindRS from '../../core/service/kindRS.rest';
@@ -36,7 +36,7 @@ import TSKindContainer from '../../models/TSKindContainer';
 import TSUser from '../../models/TSUser';
 import TSVerfuegung from '../../models/TSVerfuegung';
 import DateUtil from '../../utils/DateUtil';
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
 import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
 import GesuchModelManager from './gesuchModelManager';

@@ -21,7 +21,7 @@ import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
 import EbeguUtil from './EbeguUtil';
-import TestDataUtil from './TestDataUtil';
+import TestDataUtil from './TestDataUtil.spec';
 
 describe('EbeguUtil', () => {
 

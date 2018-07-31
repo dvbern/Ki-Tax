@@ -18,7 +18,7 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSGesuchsteller from '../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import GesuchstellerRS from './gesuchstellerRS.rest';
 
 describe('GesuchstellerRS', () => {

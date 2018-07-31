@@ -13,14 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.module';
+import {EbeguWebCore} from '../../core/core.angularjs.module';
 import UserRS from '../../core/service/userRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBerechtigung from '../../models/TSBerechtigung';
 import TSUser from '../../models/TSUser';
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
 import {EbeguAuthentication} from '../authentication.module';
 import AuthServiceRS from './AuthServiceRS.rest';
 

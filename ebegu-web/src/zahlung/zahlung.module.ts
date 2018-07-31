@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.module';
+import {EbeguWebCore} from '../core/core.angularjs.module';
 import {zahlungRun} from './zahlung.route';
 import {ZahlungViewComponentConfig} from './component/zahlungView';
 

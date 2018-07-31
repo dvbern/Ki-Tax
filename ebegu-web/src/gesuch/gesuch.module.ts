@@ -14,9 +14,8 @@
  */
 
 import {downgradeComponent} from '@angular/upgrade/static';
-import 'angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {EbeguWebCore} from '../core/core.module';
+import * as angular from 'angular';
+import {EbeguWebCore} from '../core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
@@ -80,8 +79,9 @@ export const EbeguWebGesuch =
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
-        .directive(
-            'dvNgNavbar',
-            downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
-        );
+        // .directive(
+        //     'dvNgNavbar',
+        //     downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
+        // )
+;
 

@@ -17,7 +17,7 @@ import {EbeguAuthentication} from '../../authentication/authentication.module';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import {DVRoleElementController} from './DVRoleElementController';
 
 describe('DVElementController', () => {

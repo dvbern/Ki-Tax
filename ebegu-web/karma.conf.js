@@ -45,7 +45,7 @@ module.exports = function (config) {
             'node_modules/angular-mocks/angular-mocks.js',
 
             // The app itself
-            'src/app.module.ts',
+            'src/app.angularjs.module.ts',
 
             // Tests
             'test.ts',    //ng2 tests
@@ -59,7 +59,7 @@ module.exports = function (config) {
         preprocessors: {
             'src/vendor.ts': ['webpack'],
             'src/polyfills.ts': ['webpack'],
-            'src/app.module.ts': ['webpack', 'sourcemap'],
+            'src/app.angularjs.module.ts': ['webpack', 'sourcemap'],
             'config/spec-bundle.ts': ['webpack', 'sourcemap'],
             'test.ts': ['webpack', 'sourcemap']
             // 'src/**/*.spec.ts': ['webpack']

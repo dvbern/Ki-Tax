@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
+import {EbeguWebCore} from '../../../core/core.angularjs.module';
 import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -21,7 +21,7 @@ import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import TSAdresseContainer from '../../../models/TSAdresseContainer';
 import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';

@@ -20,7 +20,7 @@ import TSBetreuungsmitteilung from '../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import MitteilungRS from './mitteilungRS.rest';
 
 describe('MitteilungRS', () => {

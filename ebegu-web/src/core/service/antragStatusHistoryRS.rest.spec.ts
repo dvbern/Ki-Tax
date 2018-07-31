@@ -19,8 +19,8 @@ import TSAntragStatusHistory from '../../models/TSAntragStatusHistory';
 import TSGesuch from '../../models/TSGesuch';
 import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil';
-import {EbeguWebCore} from '../core.module';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../core.angularjs.module';
 import AntragStatusHistoryRS from './antragStatusHistoryRS.rest';
 
 describe('antragStatusHistoryRS', () => {

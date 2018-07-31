@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {Provider} from '@angular/core';
 import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
@@ -181,3 +182,20 @@ export const downloadRSProvider = {
     useFactory: downloadRSServiceFactory,
     deps: ['$injector']
 };
+
+export const UPGRADED_PROVIDERS: Provider[] = [
+    authServiceRSProvider,
+    applicationPropertyRSProvider,
+    traegerschaftRSProvider,
+    errorServiceProvider,
+    testFaelleRSProvider,
+    userRSProvider,
+    gesuchsperiodeRSProvider,
+    databaseMigrationRSProvider,
+    zahlungRSProvider,
+    gesuchRSProvider,
+    dailyBatchRSProvider,
+    gemeindeRSProvider,
+    mitteilungRSProvider,
+    downloadRSProvider,
+];

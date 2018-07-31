@@ -15,7 +15,7 @@
 
 import {TSErrorAction} from '../../../../models/enums/TSErrorAction';
 import TSExceptionReport from '../../../../models/TSExceptionReport';
-import TestDataUtil from '../../../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../../../utils/TestDataUtil.spec';
 import {DvErrorMessagesPanelComponent} from './dvb-error-messages-panel';
 
 describe('dvbErrorMessages', () => {

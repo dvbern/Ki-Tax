@@ -22,7 +22,7 @@ import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
 import {TSDateRange} from '../../models/types/TSDateRange';
 import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import {InstitutionStammdatenRS} from './institutionStammdatenRS.rest';
 
 describe('institutionStammdatenRS', () => {

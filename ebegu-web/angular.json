@@ -21,11 +21,9 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.less"
             ],
-            "scripts": [
-              "scripts/pdfkit-0.8.2-patched.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "prod": {
@@ -45,7 +43,21 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "hmr": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hmr.ts"
+                }
+              ]
             }
           }
         },
@@ -130,14 +142,14 @@
       }
     }
   },
-  "defaultProject": "ebegu",
+  "defaultProject": "dv",
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "ebegu",
-      "styleext": "scss"
+      "prefix": "dv",
+      "styleext": "less"
     },
     "@schematics/angular:directive": {
-      "prefix": "ebegu"
+      "prefix": "dv"
     }
   }
 }

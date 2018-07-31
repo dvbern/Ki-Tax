@@ -18,8 +18,8 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSErwerbspensum from '../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../models/TSErwerbspensumContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil';
-import {EbeguWebCore} from '../core.module';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../core.angularjs.module';
 import ErwerbspensumRS from './erwerbspensumRS.rest';
 
 describe('ErwerbspensumRS', () => {

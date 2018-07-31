@@ -18,8 +18,8 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSKind from '../../models/TSKind';
 import TSKindContainer from '../../models/TSKindContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil';
-import {EbeguWebCore} from '../core.module';
+import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../core.angularjs.module';
 import KindRS from './kindRS.rest';
 
 describe('KindRS', () => {

@@ -14,9 +14,24 @@
  */
 
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
-import 'angular';
+import * as angular from 'angular';
+import 'angular-animate';
+import 'angular-aria';
+import 'angular-cookies';
+import 'angular-hotkeys';
+import 'angular-i18n/angular-locale_de-ch';
+import 'angular-material';
+import 'angular-messages';
+import 'angular-moment';
+import 'angular-sanitize';
+import 'angular-smart-table';
+import 'angular-translate';
+import 'angular-translate-loader-static-files';
+import 'angular-ui-bootstrap';
+import 'angular-unsavedchanges';
 import 'ng-file-upload';
 import {DatabaseMigrationRS} from '../admin/service/databaseMigrationRS.rest';
+import {AppAngularjsComponent} from '../app/app.angularjs.component';
 import {EbeguAuthentication} from '../authentication/authentication.module';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import router from '../dvbModules/router/router.module';
@@ -121,7 +136,7 @@ import ZahlungRS from './service/zahlungRS.rest';
 
 const dynamicDependencies = (): string[] => {
 
-    const dynDep: string [] = [];
+    const dynDep: string[] = [];
     //hier kommen plugins die wir fuer dev disablen wollen
     if (ENV === 'development') {
         return [];
@@ -149,7 +164,7 @@ const dependencies: string[] = [
     'angularMoment',
     'cfp.hotkeys',
     'ngFileUpload',
-    'unsavedChanges'
+    'unsavedChanges',
 ];
 
 export const EbeguWebCore: angular.IModule = angular
@@ -223,6 +238,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('NavigationLogger', NavigationLogger)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
+
     .controller('DVElementController', DVRoleElementController)
     .component('dvAdresse', new AdresseComponentConfig())
     .component('dvErrorMessages', new DvErrorMessagesComponentConfig())

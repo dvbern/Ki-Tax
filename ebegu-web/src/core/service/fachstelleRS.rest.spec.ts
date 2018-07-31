@@ -17,7 +17,7 @@ import {IHttpService} from 'angular';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSFachstelle} from '../../models/TSFachstelle';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import {FachstelleRS} from './fachstelleRS.rest';
 
 describe('fachstelleRS', () => {

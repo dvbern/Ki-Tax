@@ -14,23 +14,15 @@
  */
 
 import {NgModule} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
-import {UIRouterModule} from '@uirouter/angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
+import {SharedModule} from '../app/shared/shared.module';
 import {DvOnboardingComponent} from '../core/component/dv-onboarding/dv-onboarding.component';
-import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
-import {NgSharedModule} from '../shared/ng-shared.module';
 
 @NgModule({
     imports: [
-        NgSharedModule,
-        TranslateModule,
-        UIRouterModule,
+        SharedModule,
     ],
     declarations: [
-        DvNgNavbar,
         DvOnboardingComponent,
-        DvPosteingangComponent,
     ],
     entryComponents: [],
 })

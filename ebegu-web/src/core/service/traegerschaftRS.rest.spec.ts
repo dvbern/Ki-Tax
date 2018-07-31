@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
 describe('institutionStammdatenRS', () => {

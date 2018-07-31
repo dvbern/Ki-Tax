@@ -19,7 +19,7 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSDossier from '../../../models/TSDossier';
 import TSGesuch from '../../../models/TSGesuch';
 import TSUser from '../../../models/TSUser';
-import {EbeguWebCore} from '../../core.module';
+import {EbeguWebCore} from '../../core.angularjs.module';
 import UserRS from '../../service/userRS.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;

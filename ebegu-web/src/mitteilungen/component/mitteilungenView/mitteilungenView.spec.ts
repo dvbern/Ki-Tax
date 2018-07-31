@@ -27,7 +27,7 @@ import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSUser from '../../../models/TSUser';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
 import {EbeguWebMitteilungen} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import ITimeoutService = angular.ITimeoutService;

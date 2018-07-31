@@ -18,7 +18,7 @@ import TSInstitution from '../../models/TSInstitution';
 import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.module';
+import {EbeguWebCore} from '../core.angularjs.module';
 import {InstitutionRS} from './institutionRS.rest';
 
 describe('institutionRS', () => {

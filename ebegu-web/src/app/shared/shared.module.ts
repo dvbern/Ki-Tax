@@ -4,6 +4,15 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {DvNgErrorMessages} from '../../core/component/dv-error-messages/dv-ng-error-messages';
+import {DvHelpmenuComponent} from '../../core/component/dv-helpmenu/dv-helpmenu';
+import {DvNgGemeindeDialogComponent} from '../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgLinkDialogComponent} from '../../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgDebounceClickDirective} from '../../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
+import {DvNgShowElementDirective} from '../../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
 import {MaterialModule} from './material.module';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -25,7 +34,23 @@ export function createTranslateLoader(http: HttpClient) {
             }
         }),
     ],
-    declarations: [],
+    declarations: [
+        DvHelpmenuComponent,
+        DvNgDebounceClickDirective,
+        DvNgErrorMessages,
+        DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
+        DvNgLinkDialogComponent,
+        DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
+    ],
+    entryComponents: [
+        DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
+        DvNgLinkDialogComponent,
+        DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
+    ],
     exports: [
         CommonModule,
         HttpClientModule,
@@ -33,6 +58,15 @@ export function createTranslateLoader(http: HttpClient) {
 
         MaterialModule,
         TranslateModule,
+
+        DvHelpmenuComponent,
+        DvNgDebounceClickDirective,
+        DvNgErrorMessages,
+        DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
+        DvNgLinkDialogComponent,
+        DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

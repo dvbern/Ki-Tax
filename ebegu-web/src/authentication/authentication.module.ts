@@ -22,7 +22,7 @@ import {StartComponentConfig} from './component/startView/startView';
 import {SchulungComponentConfig} from './schulung';
 
 export const EbeguAuthentication: angular.IModule =
-    angular.module('dvbAngular.authentication', ['ngCookies', 'utf8-base64'])
+    angular.module('dvbAngular.authentication', ['ngCookies'])
         .run(authenticationRun)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)

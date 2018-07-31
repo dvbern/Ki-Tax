@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'angular';
+import * as angular from 'angular';
 import 'angular-smart-table';
 import {downgradeComponent} from '@angular/upgrade/static';
-import {EbeguWebCore} from '../core/core.module';
+import {EbeguWebCore} from '../core/core.angularjs.module';
 import {InstitutionRS} from '../core/service/institutionRS.rest';
 import './admin.module.less';
 import {adminRun} from './admin.route';

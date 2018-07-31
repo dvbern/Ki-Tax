@@ -34,7 +34,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from '../betreuungView/betreuungView';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import moment = require('moment');
+import * as moment from 'moment';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;

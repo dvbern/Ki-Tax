@@ -17,7 +17,7 @@ import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycl
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSUser from '../../../models/TSUser';
-import {EbeguWebCore} from '../../core.module';
+import {EbeguWebCore} from '../../core.angularjs.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import {StateService} from '@uirouter/core';
 

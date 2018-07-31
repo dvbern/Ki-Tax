@@ -15,28 +15,16 @@
 
 //
 // // RxJS
-import 'rxjs';
+// import 'rxjs';
 // import 'zone.js/dist/zone';  <-- loaded in polyfills
 
 // AngularJS
-import 'angular';
-import 'angular-utf8-base64';
-import 'angular-i18n/angular-locale_de-ch';
-import 'angular-material';
-import 'angular-animate';
-import 'angular-sanitize';
-import 'angular-messages';
-import 'angular-aria';
-import 'angular-cookies';
-import 'angular-translate';
-import 'angular-translate-loader-static-files';
-import 'angular-ui-bootstrap';
-import 'angular-smart-table';
-import 'angular-moment';
-import 'angular-unsavedchanges';
-import 'angular-hotkeys';
-import 'ng-file-upload';
-import '@uirouter/angular-hybrid';
+// import * as angular from 'angular';
+// import 'angular-i18n/angular-locale_de-ch';
+// import 'angular-translate-loader-static-files';
+// import 'angular-smart-table';
+// import 'angular-moment';
+// import '@uirouter/angular-hybrid';
 
 // Angular
 // should not be imported here but directly in the classes where they are used

@@ -9,15 +9,15 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-
-const states: NgHybridStateDeclaration[] = [];
+import {UIRouterModule} from '@uirouter/angular';
+import {AppComponent} from './test/app.component';
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forRoot({states})
+        // UIRouterUpgradeModule,
+        UIRouterModule.forRoot({states: [{name: 'app', url: '/foo', component: AppComponent}]}),
     ],
-    exports: [UIRouterUpgradeModule]
+    exports: [UIRouterModule],
 })
 export class AppRoutingModule {
 }
