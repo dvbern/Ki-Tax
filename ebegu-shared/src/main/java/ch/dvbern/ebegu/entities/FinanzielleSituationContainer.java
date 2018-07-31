@@ -29,6 +29,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckFinanzielleSituationContainerComplete;
@@ -102,14 +103,32 @@ public class FinanzielleSituationContainer extends AbstractEntity {
 		this.finanzielleSituationJA = finanzielleSituationJA;
 	}
 
-	public FinanzielleSituationContainer copyForMutation(FinanzielleSituationContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
-		super.copyForMutation(mutation);
-		mutation.setGesuchsteller(gesuchstellerMutation);
-		mutation.setJahr(this.getJahr());
-		mutation.setFinanzielleSituationGS(null);
-		mutation.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyForMutation(new FinanzielleSituation()));
-		return mutation;
+
+	public FinanzielleSituationContainer copyFinanzielleSituationContainer(
+			@Nonnull FinanzielleSituationContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setGesuchsteller(targetGesuchstellerContainer);
+			target.setJahr(this.getJahr());
+			target.setFinanzielleSituationGS(null);
+			target.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyFinanzielleSituation(new FinanzielleSituation(), copyType));
+			break;
+		case ERNEUERUNG:
+			break;
+		}
+		return target;
 	}
+
+//	public FinanzielleSituationContainer copyForMutation(FinanzielleSituationContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
+//		super.copyForMutation(mutation);
+//		mutation.setGesuchsteller(gesuchstellerMutation);
+//		mutation.setJahr(this.getJahr());
+//		mutation.setFinanzielleSituationGS(null);
+//		mutation.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyForMutation(new FinanzielleSituation()));
+//		return mutation;
+//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

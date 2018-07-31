@@ -26,6 +26,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -114,19 +115,42 @@ public class EinkommensverschlechterungContainer extends AbstractEntity {
 		this.gesuchstellerContainer = gesuchsteller;
 	}
 
-	public EinkommensverschlechterungContainer copyForMutation(EinkommensverschlechterungContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
-		super.copyForMutation(mutation);
-		mutation.setGesuchsteller(gesuchstellerMutation);
-		mutation.setEkvGSBasisJahrPlus1(null);
-		mutation.setEkvGSBasisJahrPlus2(null);
-		if (this.getEkvJABasisJahrPlus1() != null) {
-			mutation.setEkvJABasisJahrPlus1(this.getEkvJABasisJahrPlus1().copyForMutation(new Einkommensverschlechterung()));
+	public EinkommensverschlechterungContainer copyEinkommensverschlechterungContainer(@Nonnull EinkommensverschlechterungContainer target,
+			@Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
+
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setGesuchsteller(targetGesuchstellerContainer);
+			target.setEkvGSBasisJahrPlus1(null);
+			target.setEkvGSBasisJahrPlus2(null);
+			if (this.getEkvJABasisJahrPlus1() != null) {
+				target.setEkvJABasisJahrPlus1(this.getEkvJABasisJahrPlus1().copyEinkommensverschlechterung(new Einkommensverschlechterung(), copyType));
+			}
+			if (this.getEkvJABasisJahrPlus2() != null) {
+				target.setEkvJABasisJahrPlus2(this.getEkvJABasisJahrPlus2().copyEinkommensverschlechterung(new Einkommensverschlechterung(), copyType));
+			}
+			break;
+		case ERNEUERUNG:
+			break;
 		}
-		if (this.getEkvJABasisJahrPlus2() != null) {
-			mutation.setEkvJABasisJahrPlus2(this.getEkvJABasisJahrPlus2().copyForMutation(new Einkommensverschlechterung()));
-		}
-		return mutation;
+		return target;
 	}
+
+//	public EinkommensverschlechterungContainer copyForMutation(EinkommensverschlechterungContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
+//		super.copyForMutation(mutation);
+//		mutation.setGesuchsteller(gesuchstellerMutation);
+//		mutation.setEkvGSBasisJahrPlus1(null);
+//		mutation.setEkvGSBasisJahrPlus2(null);
+//		if (this.getEkvJABasisJahrPlus1() != null) {
+//			mutation.setEkvJABasisJahrPlus1(this.getEkvJABasisJahrPlus1().copyForMutation(new Einkommensverschlechterung()));
+//		}
+//		if (this.getEkvJABasisJahrPlus2() != null) {
+//			mutation.setEkvJABasisJahrPlus2(this.getEkvJABasisJahrPlus2().copyForMutation(new Einkommensverschlechterung()));
+//		}
+//		return mutation;
+//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
@@ -25,6 +26,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -148,19 +150,40 @@ public abstract class AbstractFinanzielleSituation extends AbstractEntity {
 		this.geleisteteAlimente = geleisteteAlimente;
 	}
 
-	public AbstractFinanzielleSituation copyForMutation(AbstractFinanzielleSituation mutation) {
-		super.copyForMutation(mutation);
-		mutation.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
-		mutation.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
-		mutation.setFamilienzulage(this.getFamilienzulage());
-		mutation.setErsatzeinkommen(this.getErsatzeinkommen());
-		mutation.setErhalteneAlimente(this.getErhalteneAlimente());
-		mutation.setBruttovermoegen(this.getBruttovermoegen());
-		mutation.setSchulden(this.getSchulden());
-		mutation.setGeschaeftsgewinnBasisjahr(this.getGeschaeftsgewinnBasisjahr());
-		mutation.setGeleisteteAlimente(this.getGeleisteteAlimente());
-		return mutation;
+	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
+			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
+			target.setFamilienzulage(this.getFamilienzulage());
+			target.setErsatzeinkommen(this.getErsatzeinkommen());
+			target.setErhalteneAlimente(this.getErhalteneAlimente());
+			target.setBruttovermoegen(this.getBruttovermoegen());
+			target.setSchulden(this.getSchulden());
+			target.setGeschaeftsgewinnBasisjahr(this.getGeschaeftsgewinnBasisjahr());
+			target.setGeleisteteAlimente(this.getGeleisteteAlimente());
+			break;
+		case ERNEUERUNG:
+			break;
+		}
+		return target;
 	}
+
+//	public AbstractFinanzielleSituation copyForMutation(AbstractFinanzielleSituation mutation) {
+//		super.copyForMutation(mutation);
+//		mutation.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
+//		mutation.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
+//		mutation.setFamilienzulage(this.getFamilienzulage());
+//		mutation.setErsatzeinkommen(this.getErsatzeinkommen());
+//		mutation.setErhalteneAlimente(this.getErhalteneAlimente());
+//		mutation.setBruttovermoegen(this.getBruttovermoegen());
+//		mutation.setSchulden(this.getSchulden());
+//		mutation.setGeschaeftsgewinnBasisjahr(this.getGeschaeftsgewinnBasisjahr());
+//		mutation.setGeleisteteAlimente(this.getGeleisteteAlimente());
+//		return mutation;
+//	}
 
 	@SuppressWarnings("OverlyComplexMethod")
 	@Override

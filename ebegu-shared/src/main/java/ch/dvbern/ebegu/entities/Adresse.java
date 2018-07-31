@@ -28,6 +28,7 @@ import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -186,26 +187,39 @@ public class Adresse extends AbstractDateRangedEntity {
 			EbeguUtil.isSameOrNullStrings(getOrganisation(), otherAdr.getOrganisation());
 	}
 
-	public Adresse copyForMutation(Adresse mutation) {
-		super.copyForMutation(mutation);
-		copyForMutationOrErneuerung(mutation);
-		return mutation;
+	public Adresse copyAdresse(@Nonnull Adresse target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractDateRangedEntity(target, copyType);
+		target.setStrasse(this.getStrasse());
+		target.setHausnummer(this.getHausnummer());
+		target.setZusatzzeile(this.getZusatzzeile());
+		target.setPlz(this.getPlz());
+		target.setOrt(this.getOrt());
+		target.setLand(this.getLand());
+		target.setGemeinde(this.getGemeinde());
+		target.setOrganisation(this.getOrganisation());
+		return target;
 	}
 
-	public Adresse copyForErneuerung(Adresse mutation) {
-		super.copyForErneuerung(mutation);
-		copyForMutationOrErneuerung(mutation);
-		return mutation;
-	}
-
-	private void copyForMutationOrErneuerung(Adresse mutation) {
-		mutation.setStrasse(this.getStrasse());
-		mutation.setHausnummer(this.getHausnummer());
-		mutation.setZusatzzeile(this.getZusatzzeile());
-		mutation.setPlz(this.getPlz());
-		mutation.setOrt(this.getOrt());
-		mutation.setLand(this.getLand());
-		mutation.setGemeinde(this.getGemeinde());
-		mutation.setOrganisation(this.getOrganisation());
-	}
+//	public Adresse copyForMutation(Adresse mutation) {
+//		super.copyForMutation(mutation);
+//		copyForMutationOrErneuerung(mutation);
+//		return mutation;
+//	}
+//
+//	public Adresse copyForErneuerung(Adresse mutation) {
+//		super.copyForErneuerung(mutation);
+//		copyForMutationOrErneuerung(mutation);
+//		return mutation;
+//	}
+//
+//	private void copyForMutationOrErneuerung(Adresse mutation) {
+//		mutation.setStrasse(this.getStrasse());
+//		mutation.setHausnummer(this.getHausnummer());
+//		mutation.setZusatzzeile(this.getZusatzzeile());
+//		mutation.setPlz(this.getPlz());
+//		mutation.setOrt(this.getOrt());
+//		mutation.setLand(this.getLand());
+//		mutation.setGemeinde(this.getGemeinde());
+//		mutation.setOrganisation(this.getOrganisation());
+//	}
 }

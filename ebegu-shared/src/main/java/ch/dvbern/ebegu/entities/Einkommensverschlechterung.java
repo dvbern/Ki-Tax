@@ -17,10 +17,12 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -215,24 +217,50 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			nettolohnOkt, nettolohnNov, nettolohnDez, nettolohnZus);
 	}
 
-	public Einkommensverschlechterung copyForMutation(Einkommensverschlechterung mutation) {
-		super.copyForMutation(mutation);
-		mutation.setNettolohnJan(this.getNettolohnJan());
-		mutation.setNettolohnFeb(this.getNettolohnFeb());
-		mutation.setNettolohnMrz(this.getNettolohnMrz());
-		mutation.setNettolohnApr(this.getNettolohnApr());
-		mutation.setNettolohnMai(this.getNettolohnMai());
-		mutation.setNettolohnJun(this.getNettolohnJun());
-		mutation.setNettolohnJul(this.getNettolohnJul());
-		mutation.setNettolohnAug(this.getNettolohnAug());
-		mutation.setNettolohnSep(this.getNettolohnSep());
-		mutation.setNettolohnOkt(this.getNettolohnOkt());
-		mutation.setNettolohnNov(this.getNettolohnNov());
-		mutation.setNettolohnDez(this.getNettolohnDez());
-		mutation.setNettolohnZus(this.getNettolohnZus());
-		mutation.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
-		return mutation;
+	public Einkommensverschlechterung copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung target, @Nonnull AntragCopyType copyType) {
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			super.copyAbstractFinanzielleSituation(target, copyType);
+			target.setNettolohnJan(this.getNettolohnJan());
+			target.setNettolohnFeb(this.getNettolohnFeb());
+			target.setNettolohnMrz(this.getNettolohnMrz());
+			target.setNettolohnApr(this.getNettolohnApr());
+			target.setNettolohnMai(this.getNettolohnMai());
+			target.setNettolohnJun(this.getNettolohnJun());
+			target.setNettolohnJul(this.getNettolohnJul());
+			target.setNettolohnAug(this.getNettolohnAug());
+			target.setNettolohnSep(this.getNettolohnSep());
+			target.setNettolohnOkt(this.getNettolohnOkt());
+			target.setNettolohnNov(this.getNettolohnNov());
+			target.setNettolohnDez(this.getNettolohnDez());
+			target.setNettolohnZus(this.getNettolohnZus());
+			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
+			break;
+		case ERNEUERUNG:
+			break;
+		}
+		return target;
 	}
+
+//	public Einkommensverschlechterung copyForMutation(Einkommensverschlechterung mutation) {
+//		super.copyForMutation(mutation);
+//		mutation.setNettolohnJan(this.getNettolohnJan());
+//		mutation.setNettolohnFeb(this.getNettolohnFeb());
+//		mutation.setNettolohnMrz(this.getNettolohnMrz());
+//		mutation.setNettolohnApr(this.getNettolohnApr());
+//		mutation.setNettolohnMai(this.getNettolohnMai());
+//		mutation.setNettolohnJun(this.getNettolohnJun());
+//		mutation.setNettolohnJul(this.getNettolohnJul());
+//		mutation.setNettolohnAug(this.getNettolohnAug());
+//		mutation.setNettolohnSep(this.getNettolohnSep());
+//		mutation.setNettolohnOkt(this.getNettolohnOkt());
+//		mutation.setNettolohnNov(this.getNettolohnNov());
+//		mutation.setNettolohnDez(this.getNettolohnDez());
+//		mutation.setNettolohnZus(this.getNettolohnZus());
+//		mutation.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
+//		return mutation;
+//	}
 
 	@SuppressWarnings("OverlyComplexMethod")
 	@Override

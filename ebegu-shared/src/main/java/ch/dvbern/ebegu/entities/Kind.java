@@ -34,6 +34,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -137,38 +138,77 @@ public class Kind extends AbstractPersonEntity {
 		this.pensumFachstelle = pensumFachstelle;
 	}
 
-	@Nonnull
-	public Kind copyForMutation(@Nonnull Kind mutation) {
-		super.copyForMutation(mutation);
-		if (this.getPensumFachstelle() != null) {
-			mutation.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
+
+
+	public Kind copyKind(@Nonnull Kind target, @Nonnull AntragCopyType copyType, @Nonnull Gesuchsperiode gesuchsperiode) {
+		super.copyAbstractPersonEntity(target, copyType);
+		target.setWohnhaftImGleichenHaushalt(this.getWohnhaftImGleichenHaushalt());
+		target.setKinderabzug(this.getKinderabzug());
+		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
+		target.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
+
+		switch (copyType) {
+		case MUTATION:
+			target.setEinschulungTyp(this.getEinschulungTyp());
+			copyFachstelle(target, copyType);
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			target.setEinschulungTyp(this.getEinschulungTyp());
+			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			break;
+		case ERNEUERUNG:
+			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			break;
 		}
-		mutation.setEinschulungTyp(this.getEinschulungTyp());
-		return copyForMutationOrErneuerung(mutation);
+		return target;
 	}
 
-	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	@Nonnull
-	public Kind copyForErneuerung(@Nonnull Kind folgegesuchKind, @Nonnull Gesuchsperiode gesuchsperiodeFolgegesuch) {
-		super.copyForErneuerung(folgegesuchKind);
+	private void copyFachstelle(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
+		if (this.getPensumFachstelle() != null) {
+			target.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
+		}
+	}
+
+	private void copyFachstelleIfStillValid(@Nonnull Kind target, @Nonnull AntragCopyType copyType, @Nonnull Gesuchsperiode gesuchsperiode) {
 		if (this.getPensumFachstelle() != null) {
 			// Fachstelle nur kopieren, wenn sie noch gueltig ist
-			if (!this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiodeFolgegesuch.getGueltigkeit().getGueltigAb())) {
-				folgegesuchKind.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
+			if (!this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+				target.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
 			}
 		}
-		// Beim Erneuerungsgesuch wird der EinschulungTyp NICHT kopiert
-		return copyForMutationOrErneuerung(folgegesuchKind);
 	}
 
-	@Nonnull
-	private Kind copyForMutationOrErneuerung(@Nonnull Kind mutation) {
-		mutation.setWohnhaftImGleichenHaushalt(this.getWohnhaftImGleichenHaushalt());
-		mutation.setKinderabzug(this.getKinderabzug());
-		mutation.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
-		mutation.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
-		return mutation;
-	}
+
+//	@Nonnull
+//	public Kind copyForMutation(@Nonnull Kind mutation) {
+//		if (this.getPensumFachstelle() != null) {
+//			mutation.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
+//		}
+////		mutation.setEinschulungTyp(this.getEinschulungTyp());
+////		return copyForMutationOrErneuerung(mutation);
+//	}
+//
+//	@SuppressWarnings("PMD.CollapsibleIfStatements")
+//	@Nonnull
+//	public Kind copyForErneuerung(@Nonnull Kind folgegesuchKind, @Nonnull Gesuchsperiode gesuchsperiodeFolgegesuch) {
+//		if (this.getPensumFachstelle() != null) {
+//			// Fachstelle nur kopieren, wenn sie noch gueltig ist
+//			if (!this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiodeFolgegesuch.getGueltigkeit().getGueltigAb())) {
+//				folgegesuchKind.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
+//			}
+//		}
+//		// Beim Erneuerungsgesuch wird der EinschulungTyp NICHT kopiert
+////		return copyForMutationOrErneuerung(folgegesuchKind);
+//	}
+
+//	@Nonnull
+//	private Kind copyForMutationOrErneuerung(@Nonnull Kind mutation) {
+//		mutation.setWohnhaftImGleichenHaushalt(this.getWohnhaftImGleichenHaushalt());
+//		mutation.setKinderabzug(this.getKinderabzug());
+//		mutation.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
+//		mutation.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
+//		return mutation;
+//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

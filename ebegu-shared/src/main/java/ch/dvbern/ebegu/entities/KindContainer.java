@@ -37,7 +37,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
-import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -173,34 +173,68 @@ public class KindContainer extends AbstractEntity implements Comparable<KindCont
 		return compareToBuilder.toComparison();
 	}
 
-	@Nonnull
-	public KindContainer copyForMutation(@Nonnull KindContainer mutation, @Nonnull Gesuch gesuchMutation, Eingangsart eingangsart) {
-		super.copyForMutation(mutation);
-		mutation.setKindJA(this.getKindJA().copyForMutation(new Kind()));
-		mutation.setNextNumberBetreuung(this.getNextNumberBetreuung());
-		mutation.setBetreuungen(new TreeSet<>());
-		for (Betreuung betreuung : this.getBetreuungen()) {
-			mutation.getBetreuungen().add(betreuung.copyForMutation(new Betreuung(), mutation, eingangsart));
+
+	public KindContainer copyKindContainer(@Nonnull KindContainer target, @Nonnull AntragCopyType copyType, @Nonnull Gesuch targetGesuch,
+			@Nonnull Gesuchsperiode gesuchsperiode) {
+		super.copyAbstractEntity(target, copyType);
+		target.setGesuch(targetGesuch);
+		target.setKindGS(null);
+		target.setKindNummer(this.getKindNummer());
+		target.setKindMutiert(null);
+
+		target.setKindJA(this.getKindJA().copyKind(new Kind(), copyType, gesuchsperiode));
+
+		switch (copyType) {
+		case MUTATION:
+			target.setNextNumberBetreuung(this.getNextNumberBetreuung());
+			copyBetreuungen(target, copyType, targetGesuch);
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			target.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert
+			copyBetreuungen(target, copyType, targetGesuch);
+			break;
+		case ERNEUERUNG:
+			target.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert
+			break;
 		}
-		return copyForMutationOrErneuerung(mutation, gesuchMutation);
+		return target;
 	}
 
-	@Nonnull
-	public KindContainer copyForErneuerung(@Nonnull KindContainer mutation, @Nonnull Gesuch folgegesuch) {
-		super.copyForErneuerung(mutation);
-		mutation.setKindJA(this.getKindJA().copyForErneuerung(new Kind(), folgegesuch.getGesuchsperiode()));
-		mutation.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert
-		return copyForMutationOrErneuerung(mutation, folgegesuch);
+	private void copyBetreuungen(@Nonnull KindContainer target, @Nonnull AntragCopyType copyType, @Nonnull Gesuch targetGesuch) {
+		target.setBetreuungen(new TreeSet<>());
+		for (Betreuung betreuung : this.getBetreuungen()) {
+			target.getBetreuungen().add(betreuung.copyBetreuung(new Betreuung(), copyType, target, targetGesuch.getEingangsart()));
+		}
 	}
 
-	@Nonnull
-	private KindContainer copyForMutationOrErneuerung(@Nonnull KindContainer mutation, @Nonnull Gesuch gesuchMutation) {
-		mutation.setGesuch(gesuchMutation);
-		mutation.setKindGS(null);
-		mutation.setKindNummer(this.getKindNummer());
-		mutation.setKindMutiert(null);
-		return mutation;
-	}
+//	@Nonnull
+//	public KindContainer copyForMutation(@Nonnull KindContainer mutation, @Nonnull Gesuch gesuchMutation, Eingangsart eingangsart) {
+////		super.copyForMutation(mutation);
+////		mutation.setKindJA(this.getKindJA().copyForMutation(new Kind()));
+////		mutation.setNextNumberBetreuung(this.getNextNumberBetreuung());
+//		mutation.setBetreuungen(new TreeSet<>());
+//		for (Betreuung betreuung : this.getBetreuungen()) {
+//			mutation.getBetreuungen().add(betreuung.copyForMutation(new Betreuung(), mutation, eingangsart));
+//		}
+////		return copyForMutationOrErneuerung(mutation, gesuchMutation);
+//	}
+//
+//	@Nonnull
+//	public KindContainer copyForErneuerung(@Nonnull KindContainer mutation, @Nonnull Gesuch folgegesuch) {
+////		super.copyBase(mutation);
+////		mutation.setKindJA(this.getKindJA().copyForErneuerung(new Kind(), folgegesuch.getGesuchsperiode()));
+////		mutation.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert
+////		return copyForMutationOrErneuerung(mutation, folgegesuch);
+//	}
+
+//	@Nonnull
+//	private KindContainer copyForMutationOrErneuerung(@Nonnull KindContainer mutation, @Nonnull Gesuch gesuchMutation) {
+//		mutation.setGesuch(gesuchMutation);
+//		mutation.setKindGS(null);
+//		mutation.setKindNummer(this.getKindNummer());
+//		mutation.setKindMutiert(null);
+//		return mutation;
+//	}
 
 	@Nonnull
 	@Override

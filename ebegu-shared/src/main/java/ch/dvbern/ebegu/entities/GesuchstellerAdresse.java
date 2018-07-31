@@ -23,6 +23,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 /**
@@ -92,22 +93,31 @@ public class GesuchstellerAdresse extends Adresse {
 		return AdresseTyp.RECHNUNGSADRESSE == this.getAdresseTyp();
 	}
 
-	@Nonnull
-	private GesuchstellerAdresse copyForMutationOrErneuerung(@Nonnull GesuchstellerAdresse mutation) {
-		mutation.setAdresseTyp(this.getAdresseTyp());
-		mutation.setNichtInGemeinde(this.nichtInGemeinde);
-		return mutation;
+	public GesuchstellerAdresse copyGesuchstellerAdresse(@Nonnull GesuchstellerAdresse target, @Nonnull AntragCopyType copyType) {
+		super.copyAdresse(target, copyType);
+		target.setAdresseTyp(this.getAdresseTyp());
+		target.setNichtInGemeinde(this.nichtInGemeinde);
+		return target;
 	}
 
-	@Nonnull
-	public GesuchstellerAdresse copyForMutation(@Nonnull GesuchstellerAdresse mutation) {
-		super.copyForMutation(mutation);
-		return copyForMutationOrErneuerung(mutation);
-	}
-
-	@Nonnull
-	public GesuchstellerAdresse copyForErneuerung(@Nonnull GesuchstellerAdresse mutation) {
-		super.copyForErneuerung(mutation);
-		return copyForMutationOrErneuerung(mutation);
-	}
+//
+//
+//	@Nonnull
+//	private GesuchstellerAdresse copyForMutationOrErneuerung(@Nonnull GesuchstellerAdresse mutation) {
+//		mutation.setAdresseTyp(this.getAdresseTyp());
+//		mutation.setNichtInGemeinde(this.nichtInGemeinde);
+//		return mutation;
+//	}
+//
+//	@Nonnull
+//	public GesuchstellerAdresse copyForMutation(@Nonnull GesuchstellerAdresse mutation) {
+//		super.copyForMutation(mutation);
+//		return copyForMutationOrErneuerung(mutation);
+//	}
+//
+//	@Nonnull
+//	public GesuchstellerAdresse copyForErneuerung(@Nonnull GesuchstellerAdresse mutation) {
+//		super.copyForErneuerung(mutation);
+//		return copyForMutationOrErneuerung(mutation);
+//	}
 }

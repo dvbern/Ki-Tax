@@ -26,6 +26,7 @@ import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -99,11 +100,30 @@ public class ErwerbspensumContainer extends AbstractEntity {
 		return EbeguUtil.isSameObject(getErwerbspensumJA(), otherErwerbspensumContainer.getErwerbspensumJA());
 	}
 
-	public ErwerbspensumContainer copyForMutation(@Nonnull ErwerbspensumContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
-		super.copyForMutation(mutation);
-		mutation.setGesuchsteller(gesuchstellerMutation);
-		mutation.setErwerbspensumGS(null);
-		mutation.setErwerbspensumJA(this.getErwerbspensumJA().copyForMutation(new Erwerbspensum()));
-		return mutation;
+
+	public ErwerbspensumContainer copyErwerbspensumContainer(
+		@Nonnull ErwerbspensumContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setGesuchsteller(targetGesuchstellerContainer);
+			target.setErwerbspensumGS(null);
+			if (this.getErwerbspensumJA() != null) {
+				target.setErwerbspensumJA(this.getErwerbspensumJA().copyErwerbspensum(new Erwerbspensum(), copyType));
+			}
+			break;
+		case ERNEUERUNG:
+			break;
+		}
+		return target;
 	}
+//
+//
+//
+//	public ErwerbspensumContainer copyForMutation(@Nonnull ErwerbspensumContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
+//		super.copyForMutation(mutation);
+//
+//		return mutation;
+//	}
 }

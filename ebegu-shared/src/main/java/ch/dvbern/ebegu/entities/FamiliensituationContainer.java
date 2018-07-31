@@ -77,7 +77,7 @@ public class FamiliensituationContainer extends AbstractEntity {
 
 	@Nonnull
 	public FamiliensituationContainer copyForErneuerung(@Nonnull FamiliensituationContainer folgeEntity) {
-		super.copyForErneuerung(folgeEntity);
+		super.copyBase(folgeEntity);
 		folgeEntity.setFamiliensituationGS(null);
 		folgeEntity.setFamiliensituationJA(getFamiliensituationJA().copyForErneuerung(new Familiensituation()));
 		return folgeEntity;

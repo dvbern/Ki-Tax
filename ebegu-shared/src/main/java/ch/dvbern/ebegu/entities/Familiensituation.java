@@ -157,7 +157,7 @@ public class Familiensituation extends AbstractEntity {
 
 	@Nonnull
 	public Familiensituation copyForErneuerung(@Nonnull Familiensituation folgeEntity) {
-		super.copyForErneuerung(folgeEntity);
+		super.copyBase(folgeEntity);
 		return copyForMutationOrErneuerung(folgeEntity);
 	}
 

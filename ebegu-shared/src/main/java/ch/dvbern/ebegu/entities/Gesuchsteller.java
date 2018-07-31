@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -144,30 +145,43 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		this.korrespondenzSprache = korrespondenzSprachen;
 	}
 
-	@Nonnull
-	private Gesuchsteller copyForMutationOrErneuerung(@Nonnull Gesuchsteller mutation) {
-		mutation.setMail(this.getMail());
-		mutation.setMobile(this.getMobile());
-		mutation.setTelefon(this.getTelefon());
-		mutation.setTelefonAusland(this.getTelefonAusland());
-		mutation.setEwkPersonId(this.getEwkPersonId());
-		mutation.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
-		mutation.setDiplomatenstatus(this.isDiplomatenstatus());
-		mutation.setKorrespondenzSprache(this.getKorrespondenzSprache());
-		return mutation;
+	public Gesuchsteller copyGesuchsteller(@Nonnull Gesuchsteller target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractPersonEntity(target, copyType);
+		target.setMail(this.getMail());
+		target.setMobile(this.getMobile());
+		target.setTelefon(this.getTelefon());
+		target.setTelefonAusland(this.getTelefonAusland());
+		target.setEwkPersonId(this.getEwkPersonId());
+		target.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
+		target.setDiplomatenstatus(this.isDiplomatenstatus());
+		target.setKorrespondenzSprache(this.getKorrespondenzSprache());
+		return target;
 	}
 
-	@Nonnull
-	public Gesuchsteller copyForMutation(@Nonnull Gesuchsteller mutation) {
-		super.copyForMutation(mutation);
-		return copyForMutationOrErneuerung(mutation);
-	}
-
-	@Nonnull
-	public Gesuchsteller copyForErneuerung(@Nonnull Gesuchsteller mutation) {
-		super.copyForErneuerung(mutation);
-		return copyForMutationOrErneuerung(mutation);
-	}
+//	@Nonnull
+//	private Gesuchsteller copyForMutationOrErneuerung(@Nonnull Gesuchsteller mutation) {
+//		mutation.setMail(this.getMail());
+//		mutation.setMobile(this.getMobile());
+//		mutation.setTelefon(this.getTelefon());
+//		mutation.setTelefonAusland(this.getTelefonAusland());
+//		mutation.setEwkPersonId(this.getEwkPersonId());
+//		mutation.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
+//		mutation.setDiplomatenstatus(this.isDiplomatenstatus());
+//		mutation.setKorrespondenzSprache(this.getKorrespondenzSprache());
+//		return mutation;
+//	}
+//
+//	@Nonnull
+//	public Gesuchsteller copyForMutation(@Nonnull Gesuchsteller mutation) {
+//		super.copyForMutation(mutation);
+//		return copyForMutationOrErneuerung(mutation);
+//	}
+//
+//	@Nonnull
+//	public Gesuchsteller copyForErneuerung(@Nonnull Gesuchsteller mutation) {
+//		super.copyForErneuerung(mutation);
+//		return copyForMutationOrErneuerung(mutation);
+//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
