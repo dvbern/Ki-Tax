@@ -13,6 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const environment = {
-    production: false
+import {LogLevel} from '../app/core/logging/log-level';
+import {Environment} from './IEnvironment';
+
+export const environment: Environment = {
+    production: false,
+    hmr: false,
+    logLevel: LogLevel.INFO,
+    logModules: {},
 };

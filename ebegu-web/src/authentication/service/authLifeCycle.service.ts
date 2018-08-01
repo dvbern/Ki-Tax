@@ -17,7 +17,7 @@ import {Injectable} from '@angular/core';
 import {filter} from 'rxjs/operators';
 import {ReplaySubject, Observable} from 'rxjs';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {Log} from '../../utils/LogFactory';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 
 /**
  * This service can be used to throw TSAuthEvent. When a user logs in or out, throwing the right event
@@ -28,7 +28,7 @@ import {Log} from '../../utils/LogFactory';
 })
 export class AuthLifeCycleService {
 
-    private readonly LOG: Log = Log.createLog(AuthLifeCycleService);
+    private readonly LOG = LogFactory.createLog(AuthLifeCycleService.name);
 
     private readonly _authLifeCycleSubject$ = new ReplaySubject<TSAuthEvent>(1); // use ReplaySubject because we don't have an initial value
 

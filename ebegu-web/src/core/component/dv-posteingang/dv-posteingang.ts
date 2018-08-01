@@ -21,7 +21,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
-import {Log} from '../../../utils/LogFactory';
+import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import MitteilungRS from '../../service/mitteilungRS.rest';
 
@@ -31,7 +31,7 @@ import MitteilungRS from '../../service/mitteilungRS.rest';
 })
 export class DvPosteingangComponent implements OnInit, OnDestroy {
 
-    private readonly log: Log = Log.createLog(AuthLifeCycleService);
+    private readonly log: Log = LogFactory.createLog(DvPosteingangComponent.name);
 
     private readonly unsubscribe$ = new Subject<void>();
     amountMitteilungen: number = 0;

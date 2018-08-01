@@ -16,19 +16,20 @@
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
+import {Log, LogFactory} from '../../app/core/logging/LogFactory';
 import {TSPostEingangEvent} from '../../models/enums/TSPostEingangEvent';
-import {Log} from '../../utils/LogFactory';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PosteingangService {
 
-    private readonly LOG: Log = Log.createLog(PosteingangService);
+    private readonly LOG: Log = LogFactory.createLog(PosteingangService.name);
 
     private readonly _posteingangSubject$: Subject<TSPostEingangEvent> = new ReplaySubject(1); // use ReplaySubject because we don't have an initial value
 
-    constructor() {}
+    constructor() {
+    }
 
     public posteingangChanged(): void {
         this.LOG.info('Thwrowing TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED because the number of elements in Posteingang might have changed');
