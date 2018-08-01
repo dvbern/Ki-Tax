@@ -19,16 +19,14 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {NgAdminModule} from '../admin/ng-admin.module';
-import {appModuleAngularJS} from '../app.angularjs.module';
+import {appModuleAngularJS} from './app.angularjs.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
-import {DEFAULT_LOCALE} from '../core/constants/CONSTANTS';
+import {DEFAULT_LOCALE} from './core/constants/CONSTANTS';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {NgPosteingangModule} from '../posteingang/ng-posteingang.module';
 import {AppRoutingModule} from './app-routing.module';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
-import {UIRouterModule} from '@uirouter/angular';
-import {AppComponent} from './test/app.component';
 
 @NgModule({
     imports: [
@@ -36,24 +34,17 @@ import {AppComponent} from './test/app.component';
         NoopAnimationsModule, // we don't want material animations in the project yet
         UpgradeModule,
 
- UIRouterUpgradeModule,
-    UIRouterModule.forChild({ states: [] }),
-
         // Core & Shared
-        // CoreModule.forRoot(),
-        // SharedModule,
+        CoreModule.forRoot(),
+        SharedModule,
 
-        // AppRoutingModule,
+        AppRoutingModule,
         // TODO hefa only import via router
         // NgAdminModule,
-        // NgAuthenticationModule,
+        NgAuthenticationModule,
         // NgGesuchModule,
         // NgPosteingangModule,
     ],
-    declarations: [
-        // AppComponent
-    ],
-     // bootstrap: [AppComponent]
 })
 
 export class AppModule {
@@ -62,6 +53,7 @@ export class AppModule {
     }
 
     ngDoBootstrap() {
+        // noinspection XHTMLIncompatabilitiesJS
         this.upgrade.bootstrap(document.body, [appModuleAngularJS.name], {strictDi: true});
     }
 }

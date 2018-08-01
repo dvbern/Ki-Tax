@@ -14,7 +14,7 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../core/core.angularjs.module';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -28,7 +28,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../models/TSKindContainer';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';

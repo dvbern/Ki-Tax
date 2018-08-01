@@ -15,7 +15,7 @@
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSMitteilungEvent} from '../../models/enums/TSMitteilungEvent';

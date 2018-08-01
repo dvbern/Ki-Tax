@@ -15,7 +15,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {DownloadRS} from '../../core/service/downloadRS.rest';
+import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import TSDownloadFile from '../../models/TSDownloadFile';
 
 /**

@@ -12,6 +12,7 @@ import {LogLevel, LogModules} from '../app/core/logging/log-level';
 
 export interface Environment {
     production: boolean;
+    test: boolean;
     hmr: boolean;
     logLevel: LogLevel;
     logModules?: LogModules;

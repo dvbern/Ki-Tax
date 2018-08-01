@@ -1,9 +1,9 @@
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
-import {DvPosteingangComponent} from '../../core/component/dv-posteingang/dv-posteingang';
-import {DEFAULT_LOCALE} from '../../core/constants/CONSTANTS';
-import {DvNgShowElementDirective} from '../../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
-import {UPGRADED_PROVIDERS} from '../../hybridTools/upgraded-providers';
+import {DvPosteingangComponent} from './component/dv-posteingang/dv-posteingang';
+import {DEFAULT_LOCALE} from './constants/CONSTANTS';
+import {DvNgShowElementDirective} from './directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {UPGRADED_PROVIDERS} from './upgraded-providers';
 import {NavbarComponent} from './component/navbar/navbar.component';
 
 @NgModule({

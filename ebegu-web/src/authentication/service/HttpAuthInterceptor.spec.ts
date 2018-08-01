@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {EbeguAuthentication} from '../authentication.module';

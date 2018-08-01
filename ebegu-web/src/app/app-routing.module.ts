@@ -10,12 +10,12 @@
 
 import {NgModule} from '@angular/core';
 import {UIRouterModule} from '@uirouter/angular';
-import {AppComponent} from './test/app.component';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 
 @NgModule({
     imports: [
-        // UIRouterUpgradeModule,
-        UIRouterModule.forRoot({states: [{name: 'app', url: '/foo', component: AppComponent}]}),
+        UIRouterUpgradeModule,
+        UIRouterModule.forChild({ states: [] }),
     ],
     exports: [UIRouterModule],
 })

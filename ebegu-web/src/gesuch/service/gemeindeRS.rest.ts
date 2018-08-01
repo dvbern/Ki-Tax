@@ -14,7 +14,7 @@
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSUser from '../../models/TSUser';

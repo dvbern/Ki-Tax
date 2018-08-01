@@ -14,9 +14,9 @@
  */
 
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import ErrorService from '../core/errors/service/ErrorService';
-import AntragStatusHistoryRS from '../core/service/antragStatusHistoryRS.rest';
-import EwkRS from '../core/service/ewkRS.rest';
+import ErrorService from '../app/core/errors/service/ErrorService';
+import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
+import EwkRS from '../app/core/service/ewkRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, TSAntragStatus} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
@@ -25,7 +25,7 @@ import {TSRole} from '../models/enums/TSRole';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
 import TSEWKPerson from '../models/TSEWKPerson';
-import GesuchstellerRS from '../core/service/gesuchstellerRS.rest';
+import GesuchstellerRS from '../app/core/service/gesuchstellerRS.rest';
 import {ILogService, IRootScopeService} from 'angular';
 import TSEWKResultat from '../models/TSEWKResultat';
 import TSGesuch from '../models/TSGesuch';

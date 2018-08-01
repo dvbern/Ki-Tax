@@ -18,21 +18,20 @@ import {StateService} from '@uirouter/core';
 import TSStatistikParameter from '../../../models/TSStatistikParameter';
 import {TSStatistikParameterType} from '../../../models/enums/TSStatistikParameterType';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import * as moment from 'moment';
 import DateUtil from '../../../utils/DateUtil';
-import {ReportAsyncRS} from '../../../core/service/reportAsyncRS.rest';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import BatchJobRS from '../../../core/service/batchRS.rest';
+import {ReportAsyncRS} from '../../../app/core/service/reportAsyncRS.rest';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import BatchJobRS from '../../../app/core/service/batchRS.rest';
 import TSWorkJob from '../../../models/TSWorkJob';
 import TSBatchJobInformation from '../../../models/TSBatchJobInformation';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
-import Moment = moment.Moment;
 import ITranslateService = angular.translate.ITranslateService;
 
 const template = require('./statistikView.html');
@@ -64,8 +63,8 @@ export class StatistikViewController {
     TSRoleUtil: any;
     private readonly DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
-    private maxDate: Moment;
-    private minDate: Moment;
+    private maxDate: moment.Moment;
+    private minDate: moment.Moment;
     private userjobs: Array<TSWorkJob>;
     private allJobs: Array<TSBatchJobInformation>;
 

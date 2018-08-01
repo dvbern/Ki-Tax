@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSApplicationProperty from '../../../models/TSApplicationProperty';
-import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IComponentOptions} from 'angular';
-import {ReindexRS} from '../../service/reindexRS.rest';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import TSApplicationProperty from '../../../models/TSApplicationProperty';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import AbstractAdminViewController from '../../abstractAdminView';
+import {ReindexRS} from '../../service/reindexRS.rest';
+
 require('./adminView.less');
 const template = require('./adminView.html');
 

@@ -14,7 +14,7 @@
  */
 
 import {IPromise} from 'angular';
-import {IDVFocusableController} from '../../core/component/IDVFocusableController';
+import {IDVFocusableController} from '../../app/core/component/IDVFocusableController';
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 import IQService = angular.IQService;

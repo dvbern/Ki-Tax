@@ -15,7 +15,7 @@
 
 import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';

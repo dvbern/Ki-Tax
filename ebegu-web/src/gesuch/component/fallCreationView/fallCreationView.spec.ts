@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.angularjs.module';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {FallCreationViewController} from './fallCreationView';
 import {StateService} from '@uirouter/core';

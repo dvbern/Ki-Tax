@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import UserRS from '../../core/service/userRS.rest';
+import UserRS from '../../app/core/service/userRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSUser from '../../models/TSUser';

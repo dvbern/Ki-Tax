@@ -15,7 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
-import {DvOnboardingComponent} from '../core/component/dv-onboarding/dv-onboarding.component';
+import {DvOnboardingComponent} from '../app/core/component/dv-onboarding/dv-onboarding.component';
 
 @NgModule({
     imports: [

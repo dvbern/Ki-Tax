@@ -16,9 +16,9 @@
 import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';

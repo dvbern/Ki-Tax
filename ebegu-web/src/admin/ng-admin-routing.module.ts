@@ -15,7 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';

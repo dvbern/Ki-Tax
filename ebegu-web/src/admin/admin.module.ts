@@ -16,8 +16,8 @@
 import * as angular from 'angular';
 import 'angular-smart-table';
 import {downgradeComponent} from '@angular/upgrade/static';
-import {EbeguWebCore} from '../core/core.angularjs.module';
-import {InstitutionRS} from '../core/service/institutionRS.rest';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
+import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import './admin.module.less';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
@@ -28,7 +28,6 @@ import {InstitutionStammdatenViewComponentConfig} from './component/institutionS
 import {InstitutionViewComponentConfig} from './component/institutionView/institutionView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
 import {EbeguParameterRS} from './service/ebeguParameterRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
 import {ReindexRS} from './service/reindexRS.rest';
@@ -40,7 +39,6 @@ import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
 
 export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name, 'smart-table'])
-    .service('ApplicationPropertyRS', ApplicationPropertyRS)
     .service('InstitutionRS', InstitutionRS)
     .service('EbeguParameterRS', EbeguParameterRS)
     .service('EbeguVorlageRS', EbeguVorlageRS)

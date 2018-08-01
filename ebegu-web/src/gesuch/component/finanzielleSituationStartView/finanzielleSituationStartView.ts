@@ -17,7 +17,7 @@ import {IComponentOptions} from 'angular';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
 import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import WizardStepManager from '../../service/wizardStepManager';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import IQService = angular.IQService;
@@ -30,7 +30,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSFinanzModel from '../../../models/TSFinanzModel';
 import TSGesuch from '../../../models/TSGesuch';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 
 const template = require('./finanzielleSituationStartView.html');
 require('./finanzielleSituationStartView.less');

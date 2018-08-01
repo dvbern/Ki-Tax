@@ -14,9 +14,9 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../core/core.angularjs.module';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';

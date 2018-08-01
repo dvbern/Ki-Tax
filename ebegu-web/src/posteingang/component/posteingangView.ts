@@ -15,7 +15,7 @@
 
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import MitteilungRS from '../../core/service/mitteilungRS.rest';
+import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import TSMitteilung from '../../models/TSMitteilung';

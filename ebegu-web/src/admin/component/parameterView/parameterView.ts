@@ -18,7 +18,7 @@ import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import './parameterView.less';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AbstractAdminViewController from '../../abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ITranslateService = angular.translate.ITranslateService;

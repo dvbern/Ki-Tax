@@ -16,7 +16,7 @@
 import {IComponentOptions, IFormController} from 'angular';
 import './ferieninselView.less';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import AbstractAdminViewController from '../../abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';

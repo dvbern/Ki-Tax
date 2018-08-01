@@ -30,14 +30,14 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 
 import {ShowTooltipController} from '../../dialog/ShowTooltipController';
-import {IDVFocusableController} from '../../../core/component/IDVFocusableController';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
+import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 

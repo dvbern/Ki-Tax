@@ -14,7 +14,7 @@
  */
 
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import AntragStatusHistoryRS from '../../core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../core/service/betreuungRS.rest';
 import KindRS from '../../core/service/kindRS.rest';

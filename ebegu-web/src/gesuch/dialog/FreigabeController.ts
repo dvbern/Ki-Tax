@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ApplicationPropertyRS} from '../../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import UserRS from '../../core/service/userRS.rest';
+import UserRS from '../../app/core/service/userRS.rest';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSUser from '../../models/TSUser';
 import EbeguUtil from '../../utils/EbeguUtil';

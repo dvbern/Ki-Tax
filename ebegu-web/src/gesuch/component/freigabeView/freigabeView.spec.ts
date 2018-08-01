@@ -14,16 +14,16 @@
  */
 
 import {EbeguWebAdmin} from '../../../admin/admin.module';
-import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';

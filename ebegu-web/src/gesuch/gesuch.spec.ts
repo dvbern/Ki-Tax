@@ -14,11 +14,11 @@
  */
 
 import * as moment from 'moment';
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {ngServicesMock} from '../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import TSGesuch from '../models/TSGesuch';
-import TestDataUtilSpec from '../utils/TestDataUtil.spec';
+import TestDataUtil from '../utils/TestDataUtil.spec';
 import {GesuchRouteController} from './gesuch';
 import GesuchModelManager from './service/gesuchModelManager';
 

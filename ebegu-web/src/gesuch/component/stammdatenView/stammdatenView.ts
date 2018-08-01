@@ -15,8 +15,8 @@
 
 import {IComponentOptions} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import EwkRS from '../../../core/service/ewkRS.rest';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import EwkRS from '../../../app/core/service/ewkRS.rest';
 import TSGesuchstellerSprache from '../../../models/dto/TSSelectableSprache';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';

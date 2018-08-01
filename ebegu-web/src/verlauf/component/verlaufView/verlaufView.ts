@@ -17,7 +17,7 @@ import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.rest';
+import AntragStatusHistoryRS from '../../../app/core/service/antragStatusHistoryRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../models/TSDossier';

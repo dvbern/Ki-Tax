@@ -20,7 +20,7 @@ import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import SearchRS from './searchRS.rest';
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 
 describe('searchRS', () => {
 

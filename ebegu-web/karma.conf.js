@@ -45,7 +45,7 @@ module.exports = function (config) {
             'node_modules/angular-mocks/angular-mocks.js',
 
             // The app itself
-            'src/app.angularjs.module.ts',
+            'src/app/app.angularjs.module.ts',
 
             // Tests
             'test.ts',    //ng2 tests

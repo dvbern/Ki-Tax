@@ -18,6 +18,7 @@ import {Environment} from './IEnvironment';
 
 export const environment: Environment = {
     production: true,
+    test: false,
     hmr: false,
     logLevel: LogLevel.INFO,
 };

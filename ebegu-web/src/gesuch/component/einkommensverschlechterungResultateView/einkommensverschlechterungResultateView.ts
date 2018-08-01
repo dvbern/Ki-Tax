@@ -19,7 +19,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import {IEinkommensverschlechterungResultateStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
 import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
 import WizardStepManager from '../../service/wizardStepManager';

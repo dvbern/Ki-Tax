@@ -15,7 +15,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {UIRouter} from '@uirouter/core';
-import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRole} from '../models/enums/TSRole';
 import TSGemeinde from '../models/TSGemeinde';
 import TSInstitution from '../models/TSInstitution';

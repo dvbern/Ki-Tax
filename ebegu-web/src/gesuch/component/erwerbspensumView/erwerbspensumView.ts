@@ -16,7 +16,7 @@
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
 import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
 import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';

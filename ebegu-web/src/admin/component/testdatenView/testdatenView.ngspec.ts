@@ -17,13 +17,13 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DATE_LOCALE} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '../../../app/shared/shared.module';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import UserRS from '../../../core/service/userRS.rest';
-import ZahlungRS from '../../../core/service/zahlungRS.rest';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import UserRS from '../../../app/core/service/userRS.rest';
+import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 

@@ -18,7 +18,7 @@ import AbstractGesuchViewController from '../abstractGesuchView';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
 import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
 import TSGesuch from '../../../models/TSGesuch';
 import WizardStepManager from '../../service/wizardStepManager';

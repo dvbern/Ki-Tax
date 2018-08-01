@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
 import TSGesuch from '../../models/TSGesuch';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';

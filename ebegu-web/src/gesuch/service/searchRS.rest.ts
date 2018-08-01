@@ -14,7 +14,7 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSAntragDTO from '../../models/TSAntragDTO';

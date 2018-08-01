@@ -25,7 +25,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {DvNgGemeindeDialogComponent} from '../../../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
 require('./navbar.component.less');
 

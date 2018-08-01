@@ -25,15 +25,15 @@ import TSVerfuegung from '../../../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../../../models/TSVerfuegungZeitabschnitt';
 import WizardStepManager from '../../service/wizardStepManager';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSBetreuung from '../../../models/TSBetreuung';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import ExportRS from '../../service/exportRS.rest';
-import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {ThreeButtonsDialogController} from '../../dialog/ThreeButtonsDialogController';
 import ITimeoutService = angular.ITimeoutService;
 

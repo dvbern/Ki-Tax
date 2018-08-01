@@ -15,8 +15,8 @@
 
 import {IComponentOptions, IFormController} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';

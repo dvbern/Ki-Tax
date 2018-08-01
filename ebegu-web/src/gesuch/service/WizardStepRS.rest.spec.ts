@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSWizardStep from '../../models/TSWizardStep';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import WizardStepRS from './WizardStepRS.rest';
 
 describe('WizardStepRS', () => {

@@ -14,11 +14,11 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {InstitutionRS} from '../core/service/institutionRS.rest';
-import {MandantRS} from '../core/service/mandantRS.rest';
-import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import {InstitutionRS} from '../app/core/service/institutionRS.rest';
+import {MandantRS} from '../app/core/service/mandantRS.rest';
+import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 
 adminRun.$inject = ['RouterHelper'];
 

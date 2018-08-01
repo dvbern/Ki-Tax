@@ -15,9 +15,9 @@
 
 import {IComponentOptions} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
-import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
-import ListResourceRS from '../../../core/service/listResourceRS.rest';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
+import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
+import ListResourceRS from '../../../app/core/service/listResourceRS.rest';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';

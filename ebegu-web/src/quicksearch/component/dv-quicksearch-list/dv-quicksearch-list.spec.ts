@@ -16,9 +16,9 @@
 import {StateService} from '@uirouter/core';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../core/core.angularjs.module';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
@@ -28,7 +28,7 @@ import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
 
 describe('DVQuicksearchList', () => {

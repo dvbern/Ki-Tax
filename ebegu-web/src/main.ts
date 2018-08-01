@@ -18,7 +18,7 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {UIRouter, UrlService} from '@uirouter/core';
 import {visualizer} from '@uirouter/visualizer';
 import * as angular from 'angular';
-import {appModuleAngularJS} from './app.angularjs.module';
+import {appModuleAngularJS} from './app/app.angularjs.module';
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
 

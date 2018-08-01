@@ -14,9 +14,9 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
-import BetreuungRS from '../../../core/service/betreuungRS.rest';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {DVMitteilungListController} from '../../../app/core/component/dv-mitteilung-list/dv-mitteilung-list';
+import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
+import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import FallRS from '../../../gesuch/service/fallRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -26,8 +26,7 @@ import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSUser from '../../../models/TSUser';
-import {PosteingangService} from '../../../posteingang/service/posteingang.service';
-import TestDataUtilSpec from '../../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {EbeguWebMitteilungen} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import ITimeoutService = angular.ITimeoutService;

@@ -15,7 +15,7 @@
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';

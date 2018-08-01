@@ -19,7 +19,7 @@ import {IStammdatenStateParams} from '../../gesuch.route';
 import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
 import BerechnungsManager from '../../service/berechnungsManager';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import WizardStepManager from '../../service/wizardStepManager';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import ITimeoutService = angular.ITimeoutService;
