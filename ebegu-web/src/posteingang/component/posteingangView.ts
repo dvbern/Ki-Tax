@@ -55,7 +55,7 @@ export class PosteingangViewController {
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
-        return this.ebeguUtil.addZerosToNumber(fallnummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
     private gotoMitteilung(mitteilung: TSMitteilung) {

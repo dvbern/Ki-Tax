@@ -36,7 +36,7 @@ export function QuicksearchFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
                 return actualDate === expected;
             }
             if (expression.fallNummer && expression.fallNummer === expected) {
-                let actualString = ebeguUtil.addZerosToNumber(actual, CONSTANTS.FALLNUMMER_LENGTH);
+                let actualString = EbeguUtil.addZerosToFallNummer(actual);
                 return actualString.indexOf(expected) >= 0;
             }
             if (expression.gesuchsperiodeGueltigAb && expression.gesuchsperiodeGueltigAb === expected) {

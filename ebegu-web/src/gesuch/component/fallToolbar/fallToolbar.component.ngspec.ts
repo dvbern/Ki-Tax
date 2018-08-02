@@ -71,7 +71,7 @@ describe('fallToolbar', function () {
         });
     });
 
-    fdescribe('isDossierActive', function () {
+    describe('isDossierActive', function () {
         it('should return true for the selected dossier', () => {
             component.openDossier(dossier1);
             expect(component.isDossierActive(dossier1)).toBe(true);

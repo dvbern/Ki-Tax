@@ -108,7 +108,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     public getFallNummer(dublette: TSKindDublette): string {
-        return EbeguUtil.addZerosToNumber(dublette.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(dublette.fallNummer);
     }
 
     removeKind(kind: any, index: any): void {
