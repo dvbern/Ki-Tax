@@ -216,6 +216,13 @@ export class GesuchRouteController {
         return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
     }
 
+    public getSelectedGemeindeName(): string {
+        if (this.getGesuch().dossier && this.getGesuch().dossier.gemeinde) {
+            return this.getGesuch().dossier.gemeinde.name;
+        }
+        return '';
+    }
+
     public getGesuchErstellenStepTitle(): string {
         if (this.gesuchModelManager.isGesuch()) {
             if (this.getDateFromGesuch()) {

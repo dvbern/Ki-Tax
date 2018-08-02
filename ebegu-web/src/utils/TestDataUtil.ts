@@ -15,9 +15,11 @@
 
 import {TSRole} from '../models/enums/TSRole';
 import TSBerechtigung from '../models/TSBerechtigung';
+import TSDossier from '../models/TSDossier';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
+import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
 import DateUtil from './DateUtil';
 import {IHttpBackendService} from 'angular';
@@ -224,5 +226,19 @@ export default class TestDataUtil {
         berechtigung.role = role;
         berechtigung.enabled = true;
         return berechtigung;
+    }
+
+    public static createFall(): TSFall {
+        let fall: TSFall = new TSFall();
+        TestDataUtil.setAbstractFieldsUndefined(fall);
+        fall.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046d61';
+        return fall;
+    }
+
+    public static createDossier(id: string, fall: TSFall): TSDossier {
+        let dossier: TSDossier = new TSDossier();
+        dossier.id = id;
+        dossier.fall = fall;
+        return dossier;
     }
 }

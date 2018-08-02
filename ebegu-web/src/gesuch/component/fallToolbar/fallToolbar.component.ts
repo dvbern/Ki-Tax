@@ -13,12 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import DossierRS from '../../service/dossierRS.rest';
-import FallRS from '../../service/fallRS.rest';
 
 require('./fallToolbar.less');
 
@@ -26,28 +24,37 @@ require('./fallToolbar.less');
     selector: 'dv-fall-toolbar',
     template: require('./fallToolbar.template.html'),
 })
-export class FallToolbarComponent implements OnInit {
+export class FallToolbarComponent implements OnInit, OnChanges {
 
     @Input() fallId: string;
     @Input() dossierId: string;
-    fall: TSFall;
+    @Input() defaultGemeindeName: string;
+    // fall: TSFall;
     dossierList: TSDossier[] = [];
     selectedDossier: TSDossier;
 
-    constructor(private dossierRS: DossierRS,
-        private fallRS: FallRS) {
+    constructor(private dossierRS: DossierRS) {
     }
 
-    public ngOnInit(): void {
-        this.fallRS.findFall(this.fallId).then(fall => {
-            if (fall) {
-                this.fall = fall;
-                this.dossierRS.findDossiersByFall(this.fall.id).then(dossiers => {
-                    this.dossierList = dossiers;
-                    this.setSelectedDossier();
-                });
-            }
-        });
+    ngOnInit(): void {
+        this.loadObjects();
+    }
+
+    private loadObjects() {
+        if (!this.useDefaultValues()) {
+            this.dossierRS.findDossiersByFall(this.fallId).then(dossiers => {
+                this.dossierList = dossiers;
+                this.setSelectedDossier();
+            });
+        }
+    }
+
+    ngOnChanges(changes: any) {
+        this.loadObjects();
+    }
+
+    public useDefaultValues(): boolean {
+        return !this.dossierId && !this.fallId;
     }
 
     private setSelectedDossier() {
@@ -61,11 +68,14 @@ export class FallToolbarComponent implements OnInit {
     }
 
     private getFallNummer(): string {
-        return this.fall ? EbeguUtil.addZerosToFallNummer(this.fall.fallNummer) : '';
+        if (this.selectedDossier && this.selectedDossier.fall) {
+            return EbeguUtil.addZerosToFallNummer(this.selectedDossier.fall.fallNummer);
+        }
+        return '';
     }
 
     public openDossier(dossier: TSDossier): void {
-		this.selectedDossier = dossier;
+        this.selectedDossier = dossier;
     }
 
     public createNewDossier(): void {

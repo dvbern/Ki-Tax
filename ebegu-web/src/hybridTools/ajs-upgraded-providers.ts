@@ -184,17 +184,6 @@ export const downloadRSProvider = {
     deps: ['$injector']
 };
 
-// FallRS
-export function fallRSServiceFactory(i: any) {
-    return i.get('FallRS');
-}
-
-export const fallRSProvider = {
-    provide: FallRS,
-    useFactory: fallRSServiceFactory,
-    deps: ['$injector']
-};
-
 // DossierRS
 export function dossierRSServiceFactory(i: any) {
     return i.get('DossierRS');

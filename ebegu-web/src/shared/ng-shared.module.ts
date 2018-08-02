@@ -28,7 +28,7 @@ import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgHelpDialogComponent} from '../gesuch/dialog/dv-ng-help-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
-import {dossierRSProvider, downloadRSProvider, fallRSProvider} from '../hybridTools/ajs-upgraded-providers';
+import {dossierRSProvider, downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 @NgModule({
     imports: [
@@ -74,7 +74,6 @@ import {dossierRSProvider, downloadRSProvider, fallRSProvider} from '../hybridTo
     ],
     providers: [
         downloadRSProvider,
-        fallRSProvider,
         dossierRSProvider,
     ]
 })
