@@ -29,8 +29,10 @@ require('./fallToolbar.less');
 export class FallToolbarComponent implements OnInit {
 
     @Input() fallId: string;
+    @Input() dossierId: string;
     fall: TSFall;
     dossierList: TSDossier[] = [];
+    selectedDossier: TSDossier;
 
     constructor(private dossierRS: DossierRS,
         private fallRS: FallRS) {
@@ -42,18 +44,20 @@ export class FallToolbarComponent implements OnInit {
                 this.fall = fall;
                 this.dossierRS.findDossiersByFall(this.fall.id).then(dossiers => {
                     this.dossierList = dossiers;
+                    this.setSelectedDossier();
                 });
             }
         });
     }
 
-    // todo KIBON-25 implement this hier and remove it from dossiertoolbar
+    private setSelectedDossier() {
+        this.selectedDossier = this.dossierList.find(dossier => dossier.id === this.dossierId);
+    }
+
     private hasBesitzer(): boolean {
-        return true;
-    //     return this.dossier
-    //         && this.dossier.fall
-    //         && this.dossier.fall.besitzer !== null
-    //         && this.dossier.fall.besitzer !== undefined;
+        return this.selectedDossier
+            && this.selectedDossier.fall
+            && !EbeguUtil.isNullOrUndefined(this.selectedDossier.fall.besitzer);
     }
 
     private getFallNummer(): string {
@@ -61,10 +65,16 @@ export class FallToolbarComponent implements OnInit {
     }
 
     public openDossier(dossier: TSDossier): void {
-
+		this.selectedDossier = dossier;
     }
 
     public createNewDossier(): void {
 
+    }
+
+    public isDossierActive(dossier: TSDossier): boolean {
+        return !EbeguUtil.isNullOrUndefined(this.selectedDossier)
+            && !EbeguUtil.isNullOrUndefined(dossier)
+            && this.selectedDossier.id === dossier.id;
     }
 }

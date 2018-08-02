@@ -17,6 +17,7 @@
     <div layout="row" class="row fall-toolbar-content">
         <div class="dossier-list col-md-8">
 			<button *ngFor="let dossier of dossierList" class="dossier-element"
+                    [ngClass]="{'dossier-inactive': !isDossierActive(dossier), 'dossier-active': isDossierActive(dossier)}"
 					(click)="openDossier(dossier)">
 				{{dossier.extractGemeindeName()}}
 			</button>
@@ -30,7 +31,7 @@
 
         <div class="fall-toolbar-element col-md-2">
             <span [textContent]="getFallNummer()"></span>
-            <i [ngClass]="{'fa fa-file-text-o': !hasBesitzer(), 'fa fa-desktop': hasBesitzer()}"></i>
+            <i class="fa" [ngClass]="{'fa-desktop': hasBesitzer(), 'fa-file-text-o': !hasBesitzer()}"></i>
         </div>
     </div>
 </div>

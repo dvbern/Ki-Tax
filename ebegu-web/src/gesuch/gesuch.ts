@@ -212,6 +212,10 @@ export class GesuchRouteController {
         return this.getFall() ? this.getFall().id : undefined;
     }
 
+    public getDossierId(): string {
+        return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
+    }
+
     public getGesuchErstellenStepTitle(): string {
         if (this.gesuchModelManager.isGesuch()) {
             if (this.getDateFromGesuch()) {

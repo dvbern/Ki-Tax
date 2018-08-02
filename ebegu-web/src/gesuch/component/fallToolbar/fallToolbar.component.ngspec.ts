@@ -14,6 +14,10 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import TSDossier from '../../../models/TSDossier';
+import TSFall from '../../../models/TSFall';
+import DossierRS from '../../service/dossierRS.rest';
+import FallRS from '../../service/fallRS.rest';
 import {FallToolbarComponent} from './fallToolbar.component';
 
 describe('fallToolbar', function () {
@@ -22,8 +26,18 @@ describe('fallToolbar', function () {
     let fixture: ComponentFixture<FallToolbarComponent>;
 
     beforeEach(async(() => {
+        const fall = new TSFall();
+        const dossierServiceSpy = jasmine.createSpyObj('DossierRS', ['findDossiersByFall']);
+        const fallServiceSpy = jasmine.createSpyObj('FallRS', {
+            'findFall': new Promise(() => fall)
+        });
+
         TestBed.configureTestingModule({
             imports: [
+            ],
+            providers: [
+                {provide: DossierRS, useValue: dossierServiceSpy},
+                {provide: FallRS, useValue: fallServiceSpy},
             ],
             declarations: [FallToolbarComponent]
         })
@@ -36,7 +50,38 @@ describe('fallToolbar', function () {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
+    describe('functions', function () {
+        it('should create', () => {
+            expect(component).toBeTruthy();
+        });
     });
+
+    describe('isDossierActive', function () {
+        it('should return true for the selected dossier', () => {
+            let dossier = createDossier('1111');
+            component.selectedDossier = dossier;
+            expect(component.isDossierActive(dossier)).toBe(true);
+        });
+        it('should return false for a different dossier', () => {
+            component.selectedDossier = createDossier('1111');
+            let dossier2 = createDossier('2222');
+            expect(component.isDossierActive(dossier2)).toBe(false);
+        });
+        it('should return false for undefined', () => {
+            component.selectedDossier = createDossier('1111');
+            expect(component.isDossierActive(undefined)).toBe(false);
+        });
+        it('should return false for the no selected dossier', () => {
+            let dossier = createDossier('1111');
+            component.selectedDossier = undefined;
+            expect(component.isDossierActive(dossier)).toBe(false);
+        });
+    });
+
+    function createDossier(id: string) {
+        let dossier = new TSDossier();
+        dossier.id = id;
+        return dossier;
+    }
+
 });

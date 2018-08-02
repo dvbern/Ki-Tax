@@ -13,16 +13,16 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.getFallId()">
+<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.getDossierId()">
 
 </dv-fall-toolbar>
 
-<dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getGesuch().dossier.id}}"
+<dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getDossierId()}}"
                  dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </dossier-toolbar>
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" gesuchid="{{vm.getGesuchId()}}"
-                               dossier-id="{{vm.getGesuch().dossier.id}}"
+                               dossier-id="{{vm.getDossierId()}}"
                                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
 </dossier-toolbar-gesuchsteller>
 <!--Gesuchnavigation (Uebersicht)  fuer den Gesuchsteller (mobile)-->
@@ -81,7 +81,7 @@
                     ng-class="{'active-element': vm.isElementActive('GESUCH_ERSTELLEN')}">
                     <!--this button is added twice because it should do nothing if the gesuch is not saved yet-->
                     <button ng-if="!vm.getGesuch().isNew()" type="button" class="col-xs-10  btn-link"
-                            ui-sref="gesuch.fallcreation({createNew: false, gesuchId: vm.getGesuchId(), dossierId: vm.getGesuch().dossier.id})"
+                            ui-sref="gesuch.fallcreation({createNew: false, gesuchId: vm.getGesuchId(), dossierId: vm.getDossierId()})"
                             ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
                             aria-hidden="{{vm.isWizardStepDisabled('GESUCH_ERSTELLEN')}}"
                             ng-click="vm.closeSidenav('sidenav')">

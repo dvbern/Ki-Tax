@@ -332,18 +332,6 @@ export class DossierToolbarController implements IDVFocusableController {
         return keys;
     }
 
-    /**
-     * Tries to get the "gesuchName" out of the gesuch contained in the gesuchModelManager. If this doesn't
-     * succeed it gets the "gesuchName" out of the fall
-     */
-    public getGesuchName(): string {
-        let gesuchName = this.gesuchModelManager.getGesuchName();
-        if (!gesuchName || gesuchName.length <= 0) {
-            gesuchName = this.ebeguUtil.getGesuchNameFromDossier(this.dossier);
-        }
-        return gesuchName;
-    }
-
     public getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
     }
@@ -532,20 +520,6 @@ export class DossierToolbarController implements IDVFocusableController {
             }
         }
         return undefined;
-    }
-
-    private hasBesitzer(): boolean {
-        return this.dossier
-            && this.dossier.fall
-            && this.dossier.fall.besitzer !== null
-            && this.dossier.fall.besitzer !== undefined;
-    }
-
-    private getBesitzer(): string {
-        if (this.hasBesitzer()) {
-            return this.dossier.fall.besitzer.getFullName();
-        }
-        return '';
     }
 
     public openMitteilungen(): void {
