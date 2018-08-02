@@ -14,19 +14,22 @@
   -->
 
 <div class="fall-toolbar">
-    <div layout="row" class="row">
-        <div class="dossier-list">
-            <div *ngFor="let dossier of dossierList" class="dossier-element col-md-12">
-                {{dossier.extractGemeindeName()}}
-            </div>
-        </div>
-        <div class="fall-toolbar-element col-md-12">
-            <i class="fa fa-plus"></i>
+    <div layout="row" class="row fall-toolbar-content">
+        <div class="dossier-list col-md-8">
+			<button *ngFor="let dossier of dossierList" class="dossier-element"
+					(click)="openDossier(dossier)">
+				{{dossier.extractGemeindeName()}}
+			</button>
         </div>
 
-        <div class="fall-toolbar-element col-md-12" [textContent]="fallId">
+        <div class="fall-toolbar-element col-md-2">
+            <button (click)="createNewDossier()">
+                <i class="fa fa-plus"></i>
+            </button>
         </div>
-        <div class="fall-toolbar-element col-md-12">
+
+        <div class="fall-toolbar-element col-md-2">
+            <span [textContent]="getFallNummer()"></span>
             <i [ngClass]="{'fa fa-file-text-o': !hasBesitzer(), 'fa fa-desktop': hasBesitzer()}"></i>
         </div>
     </div>

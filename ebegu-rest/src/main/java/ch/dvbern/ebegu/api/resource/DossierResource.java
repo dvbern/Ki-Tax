@@ -16,8 +16,11 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -135,6 +138,26 @@ public class DossierResource {
 		Optional<Dossier> dossierOptional = dossierService.findDossierByGemeindeAndFall(gemeindeId, fallId);
 
 		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
+	}
+
+	@ApiOperation(value = "Returns all Dossiers of the given Fall that are visible dor the current user",
+		responseContainer = "List", response = JaxDossier.class)
+	@Nullable
+	@GET
+	@Path("/fall/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxDossier> findDossiersByFall(
+		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
+
+		Objects.requireNonNull(fallJaxId.getId());
+
+		String fallId = converter.toEntityId(fallJaxId);
+		Collection<Dossier> dossierList = dossierService.findDossiersByFall(fallId);
+
+		return dossierList.stream()
+			.map(dossier -> converter.dossierToJAX(dossier))
+			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Creates a new Dossier in the database if it doesnt exist with the current user as owner.", response = JaxDossier.class)

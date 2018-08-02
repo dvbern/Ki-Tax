@@ -107,6 +107,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
 
 		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
+		// todo KIBON-25 filter out all not visible for the current user
 		return dossiers;
 	}
 

@@ -13,9 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import TSDossier from '../../../models/TSDossier';
-import TSGemeinde from '../../../models/TSGemeinde';
+import TSFall from '../../../models/TSFall';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import DossierRS from '../../service/dossierRS.rest';
+import FallRS from '../../service/fallRS.rest';
 
 require('./fallToolbar.less');
 
@@ -23,18 +26,25 @@ require('./fallToolbar.less');
     selector: 'dv-fall-toolbar',
     template: require('./fallToolbar.template.html'),
 })
-export class FallToolbarComponent {
+export class FallToolbarComponent implements OnInit {
 
     @Input() fallId: string;
-    dossierList: TSDossier[];
+    fall: TSFall;
+    dossierList: TSDossier[] = [];
 
-    constructor() {
-        // todo KIBON-25 implement this. fill list
-        this.dossierList = [];
-        let tsDossier = new TSDossier();
-        tsDossier.gemeinde = new TSGemeinde();
-        tsDossier.gemeinde.name = 'Bern';
-        this.dossierList.push(tsDossier);
+    constructor(private dossierRS: DossierRS,
+        private fallRS: FallRS) {
+    }
+
+    public ngOnInit(): void {
+        this.fallRS.findFall(this.fallId).then(fall => {
+            if (fall) {
+                this.fall = fall;
+                this.dossierRS.findDossiersByFall(this.fall.id).then(dossiers => {
+                    this.dossierList = dossiers;
+                });
+            }
+        });
     }
 
     // todo KIBON-25 implement this hier and remove it from dossiertoolbar
@@ -44,5 +54,17 @@ export class FallToolbarComponent {
     //         && this.dossier.fall
     //         && this.dossier.fall.besitzer !== null
     //         && this.dossier.fall.besitzer !== undefined;
+    }
+
+    private getFallNummer(): string {
+        return this.fall ? EbeguUtil.addZerosToFallNummer(this.fall.fallNummer) : '';
+    }
+
+    public openDossier(dossier: TSDossier): void {
+
+    }
+
+    public createNewDossier(): void {
+
     }
 }

@@ -14,9 +14,20 @@
  */
 @import "../../../style/variables.less";
 
+@toolbar-height: 4rem;
+
 .fall-toolbar {
     background-color: @white;
-    display: flex;
+}
+
+.fall-toolbar-content {
+    div {
+        display: inline-block;
+    }
+    button {
+        border: 0;
+        text-align: center;
+    }
 }
 
 .fall-toolbar .dossier-list {
@@ -29,6 +40,9 @@
     color: @contrast-lightest;
     font-weight: bold;
     width: 20rem;
+    min-height: @toolbar-height;
+    line-height: @toolbar-height;
+    margin-left: 2rem;
 }
 
 .fall-toolbar-element {
@@ -36,4 +50,11 @@
     color: @blue;
     font-weight: bold;
     width: 20rem;
+    min-height: @toolbar-height;
+    vertical-align: middle;
+
+    span, i {
+        line-height: @toolbar-height;
+        padding-left: 1rem;
+    }
 }

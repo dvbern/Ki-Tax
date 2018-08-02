@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CONSTANTS} from '../core/constants/CONSTANTS';
 import TSDossier from '../models/TSDossier';
 import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
@@ -117,6 +118,10 @@ export default class EbeguUtil {
             return fallnummerString;
         }
         return undefined;
+    }
+
+    public static addZerosToFallNummer(fallNummer: number): string {
+        return EbeguUtil.addZerosToNumber(fallNummer, CONSTANTS.FALLNUMMER_LENGTH);
     }
 
     public static getIndexOfElementwithID(entityToSearch: TSAbstractEntity, listToSearchIn: Array<any>): number {
