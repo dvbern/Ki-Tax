@@ -79,6 +79,13 @@ export class VerlaufViewController {
         return this.verlauf;
     }
 
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
+    }
+
     public cancel(): void {
         if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
             this.$state.go('gesuchstellerDashboard');
