@@ -124,7 +124,8 @@ export class GesuchstellerDashboardViewController {
 
     public goToMitteilungenOeffen() {
         this.$state.go('mitteilungen', {
-            dossierId: this.dossier.id
+            dossierId: this.dossier.id,
+            fallId: this.dossier.fall.id,
         });
     }
 

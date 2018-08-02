@@ -34,7 +34,7 @@ function getStates(): Ng1StateDeclaration[] {
 export class EbeguMitteilungenStateState implements Ng1StateDeclaration {
     name = 'mitteilungen';
     template = '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/mitteilungen/:dossierId/:betreuungId';
+    url = '/mitteilungen/:fallId/:dossierId/:betreuungId';
     params = {
         betreuungId: '',
     };
@@ -43,6 +43,7 @@ export class EbeguMitteilungenStateState implements Ng1StateDeclaration {
 // PARAMS
 
 export class IMitteilungenStateParams {
+    fallId: string;
     dossierId: string;
     betreuungId: string;
     mitteilungId: string;

@@ -191,7 +191,10 @@ export class DVQuicksearchListController {
             let url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
-            this.$state.go('mitteilungen', {dossierId: fallAntrag.dossierId});
+            this.$state.go('mitteilungen', {
+                dossierId: fallAntrag.dossierId,
+                fallId: fallAntrag.fallID,
+            });
         }
     }
 

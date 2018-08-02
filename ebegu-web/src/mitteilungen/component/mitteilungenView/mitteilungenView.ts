@@ -36,6 +36,7 @@ export class MitteilungenViewController {
 
     form: IFormController;
     dossierId: string;
+    fallId: string;
     TSRoleUtil = TSRoleUtil;
 
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
@@ -48,6 +49,9 @@ export class MitteilungenViewController {
     $onInit() {
         if (this.$stateParams.dossierId) {
             this.dossierId = this.$stateParams.dossierId;
+        }
+        if (this.$stateParams.fallId) {
+            this.fallId = this.$stateParams.fallId;
         }
     }
 

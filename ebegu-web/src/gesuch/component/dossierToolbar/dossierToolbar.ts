@@ -524,7 +524,8 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public openMitteilungen(): void {
         this.$state.go('mitteilungen', {
-            dossierId: this.dossier.id
+            dossierId: this.dossier.id,
+            fallId: this.dossier.fall.id,
         });
     }
 

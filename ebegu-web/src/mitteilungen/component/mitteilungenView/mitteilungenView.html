@@ -13,6 +13,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<dv-fall-toolbar [fall-id]="vm.fallId" [dossier-id]="vm.dossierId"
+                 [default-gemeinde-name]="vm.getSelectedGemeindeName()">
+</dv-fall-toolbar>
+
 <dossier-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
                  hide-action-buttons="{{true}}"
                  force-loading-from-fall="{{true}}"
