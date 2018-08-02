@@ -19,6 +19,7 @@ import {UIRouterModule} from '@uirouter/angular';
 import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
 import {DvPosteingangController} from '../core/component/dv-posteingang/dv-posteingang';
 import {NgSharedModule} from '../shared/ng-shared.module';
+import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
 @NgModule({
     imports: [
@@ -29,10 +30,12 @@ import {NgSharedModule} from '../shared/ng-shared.module';
     declarations: [
         DvNgNavbar,
         DvPosteingangController,
+        FallToolbarComponent,
     ],
     entryComponents: [
         DvNgNavbar,
         DvPosteingangController,
+        FallToolbarComponent,
     ],
 })
 

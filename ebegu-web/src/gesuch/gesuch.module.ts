@@ -32,6 +32,7 @@ import {EinkommensverschlechterungViewComponentConfig} from './component/einkomm
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
+import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
 import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituationResultateView/finanzielleSituationResultateView';
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
@@ -83,5 +84,9 @@ export const EbeguWebGesuch =
         .directive(
             'dvNgNavbar',
             downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
+        )
+        .directive(
+            'dvFallToolbar',
+            downgradeComponent({component: FallToolbarComponent}) as angular.IDirectiveFactory
         );
 

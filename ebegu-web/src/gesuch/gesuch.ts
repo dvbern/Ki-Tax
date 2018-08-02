@@ -28,6 +28,7 @@ import TSEWKPerson from '../models/TSEWKPerson';
 import GesuchstellerRS from '../core/service/gesuchstellerRS.rest';
 import {ILogService, IRootScopeService} from 'angular';
 import TSEWKResultat from '../models/TSEWKResultat';
+import TSFall from '../models/TSFall';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
@@ -201,6 +202,14 @@ export class GesuchRouteController {
             return this.gesuchModelManager.getGesuch();
         }
         return undefined;
+    }
+
+    public getFall(): TSFall {
+        return this.gesuchModelManager.getFall() ? this.gesuchModelManager.getFall() : undefined;
+    }
+
+    public getFallId(): string {
+        return this.getFall() ? this.getFall().id : undefined;
     }
 
     public getGesuchErstellenStepTitle(): string {

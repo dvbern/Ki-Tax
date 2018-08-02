@@ -13,6 +13,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<dv-fall-toolbar fallId="{{vm.getFallId()}}">
+
+</dv-fall-toolbar>
+
 <dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getGesuch().dossier.id}}"
                  dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </dossier-toolbar>

@@ -17,6 +17,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatDialogModule, MatSelectModule} from '@angular/material';
+import {BrowserModule} from '@angular/platform-browser';
 import {TranslateModule} from '@ngx-translate/core';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
@@ -31,6 +32,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
 
 @NgModule({
     imports: [
+        BrowserModule,
         TranslateModule,
         CommonModule,
         MatDialogModule,
@@ -58,6 +60,7 @@ import {downloadRSProvider} from '../hybridTools/ajs-upgraded-providers';
         DvHelpmenuComponent,
     ],
     exports: [
+        BrowserModule,
         DvNgDebounceClickDirective,
         DvNgErrorMessages,
         DvNgShowElementDirective,
