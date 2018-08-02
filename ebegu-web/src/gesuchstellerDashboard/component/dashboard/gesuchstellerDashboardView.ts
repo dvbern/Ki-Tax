@@ -129,6 +129,13 @@ export class GesuchstellerDashboardViewController {
         });
     }
 
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
+    }
+
     public getAntragList(): Array<TSAntragDTO> {
         return this.antragList;
     }
