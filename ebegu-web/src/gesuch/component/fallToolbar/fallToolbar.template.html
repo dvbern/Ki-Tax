@@ -30,7 +30,8 @@
 			</button>
         </div>
 
-        <div *ngIf="showCreateNewDossier()" class="fall-toolbar-element col-md-2">
+        <div *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+             class="fall-toolbar-element col-md-2">
             <button (click)="createNewDossier()">
                 <i class="fa fa-plus"></i>
             </button>
@@ -38,7 +39,7 @@
 
         <div *ngIf="!useDefaultValues()" class="fall-toolbar-element col-md-2">
             <span [textContent]="fallNummer"></span>
-            <i class="fa" [ngClass]="{'fa-desktop': hasBesitzer(), 'fa-file-text-o': !hasBesitzer()}"></i>
+            <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
         </div>
     </div>
 </div>

@@ -39,7 +39,6 @@ import {TSRole} from '../../../models/enums/TSRole';
 export class DvNgShowElementDirective implements OnInit {
 
     private hasView = false;
-    // @Input('dvNgShowElementRoles') roles: TSRole[];
     private _roles: TSRole[];
     private _condition: boolean;
 

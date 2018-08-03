@@ -19,6 +19,7 @@ import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvNgGemeindeDialogComponent} from '../../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -34,6 +35,7 @@ require('./fallToolbar.less');
 })
 export class FallToolbarComponent implements OnInit, OnChanges {
 
+    TSRoleUtil: any = TSRoleUtil;
     @Input() fallId: string;
     @Input() dossierId: string;
     @Input() defaultGemeindeName: string;
@@ -79,7 +81,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         this.calculateFallNummer();
     }
 
-    private hasBesitzer(): boolean {
+    private isOnlineGesuch(): boolean {
         return this.selectedDossier
             && this.selectedDossier.fall
             && !EbeguUtil.isNullOrUndefined(this.selectedDossier.fall.besitzer);
@@ -156,6 +158,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     public showCreateNewDossier(): boolean {
         return !this.useDefaultValues()
+            && (!this.isOnlineGesuch() === !this.authServiceRS.isRole(TSRole.GESUCHSTELLER))
             && this.availableGemeindeList.length !== 0;
     }
 }

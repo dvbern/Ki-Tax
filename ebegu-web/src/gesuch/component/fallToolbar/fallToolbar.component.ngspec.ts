@@ -16,6 +16,7 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {DvNgShowElementDirective} from '../../../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
@@ -52,6 +53,7 @@ describe('fallToolbar', function () {
         const authServiceSpy = jasmine.createSpyObj('AuthServiceRS', {
             'getPrincipalRole': Promise.resolve(TSRole.SUPER_ADMIN),
             'getPrincipal': Promise.resolve(user),
+            'isRole': false,
         });
         const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
             'findDossiersByFall': Promise.resolve([dossier1, dossier2])
@@ -66,7 +68,10 @@ describe('fallToolbar', function () {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
             ],
-            declarations: [FallToolbarComponent]
+            declarations: [
+                FallToolbarComponent,
+                DvNgShowElementDirective,
+            ]
         });
     }));
 
@@ -123,19 +128,17 @@ describe('fallToolbar', function () {
         }));
     });
 
-    describe('showCreateNewDossier', function () {
-        it('should return false for default values', () => {
-            initTestBed();
-            expect(component.showCreateNewDossier()).toBe(false);
-        });
-        it('should return true for non default values and available Gemeinden', fakeAsync(() => {
+    describe('showCreateNewDossier with available Gemeinden', function () {
+        beforeEach(async(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             initTestBed();
+        }));
 
+        it('should return true for non default values and available Gemeinden', fakeAsync(() => {
             component.dossierId = dossier1.id;
             component.fallId = fall.id;
             component.ngOnInit(); // to update all depending objects in the component
@@ -143,8 +146,42 @@ describe('fallToolbar', function () {
             tick();
             expect(component.showCreateNewDossier()).toBe(true);
         }));
-        it('should return false for non default values and no available Gemeinden', fakeAsync(() => {
+    });
+
+    describe('showCreateNewDossier with available Gemeinden but onlineGesuch', function () {
+        beforeEach(async(() => {
+            // we need a different testbed because we need to provide a different object
+            const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
+                'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+            });
+            dossier1.fall.besitzer = new TSUser(); // it  is now an onlineGesuch
+            const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
+                'findDossiersByFall': Promise.resolve([dossier1, dossier2])
+            });
+            TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
+            TestBed.overrideProvider(DossierRS, {useValue: dossierServiceSpy});
             initTestBed();
+        }));
+
+        it('should return false for non default values, available Gemeinden but onlineGesuch', fakeAsync(() => {
+            component.dossierId = dossier1.id;
+            component.fallId = fall.id;
+            component.ngOnInit(); // to update all depending objects in the component
+
+            tick();
+            expect(component.showCreateNewDossier()).toBe(false);
+        }));
+    });
+
+    describe('showCreateNewDossier with no available Gemeinden', function () {
+        beforeEach(async(() => {
+            initTestBed();
+        }));
+
+        it('should return false for default values', () => {
+            expect(component.showCreateNewDossier()).toBe(false);
+        });
+        it('should return false for non default values and no available Gemeinden', fakeAsync(() => {
             component.dossierId = dossier2.id;
             component.fallId = fall.id;
             component.ngOnInit(); // to update all depending objects in the component
