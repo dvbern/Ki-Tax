@@ -15,7 +15,7 @@
 
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import UserRS from '../../../core/service/userRS.rest';
+import UserRS from '../../../app/core/service/userRS.rest';
 import TSUser from '../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
