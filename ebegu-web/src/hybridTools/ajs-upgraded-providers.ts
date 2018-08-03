@@ -26,7 +26,6 @@ import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
 import UserRS from '../core/service/userRS.rest';
 import ZahlungRS from '../core/service/zahlungRS.rest';
 import DossierRS from '../gesuch/service/dossierRS.rest';
-import FallRS from '../gesuch/service/fallRS.rest';
 import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../gesuch/service/gesuchRS.rest';
 

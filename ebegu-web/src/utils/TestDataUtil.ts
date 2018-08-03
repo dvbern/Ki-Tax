@@ -218,6 +218,16 @@ export default class TestDataUtil {
         return gemeinde;
     }
 
+    public static createGemeindeThun(): TSGemeinde {
+        let gemeinde: TSGemeinde = new TSGemeinde();
+        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
+        gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046ccc';
+        gemeinde.name = 'Thun';
+        gemeinde.gemeindeNummer = 3;
+        gemeinde.enabled = true;
+        return gemeinde;
+    }
+
     public static createBerechtigung(role: TSRole, createGemeinde: boolean): TSBerechtigung {
         let berechtigung: TSBerechtigung = new TSBerechtigung();
         if (createGemeinde) {

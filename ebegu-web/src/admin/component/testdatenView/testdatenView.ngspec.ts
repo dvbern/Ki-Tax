@@ -22,7 +22,6 @@ import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {MatTableModule} from '@angular/material/table';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import UserRS from '../../../core/service/userRS.rest';
@@ -32,8 +31,6 @@ import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import {createTranslateLoader} from '../../../ngApp/ng-app.module';
 import {NgSharedModule} from '../../../shared/ng-shared.module';
 import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
-import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
-import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 

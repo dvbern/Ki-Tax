@@ -30,14 +30,14 @@
 			</button>
         </div>
 
-        <div *ngIf="!useDefaultValues()" class="fall-toolbar-element col-md-2">
+        <div *ngIf="showCreateNewDossier()" class="fall-toolbar-element col-md-2">
             <button (click)="createNewDossier()">
                 <i class="fa fa-plus"></i>
             </button>
         </div>
 
         <div *ngIf="!useDefaultValues()" class="fall-toolbar-element col-md-2">
-            <span [textContent]="getFallNummer()"></span>
+            <span [textContent]="fallNummer"></span>
             <i class="fa" [ngClass]="{'fa-desktop': hasBesitzer(), 'fa-file-text-o': !hasBesitzer()}"></i>
         </div>
     </div>
