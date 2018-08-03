@@ -26,12 +26,12 @@ export default class HttpResponseInterceptor implements IHttpInterceptor {
     constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService) {
     }
 
-    public responseError(response: any) {
+    public responseError = (response: any) => {
         this.$rootScope.$broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], response);
         return this.$q.reject(response);
     }
 
-    public response(response: any) {
+    public response = (response: any) => {
         this.$rootScope.$broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], response);
         return response;
     }

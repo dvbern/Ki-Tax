@@ -31,7 +31,6 @@ import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'ng-file-upload';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
-import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {EbeguAuthentication} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
@@ -105,6 +104,7 @@ import {DVUserselect} from './directive/dv-userselect/dv-userselect';
 import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {EbeguErrors} from './errors/errors';
+import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import AdresseRS from './service/adresseRS.rest';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
 import BatchJobRS from './service/batchRS.rest';
@@ -263,16 +263,12 @@ export const EbeguWebCore: angular.IModule = angular
     .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
-    .filter('arrayToString', arrayToStringFilterFactory);
-
-function arrayToStringFilterFactory() {
-    return () => {
+    .filter('arrayToString', () => {
         return (input: string[]) => {
             if (input) {
                 return input.join(', ');
             }
             return '';
         };
-    };
-}
+    });
 

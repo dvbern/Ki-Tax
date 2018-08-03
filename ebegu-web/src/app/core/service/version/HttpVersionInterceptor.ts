@@ -35,7 +35,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
     }
 
     //interceptor methode
-    public response(response: any) {
+    public response = (response: any) => {
         if (response.headers && response.config && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0 && !response.config.cache) {
             this.updateBackendVersion(response.headers('x-ebegu-version'));
         }
