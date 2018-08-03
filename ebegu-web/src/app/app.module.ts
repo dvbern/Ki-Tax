@@ -13,18 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {NgAdminModule} from '../admin/ng-admin.module';
-import {appModuleAngularJS} from './app.angularjs.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
-import {DEFAULT_LOCALE} from './core/constants/CONSTANTS';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {NgPosteingangModule} from '../posteingang/ng-posteingang.module';
 import {AppRoutingModule} from './app-routing.module';
+import {appModuleAngularJS} from './app.angularjs.module';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
 
@@ -40,10 +38,10 @@ import {SharedModule} from './shared/shared.module';
 
         AppRoutingModule,
         // TODO hefa only import via router
-        // NgAdminModule,
+        NgAdminModule,
         NgAuthenticationModule,
-        // NgGesuchModule,
-        // NgPosteingangModule,
+        NgGesuchModule,
+        NgPosteingangModule,
     ],
 })
 
