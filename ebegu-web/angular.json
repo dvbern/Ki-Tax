@@ -23,7 +23,9 @@
             "styles": [
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [
+                "node_modules/jquery/dist/jquery.min.js"
+            ]
           },
           "configurations": {
             "prod": {
@@ -92,7 +94,6 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "scripts/pdfkit-0.8.2-patched.js"
             ],
             "styles": [
               "src/styles.scss"
