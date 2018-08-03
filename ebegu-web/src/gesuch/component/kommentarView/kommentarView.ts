@@ -232,7 +232,7 @@ export class KommentarViewController {
         }).then(() => {
             return this.gesuchRS.gesuchBySTVFreigeben(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
-                this.$state.go('pendenzenSteueramt');
+                this.$state.go('pendenzenSteueramt.list-view');
             });
         });
     }

@@ -16,7 +16,22 @@
 import {upgradeModule} from '@uirouter/angular-hybrid';
 import {StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
-import '../app.module.less';
+import EbeguWebAdmin from '../admin/admin.module';
+import {EbeguWebAlleVerfuegungen} from '../alleVerfuegungen/alleVerfuegungen.module';
+import {EbeguWebFaelle} from '../faelle/faelle.module';
+import {EbeguWebGesuch} from '../gesuch/gesuch.module';
+import {EbeguWebGesuchstellerDashboard} from '../gesuchstellerDashboard/gesuchstellerDashboard.module';
+import {EbeguWebMitteilungen} from '../mitteilungen/mitteilungen.module';
+import {EbeguWebPendenzen} from '../pendenzen/pendenzen.module';
+import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen/pendenzenBetreuungen.module';
+import {EbeguWebPendenzenSteueramt} from '../pendenzenSteueramt/pendenzenSteueramt.module';
+import {EbeguWebPosteingang} from '../posteingang/posteingang.module';
+import {EbeguWebQuicksearch} from '../quicksearch/quicksearch.module';
+import {EbeguWebSearch} from '../searchResult/search.module';
+import {EbeguWebStatistik} from '../statistik/statistik.module';
+import {EbeguWebVerlauf} from '../verlauf/verlauf.module';
+import {EbeguWebZahlung} from '../zahlung/zahlung.module';
+import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
 import {EbeguWebCore} from './core/core.angularjs.module';
 import {AppAngularjsComponent} from './app.angularjs.component';
 import '../style/mediaqueries.less';
@@ -24,10 +39,10 @@ import '../style/mediaqueries.less';
 export const appModuleAngularJS = angular.module('ebeguWeb', [
         upgradeModule.name,
         EbeguWebCore.name,
-        //EbeguWebAdmin.name, EbeguWebGesuch.name, EbeguWebPendenzen.name,
-        // EbeguWebPendenzenBetreuungen.name, EbeguWebPendenzenSteueramt.name, EbeguWebFaelle.name, EbeguWebGesuchstellerDashboard.name,
-        // EbeguWebMitteilungen.name, EbeguWebPosteingang.name, EbeguWebSearch.name, EbeguWebStatistik.name, EbeguWebZahlung.name,
-        // EbeguWebZahlungsauftrag.name, EbeguWebAlleVerfuegungen.name, EbeguWebVerlauf.name, EbeguWebQuicksearch.name
+        EbeguWebAdmin.name, EbeguWebGesuch.name, EbeguWebPendenzen.name,
+        EbeguWebPendenzenBetreuungen.name, EbeguWebPendenzenSteueramt.name, EbeguWebFaelle.name, EbeguWebGesuchstellerDashboard.name,
+        EbeguWebMitteilungen.name, EbeguWebPosteingang.name, EbeguWebSearch.name, EbeguWebStatistik.name, EbeguWebZahlung.name,
+        EbeguWebZahlungsauftrag.name, EbeguWebAlleVerfuegungen.name, EbeguWebVerlauf.name, EbeguWebQuicksearch.name
     ])
         .component('appRoot', AppAngularjsComponent)
         .config(conf)

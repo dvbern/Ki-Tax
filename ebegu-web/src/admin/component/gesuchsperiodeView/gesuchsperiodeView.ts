@@ -91,7 +91,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public cancelGesuchsperiode(): void {
-        this.$state.go('parameter');
+        this.$state.go('admin.parameter');
     }
 
     public saveGesuchsperiode(): void {

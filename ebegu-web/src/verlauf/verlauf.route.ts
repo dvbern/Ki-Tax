@@ -13,31 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 
 verlaufRun.$inject = ['RouterHelper'];
 
 export function verlaufRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), [], '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguVerlaufState()
-    ];
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'verlauf',
+    },
+    {
+        name: 'verlauf.view',
+        template: '<verlauf-view flex="auto" class="overflow-hidden" layout="column">',
+        url: '/verlauf/:gesuchId',
+    }
+];
 
-//STATES
-
-export class EbeguVerlaufState implements Ng1StateDeclaration {
-    name = 'verlauf';
-    template = '<verlauf-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/verlauf/:gesuchId';
-}
-
-// PARAMS
-
+// TODO hefa implizite state param definition
 export class IVerlaufStateParams {
     gesuchId: string;
 }

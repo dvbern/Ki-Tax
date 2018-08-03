@@ -124,7 +124,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
     }
 
     private goBack() {
-        this.$state.go('institutionen');
+        this.$state.go('admin.institutionen');
     }
 
     getInstitutionStammdatenList(): TSInstitutionStammdaten[] {
@@ -171,14 +171,14 @@ export class InstitutionViewController extends AbstractAdminViewController {
     }
 
     editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten) {
-        this.$state.go('institutionstammdaten', {
+        this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: institutionstammdaten.id
         });
     }
 
     createInstitutionStammdaten(): void {
-        this.$state.go('institutionstammdaten', {
+        this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: undefined
         });

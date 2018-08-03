@@ -188,7 +188,7 @@ export class CreateAngebotListViewController {
 
     public backToHome(infoMessage: string | undefined = undefined) {
         this.form.$setPristine();
-        this.$state.go('gesuchstellerDashboard', {
+        this.$state.go('gesuchsteller.dashboard', {
             gesuchstellerDashboardStateParams: {infoMessage: infoMessage}
         });
     }

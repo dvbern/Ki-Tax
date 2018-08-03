@@ -17,7 +17,6 @@ import * as webpack from 'webpack';
 import * as webpackMerge from 'webpack-merge';
 import {hasProcessFlag} from './helpers';
 import commonConfig from './webpack.common';
-import ExtractTextPlugin = require('extract-text-webpack-plugin');
 import DefinePlugin = require('webpack/lib/DefinePlugin');
 import LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
@@ -44,9 +43,6 @@ export default (env: any): webpack.Configuration => webpackMerge(commonConfig(en
     plugins: [
         new LoaderOptionsPlugin({
             debug: true
-        }),
-        new ExtractTextPlugin({
-            filename: '[name].css'
         }),
 
         // Plugin: DefinePlugin

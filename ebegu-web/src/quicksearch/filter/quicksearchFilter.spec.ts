@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';

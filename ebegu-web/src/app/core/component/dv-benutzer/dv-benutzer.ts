@@ -264,7 +264,7 @@ export class DVBenutzerController implements IOnInit {
     }
 
     private navigateBackToUsersList() {
-        this.$state.go('benutzerlist');
+        this.$state.go('admin.benutzerlist');
     }
 
     public isInstitutionBerechtigung(berechtigung: TSBerechtigung): boolean {

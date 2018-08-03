@@ -53,13 +53,13 @@ export function readDummyLoginEnabled(applicationPropertyRS: ApplicationProperty
         .then((response: boolean) => {
             if (response === false) {
                 LOG.debug('page is disabled');
-                $state.go('start');
+                $state.go('authentication.start');
             }
             return true;
         })
         .catch(() => {
             LOG.error('there was an error while opening locallogin');
-            $state.go('login');
+            $state.go('authentication.login');
             return false;
         });
 

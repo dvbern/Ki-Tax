@@ -145,7 +145,7 @@ export class GesuchToolbarController implements IDVFocusableController {
     }
 
     public logout(): void {
-        this.$state.go('login', {type: 'logout'});
+        this.$state.go('authentication.login', {type: 'logout'});
     }
 
     private addWatchers($scope: angular.IScope) {
@@ -556,7 +556,7 @@ export class GesuchToolbarController implements IDVFocusableController {
     }
 
     public openMitteilungen(): void {
-        this.$state.go('mitteilungen', {
+        this.$state.go('mitteilungen.view', {
             dossierId: this.dossier.id
         });
     }
@@ -566,7 +566,7 @@ export class GesuchToolbarController implements IDVFocusableController {
     }
 
     public openVerlauf(): void {
-        this.$state.go('verlauf', {
+        this.$state.go('verlauf.view', {
             gesuchId: this.getGesuch().id
         });
     }
@@ -601,7 +601,7 @@ export class GesuchToolbarController implements IDVFocusableController {
                 this.gesuchRS.removeGesuchstellerAntrag(this.getGesuch().id).then(result => {
                     this.gesuchModelManager.setGesuch(new TSGesuch());
                     this.resetNavigationParameters();
-                    this.$state.go('gesuchstellerDashboard');
+                    this.$state.go('gesuchsteller.dashboard');
                 });
             } else {
                 this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(result => {
@@ -613,7 +613,7 @@ export class GesuchToolbarController implements IDVFocusableController {
                         };
                         this.$state.go('gesuch.fallcreation', navObj);
                     } else {
-                        this.$state.go('pendenzen');
+                        this.$state.go('pendenzen.list-view');
                     }
                 });
             }
@@ -631,7 +631,7 @@ export class GesuchToolbarController implements IDVFocusableController {
     }
 
     public openAlleVerfuegungen(): void {
-        this.$state.go('alleVerfuegungen', {
+        this.$state.go('alleVerfuegungen.view', {
             dossierId: this.dossier.id
         });
     }

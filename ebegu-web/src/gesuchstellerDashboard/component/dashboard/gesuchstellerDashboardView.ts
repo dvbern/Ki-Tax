@@ -123,7 +123,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public goToMitteilungenOeffen() {
-        this.$state.go('mitteilungen', {
+        this.$state.go('mitteilungen.view', {
             dossierId: this.dossier.id
         });
     }
@@ -195,7 +195,7 @@ export class GesuchstellerDashboardViewController {
         const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
-            this.$state.go('createAngebot', {type: 'TS', gesuchId: antrag.antragId});
+            this.$state.go('gesuchsteller.createAngebot', {type: 'TS', gesuchId: antrag.antragId});
         } else {
             console.error('Fehler: kein Gesuch gefunden für Gesuchsperiode in createTagesschule');
         }
@@ -205,7 +205,7 @@ export class GesuchstellerDashboardViewController {
         const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
-            this.$state.go('createAngebot', {type: 'FI', gesuchId: antrag.antragId});
+            this.$state.go('gesuchsteller.createAngebot', {type: 'FI', gesuchId: antrag.antragId});
         } else {
             console.error('Fehler: kein Gesuch gefunden für Gesuchsperiode in createFerieninsel');
         }

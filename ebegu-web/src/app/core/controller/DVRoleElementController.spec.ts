@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguAuthentication} from '../../authentication/authentication.module';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {TSRole} from '../../models/enums/TSRole';
+import {EbeguAuthentication} from '../../../authentication/authentication.module';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSRole} from '../../../models/enums/TSRole';
 import {EbeguWebCore} from '../core.angularjs.module';
 import {DVRoleElementController} from './DVRoleElementController';
 

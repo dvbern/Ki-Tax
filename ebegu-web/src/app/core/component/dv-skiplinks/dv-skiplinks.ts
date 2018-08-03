@@ -43,15 +43,16 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public goBackHome(): void {
-        this.$state.go('gesuchstellerDashboard');
+        this.$state.go('gesuchsteller.dashboard');
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === 'gesuchstellerDashboard');
+        return (this.$state.current && this.$state.current.name === 'gesuchsteller.dashboard');
     }
 
     public isCurrentPageGesuch(): boolean {
-        return (this.$state.current && this.$state.current.name !== 'gesuchstellerDashboard' && this.$state.current.name !== 'alleVerfuegungen' && this.$state.current.name !== 'mitteilungen');
+        // TODO HEFA migrate
+        return (this.$state.current && this.$state.current.name !== 'gesuchsteller.dashboard' && this.$state.current.name !== 'alleVerfuegungen.view' && this.$state.current.name !== 'mitteilungen.view');
     }
 
     public focusLink(a: string): void {

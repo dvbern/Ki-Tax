@@ -46,7 +46,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
         super(authServiceRS);
     }
 
-    public passFilterToServer = (tableFilterState: any): IPromise<TSUserSearchresultDTO> => {
+    public passFilterToServer(tableFilterState: any): IPromise<TSUserSearchresultDTO> {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
 
         return this.userRS.searchUsers(tableFilterState).then((response: TSUserSearchresultDTO) => {
@@ -63,7 +63,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
      */
     public editBenutzer(user: TSUser, event: any): void {
         if (user) {
-            this.$state.go('benutzer', {benutzerId: user.username});
+            this.$state.go('admin.benutzer', {benutzerId: user.username});
         }
     }
 }

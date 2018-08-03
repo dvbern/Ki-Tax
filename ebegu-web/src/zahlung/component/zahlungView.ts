@@ -90,7 +90,7 @@ export class ZahlungViewController implements IOnDestroy {
     }
 
     private gotToUebersicht(): void {
-        this.$state.go('zahlungsauftrag');
+        this.$state.go('zahlungsauftrag.view');
     }
 
     public downloadDetails(zahlung: TSZahlung) {

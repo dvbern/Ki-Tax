@@ -20,12 +20,10 @@ import {ILocationProvider, IServiceProvider} from 'angular';
 export class RouterHelper {
     static $inject = ['$stateProvider', '$uiRouterProvider'];
 
-    hasOtherwise: boolean = false;
-
     constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
     }
 
-    public configureStates(legacy: Ng1StateDeclaration[] = [], states: Ng2StateDeclaration[] = [], otherwisePath?: string): void {
+    public configureStates(legacy: Ng1StateDeclaration[] = [], states: Ng2StateDeclaration[] = []): void {
         legacy.forEach((state) => {
             this.stateProvider.state(state);
         });
@@ -33,10 +31,7 @@ export class RouterHelper {
             this.stateProvider.state(state);
         });
 
-        if (otherwisePath && !this.hasOtherwise) {
-            this.hasOtherwise = true;
-            this.uiRouterProvider.urlService.rules.otherwise(otherwisePath);
-        }
+        this.uiRouterProvider.urlService.rules.otherwise('/start');
     }
 }
 

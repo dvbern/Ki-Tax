@@ -13,25 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 
 pendenzRun.$inject = ['RouterHelper'];
 
 export function pendenzRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), [], '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguPendenzenListState()
-    ];
-}
-
-//STATES
-
-export class EbeguPendenzenListState implements Ng1StateDeclaration {
-    name = 'pendenzen';
-    template = '<pendenzen-list-view flex="auto" class="overflow-scroll">';
-    url = '/pendenzen';
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'pendenzen',
+    },
+    {
+        name: 'pendenzen.list-view',
+        template: '<pendenzen-list-view flex="auto" class="overflow-scroll">',
+        url: '/pendenzen',
+    }
+];

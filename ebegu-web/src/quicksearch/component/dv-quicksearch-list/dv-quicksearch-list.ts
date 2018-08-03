@@ -189,10 +189,10 @@ export class DVQuicksearchListController {
 
     private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO) {
         if (isCtrlKeyPressed) {
-            const url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
+            const url = this.$state.href('mitteilungen.view', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
-            this.$state.go('mitteilungen', {dossierId: fallAntrag.dossierId});
+            this.$state.go('mitteilungen.view', {dossierId: fallAntrag.dossierId});
         }
     }
 

@@ -135,7 +135,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     }
 
     private goBack() {
-        this.$state.go('institution', {
+        this.$state.go('admin.institution', {
             institutionId: this.selectedInstitution.id
         });
     }

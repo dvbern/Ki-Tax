@@ -67,6 +67,6 @@ export class DvPulldownUserMenuController implements IOnInit, IOnDestroy {
     }
 
     public logout(): void {
-        this.$state.go('login', {type: 'logout'});
+        this.$state.go('authentication.login', {type: 'logout'});
     }
 }

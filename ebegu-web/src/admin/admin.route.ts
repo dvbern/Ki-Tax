@@ -14,11 +14,11 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {MandantRS} from '../app/core/service/mandantRS.rest';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 
 adminRun.$inject = ['RouterHelper'];
 
@@ -61,7 +61,12 @@ const mandantResolver = ['MandantRS', (mandantRS: MandantRS) => {
 
 const ng1States: Ng1StateDeclaration[] = [
     {
+        parent: 'app',
+        abstract: true,
         name: 'admin',
+    },
+    {
+        name: 'admin.view',
         template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
         url: '/admin',
         resolve: {
@@ -69,17 +74,17 @@ const ng1States: Ng1StateDeclaration[] = [
         }
     },
     {
-        name: 'benutzerlist',
+        name: 'admin.benutzerlist',
         template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
         url: '/benutzerlist',
     },
     {
-        name: 'benutzer',
+        name: 'admin.benutzer',
         template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
         url: '/benutzerlist/benutzer/:benutzerId',
     },
     {
-        name: 'institutionen',
+        name: 'admin.institutionen',
         template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
         + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
         url: '/institutionen',
@@ -89,7 +94,7 @@ const ng1States: Ng1StateDeclaration[] = [
         }
     },
     {
-        name: 'institution',
+        name: 'admin.institution',
         template: '<dv-institution-view flex="auto" class="overflow-scroll"'
         + ' traegerschaften="$resolve.traegerschaften"'
         + ' mandant="$resolve.mandant"></dv-institution-view>',
@@ -104,7 +109,7 @@ const ng1States: Ng1StateDeclaration[] = [
         }
     },
     {
-        name: 'institutionstammdaten',
+        name: 'admin.institutionstammdaten',
         template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
         url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
         params: {
@@ -112,12 +117,12 @@ const ng1States: Ng1StateDeclaration[] = [
         },
     },
     {
-        name: 'parameter',
+        name: 'admin.parameter',
         template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
         url: '/parameter',
     },
     {
-        name: 'gesuchsperiode',
+        name: 'admin.gesuchsperiode',
         template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
         + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
@@ -131,7 +136,7 @@ const ng1States: Ng1StateDeclaration[] = [
         }
     },
     {
-        name: 'ferieninsel',
+        name: 'admin.ferieninsel',
         template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
         url: '/ferieninsel',
     },

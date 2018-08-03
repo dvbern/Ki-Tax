@@ -81,9 +81,9 @@ export class VerlaufViewController {
 
     public cancel(): void {
         if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            this.$state.go('gesuchstellerDashboard');
+            this.$state.go('gesuchsteller.dashboard');
         } else {
-            this.$state.go('pendenzen');
+            this.$state.go('pendenzen.list-view');
         }
     }
 

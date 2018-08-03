@@ -75,7 +75,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     gesuchsperiodeClicked(gesuchsperiode: any) {
         if (gesuchsperiode.isSelected) {
-            this.$state.go('gesuchsperiode', {
+            this.$state.go('admin.gesuchsperiode', {
                 gesuchsperiodeId: gesuchsperiode.id
             });
         }
@@ -87,7 +87,7 @@ export class ParameterViewController extends AbstractAdminViewController {
     }
 
     createGesuchsperiode(): void {
-        this.$state.go('gesuchsperiode', {
+        this.$state.go('admin.gesuchsperiode', {
             gesuchsperiodeId: undefined
         });
     }

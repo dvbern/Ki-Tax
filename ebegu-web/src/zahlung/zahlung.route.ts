@@ -20,7 +20,7 @@ import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
 zahlungRun.$inject = ['RouterHelper'];
 
 export function zahlungRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), [], '/start');
+    routerHelper.configureStates(getStates(), []);
 }
 
 function getStates(): Ng1StateDeclaration[] {

@@ -45,4 +45,4 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     .catch(err => console.error('App bootstrap error:', err));
 
 // Show ui-router-visualizer
-appModuleAngularJS.run(['$uiRouter', ($uiRouter: any) => visualizer($uiRouter)]);
+appModuleAngularJS.run(['$uiRouter', $uiRouter => visualizer($uiRouter)]);

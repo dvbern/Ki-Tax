@@ -27,6 +27,6 @@ export const EbeguAuthentication: angular.IModule =
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('startView', new StartComponentConfig())
-        .component('schulungView', new SchulungComponentConfig())
-        .component('authenticationView', new AuthenticationComponentConfig());
+        .component('startView', StartComponentConfig)
+        .component('schulungView', SchulungComponentConfig)
+        .component('authenticationView', AuthenticationComponentConfig);

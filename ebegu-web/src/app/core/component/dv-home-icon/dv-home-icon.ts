@@ -38,10 +38,10 @@ export class DvHomeIconController {
     }
 
     public goBackHome(): void {
-        this.$state.go('gesuchstellerDashboard');
+        this.$state.go('gesuchsteller.dashboard');
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === 'gesuchstellerDashboard');
+        return (this.$state.current && this.$state.current.name === 'gesuchsteller.dashboard');
     }
 }

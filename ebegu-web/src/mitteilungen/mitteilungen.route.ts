@@ -19,28 +19,26 @@ import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 mitteilungenRun.$inject = ['RouterHelper'];
 
 export function mitteilungenRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), [], '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguMitteilungenStateState()
-    ];
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'mitteilungen',
+    },
+    {
+        name: 'mitteilungen.view',
+        template: '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">',
+        url: '/mitteilungen/:dossierId/:betreuungId',
+        params: {
+            betreuungId: '',
+        }
+    }
+];
 
-//STATES
-
-export class EbeguMitteilungenStateState implements Ng1StateDeclaration {
-    name = 'mitteilungen';
-    template = '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/mitteilungen/:dossierId/:betreuungId';
-    params = {
-        betreuungId: '',
-    };
-}
-
-// PARAMS
-
+// TODO hefa nicht alle Params wurden bei der StateDefinition deklariert!
 export class IMitteilungenStateParams {
     dossierId: string;
     betreuungId: string;

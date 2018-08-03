@@ -59,7 +59,7 @@ export class PosteingangViewController {
     }
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
-        this.$state.go('mitteilungen', {
+        this.$state.go('mitteilungen.view', {
             dossierId: mitteilung.dossier.id
         });
     }

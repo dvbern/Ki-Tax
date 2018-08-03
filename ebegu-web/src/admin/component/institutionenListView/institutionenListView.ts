@@ -72,13 +72,13 @@ export class InstitutionenListViewController extends AbstractAdminViewController
     }
 
     createInstitution(): void {
-        this.$state.go('institution', {
+        this.$state.go('admin.institution', {
             institutionId: undefined
         });
     }
 
     editInstitution(institution: TSInstitution) {
-        this.$state.go('institution', {
+        this.$state.go('admin.institution', {
             institutionId: institution.id
         });
     }

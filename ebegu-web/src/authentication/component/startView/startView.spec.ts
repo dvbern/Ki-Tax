@@ -73,14 +73,14 @@ describe('startView', () => {
             spyOn(authService, 'getPrincipal').and.returnValue(mockPrincipal);
             spyOn(state, 'go');
             startViewController.$onInit();
-            expect(state.go).toHaveBeenCalledWith('gesuchstellerDashboard');
+            expect(state.go).toHaveBeenCalledWith('gesuchsteller.dashboard');
         });
         it('should go to pendenzen if role is sachbearbeiter ja', () => {
             mockPrincipal.currentBerechtigung.role = TSRole.SACHBEARBEITER_JA;
             spyOn(authService, 'getPrincipal').and.returnValue(mockPrincipal);
             spyOn(state, 'go');
             startViewController.$onInit();
-            expect(state.go).toHaveBeenCalledWith('pendenzen');
+            expect(state.go).toHaveBeenCalledWith('pendenzen.list-view');
         });
     });
 });

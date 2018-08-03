@@ -13,26 +13,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from './service/AuthServiceRS.rest';
+import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, ITimeoutService, IWindowService} from 'angular';
 import {IAuthenticationStateParams} from './authentication.route';
-import IWindowService = angular.IWindowService;
-import IHttpParamSerializer = angular.IHttpParamSerializer;
-import ITimeoutService = angular.ITimeoutService;
-import ILocationService = angular.ILocationService;
+import AuthServiceRS from './service/AuthServiceRS.rest';
 
-const template = require('./authentication.html');
 require('./authentication.less');
 
-export class AuthenticationComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = template;
-    controller = AuthenticationListViewController;
-    controllerAs = 'vm';
-}
+export const AuthenticationComponentConfig: IComponentOptions = {
+    transclude: false,
+    template: require('./authentication.html'),
+    controllerAs: 'vm',
+};
 
-export class AuthenticationListViewController {
+export class AuthenticationListViewController implements IController {
 
     static $inject: string[] = ['$state', '$stateParams', '$window', '$httpParamSerializer', '$timeout', 'AuthServiceRS'
         , '$location'];
@@ -93,7 +87,7 @@ export class AuthenticationListViewController {
             if (this.logoutHref !== '' || this.logoutHref === undefined) {
                 this.$window.open(this.logoutHref, '_self');
             } else {
-                this.$state.go('start');  // wenn wir nicht in iam ausloggen gehen wir auf start
+                this.$state.go('authentication.start');  // wenn wir nicht in iam ausloggen gehen wir auf start
             }
         });
     }
@@ -103,7 +97,7 @@ export class AuthenticationListViewController {
         return this.authService.getPrincipal() ? true : false;
     }
 
-    public redirect = () => {
+    public redirect() {
         const urlToGoTo = this.redirectionHref;
         console.log('redirecting to login', urlToGoTo);
 
@@ -132,3 +126,5 @@ export class AuthenticationListViewController {
 
     }
 }
+
+AuthenticationComponentConfig.controller = AuthenticationListViewController;

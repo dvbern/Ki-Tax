@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {StateService} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
@@ -25,42 +24,36 @@ import IQService = angular.IQService;
 authenticationRun.$inject = ['RouterHelper'];
 
 export function authenticationRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), ng2States, '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguLoginState(),
-        new EbeguSchulungState(),
-        new EbeguStartState()
-    ];
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'authentication',
+    },
+    {
+        name: 'authentication.login',
+        component: 'authenticationView',
+        //HINWEIS: Soweit ich sehen kann koennen url navigationen mit mehr als einem einzigen slash am Anfang nicht manuell in der Adressbar aufgerufen werden?
+        url: '/login?type&relayPath',
+    },
+    {
 
-//STATES
-
-export class EbeguLoginState implements Ng1StateDeclaration {
-    name = 'login';
-    template = '<authentication-view>';
-    //HINWEIS: Soweit ich sehen kann koennen url navigationen mit mehr als einem einzigen slash am Anfang nicht manuell in der Adressbar aufgerufen werden?
-    url = '/login?type&relayPath';
-}
-
-export class EbeguSchulungState implements Ng1StateDeclaration {
-    name = 'schulung';
-    template = '<schulung-view flex="auto" class="overflow-scroll">';
-    url = '/schulung';
-    resolve = {
-        dummyLoginEnabled: readDummyLoginEnabled
-    };
-}
-
-export class EbeguStartState implements Ng1StateDeclaration {
-    name = 'start';
-    template = '<start-view>';
-    url = '/start';
-}
-
-const ng2States: Ng2StateDeclaration[] = [];
+        name: 'authentication.schulung',
+        template: '<schulung-view flex="auto" class="overflow-scroll">',
+        url: '/schulung',
+        resolve: {
+            dummyLoginEnabled: readDummyLoginEnabled
+        }
+    },
+    {
+        name: 'authentication.start',
+        component: 'startView',
+        url: '/start',
+    }
+];
 
 export class IAuthenticationStateParams {
     relayPath: string;
@@ -75,13 +68,13 @@ export function readDummyLoginEnabled(applicationPropertyRS: ApplicationProperty
         .then((response: boolean) => {
             if (response === false) {
                 $log.debug('page is disabled');
-                $state.go('start');
+                $state.go('authentication.start');
             }
             return response;
         }).catch(() => {
             const deferred = $q.defer<boolean>();
             deferred.resolve(undefined);
-            $state.go('login');
+            $state.go('authentication.login');
             return deferred.promise;
         });
 

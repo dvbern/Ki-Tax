@@ -13,29 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
-import TSUser from '../models/TSUser';
-import {TSRole} from '../models/enums/TSRole';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from './service/AuthServiceRS.rest';
-import {TSMandant} from '../models/TSMandant';
-import TSInstitution from '../models/TSInstitution';
-import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import AuthenticationUtil from '../utils/AuthenticationUtil';
+import {IComponentOptions, IController} from 'angular';
 import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
+import {TSRole} from '../models/enums/TSRole';
+import TSInstitution from '../models/TSInstitution';
+import {TSMandant} from '../models/TSMandant';
+import {TSTraegerschaft} from '../models/TSTraegerschaft';
+import TSUser from '../models/TSUser';
+import AuthenticationUtil from '../utils/AuthenticationUtil';
+import AuthServiceRS from './service/AuthServiceRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./schulung.html');
 require('./schulung.less');
 
-export class SchulungComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = template;
-    controller = SchulungViewController;
-    controllerAs = 'vm';
-}
+export const SchulungComponentConfig: IComponentOptions = {
+    transclude: false,
+    template: require('./schulung.html'),
+    controllerAs: 'vm',
+};
 
-export class SchulungViewController {
+export class SchulungViewController implements IController {
 
     static $inject: string[] = ['$state', 'AuthServiceRS', '$timeout', 'TestFaelleRS'];
 
@@ -122,3 +120,5 @@ export class SchulungViewController {
         });
     }
 }
+
+SchulungComponentConfig.controller = SchulungViewController;

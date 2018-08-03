@@ -67,8 +67,9 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     }
 
     function stateChangeStart(transition: Transition) {
+        // TODO HEFA migrate to state definition
         //Normale Benutzer duefen nicht auf admin Seite
-        const forbiddenPlaces = ['admin', 'institution', 'parameter', 'traegerschaft'];
+        const forbiddenPlaces = ['admin.view', 'admin.institution', 'admin.parameter', 'traegerschaft'];
         const isAdmin: boolean = authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRevisorRole());
         if (forbiddenPlaces.indexOf(transition.to().name) !== -1 && authServiceRS.getPrincipal() && !isAdmin) {
             errorService.addMesageAsError('ERROR_UNAUTHORIZED');
@@ -113,11 +114,11 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
 
             //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
             if (currentPath.indexOf('fedletSSOInit') === -1
-                && ($state.current !== undefined && $state.current.name !== 'login')
+                && ($state.current !== undefined && $state.current.name !== 'authentication.login')
                 && ($state.current !== undefined && $state.current.name !== 'locallogin')
-                && ($state.current !== undefined && $state.current.name !== 'schulung')
+                && ($state.current !== undefined && $state.current.name !== 'authentication.schulung')
                 && currentPath.indexOf('sendRedirectForValidation') === -1) {
-                $state.go('login', {relayPath: currentPath, type: 'login'});
+                $state.go('authentication.login', {relayPath: currentPath, type: 'login'});
             } else {
                 console.log('supressing redirect to ', currentPath);
             }

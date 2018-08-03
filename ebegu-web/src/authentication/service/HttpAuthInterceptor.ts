@@ -22,7 +22,6 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
 
     static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
 
-    /* @ngInject */
     constructor(private readonly authLifeCycleService: AuthLifeCycleService, private readonly $q: IQService, private readonly CONSTANTS: any,
                 private readonly httpBuffer: HttpBuffer) {
     }

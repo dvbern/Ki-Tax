@@ -20,5 +20,5 @@ export const AppAngularjsComponent: IComponentOptions = {
     controller: () => {
         console.log('appComponent');
     },
-    template: require('./test/app.component.html'),
+    template: require('./app.angularjs.component.html'),
 };

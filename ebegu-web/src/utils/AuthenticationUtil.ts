@@ -26,24 +26,24 @@ export default class AuthenticationUtil {
     public static navigateToStartPageForRole(user: TSUser, $state: StateService): void {
         const currentRole: TSRole = user.getCurrentRole();
         if (currentRole === TSRole.SUPER_ADMIN) {
-            $state.go('faelle');
+            $state.go('faelle.list');
         } else if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(currentRole) > -1) {
-            $state.go('pendenzen');
+            $state.go('pendenzen.list-view');
         } else if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('pendenzenBetreuungen');
+            $state.go('pendenzenBetreuungen.list-view');
         } else if (TSRoleUtil.getSchulamtOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('pendenzen');
+            $state.go('pendenzen.list-view');
         } else if (TSRoleUtil.getSteueramtOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('pendenzenSteueramt');
+            $state.go('pendenzenSteueramt.list-view');
         } else if (TSRoleUtil.getGesuchstellerOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('gesuchstellerDashboard');
+            $state.go('gesuchsteller.dashboard');
         } else if (TSRoleUtil.getJuristOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('faelle');
+            $state.go('faelle.list');
         } else if (TSRoleUtil.getRevisorOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('faelle');
+            $state.go('faelle.list');
         } else {
             console.error('Achtung, keine Startpage definiert fuer Rolle ', user.getRoleKey(), ', nehme gesuchstellerDashboard');
-            $state.go('gesuchstellerDashboard');
+            $state.go('gesuchsteller.dashboard');
         }
     }
 }

@@ -15,9 +15,9 @@
 
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {DvOnboardingComponent} from '../app/core/component/dv-onboarding/dv-onboarding.component';
 import KindRS from '../app/core/service/kindRS.rest';
+import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
@@ -39,40 +39,7 @@ const gesuchTpl = require('./gesuch.html');
 gesuchRun.$inject = ['RouterHelper'];
 
 export function gesuchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), ng2States, '/start');
-}
-
-//array mit allen States
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguGesuchState(),
-        new EbeguFamiliensituationState(),
-        new EbeguStammdatenState(),
-        new EbeguUmzugState(),
-        new EbeguKinderListState(),
-        new EbeguFinanzielleSituationStartState(),
-        new EbeguFinanzielleSituationState(),
-        new EbeguFinanzielleSituationResultateState(),
-        new EbeguKindState(),
-        new EbeguErwerbspensenListState(),
-        new EbeguErwerbspensumState(),
-        new EbeguBetreuungListState(),
-        new EbeguBetreuungState(),
-        new EbeguAbwesenheitState(),
-        new EbeguNewFallState(),
-        new EbeguMutationState(),
-        new EbeguErneuerungsgesuchState(),
-        new EbeguVerfuegenListState(),
-        new EbeguVerfuegenState(),
-        new EbeguEinkommensverschlechterungInfoState(),
-        new EbeguEinkommensverschlechterungSteuernState(),
-        new EbeguEinkommensverschlechterungState(),
-        new EbeguEinkommensverschlechterungResultateState(),
-        new EbeguDokumenteState(),
-        new EbeguFreigabeState(),
-        new EbeguBetreuungMitteilungState(),
-        // new OnboardingTest()
-    ];
+    routerHelper.configureStates(ng1States, ng2States);
 }
 
 //STATES
@@ -86,10 +53,11 @@ const ng2States: Ng2StateDeclaration[] = [
 ];
 
 export class EbeguGesuchState implements Ng1StateDeclaration {
+    parent = 'app';
+    abstract = true;
     name = 'gesuch';
     template = gesuchTpl;
     url = '/gesuch';
-    abstract = true;
     controller = GesuchRouteController;
     controllerAs = 'vm';
 }
@@ -582,6 +550,36 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     };
 }
 
+const ng1States: Ng1StateDeclaration[] = [
+    new EbeguGesuchState(),
+    new EbeguFamiliensituationState(),
+    new EbeguStammdatenState(),
+    new EbeguUmzugState(),
+    new EbeguKinderListState(),
+    new EbeguFinanzielleSituationStartState(),
+    new EbeguFinanzielleSituationState(),
+    new EbeguFinanzielleSituationResultateState(),
+    new EbeguKindState(),
+    new EbeguErwerbspensenListState(),
+    new EbeguErwerbspensumState(),
+    new EbeguBetreuungListState(),
+    new EbeguBetreuungState(),
+    new EbeguAbwesenheitState(),
+    new EbeguNewFallState(),
+    new EbeguMutationState(),
+    new EbeguErneuerungsgesuchState(),
+    new EbeguVerfuegenListState(),
+    new EbeguVerfuegenState(),
+    new EbeguEinkommensverschlechterungInfoState(),
+    new EbeguEinkommensverschlechterungSteuernState(),
+    new EbeguEinkommensverschlechterungState(),
+    new EbeguEinkommensverschlechterungResultateState(),
+    new EbeguDokumenteState(),
+    new EbeguFreigabeState(),
+    new EbeguBetreuungMitteilungState(),
+    // new OnboardingTest()
+];
+
 //PARAMS
 
 export class IGesuchStateParams {
@@ -629,7 +627,6 @@ export class IEinkommensverschlechterungResultateStateParams {
 // FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function getMahnungen(MahnungRS: MahnungRS, $stateParams: IGesuchStateParams, $q: IQService, $log: ILogService) {
     // return [];
     if ($stateParams) {
@@ -646,7 +643,6 @@ export function getMahnungen(MahnungRS: MahnungRS, $stateParams: IGesuchStatePar
 
 getGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                                       wizardStepManager: WizardStepManager, $stateParams: IGesuchStateParams, $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
@@ -676,7 +672,6 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, be
 
 reloadGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
                                          $log: ILogService): IPromise<TSGesuch> {
@@ -702,7 +697,6 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
 }
 
 getKinderDubletten.$inject = ['$stateParams', '$q', '$log', 'KindRS', 'AuthServiceRS'];
-/* @ngInject */
 
 // Die Kinderdubletten werden nur für SCH-Mitarbeiter oder JA-Mitarbeiter (inkl. Revisor und Jurist) angezeigt
 export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQService, $log: ILogService, KindRS: KindRS, authService: AuthServiceRS) {

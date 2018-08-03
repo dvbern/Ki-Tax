@@ -20,14 +20,19 @@ import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
 export function alleVerfuegungenRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(ng1States, ng2States, '/start');
+    routerHelper.configureStates(ng1States, ng2States);
 }
 
 //STATES
 
 const ng1States: Ng1StateDeclaration[] = [
     {
+        parent: 'app',
+        abstract: true,
         name: 'alleVerfuegungen',
+    },
+    {
+        name: 'alleVerfuegungen.view',
         template: '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/alleVerfuegungen/:dossierId',
     }

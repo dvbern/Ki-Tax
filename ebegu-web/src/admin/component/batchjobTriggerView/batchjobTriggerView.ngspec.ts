@@ -16,7 +16,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '../../../app/shared/shared.module';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {BatchjobTriggerViewComponent} from './batchjobTriggerView';

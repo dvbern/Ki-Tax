@@ -24,35 +24,7 @@ import IQService = angular.IQService;
 gesuchstellerDashboardRun.$inject = ['RouterHelper'];
 
 export function gesuchstellerDashboardRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), [], '/start');
-}
-
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguGesuchstellerDashboardState(),
-        new EbeguCreateAngebotState()
-    ];
-}
-
-//STATES
-
-export class EbeguGesuchstellerDashboardState implements Ng1StateDeclaration {
-    name = 'gesuchstellerDashboard';
-    template = '<gesuchsteller-dashboard-view class="layout-column flex-100">';
-    url = '/gesuchstellerDashboard';
-    params = {
-        gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
-    };
-}
-
-export class EbeguCreateAngebotState implements Ng1StateDeclaration {
-    name = 'createAngebot';
-    template = '<create-angebot-view class="layout-column flex-100">';
-    url = '/createAngebotView/:type/:gesuchId';
-
-    resolve = {
-        gesuch: getGesuchModelManager
-    };
+    routerHelper.configureStates(ng1States, []);
 }
 
 export class IAngebotStateParams {
@@ -63,6 +35,30 @@ export class IAngebotStateParams {
 export class IGesuchstellerDashboardStateParams {
     infoMessage: string;
 }
+
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'gesuchsteller',
+    },
+    {
+        name: 'gesuchsteller.dashboard',
+        template: '<gesuchsteller-dashboard-view class="layout-column flex-100">',
+        url: '/gesuchstellerDashboard',
+        params: {
+            gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
+        }
+    },
+    {
+        name: 'gesuchsteller.createAngebot',
+        template: '<create-angebot-view class="layout-column flex-100">',
+        url: '/createAngebotView/:type/:gesuchId',
+        resolve: {
+            gesuch: getGesuchModelManager
+        }
+    }
+];
 
 getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$log'];
 
