@@ -13,9 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IQService} from 'angular';
-import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
+import {IComponentOptions, IQService} from 'angular';
+import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
+import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
 import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor';
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
@@ -32,30 +33,30 @@ export class DVVersionComponentConfig implements IComponentOptions {
 
 export class DVVersionController {
 
-    static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window', '$log'];
+    static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
 
     TSRoleUtil: any;
 
     private backendVersion: string;
-    private frontendVersion: string;
-    private buildTime: string;
+    private frontendVersion: string = VERSION;
+    private buildTime: string = BUILDTSTAMP;
     private showSingleVersion: boolean = true;
     private currentYear: number;
 
-    constructor(private readonly $rootScope: IRootScopeService, private readonly httpVersionInterceptor: HttpVersionInterceptor, private readonly $q: IQService,
-        private readonly $window: IWindowService, private readonly $log: ILogService) {
+    constructor(private readonly $rootScope: IRootScopeService,
+                private readonly httpVersionInterceptor: HttpVersionInterceptor,
+                private readonly $q: IQService,
+                private readonly $window: IWindowService) {
 
     }
 
     $onInit() {
 
-        this.backendVersion = this.httpVersionInterceptor.getBackendVersion();
-        this.frontendVersion = this.httpVersionInterceptor.frontendVersion();
-        this.buildTime = this.httpVersionInterceptor.getBuildTime();
+        this.backendVersion = this.httpVersionInterceptor.backendVersion;
         this.currentYear = DateUtil.currentYear();
 
         this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
-            this.backendVersion = this.httpVersionInterceptor.getBackendVersion();
+            this.backendVersion = this.httpVersionInterceptor.backendVersion;
             this.updateDisplayVersion();
             const msg = 'Der Client (' + this.frontendVersion + ') hat eine andere Version als der Server('
                 + this.backendVersion + '). Bitte laden sie die Seite komplett neu (F5)';

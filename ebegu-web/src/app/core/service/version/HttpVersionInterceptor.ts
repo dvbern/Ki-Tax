@@ -14,6 +14,7 @@
  */
 
 import {IHttpInterceptor, ILogService, IQService, IRootScopeService} from 'angular';
+import {VERSION} from '../../../../environments/version';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
 
 /**
@@ -23,7 +24,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
 
     static $inject = ['$rootScope', '$q', 'CONSTANTS', '$log'];
 
-    private backendVersion: string;
+    public backendVersion: string;
 
     constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService, private readonly CONSTANTS: any, private readonly $log: ILogService) {
     }
@@ -48,7 +49,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
     private updateBackendVersion(newVersion: string) {
         if (newVersion !== this.backendVersion) {
             this.backendVersion = newVersion;
-            if (HttpVersionInterceptor.hasVersionCompatibility(this.frontendVersion(), this.backendVersion)) {
+            if (HttpVersionInterceptor.hasVersionCompatibility(VERSION, this.backendVersion)) {
                 //could throw match event here but currently there is no action we want to perform when it matches
             } else {
                 this.$log.warn('Versions of Frontend and Backend do not match');
@@ -56,20 +57,4 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
             }
         }
     }
-
-    /**
-     * @return {string}
-     */
-    public frontendVersion(): string {
-        return VERSION;
-    }
-
-    public getBackendVersion(): string {
-        return this.backendVersion;
-    }
-
-    public getBuildTime(): string {
-        return BUILDTSTAMP;
-    }
-
 }

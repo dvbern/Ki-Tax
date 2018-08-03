@@ -22,6 +22,7 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import TSUser from '../../../../models/TSUser';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {VERSION, BUILDTSTAMP} from '../../../../environments/version';
 
 require('./dv-pulldown-user-menu.less');
 const template = require('./dv-pulldown-user-menu.html');
@@ -41,6 +42,9 @@ export class DvPulldownUserMenuController implements IOnInit, IOnDestroy {
     private readonly unsubscribe$ = new Subject<void>();
     TSRoleUtil = TSRoleUtil;
     principal: TSUser;
+
+    public readonly VERSION = VERSION;
+    public readonly BUILDTSTAMP = BUILDTSTAMP;
 
     constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
@@ -65,13 +69,4 @@ export class DvPulldownUserMenuController implements IOnInit, IOnDestroy {
     public logout(): void {
         this.$state.go('login', {type: 'logout'});
     }
-
-    public getVersion(): string {
-        return VERSION;
-    }
-
-    public getBuildtimestamp(): string {
-        return BUILDTSTAMP;
-    }
-
 }
