@@ -54,7 +54,7 @@ export class AuthenticationListViewController implements IController {
                 if (this.countdown > 0) {
                     this.$timeout(this.doCountdown, 1000);
                 }
-                this.$timeout(this.redirect, this.countdown * 1000);
+                this.$timeout(() => this.redirect(), this.countdown * 1000);
             }
         });
 
@@ -97,7 +97,7 @@ export class AuthenticationListViewController implements IController {
         return this.authService.getPrincipal() ? true : false;
     }
 
-    public redirect() {
+    private redirect() {
         const urlToGoTo = this.redirectionHref;
         console.log('redirecting to login', urlToGoTo);
 
