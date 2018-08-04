@@ -26,7 +26,7 @@ const showKontaktTemplate = require('../../../../gesuch/dialog/showKontaktTempla
 
 export class DvSkiplinksComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
+    bindings = {};
     template = template;
     controller = DvSkiplinksController;
     controllerAs = 'vm';

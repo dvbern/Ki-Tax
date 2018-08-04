@@ -22,12 +22,9 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 
-const template = require('./mitteilungenView.html');
-require('./mitteilungenView.less');
-
 export class MitteilungenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./mitteilungenView.html');
     controller = MitteilungenViewController;
     controllerAs = 'vm';
 }

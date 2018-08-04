@@ -13,17 +13,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {takeUntil} from 'rxjs/operators';
 import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import {ReportRS} from '../../app/core/service/reportRS.rest';
 import ZahlungRS from '../../app/core/service/zahlungRS.rest';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../gesuch/dialog/RemoveDialogController';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
@@ -33,17 +34,14 @@ import TSDownloadFile from '../../models/TSDownloadFile';
 import TSZahlungsauftrag from '../../models/TSZahlungsauftrag';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
-const template = require('./zahlungsauftragView.html');
-require('./zahlungsauftragView.less');
 
 const removeDialogTemplate = require('../../gesuch/dialog/removeDialogTemplate.html');
 
 export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./zahlungsauftragView.html');
     controller = ZahlungsauftragViewController;
     controllerAs = 'vm';
 }

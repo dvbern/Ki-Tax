@@ -13,34 +13,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
+import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
-import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {StateService} from '@uirouter/core';
-import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
-import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
-import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
-import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts';
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-
-const template = require('./pendenzenBetreuungenListView.html');
-require('./pendenzenBetreuungenListView.less');
+import EbeguUtil from '../../../utils/EbeguUtil';
+import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 
 export class PendenzenBetreuungenListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./pendenzenBetreuungenListView.html');
     controller = PendenzenBetreuungenListViewController;
     controllerAs = 'vm';
 }
@@ -134,7 +131,9 @@ export class PendenzenBetreuungenListViewController {
 
     private updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => { this.gemeindenList = gemeinden; });
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     public getPendenzenList(): Array<TSPendenzBetreuung> {

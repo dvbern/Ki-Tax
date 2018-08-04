@@ -1,3 +1,4 @@
+import {StateService} from '@uirouter/core';
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland
@@ -13,32 +14,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import {IComponentOptions} from 'angular';
-import {StateService} from '@uirouter/core';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
 import * as moment from 'moment';
-import DateUtil from '../../../utils/DateUtil';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
-import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
 import TSBelegungFerieninsel from '../../../models/TSBelegungFerieninsel';
-import ILogService = angular.ILogService;
+import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
+import TSBetreuung from '../../../models/TSBetreuung';
+import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSKindContainer from '../../../models/TSKindContainer';
+import DateUtil from '../../../utils/DateUtil';
+import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
+import ILogService = angular.ILogService;
 
-const template = require('./createAngebotView.html');
-require('./createAngebotView.less');
 const okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
 
 export class CreateAngebotListViewConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./createAngebotView.html');
     controller = CreateAngebotListViewController;
     controllerAs = 'vm';
 }

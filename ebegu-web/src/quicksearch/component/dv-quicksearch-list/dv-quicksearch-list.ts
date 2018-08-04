@@ -15,12 +15,12 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFilterService} from 'angular';
-import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {takeUntil} from 'rxjs/operators';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -35,13 +35,10 @@ import TSInstitution from '../../../models/TSInstitution';
 import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
-const template = require('./dv-quicksearch-list.html');
-require('./dv-quicksearch-list.less');
-
 export class DVQuicksearchListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         antraege: '<',
         itemsByPage: '<',
         initialAll: '=',
@@ -52,7 +49,7 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         tableTitle: '<'
     };
 
-    template = template;
+    template = require('./dv-quicksearch-list.html');
     controller = DVQuicksearchListController;
     controllerAs = 'vm';
 }
@@ -144,7 +141,9 @@ export class DVQuicksearchListController {
 
     private updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => { this.gemeindenList = gemeinden; });
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     public getQuicksearchList(): Array<TSAntragDTO> {

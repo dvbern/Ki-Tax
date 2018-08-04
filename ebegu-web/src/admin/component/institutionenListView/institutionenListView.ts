@@ -13,29 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import './institutionenListView.less';
-import {StateService} from '@uirouter/core';
 
-const template = require('./institutionenListView.html');
-const style = require('./institutionenListView.less');
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class InstitutionenListViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         institutionen: '<',
     };
-    template: string = template;
-    controller: any = InstitutionenListViewController;
-    controllerAs: string = 'vm';
+    template = require('./institutionenListView.html');
+    controller = InstitutionenListViewController;
+    controllerAs = 'vm';
 }
 
 export class InstitutionenListViewController extends AbstractAdminViewController {
@@ -45,6 +43,7 @@ export class InstitutionenListViewController extends AbstractAdminViewController
     form: IFormController;
     institutionen: TSInstitution[];
     selectedInstitution: TSInstitution = undefined;
+
     /* @ngInject */
     constructor(private readonly institutionRS: InstitutionRS, private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS, private readonly $state: StateService) {
         super(authServiceRS);

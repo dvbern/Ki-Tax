@@ -13,24 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {StateService} from '@uirouter/core';
-import IScope = angular.IScope;
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IFormController = angular.IFormController;
+import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
-
-const template = require('./betreuungMitteilungView.html');
-require('./betreuungMitteilungView.less');
 
 export class BetreuungMitteilungViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./betreuungMitteilungView.html');
     controller = BetreuungMitteilungViewController;
     controllerAs = 'vm';
 }

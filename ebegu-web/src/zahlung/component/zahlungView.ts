@@ -17,11 +17,11 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IOnDestroy} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import {ReportRS} from '../../app/core/service/reportRS.rest';
 import ZahlungRS from '../../app/core/service/zahlungRS.rest';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
@@ -30,12 +30,9 @@ import TSZahlung from '../../models/TSZahlung';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {IZahlungsauftragStateParams} from '../zahlung.route';
 
-const template = require('./zahlungView.html');
-require('./zahlungView.less');
-
 export class ZahlungViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./zahlungView.html');
     controller = ZahlungViewController;
     controllerAs = 'vm';
 }

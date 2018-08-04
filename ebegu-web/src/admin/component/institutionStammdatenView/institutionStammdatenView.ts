@@ -13,11 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
 import ListResourceRS from '../../../app/core/service/listResourceRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
@@ -31,15 +32,11 @@ import TSLand from '../../../models/types/TSLand';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IInstitutionStammdatenStateParams} from '../../admin.route';
-import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
-
-const template = require('./institutionStammdatenView.html');
-require('./institutionStammdatenView.less');
 
 export class InstitutionStammdatenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./institutionStammdatenView.html');
     controller = InstitutionStammdatenViewController;
     controllerAs = 'vm';
 }

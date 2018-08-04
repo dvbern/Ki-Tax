@@ -14,29 +14,26 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import TSGesuch from '../../../models/TSGesuch';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import {INewFallStateParams} from '../../gesuch.route';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import ITranslateService = angular.translate.ITranslateService;
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSGesuch from '../../../models/TSGesuch';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {INewFallStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
-
-const template = require('./fallCreationView.html');
-require('./fallCreationView.less');
+import ITranslateService = angular.translate.ITranslateService;
 
 export class FallCreationViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./fallCreationView.html');
     controller = FallCreationViewController;
     controllerAs = 'vm';
 }

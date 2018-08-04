@@ -21,9 +21,6 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import DateUtil from '../../../../utils/DateUtil';
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./dv-bisher.html');
-require('./dv-bisher.less');
-
 /**
  * Verwendung:
  * - gs: Wert, den der Gesuchsteller eingegeben hat
@@ -40,14 +37,14 @@ require('./dv-bisher.less');
  */
 export class DvBisherComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         gs: '<',
         ja: '<',
         specificBisherText: '<',
         blockExisted: '<',
         showIfBisherNone: '<'
     };
-    template = template;
+    template = require('./dv-bisher.html');
     controller = DvBisher;
     controllerAs = 'vm';
 }
@@ -63,7 +60,6 @@ export class DvBisher {
     bisherText: Array<string>;
     blockExisted: boolean;
 
-
     constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $translate: ITranslateService) {
     }
 
@@ -73,7 +69,7 @@ export class DvBisher {
         }
     }
 
-        public getBisher(): Array<string> {
+    public getBisher(): Array<string> {
         // noinspection IfStatementWithTooManyBranchesJS
         if (this.specificBisherText) {
             this.bisherText = this.specificBisherText ? this.specificBisherText.split('\n') : undefined;

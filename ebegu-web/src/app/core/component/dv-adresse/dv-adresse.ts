@@ -26,7 +26,7 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class AdresseComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         adresse: '<',
         prefix: '@',
         organisation: '<',

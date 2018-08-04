@@ -14,21 +14,19 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
+import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./dv-tooltip.html');
-require('./dv-tooltip.less');
 const showTooltipTemplate = require('../../../../gesuch/dialog/showTooltipTemplate.html');
 
 export class DvTooltipComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./dv-tooltip.html');
     controller = DvTooltipController;
     controllerAs = 'vm';
-    bindings: any = {
+    bindings = {
         text: '<',
         inputId: '@'
     };

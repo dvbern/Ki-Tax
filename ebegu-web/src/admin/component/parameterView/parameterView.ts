@@ -13,26 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
-import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
-import {IComponentOptions, IFormController, ILogService} from 'angular';
-import './parameterView.less';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import AbstractAdminViewController from '../../abstractAdminView';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
-import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
-
-const template = require('./parameterView.html');
-const style = require('./parameterView.less');
+import {IComponentOptions, IFormController, ILogService} from 'angular';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import TSEbeguParameter from '../../../models/TSEbeguParameter';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import AbstractAdminViewController from '../../abstractAdminView';
+import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
+import './parameterView.less';
+import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class ParameterViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    template: string = template;
-    controller: any = ParameterViewController;
-    controllerAs: string = 'vm';
+    transclude = false;
+    template = require('./parameterView.html');
+    controller = ParameterViewController;
+    controllerAs = 'vm';
 }
 
 export class ParameterViewController extends AbstractAdminViewController {
@@ -63,7 +60,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     private readGesuchsperioden(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: Array<TSGesuchsperiode>) => {
-            this.gesuchsperiodenList =  response; //angular.copy(response);
+            this.gesuchsperiodenList = response; //angular.copy(response);
         });
     }
 

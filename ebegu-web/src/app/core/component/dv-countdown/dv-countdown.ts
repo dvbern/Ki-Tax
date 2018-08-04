@@ -31,7 +31,7 @@ const dialogTemplate = require('../../../../gesuch/dialog/okDialogTemplate.html'
 
 export class DvCountdownComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
+    bindings = {};
     template = template;
     controller = DvCountdownController;
     controllerAs = 'vm';

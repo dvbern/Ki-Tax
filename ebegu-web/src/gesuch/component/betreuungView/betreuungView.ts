@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getTSBetreuungsangebotTypValues, getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -45,20 +46,16 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
-import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-declare let require: any;
-const template = require('./betreuungView.html');
-require('./betreuungView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./betreuungView.html');
     controller = BetreuungViewController;
     controllerAs = 'vm';
 }

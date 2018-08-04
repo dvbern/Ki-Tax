@@ -21,7 +21,7 @@ const template = require('./dv-home-icon.html');
 
 export class DvHomeIconComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
+    bindings = {};
     template = template;
     controller = DvHomeIconController;
     controllerAs = 'vm';

@@ -26,7 +26,7 @@ export class DvAccordionTabComponentConfig implements IComponentOptions {
     template = template;
     controller = DvAccordionTabController;
     controllerAs = 'vmt';
-    bindings: any = {
+    bindings = {
         tabid: '@',
     };
     require: any = {vma: '^dvAccordion'};

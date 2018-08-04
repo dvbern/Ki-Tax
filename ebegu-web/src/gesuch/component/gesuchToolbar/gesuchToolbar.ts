@@ -13,31 +13,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFormController, ILogService} from 'angular';
-import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import TSDossier from '../../../models/TSDossier';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSGesuch from '../../../models/TSGesuch';
-import DossierRS from '../../service/dossierRS.rest';
-import GesuchRS from '../../service/gesuchRS.rest';
 import {StateService} from '@uirouter/core';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import TSAntragDTO from '../../../models/TSAntragDTO';
+import TSDossier from '../../../models/TSDossier';
+import TSGesuch from '../../../models/TSGesuch';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 
 import {ShowTooltipController} from '../../dialog/ShowTooltipController';
-import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
-import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import DossierRS from '../../service/dossierRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import GesuchRS from '../../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 
@@ -45,11 +45,12 @@ const templateX = require('./gesuchToolbar.html');
 const templateGS = require('./gesuchToolbarGesuchsteller.html');
 const showKontaktTemplate = require('../../../gesuch/dialog/showKontaktTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-require('./gesuchToolbar.less');
+
+// TODO hefa multiple components in 1 file!?
 
 export class GesuchToolbarComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         gesuchid: '@',
         dossierId: '@',
         isDashboardScreen: '@',
@@ -64,7 +65,7 @@ export class GesuchToolbarComponentConfig implements IComponentOptions {
 
 export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         gesuchid: '@',
         dossierId: '@',
         isDashboardScreen: '@',

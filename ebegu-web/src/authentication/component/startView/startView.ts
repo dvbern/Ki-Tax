@@ -21,8 +21,6 @@ import TSUser from '../../../models/TSUser';
 import AuthenticationUtil from '../../../utils/AuthenticationUtil';
 import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
 
-require('./startView.less');
-
 export const StartComponentConfig: IComponentOptions = {
     transclude: false,
     template: require('./startView.html'),

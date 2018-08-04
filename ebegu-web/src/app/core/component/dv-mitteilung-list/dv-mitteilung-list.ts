@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IOnInit, IPromise} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IOnInit, IPromise} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import DossierRS from '../../../../gesuch/service/dossierRS.rest';
@@ -43,20 +43,18 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import IWindowService = angular.IWindowService;
 
-const template = require('./dv-mitteilung-list.html');
-require('./dv-mitteilung-list.less');
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DVMitteilungListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         dossier: '<',
         betreuung: '<',
         form: '<',
     };
 
-    template = template;
+    template = require('./dv-mitteilung-list.html');
     controller = DVMitteilungListController;
     controllerAs = 'vm';
 }

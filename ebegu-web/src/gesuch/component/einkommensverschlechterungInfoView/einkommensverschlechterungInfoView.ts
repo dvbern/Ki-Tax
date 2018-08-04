@@ -14,39 +14,37 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
+import * as moment from 'moment';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {getTSMonthValues, getTSMonthWithVorjahrValues, TSMonth} from '../../../models/enums/TSMonth';
-import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
-import WizardStepManager from '../../service/wizardStepManager';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSEinkommensverschlechterungInfoContainer from '../../../models/TSEinkommensverschlechterungInfoContainer';
-import EinkommensverschlechterungInfoRS from '../../service/einkommensverschlechterungInfoRS.rest';
-import * as moment from 'moment';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
+import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
+import TSEinkommensverschlechterungInfoContainer from '../../../models/TSEinkommensverschlechterungInfoContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
 import EinkommensverschlechterungContainerRS from '../../service/einkommensverschlechterungContainerRS.rest';
-import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
+import EinkommensverschlechterungInfoRS from '../../service/einkommensverschlechterungInfoRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./einkommensverschlechterungInfoView.html');
-require('./einkommensverschlechterungInfoView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungInfoView.html');
     controller = EinkommensverschlechterungInfoViewController;
     controllerAs = 'vm';
 }

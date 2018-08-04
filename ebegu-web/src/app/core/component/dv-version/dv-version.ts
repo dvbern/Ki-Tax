@@ -25,7 +25,7 @@ const template = require('./dv-version.html');
 
 export class DVVersionComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
+    bindings = {};
     template = template;
     controller = DVVersionController;
     controllerAs = 'vm';

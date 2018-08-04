@@ -19,18 +19,15 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import TSUser from '../../../../models/TSUser';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {VERSION, BUILDTSTAMP} from '../../../../environments/version';
-
-require('./dv-pulldown-user-menu.less');
-const template = require('./dv-pulldown-user-menu.html');
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./dv-pulldown-user-menu.html');
     controller = DvPulldownUserMenuController;
     controllerAs = 'vm';
 }

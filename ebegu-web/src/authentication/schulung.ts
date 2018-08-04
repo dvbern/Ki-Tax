@@ -25,8 +25,6 @@ import AuthenticationUtil from '../utils/AuthenticationUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 
-require('./schulung.less');
-
 export const SchulungComponentConfig: IComponentOptions = {
     transclude: false,
     template: require('./schulung.html'),

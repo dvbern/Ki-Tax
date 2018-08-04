@@ -14,30 +14,27 @@
  */
 
 import {IComponentOptions} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import {IStammdatenStateParams} from '../../gesuch.route';
-import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
-import BerechnungsManager from '../../service/berechnungsManager';
-import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
+import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import ITimeoutService = angular.ITimeoutService;
+import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import {IStammdatenStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
+import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
-import IPromise = angular.IPromise;
+import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSFinanzModel from '../../../models/TSFinanzModel';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import {TSRole} from '../../../models/enums/TSRole';
-
-const template = require('./finanzielleSituationView.html');
-require('./finanzielleSituationView.less');
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./finanzielleSituationView.html');
     controller = FinanzielleSituationViewController;
     controllerAs = 'vm';
 }

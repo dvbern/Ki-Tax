@@ -15,15 +15,12 @@
 
 import {IComponentOptions, IOnChanges} from 'angular';
 
-const template = require('./dv-accordion.html');
-require('./dv-accordion.less');
-
 export class DvAccordionComponentConfig implements IComponentOptions {
     transclude = true;
-    template = template;
+    template = require('./dv-accordion.html');
     controller = DvAccordionController;
-    controllerAs = 'vma';
-    bindings: any = {
+    controllerAs = 'vma'; // TODO hefa really vma!?
+    bindings = {
         allowMultipleSections: '<',
         selectedTabId: '<'
     };
@@ -53,7 +50,7 @@ export class DvAccordionController implements IOnChanges {
         }
     }
 
-    public isTagOpen(i: string ): boolean {
+    public isTagOpen(i: string): boolean {
         return this.accordion.indexOf(i) > -1;
     }
 }

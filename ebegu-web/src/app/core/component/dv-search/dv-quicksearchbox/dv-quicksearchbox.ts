@@ -13,29 +13,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFilterService, ILogService, IPromise, IQService} from 'angular';
-import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
-import TSQuickSearchResult from '../../../../../models/dto/TSQuickSearchResult';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFilterService, ILogService, IPromise, IQService} from 'angular';
 import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import {isAnyStatusOfVerfuegt} from '../../../../../models/enums/TSAntragStatus';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
-import EbeguUtil from '../../../../../utils/EbeguUtil';
-import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
+import TSQuickSearchResult from '../../../../../models/dto/TSQuickSearchResult';
+import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
+import {isAnyStatusOfVerfuegt} from '../../../../../models/enums/TSAntragStatus';
 import TSAntragDTO from '../../../../../models/TSAntragDTO';
-import ITranslateService = angular.translate.ITranslateService;
+import EbeguUtil from '../../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
-const template = require('./dv-quicksearchbox.html');
-require('./dv-quicksearchbox.less');
-
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DvQuicksearchboxComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./dv-quicksearchbox.html');
     controller = DvQuicksearchboxController;
     controllerAs = 'vm';
-
 }
 
 export class DvQuicksearchboxController {
@@ -63,7 +59,6 @@ export class DvQuicksearchboxController {
     $onInit() {
         this.selectedItem = undefined;
     }
-
 
     public querySearch(query: string): IPromise<Array<TSSearchResultEntry>> {
         this.searchString = query;

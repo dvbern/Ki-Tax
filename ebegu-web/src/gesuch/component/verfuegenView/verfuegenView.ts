@@ -13,38 +13,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
 import {StateService} from '@uirouter/core';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import BerechnungsManager from '../../service/berechnungsManager';
-import DateUtil from '../../../utils/DateUtil';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSBetreuung from '../../../models/TSBetreuung';
+import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSVerfuegung from '../../../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../../../models/TSVerfuegungZeitabschnitt';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSBetreuung from '../../../models/TSBetreuung';
-import {IBetreuungStateParams} from '../../gesuch.route';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import ExportRS from '../../service/exportRS.rest';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {ThreeButtonsDialogController} from '../../dialog/ThreeButtonsDialogController';
+import {IBetreuungStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import ExportRS from '../../service/exportRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./verfuegenView.html');
-require('./verfuegenView.less');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const threeButtonsDialogTempl = require('../../dialog/threeButtonsDialog.html');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./verfuegenView.html');
     controller = VerfuegenViewController;
     controllerAs = 'vm';
 }

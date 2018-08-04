@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
 import * as moment from 'moment';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -45,18 +45,16 @@ import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./verfuegenListView.html');
-require('./verfuegenListView.less');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
 
 export class VerfuegenListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         // Bereits vorhandene Mahnungen
         mahnungList: '<'
     };
-    template = template;
+    template = require('./verfuegenListView.html');
     controller = VerfuegenListViewController;
     controllerAs = 'vm';
 }

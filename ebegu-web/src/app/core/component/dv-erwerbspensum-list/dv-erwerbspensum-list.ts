@@ -17,13 +17,10 @@ import {IComponentOptions, IOnInit} from 'angular';
 import TSErwerbspensum from '../../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../../models/TSErwerbspensumContainer';
 
-const template = require('./dv-erwerbspensum-list.html');
-require('./dv-erwerbspensum-list.less');
-
 export class DVErwerbspensumListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         onRemove: '&',
         onAdd: '&',
         onEdit: '&',
@@ -35,7 +32,7 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
         addButtonText: '@',
         inputId: '@'
     };
-    template = template;
+    template = require('./dv-erwerbspensum-list.html');
     controller = DVErwerbspensumListController;
     controllerAs = 'vm';
 }

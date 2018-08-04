@@ -14,17 +14,14 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import INgModelController = angular.INgModelController;
-
-const template = require('./dv-radio-container.html');
-require('./dv-radio-container.less');
 
 export class DvRadioContainerComponentConfig implements IComponentOptions {
     transclude = false;
-    require: any = {ngModelCtrl: 'ngModel'}; //ng-model controller der vom user des elements gesetzt werden muss
-    bindings: any = {
+    require = {ngModelCtrl: 'ngModel'}; //ng-model controller der vom user des elements gesetzt werden muss
+    bindings = {
         ngModel: '<',
         ngRequired: '<',
         items: '<',
@@ -33,7 +30,7 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
         ariaDescribedBy: '@',
         ariaLabel: '@'
     };
-    template = template;
+    template = require('./dv-radio-container.html');
     controller = DvRadioContainerController;
     controllerAs = 'vm';
 

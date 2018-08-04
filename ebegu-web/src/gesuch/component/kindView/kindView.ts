@@ -37,12 +37,9 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./kindView.html');
-require('./kindView.less');
-
 export class KindViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./kindView.html');
     controller = KindViewController;
     controllerAs = 'vm';
 }

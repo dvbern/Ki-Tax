@@ -14,29 +14,26 @@
  */
 
 import {IComponentOptions, ILogService, IPromise, IQService} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
+import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
+import TSFinanzModel from '../../../models/TSFinanzModel';
 import {IEinkommensverschlechterungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
-import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
-import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
-import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSFinanzModel from '../../../models/TSFinanzModel';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
-import ITranslateService = angular.translate.ITranslateService;
 import ITimeoutService = angular.ITimeoutService;
-
-const template = require('./einkommensverschlechterungView.html');
-require('./einkommensverschlechterungView.less');
+import ITranslateService = angular.translate.ITranslateService;
 
 export class EinkommensverschlechterungViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungView.html');
     controller = EinkommensverschlechterungViewController;
     controllerAs = 'vm';
 }

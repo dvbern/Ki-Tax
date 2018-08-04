@@ -21,17 +21,14 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {ReindexRS} from '../../service/reindexRS.rest';
 
-require('./adminView.less');
-const template = require('./adminView.html');
-
 export class AdminViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         applicationProperties: '<'
     };
-    template: string = template;
-    controller: any = AdminViewController;
-    controllerAs: string = 'vm';
+    template = require('./adminView.html');
+    controller = AdminViewController;
+    controllerAs = 'vm';
 }
 
 export class AdminViewController extends AbstractAdminViewController {

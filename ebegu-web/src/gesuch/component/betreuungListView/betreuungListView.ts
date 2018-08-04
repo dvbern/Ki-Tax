@@ -13,40 +13,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import {TSRole} from '../../../models/enums/TSRole';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSBetreuung from '../../../models/TSBetreuung';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {IComponentOptions} from 'angular';
+import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import BerechnungsManager from '../../service/berechnungsManager';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {isStatusVerfuegenVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
-import {isStatusVerfuegenVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import ITranslateService = angular.translate.ITranslateService;
-import ITimeoutService = angular.ITimeoutService;
-import IScope = angular.IScope;
-import ILogService = angular.ILogService;
+import TSBetreuung from '../../../models/TSBetreuung';
 import TSGesuch from '../../../models/TSGesuch';
+import TSKindContainer from '../../../models/TSKindContainer';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
+import ILogService = angular.ILogService;
+import IScope = angular.IScope;
+import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./betreuungListView.html');
-require('./betreuungListView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./betreuungListView.html');
     controller = BetreuungListViewController;
     controllerAs = 'vm';
 }
@@ -117,7 +115,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public createAnmeldungFerieninsel(kind: TSKindContainer): void {
-       this.createAnmeldungSchulamt(TSBetreuungsangebotTyp.FERIENINSEL, kind);
+        this.createAnmeldungSchulamt(TSBetreuungsangebotTyp.FERIENINSEL, kind);
     }
 
     public createAnmeldungTagesschule(kind: TSKindContainer): void {
@@ -236,7 +234,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
      */
     public isBetreuungenHinzufuegenDisabled(): boolean {
         return this.gesuchModelManager.getGesuch().gesuchsperiode.hasTagesschulenAnmeldung() &&
-                this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
+            this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
     }
 
     public hasOnlyFerieninsel() {

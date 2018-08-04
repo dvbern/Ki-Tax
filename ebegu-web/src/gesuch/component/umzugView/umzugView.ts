@@ -13,36 +13,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
+import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
+import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import TSAdresse from '../../../models/TSAdresse';
-import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
-import TSUmzugAdresse from '../../../models/TSUmzugAdresse';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import TSAdresseContainer from '../../../models/TSAdresseContainer';
+import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import TSUmzugAdresse from '../../../models/TSUmzugAdresse';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import ITranslateService = angular.translate.ITranslateService;
-import ITimeoutService = angular.ITimeoutService;
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
+import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./umzugView.html');
-require('./umzugView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class UmzugViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./umzugView.html');
     controller = UmzugViewController;
     controllerAs = 'vm';
 }

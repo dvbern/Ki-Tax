@@ -13,29 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFilterService} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFilterService} from 'angular';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
+import SearchRS from '../../gesuch/service/searchRS.rest';
+import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
-import SearchRS from '../../gesuch/service/searchRS.rest';
-const template = require('./faelleListView.html');
-require('./faelleListView.less');
+import IPromise = angular.IPromise;
 
 export class FaelleListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./faelleListView.html');
     controller = FaelleListViewController;
     controllerAs = 'vm';
 }
 
 export class FaelleListViewController {
-
 
     static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
@@ -52,7 +49,6 @@ export class FaelleListViewController {
         // this.updateAntragList();
 
     }
-
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);

@@ -14,30 +14,27 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IEinkommensverschlechterungResultateStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
-import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSFinanzModel from '../../../models/TSFinanzModel';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./einkommensverschlechterungResultateView.html');
-require('./einkommensverschlechterungResultateView.less');
-
 export class EinkommensverschlechterungResultateViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungResultateView.html');
     controller = EinkommensverschlechterungResultateViewController;
     controllerAs = 'vm';
 }

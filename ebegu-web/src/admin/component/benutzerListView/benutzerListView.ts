@@ -22,17 +22,15 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import './benutzerListView.less';
 import {StateService} from '@uirouter/core';
 
-const template = require('./benutzerListView.html');
-require('./benutzerListView.less');
 
 export class BenutzerListViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         benutzer: '<',
     };
-    template: string = template;
-    controller: any = BenutzerListViewController;
-    controllerAs: string = 'vm';
+    template = require('./benutzerListView.html');
+    controller = BenutzerListViewController;
+    controllerAs = 'vm';
 }
 
 export class BenutzerListViewController extends AbstractAdminViewController {

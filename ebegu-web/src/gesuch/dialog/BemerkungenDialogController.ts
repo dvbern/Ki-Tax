@@ -16,7 +16,6 @@
 import {IPromise} from 'angular';
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
-require('./dialogs.less');
 
 export class BemerkungenDialogController {
 

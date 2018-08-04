@@ -15,16 +15,13 @@
 
 import {IComponentOptions} from 'angular';
 
-require('./dv-error-messages.less');
-const errTemplate = require('./dv-error-messages.html');
-
 export class DvErrorMessagesComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         errorObject: '<for',
         inputid: '@inputId'
     };
-    template = errTemplate;
+    template = require('./dv-error-messages.html');
     controller = DvErrorMessages;
     controllerAs = 'vm';
 }

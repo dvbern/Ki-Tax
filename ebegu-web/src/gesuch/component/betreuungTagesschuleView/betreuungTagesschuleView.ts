@@ -13,12 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {IComponentOptions} from 'angular';
+import * as moment from 'moment';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
@@ -33,22 +35,18 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from '../betreuungView/betreuungView';
-import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import * as moment from 'moment';
+import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import IFormController = angular.IFormController;
 
-const template = require('./betreuungTagesschuleView.html');
-require('./betreuungTagesschuleView.less');
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungTagesschuleViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         betreuung: '=',
         onSave: '&',
         cancel: '&',
@@ -57,7 +55,7 @@ export class BetreuungTagesschuleViewComponentConfig implements IComponentOption
         anmeldungSchulamtFalscheInstitution: '&',
         form: '='
     };
-    template = template;
+    template = require('./betreuungTagesschuleView.html');
     controller = BetreuungTagesschuleViewController;
     controllerAs = 'vm';
 }

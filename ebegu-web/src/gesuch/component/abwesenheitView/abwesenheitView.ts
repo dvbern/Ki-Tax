@@ -13,34 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSBetreuung from '../../../models/TSBetreuung';
 import TSAbwesenheitContainer from '../../../models/TSAbwesenheitContainer';
+import TSBetreuung from '../../../models/TSBetreuung';
 import TSKindContainer from '../../../models/TSKindContainer';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import ITranslateService = angular.translate.ITranslateService;
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./abwesenheitView.html');
-require('./abwesenheitView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class AbwesenheitViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./abwesenheitView.html');
     controller = AbwesenheitViewController;
     controllerAs = 'vm';
 }

@@ -17,9 +17,9 @@ import IComponentOptions = angular.IComponentOptions;
 import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
@@ -30,12 +30,9 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
-const template = require('./alleVerfuegungenView.html');
-require('./alleVerfuegungenView.less');
-
 export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./alleVerfuegungenView.html');
     controller = AlleVerfuegungenViewController;
     controllerAs = 'vm';
 }

@@ -13,34 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
 import {StateService} from '@uirouter/core';
-import TSKindContainer from '../../../models/TSKindContainer';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {IComponentOptions} from 'angular';
+import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import BerechnungsManager from '../../service/berechnungsManager';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSKindContainer from '../../../models/TSKindContainer';
 import TSKindDublette from '../../../models/TSKindDublette';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
-import ITranslateService = angular.translate.ITranslateService;
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./kinderListView.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-require('./kinderListView.less');
 
 export class KinderListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         kinderDubletten: '<'
     };
-    template = template;
+    template = require('./kinderListView.html');
     controller = KinderListViewController;
     controllerAs = 'vm';
 }

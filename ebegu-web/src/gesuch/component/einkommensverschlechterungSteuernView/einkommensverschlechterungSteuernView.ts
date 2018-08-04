@@ -14,28 +14,25 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
-import BerechnungsManager from '../../service/berechnungsManager';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
-import TSGesuch from '../../../models/TSGesuch';
-import WizardStepManager from '../../service/wizardStepManager';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSFinanzModel from '../../../models/TSFinanzModel';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import TSGesuch from '../../../models/TSGesuch';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./einkommensverschlechterungSteuernView.html');
-require('./einkommensverschlechterungSteuernView.less');
-
 export class EinkommensverschlechterungSteuernViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungSteuernView.html');
     controller = EinkommensverschlechterungSteuernViewController;
     controllerAs = 'vm';
 }

@@ -14,9 +14,9 @@
  */
 
 import {IComponentOptions} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSGesuchstellerSprache from '../../../models/dto/TSSelectableSprache';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
@@ -45,13 +45,10 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./stammdatenView.html');
-require('./stammdatenView.less');
-
 export class StammdatenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./stammdatenView.html');
     controller = StammdatenViewController;
     controllerAs = 'vm';
 }

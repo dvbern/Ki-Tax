@@ -16,11 +16,11 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
@@ -34,18 +34,16 @@ import {IInstitutionStateParams} from '../../admin.route';
 import IFormController = angular.IFormController;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-const template = require('./institutionView.html');
-require('./institutionView.less');
 
 export class InstitutionViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         traegerschaften: '<',
         mandant: '<'
     };
-    template: string = template;
-    controller: any = InstitutionViewController;
-    controllerAs: string = 'vm';
+    template = require('./institutionView.html');
+    controller = InstitutionViewController;
+    controllerAs = 'vm';
 }
 
 export class InstitutionViewController extends AbstractAdminViewController {

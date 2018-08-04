@@ -23,7 +23,7 @@ const template = require('./dv-finanzielle-situation-require.html');
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         areThereOnlySchulamtangebote: '=',
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',

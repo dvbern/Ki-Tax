@@ -13,45 +13,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import BerechnungsManager from '../../service/berechnungsManager';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
+import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
+import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template: string = require('./erwerbspensumListView.html');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
-require('./erwerbspensumListView.less');
 
 export class ErwerbspensumListViewComponentConfig implements IComponentOptions {
-    transclude: boolean;
-    bindings: any;
-    template: string;
-    controller: any;
-    controllerAs: string;
-
-    constructor() {
-        this.transclude = false;
-        this.bindings = {};
-        this.template = template;
-        this.controller = ErwerbspensumListViewController;
-        this.controllerAs = 'vm';
-    }
+    transclude = false;
+    bindings = {};
+    template = require('./erwerbspensumListView.html');
+    controller = ErwerbspensumListViewController;
+    controllerAs = 'vm';
 }
 
 export class ErwerbspensumListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {

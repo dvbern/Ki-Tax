@@ -14,16 +14,12 @@
  */
 
 import {IComponentOptions, IFilterService, ILogService, IOnDestroy, IOnInit, IPromise} from 'angular';
-import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {
-    getTSAntragStatusPendenzValues,
-    getTSAntragStatusValuesByRole,
-    TSAntragStatus
-} from '../../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
@@ -38,13 +34,10 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 
-const template = require('./dv-antrag-list.html');
-require('./dv-antrag-list.less');
-
 export class DVAntragListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         onRemove: '&',
         onAdd: '&',
         onEdit: '&',
@@ -57,7 +50,7 @@ export class DVAntragListConfig implements IComponentOptions {
         addButtonText: '@',
         pendenz: '='
     };
-    template = template;
+    template = require('./dv-antrag-list.html');
     controller = DVAntragListController;
     controllerAs = 'vm';
 }
@@ -156,7 +149,9 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
 
     private updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => { this.gemeindenList = gemeinden; });
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     removeClicked(antragToRemove: TSAbstractAntragEntity) {

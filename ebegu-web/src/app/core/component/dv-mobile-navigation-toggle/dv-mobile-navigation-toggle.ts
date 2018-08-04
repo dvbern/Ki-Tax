@@ -15,13 +15,10 @@
 
 import {IComponentOptions} from 'angular';
 
-require('./dv-mobile-navigation-toggle.less');
-const template = require('./dv-mobile-navigation-toggle.html');
-
 export class DvMobileNavigationToggleComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./dv-mobile-navigation-toggle.html');
     controller = DvMobileNavigationToggleController;
     controllerAs = 'vm';
 }

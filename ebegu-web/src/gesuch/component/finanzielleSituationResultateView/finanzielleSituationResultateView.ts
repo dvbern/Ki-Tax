@@ -14,26 +14,23 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import {IStammdatenStateParams} from '../../gesuch.route';
-import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
-import BerechnungsManager from '../../service/berechnungsManager';
-import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSFinanzModel from '../../../models/TSFinanzModel';
+import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import {IStammdatenStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./finanzielleSituationResultateView.html');
-require('./finanzielleSituationResultateView.less');
-
 export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./finanzielleSituationResultateView.html');
     controller = FinanzielleSituationResultateViewController;
     controllerAs = 'vm';
 }

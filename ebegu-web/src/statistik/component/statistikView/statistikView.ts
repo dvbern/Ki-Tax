@@ -13,33 +13,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IIntervalService} from 'angular';
 import {StateService} from '@uirouter/core';
-import TSStatistikParameter from '../../../models/TSStatistikParameter';
-import {TSStatistikParameterType} from '../../../models/enums/TSStatistikParameterType';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import {IComponentOptions, IIntervalService} from 'angular';
 import * as moment from 'moment';
-import DateUtil from '../../../utils/DateUtil';
-import {ReportAsyncRS} from '../../../app/core/service/reportAsyncRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import BatchJobRS from '../../../app/core/service/batchRS.rest';
-import TSWorkJob from '../../../models/TSWorkJob';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {ReportAsyncRS} from '../../../app/core/service/reportAsyncRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSStatistikParameterType} from '../../../models/enums/TSStatistikParameterType';
 import TSBatchJobInformation from '../../../models/TSBatchJobInformation';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSStatistikParameter from '../../../models/TSStatistikParameter';
+import TSWorkJob from '../../../models/TSWorkJob';
+import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./statistikView.html');
-require('./statistikView.less');
-
 export class StatistikViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./statistikView.html');
     controller = StatistikViewController;
     controllerAs = 'vm';
 }
@@ -69,8 +66,8 @@ export class StatistikViewController {
     private allJobs: Array<TSBatchJobInformation>;
 
     constructor(private readonly $state: StateService, private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $log: ILogService,
-        private readonly reportAsyncRS: ReportAsyncRS, private readonly downloadRS: DownloadRS, private readonly bachJobRS: BatchJobRS, private readonly errorService: ErrorService,
-        private readonly $translate: ITranslateService, private readonly $interval: IIntervalService) {
+                private readonly reportAsyncRS: ReportAsyncRS, private readonly downloadRS: DownloadRS, private readonly bachJobRS: BatchJobRS, private readonly errorService: ErrorService,
+                private readonly $translate: ITranslateService, private readonly $interval: IIntervalService) {
     }
 
     $onInit() {

@@ -13,36 +13,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSFamiliensituation from '../../../models/TSFamiliensituation';
-import './familiensituationView.less';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {getTSGesuchstellerKardinalitaetValues, TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TSRole} from '../../../models/enums/TSRole';
-import WizardStepManager from '../../service/wizardStepManager';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import TSFamiliensituation from '../../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
 import FamiliensituationRS from '../../service/familiensituationRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
+import './familiensituationView.less';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./familiensituationView.html');
-require('./familiensituationView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FamiliensituationViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./familiensituationView.html');
     controller = FamiliensituationViewController;
     controllerAs = 'vm';
 }

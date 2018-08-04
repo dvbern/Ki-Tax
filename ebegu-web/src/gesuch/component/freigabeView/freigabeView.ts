@@ -13,34 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import TSDownloadFile from '../../../models/TSDownloadFile';
-import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import DateUtil from '../../../utils/DateUtil';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./freigabeView.html');
-require('./freigabeView.less');
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FreigabeViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./freigabeView.html');
     controller = FreigabeViewController;
     controllerAs = 'vm';
 }

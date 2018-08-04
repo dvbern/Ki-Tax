@@ -13,29 +13,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {StateService} from '@uirouter/core';
-const template = require('./posteingangView.html');
-require('./posteingangView.less');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./posteingangView.html');
     controller = PosteingangViewController;
     controllerAs = 'vm';
 }
 
 export class PosteingangViewController {
-
-
 
     static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
 

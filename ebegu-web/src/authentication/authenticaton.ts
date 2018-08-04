@@ -18,8 +18,6 @@ import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, 
 import {IAuthenticationStateParams} from './authentication.route';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 
-require('./authentication.less');
-
 export const AuthenticationComponentConfig: IComponentOptions = {
     transclude: false,
     template: require('./authentication.html'),

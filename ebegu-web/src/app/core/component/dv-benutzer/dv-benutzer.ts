@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService, IOnInit} from 'angular';
 import * as moment from 'moment';
 import {IBenutzerStateParams} from '../../../../admin/admin.route';
-import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
@@ -29,19 +29,17 @@ import {TSDateRange} from '../../../../models/types/TSDateRange';
 import DateUtil from '../../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import UserRS from '../../service/userRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
-import {StateService} from '@uirouter/core';
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
-const template = require('./dv-benutzer.html');
-require('./dv-benutzer.less');
 
 export class DVBenutzerConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./dv-benutzer.html');
     controller = DVBenutzerController;
     controllerAs = 'vm';
 }
@@ -63,7 +61,6 @@ export class DVBenutzerController implements IOnInit {
     public set isDefaultVerantwortlicher(value: boolean) {
         this._isDefaultVerantwortlicher = value;
     }
-
 
     static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS',
         '$state', 'DvDialog', 'ApplicationPropertyRS'];
@@ -93,26 +90,26 @@ export class DVBenutzerController implements IOnInit {
         this.updateTraegerschaftenList();
         const username: string = this.$stateParams.benutzerId;
         if (username) {
-           this.userRS.findBenutzer(username).then((result) => {
-               this.selectedUser = result;
-               this.initSelectedUser();
-               // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den "Default-Verantwortlichen" des
-               // entsprechenden Amtes handelt
-               if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
-                   this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
-                       if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
-                           this._isDefaultVerantwortlicher = true;
-                       }
-                   });
-               }
-               if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
-                   this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
-                       if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
-                           this._isDefaultVerantwortlicher = true;
-                       }
-                   });
-               }
-           });
+            this.userRS.findBenutzer(username).then((result) => {
+                this.selectedUser = result;
+                this.initSelectedUser();
+                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den "Default-Verantwortlichen" des
+                // entsprechenden Amtes handelt
+                if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
+                    this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
+                        if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
+                            this._isDefaultVerantwortlicher = true;
+                        }
+                    });
+                }
+                if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
+                    this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
+                        if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
+                            this._isDefaultVerantwortlicher = true;
+                        }
+                    });
+                }
+            });
         }
     }
 

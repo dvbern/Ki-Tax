@@ -15,24 +15,22 @@
 
 import IComponentOptions = angular.IComponentOptions;
 import IScope = angular.IScope;
-import {TSMessageEvent} from '../../../../../models/enums/TSErrorEvent';
-import ErrorService from '../../service/ErrorService';
-import TSExceptionReport from '../../../../../models/TSExceptionReport';
-import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
-import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import {TSErrorAction} from '../../../../../models/enums/TSErrorAction';
-import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
+import {IController, IOnInit} from 'angular';
 import {RemoveDialogController} from '../../../../../gesuch/dialog/RemoveDialogController';
 import GesuchRS from '../../../../../gesuch/service/gesuchRS.rest';
+import {TSErrorAction} from '../../../../../models/enums/TSErrorAction';
+import {TSMessageEvent} from '../../../../../models/enums/TSErrorEvent';
+import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
+import TSExceptionReport from '../../../../../models/TSExceptionReport';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
+import ErrorService from '../../service/ErrorService';
 
-const templ = require('./dvb-error-messages-panel.html');
-require('./dvb-error-messages-panel.less');
 const removeDialogTemplate = require('../../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
-
     scope = {};
-    template = templ;
+    template = require('./dvb-error-messages-panel.html');
     controller = DvErrorMessagesPanelComponent;
     controllerAs = 'vm';
 }
@@ -40,14 +38,13 @@ export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
 /**
  * component that can display error messages
  */
-export class DvErrorMessagesPanelComponent {
-
+export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
     static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
 
     errors: Array<TSExceptionReport> = [];
     TSRoleUtil: any;
-    /* @ngInject */
+
     constructor(private readonly $scope: IScope, private readonly errorService: ErrorService, private readonly dvDialog: DvDialog,
                 private readonly gesuchRS: GesuchRS) {
     }
@@ -85,7 +82,8 @@ export class DvErrorMessagesPanelComponent {
             parentController: undefined,
             elementID: undefined
         }).then(() => {   //User confirmed removal
-            this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId).then(() => {});
+            this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId).then(() => {
+            });
         });
     }
 
@@ -96,7 +94,8 @@ export class DvErrorMessagesPanelComponent {
             parentController: undefined,
             elementID: undefined
         }).then(() => {   //User confirmed removal
-            this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId).then(() => {});
+            this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId).then(() => {
+            });
         });
     }
 

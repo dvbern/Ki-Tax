@@ -13,16 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFormController, IPromise} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFormController, IPromise} from 'angular';
+import * as moment from 'moment';
 import {FerieninselStammdatenRS} from '../../../admin/service/ferieninselStammdatenRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerienname';
 import TSBelegungFerieninsel from '../../../models/TSBelegungFerieninsel';
+import TSBelegungFerieninselTag from '../../../models/TSBelegungFerieninselTag';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSFerieninselStammdaten from '../../../models/TSFerieninselStammdaten';
 import DateUtil from '../../../utils/DateUtil';
@@ -33,22 +36,16 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from '../betreuungView/betreuungView';
-import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import * as moment from 'moment';
-import TSBelegungFerieninselTag from '../../../models/TSBelegungFerieninselTag';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-declare let require: any;
-const template = require('./betreuungFerieninselView.html');
-require('./betreuungFerieninselView.less');
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungFerieninselViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         betreuung: '=',
         onSave: '&',
         anmeldungSchulamtUebernehmen: '&',
@@ -57,7 +54,7 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
         cancel: '&',
         form: '='
     };
-    template = template;
+    template = require('./betreuungFerieninselView.html');
     controller = BetreuungFerieninselViewController;
     controllerAs = 'vm';
 }

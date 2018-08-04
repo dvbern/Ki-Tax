@@ -16,8 +16,8 @@
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import AntragStatusHistoryRS from '../../../app/core/service/antragStatusHistoryRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../models/TSDossier';
@@ -27,12 +27,9 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IVerlaufStateParams} from '../../verlauf.route';
 
-const template = require('./verlaufView.html');
-require('./verlaufView.less');
-
 export class VerlaufViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./verlaufView.html');
     controller = VerlaufViewController;
     controllerAs = 'vm';
 }
@@ -43,7 +40,7 @@ export class VerlaufViewController {
 
     form: IFormController;
     dossier: TSDossier;
-    gesuche: {[gesuchId: string]: string} = {};
+    gesuche: { [gesuchId: string]: string } = {};
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
     verlauf: Array<TSAntragStatusHistory>;

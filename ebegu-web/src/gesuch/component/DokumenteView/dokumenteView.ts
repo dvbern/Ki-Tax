@@ -14,30 +14,27 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import {IStammdatenStateParams} from '../../gesuch.route';
 import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
-import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import TSDokument from '../../../models/TSDokument';
-import DokumenteRS from '../../service/dokumenteRS.rest';
-import WizardStepManager from '../../service/wizardStepManager';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSDokument from '../../../models/TSDokument';
+import TSDokumentGrund from '../../../models/TSDokumentGrund';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {IStammdatenStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import DokumenteRS from '../../service/dokumenteRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import GlobalCacheService from '../../service/globalCacheService';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const template = require('./dokumenteView.html');
-require('./dokumenteView.less');
-
 export class DokumenteViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./dokumenteView.html');
     controller = DokumenteViewController;
     controllerAs = 'vm';
 }

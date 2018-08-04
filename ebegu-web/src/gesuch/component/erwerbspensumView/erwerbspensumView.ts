@@ -15,8 +15,8 @@
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
 import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
 import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
@@ -35,23 +35,12 @@ import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
 
-const template: string = require('./erwerbspensumView.html');
-require('./erwerbspensumView.less');
-
 export class ErwerbspensumViewComponentConfig implements IComponentOptions {
-    transclude: boolean;
-    bindings: any;
-    template: string;
-    controller: any;
-    controllerAs: string;
-
-    constructor() {
-        this.transclude = false;
-        this.bindings = {};
-        this.template = template;
-        this.controller = ErwerbspensumViewController;
-        this.controllerAs = 'vm';
-    }
+    transclude = false;
+    bindings = {};
+    template = require('./erwerbspensumView.html');
+    controller = ErwerbspensumViewController;
+    controllerAs = 'vm';
 }
 
 export class ErwerbspensumViewController extends AbstractGesuchViewController<TSErwerbspensumContainer> {

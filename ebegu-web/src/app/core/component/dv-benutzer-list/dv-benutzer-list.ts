@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IPromise, IOnInit} from 'angular';
+import {IComponentOptions, ILogService, IOnInit, IPromise} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSInstitution from '../../../../models/TSInstitution';
@@ -25,20 +25,17 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./dv-benutzer-list.html');
-require('./dv-benutzer-list.less');
-
 export class DVBenutzerListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         onEdit: '&',
         onFilterChange: '&',
         totalResultCount: '<',
         tableId: '@',
         tableTitle: '@',
     };
-    template = template;
+    template = require('./dv-benutzer-list.html');
     controller = DVBenutzerListController;
     controllerAs = 'vm';
 }
@@ -71,7 +68,7 @@ export class DVBenutzerListController implements IOnInit {
     TSRoleUtil: TSRoleUtil;
 
     constructor(private readonly $log: ILogService, private readonly institutionRS: InstitutionRS, private readonly traegerschaftenRS: TraegerschaftRS,
-               private readonly authServiceRS: AuthServiceRS, private readonly $window: ng.IWindowService, private readonly $translate: ITranslateService) {
+                private readonly authServiceRS: AuthServiceRS, private readonly $window: ng.IWindowService, private readonly $translate: ITranslateService) {
 
         this.TSRoleUtil = TSRoleUtil;
     }

@@ -21,7 +21,7 @@ const template = require('./dv-search-result-icon.html');
 export class DvSearchResultIconComponentConfig implements IComponentOptions {
 
     transclude = false;
-    bindings: any = {
+    bindings = {
         entry: '<',
     };
     template = template;

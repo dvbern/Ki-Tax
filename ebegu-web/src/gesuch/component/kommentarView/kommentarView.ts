@@ -13,41 +13,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFormController, ILogService} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSGesuch from '../../../models/TSGesuch';
-import GesuchRS from '../../service/gesuchRS.rest';
-import DokumenteRS from '../../service/dokumenteRS.rest';
-import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
-import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
-import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import TSDokument from '../../../models/TSDokument';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import {UploadRS} from '../../../app/core/service/uploadRS.rest';
-import WizardStepManager from '../../service/wizardStepManager';
-import TSWizardStep from '../../../models/TSWizardStep';
-import GlobalCacheService from '../../service/globalCacheService';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import GesuchstellerRS from '../../../app/core/service/gesuchstellerRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import GesuchstellerRS from '../../../app/core/service/gesuchstellerRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
+import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
+import TSDokument from '../../../models/TSDokument';
+import TSDokumentGrund from '../../../models/TSDokumentGrund';
+import TSDownloadFile from '../../../models/TSDownloadFile';
+import TSGesuch from '../../../models/TSGesuch';
+import TSWizardStep from '../../../models/TSWizardStep';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import DokumenteRS from '../../service/dokumenteRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import GesuchRS from '../../service/gesuchRS.rest';
+import GlobalCacheService from '../../service/globalCacheService';
+import WizardStepManager from '../../service/wizardStepManager';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import ITranslateService = angular.translate.ITranslateService;
 import IRootScopeService = angular.IRootScopeService;
-const template = require('./kommentarView.html');
-require('./kommentarView.less');
+import ITranslateService = angular.translate.ITranslateService;
+
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class KommentarViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./kommentarView.html');
     controller = KommentarViewController;
     controllerAs = 'vm';
 }
@@ -63,6 +62,7 @@ export class KommentarViewController {
     form: IFormController;
     dokumentePapiergesuch: TSDokumentGrund;
     TSRoleUtil: any;
+
     /* @ngInject */
     constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
                 private readonly dokumenteRS: DokumenteRS, private readonly downloadRS: DownloadRS, private readonly $q: IQService,
@@ -94,6 +94,7 @@ export class KommentarViewController {
     getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
     }
+
     public toggleEwkSidenav() {
         this.$mdSidenav('ewk').toggle();
     }

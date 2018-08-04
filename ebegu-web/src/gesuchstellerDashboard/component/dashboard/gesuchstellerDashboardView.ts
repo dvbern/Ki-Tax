@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {IComponentOptions} from 'angular';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
@@ -34,12 +34,9 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./gesuchstellerDashboardView.html');
-require('./gesuchstellerDashboardView.less');
-
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./gesuchstellerDashboardView.html');
     controller = GesuchstellerDashboardViewController;
     controllerAs = 'vm';
 }

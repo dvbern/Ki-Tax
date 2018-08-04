@@ -29,7 +29,7 @@ const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemp
 
 export class DVVorlageListConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         ebeguVorlageList: '<',
         isReadonly: '&',
         gesuchsperiode: '<',

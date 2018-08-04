@@ -14,37 +14,34 @@
  */
 
 import {IComponentOptions} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
-import BerechnungsManager from '../../service/berechnungsManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import TSGesuch from '../../../models/TSGesuch';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
+import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
-import IPromise = angular.IPromise;
-import AbstractGesuchViewController from '../abstractGesuchView';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSFinanzModel from '../../../models/TSFinanzModel';
-import TSGesuch from '../../../models/TSGesuch';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 
-const template = require('./finanzielleSituationStartView.html');
-require('./finanzielleSituationStartView.less');
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FinanzielleSituationStartViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./finanzielleSituationStartView.html');
     controller = FinanzielleSituationStartViewController;
     controllerAs = 'vm';
 }
 
 export class FinanzielleSituationStartViewController extends AbstractGesuchViewController<TSFinanzModel> {
-
 
     static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$q', '$scope', '$timeout', 'DvDialog'];

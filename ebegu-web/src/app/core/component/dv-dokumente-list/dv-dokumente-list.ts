@@ -14,36 +14,34 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
-import TSDokumentGrund from '../../../../models/TSDokumentGrund';
-import {UploadRS} from '../../service/uploadRS.rest';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import EbeguUtil from '../../../../utils/EbeguUtil';
-import TSDokument from '../../../../models/TSDokument';
-import {DownloadRS} from '../../service/downloadRS.rest';
-import TSDownloadFile from '../../../../models/TSDownloadFile';
-import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
-import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
-import TSKindContainer from '../../../../models/TSKindContainer';
-import {TSRole} from '../../../../models/enums/TSRole';
+import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
+import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
 import {isAnyStatusOfVerfuegtButSchulamt} from '../../../../models/enums/TSAntragStatus';
-import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
+import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
+import {TSRole} from '../../../../models/enums/TSRole';
 import TSApplicationProperty from '../../../../models/TSApplicationProperty';
+import TSDokument from '../../../../models/TSDokument';
+import TSDokumentGrund from '../../../../models/TSDokumentGrund';
+import TSDownloadFile from '../../../../models/TSDownloadFile';
+import TSKindContainer from '../../../../models/TSKindContainer';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../service/downloadRS.rest';
+import {UploadRS} from '../../service/uploadRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
-const template = require('./dv-dokumente-list.html');
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
-require('./dv-dokumente-list.less');
 const okHtmlDialogTempl = require('../../../../gesuch/dialog/okHtmlDialogTemplate.html');
 
 export class DVDokumenteListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         dokumente: '<',
         tableId: '@',
         tableTitle: '@',
@@ -54,7 +52,7 @@ export class DVDokumenteListConfig implements IComponentOptions {
         sonstige: '<'
 
     };
-    template = template;
+    template = require('./dv-dokumente-list.html');
     controller = DVDokumenteListController;
     controllerAs = 'vm';
 }
@@ -75,9 +73,9 @@ export class DVDokumenteListController {
     allowedMimetypes: string = '';
 
     constructor(private readonly uploadRS: UploadRS, private readonly gesuchModelManager: GesuchModelManager, private readonly ebeguUtil: EbeguUtil,
-        private readonly downloadRS: DownloadRS, private readonly dvDialog: DvDialog, private readonly wizardStepManager: WizardStepManager,
-        private readonly $log: ILogService, private readonly authServiceRS: AuthServiceRS, private readonly $translate: ITranslateService,
-        private readonly $window: ng.IWindowService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
+                private readonly downloadRS: DownloadRS, private readonly dvDialog: DvDialog, private readonly wizardStepManager: WizardStepManager,
+                private readonly $log: ILogService, private readonly authServiceRS: AuthServiceRS, private readonly $translate: ITranslateService,
+                private readonly $window: ng.IWindowService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
     }
 
@@ -181,10 +179,10 @@ export class DVDokumenteListController {
             parentController: undefined,
             elementID: undefined
         })
-        .then(() => {   //User confirmed removal
-            this.onRemove({dokumentGrund: dokumentGrund, dokument: dokument});
+            .then(() => {   //User confirmed removal
+                this.onRemove({dokumentGrund: dokumentGrund, dokument: dokument});
 
-        });
+            });
     }
 
     download(dokument: TSDokument, attachment: boolean) {
@@ -192,14 +190,14 @@ export class DVDokumenteListController {
         const win: Window = this.downloadRS.prepareDownloadWindow();
 
         this.downloadRS.getAccessTokenDokument(dokument.id)
-        .then((downloadFile: TSDownloadFile) => {
-            this.$log.debug('accessToken: ' + downloadFile.accessToken);
-            this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
-        })
-        .catch((ex) => {
-            win.close();
-            this.$log.error('An error occurred downloading the document, closing download window.');
-        });
+            .then((downloadFile: TSDownloadFile) => {
+                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch((ex) => {
+                win.close();
+                this.$log.error('An error occurred downloading the document, closing download window.');
+            });
     }
 
     getWidth(): string {
