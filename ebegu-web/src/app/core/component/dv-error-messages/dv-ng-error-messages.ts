@@ -15,11 +15,10 @@
 
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
-require('./dv-error-messages.less');
-
 @Component({
     selector: 'dv-ng-error-messages',
-    template: require('./dv-ng-error-messages.html'),
+    templateUrl: './dv-ng-error-messages.html',
+    styleUrls: ['./dv-error-messages.less']
 })
 export class DvNgErrorMessages implements OnInit, OnChanges {
 

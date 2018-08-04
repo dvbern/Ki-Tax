@@ -14,20 +14,20 @@
  */
 
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
-import {Log, LogFactory} from '../../logging/LogFactory';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {Log, LogFactory} from '../../logging/LogFactory';
 import MitteilungRS from '../../service/mitteilungRS.rest';
 
 @Component({
     selector: 'dv-posteingang',
-    template: require('./dv-posteingang.html'),
+    templateUrl: './dv-posteingang.html',
 })
 export class DvPosteingangComponent implements OnInit, OnDestroy {
 
@@ -36,7 +36,6 @@ export class DvPosteingangComponent implements OnInit, OnDestroy {
     private readonly unsubscribe$ = new Subject<void>();
     amountMitteilungen: number = 0;
     reloadAmountMitteilungenInterval: number;
-
 
     constructor(private readonly mitteilungRS: MitteilungRS,
                 private readonly authServiceRS: AuthServiceRS,
@@ -51,14 +50,18 @@ export class DvPosteingangComponent implements OnInit, OnDestroy {
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-                () => {clearInterval(this.reloadAmountMitteilungenInterval); },
+                () => {
+                    clearInterval(this.reloadAmountMitteilungenInterval);
+                },
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
             );
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-                () => {this.handleLogIn(); },
+                () => {
+                    this.handleLogIn();
+                },
                 error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
             );
 
@@ -66,7 +69,8 @@ export class DvPosteingangComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => {
-                    this.getAmountNewMitteilungen(); },
+                    this.getAmountNewMitteilungen();
+                },
                 error => this.log.info(`the received TSPostEingangEvent ${event} threw an error ${error}`),
             );
     }

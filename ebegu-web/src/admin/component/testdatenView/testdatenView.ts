@@ -22,6 +22,7 @@ import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-di
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import UserRS from '../../../app/core/service/userRS.rest';
 import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
@@ -30,14 +31,12 @@ import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSUser from '../../../models/TSUser';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
-
-require('./testdatenView.less');
 
 @Component({
     selector: 'testdaten-view',
-    template: require('./testdatenView.html'),
+    templateUrl: './testdatenView.html',
+    styleUrls: ['./testdatenView.less']
 })
 export class TestdatenViewComponent implements OnInit {
 

@@ -1,15 +1,14 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {Observable, from} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../../models/TSGemeinde';
 
-require('./dv-onboarding.component.less');
-
 @Component({
     selector: 'dv-onboarding',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    template: require('./dv-onboarding.component.html'),
+    templateUrl: './dv-onboarding.component.html',
+    styleUrls: ['./dv-onboarding.component.less'],
 })
 export class DvOnboardingComponent {
     public gemeinden$: Observable<TSGemeinde[]>;

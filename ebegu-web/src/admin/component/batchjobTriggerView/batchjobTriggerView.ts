@@ -19,11 +19,10 @@ import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 
-require('./batchjobTrigger.less');
-
 @Component({
     selector: 'batchjob-trigger-view',
-    template: require('./batchjobTriggerView.html'),
+    templateUrl: './batchjobTriggerView.html',
+    styleUrls: ['./batchjobTrigger.less']
 })
 export class BatchjobTriggerViewComponent {
 

@@ -21,7 +21,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
  */
 @Component({
     selector: 'dv-ng-ok-dialog',
-    template: require('./dv-ng-ok-dialog.template.html'),
+    templateUrl: './dv-ng-ok-dialog.template.html',
 })
 export class DvNgOkDialogComponent {
 

@@ -25,12 +25,10 @@ import TSUser from '../models/TSUser';
 import AuthenticationUtil from '../utils/AuthenticationUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 
-require('./dummyAuthentication.less');
-
-
 @Component({
     selector: 'dummy-authentication-view',
-    template: require('./dummyAuthentication.html'),
+    templateUrl: './dummyAuthentication.html',
+    styleUrls: ['./dummyAuthentication.less'],
 })
 export class DummyAuthenticationListViewComponent {
 
@@ -83,7 +81,6 @@ export class DummyAuthenticationListViewComponent {
     private readonly traegerschaftSGF: TSTraegerschaft;
     private readonly traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
-
 
     constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
                 @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -260,7 +257,6 @@ export class DummyAuthenticationListViewComponent {
             this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
         this.sachbearbeiterTSBernOstermundigen = new TSUser('Julien', 'Bucheli', 'buju', 'password1', 'julien.schuler@example.com',
             this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
-
 
         this.steueramtBernOstermundigen = new TSUser('Rodolfo', 'Hermann', 'hero', 'password1', 'rodolfo.geldmacher@example.com',
             this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);

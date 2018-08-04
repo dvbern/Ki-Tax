@@ -17,11 +17,10 @@ import {Component} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dialog.component';
 
-require('./dv-helpmenu.less');
-
 @Component({
     selector: 'dv-helpmenu',
-    template: require('./dv-helpmenu.html'),
+    templateUrl: './dv-helpmenu.html',
+    styleUrls: ['./dv-helpmenu.less'],
 })
 export class DvHelpmenuComponent {
 

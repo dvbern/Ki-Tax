@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import './traegerschaftView.less';
+import * as angular from 'angular';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatSort, MatSortable, MatTableDataSource} from '@angular/material';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -25,14 +25,12 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
-const style = require('./traegerschaftView.less');
-
-
 @Component({
     selector: 'dv-traegerschaft-view',
-    template: require('./traegerschaftView.html'),
+    templateUrl: './traegerschaftView.html',
+    styleUrls: ['./traegerschaftView.less']
 })
-export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit {
+export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
     @Input() traegerschaften: TSTraegerschaft[];
 

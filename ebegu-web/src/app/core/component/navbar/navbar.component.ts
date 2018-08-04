@@ -27,11 +27,10 @@ import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
-require('./navbar.component.less');
-
 @Component({
     selector: 'dv-navbar',
-    template: require('./navbar.component.html'),
+    templateUrl: './navbar.component.html',
+    styleUrls: ['./navbar.component.less']
 })
 export class NavbarComponent {
 

@@ -23,7 +23,7 @@ import TSDownloadFile from '../../models/TSDownloadFile';
  */
 @Component({
     selector: 'dv-ng-help-dialog',
-    template: require('./dv-ng-help-dialog.template.html'),
+    templateUrl: './dv-ng-help-dialog.template.html',
 })
 export class DvNgHelpDialogComponent {
 

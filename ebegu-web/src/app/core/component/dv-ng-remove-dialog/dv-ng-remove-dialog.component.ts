@@ -21,7 +21,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
  */
 @Component({
     selector: 'dv-ng-remove-dialog',
-    template: require('./dv-ng-remove-dialog.template.html'),
+    templateUrl: './dv-ng-remove-dialog.template.html',
 })
 export class DvNgRemoveDialogComponent {
 

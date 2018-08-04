@@ -26,7 +26,7 @@ import TSGemeinde from '../../../../models/TSGemeinde';
  */
 @Component({
     selector: 'dv-ng-gemeinde-dialog',
-    template: require('./dv-ng-gemeinde-dialog.template.html'),
+    templateUrl: './dv-ng-gemeinde-dialog.template.html',
 })
 export class DvNgGemeindeDialogComponent {
 
