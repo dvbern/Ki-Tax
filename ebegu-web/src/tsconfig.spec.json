@@ -11,11 +11,12 @@
         ]
     },
     "files": [
-        "../test.ts",
+        "./test.ts",
         "polyfills.ts"
     ],
     "include": [
-        "**/*.spec.ts",
+//        "**/*.spec.ts",
+        "**/*.ngspec.ts",
         "**/*.d.ts"
     ]
 }

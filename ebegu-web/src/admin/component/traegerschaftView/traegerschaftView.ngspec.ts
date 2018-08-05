@@ -17,9 +17,9 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '../../../app/shared/shared.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
 
 import {TraegerschaftViewComponent} from './traegerschaftView';
 
