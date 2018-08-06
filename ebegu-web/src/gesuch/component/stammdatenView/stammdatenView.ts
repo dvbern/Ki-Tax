@@ -17,7 +17,6 @@ import {IComponentOptions} from 'angular';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSGesuchstellerSprache from '../../../models/dto/TSSelectableSprache';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
@@ -54,30 +53,33 @@ export class StammdatenViewComponentConfig implements IComponentOptions {
 
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
 
-    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
-        'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
+    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+        'WizardStepManager', 'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
+
     geschlechter: Array<string>;
     showKorrespondadr: boolean;
     showKorrespondadrGS: boolean;
     showRechnungsadr: boolean;
     showRechnungsadrGS: boolean;
-    ebeguRestUtil: EbeguRestUtil;
     allowedRoles: Array<TSRole>;
     gesuchstellerNumber: number;
     private initialModel: TSGesuchstellerContainer;
     private isLastVerfuegtesGesuch: boolean = false;
 
-    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
-        'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
-
-    /* @ngInject */
-    constructor($stateParams: IStammdatenStateParams, ebeguRestUtil: EbeguRestUtil, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private readonly CONSTANTS: any, private readonly $q: IQService, $scope: IScope,
-                private readonly $translate: ITranslateService, private readonly authServiceRS: AuthServiceRS, private readonly $rootScope: IRootScopeService,
+    constructor($stateParams: IStammdatenStateParams,
+                public readonly ebeguRestUtil: EbeguRestUtil,
+                gesuchModelManager: GesuchModelManager,
+                berechnungsManager: BerechnungsManager,
+                private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager,
+                private readonly CONSTANTS: any,
+                private readonly $q: IQService,
+                $scope: IScope,
+                private readonly $translate: ITranslateService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $rootScope: IRootScopeService,
                 private readonly ewkRS: EwkRS, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCHSTELLER, $timeout);
-        this.ebeguRestUtil = ebeguRestUtil;
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
     }
