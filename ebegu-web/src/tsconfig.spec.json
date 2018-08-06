@@ -21,7 +21,6 @@
     ],
     "include": [
         "**/*.spec.ts",
-        "**/*.ngspec.ts",
         "**/*.d.ts"
     ]
 }

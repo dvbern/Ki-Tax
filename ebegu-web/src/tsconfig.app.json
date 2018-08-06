@@ -11,6 +11,5 @@
     "exclude": [
         "test.ts",
         "**/*.spec.ts",
-        "**/*.ngspec.ts"
     ]
 }

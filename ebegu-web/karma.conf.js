@@ -114,8 +114,8 @@ module.exports = function (config) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [
-            'Chrome',
-            // 'ChromeHeadless'
+            // 'Chrome',
+            'ChromeHeadless'
         ],
 
         // timeout when there's no activity, increased because the start up time is quite long with webpack
