@@ -39,8 +39,6 @@ export class DVEnableElement implements IDirective {
         return directive;
     }
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
-
-    // TODO hefa unterminated statement
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController) => {
         // attributes.$observe funktioniert nicht. Siehe dv-show-element.ts
         scope.$watch(attributes['dvEnableAllowedRoles'], (newValue: any, oldValue: any, scope: any) => {
@@ -51,7 +49,7 @@ export class DVEnableElement implements IDirective {
             controller.dvExpression = newValue;
             this.enableElement(controller, attributes);
         }, true);
-    }
+    };
 
     /**
      * Sets the attribute disabled to true or false of the element.

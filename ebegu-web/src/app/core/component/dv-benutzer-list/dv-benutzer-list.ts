@@ -99,8 +99,7 @@ export class DVBenutzerListController implements IOnInit {
         this.onEdit({user: user, event: event});
     }
 
-    // TODO hefa unterminated statement
-    private readonly callServer = (tableFilterState: any) => {
+    public readonly callServer = (tableFilterState: any) => {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 
@@ -115,7 +114,7 @@ export class DVBenutzerListController implements IOnInit {
         } else {
             this.$log.info('no callback function spcified for filtering');
         }
-    }
+    };
 
     public getRollen(): Array<TSRole> {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {

@@ -37,7 +37,6 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
         return frontendVersion === backendVersion;
     }
 
-    // TODO hefa unterminated statement
     //interceptor methode
     public response = (response: any) => {
         if (response.headers && response.config && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0 && !response.config.cache) {
@@ -45,7 +44,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
         }
 
         return response;
-    }
+    };
 
     /**
      * @param {*} newVersion

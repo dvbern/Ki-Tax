@@ -60,11 +60,10 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         });
     }
 
-    // TODO hefa unterminated statement
     displayMessages = (event: any, errors: Array<TSExceptionReport>) => {
         this.errors = errors;
         this.show();
-    }
+    };
 
     private executeAction(error: TSExceptionReport): void {
         if (error.action) {

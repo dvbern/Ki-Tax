@@ -52,7 +52,6 @@ export class DVShowElement implements IDirective {
         return directive;
     }
 
-    // TODO hefa unterminated statement
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
         // Consider using a standard function expression.
@@ -68,7 +67,7 @@ export class DVShowElement implements IDirective {
         scope.$watch(attributes['dvShowExpression'], (newValue: any, oldValue: any) => {
             controller.dvExpression = newValue;
         }, true);
-    }
+    };
 
     /**
      * Diese Methode darf nur einmal aufgerufen werden.

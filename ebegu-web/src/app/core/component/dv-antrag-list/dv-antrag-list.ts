@@ -172,7 +172,6 @@ export class DVAntragListController implements IController {
         this.onAdd();
     }
 
-    // TODO hefa unterminated statement
     public readonly callServer = (tableFilterState: any) => {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
@@ -191,7 +190,7 @@ export class DVAntragListController implements IController {
         } else {
             this.$log.info('no callback function spcified for filtering');
         }
-    }
+    };
 
     public getAntragTypen(): Array<TSAntragTyp> {
         return getNormalizedTSAntragTypValues();

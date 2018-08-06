@@ -77,7 +77,6 @@ export class PosteingangViewController {
         this.passFilterToServer(this.myTableFilterState);
     }
 
-    // TODO hefa unterminated statement
     public passFilterToServer = (tableFilterState: any): IPromise<void> => {
         this.pagination = tableFilterState.pagination;
         this.myTableFilterState = tableFilterState;
@@ -85,7 +84,7 @@ export class PosteingangViewController {
         return this.mitteilungRS.searchMitteilungen(tableFilterState, this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
             this.setResult(result);
         });
-    }
+    };
 
     private setResult(result: TSMtteilungSearchresultDTO): void {
         if (result) {
