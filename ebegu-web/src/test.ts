@@ -18,8 +18,33 @@
 require('zone.js/dist/zone-testing');
 // zone-testing muss als 1. importiert werden. Danke require Syntax ändert IntelliJ die Reihenfolge nicht wenn man neu
 // formatiert
+require('jquery');
+require('rxjs');
+// AngularJs nach jQuery
+require('angular');
+// AngularJS Mocks nach AngularJS
+require('angular-mocks');
+
 import {getTestBed} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
+import '@uirouter/angular-hybrid';
+import 'angular-animate';
+import 'angular-aria';
+import 'angular-cookies';
+import 'angular-hotkeys';
+import 'angular-i18n/angular-locale_de-ch';
+import 'angular-material';
+import 'angular-messages';
+import 'angular-moment';
+import 'angular-sanitize';
+import 'angular-smart-table';
+import 'angular-translate';
+import 'angular-translate-loader-static-files';
+import 'angular-ui-bootstrap';
+import 'angular-unsavedchanges';
+import 'ng-file-upload';
+
+
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
@@ -28,6 +53,6 @@ getTestBed().initTestEnvironment(
 );
 
 // Then we find all the tests.
-const context = require.context('./', true, /\.ngspec\.ts$/);
+const context = require.context('./', true, /spec\.ts$/);
 // And load the modules.
 context.keys().map(context);

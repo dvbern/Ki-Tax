@@ -7,15 +7,20 @@
         "types": [
             "jasmine",
             "node",
-            "webpack-env"
+            "webpack-env",
+            "angular-cookies",
+            "angular-material",
+            "angular-translate",
+            "angular-mocks",
+            "jquery"
         ]
     },
     "files": [
         "./test.ts",
-        "polyfills.ts"
+        "./polyfills.ts"
     ],
     "include": [
-//        "**/*.spec.ts",
+        "**/*.spec.ts",
         "**/*.ngspec.ts",
         "**/*.d.ts"
     ]

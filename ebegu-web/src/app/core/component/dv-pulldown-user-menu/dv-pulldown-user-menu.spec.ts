@@ -54,7 +54,7 @@ describe('DvPulldownUserMenuController', () => {
                 controller.logout();
                 scope.$apply();
                 //actual logout happens on login page
-                expect($state.go).toHaveBeenCalledWith('login', {type: 'logout'});
+                expect($state.go).toHaveBeenCalledWith('authentication.login', {type: 'logout'});
             });
         });
         describe('change Principal', () => {

@@ -27,6 +27,7 @@ import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../../models/TSApplicationProperty';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import ErrorService from './errors/service/ErrorService';
+import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
@@ -36,6 +37,8 @@ import IInjectorService = angular.auto.IInjectorService;
 import ILocationService = angular.ILocationService;
 import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
+
+const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
@@ -110,7 +113,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
             //user is not yet authenticated, show loginpage
 
             const currentPath = angular.copy($location.absUrl());
-            console.log('going to login page with current path ', currentPath);
+            LOG.debug('going to login page with current path ', currentPath);
 
             //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
             if (currentPath.indexOf('fedletSSOInit') === -1
@@ -120,7 +123,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
                 && currentPath.indexOf('sendRedirectForValidation') === -1) {
                 $state.go('authentication.login', {relayPath: currentPath, type: 'login'});
             } else {
-                console.log('supressing redirect to ', currentPath);
+                LOG.debug('supressing redirect to ', currentPath);
             }
         });
 

@@ -20,8 +20,6 @@ export class OnboardingComponent {
     constructor(private readonly gemeindeRs: GemeindeRS) {
         this.gemeinden$ = from(this.gemeindeRs.getAllGemeinden())
             .pipe(map(gemeinden => gemeinden.sort((a, b) => a.name.localeCompare(b.name))));
-
-        this.gemeinden$.subscribe(g => console.log('test', g), e => console.error(e));
     }
 
     public onSubmit(): void {
