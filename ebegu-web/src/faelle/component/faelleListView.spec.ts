@@ -92,13 +92,13 @@ describe('faelleListView', function () {
             it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', function () {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 callEditFall();
-                expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
+                expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: '66345345'});
             });
             it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt', function () {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 mockAntrag.status = TSAntragStatus.VERFUEGT;
                 callEditFall();
-                expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
+                expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {gesuchId: '66345345'});
             });
         });
     });

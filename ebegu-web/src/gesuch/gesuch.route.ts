@@ -675,26 +675,26 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
     if ($stateParams) {
 
         let eingangsart = $stateParams.eingangsart;
-        let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let dossierId = $stateParams.dossierId;
         let gemeindeId = $stateParams.gemeindeId;
 
         if ($stateParams.createNewFall === 'true') {
             //initialize gesuch
-            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId, true);
-        } else {
-            let createNewDossierParam = $stateParams.createNewDossier;
-            if (createNewDossierParam === 'true') {
-                return gesuchModelManager.initGesuchWithEingangsart(false, eingangsart, gesuchsperiodeId, dossierId, gemeindeId, false);
-            }
-            let gesuchIdParam = $stateParams.gesuchId;
-            if (!gesuchIdParam) {
-                $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
-            }
-
-            berechnungsManager.clear();
-            return gesuchModelManager.openGesuch(gesuchIdParam);
+            return gesuchModelManager.createNewFall(eingangsart, gemeindeId);
         }
+
+        let createNewDossierParam = $stateParams.createNewDossier;
+        if (createNewDossierParam === 'true') {
+            return gesuchModelManager.createNewDossierForCurrentFall(eingangsart, gemeindeId);
+        }
+
+        let gesuchIdParam = $stateParams.gesuchId;
+        if (!gesuchIdParam) {
+            $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
+        }
+
+        berechnungsManager.clear();
+        return gesuchModelManager.openGesuch(gesuchIdParam);
+
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
     return $q.defer(gesuchModelManager.getGesuch());

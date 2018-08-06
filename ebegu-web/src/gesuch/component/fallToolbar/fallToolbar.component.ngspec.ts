@@ -15,6 +15,7 @@
 
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvNgShowElementDirective} from '../../../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -58,6 +59,7 @@ describe('fallToolbar', function () {
         const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
             'findDossiersByFall': Promise.resolve([dossier1, dossier2])
         });
+        const stateServiceSpy = jasmine.createSpyObj('StateSevice', ['go']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -67,6 +69,7 @@ describe('fallToolbar', function () {
                 {provide: DossierRS, useValue: dossierServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ],
             declarations: [
                 FallToolbarComponent,

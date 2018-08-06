@@ -81,12 +81,18 @@ export class FaelleListViewController {
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since last time
                 this.gesuchModelManager.clearGesuch();
                 if (isAnyStatusOfVerfuegt(antrag.status)) {
-                    this.openGesuch(antrag, 'gesuch.verfuegen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.verfuegen',
+                        {gesuchId: antrag.antragId},
+                        isCtrlKeyPressed);
                 } else {
-                    this.openGesuch(antrag, 'gesuch.betreuungen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.betreuungen',
+                        {gesuchId: antrag.antragId},
+                        isCtrlKeyPressed);
                 }
             } else {
-                this.openGesuch(antrag, 'gesuch.fallcreation', isCtrlKeyPressed);
+                this.openGesuch(antrag, 'gesuch.fallcreation',
+                    {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId},
+                    isCtrlKeyPressed);
             }
         }
     }
@@ -95,15 +101,16 @@ export class FaelleListViewController {
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
      * @param antrag
      * @param urlToGoTo
+     * @param params
      * @param isCtrlKeyPressed true if user pressed ctrl when clicking
      */
-    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
+    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, params: any, isCtrlKeyPressed: boolean): void {
         if (antrag) {
             if (isCtrlKeyPressed) {
-                let url = this.$state.href(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                let url = this.$state.href(urlToGoTo, params);
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go(urlToGoTo, params);
             }
         }
     }
