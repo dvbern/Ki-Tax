@@ -103,7 +103,7 @@ public class FinanzielleSituationContainer extends AbstractEntity {
 		this.finanzielleSituationJA = finanzielleSituationJA;
 	}
 
-
+	@Nonnull
 	public FinanzielleSituationContainer copyFinanzielleSituationContainer(
 			@Nonnull FinanzielleSituationContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
 		super.copyAbstractEntity(target, copyType);
@@ -116,19 +116,11 @@ public class FinanzielleSituationContainer extends AbstractEntity {
 			target.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyFinanzielleSituation(new FinanzielleSituation(), copyType));
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-
-//	public FinanzielleSituationContainer copyForMutation(FinanzielleSituationContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
-//		super.copyForMutation(mutation);
-//		mutation.setGesuchsteller(gesuchstellerMutation);
-//		mutation.setJahr(this.getJahr());
-//		mutation.setFinanzielleSituationGS(null);
-//		mutation.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyForMutation(new FinanzielleSituation()));
-//		return mutation;
-//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

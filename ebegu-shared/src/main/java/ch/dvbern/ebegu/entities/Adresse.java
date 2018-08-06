@@ -187,6 +187,7 @@ public class Adresse extends AbstractDateRangedEntity {
 			EbeguUtil.isSameOrNullStrings(getOrganisation(), otherAdr.getOrganisation());
 	}
 
+	@Nonnull
 	public Adresse copyAdresse(@Nonnull Adresse target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setStrasse(this.getStrasse());
@@ -199,27 +200,4 @@ public class Adresse extends AbstractDateRangedEntity {
 		target.setOrganisation(this.getOrganisation());
 		return target;
 	}
-
-//	public Adresse copyForMutation(Adresse mutation) {
-//		super.copyForMutation(mutation);
-//		copyForMutationOrErneuerung(mutation);
-//		return mutation;
-//	}
-//
-//	public Adresse copyForErneuerung(Adresse mutation) {
-//		super.copyForErneuerung(mutation);
-//		copyForMutationOrErneuerung(mutation);
-//		return mutation;
-//	}
-//
-//	private void copyForMutationOrErneuerung(Adresse mutation) {
-//		mutation.setStrasse(this.getStrasse());
-//		mutation.setHausnummer(this.getHausnummer());
-//		mutation.setZusatzzeile(this.getZusatzzeile());
-//		mutation.setPlz(this.getPlz());
-//		mutation.setOrt(this.getOrt());
-//		mutation.setLand(this.getLand());
-//		mutation.setGemeinde(this.getGemeinde());
-//		mutation.setOrganisation(this.getOrganisation());
-//	}
 }

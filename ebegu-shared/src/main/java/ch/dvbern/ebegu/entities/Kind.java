@@ -138,8 +138,7 @@ public class Kind extends AbstractPersonEntity {
 		this.pensumFachstelle = pensumFachstelle;
 	}
 
-
-
+	@Nonnull
 	public Kind copyKind(@Nonnull Kind target, @Nonnull AntragCopyType copyType, @Nonnull Gesuchsperiode gesuchsperiode) {
 		super.copyAbstractPersonEntity(target, copyType);
 		target.setWohnhaftImGleichenHaushalt(this.getWohnhaftImGleichenHaushalt());
@@ -159,13 +158,16 @@ public class Kind extends AbstractPersonEntity {
 		case ERNEUERUNG:
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			break;
+		case ERNEUERUNG_NEUES_DOSSIER:
+			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			break;
 		}
 		return target;
 	}
 
 	private void copyFachstelle(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
 		if (this.getPensumFachstelle() != null) {
-			target.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
+			target.setPensumFachstelle(this.getPensumFachstelle().copyPensumFachstelle(new PensumFachstelle(), copyType));
 		}
 	}
 
@@ -173,42 +175,10 @@ public class Kind extends AbstractPersonEntity {
 		if (this.getPensumFachstelle() != null) {
 			// Fachstelle nur kopieren, wenn sie noch gueltig ist
 			if (!this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
-				target.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
+				target.setPensumFachstelle(this.getPensumFachstelle().copyPensumFachstelle(new PensumFachstelle(), copyType));
 			}
 		}
 	}
-
-
-//	@Nonnull
-//	public Kind copyForMutation(@Nonnull Kind mutation) {
-//		if (this.getPensumFachstelle() != null) {
-//			mutation.setPensumFachstelle(this.getPensumFachstelle().copyForMutation(new PensumFachstelle()));
-//		}
-////		mutation.setEinschulungTyp(this.getEinschulungTyp());
-////		return copyForMutationOrErneuerung(mutation);
-//	}
-//
-//	@SuppressWarnings("PMD.CollapsibleIfStatements")
-//	@Nonnull
-//	public Kind copyForErneuerung(@Nonnull Kind folgegesuchKind, @Nonnull Gesuchsperiode gesuchsperiodeFolgegesuch) {
-//		if (this.getPensumFachstelle() != null) {
-//			// Fachstelle nur kopieren, wenn sie noch gueltig ist
-//			if (!this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiodeFolgegesuch.getGueltigkeit().getGueltigAb())) {
-//				folgegesuchKind.setPensumFachstelle(this.getPensumFachstelle().copyForErneuerung(new PensumFachstelle()));
-//			}
-//		}
-//		// Beim Erneuerungsgesuch wird der EinschulungTyp NICHT kopiert
-////		return copyForMutationOrErneuerung(folgegesuchKind);
-//	}
-
-//	@Nonnull
-//	private Kind copyForMutationOrErneuerung(@Nonnull Kind mutation) {
-//		mutation.setWohnhaftImGleichenHaushalt(this.getWohnhaftImGleichenHaushalt());
-//		mutation.setKinderabzug(this.getKinderabzug());
-//		mutation.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
-//		mutation.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
-//		return mutation;
-//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

@@ -150,6 +150,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractEntity {
 		this.geleisteteAlimente = geleisteteAlimente;
 	}
 
+	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
@@ -166,24 +167,11 @@ public abstract class AbstractFinanzielleSituation extends AbstractEntity {
 			target.setGeleisteteAlimente(this.getGeleisteteAlimente());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-
-//	public AbstractFinanzielleSituation copyForMutation(AbstractFinanzielleSituation mutation) {
-//		super.copyForMutation(mutation);
-//		mutation.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
-//		mutation.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
-//		mutation.setFamilienzulage(this.getFamilienzulage());
-//		mutation.setErsatzeinkommen(this.getErsatzeinkommen());
-//		mutation.setErhalteneAlimente(this.getErhalteneAlimente());
-//		mutation.setBruttovermoegen(this.getBruttovermoegen());
-//		mutation.setSchulden(this.getSchulden());
-//		mutation.setGeschaeftsgewinnBasisjahr(this.getGeschaeftsgewinnBasisjahr());
-//		mutation.setGeleisteteAlimente(this.getGeleisteteAlimente());
-//		return mutation;
-//	}
 
 	@SuppressWarnings("OverlyComplexMethod")
 	@Override

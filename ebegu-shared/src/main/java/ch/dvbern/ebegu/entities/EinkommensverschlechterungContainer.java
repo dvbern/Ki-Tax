@@ -115,6 +115,7 @@ public class EinkommensverschlechterungContainer extends AbstractEntity {
 		this.gesuchstellerContainer = gesuchsteller;
 	}
 
+	@Nonnull
 	public EinkommensverschlechterungContainer copyEinkommensverschlechterungContainer(@Nonnull EinkommensverschlechterungContainer target,
 			@Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
 
@@ -133,24 +134,11 @@ public class EinkommensverschlechterungContainer extends AbstractEntity {
 			}
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-
-//	public EinkommensverschlechterungContainer copyForMutation(EinkommensverschlechterungContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
-//		super.copyForMutation(mutation);
-//		mutation.setGesuchsteller(gesuchstellerMutation);
-//		mutation.setEkvGSBasisJahrPlus1(null);
-//		mutation.setEkvGSBasisJahrPlus2(null);
-//		if (this.getEkvJABasisJahrPlus1() != null) {
-//			mutation.setEkvJABasisJahrPlus1(this.getEkvJABasisJahrPlus1().copyForMutation(new Einkommensverschlechterung()));
-//		}
-//		if (this.getEkvJABasisJahrPlus2() != null) {
-//			mutation.setEkvJABasisJahrPlus2(this.getEkvJABasisJahrPlus2().copyForMutation(new Einkommensverschlechterung()));
-//		}
-//		return mutation;
-//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

@@ -217,7 +217,9 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			nettolohnOkt, nettolohnNov, nettolohnDez, nettolohnZus);
 	}
 
+	@Nonnull
 	public Einkommensverschlechterung copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
@@ -238,29 +240,11 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-
-//	public Einkommensverschlechterung copyForMutation(Einkommensverschlechterung mutation) {
-//		super.copyForMutation(mutation);
-//		mutation.setNettolohnJan(this.getNettolohnJan());
-//		mutation.setNettolohnFeb(this.getNettolohnFeb());
-//		mutation.setNettolohnMrz(this.getNettolohnMrz());
-//		mutation.setNettolohnApr(this.getNettolohnApr());
-//		mutation.setNettolohnMai(this.getNettolohnMai());
-//		mutation.setNettolohnJun(this.getNettolohnJun());
-//		mutation.setNettolohnJul(this.getNettolohnJul());
-//		mutation.setNettolohnAug(this.getNettolohnAug());
-//		mutation.setNettolohnSep(this.getNettolohnSep());
-//		mutation.setNettolohnOkt(this.getNettolohnOkt());
-//		mutation.setNettolohnNov(this.getNettolohnNov());
-//		mutation.setNettolohnDez(this.getNettolohnDez());
-//		mutation.setNettolohnZus(this.getNettolohnZus());
-//		mutation.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
-//		return mutation;
-//	}
 
 	@SuppressWarnings("OverlyComplexMethod")
 	@Override

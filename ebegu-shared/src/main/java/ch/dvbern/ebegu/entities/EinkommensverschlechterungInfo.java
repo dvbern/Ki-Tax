@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
@@ -200,20 +202,29 @@ public class EinkommensverschlechterungInfo extends AbstractEntity {
 		this.ekvBasisJahrPlus2Annulliert = ekvBasisJahrPlus2Annulliert;
 	}
 
-	public EinkommensverschlechterungInfo copyForMutation(EinkommensverschlechterungInfo mutation) {
-		super.copyForMutation(mutation);
-		mutation.setEinkommensverschlechterung(this.getEinkommensverschlechterung());
-		mutation.setEkvFuerBasisJahrPlus1(this.getEkvFuerBasisJahrPlus1());
-		mutation.setEkvFuerBasisJahrPlus2(this.getEkvFuerBasisJahrPlus2());
-		mutation.setGemeinsameSteuererklaerung_BjP1(this.getGemeinsameSteuererklaerung_BjP1());
-		mutation.setGemeinsameSteuererklaerung_BjP2(this.getGemeinsameSteuererklaerung_BjP2());
-		mutation.setGrundFuerBasisJahrPlus1(this.getGrundFuerBasisJahrPlus1());
-		mutation.setGrundFuerBasisJahrPlus2(this.getGrundFuerBasisJahrPlus2());
-		mutation.setStichtagFuerBasisJahrPlus1(this.getStichtagFuerBasisJahrPlus1());
-		mutation.setStichtagFuerBasisJahrPlus2(this.getStichtagFuerBasisJahrPlus2());
-		mutation.setEkvBasisJahrPlus1Annulliert(this.getEkvBasisJahrPlus1Annulliert());
-		mutation.setEkvBasisJahrPlus2Annulliert(this.getEkvBasisJahrPlus2Annulliert());
-		return mutation;
+	@Nonnull
+	public EinkommensverschlechterungInfo copyEinkommensverschlechterungInfo(@Nonnull EinkommensverschlechterungInfo target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setEinkommensverschlechterung(this.getEinkommensverschlechterung());
+			target.setEkvFuerBasisJahrPlus1(this.getEkvFuerBasisJahrPlus1());
+			target.setEkvFuerBasisJahrPlus2(this.getEkvFuerBasisJahrPlus2());
+			target.setGemeinsameSteuererklaerung_BjP1(this.getGemeinsameSteuererklaerung_BjP1());
+			target.setGemeinsameSteuererklaerung_BjP2(this.getGemeinsameSteuererklaerung_BjP2());
+			target.setGrundFuerBasisJahrPlus1(this.getGrundFuerBasisJahrPlus1());
+			target.setGrundFuerBasisJahrPlus2(this.getGrundFuerBasisJahrPlus2());
+			target.setStichtagFuerBasisJahrPlus1(this.getStichtagFuerBasisJahrPlus1());
+			target.setStichtagFuerBasisJahrPlus2(this.getStichtagFuerBasisJahrPlus2());
+			target.setEkvBasisJahrPlus1Annulliert(this.getEkvBasisJahrPlus1Annulliert());
+			target.setEkvBasisJahrPlus2Annulliert(this.getEkvBasisJahrPlus2Annulliert());
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Transient

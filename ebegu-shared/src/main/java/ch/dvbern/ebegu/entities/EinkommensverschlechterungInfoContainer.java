@@ -24,6 +24,7 @@ import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -70,14 +71,6 @@ public class EinkommensverschlechterungInfoContainer extends AbstractEntity {
 		}
 	}
 
-	public EinkommensverschlechterungInfoContainer copyForMutation(EinkommensverschlechterungInfoContainer mutation, Gesuch mutationGesuch) {
-		super.copyForMutation(mutation);
-		mutation.setGesuch(mutationGesuch);
-		mutation.setEinkommensverschlechterungInfoGS(null);
-		mutation.setEinkommensverschlechterungInfoJA(getEinkommensverschlechterungInfoJA().copyForMutation(new EinkommensverschlechterungInfo()));
-		return mutation;
-	}
-
 	public EinkommensverschlechterungInfo getEinkommensverschlechterungInfoGS() {
 		return einkommensverschlechterungInfoGS;
 	}
@@ -106,6 +99,25 @@ public class EinkommensverschlechterungInfoContainer extends AbstractEntity {
 			(gesuch.getEinkommensverschlechterungInfoContainer() == null || !gesuch.getEinkommensverschlechterungInfoContainer().equals(this))) {
 			gesuch.setEinkommensverschlechterungInfoContainer(this);
 		}
+	}
+
+	@Nonnull
+	public EinkommensverschlechterungInfoContainer copyEinkommensverschlechterungInfoContainer(
+			@Nonnull EinkommensverschlechterungInfoContainer target, @Nonnull AntragCopyType copyType, @Nonnull Gesuch targetGesuch) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setGesuch(targetGesuch);
+			target.setEinkommensverschlechterungInfoGS(null);
+			target.setEinkommensverschlechterungInfoJA(getEinkommensverschlechterungInfoJA().copyEinkommensverschlechterungInfo(
+				new EinkommensverschlechterungInfo(), copyType));
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Override

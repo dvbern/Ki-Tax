@@ -269,23 +269,12 @@ public abstract class AbstractEntity implements Serializable {
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setVorgaengerId(null);
 			break;
 		}
 		return target;
 	}
-
-//	@Nonnull
-//	public AbstractEntity copyForMutation(@Nonnull AbstractEntity mutation) {
-//		mutation.setVorgaengerId(this.getId());
-//		return mutation;
-//	}
-//
-//	@Nonnull
-//	public AbstractEntity copyBase(@Nonnull AbstractEntity folgeEntity) {
-//		folgeEntity.setVorgaengerId(null); // Wir verlinken exlizit nicht mit der Vorperiode
-//		return folgeEntity;
-//	}
 
 	public abstract boolean isSame(AbstractEntity other);
 }

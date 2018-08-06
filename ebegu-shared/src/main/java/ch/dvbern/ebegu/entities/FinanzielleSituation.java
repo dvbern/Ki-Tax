@@ -86,6 +86,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
+	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
 		case MUTATION:
@@ -96,18 +97,11 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-
-//	public FinanzielleSituation copyForMutation(FinanzielleSituation mutation) {
-//		super.copyAbstractFinanzielleSituation(mutation);
-//		mutation.setNettolohn(this.getNettolohn());
-//		mutation.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
-//		mutation.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
-//		return mutation;
-//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

@@ -93,31 +93,11 @@ public class GesuchstellerAdresse extends Adresse {
 		return AdresseTyp.RECHNUNGSADRESSE == this.getAdresseTyp();
 	}
 
+	@Nonnull
 	public GesuchstellerAdresse copyGesuchstellerAdresse(@Nonnull GesuchstellerAdresse target, @Nonnull AntragCopyType copyType) {
 		super.copyAdresse(target, copyType);
 		target.setAdresseTyp(this.getAdresseTyp());
 		target.setNichtInGemeinde(this.nichtInGemeinde);
 		return target;
 	}
-
-//
-//
-//	@Nonnull
-//	private GesuchstellerAdresse copyForMutationOrErneuerung(@Nonnull GesuchstellerAdresse mutation) {
-//		mutation.setAdresseTyp(this.getAdresseTyp());
-//		mutation.setNichtInGemeinde(this.nichtInGemeinde);
-//		return mutation;
-//	}
-//
-//	@Nonnull
-//	public GesuchstellerAdresse copyForMutation(@Nonnull GesuchstellerAdresse mutation) {
-//		super.copyForMutation(mutation);
-//		return copyForMutationOrErneuerung(mutation);
-//	}
-//
-//	@Nonnull
-//	public GesuchstellerAdresse copyForErneuerung(@Nonnull GesuchstellerAdresse mutation) {
-//		super.copyForErneuerung(mutation);
-//		return copyForMutationOrErneuerung(mutation);
-//	}
 }

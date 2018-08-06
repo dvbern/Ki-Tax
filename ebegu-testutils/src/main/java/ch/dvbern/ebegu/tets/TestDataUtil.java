@@ -127,6 +127,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -256,7 +257,7 @@ public final class TestDataUtil {
 	public static Einkommensverschlechterung createDefaultEinkommensverschlechterung() {
 		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
 		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
-		einkommensverschlechterung.setNettolohnJan(BigDecimal.ONE);
+		einkommensverschlechterung.setNettolohnJan(MathUtil.DEFAULT.from(BigDecimal.ONE));
 		return einkommensverschlechterung;
 	}
 

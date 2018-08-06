@@ -306,7 +306,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
-		if (extractFamiliensituation() != null && extractFamiliensituation().hasSecondGesuchsteller()) {
+		if (extractFamiliensituation() != null && Objects.requireNonNull(extractFamiliensituation()).hasSecondGesuchsteller()) {
 			return finanzDatenDTO_zuZweit;
 		}
 		return finanzDatenDTO_alleine;
@@ -655,7 +655,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		//noinspection SimplifyStreamApiCallChains
 		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.collect(Collectors.toList());
-		return !allBetreuungen.isEmpty() && allBetreuungen.stream().allMatch(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt());
+		return !allBetreuungen.isEmpty() && allBetreuungen.stream().allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
 	}
 
 	@Transient
@@ -723,6 +723,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		familiensituationContainer.setFamiliensituationJA(new Familiensituation());
 	}
 
+	@Nonnull
 	public Gesuch copyGesuch(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, @Nonnull Eingangsart targetEingangsart,
 			@Nonnull Dossier targetDossier, @Nonnull Gesuchsperiode targetGesuchsperiode) {
 		super.copyAbstractEntity(target, copyType);
@@ -775,22 +776,19 @@ public class Gesuch extends AbstractEntity implements Searchable {
 			copyKindContainer(target, copyType);
 			break;
 		}
-
-
-
 		return target;
 	}
 
 	private void copyFamiliensituation(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		if (this.getFamiliensituationContainer() != null) {
-			target.setFamiliensituationContainer(this.getFamiliensituationContainer().copyForErneuerung(new FamiliensituationContainer())); //TODO
-//			mutation.setFamiliensituationContainer(this.getFamiliensituationContainer().copyForMutation(new FamiliensituationContainer(), this.isMutation()));
+			target.setFamiliensituationContainer(this.getFamiliensituationContainer().copyFamiliensituationContainer(new FamiliensituationContainer(), copyType));
 		}
 	}
 
 	private void copyEinkommensverschlechterungInfoContainer(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		if (this.getEinkommensverschlechterungInfoContainer() != null) {
-			target.setEinkommensverschlechterungInfoContainer(this.getEinkommensverschlechterungInfoContainer().copyForMutation(new EinkommensverschlechterungInfoContainer(), target)); //TODO
+			target.setEinkommensverschlechterungInfoContainer(this.getEinkommensverschlechterungInfoContainer()
+				.copyEinkommensverschlechterungInfoContainer (new EinkommensverschlechterungInfoContainer(), copyType, target));
 		}
 	}
 
@@ -827,7 +825,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		if (this.getDokumentGrunds() != null) {
 			target.setDokumentGrunds(new HashSet<>());
 			for (DokumentGrund dokumentGrund : this.getDokumentGrunds()) {
-				target.addDokumentGrund(dokumentGrund.copyForMutation(new DokumentGrund())); //TODO
+				target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
 			}
 		}
 	}
@@ -942,6 +940,4 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public void setPreStatus(AntragStatus preStatus) {
 		this.preStatus = preStatus;
 	}
-
-
 }

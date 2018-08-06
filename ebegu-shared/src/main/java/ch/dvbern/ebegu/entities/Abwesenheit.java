@@ -15,11 +15,13 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -56,8 +58,9 @@ public class Abwesenheit extends AbstractDateRangedEntity implements Comparable<
 		return builder.toComparison();
 	}
 
-	public Abwesenheit copyForMutation(Abwesenheit mutation) {
-		return (Abwesenheit) super.copyForMutation(mutation);
+	@Nonnull
+	public Abwesenheit copyAbwesenheit(@Nonnull Abwesenheit target, @Nonnull AntragCopyType copyType) {
+		return (Abwesenheit) super.copyAbstractEntity(target, copyType);
 	}
 
 	@Override

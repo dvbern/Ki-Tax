@@ -117,27 +117,6 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 		return target;
 	}
 
-//	@Nonnull
-//	public AbstractPersonEntity copyForMutation(@Nonnull AbstractPersonEntity mutation) {
-//		super.copyForMutation(mutation);
-//		return copyForMutationOrErneuerung(mutation);
-//	}
-//
-//	@Nonnull
-//	public AbstractPersonEntity copyForErneuerung(@Nonnull AbstractPersonEntity folgeEntity) {
-//		super.copyBase(folgeEntity);
-//		return copyForMutationOrErneuerung(folgeEntity);
-//	}
-//
-//	@Nonnull
-//	private AbstractPersonEntity copyForMutationOrErneuerung(@Nonnull AbstractPersonEntity mutation) {
-//		mutation.setGeschlecht(this.getGeschlecht());
-//		mutation.setVorname(this.getVorname());
-//		mutation.setNachname(this.getNachname());
-//		mutation.setGeburtsdatum(this.getGeburtsdatum());
-//		return mutation;
-//	}
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

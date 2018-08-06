@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckFamiliensituationContainerComplete;
@@ -63,24 +65,24 @@ public class FamiliensituationContainer extends AbstractEntity {
 	}
 
 	@Nonnull
-	public FamiliensituationContainer copyForMutation(@Nonnull FamiliensituationContainer mutation, boolean toCopyisMutation) {
-		super.copyForMutation(mutation);
-		mutation.setFamiliensituationGS(null);
-		mutation.setFamiliensituationJA(getFamiliensituationJA().copyForMutation(new Familiensituation()));
-		if (toCopyisMutation) {
-			mutation.setFamiliensituationErstgesuch(this.getFamiliensituationErstgesuch().copyForMutation(new Familiensituation()));
-		} else { // beim ErstGesuch holen wir direkt die normale Familiensituation
-			mutation.setFamiliensituationErstgesuch(this.getFamiliensituationJA().copyForMutation(new Familiensituation()));
-		}
-		return mutation;
-	}
+	public FamiliensituationContainer copyFamiliensituationContainer(@Nonnull FamiliensituationContainer target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		target.setFamiliensituationGS(null);
+		Objects.requireNonNull(getFamiliensituationJA());
+		target.setFamiliensituationJA(getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
 
-	@Nonnull
-	public FamiliensituationContainer copyForErneuerung(@Nonnull FamiliensituationContainer folgeEntity) {
-		super.copyBase(folgeEntity);
-		folgeEntity.setFamiliensituationGS(null);
-		folgeEntity.setFamiliensituationJA(getFamiliensituationJA().copyForErneuerung(new Familiensituation()));
-		return folgeEntity;
+		switch (copyType) {
+		case MUTATION:
+			Objects.requireNonNull(this.getFamiliensituationErstgesuch());
+			target.setFamiliensituationErstgesuch(this.getFamiliensituationErstgesuch().copyFamiliensituation(new Familiensituation(), copyType));
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			target.setFamiliensituationErstgesuch(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
+			break;
+		}
+		return target;
 	}
 
 	@Nullable
@@ -117,9 +119,11 @@ public class FamiliensituationContainer extends AbstractEntity {
 
 	@Nonnull
 	public Familiensituation getFamiliensituationAm(LocalDate stichtag) {
+		Objects.requireNonNull(getFamiliensituationJA());
 		if (getFamiliensituationJA().getAenderungPer() == null || getFamiliensituationJA().getAenderungPer().isBefore(stichtag)) {
 			return getFamiliensituationJA();
 		} else {
+			Objects.requireNonNull(getFamiliensituationErstgesuch());
 			return getFamiliensituationErstgesuch();
 		}
 	}

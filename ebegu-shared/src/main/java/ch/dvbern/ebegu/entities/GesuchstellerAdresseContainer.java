@@ -188,6 +188,7 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 		return this.gesuchstellerAdresseJA != null ? this.gesuchstellerAdresseJA.getOrganisation() : null;
 	}
 
+	@Nonnull
 	public GesuchstellerAdresseContainer copyGesuchstellerAdresseContainer(@Nonnull GesuchstellerAdresseContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer gsContainer) {
 		super.copyAbstractEntity(target, copyType);
 		target.setGesuchstellerContainer(gsContainer);
@@ -197,31 +198,6 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 		}
 		return target;
 	}
-
-//	@Nonnull
-//	private GesuchstellerAdresseContainer copyForMutationOrErneuerung(@Nonnull GesuchstellerAdresseContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerContainer) {
-//		mutation.setGesuchstellerContainer(gesuchstellerContainer);
-//		mutation.setGesuchstellerAdresseGS(null);
-//		return mutation;
-//	}
-
-//	@Nonnull
-//	public GesuchstellerAdresseContainer copyForMutation(@Nonnull GesuchstellerAdresseContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerContainer) {
-//		super.copyForMutation(mutation);
-//		if (this.getGesuchstellerAdresseJA() != null) {
-//			mutation.setGesuchstellerAdresseJA(this.getGesuchstellerAdresseJA().copyForMutation(new GesuchstellerAdresse()));
-//		}
-//		return copyForMutationOrErneuerung(mutation, gesuchstellerContainer);
-//	}
-//
-//	@Nonnull
-//	public GesuchstellerAdresseContainer copyForErneuerung(@Nonnull GesuchstellerAdresseContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerContainer) {
-//		super.copyBase(mutation);
-//		if (this.getGesuchstellerAdresseJA() != null) {
-//			mutation.setGesuchstellerAdresseJA(this.getGesuchstellerAdresseJA().copyForErneuerung(new GesuchstellerAdresse()));
-//		}
-//		return copyForMutationOrErneuerung(mutation, gesuchstellerContainer);
-//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

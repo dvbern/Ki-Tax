@@ -145,6 +145,7 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		this.korrespondenzSprache = korrespondenzSprachen;
 	}
 
+	@Nonnull
 	public Gesuchsteller copyGesuchsteller(@Nonnull Gesuchsteller target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractPersonEntity(target, copyType);
 		target.setMail(this.getMail());
@@ -157,31 +158,6 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		target.setKorrespondenzSprache(this.getKorrespondenzSprache());
 		return target;
 	}
-
-//	@Nonnull
-//	private Gesuchsteller copyForMutationOrErneuerung(@Nonnull Gesuchsteller mutation) {
-//		mutation.setMail(this.getMail());
-//		mutation.setMobile(this.getMobile());
-//		mutation.setTelefon(this.getTelefon());
-//		mutation.setTelefonAusland(this.getTelefonAusland());
-//		mutation.setEwkPersonId(this.getEwkPersonId());
-//		mutation.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
-//		mutation.setDiplomatenstatus(this.isDiplomatenstatus());
-//		mutation.setKorrespondenzSprache(this.getKorrespondenzSprache());
-//		return mutation;
-//	}
-//
-//	@Nonnull
-//	public Gesuchsteller copyForMutation(@Nonnull Gesuchsteller mutation) {
-//		super.copyForMutation(mutation);
-//		return copyForMutationOrErneuerung(mutation);
-//	}
-//
-//	@Nonnull
-//	public Gesuchsteller copyForErneuerung(@Nonnull Gesuchsteller mutation) {
-//		super.copyForErneuerung(mutation);
-//		return copyForMutationOrErneuerung(mutation);
-//	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

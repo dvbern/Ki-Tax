@@ -148,13 +148,12 @@ public class Erwerbspensum extends AbstractPensumEntity {
 		this.bezeichnung = bezeichnung;
 	}
 
-
 	@Nonnull
 	public Erwerbspensum copyErwerbspensum(@Nonnull Erwerbspensum target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractPensumEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
-			super.copyAbstractDateRangedEntity(target, copyType);
 			target.setTaetigkeit(this.getTaetigkeit());
 			target.setZuschlagZuErwerbspensum(this.getZuschlagZuErwerbspensum());
 			target.setZuschlagsgrund(this.getZuschlagsgrund());
@@ -162,21 +161,11 @@ public class Erwerbspensum extends AbstractPensumEntity {
 			target.setBezeichnung(this.getBezeichnung());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-
-//
-//	public Erwerbspensum copyForMutation(Erwerbspensum mutation) {
-//		super.copyForMutation(mutation);
-//		mutation.setTaetigkeit(this.getTaetigkeit());
-//		mutation.setZuschlagZuErwerbspensum(this.getZuschlagZuErwerbspensum());
-//		mutation.setZuschlagsgrund(this.getZuschlagsgrund());
-//		mutation.setZuschlagsprozent(this.getZuschlagsprozent());
-//		mutation.setBezeichnung(this.getBezeichnung());
-//		return mutation;
-//	}
 
 	@Override
 	public String toString() {

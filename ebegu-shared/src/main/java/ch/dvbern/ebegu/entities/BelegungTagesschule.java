@@ -26,6 +26,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 
@@ -84,14 +85,20 @@ public class BelegungTagesschule extends AbstractEntity {
 	}
 
 	@Nonnull
-	public BelegungTagesschule copyForMutation(@Nonnull BelegungTagesschule mutation, @Nonnull Betreuung parentBetreuung) {
-		super.copyForMutation(mutation);
-		mutation.setEintrittsdatum(LocalDate.from(eintrittsdatum));
-
-		// Don't copy them, because it's a ManyToMany realation
-		mutation.getModuleTagesschule().clear();
-		mutation.getModuleTagesschule().addAll(moduleTagesschule);
-
-		return mutation;
+	public BelegungTagesschule copyBelegungTagesschule(@Nonnull BelegungTagesschule target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setEintrittsdatum(LocalDate.from(eintrittsdatum));
+			// Don't copy them, because it's a ManyToMany realation
+			target.getModuleTagesschule().clear();
+			target.getModuleTagesschule().addAll(moduleTagesschule);
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }

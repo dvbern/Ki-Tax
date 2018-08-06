@@ -100,9 +100,9 @@ public class ErwerbspensumContainer extends AbstractEntity {
 		return EbeguUtil.isSameObject(getErwerbspensumJA(), otherErwerbspensumContainer.getErwerbspensumJA());
 	}
 
-
+	@Nonnull
 	public ErwerbspensumContainer copyErwerbspensumContainer(
-		@Nonnull ErwerbspensumContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
+			@Nonnull ErwerbspensumContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer targetGesuchstellerContainer) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
@@ -114,16 +114,9 @@ public class ErwerbspensumContainer extends AbstractEntity {
 			}
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
 	}
-//
-//
-//
-//	public ErwerbspensumContainer copyForMutation(@Nonnull ErwerbspensumContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerMutation) {
-//		super.copyForMutation(mutation);
-//
-//		return mutation;
-//	}
 }
