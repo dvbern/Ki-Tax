@@ -14,7 +14,7 @@
  */
 
 'use strict';
-var path = require('path');
+const path = require('path');
 
 module.exports = function (config) {
     config.set({
@@ -31,27 +31,9 @@ module.exports = function (config) {
         ],
         // list of files / patterns to load in the browser
         // we are building the test environment in ./spec-bundle.ts
-        // files: [
-        //     'src/polyfills.ts',
-        //     // Required (scoped) vendor modules
-        //     'src/vendor.ts',
-		//
-        //     // Global vendor modules (modules listed in webpack.ProvidePlugin need to be included here)
-        //     'node_modules/jquery/dist/jquery.js',
-        //     'node_modules/moment/moment.js',
-		//
-        //     // Unit Testing vendor modules
-        //     'node_modules/angular-mocks/angular-mocks.js',
-		//
-        //     // The app itself
-        //     'src/app/app.angularjs.module.ts',
-		//
-        //     // Tests
-        //     'src/test.ts',    //ng2 tests
-        //     'config/spec-bundle.ts' //ng1  tests
-        //     // alterntavie zum spec bundle. Dauert aber zu lange, da für jedes spec file 1 Webpack bundle erstellt wird
-        //     // 'src/**/*.spec.ts'
-        // ],
+        files: [
+            {pattern: 'src/assets/**', included: false, serve: true},
+        ],
         client: {
             clearContext: false // leave Jasmine Spec Runner output visible in browser
         },
@@ -132,8 +114,8 @@ module.exports = function (config) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [
-            // 'Chrome',
-            'ChromeHeadless'
+            'Chrome',
+            // 'ChromeHeadless'
         ],
 
         // timeout when there's no activity, increased because the start up time is quite long with webpack
