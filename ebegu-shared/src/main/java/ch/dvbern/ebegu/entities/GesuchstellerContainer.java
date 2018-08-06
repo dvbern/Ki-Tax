@@ -296,6 +296,7 @@ public class GesuchstellerContainer extends AbstractEntity implements Searchable
 		}
 	}
 
+	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	private void copyAdressenAktuellUndZukuenftig(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
 		for (GesuchstellerAdresseContainer gesuchstellerAdresse : this.getAdressen()) {
 			if (gesuchstellerAdresse.getGesuchstellerAdresseJA() != null) {

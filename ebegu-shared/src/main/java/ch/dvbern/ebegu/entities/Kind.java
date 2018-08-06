@@ -172,11 +172,9 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	private void copyFachstelleIfStillValid(@Nonnull Kind target, @Nonnull AntragCopyType copyType, @Nonnull Gesuchsperiode gesuchsperiode) {
-		if (this.getPensumFachstelle() != null) {
-			// Fachstelle nur kopieren, wenn sie noch gueltig ist
-			if (!this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
-				target.setPensumFachstelle(this.getPensumFachstelle().copyPensumFachstelle(new PensumFachstelle(), copyType));
-			}
+		// Fachstelle nur kopieren, wenn sie noch gueltig ist
+		if (this.getPensumFachstelle() != null && !this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+			target.setPensumFachstelle(this.getPensumFachstelle().copyPensumFachstelle(new PensumFachstelle(), copyType));
 		}
 	}
 

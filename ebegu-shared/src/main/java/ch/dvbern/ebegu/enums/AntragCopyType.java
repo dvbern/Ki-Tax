@@ -22,5 +22,5 @@ public enum AntragCopyType {
 	MUTATION,
 	ERNEUERUNG,
 	MUTATION_NEUES_DOSSIER,
-	ERNEUERUNG_NEUES_DOSSIER //TODO (hefr) überall anpassen!!!
+	ERNEUERUNG_NEUES_DOSSIER
 }
