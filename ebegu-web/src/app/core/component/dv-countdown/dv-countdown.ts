@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IIntervalService} from 'angular';
+import {IComponentOptions, IController, IIntervalService} from 'angular';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkDialogController} from '../../../../gesuch/dialog/OkDialogController';
@@ -37,7 +37,7 @@ export class DvCountdownComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DvCountdownController {
+export class DvCountdownController implements IController {
 
     static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
 

@@ -13,14 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory} from 'angular';
+import {IController, IDirective, IDirectiveFactory} from 'angular';
 import * as moment from 'moment';
 import DateUtil from '../../../../utils/DateUtil';
 import IAttributes = angular.IAttributes;
 import ILogService = angular.ILogService;
 import INgModelController = angular.INgModelController;
-
-const template = require('./dv-timepicker.html');
 
 export class DVTimepicker implements IDirective {
     restrict = 'E';
@@ -39,7 +37,7 @@ export class DVTimepicker implements IDirective {
         dvMinDateTime: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvMaxDateTime: '<?'  // Kann als String im Format allowedFormats oder als Moment angegeben werden
     };
-    template = template;
+    template = require('./dv-timepicker.html');
 
     /* constructor() { this.link = this.unboundLink.bind(this); }*/
     static factory(): IDirectiveFactory {
@@ -49,7 +47,7 @@ export class DVTimepicker implements IDirective {
     }
 }
 
-export class TimepickerController {
+export class TimepickerController implements IController {
     static $inject: string[] = ['$log', '$attrs'];
     static allowedFormats: string[] = ['HH:mm:ss', 'HH:mm'];
     static defaultFormat: string = 'HH:mm';

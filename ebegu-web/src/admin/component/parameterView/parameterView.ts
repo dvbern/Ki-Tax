@@ -38,8 +38,6 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     form: IFormController;
 
-    ebeguParameterRS: EbeguParameterRS;
-
     gesuchsperiodenList: Array<TSGesuchsperiode> = [];
 
     jahr: number;
@@ -47,11 +45,14 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     ebeguParameterListJahr: TSEbeguParameter[]; // enthält alle Params für nur 1 Jahr
 
-    constructor(ebeguParameterRS: EbeguParameterRS, private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $translate: ITranslateService, private readonly $log: ILogService, private readonly $state: StateService,
-                private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+    constructor(public readonly ebeguParameterRS: EbeguParameterRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $translate: ITranslateService,
+                private readonly $log: ILogService,
+                private readonly $state: StateService,
+                private readonly $timeout: ITimeoutService,
+                authServiceRS: AuthServiceRS) {
         super(authServiceRS);
-        this.ebeguParameterRS = ebeguParameterRS;
         $timeout(() => {
             this.readGesuchsperioden();
             this.updateJahresabhParamList();

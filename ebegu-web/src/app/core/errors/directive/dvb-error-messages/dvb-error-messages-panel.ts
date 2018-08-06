@@ -45,7 +45,9 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     errors: Array<TSExceptionReport> = [];
     TSRoleUtil: any;
 
-    constructor(private readonly $scope: IScope, private readonly errorService: ErrorService, private readonly dvDialog: DvDialog,
+    constructor(private readonly $scope: IScope,
+                private readonly errorService: ErrorService,
+                private readonly dvDialog: DvDialog,
                 private readonly gesuchRS: GesuchRS) {
     }
 
@@ -58,6 +60,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         });
     }
 
+    // TODO hefa unterminated statement
     displayMessages = (event: any, errors: Array<TSExceptionReport>) => {
         this.errors = errors;
         this.show();
@@ -82,8 +85,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             parentController: undefined,
             elementID: undefined
         }).then(() => {   //User confirmed removal
-            this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId).then(() => {
-            });
+            this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId);
         });
     }
 
@@ -94,8 +96,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             parentController: undefined,
             elementID: undefined
         }).then(() => {   //User confirmed removal
-            this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId).then(() => {
-            });
+            this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId);
         });
     }
 

@@ -18,43 +18,43 @@
     <div class="dv-ng-navbar-wrapper">
         <div id="navbar" class="navbar-header dv-navbar-header">
             <ul class="nav navbar-nav noMargin">
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <a ui-sref="pendenzen.list-view" [textContent]="'MENU_PENDENZEN' | translate"></a>
+                    <a uiSref="pendenzen.list-view" [textContent]="'MENU_PENDENZEN' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getSchulamtRoles()">
-                    <a ui-sref="pendenzenBetreuungen.list-view" [textContent]="'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate"></a>
+                    <a uiSref="pendenzenBetreuungen.list-view" [textContent]="'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getTraegerschaftInstitutionRoles()">
-                    <a ui-sref="pendenzenBetreuungen.list-view" [textContent]="'MENU_PENDENZEN_INSTITUTION' | translate"></a>
+                    <a uiSref="pendenzenBetreuungen.list-view" [textContent]="'MENU_PENDENZEN_INSTITUTION' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getSteueramtRoles()">
-                    <a ui-sref="pendenzenSteueramt.list-view" [textContent]="'MENU_PENDENZEN_STEUERAMT' | translate"></a>
+                    <a uiSref="pendenzenSteueramt.list-view" [textContent]="'MENU_PENDENZEN_STEUERAMT' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForMenuAlleFaelle()">
-                    <a ui-sref="faelle.list" [textContent]="'MENU_ALL_FAELLE' | translate"></a>
+                    <a uiSref="faelle.list" [textContent]="'MENU_ALL_FAELLE' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForZahlungen()">
-                    <a ui-sref="zahlungsauftrag.view" [textContent]="'MENU_ZAHLUNG' | translate"></a>
+                    <a uiSref="zahlungsauftrag.view" [textContent]="'MENU_ZAHLUNG' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
-                    <a ui-sref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
+                    <a uiSref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
                 </li>
-                <li ui-sref-active="active"
+                <li uiSrefActive="active"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <dv-posteingang ui-sref="posteingang.view"></dv-posteingang>
+                    <dv-posteingang uiSref="posteingang.view"></dv-posteingang>
                 </li>
             </ul>
         </div> <!--/.nav-collapse -->
 
 
-        <div id="navbar_falleroeffnen" class="dv-ng-navbar-pull-right dv-ng-navbar-element" ui-sref-active="active"
+        <div id="navbar_falleroeffnen" class="dv-ng-navbar-pull-right dv-ng-navbar-element" uiSrefActive="active"
              *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                     <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button">
                         <i class="fa fa-plus-square"></i>

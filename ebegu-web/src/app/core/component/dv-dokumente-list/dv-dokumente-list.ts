@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService} from 'angular';
+import {IComponentOptions, ILogService, IWindowService} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
@@ -72,10 +72,17 @@ export class DVDokumenteListController {
     sonstige: boolean;
     allowedMimetypes: string = '';
 
-    constructor(private readonly uploadRS: UploadRS, private readonly gesuchModelManager: GesuchModelManager, private readonly ebeguUtil: EbeguUtil,
-                private readonly downloadRS: DownloadRS, private readonly dvDialog: DvDialog, private readonly wizardStepManager: WizardStepManager,
-                private readonly $log: ILogService, private readonly authServiceRS: AuthServiceRS, private readonly $translate: ITranslateService,
-                private readonly $window: ng.IWindowService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly uploadRS: UploadRS,
+                private readonly gesuchModelManager: GesuchModelManager,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly downloadRS: DownloadRS,
+                private readonly dvDialog: DvDialog,
+                private readonly wizardStepManager: WizardStepManager,
+                private readonly $log: ILogService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $translate: ITranslateService,
+                private readonly $window: IWindowService,
+                private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
     }
 

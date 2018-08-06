@@ -41,7 +41,6 @@ export default class DVSTPersistAntraege implements IDirective {
     link: IDirectiveLinkFn;
     obss: Subscription;
 
-    /* @ngInject */
     constructor(private readonly userRS: UserRS,
                 private readonly institutionRS: InstitutionRS,
                 private readonly authServiceRS: AuthServiceRS,

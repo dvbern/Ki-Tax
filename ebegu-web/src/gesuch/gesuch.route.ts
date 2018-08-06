@@ -15,7 +15,7 @@
 
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {DvOnboardingComponent} from '../app/core/component/dv-onboarding/dv-onboarding.component';
+import {OnboardingComponent} from '../app/core/component/dv-onboarding/onboarding.component';
 import KindRS from '../app/core/service/kindRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
@@ -46,9 +46,10 @@ export function gesuchRun(routerHelper: RouterHelper) {
 
 const ng2States: Ng2StateDeclaration[] = [
     {
-        name: 'onboarding',
+        parent: 'app',
+        name: 'nboarding',
         url: '/onboarding',
-        component: DvOnboardingComponent,
+        component: OnboardingComponent,
     },
 ];
 

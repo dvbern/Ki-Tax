@@ -31,7 +31,6 @@ export default class DVSTPersistQuicksearch implements IDirective {
     require = ['^stTable', '^dvQuicksearchList'];
     link: IDirectiveLinkFn;
 
-    /* @ngInject */
     constructor(private readonly userRS: UserRS,
                 private readonly institutionRS: InstitutionRS,
                 private readonly dVsTPersistService: DVsTPersistService,

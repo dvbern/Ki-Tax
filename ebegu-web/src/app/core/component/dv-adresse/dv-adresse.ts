@@ -13,15 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AdresseRS from '../../service/adresseRS.rest';
-import TSLand from '../../../../models/types/TSLand';
-import ListResourceRS from '../../service/listResourceRS.rest';
 import {IComponentOptions, IFormController} from 'angular';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import TSAdresseContainer from '../../../../models/TSAdresseContainer';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
+import TSAdresseContainer from '../../../../models/TSAdresseContainer';
+import TSLand from '../../../../models/types/TSLand';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import AdresseRS from '../../service/adresseRS.rest';
+import ListResourceRS from '../../service/listResourceRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class AdresseComponentConfig implements IComponentOptions {
@@ -39,28 +39,24 @@ export class AdresseComponentConfig implements IComponentOptions {
     require: any = {parentForm: '?^form'};
 }
 
-
 export class DvAdresseController {
     static $inject = ['AdresseRS', 'ListResourceRS', 'GesuchModelManager', '$translate', 'AuthServiceRS'];
 
     adresse: TSAdresseContainer;
     prefix: string;
-    adresseRS: AdresseRS;
-    $translate: ITranslateService;
     parentForm: IFormController;
     laenderList: TSLand[];
     organisation: boolean;
     TSRoleUtil = TSRoleUtil;
     showNichtInGemeinde: boolean;
-    gesuchModelManager: GesuchModelManager;
     bisherLand: string;
 
-    constructor(adresseRS: AdresseRS, listResourceRS: ListResourceRS, gesuchModelManager: GesuchModelManager,
-                $translate: ITranslateService, private readonly authServiceRS: AuthServiceRS) {
+    constructor(public readonly adresseRS: AdresseRS,
+                listResourceRS: ListResourceRS,
+                public readonly gesuchModelManager: GesuchModelManager,
+                public readonly $translate: ITranslateService,
+                private readonly authServiceRS: AuthServiceRS) {
         this.TSRoleUtil = TSRoleUtil;
-        this.adresseRS = adresseRS;
-        this.gesuchModelManager = gesuchModelManager;
-        this.$translate = $translate;
         this.bisherLand = this.getBisherLand();
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
@@ -80,7 +76,6 @@ export class DvAdresseController {
         this.adresse = undefined;
     }
 
-
     public isGesuchReadonly(): boolean {
         return this.gesuchModelManager.isGesuchReadonly();
     }
@@ -94,7 +89,7 @@ export class DvAdresseController {
     }
 
     private getBisherLand(): string {
-        if (this.getModel() &&  this.getModel().adresseGS && this.getModel().adresseGS.land) {
+        if (this.getModel() && this.getModel().adresseGS && this.getModel().adresseGS.land) {
             return this.$translate.instant('Land_' + this.getModel().adresseGS.land);
         }
         return '';

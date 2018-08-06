@@ -23,8 +23,13 @@ import IHttpPromise = angular.IHttpPromise;
 export class EbeguVorlageRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
+
     serviceURL: string;
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly upload: any,
+
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly upload: any,
                 private readonly $q: IQService) {
         this.serviceURL = REST_API + 'ebeguVorlage';
     }
@@ -58,7 +63,7 @@ export class EbeguVorlageRS {
             return this.ebeguRestUtil.parseEbeguVorlage(new TSEbeguVorlage(), response.data);
         }, (response: any) => {
             console.log('Upload File: NOT SUCCESS');
-            return this.$q.reject();
+            return this.$q.reject(response);
         }, (evt: any) => {
             const loaded: number = evt.loaded;
             const total: number = evt.total;

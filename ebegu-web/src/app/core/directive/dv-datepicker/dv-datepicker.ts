@@ -62,7 +62,8 @@ export class DatepickerController {
     dvMinDate: any;
     dvMaxDate: any;
 
-    constructor(private readonly $log: ILogService, private readonly $attrs: IAttributes) {
+    constructor(private readonly $log: ILogService,
+                private readonly $attrs: IAttributes) {
     }
 
     private static momentToString(mom: moment.Moment): string {

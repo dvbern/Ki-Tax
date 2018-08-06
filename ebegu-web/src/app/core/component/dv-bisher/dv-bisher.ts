@@ -60,7 +60,8 @@ export class DvBisher {
     bisherText: Array<string>;
     blockExisted: boolean;
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $translate: ITranslateService) {
+    constructor(private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $translate: ITranslateService) {
     }
 
     $onInit() {

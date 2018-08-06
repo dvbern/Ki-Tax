@@ -40,6 +40,7 @@ export class DVEnableElement implements IDirective {
     }
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
 
+    // TODO hefa unterminated statement
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController) => {
         // attributes.$observe funktioniert nicht. Siehe dv-show-element.ts
         scope.$watch(attributes['dvEnableAllowedRoles'], (newValue: any, oldValue: any, scope: any) => {

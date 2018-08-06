@@ -13,27 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFormController, ILogService} from 'angular';
-import AbstractAdminViewController from '../../abstractAdminView';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
-import * as moment from 'moment';
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {getTSGesuchsperiodeStatusValues, TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import GlobalCacheService from '../../../gesuch/service/globalCacheService';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import {TSDateRange} from '../../../models/types/TSDateRange';
-import {IGesuchsperiodeStateParams} from '../../admin.route';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFormController, ILogService} from 'angular';
+import * as moment from 'moment';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import GlobalCacheService from '../../../gesuch/service/globalCacheService';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {getTSGesuchsperiodeStatusValues, TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import TSEbeguParameter from '../../../models/TSEbeguParameter';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSDateRange} from '../../../models/types/TSDateRange';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import AbstractAdminViewController from '../../abstractAdminView';
+import {IGesuchsperiodeStateParams} from '../../admin.route';
+import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
 
 const template = require('./gesuchsperiodeView.html');
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
@@ -43,7 +42,6 @@ export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
 }
 
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
-
 
     static $inject = ['EbeguParameterRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log', '$stateParams',
         '$state', 'AuthServiceRS'];
@@ -56,9 +54,14 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     datumFreischaltungTagesschule: moment.Moment;
     datumFreischaltungMax: moment.Moment;
 
-    constructor(private readonly ebeguParameterRS: EbeguParameterRS, private readonly dvDialog: DvDialog, private readonly globalCacheService: GlobalCacheService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $log: ILogService, private readonly $stateParams: IGesuchsperiodeStateParams,
-                private readonly $state: StateService, authServiceRS: AuthServiceRS) {
+    constructor(private readonly ebeguParameterRS: EbeguParameterRS,
+                private readonly dvDialog: DvDialog,
+                private readonly globalCacheService: GlobalCacheService,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $log: ILogService,
+                private readonly $stateParams: IGesuchsperiodeStateParams,
+                private readonly $state: StateService,
+                authServiceRS: AuthServiceRS) {
         super(authServiceRS);
     }
 
@@ -189,7 +192,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     public ersterSchultagRequired(): boolean {
         return (EbeguUtil.isNotNullOrUndefined(this.gesuchsperiode.datumFreischaltungTagesschule)
-            &&  this.gesuchsperiode.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb))
+            && this.gesuchsperiode.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb))
             || (EbeguUtil.isNotNullOrUndefined(this.datumFreischaltungTagesschule)
                 && this.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb));
     }
@@ -207,7 +210,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public getDatumFreischaltungMax() {
-        const gueltigAb: moment.Moment  = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
+        const gueltigAb: moment.Moment = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
         return gueltigAb.subtract(1, 'days');
     }
 }

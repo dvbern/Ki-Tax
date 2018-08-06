@@ -13,19 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory} from 'angular';
-import {takeUntil} from 'rxjs/operators';
+import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import {DvDialog} from './dv-dialog/dv-dialog';
-import {FreigabeController} from '../../../gesuch/dialog/FreigabeController';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {FreigabeController} from '../../../gesuch/dialog/FreigabeController';
+import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../errors/service/ErrorService';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import ITimeoutService = angular.ITimeoutService;
+import {DvDialog} from './dv-dialog/dv-dialog';
 import IDocumentService = angular.IDocumentService;
 import ILogService = angular.ILogService;
+import ITimeoutService = angular.ITimeoutService;
 
 const FREIGEBEN_DIALOG_TEMPLATE = require('../../../gesuch/dialog/freigabe.html');
 
@@ -46,8 +46,7 @@ export class DVBarcodeListener implements IDirective {
  * is found then we open the dialog
  * The format of an expected barcode sequence is §FREIGABE|OPEN|cd85e001-403f-407f-8eb8-102c402342b6§
  */
-export class DVBarcodeController {
-
+export class DVBarcodeController implements IController {
 
     static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
 
@@ -56,8 +55,13 @@ export class DVBarcodeController {
     private barcodeBuffer: string[] = [];
     private barcodeReadtimeout: any = null;
 
-    constructor(private readonly $document: IDocumentService, private readonly $timeout: ITimeoutService, private readonly dVDialog: DvDialog, private readonly authService: AuthServiceRS,
-                private readonly errorService: ErrorService, private readonly $log: ILogService, private readonly authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly $document: IDocumentService,
+                private readonly $timeout: ITimeoutService,
+                private readonly dVDialog: DvDialog,
+                private readonly authService: AuthServiceRS,
+                private readonly errorService: ErrorService,
+                private readonly $log: ILogService,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
     }
 
     $onInit() {

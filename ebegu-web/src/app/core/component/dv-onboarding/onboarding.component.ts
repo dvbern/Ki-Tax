@@ -3,6 +3,9 @@ import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../../models/TSGemeinde';
+import {LogFactory} from '../../logging/LogFactory';
+
+const LOG = LogFactory.createLog('OnboardingComponent');
 
 @Component({
     selector: 'dv-onboarding',
@@ -10,15 +13,18 @@ import TSGemeinde from '../../../../models/TSGemeinde';
     templateUrl: './dv-onboarding.component.html',
     styleUrls: ['./dv-onboarding.component.less'],
 })
-export class DvOnboardingComponent {
+export class OnboardingComponent {
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
 
     constructor(private readonly gemeindeRs: GemeindeRS) {
-        console.log('tegege', this.gemeindeRs);
         this.gemeinden$ = from(this.gemeindeRs.getAllGemeinden())
             .pipe(map(gemeinden => gemeinden.sort((a, b) => a.name.localeCompare(b.name))));
 
         this.gemeinden$.subscribe(g => console.log('test', g), e => console.error(e));
+    }
+
+    public onSubmit(): void {
+        LOG.info('submitted');
     }
 }

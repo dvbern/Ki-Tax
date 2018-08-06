@@ -25,14 +25,11 @@ export default class ErrorService {
     static $inject = ['$rootScope'];
 
     errors: Array<TSExceptionReport> = [];
-    /* @ngInject */
+
     constructor(private readonly $rootScope: IRootScopeService) {
     }
 
 
-    /**
-     * @returns {Array|DvbError}
-     */
     getErrors(): Array<TSExceptionReport> {
         return angular.copy(this.errors);
     }
@@ -113,14 +110,14 @@ export default class ErrorService {
     }
 
     /**
-     * @param {DvbError} dvbError adds a DvbError to the errors
+     * adds a DvbError to the errors
      */
     handleError(dvbError: TSExceptionReport) {
         this.addDvbError(dvbError);
     }
 
     /**
-     * @param {DvbError} dvbErrors adds all Errors to the errors service
+     * adds all Errors to the errors service
      */
     handleErrors(dvbErrors: Array<TSExceptionReport>) {
         if (dvbErrors) {

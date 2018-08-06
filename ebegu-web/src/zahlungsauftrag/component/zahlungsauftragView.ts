@@ -63,11 +63,16 @@ export class ZahlungsauftragViewController {
     testMode: boolean = false;
     minDateForTestlauf: moment.Moment;
 
-    constructor(private readonly zahlungRS: ZahlungRS, private readonly CONSTANTS: any,
-                private readonly $state: StateService, private readonly downloadRS: DownloadRS,
+    constructor(private readonly zahlungRS: ZahlungRS,
+                private readonly CONSTANTS: any,
+                private readonly $state: StateService,
+                private readonly downloadRS: DownloadRS,
                 private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly reportRS: ReportRS, private readonly authServiceRS: AuthServiceRS, private readonly ebeguUtil: EbeguUtil,
-                private readonly dvDialog: DvDialog, private readonly $translate: ITranslateService,
+                private readonly reportRS: ReportRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly dvDialog: DvDialog,
+                private readonly $translate: ITranslateService,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)

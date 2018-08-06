@@ -43,7 +43,8 @@ export class DvPulldownUserMenuController implements IOnInit, IOnDestroy {
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
 
-    constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
+    constructor(private readonly $state: StateService,
+                private readonly authServiceRS: AuthServiceRS,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.TSRoleUtil = TSRoleUtil;

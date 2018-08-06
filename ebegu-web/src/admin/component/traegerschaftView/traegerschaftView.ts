@@ -42,7 +42,8 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     @ViewChild(MatSort) sort: MatSort;
 
 
-    constructor(private readonly traegerschaftRS: TraegerschaftRS, private readonly errorService: ErrorService,
+    constructor(private readonly traegerschaftRS: TraegerschaftRS,
+                private readonly errorService: ErrorService,
                 private readonly dialog: MatDialog,
                 authServiceRS: AuthServiceRS) {
 

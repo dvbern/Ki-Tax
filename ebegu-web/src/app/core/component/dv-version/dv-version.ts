@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IQService} from 'angular';
+import {IComponentOptions, IController, IQService} from 'angular';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
@@ -31,7 +31,7 @@ export class DVVersionComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVVersionController {
+export class DVVersionController implements IController {
 
     static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
 

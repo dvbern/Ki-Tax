@@ -29,7 +29,7 @@ export default class DVSTResetSearch implements IDirective {
     constructor(private readonly dVsTPersistService: DVsTPersistService) {
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {
             const nameSpace: string = attrs.dvStPersistAntraege;
-            return element.bind('click', () => scope.$apply(() => {
+            return element.on('click', () => scope.$apply(() => {
                 const tableState = ctrl.tableState();
                 tableState.search.predicateObject = {};
                 tableState.sort = {};

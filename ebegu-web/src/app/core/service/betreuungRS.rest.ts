@@ -24,7 +24,10 @@ export default class BetreuungRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService,
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                public log: ILogService,
                 private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'betreuungen';
     }

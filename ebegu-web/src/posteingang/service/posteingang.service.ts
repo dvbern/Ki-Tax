@@ -28,9 +28,6 @@ export class PosteingangService {
 
     private readonly _posteingangSubject$: Subject<TSPostEingangEvent> = new ReplaySubject(1); // use ReplaySubject because we don't have an initial value
 
-    constructor() {
-    }
-
     public posteingangChanged(): void {
         this.LOG.info('Thwrowing TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED because the number of elements in Posteingang might have changed');
         this._posteingangSubject$.next(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);

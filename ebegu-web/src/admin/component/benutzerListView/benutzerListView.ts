@@ -44,7 +44,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
         super(authServiceRS);
     }
 
-    public passFilterToServer(tableFilterState: any): IPromise<TSUserSearchresultDTO> {
+    public passFilterToServer = (tableFilterState: any): IPromise<TSUserSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
 
         return this.userRS.searchUsers(tableFilterState).then((response: TSUserSearchresultDTO) => {

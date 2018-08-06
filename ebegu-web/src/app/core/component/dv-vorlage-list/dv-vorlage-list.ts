@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import TSEbeguVorlage from '../../../../models/TSEbeguVorlage';
 import {DownloadRS} from '../../service/downloadRS.rest';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
@@ -40,18 +40,22 @@ export class DVVorlageListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVVorlageListController {
+export class DVVorlageListController implements IController {
 
     static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
         'EbeguUtil', '$scope'];
+
     ebeguVorlageList: TSEbeguVorlage[];
     isReadonly: () => void;
     gesuchsperiode: TSGesuchsperiode;
     proGesuchsperiode: boolean;
 
-    constructor(private readonly downloadRS: DownloadRS, private readonly $log: ILogService,
-                private readonly ebeguVorlageRS: EbeguVorlageRS, private readonly dvDialog: DvDialog,
-                private readonly ebeguUtil: EbeguUtil, private readonly $scope: IScope) {
+    constructor(private readonly downloadRS: DownloadRS,
+                private readonly $log: ILogService,
+                private readonly ebeguVorlageRS: EbeguVorlageRS,
+                private readonly dvDialog: DvDialog,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly $scope: IScope) {
     }
 
     $onInit() {

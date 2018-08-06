@@ -38,7 +38,8 @@ export class DvTooltipController implements IDVFocusableController {
 
     private readonly inputId: string;
 
-    constructor(private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog) {
+    constructor(private readonly $translate: ITranslateService,
+                private readonly DvDialog: DvDialog) {
     }
 
     showTooltip(info: any): void {

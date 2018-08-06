@@ -34,7 +34,10 @@ export default class AntragStatusHistoryRS {
 
     private _lastChange: TSAntragStatusHistory;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService,
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                public log: ILogService,
                 private readonly authServiceRS: AuthServiceRS) {
         this.serviceURL = REST_API + 'antragStatusHistory';
     }

@@ -65,9 +65,15 @@ export class StatistikViewController {
     private userjobs: Array<TSWorkJob>;
     private allJobs: Array<TSBatchJobInformation>;
 
-    constructor(private readonly $state: StateService, private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $log: ILogService,
-                private readonly reportAsyncRS: ReportAsyncRS, private readonly downloadRS: DownloadRS, private readonly bachJobRS: BatchJobRS, private readonly errorService: ErrorService,
-                private readonly $translate: ITranslateService, private readonly $interval: IIntervalService) {
+    constructor(private readonly $state: StateService,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $log: ILogService,
+                private readonly reportAsyncRS: ReportAsyncRS,
+                private readonly downloadRS: DownloadRS,
+                private readonly bachJobRS: BatchJobRS,
+                private readonly errorService: ErrorService,
+                private readonly $translate: ITranslateService,
+                private readonly $interval: IIntervalService) {
     }
 
     $onInit() {

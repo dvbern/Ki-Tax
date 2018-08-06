@@ -47,7 +47,6 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     TSRoleUtil: TSRoleUtil;
 
-    /* @ngInject */
     constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                 private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
                 private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {

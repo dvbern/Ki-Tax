@@ -17,8 +17,5 @@
 import {IComponentOptions} from 'angular';
 
 export const AppAngularjsComponent: IComponentOptions = {
-    controller: () => {
-        console.log('appComponent');
-    },
     template: require('./app.angularjs.component.html'),
 };

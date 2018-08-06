@@ -78,6 +78,7 @@ import {DvSkiplinksComponentConfig} from './component/dv-skiplinks/dv-skiplinks'
 import {DvTooltipComponentConfig} from './component/dv-tooltip/dv-tooltip';
 import {DVVersionComponentConfig} from './component/dv-version/dv-version';
 import {DVVorlageListConfig} from './component/dv-vorlage-list/dv-vorlage-list';
+import {NavbarComponent} from './component/navbar/navbar.component';
 import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
@@ -255,10 +256,8 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvBenutzer', new DVBenutzerConfig())
     .component('dvOnboarding', new DvOnboardingComponentConfig())
-    .directive(
-        'dvHelpmenu',
-        downgradeComponent({component: DvHelpmenuComponent}) as angular.IDirectiveFactory
-    )
+    .component('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
+    .component('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)

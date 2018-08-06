@@ -17,6 +17,7 @@ import IComponentOptions = angular.IComponentOptions;
 import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
+import {IController, IOnInit} from 'angular';
 import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -37,9 +38,9 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class AlleVerfuegungenViewController {
+export class AlleVerfuegungenViewController implements IController {
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
+    static $inject: ReadonlyArray<string> = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
         'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
 
     dossier: TSDossier;
@@ -47,9 +48,14 @@ export class AlleVerfuegungenViewController {
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $state: StateService, private readonly $stateParams: IAlleVerfuegungenStateParams,
-                private readonly authServiceRS: AuthServiceRS, private readonly betreuungRS: BetreuungRS, private readonly downloadRS: DownloadRS,
-                private readonly $log: ILogService, private readonly $timeout: ITimeoutService, private readonly dossierRS: DossierRS,
+    constructor(private readonly $state: StateService,
+                private readonly $stateParams: IAlleVerfuegungenStateParams,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly betreuungRS: BetreuungRS,
+                private readonly downloadRS: DownloadRS,
+                private readonly $log: ILogService,
+                private readonly $timeout: ITimeoutService,
+                private readonly dossierRS: DossierRS,
                 private readonly ebeguUtil: EbeguUtil) {
     }
 

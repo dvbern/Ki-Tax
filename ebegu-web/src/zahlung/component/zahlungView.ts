@@ -47,10 +47,15 @@ export class ZahlungViewController implements IOnDestroy {
 
     itemsByPage: number = 20;
 
-    constructor(private readonly zahlungRS: ZahlungRS, private readonly CONSTANTS: any,
-                private readonly $stateParams: IZahlungsauftragStateParams, private readonly $state: StateService,
-                private readonly downloadRS: DownloadRS, private readonly reportRS: ReportRS, private readonly authServiceRS: AuthServiceRS,
-                private readonly ebeguUtil: EbeguUtil, private readonly authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly zahlungRS: ZahlungRS,
+                private readonly CONSTANTS: any,
+                private readonly $stateParams: IZahlungsauftragStateParams,
+                private readonly $state: StateService,
+                private readonly downloadRS: DownloadRS,
+                private readonly reportRS: ReportRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))

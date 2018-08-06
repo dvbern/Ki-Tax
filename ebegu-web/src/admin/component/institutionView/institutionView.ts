@@ -60,9 +60,13 @@ export class InstitutionViewController extends AbstractAdminViewController {
     betreuungsangebotValues: Array<any>;
     errormessage: string = undefined;
 
-    constructor(private readonly institutionRS: InstitutionRS, private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                private readonly errorService: ErrorService, private readonly dvDialog: DvDialog, private readonly ebeguUtil: EbeguUtil,
-                authServiceRS: AuthServiceRS, private readonly $stateParams: IInstitutionStateParams,
+    constructor(private readonly institutionRS: InstitutionRS,
+                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                private readonly errorService: ErrorService,
+                private readonly dvDialog: DvDialog,
+                private readonly ebeguUtil: EbeguUtil,
+                authServiceRS: AuthServiceRS,
+                private readonly $stateParams: IInstitutionStateParams,
                 private readonly $state: StateService) {
         super(authServiceRS);
     }

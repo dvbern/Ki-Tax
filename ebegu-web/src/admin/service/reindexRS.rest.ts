@@ -19,14 +19,13 @@ import {IHttpPromise, IHttpService} from 'angular';
 export class ReindexRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+
+    constructor(public readonly http: IHttpService,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'admin/reindex';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     reindex(): IHttpPromise<any> {

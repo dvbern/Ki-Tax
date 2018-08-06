@@ -14,16 +14,13 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IDirective, IDirectiveFactory, IOnInit, IQService, ITimeoutService} from 'angular';
+import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import ErrorService from '../../errors/service/ErrorService';
 import ITranslateService = angular.translate.ITranslateService;
-
-declare let require: any;
-const template = require('./dv-navigation.html');
 
 /**
  * Diese Direktive wird benutzt, um die Navigation Buttons darzustellen. Folgende Parameter koennen benutzt werden,
@@ -53,7 +50,7 @@ export class DVNavigation implements IDirective {
         dvTranslateNext: '@',
         dvTranslatePrevious: '@'
     };
-    template = template;
+    template = require('./dv-navigation.html');
 
     static factory(): IDirectiveFactory {
         const directive = () => new DVNavigation();
@@ -65,7 +62,7 @@ export class DVNavigation implements IDirective {
 /**
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
-export class NavigatorController implements IOnInit {
+export class NavigatorController implements IController {
 
     static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
 
@@ -82,8 +79,13 @@ export class NavigatorController implements IOnInit {
 
     performSave: boolean;
 
-    constructor(private readonly wizardStepManager: WizardStepManager, private readonly state: StateService, private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $translate: ITranslateService, private readonly errorService: ErrorService, private readonly $q: IQService, private readonly $timeout: ITimeoutService) {
+    constructor(private readonly wizardStepManager: WizardStepManager,
+                private readonly state: StateService,
+                private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $translate: ITranslateService,
+                private readonly errorService: ErrorService,
+                private readonly $q: IQService,
+                private readonly $timeout: ITimeoutService) {
     }
 
     //wird von angular aufgerufen

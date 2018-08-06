@@ -31,7 +31,7 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  */
 export class DVDisplayElement implements IDirective {
 
-    static $inject: string[] = ['ngShowDirective'];
+    static $inject: ReadonlyArray<string> = ['ngShowDirective'];
     restrict = 'A';
     controller = DVRoleElementController;
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
@@ -39,7 +39,6 @@ export class DVDisplayElement implements IDirective {
     multiElement: any;
     ngShow: any;
 
-    /* @ngInject */
     constructor(private readonly ngShowDirective: any) {
         this.ngShow = ngShowDirective[0];
         this.multiElement = this.ngShow.multiElement;
@@ -51,6 +50,7 @@ export class DVDisplayElement implements IDirective {
         return directive;
     }
 
+    // TODO hefa unterminated statement
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
         // Consider using a standard function expression.

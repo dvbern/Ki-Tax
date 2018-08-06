@@ -40,7 +40,6 @@ export class DVShowElement implements IDirective {
     priority: number;
     ngIf: any;
 
-    /* @ngInject */
     constructor(private readonly ngIfDirective: any) {
         this.ngIf = ngIfDirective[0];
         this.transclude = this.ngIf.transclude;
@@ -53,6 +52,7 @@ export class DVShowElement implements IDirective {
         return directive;
     }
 
+    // TODO hefa unterminated statement
     link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
         // Consider using a standard function expression.

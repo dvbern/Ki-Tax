@@ -24,7 +24,7 @@ export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
     const filterFilter = $filter('filter');
     const dateFilter = $filter('date');
 
-    const standardComparator = function standardComparator(obj: any, text: any) {
+    const standardComparator = (obj: any, text: any) => {
         text = ('' + text).toLowerCase();
         return ('' + obj).toLowerCase().indexOf(text) > -1;
     };

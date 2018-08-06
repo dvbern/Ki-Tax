@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {DvOnboardingComponent} from './dv-onboarding.component';
+import {OnboardingComponent} from './dv-onboarding.component';
 
 describe('DvOnboardingComponent', () => {
-    let component: DvOnboardingComponent;
-    let fixture: ComponentFixture<DvOnboardingComponent>;
+    let component: OnboardingComponent;
+    let fixture: ComponentFixture<OnboardingComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DvOnboardingComponent]
+            declarations: [OnboardingComponent]
         })
             .compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DvOnboardingComponent);
+        fixture = TestBed.createComponent(OnboardingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

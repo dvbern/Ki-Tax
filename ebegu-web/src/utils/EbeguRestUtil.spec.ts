@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import {CONSTANTS} from '../core/constants/CONSTANTS';
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
@@ -51,8 +51,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import DateUtil from './DateUtil';
 import EbeguRestUtil from './EbeguRestUtil';
 import EbeguUtil from './EbeguUtil';
-import TestDataUtilSpec from './TestDataUtil';
-import Moment = moment.Moment;
+import TestDataUtil from './TestDataUtil.spec';
 
 describe('EbeguRestUtil', () => {
 
@@ -290,7 +289,7 @@ describe('EbeguRestUtil', () => {
                 TestDataUtil.setAbstractFieldsUndefined(tsBetreuungspensumContainer);
                 const betContainers: Array<TSBetreuungspensumContainer> = [tsBetreuungspensumContainer];
 
-                const today: Moment = DateUtil.today();
+                const today: moment.Moment = DateUtil.today();
                 const tsAbwesenheitGS: TSAbwesenheit = new TSAbwesenheit(new TSDateRange(today, today));
                 const tsAbwesenheitJA: TSAbwesenheit = new TSAbwesenheit(new TSDateRange(today, today));
                 const tsAbwesenheitContainer: TSAbwesenheitContainer = new TSAbwesenheitContainer(tsAbwesenheitGS, tsAbwesenheitJA);

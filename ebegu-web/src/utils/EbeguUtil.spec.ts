@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import {CONSTANTS} from '../core/constants/CONSTANTS';
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';

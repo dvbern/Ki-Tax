@@ -22,7 +22,9 @@ export class DatabaseMigrationRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'dbmigration';
     }
 

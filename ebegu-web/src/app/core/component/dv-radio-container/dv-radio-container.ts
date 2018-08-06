@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import INgModelController = angular.INgModelController;
@@ -36,7 +36,7 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
 
 }
 
-export class DvRadioContainerController {
+export class DvRadioContainerController implements IController {
 
     static $inject: ReadonlyArray<string> = [];
 

@@ -13,15 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory} from 'angular';
+import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
 import IHttpService = angular.IHttpService;
 import ITimeoutService = angular.ITimeoutService;
 import IFormController = angular.IFormController;
 import IAttributes = angular.IAttributes;
 import ILogService = angular.ILogService;
-
-const template = require('./dv-loading-button.html');
 
 interface IDVLoadingButtonController {
     isDisabled: boolean;
@@ -33,7 +31,7 @@ export class DVLoadingButton implements IDirective {
     restrict = 'E';
     require: any = {dvLoadingButtonCtrl: 'dvLoadingButton', formCtrl: '^?form'};
     scope = {};
-    template = template;
+    template = require('./dv-loading-button.html');
     controller = DVLoadingButtonController;
     controllerAs = 'vm';
     bindToController = {
@@ -70,7 +68,7 @@ export class DVLoadingButton implements IDirective {
  </dv-loading-button>
  *
  */
-export class DVLoadingButtonController implements IDVLoadingButtonController {
+export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
     static $inject: string[] = ['$http', '$scope', '$timeout', '$attrs', '$log'];
 
     buttonClicked: ($event: any) => void;
@@ -82,9 +80,11 @@ export class DVLoadingButtonController implements IDVLoadingButtonController {
     buttonDisabled: boolean; //true wenn unser element programmatisch disabled wird
     buttonClick: () => void;
 
-    /* @ngInject */
-    constructor(private readonly $http: IHttpService, private readonly $scope: any, private readonly $timeout: ITimeoutService,
-                private readonly $attrs: IAttributes, private readonly $log: ILogService) {
+    constructor(private readonly $http: IHttpService,
+                private readonly $scope: any,
+                private readonly $timeout: ITimeoutService,
+                private readonly $attrs: IAttributes,
+                private readonly $log: ILogService) {
     }
 
     //wird von angular aufgerufen

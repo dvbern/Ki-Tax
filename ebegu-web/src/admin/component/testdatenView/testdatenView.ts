@@ -40,7 +40,6 @@ import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 })
 export class TestdatenViewComponent implements OnInit {
 
-    testFaelleRS: TestFaelleRS;
     dossierid: string;
     verfuegenGesuchid: string;
     eingangsdatum: moment.Moment;
@@ -58,13 +57,15 @@ export class TestdatenViewComponent implements OnInit {
 
     devMode: boolean;
 
-    constructor(testFaelleRS: TestFaelleRS, private readonly userRS: UserRS,
-                private readonly errorService: ErrorService, private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly zahlungRS: ZahlungRS, private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly gesuchRS: GesuchRS, private readonly gemeindeRS: GemeindeRS,
+    constructor(public readonly testFaelleRS: TestFaelleRS,
+                private readonly userRS: UserRS,
+                private readonly errorService: ErrorService,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly zahlungRS: ZahlungRS,
+                private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly gesuchRS: GesuchRS,
+                private readonly gemeindeRS: GemeindeRS,
                 private readonly dialog: MatDialog) {
-
-        this.testFaelleRS = testFaelleRS;
     }
 
     public ngOnInit(): void {

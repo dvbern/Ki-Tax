@@ -14,7 +14,7 @@
  */
 
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import MitteilungRS from '../../core/service/mitteilungRS.rest';
+import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import BerechnungsManager from '../../gesuch/service/berechnungsManager';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
@@ -30,7 +30,7 @@ import TSUser from '../../models/TSUser';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {StateService} from '@uirouter/core';
 
-import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
 

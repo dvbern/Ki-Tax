@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFilterService, ILogService, IOnDestroy, IOnInit, IPromise} from 'angular';
+import {IComponentOptions, IController, IFilterService, ILogService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
@@ -55,7 +55,7 @@ export class DVAntragListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVAntragListController implements IOnInit, IOnDestroy {
+export class DVAntragListController implements IController {
 
     static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
         'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
@@ -97,10 +97,16 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
     onAdd: () => void;
     TSRoleUtil: any;
 
-    constructor(private readonly ebeguUtil: EbeguUtil, private readonly $filter: IFilterService, private readonly $log: ILogService,
-                private readonly institutionRS: InstitutionRS, private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly CONSTANTS: any, private readonly authServiceRS: AuthServiceRS, private readonly $window: ng.IWindowService,
-                private readonly gemeindeRS: GemeindeRS, private readonly authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly ebeguUtil: EbeguUtil,
+                private readonly $filter: IFilterService,
+                private readonly $log: ILogService,
+                private readonly institutionRS: InstitutionRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly CONSTANTS: any,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $window: IWindowService,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.TSRoleUtil = TSRoleUtil;
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
@@ -166,7 +172,8 @@ export class DVAntragListController implements IOnInit, IOnDestroy {
         this.onAdd();
     }
 
-    private readonly callServer = (tableFilterState: any) => {
+    // TODO hefa unterminated statement
+    private callServer = (tableFilterState: any) => {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 

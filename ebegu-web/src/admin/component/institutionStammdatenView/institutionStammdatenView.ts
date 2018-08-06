@@ -56,9 +56,12 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     hasDifferentZahlungsadresse: boolean = false;
     modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
 
-    constructor(private readonly institutionRS: InstitutionRS, private readonly ebeguUtil: EbeguUtil,
+    constructor(private readonly institutionRS: InstitutionRS,
+                private readonly ebeguUtil: EbeguUtil,
                 private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                private readonly $state: StateService, private readonly listResourceRS: ListResourceRS, authServiceRS: AuthServiceRS,
+                private readonly $state: StateService,
+                private readonly listResourceRS: ListResourceRS,
+                authServiceRS: AuthServiceRS,
                 private readonly $stateParams: IInstitutionStammdatenStateParams) {
         super(authServiceRS);
     }

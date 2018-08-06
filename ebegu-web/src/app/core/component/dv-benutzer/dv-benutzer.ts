@@ -79,10 +79,16 @@ export class DVBenutzerController implements IOnInit {
 
     private _isDefaultVerantwortlicher: boolean = false;
 
-    constructor(private readonly $log: ILogService, private readonly institutionRS: InstitutionRS, private readonly traegerschaftenRS: TraegerschaftRS,
-                private readonly authServiceRS: AuthServiceRS, private readonly $translate: ITranslateService,
-                private readonly $stateParams: IBenutzerStateParams, private readonly userRS: UserRS, private readonly $state: StateService,
-                private readonly dvDialog: DvDialog, private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly $log: ILogService,
+                private readonly institutionRS: InstitutionRS,
+                private readonly traegerschaftenRS: TraegerschaftRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $translate: ITranslateService,
+                private readonly $stateParams: IBenutzerStateParams,
+                private readonly userRS: UserRS,
+                private readonly $state: StateService,
+                private readonly dvDialog: DvDialog,
+                private readonly applicationPropertyRS: ApplicationPropertyRS) {
     }
 
     $onInit() {

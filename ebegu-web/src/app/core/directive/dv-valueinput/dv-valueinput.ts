@@ -17,11 +17,10 @@ import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, INgMo
 import ITimeoutService = angular.ITimeoutService;
 declare let require: any;
 declare let angular: any;
-const template = require('./dv-valueinput.html');
 
 export class DVValueinput implements IDirective {
     restrict = 'E';
-    require: any = {ngModelCtrl: 'ngModel', dvValueInputCtrl: 'dvValueinput'};
+    require = {ngModelCtrl: 'ngModel', dvValueInputCtrl: 'dvValueinput'};
     scope = {};
     controller = ValueinputController;
     controllerAs = 'vm';
@@ -36,12 +35,8 @@ export class DVValueinput implements IDirective {
         dvOnBlur: '&?',
         inputName: '@?',
     };
-    template = template;
+    template = require('./dv-valueinput.html');
     link: IDirectiveLinkFn;
-
-    constructor() {
-
-    }
 
     static factory(): IDirectiveFactory {
         const directive = () => new DVValueinput();
@@ -52,6 +47,7 @@ export class DVValueinput implements IDirective {
 export class ValueinputController {
 
     static $inject: string[] = ['$timeout'];
+
     valueinput: string;
     ngModelCtrl: INgModelController;
     valueRequired: boolean;
@@ -60,6 +56,7 @@ export class ValueinputController {
     float: boolean;
     fixedDecimals: number;
     dvOnBlur: () => void;
+
     constructor(private readonly $timeout: ITimeoutService) {
     }
 

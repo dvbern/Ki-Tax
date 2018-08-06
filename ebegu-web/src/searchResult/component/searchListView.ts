@@ -37,8 +37,10 @@ export class SearchListViewController {
     private readonly ignoreRequest: boolean = true; //we want to ignore the first filter request because the default sort triggers always a second one
     searchString: string;
 
-    constructor(private readonly $log: ILogService, $stateParams: ISearchResultateStateParams,
-                private readonly searchIndexRS: SearchIndexRS, private readonly ebeguUtil: EbeguUtil) {
+    constructor(private readonly $log: ILogService,
+                $stateParams: ISearchResultateStateParams,
+                private readonly searchIndexRS: SearchIndexRS,
+                private readonly ebeguUtil: EbeguUtil) {
         this.searchString = $stateParams.searchString;
         this.initViewModel();
 

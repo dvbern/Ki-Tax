@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory} from 'angular';
+import {IDirective, IDirectiveFactory, IController} from 'angular';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
@@ -21,7 +21,6 @@ import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import TSUser from '../../../../models/TSUser';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import UserRS from '../../service/userRS.rest';
-const template = require('./dv-userselect.html');
 
 export class DVUserselect implements IDirective {
     restrict = 'E';
@@ -41,7 +40,7 @@ export class DVUserselect implements IDirective {
         schulamt: '<'
         //initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
     };
-    template = template;
+    template = require('./dv-userselect.html');
 
     static factory(): IDirectiveFactory {
         const directive = () => new DVUserselect();
@@ -52,7 +51,7 @@ export class DVUserselect implements IDirective {
 /**
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
-export class UserselectController {
+export class UserselectController implements IController {
 
     static $inject: string[] = ['UserRS', 'AuthServiceRS', 'AuthLifeCycleService'];
 
@@ -66,8 +65,9 @@ export class UserselectController {
     valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
     onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     schulamt: string;
-    /* @ngInject */
-    constructor(private readonly userRS: UserRS, private readonly authServiceRS: AuthServiceRS,
+
+    constructor(private readonly userRS: UserRS,
+                private readonly authServiceRS: AuthServiceRS,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
 
     }

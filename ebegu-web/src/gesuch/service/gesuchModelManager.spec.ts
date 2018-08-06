@@ -36,7 +36,7 @@ import TSKindContainer from '../../models/TSKindContainer';
 import TSUser from '../../models/TSUser';
 import TSVerfuegung from '../../models/TSVerfuegung';
 import DateUtil from '../../utils/DateUtil';
-import TestDataUtilSpec from '../../utils/TestDataUtil.spec';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
 import GesuchModelManager from './gesuchModelManager';

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory} from 'angular';
+import {IController, IDirective, IDirectiveFactory} from 'angular';
 import ITranslateService = angular.translate.ITranslateService;
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import TSUser from '../../../../models/TSUser';
@@ -22,11 +22,10 @@ import UserRS from '../../service/userRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import TSGesuch from '../../../../models/TSGesuch';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-const template = require('./dv-verantwortlicherselect.html');
 
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
-    require: any = {};
+    require = {};
     scope = {};
     controller = VerantwortlicherselectController;
     controllerAs = 'vm';
@@ -34,7 +33,7 @@ export class DvVerantwortlicherselect implements IDirective {
         schulamt: '<',
         antragList: '<'
     };
-    template = template;
+    template = require('./dv-verantwortlicherselect.html');
 
     static factory(): IDirectiveFactory {
         const directive = () => new DvVerantwortlicherselect();
@@ -45,7 +44,7 @@ export class DvVerantwortlicherselect implements IDirective {
 /**
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
-export class VerantwortlicherselectController {
+export class VerantwortlicherselectController implements IController {
 
     static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
 
@@ -53,8 +52,10 @@ export class VerantwortlicherselectController {
     TSRoleUtil: any;
     antragList: Array<TSAntragDTO>;
     schulamt: boolean;
-    /* @ngInject */
-    constructor(private readonly userRS: UserRS, private readonly authServiceRS: AuthServiceRS, private readonly gesuchModelManager: GesuchModelManager,
+
+    constructor(private readonly userRS: UserRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $translate: ITranslateService) {
         this.TSRoleUtil = TSRoleUtil;
     }

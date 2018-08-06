@@ -26,13 +26,11 @@ export class EbeguParameterRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+
+    constructor(public readonly http: IHttpService,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'parameter';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public saveEbeguParameter(tsEbeguParameter: TSEbeguParameter): IPromise<TSEbeguParameter> {

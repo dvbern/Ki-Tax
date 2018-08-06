@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
 
 const template = require('./dv-search-result-icon.html');
@@ -29,7 +29,7 @@ export class DvSearchResultIconComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DvSearchResultController {
+export class DvSearchResultController implements IController {
 
     static $inject: ReadonlyArray<string> = [];
 

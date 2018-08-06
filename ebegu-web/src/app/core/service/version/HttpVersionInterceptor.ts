@@ -26,7 +26,10 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
 
     public backendVersion: string;
 
-    constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService, private readonly CONSTANTS: any, private readonly $log: ILogService) {
+    constructor(private readonly $rootScope: IRootScopeService,
+                private readonly $q: IQService,
+                private readonly CONSTANTS: any,
+                private readonly $log: ILogService) {
     }
 
     private static hasVersionCompatibility(frontendVersion: string, backendVersion: string): boolean {
@@ -34,6 +37,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
         return frontendVersion === backendVersion;
     }
 
+    // TODO hefa unterminated statement
     //interceptor methode
     public response = (response: any) => {
         if (response.headers && response.config && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0 && !response.config.cache) {

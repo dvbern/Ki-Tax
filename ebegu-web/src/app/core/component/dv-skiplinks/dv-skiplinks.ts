@@ -38,7 +38,9 @@ export class DvSkiplinksController implements IDVFocusableController {
 
     TSRoleUtil: any;
 
-    constructor(private readonly $state: StateService, private readonly DvDialog: DvDialog, private readonly ebeguUtil: EbeguUtil) {
+    constructor(private readonly $state: StateService,
+                private readonly DvDialog: DvDialog,
+                private readonly ebeguUtil: EbeguUtil) {
         this.TSRoleUtil = TSRoleUtil;
     }
 

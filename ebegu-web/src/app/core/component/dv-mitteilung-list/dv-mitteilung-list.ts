@@ -75,13 +75,18 @@ export class DVMitteilungListController implements IOnInit {
     TSRole: any;
     TSRoleUtil: any;
 
-    constructor(private readonly $stateParams: IMitteilungenStateParams, private readonly mitteilungRS: MitteilungRS,
+    constructor(private readonly $stateParams: IMitteilungenStateParams,
+                private readonly mitteilungRS: MitteilungRS,
                 private readonly authServiceRS: AuthServiceRS,
-                private readonly betreuungRS: BetreuungRS, private readonly $q: IQService,
+                private readonly betreuungRS: BetreuungRS,
+                private readonly $q: IQService,
                 private readonly $window: IWindowService,
-                private readonly $rootScope: IRootScopeService, private readonly $state: StateService, public ebeguUtil: EbeguUtil,
+                private readonly $rootScope: IRootScopeService,
+                private readonly $state: StateService,
+                public ebeguUtil: EbeguUtil,
                 private readonly DvDialog: DvDialog,
-                private readonly gesuchModelManager: GesuchModelManager, private readonly $scope: IScope,
+                private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $scope: IScope,
                 private readonly $timeout: ITimeoutService,
                 private readonly dossierRS: DossierRS,
                 private readonly posteingangService: PosteingangService) {

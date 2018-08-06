@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, IIntervalService, ILogService, IPromise} from 'angular';
+import {IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
@@ -23,9 +23,14 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 export class DownloadRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval'];
+
     serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private readonly $window: ng.IWindowService,
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                public log: ILogService,
+                private readonly $window: IWindowService,
                 private readonly $interval: IIntervalService) {
         this.serviceURL = REST_API + 'blobs/temp';
     }

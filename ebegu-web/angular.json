@@ -89,7 +89,7 @@
                         "scripts": [
                         ],
                         "styles": [
-                            "src/styles.scss"
+                            "src/styles.less"
                         ],
                         "assets": [
                             "src/assets",

@@ -21,17 +21,15 @@ import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 export default class ErwerbspensumRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService,
+
+    constructor(public readonly http: IHttpService,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil,
+                public readonly log: ILogService,
                 private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'erwerbspensen';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public getServiceName(): string {

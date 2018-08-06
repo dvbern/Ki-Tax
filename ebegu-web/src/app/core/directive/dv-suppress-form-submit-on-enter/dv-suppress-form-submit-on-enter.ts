@@ -60,8 +60,10 @@ export class DVSuppressFormSubmitOnEnterController {
     static $inject: string[] = ['$mdConstant', '$mdUtil', '$log'];
 
     mdRadioGroupCtrl: any; //see radioButton.js of angular material: mdRadioGroup
-    /* @ngInject */
-    constructor(private readonly $mdConstant: any, private readonly $mdUtil: any, private readonly $log: ILogService) {
+
+    constructor(private readonly $mdConstant: any,
+                private readonly $mdUtil: any,
+                private readonly $log: ILogService) {
 
     }
 

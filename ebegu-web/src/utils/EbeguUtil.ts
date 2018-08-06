@@ -35,7 +35,9 @@ export default class EbeguUtil {
 
     static $inject = ['$filter', 'CONSTANTS', '$translate', '$log'];
 
-    constructor(private readonly $filter: IFilterService, private readonly CONSTANTS: any, private readonly $translate: ITranslateService,
+    constructor(private readonly $filter: IFilterService,
+                private readonly CONSTANTS: any,
+                private readonly $translate: ITranslateService,
                 private readonly $log: ILogService) {
     }
 

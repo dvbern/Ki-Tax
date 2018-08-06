@@ -38,14 +38,15 @@ export class InstitutionenListViewComponentConfig implements IComponentOptions {
 
 export class InstitutionenListViewController extends AbstractAdminViewController {
 
-    static $inject = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
+    static $inject: ReadonlyArray<string> = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
 
     form: IFormController;
     institutionen: TSInstitution[];
     selectedInstitution: TSInstitution = undefined;
 
-    /* @ngInject */
-    constructor(private readonly institutionRS: InstitutionRS, private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS, private readonly $state: StateService) {
+    constructor(private readonly institutionRS: InstitutionRS,
+                private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS,
+                private readonly $state: StateService) {
         super(authServiceRS);
     }
 

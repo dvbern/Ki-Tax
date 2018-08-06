@@ -18,7 +18,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 
 export class DVRoleElementController {
 
-    static $inject: string[] = ['AuthServiceRS'];
+    static $inject: ReadonlyArray<string> = ['AuthServiceRS'];
 
     dvAllowedRoles: Array<TSRole>;
     dvExpression: boolean;

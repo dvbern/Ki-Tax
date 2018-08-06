@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IOnInit, IPromise} from 'angular';
+import {IComponentOptions, ILogService, IOnInit, IPromise, IWindowService} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSInstitution from '../../../../models/TSInstitution';
@@ -67,8 +67,12 @@ export class DVBenutzerListController implements IOnInit {
     onEdit: (user: any) => void;
     TSRoleUtil: TSRoleUtil;
 
-    constructor(private readonly $log: ILogService, private readonly institutionRS: InstitutionRS, private readonly traegerschaftenRS: TraegerschaftRS,
-                private readonly authServiceRS: AuthServiceRS, private readonly $window: ng.IWindowService, private readonly $translate: ITranslateService) {
+    constructor(private readonly $log: ILogService,
+                private readonly institutionRS: InstitutionRS,
+                private readonly traegerschaftenRS: TraegerschaftRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $window: IWindowService,
+                private readonly $translate: ITranslateService) {
 
         this.TSRoleUtil = TSRoleUtil;
     }
@@ -95,6 +99,7 @@ export class DVBenutzerListController implements IOnInit {
         this.onEdit({user: user, event: event});
     }
 
+    // TODO hefa unterminated statement
     private readonly callServer = (tableFilterState: any) => {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;

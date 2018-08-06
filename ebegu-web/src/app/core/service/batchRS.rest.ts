@@ -25,7 +25,9 @@ export default class BatchJobRS {
 
     serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, private readonly ebeguRestUtil: EbeguRestUtil) {
+    constructor(public http: IHttpService,
+                REST_API: string,
+                private readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'admin/batch';
     }
 

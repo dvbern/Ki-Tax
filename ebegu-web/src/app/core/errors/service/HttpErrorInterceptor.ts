@@ -26,7 +26,9 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     static $inject = ['$rootScope', '$q', 'ErrorService', '$log'];
 
-    constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService, private readonly errorService: ErrorService,
+    constructor(private readonly $rootScope: IRootScopeService,
+                private readonly $q: IQService,
+                private readonly errorService: ErrorService,
                 private readonly $log: ILogService) {
     }
 

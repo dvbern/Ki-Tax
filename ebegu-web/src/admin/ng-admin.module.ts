@@ -28,9 +28,13 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
     declarations: [
         TraegerschaftViewComponent,
         TestdatenViewComponent,
-        BatchjobTriggerViewComponent
+        BatchjobTriggerViewComponent,
     ],
-    entryComponents: [],
+    entryComponents: [
+         TraegerschaftViewComponent,
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent,
+    ],
     providers: [],
 })
 export class NgAdminModule {

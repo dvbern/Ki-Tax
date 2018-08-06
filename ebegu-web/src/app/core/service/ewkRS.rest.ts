@@ -24,20 +24,17 @@ import IHttpParamSerializer = angular.IHttpParamSerializer;
 export default class EwkRS {
 
     static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
+
     serviceURL: string;
-    http: IHttpService;
-    httpParamSerializer: IHttpParamSerializer;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
     gesuchsteller1: TSGesuchstellerContainer;
     gesuchsteller2: TSGesuchstellerContainer;
-    /* @ngInject */
-    constructor($http: IHttpService, private readonly $httpParamSerializer: IHttpParamSerializer, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+
+    constructor(public readonly http: IHttpService,
+                public readonly httpParamSerializer: IHttpParamSerializer,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil,
+                public readonly log: ILogService) {
         this.serviceURL = REST_API + 'gesuchsteller';
-        this.http = $http;
-        this.httpParamSerializer = $httpParamSerializer;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public ewkSearchAvailable(gsNr: number): boolean {

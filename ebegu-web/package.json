@@ -21,7 +21,7 @@
     "test": "check-engine && ng test",
     "test:ci": "check-engine && ng test --progress=false --watch=false --code-coverage",
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
-    "start": "npm run server:dev",
+    "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
     "postinstall": "npm run set-version"
   },

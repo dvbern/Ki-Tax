@@ -45,9 +45,12 @@ export class VerlaufViewController {
     TSRoleUtil = TSRoleUtil;
     verlauf: Array<TSAntragStatusHistory>;
 
-    constructor(private readonly $state: StateService, private readonly $stateParams: IVerlaufStateParams,
-                private readonly authServiceRS: AuthServiceRS, private readonly gesuchRS: GesuchRS,
-                private readonly antragStatusHistoryRS: AntragStatusHistoryRS, private readonly ebeguUtil: EbeguUtil) {
+    constructor(private readonly $state: StateService,
+                private readonly $stateParams: IVerlaufStateParams,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gesuchRS: GesuchRS,
+                private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+                private readonly ebeguUtil: EbeguUtil) {
     }
 
     $onInit() {

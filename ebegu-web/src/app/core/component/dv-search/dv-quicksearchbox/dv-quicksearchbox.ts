@@ -48,10 +48,17 @@ export class DvQuicksearchboxController {
     TSRoleUtil: TSRoleUtil;
     gesuchModelManager: GesuchModelManager;
 
-    constructor(private readonly ebeguUtil: EbeguUtil, private readonly $timeout: IFilterService, private readonly $log: ILogService,
-                private readonly $q: IQService, private readonly searchIndexRS: SearchIndexRS, private readonly CONSTANTS: any,
-                private readonly $filter: IFilterService, private readonly $translate: ITranslateService,
-                private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS, private readonly $injector: IInjectorService) {
+    constructor(private readonly ebeguUtil: EbeguUtil,
+                private readonly $timeout: IFilterService,
+                private readonly $log: ILogService,
+                private readonly $q: IQService,
+                private readonly searchIndexRS: SearchIndexRS,
+                private readonly CONSTANTS: any,
+                private readonly $filter: IFilterService,
+                private readonly $translate: ITranslateService,
+                private readonly $state: StateService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $injector: IInjectorService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 
