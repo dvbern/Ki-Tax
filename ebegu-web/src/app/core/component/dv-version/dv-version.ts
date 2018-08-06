@@ -38,8 +38,8 @@ export class DVVersionController {
     TSRoleUtil: any;
 
     private backendVersion: string;
-    private frontendVersion: string = VERSION;
-    private buildTime: string = BUILDTSTAMP;
+    private readonly frontendVersion: string = VERSION;
+    private readonly buildTime: string = BUILDTSTAMP;
     private showSingleVersion: boolean = true;
     private currentYear: number;
 

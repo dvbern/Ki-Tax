@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {StateService} from '@uirouter/core';
-import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
 
@@ -51,8 +51,10 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public isCurrentPageGesuch(): boolean {
-        // TODO HEFA migrate
-        return (this.$state.current && this.$state.current.name !== 'gesuchsteller.dashboard' && this.$state.current.name !== 'alleVerfuegungen.view' && this.$state.current.name !== 'mitteilungen.view');
+        return (this.$state.current &&
+            this.$state.current.name !== 'gesuchsteller.dashboard' &&
+            this.$state.current.name !== 'alleVerfuegungen.view' &&
+            this.$state.current.name !== 'mitteilungen.view');
     }
 
     public focusLink(a: string): void {
