@@ -39,6 +39,6 @@ describe('DvOnboardingComponent', () => {
     });
 
     it('should load all Gemeinden', () => {
-        expect(gemeindeRSSpy.getAllGemeinden).toHaveBeenCalledTimes(1);
+        expect(gemeindeRSSpy.getAllGemeinden).toHaveBeenCalled();
     });
 });

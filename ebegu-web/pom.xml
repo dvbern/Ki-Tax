@@ -85,9 +85,8 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run test</arguments>
-                            <!-- TODO hefa geht leider noch nicht -->
-                            <skip>true</skip>
+                            <arguments>run test:ci</arguments>
+                            <skip>${skipTests}</skip>
                         </configuration>
                     </execution>
 
