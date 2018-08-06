@@ -10,8 +10,8 @@ const LOG = LogFactory.createLog('OnboardingComponent');
 @Component({
     selector: 'dv-onboarding',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './dv-onboarding.component.html',
-    styleUrls: ['./dv-onboarding.component.less'],
+    templateUrl: './onboarding.component.html',
+    styleUrls: ['./onboarding.component.less'],
 })
 export class OnboardingComponent {
     public gemeinden$: Observable<TSGemeinde[]>;

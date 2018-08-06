@@ -21,6 +21,10 @@ import {NavbarComponent} from './component/navbar/navbar.component';
         NavbarComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
+    ],
+    entryComponents: [
+        NavbarComponent,
+        DvPosteingangComponent,
     ]
 })
 export class CoreModule {

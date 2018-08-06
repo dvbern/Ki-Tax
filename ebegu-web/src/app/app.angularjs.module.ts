@@ -34,7 +34,6 @@ import {EbeguWebZahlung} from '../zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
 import {EbeguWebCore} from './core/core.angularjs.module';
 import {AppAngularjsComponent} from './app.angularjs.component';
-import '../style/mediaqueries.less';
 
 export const appModuleAngularJS = angular.module('ebeguWeb', [
         upgradeModule.name,

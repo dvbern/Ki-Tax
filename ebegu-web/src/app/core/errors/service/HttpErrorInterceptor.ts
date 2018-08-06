@@ -32,8 +32,8 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
                 private readonly $log: ILogService) {
     }
 
-
-    public responseError(response: any) {
+    // TODO hefa unterminated statement
+    public responseError = (response: any) => {
         if (response.status === 403) {
             this.errorService.addMesageAsError('ERROR_UNAUTHORIZED');
             return this.$q.reject(response);
