@@ -15,10 +15,10 @@
 
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../app/core/core.angularjs.module';
-import AntragStatusHistoryRS from '../../core/service/antragStatusHistoryRS.rest';
-import BetreuungRS from '../../core/service/betreuungRS.rest';
-import KindRS from '../../core/service/kindRS.rest';
-import VerfuegungRS from '../../core/service/verfuegungRS.rest';
+import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
+import BetreuungRS from '../../app/core/service/betreuungRS.rest';
+import KindRS from '../../app/core/service/kindRS.rest';
+import VerfuegungRS from '../../app/core/service/verfuegungRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';

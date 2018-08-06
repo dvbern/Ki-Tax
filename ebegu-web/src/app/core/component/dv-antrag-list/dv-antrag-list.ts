@@ -173,7 +173,7 @@ export class DVAntragListController implements IController {
     }
 
     // TODO hefa unterminated statement
-    private callServer = (tableFilterState: any) => {
+    public readonly callServer = (tableFilterState: any) => {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 

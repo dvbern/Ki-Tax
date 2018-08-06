@@ -15,7 +15,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 @NgModule({
     imports: [
         UIRouterUpgradeModule,
-        UIRouterModule.forChild({ states: [] }),
+        UIRouterModule.forChild({states: []}),
     ],
     exports: [UIRouterModule],
 })

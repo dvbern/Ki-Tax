@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EwkRS from '../../../core/service/ewkRS.rest';
+import EwkRS from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';

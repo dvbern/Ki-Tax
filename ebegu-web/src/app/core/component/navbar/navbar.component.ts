@@ -29,8 +29,7 @@ import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemein
 
 @Component({
     selector: 'dv-navbar',
-    template: '<h1>test</h1>',
-    // templateUrl: './navbar.component.html',
+    templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.less']
 })
 export class NavbarComponent {

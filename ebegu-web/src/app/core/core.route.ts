@@ -13,9 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
 import {StateService, Transition, TransitionService} from '@uirouter/core';
-import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
+import * as angular from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
@@ -28,6 +27,7 @@ import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../../models/TSApplicationProperty';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import ErrorService from './errors/service/ErrorService';
+import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import ListResourceRS from './service/listResourceRS.rest';

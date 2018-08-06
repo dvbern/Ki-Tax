@@ -25,6 +25,6 @@ export class OnboardingComponent {
     }
 
     public onSubmit(): void {
-        LOG.info('submitted');
+        LOG.info('submitted', this.gemeinde);
     }
 }
