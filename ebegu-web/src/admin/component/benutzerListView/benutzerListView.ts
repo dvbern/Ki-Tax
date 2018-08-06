@@ -19,7 +19,6 @@ import UserRS from '../../../app/core/service/userRS.rest';
 import TSUser from '../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
-import './benutzerListView.less';
 import {StateService} from '@uirouter/core';
 
 

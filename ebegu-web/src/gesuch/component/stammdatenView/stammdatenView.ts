@@ -37,7 +37,6 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
-import './stammdatenView.less';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;

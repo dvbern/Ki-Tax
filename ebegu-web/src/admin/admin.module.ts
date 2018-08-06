@@ -18,7 +18,6 @@ import * as angular from 'angular';
 import 'angular-smart-table';
 import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
-import './admin.module.less';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';

@@ -22,7 +22,6 @@ import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogControl
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
-import './institutionenListView.less';
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 

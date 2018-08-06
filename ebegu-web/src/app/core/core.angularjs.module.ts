@@ -82,7 +82,6 @@ import {NavbarComponent} from './component/navbar/navbar.component';
 import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
-import './core.module.less';
 import {appRun} from './core.route';
 import {DVBarcodeListener} from './directive/dv-barcode-listener';
 import {DVDatepicker} from './directive/dv-datepicker/dv-datepicker';

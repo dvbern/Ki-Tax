@@ -25,7 +25,6 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {FerieninselStammdatenRS} from '../../service/ferieninselStammdatenRS.rest';
-import './ferieninselView.less';
 import ITimeoutService = angular.ITimeoutService;
 
 export class FerieninselViewComponentConfig implements IComponentOptions {

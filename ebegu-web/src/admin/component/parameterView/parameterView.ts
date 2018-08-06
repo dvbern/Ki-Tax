@@ -21,7 +21,6 @@ import TSEbeguParameter from '../../../models/TSEbeguParameter';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
-import './parameterView.less';
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 

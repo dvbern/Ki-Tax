@@ -44,7 +44,6 @@ import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdat
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
-import './gesuch.module.less';
 import {gesuchRun} from './gesuch.route';
 
 export const EbeguWebGesuch =
