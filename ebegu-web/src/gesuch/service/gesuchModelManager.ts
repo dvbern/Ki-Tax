@@ -534,9 +534,9 @@ export default class GesuchModelManager {
      * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht erstellt wurde i.e. es null/undefined ist
      * Wenn force werden Gesuch und Fall immer erstellt.
      */
-    public initGesuch(forced: boolean, eingangsart: TSEingangsart) {
-        if (forced || (!forced && !this.gesuch)) {
-            this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart);
+    public initGesuch(forced: boolean, eingangsart: TSEingangsart, createNewFall: boolean) {
+        if (forced || (!forced && !this.getDossier())) {
+            this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, createNewFall);
         }
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
     }
@@ -544,17 +544,12 @@ export default class GesuchModelManager {
     /**
      * Erstellt ein neues Gesuch mit der angegebenen Eingangsart und Gesuchsperiode. Damit dies im resolve des
      * routing gemacht werden kann, wird das ganze als promise gehandhabt
-     * @param forced
-     * @param eingangsart
-     * @param gesuchsperiodeId
-     * @param dossierId
-     * @param gemeindeId
      * @return a void promise that is resolved once all subpromises are done
      */
     public initGesuchWithEingangsart(forced: boolean, eingangsart: TSEingangsart, gesuchsperiodeId: string,
-                                     dossierId: string, gemeindeId: string): IPromise<TSGesuch> {
+                                     dossierId: string, gemeindeId: string, createNewFall: boolean): IPromise<TSGesuch> {
 
-        this.initGesuch(forced, eingangsart);
+        this.initGesuch(forced, eingangsart, createNewFall);
         let setGesuchsperiodeProm: IPromise<void>;
         if (gesuchsperiodeId) {
             setGesuchsperiodeProm = this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
@@ -603,23 +598,24 @@ export default class GesuchModelManager {
      * mit dem ID des alten Gesuchs aufgerufen. Das Objekt das man zurueckbekommt, wird dann diese Fake-Mutation mit den richtigen
      * Daten ueberschreiben
      */
-    public initMutation(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string): void {
-        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.MUTATION);
+    public initMutation(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string, createNewFall: boolean): void {
+        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.MUTATION, createNewFall);
     }
 
     /**
      * Diese Methode erstellt ein Fake-Erneuerungsgesuch als gesuch fuer das GesuchModelManager. Das Gesuch ist noch leer und hat
      * das ID des Gesuchs aus dem es erstellt wurde.
      */
-    public initErneuerungsgesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string) {
-        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.ERNEUERUNGSGESUCH);
+    public initErneuerungsgesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string, createNewFall: boolean) {
+        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.ERNEUERUNGSGESUCH, createNewFall);
     }
 
-    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string, antragTyp: TSAntragTyp): void {
+    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string,
+                             antragTyp: TSAntragTyp, createNewFall: boolean): void {
         this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
             this.gesuch.gesuchsperiode = periode;
         });
-        this.initAntrag(antragTyp, eingangsart);
+        this.initAntrag(antragTyp, eingangsart, createNewFall);
         this.dossierRS.findDossier(dossierId).then(foundDossier => {
             this.gesuch.dossier = foundDossier;
         });
@@ -632,10 +628,10 @@ export default class GesuchModelManager {
         this.gesuch.emptyCopy = true;
     }
 
-    private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart): void {
+    private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart, createNewFall: boolean): void {
         this.gesuch = new TSGesuch();
         this.gesuch.dossier = new TSDossier();
-        this.gesuch.dossier.fall = new TSFall();
+        this.gesuch.dossier.fall = createNewFall ? new TSFall() : this.getFall();
         this.gesuch.typ = antragTyp; // by default ist es ein Erstgesuch
         this.gesuch.eingangsart = eingangsart;
         this.setHiddenSteps();

@@ -45,7 +45,7 @@ describe('stammdatenView', function () {
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         $stateParams = $injector.get('$stateParams');
         $stateParams.gesuchstellerNumber = '1';
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER, true);
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         ewkRS = $injector.get('EwkRS');

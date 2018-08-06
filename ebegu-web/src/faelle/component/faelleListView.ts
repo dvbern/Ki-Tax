@@ -100,10 +100,10 @@ export class FaelleListViewController {
     private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
         if (antrag) {
             if (isCtrlKeyPressed) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                let url = this.$state.href(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

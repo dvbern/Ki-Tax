@@ -84,7 +84,8 @@ export class DvNgNavbar {
                     let params: INewFallStateParams = {
                         gesuchsperiodeId: null,
                         createMutation: null,
-                        createNew: 'true',
+                        createNewFall: 'true',
+                        createNewDossier: 'false',
                         gesuchId: null,
                         dossierId: null,
                         gemeindeId: gemeindeId,

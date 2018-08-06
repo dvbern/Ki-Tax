@@ -160,7 +160,7 @@ export class GesuchstellerDashboardViewController {
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
@@ -189,7 +189,7 @@ export class GesuchstellerDashboardViewController {
             } else {
                 // Dies ist das erste Gesuch
                 this.$state.go('gesuch.fallcreation', {
-                    createNew: true,
+                    createNewFall: true,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: null,
                     gesuchsperiodeId: periode.id,
@@ -253,7 +253,7 @@ export class GesuchstellerDashboardViewController {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
                 this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

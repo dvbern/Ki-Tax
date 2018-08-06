@@ -201,7 +201,7 @@ export class DVQuicksearchListController {
     private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean) {
         if (antragDTO.antragId) {
             let navObj: any = {
-                createNew: false,
+                createNewFall: false,
                 gesuchId: antragDTO.antragId,
                 dossierId: antragDTO.dossierId
             };

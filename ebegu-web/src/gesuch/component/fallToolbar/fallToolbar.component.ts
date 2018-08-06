@@ -19,13 +19,16 @@ import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvNgGemeindeDialogComponent} from '../../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {getTSEingangsartFromRole} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {INewFallStateParams} from '../../gesuch.route';
 import DossierRS from '../../service/dossierRS.rest';
 import GemeindeRS from '../../service/gemeindeRS.rest';
+import {StateService} from '@uirouter/core';
 
 require('./fallToolbar.less');
 
@@ -49,6 +52,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     constructor(private dossierRS: DossierRS,
             private dialog: MatDialog,
             private gemeindeRS: GemeindeRS,
+            private $state: StateService,
             private authServiceRS: AuthServiceRS) {
     }
 
@@ -99,11 +103,25 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     public createNewDossier(): void {
         this.getGemeindeIDFromDialog().subscribe(
-            () => {
-                // this.dossierRS.createDossier(undefined).then(response => {
-                // });
+            (chosenGemeindeId) => {
+                // TODO kibon-91 it must create a new Dossier for an existing fall. Not a new fall
+                let params: INewFallStateParams = {
+                    gesuchsperiodeId: null,
+                    createMutation: null,
+                    createNewFall: 'false',
+                    createNewDossier: 'true',
+                    gesuchId: null,
+                    dossierId: null,
+                    gemeindeId: chosenGemeindeId,
+                    eingangsart: this.getEingangsArt(),
+                };
+                this.$state.go('gesuch.fallcreation', params);
             }
         );
+    }
+
+    private getEingangsArt() {
+        return getTSEingangsartFromRole(this.authServiceRS.getPrincipalRole());
     }
 
     /**

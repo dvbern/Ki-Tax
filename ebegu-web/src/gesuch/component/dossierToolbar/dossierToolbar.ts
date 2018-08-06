@@ -388,7 +388,7 @@ export class DossierToolbarController implements IDVFocusableController {
                 this.$state.go('gesuch.familiensituation', {gesuchId: gesuchId});
             } else {
                 this.$state.go('gesuch.fallcreation', {
-                    createNew: false, gesuchId: gesuchId
+                    createNewFall: false, gesuchId: gesuchId
                 });
             }
         }
@@ -572,10 +572,10 @@ export class DossierToolbarController implements IDVFocusableController {
                     this.$state.go('gesuchstellerDashboard');
                 });
             } else {
-                this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(result => {
+                this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(() => {
                     if (this.antragList.length > 1) {
                         let navObj: any = {
-                            createNew: false,
+                            createNewFall: false,
                             gesuchId: this.antragList[0].antragId,
                             dossierId: this.antragList[0].dossierId
                         };

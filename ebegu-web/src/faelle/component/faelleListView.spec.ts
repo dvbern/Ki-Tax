@@ -86,7 +86,7 @@ describe('faelleListView', function () {
             it('should call findGesuch and open the view gesuch.fallcreation with it for normal user', function () {
                 callEditFall();
 
-                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
+                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNewFall: false, gesuchId: '66345345', dossierId: '11111111'});
 
             });
             it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', function () {

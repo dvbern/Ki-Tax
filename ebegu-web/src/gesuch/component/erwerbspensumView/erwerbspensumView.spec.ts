@@ -39,7 +39,7 @@ describe('erwerbspensumView', function () {
     }));
 
     beforeEach(function () {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER, true);
         let tsGesuchsperiode = new TSGesuchsperiode();
         tsGesuchsperiode.id = '123';
         gesuchModelManager.getGesuch().gesuchsperiode = tsGesuchsperiode;
