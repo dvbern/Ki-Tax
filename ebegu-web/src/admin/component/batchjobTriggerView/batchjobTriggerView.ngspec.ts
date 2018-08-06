@@ -14,9 +14,9 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatDialog} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '../../../app/shared/shared.module';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {BatchjobTriggerViewComponent} from './batchjobTriggerView';
@@ -27,7 +27,7 @@ describe('batchjobTriggerView', () => {
     let fixture: ComponentFixture<BatchjobTriggerViewComponent>;
 
     beforeEach(async(() => {
-        const dvDialogSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
+        const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
         const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);
 
@@ -37,7 +37,7 @@ describe('batchjobTriggerView', () => {
                 NoopAnimationsModule,
             ],
             providers: [
-                {provide: DvDialog, useValue: dvDialogSpy},
+                {provide: MatDialog, useValue: dvDialogSpy},
                 {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
                 {provide: DailyBatchRS, useValue: dailyBatchRSSpy},
             ],
