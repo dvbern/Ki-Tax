@@ -22,7 +22,7 @@ import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 
 export const traegerschaftState: Ng2StateDeclaration = {
-    name: 'traegerschaft',
+    name: 'admin.traegerschaft',
     url: '/traegerschaft',
     component: TraegerschaftViewComponent,
     resolve: [
@@ -35,13 +35,13 @@ export const traegerschaftState: Ng2StateDeclaration = {
 };
 
 export const testdatenState: Ng2StateDeclaration = {
-    name: 'testdaten',
+    name: 'admin.testdaten',
     url: '/testdaten',
     component: TestdatenViewComponent,
 };
 
 export const batchjobTriggerState: Ng2StateDeclaration = {
-    name: 'batchjobTrigger',
+    name: 'admin.batchjobTrigger',
     url: '/batchjobTrigger',
     component: BatchjobTriggerViewComponent,
 };

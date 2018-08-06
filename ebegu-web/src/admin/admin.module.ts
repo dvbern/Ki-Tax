@@ -54,8 +54,8 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())
     .directive('dvTraegerschaftView', downgradeComponent({component: TraegerschaftViewComponent}))
-    .directive('testdatenView', downgradeComponent({component: TestdatenViewComponent}))
-    .directive('batchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
+    .directive('dvTestdatenView', downgradeComponent({component: TestdatenViewComponent}))
+    .directive('dvBatchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
     .run(adminRun);
 
 export default EbeguWebAdmin;

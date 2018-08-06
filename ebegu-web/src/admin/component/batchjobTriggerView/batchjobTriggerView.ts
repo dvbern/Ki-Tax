@@ -20,7 +20,7 @@ import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 
 @Component({
-    selector: 'batchjob-trigger-view',
+    selector: 'dv-batchjob-trigger-view',
     templateUrl: './batchjobTriggerView.html',
     styleUrls: ['./batchjobTrigger.less']
 })

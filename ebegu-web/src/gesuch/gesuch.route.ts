@@ -46,7 +46,6 @@ export function gesuchRun(routerHelper: RouterHelper) {
 
 const ng2States: Ng2StateDeclaration[] = [
     {
-        parent: 'app',
         name: 'onboarding',
         url: '/onboarding',
         component: OnboardingComponent,

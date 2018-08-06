@@ -34,7 +34,7 @@ import TSUser from '../../../models/TSUser';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 
 @Component({
-    selector: 'testdaten-view',
+    selector: 'dv-testdaten-view',
     templateUrl: './testdatenView.html',
     styleUrls: ['./testdatenView.less']
 })

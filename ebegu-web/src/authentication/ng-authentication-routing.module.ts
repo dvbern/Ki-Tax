@@ -23,7 +23,7 @@ import {LogFactory} from '../app/core/logging/LogFactory';
 import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
 
 export const localLoginState: Ng2StateDeclaration = {
-    name: 'locallogin',
+    name: 'authentication.locallogin',
     url: '/locallogin',
     component: DummyAuthenticationListViewComponent,
     resolve: [
