@@ -65,7 +65,8 @@ public class FamiliensituationContainer extends AbstractEntity {
 	}
 
 	@Nonnull
-	public FamiliensituationContainer copyFamiliensituationContainer(@Nonnull FamiliensituationContainer target, @Nonnull AntragCopyType copyType) {
+	public FamiliensituationContainer copyFamiliensituationContainer(
+			@Nonnull FamiliensituationContainer target, @Nonnull AntragCopyType copyType, @Nonnull boolean sourceGesuchIsMutation) {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamiliensituationGS(null);
 		Objects.requireNonNull(getFamiliensituationJA());
@@ -73,8 +74,13 @@ public class FamiliensituationContainer extends AbstractEntity {
 
 		switch (copyType) {
 		case MUTATION:
-			Objects.requireNonNull(this.getFamiliensituationErstgesuch());
-			target.setFamiliensituationErstgesuch(this.getFamiliensituationErstgesuch().copyFamiliensituation(new Familiensituation(), copyType));
+			// Falls das zu kopierende Gesuch bereits eine Mutation war, muss die FamiliensituationErstgesuch auch gesetzt werden
+			if (sourceGesuchIsMutation) {
+				Objects.requireNonNull(this.getFamiliensituationErstgesuch());
+				target.setFamiliensituationErstgesuch(this.getFamiliensituationErstgesuch().copyFamiliensituation(new Familiensituation(), copyType));
+			} else {
+				target.setFamiliensituationErstgesuch(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
+			}
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

@@ -743,7 +743,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		target.setGueltig(false);
 		target.setDokumenteHochgeladen(false);
 
-		copyFamiliensituation(target, copyType);
+		copyFamiliensituation(target, copyType, this.isMutation());
 		copyGesuchsteller1(target, copyType);
 
 		switch (copyType) {
@@ -779,9 +779,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		return target;
 	}
 
-	private void copyFamiliensituation(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+	private void copyFamiliensituation(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, boolean sourceGesuchIsMutation) {
 		if (this.getFamiliensituationContainer() != null) {
-			target.setFamiliensituationContainer(this.getFamiliensituationContainer().copyFamiliensituationContainer(new FamiliensituationContainer(), copyType));
+			target.setFamiliensituationContainer(this.getFamiliensituationContainer().copyFamiliensituationContainer(new FamiliensituationContainer(),
+				copyType, sourceGesuchIsMutation));
 		}
 	}
 

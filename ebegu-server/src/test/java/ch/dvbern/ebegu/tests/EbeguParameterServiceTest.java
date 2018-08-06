@@ -98,7 +98,7 @@ public class EbeguParameterServiceTest extends AbstractEbeguLoginTest {
 	public void getAllEbeguParameterByDateTest() {
 		Assert.assertNotNull(parameterService);
 		createAndPersistParameter(EbeguParameterKey.PARAM_ANZAL_TAGE_MAX_KITA, Constants.GESUCHSPERIODE_17_18);
-		Collection<EbeguParameter> allEbeguParameterByDate = parameterService.getAllEbeguParameterByDate(LocalDate.now());
+		Collection<EbeguParameter> allEbeguParameterByDate = parameterService.getAllEbeguParameterByDate(LocalDate.of(2018, Month.FEBRUARY, 10));
 		Assert.assertEquals(1, allEbeguParameterByDate.size());
 	}
 
