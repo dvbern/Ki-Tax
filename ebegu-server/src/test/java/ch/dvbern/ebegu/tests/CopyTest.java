@@ -144,7 +144,7 @@ public class CopyTest {
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, mutationNeuesDossier.getStatus());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, erneuerungNeuesDossier.getStatus());
 
-		// Eingangsdatum / RegelnAbDatum
+		// Eingangsdatum / RegelnAbDatum: Immer null
 		Assert.assertNull(mutation.getEingangsdatum());
 		Assert.assertNull(mutation.getRegelStartDatum());
 		Assert.assertNull(erneuerung.getEingangsdatum());
@@ -195,32 +195,34 @@ public class CopyTest {
 
 	@Test
 	public void copyEinkommensverschlechterung() {
+		// Mutation: Wird kopiert
 		Assert.assertNotNull(mutation.getEinkommensverschlechterungInfoContainer());
 		Assert.assertNotNull(mutation.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA());
 		Assert.assertEquals(Boolean.TRUE,
 			mutation.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1());
-
 		Assert.assertNotNull(mutation.getGesuchsteller1());
 		Assert.assertNotNull(mutation.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		Assert.assertNotNull(mutation.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
 		Assert.assertNotNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
 		Assert.assertEquals(MathUtil.DEFAULT.from(53265), mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
 
+		// Erneuerung: Wird nicht kopiert
 		Assert.assertNull(erneuerung.getEinkommensverschlechterungInfoContainer());
 		Assert.assertNotNull(erneuerung.getGesuchsteller1());
 		Assert.assertNull(erneuerung.getGesuchsteller1().getEinkommensverschlechterungContainer());
 
+		// Neues Dossier im selben Jahr: Wird kopiert
 		Assert.assertNotNull(mutationNeuesDossier.getEinkommensverschlechterungInfoContainer());
 		Assert.assertNotNull(mutationNeuesDossier.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA());
 		Assert.assertEquals(Boolean.TRUE,
 			mutationNeuesDossier.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1());
-
 		Assert.assertNotNull(mutationNeuesDossier.getGesuchsteller1());
 		Assert.assertNotNull(mutationNeuesDossier.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		Assert.assertNotNull(mutationNeuesDossier.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
 		Assert.assertNotNull(mutationNeuesDossier.getGesuchsteller1().getFinanzielleSituationContainer());
 		Assert.assertEquals(MathUtil.DEFAULT.from(53265), mutationNeuesDossier.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
 
+		// Neues Dossier im neuen Jahr: Wird nicht kopiert
 		Assert.assertNull(erneuerungNeuesDossier.getEinkommensverschlechterungInfoContainer());
 		Assert.assertNotNull(erneuerungNeuesDossier.getGesuchsteller1());
 		Assert.assertNull(erneuerungNeuesDossier.getGesuchsteller1().getEinkommensverschlechterungContainer());
@@ -259,6 +261,7 @@ public class CopyTest {
 
 	@Test
 	public void copyBetreuungen() {
+		// Betreuungen werden nur bei Mutationen in der selben Gemeinde kopiert
 		Assert.assertNotNull(mutation.extractAllBetreuungen());
 		Assert.assertEquals(2, mutation.extractAllBetreuungen().size());
 
@@ -274,6 +277,7 @@ public class CopyTest {
 
 	@Test
 	public void copyDokumente() {
+		// Dokumente werden nur im selben Jahr kopiert (unabhängig von Gemeinde)
 		Assert.assertNotNull(mutation.getDokumentGrunds());
 		Assert.assertEquals(1, mutation.getDokumentGrunds().size());
 
@@ -287,25 +291,29 @@ public class CopyTest {
 
 	@Test
 	public void copyAdressen() {
+		// Mutation: Es werden alle Adressen kopiert
 		Assert.assertNotNull(mutation.getGesuchsteller1());
 		Assert.assertNotNull(mutation.getGesuchsteller1().getAdressen());
 		Assert.assertEquals(2, mutation.getGesuchsteller1().getAdressen().size());
 
+		// Erneuerung: Es werden nur aktive Adressen kopiert
 		Assert.assertNotNull(erneuerung.getGesuchsteller1());
 		Assert.assertNotNull(erneuerung.getGesuchsteller1().getAdressen());
 		Assert.assertEquals(1, erneuerung.getGesuchsteller1().getAdressen().size());
 
+		// Neue Gemeinde: Es werden KEINE Adressen kopiert (egal welche GP)
 		Assert.assertNotNull(mutationNeuesDossier.getGesuchsteller1());
 		Assert.assertNotNull(mutationNeuesDossier.getGesuchsteller1().getAdressen());
-		Assert.assertEquals(1, mutationNeuesDossier.getGesuchsteller1().getAdressen().size());
+		Assert.assertEquals(0, mutationNeuesDossier.getGesuchsteller1().getAdressen().size());
 
 		Assert.assertNotNull(erneuerungNeuesDossier.getGesuchsteller1());
 		Assert.assertNotNull(erneuerungNeuesDossier.getGesuchsteller1().getAdressen());
-		Assert.assertEquals(1, erneuerungNeuesDossier.getGesuchsteller1().getAdressen().size());
+		Assert.assertEquals(0, erneuerungNeuesDossier.getGesuchsteller1().getAdressen().size());
 	}
 
 	@Test
 	public void copyFachstellen() {
+		// Fachstellen werden im gleichen Jahr immer kopiert, im neuen Jahr nur wenn noch aktuell (unabhängig von Gemeinde)
 		KindContainer kindMutation = mutation.getKindContainers().iterator().next();
 		Assert.assertNotNull(kindMutation);
 		Assert.assertNotNull(kindMutation.getKindJA());

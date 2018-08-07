@@ -247,7 +247,7 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
-		case MUTATION_NEUES_DOSSIER: //TODO (hefr) Dokumente kopieren für Neues Dossier???
+		case MUTATION_NEUES_DOSSIER:
 			target.setDokumentGrundTyp(this.getDokumentGrundTyp());
 			target.setFullName(this.getFullName());
 			target.setTag(this.getTag());

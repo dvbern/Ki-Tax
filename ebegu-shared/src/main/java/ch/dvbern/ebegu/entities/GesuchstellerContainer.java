@@ -260,12 +260,10 @@ public class GesuchstellerContainer extends AbstractEntity implements Searchable
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
-			copyAdressenAktuellUndZukuenftig(target, copyType); //TODO stimmt das fuer neues dossier?
 			copyFinanzen(target, copyType);
 			copyErwerbspensen(target, copyType);
 			break;
 		case ERNEUERUNG_NEUES_DOSSIER:
-			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		}
 		return target;
