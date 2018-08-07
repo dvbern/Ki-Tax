@@ -1,17 +1,17 @@
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {DvPosteingangComponent} from './component/dv-posteingang/dv-posteingang';
+import {NavbarComponent} from './component/navbar/navbar.component';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {DvNgShowElementDirective} from './directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-import {NavbarComponent} from './component/navbar/navbar.component';
-import {UIRouterModule} from '@uirouter/angular';
 
 @NgModule({
     imports: [
         // only those modules required by the providers/components of the core module (other global modules go to shared module)
         TranslateModule,
-        UIRouterModule,
+        UIRouterUpgradeModule,
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)

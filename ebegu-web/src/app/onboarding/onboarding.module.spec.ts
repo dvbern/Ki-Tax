@@ -13,16 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../app/shared/shared.module';
+import {OnboardingModule} from './onboarding.module';
 
-@NgModule({
-    imports: [
-        SharedModule,
-    ],
-    declarations: [],
-    entryComponents: [],
-})
+describe('OnboardingModule', () => {
+    let onboardingModule: OnboardingModule;
 
-export class NgGesuchModule {
-}
+    beforeEach(() => {
+        onboardingModule = new OnboardingModule();
+    });
+
+    it('should create an instance', () => {
+        expect(onboardingModule).toBeTruthy();
+    });
+});

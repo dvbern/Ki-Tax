@@ -1,12 +1,18 @@
+@import (reference) '../../../style/variables.less';
 
-@import (reference) '../../../../style/variables.less';
+.onboarding-text() {
+    font-size: 1.4rem;
+    color: @white;
+    letter-spacing: 0.05rem;
+    line-height: 1.9rem;
+}
 
 .onboarding {
     &-container {
         overflow-y: auto;
-        background: url('../../../../assets/images/kitax_bg.jpg') no-repeat center center fixed; /* fallback */
+        background: url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed; /* fallback */
         background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
-        url('../../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
+        url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -20,8 +26,19 @@
     &-content {
         flex: 1;
         display: flex;
-        flex-direction: column;
+        flex-flow: column;
         align-items: center;
+
+        &-login {
+            margin-top: 15vh;
+            text-align: center;
+            color: @white;
+            letter-spacing: 0.05rem;
+
+            a {
+                color: @red
+            }
+        }
     }
 
     &-title {
@@ -56,42 +73,41 @@
         }
 
         &-label {
-            height: 5rem;
-            width: 32rem;
-            color: @white;
-            font-size: 1.8rem;
-            letter-spacing: 0.1rem;
-            line-height: 2.3rem;
-            margin: 0.5vh;
+            height: 4rem;
+            width: 23.9rem;
+            .onboarding-text();
+            margin-bottom: 1.7rem;
         }
 
         &-search {
-            height: 5rem;
-            width: 32rem;
             border: 0.5rem solid @primary;
-            margin-top: 0.5vh;
-            margin-right: 16rem;
-            background: @white;
-            display: flex;
-            align-items: center;
+            margin-right: 12rem;
 
-            &-input {
-                height: 4rem;
-                width: 100%;
-                border: 0.01rem solid @anthracite;
+            .dv-select-style {
+                border: 1px solid @anthracite;
+
+                select {
+                    width: 22.9rem;
+                    height: 3rem;
+                    font-size: 1.4rem;
+                    font-weight: normal;
+                }
+
+                &:after {
+                    top: 0.5rem;
+                }
             }
+
         }
 
         &-auswaehlen {
-            height: 5rem;
-            width: 32rem;
-            max-width: 32rem;
+            height: 4rem;
+            width: 26.3rem;
+            min-width: 26.3rem;
+            max-width: 26.3rem;
             margin-top: 1.7rem;
+            .onboarding-text();
             background-color: @primary;
-            color: @white;
-            font-size: 1.8rem;
-            letter-spacing: 0.05rem;
-            line-height: 1.9rem;
             text-align: center;
             flex: 1;
             border: none;

@@ -42,7 +42,7 @@ export class StartViewController implements IController, IOnInit {
         if (this.authService.getPrincipal()) {  // wenn logged in
             AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
         } else {
-            //wenn wir noch nicht eingeloggt sind werden wir das event welches das login prozedere anstoesst
+            //wenn wir noch nicht eingeloggt sind werfen wir das event, welches das login prozedere anstoesst
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, 'not logged in on startpage');
         }
     }

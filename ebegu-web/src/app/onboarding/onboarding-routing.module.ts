@@ -14,15 +14,31 @@
  */
 
 import {NgModule} from '@angular/core';
-import {SharedModule} from '../app/shared/shared.module';
+import {Ng2StateDeclaration} from '@uirouter/angular';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+
+const states: Ng2StateDeclaration[] = [
+    {
+        // parent: 'app', app-bar anzeigen oder nicht?
+        name: 'onboarding',
+        abstract: true
+    },
+    {
+        name: 'onboarding.start',
+        url: '/',
+        component: OnboardingComponent,
+    },
+];
 
 @NgModule({
     imports: [
-        SharedModule,
+        UIRouterUpgradeModule.forChild({states}),
     ],
-    declarations: [],
-    entryComponents: [],
+    exports: [
+        UIRouterUpgradeModule
+    ],
+    declarations: []
 })
-
-export class NgGesuchModule {
+export class OnboardingRoutingModule {
 }

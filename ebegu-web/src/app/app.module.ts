@@ -24,6 +24,7 @@ import {NgPosteingangModule} from '../posteingang/ng-posteingang.module';
 import {AppRoutingModule} from './app-routing.module';
 import {appModuleAngularJS} from './app.angularjs.module';
 import {CoreModule} from './core/core.module';
+import {OnboardingModule} from './onboarding/onboarding.module';
 import {SharedModule} from './shared/shared.module';
 
 @NgModule({
@@ -37,11 +38,11 @@ import {SharedModule} from './shared/shared.module';
         SharedModule,
 
         AppRoutingModule,
-        // TODO hefa only import via router
         NgAdminModule,
         NgAuthenticationModule,
         NgGesuchModule,
         NgPosteingangModule,
+        OnboardingModule,
     ],
 })
 

@@ -50,7 +50,9 @@ export const batchjobTriggerState: Ng2StateDeclaration = {
     imports: [
         UIRouterUpgradeModule.forChild({states: [traegerschaftState, testdatenState, batchjobTriggerState]}),
     ],
-    exports: [],
+    exports: [
+        UIRouterUpgradeModule
+    ],
 })
 export class NgAdminRoutingModule {
 }

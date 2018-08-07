@@ -13,9 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {OnboardingComponent} from '../app/core/component/dv-onboarding/onboarding.component';
 import KindRS from '../app/core/service/kindRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
@@ -39,18 +37,10 @@ const gesuchTpl = require('./gesuch.html');
 gesuchRun.$inject = ['RouterHelper'];
 
 export function gesuchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(ng1States, ng2States);
+    routerHelper.configureStates(ng1States, []);
 }
 
 //STATES
-
-const ng2States: Ng2StateDeclaration[] = [
-    {
-        name: 'onboarding',
-        url: '/',
-        component: OnboardingComponent,
-    },
-];
 
 export class EbeguGesuchState implements Ng1StateDeclaration {
     parent = 'app';

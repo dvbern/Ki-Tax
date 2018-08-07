@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../../models/TSGemeinde';
-import {LogFactory} from '../../logging/LogFactory';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSGemeinde from '../../../models/TSGemeinde';
+import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('OnboardingComponent');
 

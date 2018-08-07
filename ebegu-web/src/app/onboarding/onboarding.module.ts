@@ -14,15 +14,20 @@
  */
 
 import {NgModule} from '@angular/core';
-import {SharedModule} from '../app/shared/shared.module';
+import {SharedModule} from '../shared/shared.module';
+import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingRoutingModule} from './onboarding-routing.module';
 
 @NgModule({
     imports: [
         SharedModule,
+        OnboardingRoutingModule,
     ],
-    declarations: [],
-    entryComponents: [],
+    declarations: [
+        OnboardingComponent
+    ]
 })
-
-export class NgGesuchModule {
+class OnboardingModule {
 }
+
+export {OnboardingModule};
