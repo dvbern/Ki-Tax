@@ -31,7 +31,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     @Input() defaultGemeindeName: string;
     // fall: TSFall;
     dossierList: TSDossier[] = [];
-    selectedDossier: TSDossier;
+    selectedDossier?: TSDossier;
 
     constructor(private dossierRS: DossierRS) {
     }
