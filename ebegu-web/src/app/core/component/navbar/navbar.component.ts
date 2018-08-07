@@ -40,7 +40,6 @@ export class NavbarComponent {
                 private readonly dialog: MatDialog,
                 private readonly $state: StateService,
                 private readonly gemeindeRS: GemeindeRS) {
-        console.log('test');
     }
 
     public getGemeindeIDFromUser$(): Observable<string> {

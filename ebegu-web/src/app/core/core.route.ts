@@ -42,17 +42,15 @@ const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS', '$trace'];
+    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
 export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
                        mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
                        authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
                        $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService, gemeindeRS: GemeindeRS, $trace: any) {
+                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
     // navigationLogger.toggle();
-
-    $trace.enable(1);
 
     $transitions.onStart({}, transition => {
         stateChangeStart(transition);
