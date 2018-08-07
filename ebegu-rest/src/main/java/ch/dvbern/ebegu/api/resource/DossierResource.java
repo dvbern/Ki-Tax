@@ -140,7 +140,7 @@ public class DossierResource {
 		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
 	}
 
-	@ApiOperation(value = "Returns all Dossiers of the given Fall that are visible dor the current user",
+	@ApiOperation(value = "Returns all Dossiers of the given Fall that are visible for the current user",
 		responseContainer = "List", response = JaxDossier.class)
 	@Nullable
 	@GET
