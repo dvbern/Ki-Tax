@@ -20,7 +20,8 @@
                 <h3 data-translate="POSTEINGANG"></h3>
             </div>
             <div class="col-md-2 text-right closedMitteilungen posteingangView__resultCombo">
-                <md-checkbox ng-model="vm.includeClosed" name="includeClosed" id="includeClosed" ng-change="vm.clickedIncludeClosed()"
+                <md-checkbox ng-model="vm.includeClosed" name="includeClosed" id="includeClosed"
+                             ng-change="vm.clickedIncludeClosed()"
                              aria-label="{{'POSTEINGANG_INCLUDE_CLOSED'|translate}}">
                     <span data-translate="POSTEINGANG_INCLUDE_CLOSED"></span>
                 </md-checkbox>
@@ -36,24 +37,44 @@
                     <tr>
                         <!-- Von -->
                         <th st-sort="sender" class="sortable row-sender" data-translate="POSTEINGANG_VON_UPPER"></th>
+                        <!-- Gemeinde -->
+                        <th st-sort="gemeinde" class="sortable row-gemeinde"
+                            data-translate="POSTEINGANG_GEMEINDE_UPPER"></th>
                         <!-- Fall-Nummer -->
-                        <th st-sort="fallNummer" class="sortable row-fallNummer" data-translate="POSTEINGANG_FALL_UPPER"></th>
+                        <th st-sort="fallNummer" class="sortable row-fallNummer"
+                            data-translate="POSTEINGANG_FALL_UPPER"></th>
                         <!-- Familie -->
-                        <th st-sort="familienName" class="sortable row-besitzer" data-translate="POSTEINGANG_FAMILIE_UPPER"></th>
+                        <th st-sort="familienName" class="sortable row-besitzer"
+                            data-translate="POSTEINGANG_FAMILIE_UPPER"></th>
                         <!-- Betreff -->
-                        <th st-sort="subject" class="sortable row-subject" data-translate="POSTEINGANG_BETREFF_UPPER"></th>
+                        <th st-sort="subject" class="sortable row-subject"
+                            data-translate="POSTEINGANG_BETREFF_UPPER"></th>
                         <!-- Datum -->
-                        <th st-sort="sentDatum" class="sortable row-sentDatum" data-translate="POSTEINGANG_DATUM_UPPER"></th>
+                        <th st-sort="sentDatum" class="sortable row-sentDatum"
+                            data-translate="POSTEINGANG_DATUM_UPPER"></th>
                         <!-- Verantwortliche Person -->
-                        <th st-sort="empfaenger" class="sortable row-empfaenger" data-translate="POSTEINGANG_VERANTWORTLICH_UPPER"></th>
+                        <th st-sort="empfaenger" class="sortable row-empfaenger"
+                            data-translate="POSTEINGANG_VERANTWORTLICH_UPPER"></th>
                         <!-- Amt -->
                         <th st-sort="empfaengerAmt" class="sortable row-amt" data-translate="POSTEINGANG_AMT"></th>
                         <!-- Status -->
-                        <th st-sort="mitteilungStatus" class="sortable row-status" data-translate="POSTEINGANG_STATUS"></th>
+                        <th st-sort="mitteilungStatus" class="sortable row-status"
+                            data-translate="POSTEINGANG_STATUS"></th>
                     </tr>
                     <tr>
                         <!-- Von -->
                         <th><input st-search="sender" class="form-control" type="text"/></th>
+                        <!-- Gemeinde -->
+                        <th>
+                            <div class="dv-select-style">
+                                <select st-input-event="change" name="gemeinde" id="gemeinde"
+                                        st-search="gemeinde" class="form-control"
+                                        ng-options="gemeinde.name for gemeinde in vm.gemeindenList | orderBy: 'name'  track by gemeinde.name"
+                                        ng-model="vm.selectedGemeinde">
+                                    <option value="">{{"ALLE" | translate}}</option>
+                                </select>
+                            </div>
+                        </th>
                         <!-- Fall-Nummer -->
                         <th><input st-search="fallNummer" class="form-control" type="text"/></th>
                         <!-- Familie -->
@@ -64,14 +85,17 @@
                         <th><input st-search="sentDatum" class="form-control" type="text"/></th>
                         <!-- Verantwortliche Person -->
                         <th>
-                            <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger" initial-all="false" show-selection-all="true"
+                            <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger" initial-all="false"
+                                           show-selection-all="true"
                                            schulamt="vm.isCurrentUserSchulamt()"></dv-userselect>
                         </th>
                         <!-- Amt -->
                         <th>
                             <div class="dv-select-style">
-                                <select st-input-event="change" name="empfaengerAmt" id="empfaengerAmt" st-search="empfaengerAmt" class="form-control"
-                                        ng-options="'AMT_' + a | translate for a in vm.getAemter() track by a" ng-model="vm.selectedAmt">
+                                <select st-input-event="change" name="empfaengerAmt" id="empfaengerAmt"
+                                        st-search="empfaengerAmt" class="form-control"
+                                        ng-options="'AMT_' + a | translate for a in vm.getAemter() track by a"
+                                        ng-model="vm.selectedAmt">
                                     <option value="">{{"ALLE" | translate}}</option>
                                 </select>
                             </div>
@@ -90,11 +114,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="row in vm.displayedCollection" st-select-row="row" st-select-mode="single" ng-click="vm.gotoMitteilung(row)"
+                    <tr ng-repeat="row in vm.displayedCollection" st-select-row="row" st-select-mode="single"
+                        ng-click="vm.gotoMitteilung(row)"
                         ng-class="{'mitteilung_neu': ('NEU' === row.mitteilungStatus.toString()),'mitteilung_alt': ('NEU' !== row.mitteilungStatus.toString())}">
                         <!-- Von -->
                         <td title="{{row.sender.getFullName()}}"
                             ng-bind="row.sender.getFullName()"></td>
+                        <!-- Gemeinde -->
+                        <td title="{{row.dossier.gemeinde.name}}" ng-bind="row.dossier.gemeinde.name"></td>
                         <!-- Fall-Nummer -->
                         <td class="ellipsis" title="{{vm.addZerosToFallNummer(row.dossier.fall.fallNummer)}}"
                             ng-bind="vm.addZerosToFallNummer(row.dossier.fall.fallNummer)"></td>

@@ -14,15 +14,22 @@
  */
 
 import {IComponentOptions, ILogService, IPromise} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import MitteilungRS from '../../core/service/mitteilungRS.rest';
+import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
+import TSGemeinde from '../../models/TSGemeinde';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {StateService} from '@uirouter/core';
+
 let template = require('./posteingangView.html');
 require('./posteingangView.less');
 
@@ -35,23 +42,39 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 
 export class PosteingangViewController {
 
+    private readonly unsubscribe$ = new Subject<void>();
     displayedCollection: Array<TSMitteilung> = []; //Liste die im Gui angezeigt wird
     pagination: any = {};
     totalResultCount: string = '0';
-    myTableFilterState: any; // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
+    myTableFilterState: any; // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox
+                             // vorhanden ist
 
     itemsByPage: number = 20;
     numberOfPages: number = 1;
     selectedAmt: string;
     selectedMitteilungsstatus: TSMitteilungStatus;
     includeClosed: boolean = false;
+    gemeindenList: Array<TSGemeinde> = [];
 
+    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS',
+        '$log', 'AuthLifeCycleService'];
 
+    constructor(private mitteilungRS: MitteilungRS,
+                private ebeguUtil: EbeguUtil,
+                private CONSTANTS: any,
+                private $state: StateService,
+                private authServiceRS: AuthServiceRS,
+                private gemeindeRS: GemeindeRS,
+                private $log: ILogService,
+                private authLifeCycleService: AuthLifeCycleService) {
 
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
+    }
 
-    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: StateService,
-                private authServiceRS: AuthServiceRS, private $log: ILogService) {
+    initViewModel() {
+        this.updateGemeindenList();
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
@@ -67,6 +90,13 @@ export class PosteingangViewController {
     isCurrentUserSchulamt(): boolean {
         let isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
         return isUserSchulamt;
+    }
+
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     getAemter(): Array<TSAmt> {
@@ -85,7 +115,8 @@ export class PosteingangViewController {
         this.pagination = tableFilterState.pagination;
         this.myTableFilterState = tableFilterState;
 
-        return this.mitteilungRS.searchMitteilungen(tableFilterState, this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
+        return this.mitteilungRS.searchMitteilungen(tableFilterState,
+            this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
             this.setResult(result);
         });
     }

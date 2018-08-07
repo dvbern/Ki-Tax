@@ -57,6 +57,9 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	@Nullable
 	private JaxAuthLoginElement empfaenger;
 
+	@Nullable
+	private String gemeinde;
+
 	@Size(min = 0, max = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
 	private String subject;
@@ -159,5 +162,14 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	public void setSentDatum(@Nullable LocalDateTime sentDatum) {
 		this.sentDatum = sentDatum;
+	}
+
+	@Nullable
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nullable String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }
