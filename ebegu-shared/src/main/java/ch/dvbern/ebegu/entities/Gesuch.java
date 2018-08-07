@@ -724,10 +724,11 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	@Nonnull
-	public Gesuch copyGesuch(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, @Nonnull Eingangsart targetEingangsart,
+	public Gesuch copyGesuch(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, @Nonnull Eingangsart targetEingangsart, @Nonnull AntragTyp targetTyp,
 			@Nonnull Dossier targetDossier, @Nonnull Gesuchsperiode targetGesuchsperiode) {
 		super.copyAbstractEntity(target, copyType);
 		target.setEingangsart(targetEingangsart);
+		target.setTyp(targetTyp);
 		target.setEingangsdatum(null);
 		target.setRegelnGueltigAb(null);
 		target.setDossier(targetDossier);
@@ -749,31 +750,23 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		switch (copyType) {
 		case MUTATION:
 			target.setLaufnummer(this.getLaufnummer() + 1);
-			target.setTyp(AntragTyp.MUTATION);
 			copyGesuchsteller2(target, copyType);
 			copyKindContainer(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
-			target.setTyp(AntragTyp.ERNEUERUNGSGESUCH); //OK
 			copyGesuchsteller2IfStillNeeded(target, copyType);
 			copyKindContainer(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für das neue Dossier wieder mit 0 an
-			target.setTyp(AntragTyp.ERSTGESUCH); //TODO Ist ein neues Dossier ein ERSTgesuch?
 			copyGesuchsteller2(target, copyType);
 			copyKindContainer(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
-			break;
-		case ERNEUERUNG_NEUES_DOSSIER:
-			target.setLaufnummer(0); // Wir fangen für eine neue Periode wieder mit 0 an
-			target.setTyp(AntragTyp.ERSTGESUCH); //TODO Ist ein neues Dossier ein ERSTgesuch?
-			copyGesuchsteller2IfStillNeeded(target, copyType);
-			copyKindContainer(target, copyType);
 			break;
 		}
 		return target;
@@ -834,25 +827,25 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Nonnull
 	public Gesuch copyForMutation(
 			@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsart) {
-		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsart, this.getDossier(), this.getGesuchsperiode());
+		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsart, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode());
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerung(
 			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
-		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsart, this.getDossier(), gesuchsperiode);
+		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsart, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiode);
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerungsgesuchNeuesDossier(
-			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsart, @Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
-		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsart, dossier, gesuchsperiode);
+			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsart, @Nonnull AntragTyp typ, @Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsart, typ, dossier, gesuchsperiode);
 	}
 
 	@Nonnull
 	public Gesuch copyForMutationNeuesDossier(
-			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsart, @Nonnull Dossier dossier) {
-		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsart, dossier, this.getGesuchsperiode());
+			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsart, @Nonnull AntragTyp typ, @Nonnull Dossier dossier) {
+		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsart, typ, dossier, this.getGesuchsperiode());
 	}
 
 	@Nonnull

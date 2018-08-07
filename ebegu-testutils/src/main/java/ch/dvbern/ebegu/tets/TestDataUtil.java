@@ -352,6 +352,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
+	@Nonnull
 	public static Gemeinde createGemeindeBern() {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_BERN_ID);
@@ -362,6 +363,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
+	@Nonnull
 	public static Gemeinde createGemeindeOstermundigen() {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);

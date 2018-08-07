@@ -114,8 +114,8 @@ public class CopyTest {
 
 		mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
 		erneuerung = erstgesuch.copyForErneuerung(new Gesuch(), folgeperiode, Eingangsart.ONLINE);
-		mutationNeuesDossier = erstgesuch.copyForMutationNeuesDossier(new Gesuch(), Eingangsart.ONLINE, folgeDossier);
-		erneuerungNeuesDossier = erstgesuch.copyForErneuerungsgesuchNeuesDossier(new Gesuch(), Eingangsart.ONLINE, folgeDossier, folgeperiode);
+		mutationNeuesDossier = erstgesuch.copyForMutationNeuesDossier(new Gesuch(), Eingangsart.ONLINE, AntragTyp.ERSTGESUCH, folgeDossier);
+		erneuerungNeuesDossier = erstgesuch.copyForErneuerungsgesuchNeuesDossier(new Gesuch(), Eingangsart.ONLINE, AntragTyp.ERSTGESUCH, folgeDossier, folgeperiode);
 	}
 
 	@Test

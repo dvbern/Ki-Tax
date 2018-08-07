@@ -125,7 +125,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	public void setupTestdata(@Nonnull TestdataSetupConfig config) {
 		Mandant mandant = getMandant(config);
 		Gesuchsperiode gesuchsperiode = getGesuchsperiode(config, null);
-		insertInstitutionsstammdatenForTestfaelle(config, mandant);
+		insertInstitutionsstammdatenForTestfaelle(config, mandant, gesuchsperiode);
 		insertParametersForTestfaelle(gesuchsperiode);
 	}
 
@@ -334,7 +334,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		return gemeinde;
 	}
 
-	private void insertInstitutionsstammdatenForTestfaelle(@Nonnull TestdataSetupConfig config, @Nonnull Mandant mandant) {
+	private void insertInstitutionsstammdatenForTestfaelle(@Nonnull TestdataSetupConfig config, @Nonnull Mandant mandant, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = config.getKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = config.getKitaBruennen();
 		final InstitutionStammdaten institutionStammdatenTagiAaregg = config.getTagiWeissenstein();
@@ -355,18 +355,23 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		institutionStammdatenTagiAaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
-		saveInstitutionStammdaten(institutionStammdatenKitaAaregg);
-		saveInstitutionStammdaten(institutionStammdatenTagiAaregg);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaAaregg, gesuchsperiode);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagiAaregg, gesuchsperiode);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());
-		saveInstitutionStammdaten(institutionStammdatenKitaBruennen);
-		saveInstitutionStammdaten(institutionStammdatenTagesschuleBruennen);
-		saveInstitutionStammdaten(institutionStammdatenFerieninselBruennen);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaBruennen, gesuchsperiode);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesschuleBruennen, gesuchsperiode);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenFerieninselBruennen, gesuchsperiode);
 	}
 
-	private void saveInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten) {
+	private void saveInstitutionStammdatenIfNecessary(@Nullable InstitutionStammdaten institutionStammdaten, @Nonnull Gesuchsperiode gesuchsperiode) {
 		if (institutionStammdaten != null) {
-			institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
+			Collection<InstitutionStammdaten> existing = institutionStammdatenService
+				.getAllInstitutionStammdatenByInstitutionAndGesuchsperiode(
+				institutionStammdaten.getInstitution().getId(), institutionStammdaten.getBetreuungsangebotTyp(), gesuchsperiode);
+			if (existing.isEmpty()) {
+				institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
+			}
 		}
 	}
 
