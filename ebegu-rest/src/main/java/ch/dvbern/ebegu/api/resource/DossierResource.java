@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -148,7 +149,7 @@ public class DossierResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxDossier> findDossiersByFall(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
+		@Nonnull @NotNull @Valid @PathParam("fallId") JaxId fallJaxId) {
 
 		Objects.requireNonNull(fallJaxId.getId());
 
