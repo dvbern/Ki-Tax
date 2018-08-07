@@ -40,10 +40,10 @@ describe('fallToolbar', function () {
         dossier2 = TestDataUtil.createDossier(DOSSIER_ID_2, fall);
         dossierList = [dossier1, dossier2];
 
-        const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
+        const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
             'findDossiersByFall': new Promise(() => dossierList)
         });
-        const fallServiceSpy = jasmine.createSpyObj('FallRS', {
+        const fallServiceSpy = jasmine.createSpyObj<FallRS>(FallRS.name, {
             'findFall': new Promise(() => fall)
         });
 
