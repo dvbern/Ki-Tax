@@ -28,6 +28,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 export default class BerechnungsManager {
 
     static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
+
     finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
     einkommensverschlechterungResultateBjP1: TSFinanzielleSituationResultateDTO;
     einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;

@@ -56,7 +56,7 @@ export class UploadRS {
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
         }, (response: any) => {
             console.log('Upload File: NOT SUCCESS');
-            return this.q.reject();
+            return this.q.reject(response);
         }, (evt: any) => {
             const loaded: number = evt.loaded;
             const total: number = evt.total;

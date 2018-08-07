@@ -20,22 +20,20 @@ import {TSMandant} from '../../../models/TSMandant';
 export class MandantRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                public $log: ILogService) {
         this.serviceURL = REST_API + 'mandanten';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public findMandant(mandantID: string): IPromise<TSMandant> {
-        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(mandantID))
+        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(mandantID))
             .then((response: any) => {
-                this.log.debug('PARSING mandant REST object ', response.data);
+                this.$log.debug('PARSING mandant REST object ', response.data);
                 return this.ebeguRestUtil.parseMandant(new TSMandant(), response.data);
             });
     }
@@ -45,9 +43,9 @@ export class MandantRS {
      * @returns {IPromise<TSMandant>}
      */
     public getFirst(): IPromise<TSMandant> {
-        return this.http.get(this.serviceURL + '/first', { cache: true })
+        return this.$http.get(this.serviceURL + '/first', { cache: true })
             .then((response: any) => {
-                this.log.debug('PARSING mandant REST object ', response.data);
+                this.$log.debug('PARSING mandant REST object ', response.data);
                 return this.ebeguRestUtil.parseMandant(new TSMandant(), response.data);
             });
     }

@@ -21,12 +21,11 @@ import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
 
-const template = require('./dv-version.html');
 
 export class DVVersionComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {};
-    template = template;
+    template = require('./dv-version.html');
     controller = DVVersionController;
     controllerAs = 'vm';
 }
@@ -34,8 +33,6 @@ export class DVVersionComponentConfig implements IComponentOptions {
 export class DVVersionController implements IController {
 
     static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
-
-    TSRoleUtil: any;
 
     private backendVersion: string;
     private readonly frontendVersion: string = VERSION;

@@ -46,6 +46,7 @@ export class DVBenutzerConfig implements IComponentOptions {
 
 export class DVBenutzerController implements IOnInit {
 
+    // todo fragen warum hier oben????
     public get currentBerechtigung(): TSBerechtigung {
         return this._currentBerechtigung;
     }

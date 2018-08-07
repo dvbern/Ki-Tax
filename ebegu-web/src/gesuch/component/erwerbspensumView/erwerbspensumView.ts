@@ -52,7 +52,6 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     patternPercentage: string;
     maxZuschlagsprozent: number = 100;
 
-    /* @ngInject */
     constructor($stateParams: IErwerbspensumStateParams, gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
                 private readonly authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private readonly $q: IQService,

@@ -51,9 +51,8 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     bestaetigungFreigabequittung: boolean = false;
     isFreigebenClicked: boolean = false;
     private showGesuchFreigebenSimulationButton: boolean = false;
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
                 private readonly downloadRS: DownloadRS, $scope: IScope, private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -66,7 +65,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.initDevModeParameter();
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     public gesuchEinreichen(): IPromise<void> {

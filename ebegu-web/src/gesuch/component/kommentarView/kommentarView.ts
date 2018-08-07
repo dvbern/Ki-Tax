@@ -61,9 +61,8 @@ export class KommentarViewController {
 
     form: IFormController;
     dokumentePapiergesuch: TSDokumentGrund;
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
-    /* @ngInject */
     constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
                 private readonly dokumenteRS: DokumenteRS, private readonly downloadRS: DownloadRS, private readonly $q: IQService,
                 private readonly uploadRS: UploadRS, private readonly wizardStepManager: WizardStepManager, private readonly globalCacheService: GlobalCacheService,
@@ -73,7 +72,6 @@ export class KommentarViewController {
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
         }
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {

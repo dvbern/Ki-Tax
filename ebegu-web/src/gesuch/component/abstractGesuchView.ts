@@ -35,8 +35,8 @@ export default class AbstractGesuchViewController<T> {
     gesuchModelManager: GesuchModelManager;
     berechnungsManager: BerechnungsManager;
     wizardStepManager: WizardStepManager;
-    TSRole: any;
-    TSRoleUtil: any;
+    TSRole = TSRole;
+    TSRoleUtil = TSRoleUtil;
     private _model: T;
     form: IFormController;
     $timeout: ITimeoutService;
@@ -47,8 +47,6 @@ export default class AbstractGesuchViewController<T> {
         this.gesuchModelManager = $gesuchModelManager;
         this.berechnungsManager = $berechnungsManager;
         this.wizardStepManager = wizardStepManager;
-        this.TSRole = TSRole;
-        this.TSRoleUtil = TSRoleUtil;
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.wizardStepManager.setCurrentStep(stepName);

@@ -17,7 +17,7 @@ import IComponentOptions = angular.IComponentOptions;
 import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
-import {IController, IOnInit} from 'angular';
+import {IController} from 'angular';
 import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';

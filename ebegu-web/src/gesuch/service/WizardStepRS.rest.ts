@@ -21,19 +21,18 @@ export default class WizardStepRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'wizard-steps';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public updateWizardStep(wizardStep: TSWizardStep): IPromise<any> {
         const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
 
-        return this.http.post(this.serviceURL, wizardStepObject, {
+        return this.$http.post(this.serviceURL, wizardStepObject, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -44,7 +43,7 @@ export default class WizardStepRS {
     }
 
     public findWizardStepsFromGesuch(gesuchID: string): IPromise<any> {
-        return this.http.get(this.serviceURL + '/' + encodeURIComponent(gesuchID))
+        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(gesuchID))
             .then((response: any) => {
                 this.$log.debug('PARSING wizardSteps REST objects ', response.data);
                 return this.ebeguRestUtil.parseWizardStepList(response.data);
@@ -56,7 +55,7 @@ export default class WizardStepRS {
     }
 
     public setWizardStepMutiert(wizardStepId: string): IPromise<TSWizardStep> {
-        return this.http.post(this.serviceURL + '/setWizardStepMutiert/' + encodeURIComponent(wizardStepId), null)
+        return this.$http.post(this.serviceURL + '/setWizardStepMutiert/' + encodeURIComponent(wizardStepId), null)
             .then((response) => {
             return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
         });

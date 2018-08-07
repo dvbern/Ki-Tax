@@ -52,7 +52,6 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
 
     dirty = false;
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 wizardStepManager: WizardStepManager, private readonly errorService: ErrorService,
                 private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog, private readonly $q: IQService,

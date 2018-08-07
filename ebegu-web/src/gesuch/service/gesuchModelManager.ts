@@ -101,7 +101,6 @@ export default class GesuchModelManager {
     ewkPersonGS1: TSEWKPerson;
     ewkPersonGS2: TSEWKPerson;
 
-    /* @ngInject */
     constructor(private readonly familiensituationRS: FamiliensituationRS,
                 private readonly fallRS: FallRS,
                 private readonly gesuchRS: GesuchRS,

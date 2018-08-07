@@ -16,20 +16,18 @@
 import {IComponentOptions} from 'angular';
 import {DvAccordionController} from '../dv-accordion';
 
-const template = require('./dv-accordion-tab.html');
-
 export class DvAccordionTabComponentConfig implements IComponentOptions {
     transclude: any = {
         title: '?tabTitle',
         body: '?tabBody'
     };
-    template = template;
+    template = require('./dv-accordion-tab.html');
     controller = DvAccordionTabController;
-    controllerAs = 'vmt';
+    controllerAs = 'vm';
     bindings = {
         tabid: '@',
     };
-    require: any = {vma: '^dvAccordion'};
+    require: any = {vm: '^dvAccordion'};
 
 }
 
@@ -37,5 +35,5 @@ export class DvAccordionTabController {
     static $inject: ReadonlyArray<string> = [];
 
     tabid: string;
-    vma: DvAccordionController;
+    vm: DvAccordionController;
 }

@@ -23,11 +23,10 @@ import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 
-const template = require('./pendenzenSteueramtListView.html');
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./pendenzenSteueramtListView.html');
     controller = PendenzenSteueramtListViewController;
     controllerAs = 'vm';
 }
@@ -38,11 +37,10 @@ export class PendenzenSteueramtListViewController {
     static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
     totalResultCount: string = '0';
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
     constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $state: StateService, private readonly $log: ILogService,
                 private readonly searchRS: SearchRS) {
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     $onInit() {

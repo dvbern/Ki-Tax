@@ -29,7 +29,6 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 
 export default class WizardStepManager {
 
-
     static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
 
     private allowedSteps: Array<TSWizardStepName> = [];
@@ -38,7 +37,7 @@ export default class WizardStepManager {
     private currentStepName: TSWizardStepName; // keeps track of the name of the current step
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
-    /* @ngInject */
+
     constructor(private readonly authServiceRS: AuthServiceRS, private readonly wizardStepRS: WizardStepRS, private readonly $q: IQService,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
 

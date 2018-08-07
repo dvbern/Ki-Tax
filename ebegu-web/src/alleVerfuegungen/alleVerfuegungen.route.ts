@@ -42,7 +42,6 @@ const ng2States: Ng2StateDeclaration[] = [];
 
 // PARAMS
 
-// FIXME hefa: sollten die Parameter nicht irgendwo gebraucht werden?
 export class IAlleVerfuegungenStateParams {
     dossierId: string;
 }

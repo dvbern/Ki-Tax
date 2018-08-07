@@ -49,7 +49,7 @@ export class VerantwortlicherselectController implements IController {
     static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
 
     userList: Array<TSUser>;
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
     antragList: Array<TSAntragDTO>;
     schulamt: boolean;
 
@@ -57,7 +57,6 @@ export class VerantwortlicherselectController implements IController {
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $translate: ITranslateService) {
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     //wird von angular aufgerufen

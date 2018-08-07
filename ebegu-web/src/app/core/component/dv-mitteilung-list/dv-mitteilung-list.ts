@@ -72,8 +72,8 @@ export class DVMitteilungListController implements IOnInit {
     paramSelectedMitteilungId: string;
     currentMitteilung: TSMitteilung;
     allMitteilungen: Array<TSMitteilung>;
-    TSRole: any;
-    TSRoleUtil: any;
+    TSRole = TSRole;
+    TSRoleUtil = TSRoleUtil;
 
     constructor(private readonly $stateParams: IMitteilungenStateParams,
                 private readonly mitteilungRS: MitteilungRS,
@@ -90,8 +90,6 @@ export class DVMitteilungListController implements IOnInit {
                 private readonly $timeout: ITimeoutService,
                 private readonly dossierRS: DossierRS,
                 private readonly posteingangService: PosteingangService) {
-        this.TSRole = TSRole;
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     $onInit() {

@@ -23,13 +23,12 @@ export default class SearchRS implements IEntityRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'search';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public getServiceName(): string {
@@ -38,7 +37,7 @@ export default class SearchRS implements IEntityRS {
 
 
     public searchAntraege(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
-        return this.http.post(this.serviceURL + '/search/', antragSearch, {
+        return this.$http.post(this.serviceURL + '/search/', antragSearch, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -49,7 +48,7 @@ export default class SearchRS implements IEntityRS {
     }
 
     public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
-        return this.http.post(this.serviceURL + '/jugendamt/', antragSearch, {
+        return this.$http.post(this.serviceURL + '/jugendamt/', antragSearch, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -60,7 +59,7 @@ export default class SearchRS implements IEntityRS {
     }
 
     public getPendenzenListForUser(userId: string): IPromise<Array<TSAntragDTO>> {
-        return this.http.get(this.serviceURL + '/jugendamt/user/' + encodeURIComponent(userId))
+        return this.$http.get(this.serviceURL + '/jugendamt/user/' + encodeURIComponent(userId))
             .then((response: any) => {
                 this.$log.debug('PARSING pendenz REST object ', response.data);
                 return this.ebeguRestUtil.parseAntragDTOs(response.data);
@@ -68,7 +67,7 @@ export default class SearchRS implements IEntityRS {
     }
 
     public getAntraegeGesuchstellerList(): IPromise<Array<TSAntragDTO>> {
-        return this.http.get(this.serviceURL + '/gesuchsteller')
+        return this.$http.get(this.serviceURL + '/gesuchsteller')
             .then((response: any) => {
                 this.$log.debug('PARSING pendenz REST object ', response.data);
                 return this.ebeguRestUtil.parseAntragDTOs(response.data);

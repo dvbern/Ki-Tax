@@ -23,7 +23,6 @@ export default class DVMaxLength implements IDirective {
     length: number;
     link: IDirectiveLinkFn;
 
-    /* @ngInject */
     constructor(CONSTANTS: any) {
         this.length = CONSTANTS.MAX_LENGTH;
         this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {

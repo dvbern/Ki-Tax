@@ -18,8 +18,6 @@ import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
 import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
-declare let require: any;
-const template = require('./dv-finanzielle-situation-require.html');
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     transclude = false;
@@ -29,7 +27,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '='
     };
-    template = template;
+    template = require('./dv-finanzielle-situation-require.html');
     controller = DVFinanzielleSituationRequireController;
     controllerAs = 'vm';
 }
@@ -45,7 +43,6 @@ export class DVFinanzielleSituationRequireController {
 
     maxMassgebendesEinkommen: string;
 
-    /* @ngInject */
     constructor(private readonly ebeguParameterRS: EbeguParameterRS, private readonly gesuchModelManager: GesuchModelManager) {
     }
 

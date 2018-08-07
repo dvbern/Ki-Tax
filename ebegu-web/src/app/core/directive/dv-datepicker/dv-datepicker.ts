@@ -20,8 +20,6 @@ import IAttributes = angular.IAttributes;
 import ILogService = angular.ILogService;
 import INgModelController = angular.INgModelController;
 
-const template = require('./dv-datepicker.html');
-
 export class DVDatepicker implements IDirective {
     restrict = 'E';
     require: any = {ngModelCtrl: 'ngModel'};
@@ -39,7 +37,7 @@ export class DVDatepicker implements IDirective {
         dvMinDate: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvMaxDate: '<?'  // Kann als String im Format allowedFormats oder als Moment angegeben werden
     };
-    template = template;
+    template = require('./dv-datepicker.html');
 
     /* constructor() { this.link = this.unboundLink.bind(this); }*/
     static factory(): IDirectiveFactory {

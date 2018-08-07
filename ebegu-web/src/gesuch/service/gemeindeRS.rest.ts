@@ -27,14 +27,14 @@ export default class GemeindeRS implements IEntityRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q'];
     serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+    constructor(public $http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
                 private readonly globalCacheService: GlobalCacheService, private readonly $q: IQService) {
         this.serviceURL = REST_API + 'gemeinde';
     }
 
     public getAllGemeinden(): IPromise<TSGemeinde[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
-        return this.http.get(this.serviceURL + '/all', {cache: cache})
+        return this.$http.get(this.serviceURL + '/all', {cache: cache})
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeindeList(response.data);
@@ -55,7 +55,7 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
-        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(gemeindeId))
+        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(gemeindeId))
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);

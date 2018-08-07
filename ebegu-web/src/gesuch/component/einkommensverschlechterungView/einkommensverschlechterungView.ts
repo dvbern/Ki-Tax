@@ -52,7 +52,6 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     allowedRoles: Array<TSRole>;
     public initialModel: TSFinanzModel;
 
-    /* @ngInject */
     constructor($stateParams: IEinkommensverschlechterungStateParams, gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService, private readonly $log: ILogService,
                 wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly $translate: ITranslateService,

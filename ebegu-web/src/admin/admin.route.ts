@@ -129,11 +129,6 @@ const ng1States: Ng1StateDeclaration[] = [
         params: {
             gesuchsperiodeId: '',
         },
-
-        resolve: {
-            traegerschaften: traegerschaftenResolver, // TODO warum werden traegerschaften resolved?
-            mandant: mandantResolver,
-        }
     },
     {
         name: 'admin.ferieninsel',

@@ -56,7 +56,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     fachstelleId: string; //der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     allowedRoles: Array<TSRole>;
 
-    /* @ngInject */
     constructor($stateParams: IKindStateParams, gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, private readonly $q: IQService, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {

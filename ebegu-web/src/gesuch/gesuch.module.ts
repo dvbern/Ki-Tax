@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
@@ -78,9 +77,5 @@ export const EbeguWebGesuch =
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
-        // .directive(
-        //     'dvNgNavbar',
-        //     downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
-        // )
 ;
 

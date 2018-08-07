@@ -42,12 +42,6 @@ export class FaelleListViewController {
     constructor(private readonly $filter: IFilterService, private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $state: StateService, private readonly $log: ILogService,
                 private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS) {
-        this.initViewModel();
-    }
-
-    private initViewModel() {
-        // this.updateAntragList();
-
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {

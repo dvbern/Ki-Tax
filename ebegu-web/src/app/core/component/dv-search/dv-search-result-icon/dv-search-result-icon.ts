@@ -16,7 +16,6 @@
 import {IComponentOptions, IController} from 'angular';
 import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
 
-const template = require('./dv-search-result-icon.html');
 
 export class DvSearchResultIconComponentConfig implements IComponentOptions {
 
@@ -24,7 +23,7 @@ export class DvSearchResultIconComponentConfig implements IComponentOptions {
     bindings = {
         entry: '<',
     };
-    template = template;
+    template = require('./dv-search-result-icon.html');
     controller = DvSearchResultController;
     controllerAs = 'vm';
 }

@@ -26,13 +26,12 @@ import {TSHTTPEvent} from '../../events/TSHTTPEvent';
 import IPromise = angular.IPromise;
 import IRootScopeService = angular.IRootScopeService;
 
-const template = require('./dv-countdown.html');
 const dialogTemplate = require('../../../../gesuch/dialog/okDialogTemplate.html');
 
 export class DvCountdownComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {};
-    template = template;
+    template = require('./dv-countdown.html');
     controller = DvCountdownController;
     controllerAs = 'vm';
 }
@@ -41,7 +40,7 @@ export class DvCountdownController implements IController {
 
     static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
 
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
     timer: moment.Duration;
     timerInterval: IPromise<any>;
 
@@ -54,7 +53,6 @@ export class DvCountdownController implements IController {
     }
 
     $onInit() {
-        this.TSRoleUtil = TSRoleUtil;
         this.$rootScope.$on(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], () => {
             if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && this.isGesuchAvailableAndWritable() && this.isOnGesuchView()) {
                 if (this.timerInterval === undefined) {
