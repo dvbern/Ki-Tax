@@ -19,6 +19,7 @@ import TSDossier from '../../../models/TSDossier';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSGesuch from '../../../models/TSGesuch';
+import {NavigationUtil} from '../../../utils/NavigationUtil';
 import DossierRS from '../../service/dossierRS.rest';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {StateService} from '@uirouter/core';
@@ -305,7 +306,8 @@ export class DossierToolbarController implements IDVFocusableController {
             if (!this.gesuchNavigationList[gs]) {
                 this.gesuchNavigationList[gs] = [];
             }
-            this.gesuchNavigationList[gs].push(this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer));
+            this.gesuchNavigationList[gs].push(this.ebeguUtil
+                .getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer));
         }
     }
 
@@ -382,15 +384,11 @@ export class DossierToolbarController implements IDVFocusableController {
      */
     private goToOpenGesuch(gesuchId: string): void {
         if (gesuchId) {
-            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                this.$state.go('gesuch.betreuungen', {gesuchId: gesuchId});
-            } else if (this.authServiceRS.isRole(TSRole.STEUERAMT)) {
-                this.$state.go('gesuch.familiensituation', {gesuchId: gesuchId});
-            } else {
-                this.$state.go('gesuch.fallcreation', {
-                    createNewFall: false, gesuchId: gesuchId
-                });
-            }
+            NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                this.authServiceRS.getPrincipalRole(),
+                this.$state,
+                gesuchId
+            );
         }
     }
 

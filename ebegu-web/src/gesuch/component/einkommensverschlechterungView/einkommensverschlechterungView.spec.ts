@@ -42,7 +42,7 @@ describe('einkommensverschlechterungView', function () {
     }));
 
     beforeEach(function () {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER, true);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
         gesuchModelManager.initFamiliensituation();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
         gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());

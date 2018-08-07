@@ -111,7 +111,7 @@ export class GesuchstellerDashboardViewController {
             this._activeGesuchsperiodenList = angular.copy(response);
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
             for (let gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.id).then(response => {
+                this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
                 });
             }

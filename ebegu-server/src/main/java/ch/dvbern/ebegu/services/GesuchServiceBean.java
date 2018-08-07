@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Asynchronous;
+import javax.ejb.EJBAccessException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -56,8 +57,10 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
@@ -76,7 +79,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
-import ch.dvbern.ebegu.entities.Gesuchsteller_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -293,9 +295,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Root<Gesuch> root = query.from(Gesuch.class);
 
-		Predicate predicateId = root.get(Gesuch_.id).in(gesuchIds);
+		Predicate predicateId = root.get(AbstractEntity_.id).in(gesuchIds);
 		query.where(predicateId);
-		query.orderBy(cb.asc(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.id)));
+		query.orderBy(cb.asc(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query);
 		return criteriaResults.stream()
 			.filter(gesuch -> this.booleanAuthorizer.hasReadAuthorization(gesuch))
@@ -385,10 +387,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		ParameterExpression<String> nameParam = cb.parameter(String.class, "nachname");
-		Predicate namePredicate = cb.equal(root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA).get(Gesuchsteller_.nachname), nameParam);
+		Predicate namePredicate = cb.equal(root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA).get(AbstractPersonEntity_.nachname), nameParam);
 
 		ParameterExpression<String> vornameParam = cb.parameter(String.class, "vorname");
-		Predicate vornamePredicate = cb.equal(root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA).get(Gesuchsteller_.vorname), vornameParam);
+		Predicate vornamePredicate = cb.equal(root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA).get(AbstractPersonEntity_.vorname), vornameParam);
 
 		query.where(namePredicate, vornamePredicate);
 		TypedQuery<Gesuch> q = persistence.getEntityManager().createQuery(query);
@@ -473,9 +475,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Join<Fall, Benutzer> besitzerJoin = fallJoin.join(Fall_.besitzer, JoinType.LEFT);
 
 			query.multiselect(
-				root.get(Gesuch_.id),
-				root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigAb),
-				root.get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigBis),
+				root.get(AbstractEntity_.id),
+				root.get(Gesuch_.gesuchsperiode).get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+				root.get(Gesuch_.gesuchsperiode).get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 				root.get(Gesuch_.eingangsdatum),
 				root.get(Gesuch_.eingangsdatumSTV),
 				root.get(Gesuch_.typ),
@@ -541,7 +543,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<Gesuch> root = query.from(Gesuch.class);
 
-		query.select(root.get(Gesuch_.id));
+		query.select(root.get(AbstractEntity_.id));
 
 		ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
 
@@ -562,7 +564,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<Gesuch> root = query.from(Gesuch.class);
 
-		query.select(root.get(Gesuch_.id));
+		query.select(root.get(AbstractEntity_.id));
 
 		ParameterExpression<String> dossierIdParam = cb.parameter(String.class, "dossierId");
 
@@ -977,21 +979,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@PermitAll
 	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
-		return getNeustesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
+		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
 	}
 
 	@Override
 	@PermitAll
 	public boolean isNeustesGesuch(@Nonnull Gesuch gesuch) {
-		final Optional<Gesuch> neustesGesuchFuerGesuch = getNeustesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
+		final Optional<Gesuch> neustesGesuchFuerGesuch = getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
 		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(neustesGesuchFuerGesuch.get().getId(), gesuch.getId());
 	}
 
 	@Override
 	@PermitAll
-	public Optional<String> getIdOfNeuestesGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier) {
+	public Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier) {
 		// Da wir nur die ID zurueckgeben, koennen wir den AuthCheck weglassen
-		Optional<Gesuch> gesuchOptional = getNeustesGesuchFuerGesuch(gesuchsperiode, dossier, false);
+		Optional<Gesuch> gesuchOptional = getNeustesGesuchForDossierAndGesuchsperiode(gesuchsperiode, dossier, false);
 		return gesuchOptional.map(AbstractEntity::getId);
 	}
 
@@ -1000,7 +1002,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	 * Das Interface sollte aber diese Moeglichkeit nur versteckt durch bestimmte Methoden anbieten.
 	 */
 	@Nonnull
-	private Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier, boolean checkReadAuthorization) {
+	private Optional<Gesuch> getNeustesGesuchForDossierAndGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier, boolean checkReadAuthorization) {
 		authorizer.checkReadAuthorizationDossier(dossier);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
@@ -1011,7 +1013,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateGesuchsperiode, predicateDossier);
 		query.select(root);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
 		if (criteriaResults.isEmpty()) {
@@ -1023,6 +1025,42 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			authorizer.checkReadAuthorization(gesuch);
 		}
 		return Optional.of(gesuch);
+	}
+
+	/**
+	 * Sucht
+	 */
+	@Nonnull
+	public Optional<String> getIdOfNeuestesGesuchForDossier(@Nonnull Dossier dossier) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier), dossier);
+
+		query.select(root);
+		query.where(predicateFall);
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+
+		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
+		if (criteriaResults.isEmpty()) {
+			return Optional.empty();
+		}
+
+		// look for the first gesuch which the user can read
+		for (Gesuch gesuch : criteriaResults) {
+			try {
+				authorizer.checkReadAuthorization(gesuch);
+				return Optional.of(gesuch.getId());
+
+			} catch(EJBAccessException e) {
+				// nop
+			}
+		}
+
+		return Optional.empty();
 	}
 
 	@Override
@@ -1039,7 +1077,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateGesuchsperiode, predicateFallNummer, predicateFinSit);
 		query.select(root);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
 		if (criteriaResults.isEmpty()) {
 			return Optional.empty();
@@ -1060,7 +1098,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateDossier);
 		query.select(root);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
 		if (criteriaResults.isEmpty()) {
@@ -1094,13 +1132,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Status in Bearbeitung GS
 		Predicate predicateStatus = cb.equal(root.get(Gesuch_.status), AntragStatus.IN_BEARBEITUNG_GS);
 		// Irgendwann am Stichtag erstellt:
-		Predicate predicateDatum = cb.lessThan(root.get(Gesuch_.timestampErstellt), stichtag);
+		Predicate predicateDatum = cb.lessThan(root.get(AbstractEntity_.timestampErstellt), stichtag);
 		// Noch nicht gewarnt
 		Predicate predicateNochNichtGewarnt = cb.isNull(root.get(Gesuch_.datumGewarntNichtFreigegeben));
 
 		query.where(predicateStatus, predicateDatum, predicateNochNichtGewarnt);
 		query.select(root);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> gesucheNichtAbgeschlossenSeit = persistence.getCriteriaResults(query);
 
 		int anzahl = gesucheNichtAbgeschlossenSeit.size();
@@ -1144,7 +1182,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateStatus, predicateDatum, predicateNochNichtGewarnt);
 		query.select(root);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> gesucheNichtAbgeschlossenSeit = persistence.getCriteriaResults(query);
 
 		int anzahl = gesucheNichtAbgeschlossenSeit.size();
@@ -1228,7 +1266,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		query.where(predicateFehlendeFreigabeOrQuittung);
 		query.select(root);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -1505,7 +1543,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
 		query.where(dossierPredicate, gesuchsperiodePredicate);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
 
 		if (criteriaResults.isEmpty()) {
@@ -1545,7 +1583,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			update.set(Gesuch_.hasFSDokument, false); // immer auf false wenn ABGELEHNT
 		}
 
-		Predicate predGesuch = cb.equal(root.get(Gesuch_.id), antragId);
+		Predicate predGesuch = cb.equal(root.get(AbstractEntity_.id), antragId);
 		update.where(predGesuch);
 
 		return persistence.getEntityManager().createQuery(update).executeUpdate();

@@ -26,12 +26,14 @@ import TSUser from '../../../models/TSUser';
 import TestDataUtil from '../../../utils/TestDataUtil';
 import DossierRS from '../../service/dossierRS.rest';
 import GemeindeRS from '../../service/gemeindeRS.rest';
+import GesuchRS from '../../service/gesuchRS.rest';
 import {FallToolbarComponent} from './fallToolbar.component';
 
 describe('fallToolbar', function () {
 
     const DOSSIER_ID_1 = 'ea02b313-e7c3-4b26-1122-e413f4041111';
     const DOSSIER_ID_2 = 'ea02b313-e7c3-4b26-1122-e413f4042222';
+    const MOCK_GESUCH_ID = 'ea02b313-e7c3-4b26-1122-e413f4043333';
 
     let component: FallToolbarComponent;
     let fixture: ComponentFixture<FallToolbarComponent>;
@@ -60,6 +62,9 @@ describe('fallToolbar', function () {
             'findDossiersByFall': Promise.resolve([dossier1, dossier2])
         });
         const stateServiceSpy = jasmine.createSpyObj('StateSevice', ['go']);
+        const gesuchServiceSpy = jasmine.createSpyObj('GesuchRS', {
+            'getIdOfNewestGesuchForDossier': Promise.resolve(MOCK_GESUCH_ID)
+        });
 
         TestBed.configureTestingModule({
             imports: [
@@ -70,6 +75,7 @@ describe('fallToolbar', function () {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: GesuchRS, useValue: gesuchServiceSpy},
             ],
             declarations: [
                 FallToolbarComponent,

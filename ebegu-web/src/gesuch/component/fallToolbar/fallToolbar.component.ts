@@ -24,11 +24,13 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import DossierRS from '../../service/dossierRS.rest';
 import GemeindeRS from '../../service/gemeindeRS.rest';
 import {StateService} from '@uirouter/core';
+import GesuchRS from '../../service/gesuchRS.rest';
 
 require('./fallToolbar.less');
 
@@ -39,10 +41,11 @@ require('./fallToolbar.less');
 export class FallToolbarComponent implements OnInit, OnChanges {
 
     TSRoleUtil: any = TSRoleUtil;
+
     @Input() fallId: string;
     @Input() dossierId: string;
     @Input() defaultGemeindeName: string;
-    // fall: TSFall;
+
     dossierList: TSDossier[] = [];
     selectedDossier: TSDossier;
     fallNummer: string;
@@ -53,6 +56,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
             private dialog: MatDialog,
             private gemeindeRS: GemeindeRS,
             private $state: StateService,
+            private gesuchRS: GesuchRS,
             private authServiceRS: AuthServiceRS) {
     }
 
@@ -97,14 +101,27 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         }
     }
 
+    /**
+     * Opens a dossier
+     * If it is undefined it doesn't do anything
+     */
     public openDossier(dossier: TSDossier): void {
-        this.selectedDossier = dossier;
+        if (dossier) {
+            this.selectedDossier = dossier;
+
+            this.gesuchRS.getIdOfNewestGesuchForDossier(this.selectedDossier.id).then(newestGesuchID => {
+                NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                    this.authServiceRS.getPrincipalRole(),
+                    this.$state,
+                    newestGesuchID,
+                );
+            });
+        }
     }
 
     public createNewDossier(): void {
         this.getGemeindeIDFromDialog().subscribe(
             (chosenGemeindeId) => {
-                // TODO kibon-91 it must create a new Dossier for an existing fall. Not a new fall
                 let params: INewFallStateParams = {
                     gesuchsperiodeId: null,
                     createMutation: null,

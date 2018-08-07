@@ -535,10 +535,8 @@ export default class GesuchModelManager {
      * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht erstellt wurde i.e. es null/undefined ist
      * Wenn force werden Gesuch und Fall immer erstellt.
      */
-    public initGesuch(forced: boolean, eingangsart: TSEingangsart, createNewFall: boolean) {
-        if (forced || (!forced && !this.getDossier())) {
-            this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, createNewFall);
-        }
+    public initGesuch(eingangsart: TSEingangsart, createNewFall: boolean) {
+        this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, createNewFall);
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
     }
 
@@ -563,7 +561,7 @@ export default class GesuchModelManager {
      * or a complete new Fall will be created instead.
      */
     private createNewDossier(eingangsart: TSEingangsart, gemeindeId: string, createNewFall: boolean): IPromise<TSGesuch> {
-        this.initGesuch(true, eingangsart, createNewFall);
+        this.initGesuch(eingangsart, createNewFall);
 
         return this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
             this.gesuch.dossier.gemeinde = foundGemeinde;

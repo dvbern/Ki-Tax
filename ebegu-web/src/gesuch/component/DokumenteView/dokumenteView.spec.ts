@@ -41,7 +41,7 @@ describe('dokumenteView', function () {
     }));
 
     beforeEach(function () {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER, true);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
     });
 
     it('should be defined', function () {
