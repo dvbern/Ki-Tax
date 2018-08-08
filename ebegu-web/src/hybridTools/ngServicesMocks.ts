@@ -13,15 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
+import {of} from 'rxjs';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 
 ngServicesMock.$inject = ['$provide'];
 
 export function ngServicesMock($provide: angular.auto.IProvideService) {
-    $provide.service('AuthLifeCycleService', function() {
-        this.get$ = function(event: TSAuthEvent): Observable<TSAuthEvent> { return of(event); };
-        this.changeAuthStatus =  function(status: TSAuthEvent, message?: string): void {};
+    $provide.service('AuthLifeCycleService', function () {
+        this.get$ = (event: TSAuthEvent) => of(event);
+        this.changeAuthStatus = (status: TSAuthEvent, message?: string) => {
+        };
     });
 }

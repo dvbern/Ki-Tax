@@ -17,9 +17,10 @@ import IComponentOptions = angular.IComponentOptions;
 import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
+import {IController} from 'angular';
+import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import BetreuungRS from '../../../core/service/betreuungRS.rest';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
@@ -30,31 +31,32 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
-let template = require('./alleVerfuegungenView.html');
-require('./alleVerfuegungenView.less');
-
 export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./alleVerfuegungenView.html');
     controller = AlleVerfuegungenViewController;
     controllerAs = 'vm';
 }
 
-export class AlleVerfuegungenViewController {
+export class AlleVerfuegungenViewController implements IController {
+
+    static $inject: ReadonlyArray<string> = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
+        'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
 
     dossier: TSDossier;
     alleVerfuegungen: Array<any> = [];
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
-        'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
-
-    /* @ngInject */
-    constructor(private $state: StateService, private $stateParams: IAlleVerfuegungenStateParams,
-                private authServiceRS: AuthServiceRS, private betreuungRS: BetreuungRS, private downloadRS: DownloadRS,
-                private $log: ILogService, private $timeout: ITimeoutService, private dossierRS: DossierRS,
-                private ebeguUtil: EbeguUtil) {
+    constructor(private readonly $state: StateService,
+                private readonly $stateParams: IAlleVerfuegungenStateParams,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly betreuungRS: BetreuungRS,
+                private readonly downloadRS: DownloadRS,
+                private readonly $log: ILogService,
+                private readonly $timeout: ITimeoutService,
+                private readonly dossierRS: DossierRS,
+                private readonly ebeguUtil: EbeguUtil) {
     }
 
     $onInit() {
@@ -92,9 +94,9 @@ export class AlleVerfuegungenViewController {
 
     public cancel(): void {
         if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            this.$state.go('gesuchstellerDashboard');
+            this.$state.go('gesuchsteller.dashboard');
         } else {
-            this.$state.go('pendenzen');
+            this.$state.go('pendenzen.list-view');
         }
     }
 
@@ -103,7 +105,7 @@ export class AlleVerfuegungenViewController {
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(betreuung.gesuchId,
             betreuung.id, false, '')
             .then((downloadFile: TSDownloadFile) => {
@@ -117,7 +119,7 @@ export class AlleVerfuegungenViewController {
     }
 
     public openNichteintretenPDF(betreuung: TSBetreuung): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(betreuung.id, false)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);

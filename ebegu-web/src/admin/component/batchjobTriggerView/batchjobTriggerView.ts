@@ -15,21 +15,20 @@
 
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
-import {DvNgOkDialogComponent} from '../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
+import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 
-require('./batchjobTrigger.less');
-
 @Component({
-    selector: 'batchjob-trigger-view',
-    template: require('./batchjobTriggerView.html'),
+    selector: 'dv-batchjob-trigger-view',
+    templateUrl: './batchjobTriggerView.html',
+    styleUrls: ['./batchjobTrigger.less']
 })
 export class BatchjobTriggerViewComponent {
 
-    constructor(private dialog: MatDialog,
-                private databaseMigrationRS: DatabaseMigrationRS,
-                private dailyBatchRS: DailyBatchRS) {
+    constructor(private readonly dialog: MatDialog,
+                private readonly databaseMigrationRS: DatabaseMigrationRS,
+                private readonly dailyBatchRS: DailyBatchRS) {
     }
 
     public processScript(script: string): void {

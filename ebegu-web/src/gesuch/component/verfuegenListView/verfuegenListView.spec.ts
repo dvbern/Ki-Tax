@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSGesuch from '../../../models/TSGesuch';
 import TSKindContainer from '../../../models/TSKindContainer';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -27,7 +27,7 @@ import WizardStepManager from '../../service/wizardStepManager';
 import {VerfuegenListViewController} from './verfuegenListView';
 import {StateService} from '@uirouter/core';
 
-describe('verfuegenListViewTest', function () {
+describe('verfuegenListViewTest', () => {
 
     let verfuegenListView: VerfuegenListViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -43,7 +43,7 @@ describe('verfuegenListViewTest', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         $state = $injector.get('$state');
         $q = $injector.get('$q');
@@ -51,7 +51,7 @@ describe('verfuegenListViewTest', function () {
         $httpBackend = $injector.get('$httpBackend');
         tsKindContainer = new TSKindContainer();
         tsKindContainer.kindNummer = 1;
-        let wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
+        const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         spyOn(gesuchModelManager, 'getKinderWithBetreuungList').and.returnValue([tsKindContainer]);
         spyOn(gesuchModelManager, 'calculateVerfuegungen').and.returnValue($q.when({}));
@@ -69,37 +69,37 @@ describe('verfuegenListViewTest', function () {
         $rootScope.$apply();
     }));
 
-    describe('Public API', function () {
-        it('should include a getKinderWithBetreuungList() function', function () {
+    describe('Public API', () => {
+        it('should include a getKinderWithBetreuungList() function', () => {
             expect(verfuegenListView.getKinderWithBetreuungList).toBeDefined();
         });
-        it('should include a openVerfuegung() function', function () {
+        it('should include a openVerfuegung() function', () => {
             expect(verfuegenListView.openVerfuegung).toBeDefined();
         });
     });
 
-    describe('Usage API', function () {
-        it('should call gesuchModelManager.getBetreuungenList() and return it back', function () {
-            let kinderWithetreuungList = verfuegenListView.getKinderWithBetreuungList();
+    describe('Usage API', () => {
+        it('should call gesuchModelManager.getBetreuungenList() and return it back', () => {
+            const kinderWithetreuungList = verfuegenListView.getKinderWithBetreuungList();
             expect(kinderWithetreuungList).toBeDefined();
             expect(kinderWithetreuungList.length).toBe(1);
             expect(kinderWithetreuungList[0]).toBe(tsKindContainer);
         });
-        describe('openVerfuegen', function () {
-            it('does not open the betreuung because it is not BESTAETIGT', function () {
+        describe('openVerfuegen', () => {
+            it('does not open the betreuung because it is not BESTAETIGT', () => {
                 spyOn(gesuchModelManager, 'findKind').and.returnValue(1);
-                let betreuung: TSBetreuung = new TSBetreuung();
+                const betreuung: TSBetreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.ABGEWIESEN;
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
                 expect(gesuchModelManager.findKind).not.toHaveBeenCalled();
             });
-            it('does not find the Kind, so it stops loading and does not move to the next page', function () {
+            it('does not find the Kind, so it stops loading and does not move to the next page', () => {
                 spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(-1);
                 spyOn(gesuchModelManager, 'setKindIndex');
                 spyOn($state, 'go');
-                let betreuung: TSBetreuung = new TSBetreuung();
+                const betreuung: TSBetreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
@@ -108,13 +108,13 @@ describe('verfuegenListViewTest', function () {
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
                 expect($state.go).not.toHaveBeenCalledWith('gesuch.verfuegenView', {gesuchId: ''});
             });
-            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page', function () {
+            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page', () => {
                 spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
                 spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(-1);
                 spyOn(gesuchModelManager, 'setKindIndex');
                 spyOn(gesuchModelManager, 'setBetreuungIndex');
                 spyOn($state, 'go');
-                let betreuung: TSBetreuung = new TSBetreuung();
+                const betreuung: TSBetreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
@@ -124,13 +124,13 @@ describe('verfuegenListViewTest', function () {
                 expect(gesuchModelManager.setBetreuungIndex).not.toHaveBeenCalled();
                 expect($state.go).not.toHaveBeenCalledWith('gesuch.verfuegenView', {gesuchId: ''});
             });
-            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page', function () {
+            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page', () => {
                 spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
                 spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(1);
                 spyOn(gesuchModelManager, 'setKindIndex');
                 spyOn(gesuchModelManager, 'setBetreuungIndex');
                 spyOn($state, 'go');
-                let betreuung: TSBetreuung = new TSBetreuung();
+                const betreuung: TSBetreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
                 betreuung.betreuungNummer = 2;
 

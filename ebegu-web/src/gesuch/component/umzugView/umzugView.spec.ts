@@ -13,21 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import TSAdresseContainer from '../../../models/TSAdresseContainer';
 import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {UmzugViewController} from './umzugView';
 
-describe('umzugView', function () {
+describe('umzugView', () => {
 
     let umzugController: UmzugViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -45,7 +45,7 @@ describe('umzugView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         wizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
@@ -59,13 +59,13 @@ describe('umzugView', function () {
         $timeout = $injector.get('$timeout');
     }));
 
-    describe('getNameFromBetroffene', function () {
-        beforeEach(function () {
+    describe('getNameFromBetroffene', () => {
+        beforeEach(() => {
             umzugController = new UmzugViewController(gesuchModelManager, berechnungsManager,
                 wizardStepManager, errorService, $translate, dialog, $q, $rootScope, $timeout);
         });
-        it('should return the names of the GS or beide Gesuchsteller', function () {
-            let gesuch: TSGesuch = new TSGesuch();
+        it('should return the names of the GS or beide Gesuchsteller', () => {
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
@@ -74,8 +74,8 @@ describe('umzugView', function () {
             expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_2)).toEqual(gesuch.gesuchsteller2.extractFullName());
             expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual('beide Gesuchstellenden');
         });
-        it('should return empty string for empty data', function () {
-            let gesuch: TSGesuch = new TSGesuch();
+        it('should return empty string for empty data', () => {
+            const gesuch: TSGesuch = new TSGesuch();
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
             expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1)).toEqual('');
@@ -84,27 +84,27 @@ describe('umzugView', function () {
         });
     });
 
-    describe('getBetroffenenList', function () {
-        beforeEach(function () {
+    describe('getBetroffenenList', () => {
+        beforeEach(() => {
             umzugController = new UmzugViewController(gesuchModelManager, berechnungsManager,
                 wizardStepManager, errorService, $translate, dialog, $q, $rootScope, $timeout);
         });
-        it('should return a list with only GS1', function () {
-            let gesuch: TSGesuch = new TSGesuch();
+        it('should return a list with only GS1', () => {
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
-            let betroffenenList: Array<TSBetroffene> = umzugController.getBetroffenenList();
+            const betroffenenList: Array<TSBetroffene> = umzugController.getBetroffenenList();
             expect(betroffenenList.length).toBe(1);
             expect(betroffenenList[0]).toBe(TSBetroffene.GESUCHSTELLER_1);
         });
-        it('should return a list with GS1, GS2 und BEIDE', function () {
-            let gesuch: TSGesuch = new TSGesuch();
+        it('should return a list with GS1, GS2 und BEIDE', () => {
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
-            let betroffenenList: Array<TSBetroffene> = umzugController.getBetroffenenList();
+            const betroffenenList: Array<TSBetroffene> = umzugController.getBetroffenenList();
             expect(betroffenenList.length).toBe(3);
             expect(betroffenenList[0]).toBe(TSBetroffene.GESUCHSTELLER_1);
             expect(betroffenenList[1]).toBe(TSBetroffene.GESUCHSTELLER_2);
@@ -112,8 +112,8 @@ describe('umzugView', function () {
         });
     });
 
-    describe('getAdressenListFromGS', function () {
-        it('should have an empty AdressenList for gesuch=null', function () {
+    describe('getAdressenListFromGS', () => {
+        it('should have an empty AdressenList for gesuch=null', () => {
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(undefined);
 
             umzugController = new UmzugViewController(gesuchModelManager, berechnungsManager,
@@ -121,17 +121,17 @@ describe('umzugView', function () {
 
             expect(umzugController.getUmzugAdressenList().length).toBe(0);
         });
-        it('should have all adressen for GS1 and GS2', function () {
-            let gesuch: TSGesuch = new TSGesuch();
+        it('should have all adressen for GS1 and GS2', () => {
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller1.addAdresse(TestDataUtil.createAdresse('strasse1', '10'));
-            let umzugAdresseGS1: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse1', '10');
+            const umzugAdresseGS1: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse1', '10');
             umzugAdresseGS1.showDatumVon = true;
             gesuch.gesuchsteller1.addAdresse(umzugAdresseGS1);
 
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Conchita', 'Prieto');
             gesuch.gesuchsteller2.addAdresse(TestDataUtil.createAdresse('strasse2', '20'));
-            let umzugAdresseGS2: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse2', '20');
+            const umzugAdresseGS2: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse2', '20');
             umzugAdresseGS2.showDatumVon = true;
             gesuch.gesuchsteller2.addAdresse(umzugAdresseGS2);
 
@@ -146,11 +146,11 @@ describe('umzugView', function () {
             expect(umzugController.getUmzugAdressenList()[1].betroffene).toBe(TSBetroffene.GESUCHSTELLER_2);
             expect(umzugController.getUmzugAdressenList()[1].adresse).toEqual(umzugAdresseGS2);
         });
-        it('should merge the adresse of GS1 and GS2 in a single one with BEIDE_GESUCHSTELLER', function () {
-            let gesuch: TSGesuch = new TSGesuch();
+        it('should merge the adresse of GS1 and GS2 in a single one with BEIDE_GESUCHSTELLER', () => {
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
-            let adresse1: TSAdresseContainer = TestDataUtil.createAdresse('strasse1', '10');
-            let adresse2: TSAdresseContainer = TestDataUtil.createAdresse('strasse2', '20');
+            const adresse1: TSAdresseContainer = TestDataUtil.createAdresse('strasse1', '10');
+            const adresse2: TSAdresseContainer = TestDataUtil.createAdresse('strasse2', '20');
             gesuch.gesuchsteller1.addAdresse(adresse1);
             gesuch.gesuchsteller1.addAdresse(adresse2);
 
@@ -169,15 +169,15 @@ describe('umzugView', function () {
         });
     });
 
-    describe('createAndRemoveUmzugAdresse', function () {
-        it('should create and remove adressen for GS1 and GS2', function () {
+    describe('createAndRemoveUmzugAdresse', () => {
+        it('should create and remove adressen for GS1 and GS2', () => {
             spyOn(dialog, 'showRemoveDialog').and.returnValue($q.when({}));
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-            let gesuch: TSGesuch = new TSGesuch();
+            const gesuch: TSGesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller1.addAdresse(TestDataUtil.createAdresse('strasse1', '10'));
-            let umzugAdresseGS1: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse1', '10');
+            const umzugAdresseGS1: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse1', '10');
             umzugAdresseGS1.showDatumVon = true;
             gesuch.gesuchsteller1.addAdresse(umzugAdresseGS1);
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Conchita', 'Prieto');

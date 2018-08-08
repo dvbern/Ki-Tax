@@ -13,46 +13,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import TSZahlung from '../../models/TSZahlung';
-import ZahlungRS from '../../core/service/zahlungRS.rest';
-import {IZahlungsauftragStateParams} from '../zahlung.route';
-import {DownloadRS} from '../../core/service/downloadRS.rest';
-import {ReportRS} from '../../core/service/reportRS.rest';
-import TSDownloadFile from '../../models/TSDownloadFile';
-import {TSRole} from '../../models/enums/TSRole';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import EbeguUtil from '../../utils/EbeguUtil';
-import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
 import {StateService} from '@uirouter/core';
-let template = require('./zahlungView.html');
-require('./zahlungView.less');
+import {IComponentOptions, IOnDestroy} from 'angular';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {DownloadRS} from '../../app/core/service/downloadRS.rest';
+import {ReportRS} from '../../app/core/service/reportRS.rest';
+import ZahlungRS from '../../app/core/service/zahlungRS.rest';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {TSRole} from '../../models/enums/TSRole';
+import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
+import TSDownloadFile from '../../models/TSDownloadFile';
+import TSZahlung from '../../models/TSZahlung';
+import EbeguUtil from '../../utils/EbeguUtil';
+import {IZahlungsauftragStateParams} from '../zahlung.route';
 
 export class ZahlungViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./zahlungView.html');
     controller = ZahlungViewController;
     controllerAs = 'vm';
 }
 
-export class ZahlungViewController {
+export class ZahlungViewController implements IOnDestroy {
+
+    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
+        'AuthServiceRS', 'EbeguUtil', 'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     private zahlungen: Array<TSZahlung>;
 
     itemsByPage: number = 20;
 
-    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
-        'AuthServiceRS', 'EbeguUtil', 'AuthLifeCycleService'];
-
-    constructor(private zahlungRS: ZahlungRS, private CONSTANTS: any,
-                private $stateParams: IZahlungsauftragStateParams, private $state: StateService,
-                private downloadRS: DownloadRS, private reportRS: ReportRS, private authServiceRS: AuthServiceRS,
-                private ebeguUtil: EbeguUtil, private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly zahlungRS: ZahlungRS,
+                private readonly CONSTANTS: any,
+                private readonly $stateParams: IZahlungsauftragStateParams,
+                private readonly $state: StateService,
+                private readonly downloadRS: DownloadRS,
+                private readonly reportRS: ReportRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
@@ -63,22 +66,20 @@ export class ZahlungViewController {
         if (this.$stateParams.zahlungsauftragId && this.authServiceRS.getPrincipal()) {
             switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
                 case TSRole.SACHBEARBEITER_INSTITUTION:
-                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
+                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
                     this.zahlungRS.getZahlungsauftragInstitution(this.$stateParams.zahlungsauftragId).then((response) => {
                         this.zahlungen = response.zahlungen;
                     });
                     break;
-                }
                 case TSRole.SUPER_ADMIN:
                 case TSRole.ADMIN:
                 case TSRole.SACHBEARBEITER_JA:
                 case TSRole.JURIST:
-                case TSRole.REVISOR: {
+                case TSRole.REVISOR:
                     this.zahlungRS.getZahlungsauftrag(this.$stateParams.zahlungsauftragId).then((response) => {
                         this.zahlungen = response.zahlungen;
                     });
                     break;
-                }
                 default:
                     break;
             }
@@ -91,16 +92,16 @@ export class ZahlungViewController {
     }
 
     private gotToUebersicht(): void {
-        this.$state.go('zahlungsauftrag');
+        this.$state.go('zahlungsauftrag.view');
     }
 
     public downloadDetails(zahlung: TSZahlung) {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungReportExcel(zahlung.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
             });
     }
@@ -108,7 +109,7 @@ export class ZahlungViewController {
     public bestaetigen(zahlung: TSZahlung) {
         console.log('bestaetigen');
         this.zahlungRS.zahlungBestaetigen(zahlung.id).then((response: TSZahlung) => {
-            let index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
+            const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
             if (index > -1) {
                 this.zahlungen[index] = response;
             }
@@ -116,6 +117,7 @@ export class ZahlungViewController {
         });
     }
 
+    // noinspection JSMethodCanBeStatic
     public isBestaetigt(zahlungstatus: TSZahlungsstatus): boolean {
         return zahlungstatus === TSZahlungsstatus.BESTAETIGT;
     }

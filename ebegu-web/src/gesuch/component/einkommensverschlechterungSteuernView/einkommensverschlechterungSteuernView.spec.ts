@@ -21,7 +21,7 @@ import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
-describe('einkommensverschlechterungSteuernView', function () {
+describe('einkommensverschlechterungSteuernView', () => {
 
     let gesuchModelManager: GesuchModelManager;
 
@@ -33,25 +33,25 @@ describe('einkommensverschlechterungSteuernView', function () {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
-        let $rootScope = $injector.get('$rootScope');
+        const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
 
-    beforeEach(function () {
+    beforeEach(() => {
         gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
         gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
     });
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         /*
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.
          */
-        let bindings: {};
+        const bindings = {};
         component = $componentController('einkommensverschlechterungSteuernView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });

@@ -14,9 +14,9 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../core/core.module';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -26,7 +26,7 @@ import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungListViewController} from './betreuungListView';
 import {StateService} from '@uirouter/core';
 
-describe('betreuungListViewTest', function () {
+describe('betreuungListViewTest', () => {
 
     let betreuungListView: BetreuungListViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -37,33 +37,33 @@ describe('betreuungListViewTest', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
-        let wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
+        const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
         $state = $injector.get('$state');
-        let $translate: angular.translate.ITranslateService = $injector.get('$translate');
-        let dialog: DvDialog = $injector.get('DvDialog');
-        let ebeguUtil: EbeguUtil = $injector.get('EbeguUtil');
-        let errorService: ErrorService = $injector.get('ErrorService');
-        let $timeout = $injector.get('$timeout');
-        let authServiceRS: AuthServiceRS = $injector.get('AuthServiceRS');
+        const $translate: angular.translate.ITranslateService = $injector.get('$translate');
+        const dialog: DvDialog = $injector.get('DvDialog');
+        const ebeguUtil: EbeguUtil = $injector.get('EbeguUtil');
+        const errorService: ErrorService = $injector.get('ErrorService');
+        const $timeout = $injector.get('$timeout');
+        const authServiceRS: AuthServiceRS = $injector.get('AuthServiceRS');
 
         betreuungListView = new BetreuungListViewController($state, gesuchModelManager, $translate, dialog, ebeguUtil, undefined,
             errorService, wizardStepManager, authServiceRS, $injector.get('$rootScope'), undefined, $timeout);
     }));
 
-    describe('Public API', function () {
-        it('should include a createBetreuung() function', function () {
+    describe('Public API', () => {
+        it('should include a createBetreuung() function', () => {
             expect(betreuungListView.createBetreuung).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('createBetreuung', () => {
             it('should create a Betreuung', () => {
-                let tsKindContainer = new TSKindContainer();
+                const tsKindContainer = new TSKindContainer();
                 tsKindContainer.betreuungen = [];
                 tsKindContainer.kindNummer = 1;
                 spyOn($state, 'go');

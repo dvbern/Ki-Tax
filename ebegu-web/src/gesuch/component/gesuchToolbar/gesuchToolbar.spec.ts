@@ -14,9 +14,9 @@
  */
 
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../core/core.module';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -26,10 +26,10 @@ import DossierRS from '../../service/dossierRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {GesuchToolbarController} from './gesuchToolbar';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import {StateService} from '@uirouter/core';
 
-describe('gesuchToolbar', function () {
+describe('gesuchToolbar', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let gesuchToolbarController: GesuchToolbarController;
@@ -52,7 +52,7 @@ describe('gesuchToolbar', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
         ebeguUtil = $injector.get('EbeguUtil');

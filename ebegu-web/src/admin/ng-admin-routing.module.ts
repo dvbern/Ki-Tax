@@ -14,17 +14,15 @@
  */
 
 import {NgModule} from '@angular/core';
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-
-
 
 export const traegerschaftState: Ng2StateDeclaration = {
-    name: 'traegerschaft',
+    name: 'admin.traegerschaft',
     url: '/traegerschaft',
     component: TraegerschaftViewComponent,
     resolve: [
@@ -37,28 +35,25 @@ export const traegerschaftState: Ng2StateDeclaration = {
 };
 
 export const testdatenState: Ng2StateDeclaration = {
-    name: 'testdaten',
+    name: 'admin.testdaten',
     url: '/testdaten',
     component: TestdatenViewComponent,
 };
 
 export const batchjobTriggerState: Ng2StateDeclaration = {
-    name: 'batchjobTrigger',
+    name: 'admin.batchjobTrigger',
     url: '/batchjobTrigger',
     component: BatchjobTriggerViewComponent,
 };
 
-
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({ states: [ traegerschaftState, testdatenState, batchjobTriggerState ] })
+        UIRouterUpgradeModule.forChild({states: [traegerschaftState, testdatenState, batchjobTriggerState]}),
     ],
     exports: [],
 })
 export class NgAdminRoutingModule {
 }
-
-
 
 function getTraegerschaften(traegerschaftRS: TraegerschaftRS) {
     return traegerschaftRS.getAllActiveTraegerschaften();

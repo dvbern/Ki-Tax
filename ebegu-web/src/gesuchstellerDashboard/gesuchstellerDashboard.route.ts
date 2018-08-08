@@ -13,47 +13,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
 import TSGesuch from '../models/TSGesuch';
-import IQService = angular.IQService;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
+import IQService = angular.IQService;
 
 gesuchstellerDashboardRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function gesuchstellerDashboardRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
-}
-
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguGesuchstellerDashboardState(),
-        new EbeguCreateAngebotState()
-    ];
-}
-
-//STATES
-
-export class EbeguGesuchstellerDashboardState implements Ng1StateDeclaration {
-    name = 'gesuchstellerDashboard';
-    template = '<gesuchsteller-dashboard-view class="layout-column flex-100">';
-    url = '/gesuchstellerDashboard';
-    params = {
-        gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
-    };
-}
-
-export class EbeguCreateAngebotState implements Ng1StateDeclaration {
-    name = 'createAngebot';
-    template = '<create-angebot-view class="layout-column flex-100">';
-    url = '/createAngebotView/:type/:gesuchId';
-
-    resolve = {
-        gesuch: getGesuchModelManager
-    };
+    routerHelper.configureStates(ng1States, []);
 }
 
 export class IAngebotStateParams {
@@ -65,13 +36,36 @@ export class IGesuchstellerDashboardStateParams {
     infoMessage: string;
 }
 
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'gesuchsteller',
+    },
+    {
+        name: 'gesuchsteller.dashboard',
+        template: '<gesuchsteller-dashboard-view class="layout-column flex-100">',
+        url: '/gesuchstellerDashboard',
+        params: {
+            gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
+        }
+    },
+    {
+        name: 'gesuchsteller.createAngebot',
+        template: '<create-angebot-view class="layout-column flex-100">',
+        url: '/createAngebotView/:type/:gesuchId',
+        resolve: {
+            gesuch: getGesuchModelManager
+        }
+    }
+];
+
 getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $stateParams: IAngebotStateParams, $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
                 || gesuchModelManager.getGesuch().emptyCopy) {
@@ -81,16 +75,14 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $s
 
                 return gesuchModelManager.openGesuch(gesuchIdParam);
             } else {
-                let deferred = $q.defer<TSGesuch>();
-                deferred.resolve(gesuchModelManager.getGesuch());
-                return deferred.promise;
+                return $q.resolve(gesuchModelManager.getGesuch());
             }
 
         }
     }
+
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    let deferred = $q.defer<TSGesuch>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+
+    return $q.resolve(undefined);
 }
 

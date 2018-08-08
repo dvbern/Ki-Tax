@@ -13,44 +13,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateProvider, Ng1StateDeclaration, UIRouter} from '@uirouter/angularjs';
+import {Ng2StateDeclaration} from '@uirouter/angular';
+import {Ng1StateDeclaration, StateProvider, UIRouter} from '@uirouter/angularjs';
 import {ILocationProvider, IServiceProvider} from 'angular';
 
 export class RouterHelper {
     static $inject = ['$stateProvider', '$uiRouterProvider'];
 
-    hasOtherwise: boolean;
-    stateProvider: StateProvider;
-    uiRouterProvider: UIRouter;
-
-    /* @ngInject */
-    constructor($stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
-        this.hasOtherwise = false;
-        this.stateProvider = $stateProvider;
-        this.uiRouterProvider = $uiRouterProvider;
+    constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
     }
 
-    public configureStates(states: Ng1StateDeclaration[], otherwisePath?: string): void {
-        states.forEach((state) => {
+    public configureStates(legacy: Ng1StateDeclaration[] = [], states: Ng2StateDeclaration[] = []): void {
+        legacy.forEach((state) => {
             this.stateProvider.state(state);
         });
-        if (otherwisePath && !this.hasOtherwise) {
-            this.hasOtherwise = true;
-            this.uiRouterProvider.urlService.rules.otherwise(otherwisePath);
-        }
-    }
+        states.forEach(state => {
+            this.stateProvider.state(state);
+        });
 
-    // public getStates(): Ng1StateDeclaration[] {
-    //     return this.stateProvider.$get();
-    // }
+        this.uiRouterProvider.urlService.rules.otherwise('/start');
+    }
 }
 
 export default class RouterHelperProvider implements IServiceProvider {
     static $inject = ['$locationProvider', '$stateProvider', '$uiRouterProvider'];
 
-    private routerHelper: RouterHelper;
+    private readonly routerHelper: RouterHelper;
 
-    /* @ngInject */
     constructor($locationProvider: ILocationProvider, $stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
         $locationProvider.html5Mode(false);
         this.routerHelper = new RouterHelper($stateProvider, $uiRouterProvider);

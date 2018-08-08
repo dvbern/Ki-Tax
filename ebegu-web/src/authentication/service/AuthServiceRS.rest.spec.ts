@@ -13,18 +13,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.module';
-import UserRS from '../../core/service/userRS.rest';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import UserRS from '../../app/core/service/userRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBerechtigung from '../../models/TSBerechtigung';
 import TSUser from '../../models/TSUser';
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import {EbeguAuthentication} from '../authentication.module';
 import AuthServiceRS from './AuthServiceRS.rest';
 
-describe('AuthServiceRS', function () {
+describe('AuthServiceRS', () => {
 
     let authServiceRS: AuthServiceRS;
     let $http: angular.IHttpService;
@@ -33,7 +33,6 @@ describe('AuthServiceRS', function () {
     let $rootScope: angular.IScope;
     let $timeout: angular.ITimeoutService;
     let $cookies: angular.cookies.ICookiesService;
-    let base64: any;
     let gesuchModelManager: GesuchModelManager;
     let userRS: UserRS;
 
@@ -42,7 +41,7 @@ describe('AuthServiceRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         $http = $injector.get('$http');
         $httpBackend = $injector.get('$httpBackend');
@@ -50,26 +49,25 @@ describe('AuthServiceRS', function () {
         $q = $injector.get('$q');
         $timeout = $injector.get('$timeout');
         $cookies = $injector.get('$cookies');
-        base64 = $injector.get('base64');
         userRS = $injector.get('UserRS');
         gesuchModelManager = $injector.get('GesuchModelManager');
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
     }));
 
-    describe('API usage', function () {
+    describe('API usage', () => {
         beforeEach(() => {
             spyOn($http, 'post').and.returnValue($q.when({}));
         });
-        it('does not nothing for an undefined user', function () {
+        it('does not nothing for an undefined user', () => {
             expect(authServiceRS.loginRequest(undefined)).toBeUndefined();
             expect($http.post).not.toHaveBeenCalled();
         });
-        it('receives a loginRequest and handles the incoming cookie', function () {
+        it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSUser sein. Deswegen machen wir hier ein Objekt mit dem Inhalt, den die Cookie braucht
-            let user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
+            const user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
             user.currentBerechtigung = new TSBerechtigung(undefined, TSRole.GESUCHSTELLER);
-            let cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
-            let encodedUser = base64.encode(JSON.stringify(cookieContent).split('_').join(''));
+            const cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
+            const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
             spyOn(userRS, 'findBenutzer').and.returnValue($q.when(user));
 

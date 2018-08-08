@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {ErwerbspensumListViewComponentConfig} from './erwerbspensumListView';
 
-describe('erwerbspensumListView', function () {
+describe('erwerbspensumListView', () => {
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
 
@@ -26,18 +26,18 @@ describe('erwerbspensumListView', function () {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject(function (_$componentController_: angular.IComponentControllerService,
-                                             $rootScope: angular.IRootScopeService) {
+    beforeEach(angular.mock.inject((_$componentController_: angular.IComponentControllerService,
+                                    $rootScope: angular.IRootScopeService) => {
         $componentController = _$componentController_;
         scope = $rootScope.$new();
     }));
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         /*
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.
          */
-        let bindings = {};
+        const bindings = {};
         component = $componentController('erwerbspensumListView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });

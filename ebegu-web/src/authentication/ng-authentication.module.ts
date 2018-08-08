@@ -14,18 +14,15 @@
  */
 
 import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {TranslateModule} from '@ngx-translate/core';
-import {applicationPropertyRSProvider, authServiceRSProvider} from '../hybridTools/ajs-upgraded-providers';
+import {SharedModule} from '../app/shared/shared.module';
 import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
 import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module';
 import {AuthLifeCycleService} from './service/authLifeCycle.service';
 
 @NgModule({
     imports: [
-        BrowserModule,
+        SharedModule,
         NgAuthenticationRoutingModule,
-        TranslateModule,
     ],
     declarations: [
         DummyAuthenticationListViewComponent,
@@ -34,8 +31,6 @@ import {AuthLifeCycleService} from './service/authLifeCycle.service';
         DummyAuthenticationListViewComponent,
     ],
     providers: [
-        authServiceRSProvider,
-        applicationPropertyRSProvider,
         AuthLifeCycleService,
     ],
 })

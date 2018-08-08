@@ -16,7 +16,7 @@
 
 <html lang="de">
 <head>
-    <base href="">
+    <base href="/">
     <title>Ki-Tax</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8">
@@ -25,33 +25,7 @@
           type='text/css'>
     <link rel="shortcut icon" type="image/x-icon" href="src/assets/images/favicon.ico"/>
 </head>
-<body class="ebegu" md-no-ink ng-class="{loaded:true}" style="opacity: 0;" dv-barcode-listener>
-<dv-skiplinks dv-show-element dv-show-allowed-roles="['GESUCHSTELLER']">
-</dv-skiplinks>
-
-<div id="Intro" class="logo-bern">
-    <h1 class="access-for-all-title" data-translate="AFA_INDEXBAR"></h1>
-    <dv-home-icon></dv-home-icon>
-    <dv-quicksearchbox dv-show-element
-                       dv-show-allowed-roles="['SACHBEARBEITER_JA', 'ADMIN', 'SUPER_ADMIN', 'SACHBEARBEITER_INSTITUTION', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMINISTRATOR_SCHULAMT', 'SCHULAMT', 'JURIST', 'REVISOR']"></dv-quicksearchbox>
-    <dv-helpmenu dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA', 'ADMIN', 'SUPER_ADMIN', 'SACHBEARBEITER_INSTITUTION', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMINISTRATOR_SCHULAMT', 'SCHULAMT', 'JURIST', 'REVISOR', 'STEUERAMT']"></dv-helpmenu>
-    <dv-pulldown-user-menu dv-show-element
-                           dv-show-allowed-roles="['SACHBEARBEITER_JA', 'ADMIN', 'SUPER_ADMIN', 'SACHBEARBEITER_INSTITUTION', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMINISTRATOR_SCHULAMT', 'SCHULAMT', 'STEUERAMT', 'JURIST', 'REVISOR']"></dv-pulldown-user-menu>
-    <dv-pulldown-user-menu hide-sm hide-xs dv-show-element dv-show-allowed-roles="['GESUCHSTELLER']"></dv-pulldown-user-menu>
-    <dv-mobile-navigation-toggle hide-gt-sm dv-show-element dv-show-allowed-roles="['GESUCHSTELLER']"></dv-mobile-navigation-toggle>
-</div>
-
-<dv-ng-navbar></dv-ng-navbar>
-
-<dvb-error-messages-panel></dvb-error-messages-panel>
-
-<md-progress-linear class="dv-progressbar" dv-loading md-mode="indeterminate"></md-progress-linear>
-<div ui-view class="ui-absolute-view"></div>
-
-
-<footer>
-    <dv-version ng-show="false"></dv-version>
-</footer>
+<body class="ebegu loaded">
+    <ui-view></ui-view>
 </body>
 </html>

@@ -16,7 +16,7 @@
 import * as path from 'path';
 
 // Helper functions
-let _root = path.resolve(__dirname, '..');
+const _root = path.resolve(__dirname, '..');
 
 export function hasProcessFlag(flag) {
     return process.argv.join('').indexOf(flag) > -1;
@@ -37,19 +37,15 @@ export function prependExt(extensions, args) {
     if (!Array.isArray(args)) {
         args = [args];
     }
-    return extensions.reduce(function (memo, val) {
-        return memo.concat(val, args.map(function (prefix) {
-            return prefix + val;
-        }));
-    }, ['']);
+    return extensions.reduce((memo, val) => memo.concat(val, args.map(prefix => prefix + val)), ['']);
 }
 
 export function packageSort(packages) {
     // packages = ['polyfills', 'vendor', 'main']
-    let len = packages.length - 1;
-    let first = packages[0];
-    let last = packages[len];
-    return function sort(a, b) {
+    const len = packages.length - 1;
+    const first = packages[0];
+    const last = packages[len];
+    return (a, b) => {
         // polyfills always first
         if (a.names[0] === first) {
             return -1;
