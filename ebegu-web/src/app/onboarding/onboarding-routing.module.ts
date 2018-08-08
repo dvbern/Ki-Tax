@@ -20,9 +20,13 @@ import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 
 const states: Ng2StateDeclaration[] = [
     {
-        // parent: 'app', app-bar anzeigen oder nicht?
+        parent: 'app',
         name: 'onboarding',
-        abstract: true
+        abstract: true,
+        data: {
+            // all substates are public too!
+            isPublic: true,
+        }
     },
     {
         name: 'onboarding.start',
