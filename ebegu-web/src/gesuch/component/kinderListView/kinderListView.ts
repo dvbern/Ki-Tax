@@ -13,49 +13,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
 import {StateService} from '@uirouter/core';
-import TSKindContainer from '../../../models/TSKindContainer';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import BerechnungsManager from '../../service/berechnungsManager';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {IComponentOptions} from 'angular';
+import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSKindContainer from '../../../models/TSKindContainer';
 import TSKindDublette from '../../../models/TSKindDublette';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import {IDVFocusableController} from '../../../core/component/IDVFocusableController';
-import ITranslateService = angular.translate.ITranslateService;
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./kinderListView.html');
-let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-require('./kinderListView.less');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class KinderListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         kinderDubletten: '<'
     };
-    template = template;
+    template = require('./kinderListView.html');
     controller = KinderListViewController;
     controllerAs = 'vm';
 }
 
 export class KinderListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    kinderDubletten: TSKindDublette[] = [];
-
     static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$translate', 'DvDialog',
         'WizardStepManager', '$scope', 'CONSTANTS', '$timeout'];
 
-    /* @ngInject */
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private $translate: ITranslateService, private DvDialog: DvDialog,
-                wizardStepManager: WizardStepManager, $scope: IScope, private CONSTANTS: any, $timeout: ITimeoutService) {
+    kinderDubletten: TSKindDublette[] = [];
+
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog,
+                wizardStepManager: WizardStepManager, $scope: IScope, private readonly CONSTANTS: any, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         this.initViewModel();
     }
@@ -87,19 +84,13 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     getDubletten(kindContainer: TSKindContainer): TSKindDublette[] {
         if (this.kinderDubletten) {
-            let dublettenForThisKind: TSKindDublette[] = [];
-            for (let i = 0; i < this.kinderDubletten.length; i++) {
-                if (this.kinderDubletten[i].kindNummerOriginal === kindContainer.kindNummer) {
-                    dublettenForThisKind.push(this.kinderDubletten[i]);
-                }
-            }
-            return dublettenForThisKind;
+            return this.kinderDubletten.filter(kd => kd.kindNummerOriginal === kindContainer.kindNummer);
         }
         return undefined;
     }
 
     public gotoKindDublette(dublette: TSKindDublette): void {
-        let url = this.$state.href('gesuch.kind', {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
+        const url = this.$state.href('gesuch.kind', {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
         window.open(url, '_blank');
     }
 
@@ -112,7 +103,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     removeKind(kind: any, index: any): void {
-        let remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
+        const remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
         this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
@@ -120,7 +111,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
             elementID: 'removeKindButton_' + index
         })
             .then(() => {   //User confirmed removal
-                let kindIndex: number = this.gesuchModelManager.findKind(kind);
+                const kindIndex: number = this.gesuchModelManager.findKind(kind);
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
                     this.gesuchModelManager.removeKind();

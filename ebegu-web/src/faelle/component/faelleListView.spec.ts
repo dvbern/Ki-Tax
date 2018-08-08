@@ -21,7 +21,7 @@ import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp'
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import TSGesuch from '../../models/TSGesuch';
-import TestDataUtil from '../../utils/TestDataUtil';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import {EbeguWebFaelle} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -30,7 +30,7 @@ import SearchRS from '../../gesuch/service/searchRS.rest';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 import {StateService} from '@uirouter/core';
 
-describe('faelleListView', function () {
+describe('faelleListView', () => {
 
     let authServiceRS: AuthServiceRS;
     let gesuchRS: GesuchRS;
@@ -50,7 +50,7 @@ describe('faelleListView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         gesuchRS = $injector.get('GesuchRS');
         searchRS = $injector.get('SearchRS');
@@ -65,9 +65,9 @@ describe('faelleListView', function () {
         mockAntrag = mockGetPendenzenList();
     }));
 
-    describe('API Usage', function () {
-        describe('searchFaelle', function () {
-            it('should return the list with found Faellen', function () {
+    describe('API Usage', () => {
+        describe('searchFaelle', () => {
+            it('should return the list with found Faellen', () => {
                 mockRestCalls();
                 faelleListViewController = new FaelleListViewController($filter,
                     gesuchModelManager,  $state, $log,  authServiceRS, searchRS);
@@ -76,25 +76,25 @@ describe('faelleListView', function () {
                 expect(searchRS.searchAntraege).toHaveBeenCalledTimes(1);
                 $scope.$apply();
 
-                let list: Array<TSAntragDTO> = faelleListViewController.getAntragList();
+                const list: Array<TSAntragDTO> = faelleListViewController.getAntragList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(1);
                 expect(list[0]).toEqual(mockAntrag);
             });
         });
-        describe('editPendenzJA', function () {
-            it('should call findGesuch and open the view gesuch.fallcreation with it for normal user', function () {
+        describe('editPendenzJA', () => {
+            it('should call findGesuch and open the view gesuch.fallcreation with it for normal user', () => {
                 callEditFall();
 
                 expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
 
             });
-            it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', function () {
+            it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', () => {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 callEditFall();
                 expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {createNew: false, gesuchId: '66345345', dossierId: '11111111'});
             });
-            it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt', function () {
+            it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt', () => {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 mockAntrag.status = TSAntragStatus.VERFUEGT;
                 callEditFall();
@@ -104,13 +104,13 @@ describe('faelleListView', function () {
     });
 
     function mockGetPendenzenList(): TSAntragDTO {
-        let mockPendenz: TSAntragDTO = new TSAntragDTO('66345345', 123, 'name', TSAntragTyp.ERSTGESUCH,
+        const mockPendenz: TSAntragDTO = new TSAntragDTO('66345345', 123, 'name', TSAntragTyp.ERSTGESUCH,
             undefined, undefined, undefined, [TSBetreuungsangebotTyp.KITA], ['Inst1, Inst2'], 'Juan Arbolado', 'Juan Arbolado',
             undefined, undefined, undefined);
         mockPendenz.dossierId = '11111111';
-        let dtoList: Array<TSAntragDTO> = [mockPendenz];
-        let totalSize: number = 1;
-        let searchresult: TSAntragSearchresultDTO = new TSAntragSearchresultDTO(dtoList, totalSize);
+        const dtoList: Array<TSAntragDTO> = [mockPendenz];
+        const totalSize: number = 1;
+        const searchresult: TSAntragSearchresultDTO = new TSAntragSearchresultDTO(dtoList, totalSize);
         spyOn(searchRS, 'searchAntraege').and.returnValue($q.when(searchresult));
         return mockPendenz;
     }
@@ -129,7 +129,7 @@ describe('faelleListView', function () {
         faelleListViewController = new FaelleListViewController($filter, gesuchModelManager,
             $state, $log, authServiceRS, searchRS);
 
-        let tsGesuch = new TSGesuch();
+        const tsGesuch = new TSGesuch();
         spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
         spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue($q.when(tsGesuch));
 

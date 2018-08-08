@@ -13,41 +13,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from './service/AuthServiceRS.rest';
+import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, ITimeoutService, IWindowService} from 'angular';
 import {IAuthenticationStateParams} from './authentication.route';
-import IWindowService = angular.IWindowService;
-import IHttpParamSerializer = angular.IHttpParamSerializer;
-import ITimeoutService = angular.ITimeoutService;
-import ILocationService = angular.ILocationService;
+import AuthServiceRS from './service/AuthServiceRS.rest';
 
-let template = require('./authentication.html');
-require('./authentication.less');
+export const AuthenticationComponentConfig: IComponentOptions = {
+    transclude: false,
+    template: require('./authentication.html'),
+    controllerAs: 'vm',
+};
 
-export class AuthenticationComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = template;
-    controller = AuthenticationListViewController;
-    controllerAs = 'vm';
-}
-
-export class AuthenticationListViewController {
+export class AuthenticationListViewController implements IController {
 
     static $inject: string[] = ['$state', '$stateParams', '$window', '$httpParamSerializer', '$timeout', 'AuthServiceRS'
         , '$location'];
 
     private redirectionUrl: string = '/ebegu/saml2/jsp/fedletSSOInit.jsp';
-    private relayString: string;
+    private readonly relayString: string;
     private redirectionHref: string;
 
     private logoutHref: string;
     private redirecting: boolean;
     private countdown: number = 0;
 
-    constructor(private $state: StateService, private $stateParams: IAuthenticationStateParams,
-                private $window: IWindowService, private $httpParamSerializer: IHttpParamSerializer,
-                private $timeout: ITimeoutService, private authService: AuthServiceRS, private $location: ILocationService) {
+    constructor(private readonly $state: StateService, private readonly $stateParams: IAuthenticationStateParams,
+                private readonly $window: IWindowService, private readonly $httpParamSerializer: IHttpParamSerializer,
+                private readonly $timeout: ITimeoutService, private readonly authService: AuthServiceRS, private readonly $location: ILocationService) {
         //wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         this.relayString = angular.copy(this.$stateParams.relayPath ? (this.$stateParams.relayPath) : '');
         this.authService.initSSOLogin(this.relayString).then((response) => {
@@ -60,7 +52,7 @@ export class AuthenticationListViewController {
                 if (this.countdown > 0) {
                     this.$timeout(this.doCountdown, 1000);
                 }
-                this.$timeout(this.redirect, this.countdown * 1000);
+                this.$timeout(() => this.redirect(), this.countdown * 1000);
             }
         });
 
@@ -74,12 +66,12 @@ export class AuthenticationListViewController {
 
     public getBaseURL(): string {
         //let port = (this.$location.port() === 80 || this.$location.port() === 443) ? '' : ':' + this.$location.port();
-        let absURL = this.$location.absUrl();
-        let index = absURL.indexOf(this.$location.url());
+        const absURL = this.$location.absUrl();
+        const index = absURL.indexOf(this.$location.url());
         let result = absURL;
         if (index !== -1) {
             result = absURL.substr(0, index);
-            let hashindex = result.indexOf('#');
+            const hashindex = result.indexOf('#');
             if (hashindex !== -1) {
                 result = absURL.substr(0, hashindex);
             }
@@ -93,7 +85,7 @@ export class AuthenticationListViewController {
             if (this.logoutHref !== '' || this.logoutHref === undefined) {
                 this.$window.open(this.logoutHref, '_self');
             } else {
-                this.$state.go('start');  // wenn wir nicht in iam ausloggen gehen wir auf start
+                this.$state.go('authentication.start');  // wenn wir nicht in iam ausloggen gehen wir auf start
             }
         });
     }
@@ -103,8 +95,8 @@ export class AuthenticationListViewController {
         return this.authService.getPrincipal() ? true : false;
     }
 
-    public redirect = () => {
-        let urlToGoTo = this.redirectionHref;
+    private redirect() {
+        const urlToGoTo = this.redirectionHref;
         console.log('redirecting to login', urlToGoTo);
 
         this.$window.open(urlToGoTo, '_self');
@@ -124,7 +116,7 @@ export class AuthenticationListViewController {
 
     }
 
-    private doCountdown = () => {
+    private readonly doCountdown = () => {
         if (this.countdown > 0) {
             this.countdown--;
             this.$timeout(this.doCountdown, 1000);
@@ -132,3 +124,5 @@ export class AuthenticationListViewController {
 
     }
 }
+
+AuthenticationComponentConfig.controller = AuthenticationListViewController;

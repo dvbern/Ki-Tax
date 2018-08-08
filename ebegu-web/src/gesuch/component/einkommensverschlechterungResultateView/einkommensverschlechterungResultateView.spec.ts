@@ -25,7 +25,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {EinkommensverschlechterungResultateViewController} from './einkommensverschlechterungResultateView';
 
-describe('einkommensverschlechterungResultateView', function () {
+describe('einkommensverschlechterungResultateView', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
@@ -45,13 +45,13 @@ describe('einkommensverschlechterungResultateView', function () {
     let $rootScope: angular.IScope;
     let $timeout: angular.ITimeoutService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
         berechnungsManager = $injector.get('BerechnungsManager');
         $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
-        let $q = $injector.get('$q');
+        const $q = $injector.get('$q');
         stateParams = $injector.get('$stateParams');
         consta = $injector.get('CONSTANTS');
         errorservice = $injector.get('ErrorService');
@@ -62,7 +62,7 @@ describe('einkommensverschlechterungResultateView', function () {
 
     }));
 
-    beforeEach(function () {
+    beforeEach(() => {
         gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
         gesuchModelManager.initFamiliensituation();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
@@ -70,15 +70,15 @@ describe('einkommensverschlechterungResultateView', function () {
 
     });
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung').and.returnValue({});
-        let bindings: {};
+        const bindings = {};
         component = $componentController('einkommensverschlechterungResultateView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });
 
     describe('calculateVeraenderung', () => {
-        beforeEach(function () {
+        beforeEach(() => {
             ekvrvc = new EinkommensverschlechterungResultateViewController(stateParams, gesuchModelManager,
                 berechnungsManager, errorservice, wizardStepManager, null, $rootScope, null, $timeout);
             ekvrvc.model = new TSFinanzModel(gesuchModelManager.getBasisjahr(), gesuchModelManager.isGesuchsteller2Required(), null, null);
@@ -141,10 +141,10 @@ describe('einkommensverschlechterungResultateView', function () {
         });
 
         function setValues(massgebendesEinkommen_vj: number, massgebendesEinkommen_bj: number) {
-            let finsint: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
+            const finsint: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
             finsint.massgebendesEinkVorAbzFamGr = massgebendesEinkommen_bj;
 
-            let finsintvj: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
+            const finsintvj: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
             finsintvj.massgebendesEinkVorAbzFamGr = massgebendesEinkommen_vj;
 
             spyOn(ekvrvc, 'getResultate').and.returnValue(finsint);

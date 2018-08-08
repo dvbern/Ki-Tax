@@ -1,3 +1,4 @@
+import {StateService} from '@uirouter/core';
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland
@@ -13,51 +14,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import {IComponentOptions} from 'angular';
-import {StateService} from '@uirouter/core';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
 import * as moment from 'moment';
-import DateUtil from '../../../utils/DateUtil';
+import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
-import BetreuungRS from '../../../core/service/betreuungRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import TSBelegungFerieninsel from '../../../models/TSBelegungFerieninsel';
-import ILogService = angular.ILogService;
+import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
+import TSBetreuung from '../../../models/TSBetreuung';
+import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSKindContainer from '../../../models/TSKindContainer';
+import DateUtil from '../../../utils/DateUtil';
+import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
-
-let template = require('./createAngebotView.html');
-require('./createAngebotView.less');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
+import ILogService = angular.ILogService;
 
 export class CreateAngebotListViewConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./createAngebotView.html');
     controller = CreateAngebotListViewController;
     controllerAs = 'vm';
 }
 
 export class CreateAngebotListViewController {
 
+    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
+
     form: IFormController;
     einschulungTypValues: Array<TSEinschulungTyp>;
     private ts: boolean;
     private fi: boolean;
-    private kindContainer: TSKindContainer;
-    private institution: TSInstitutionStammdaten;
+    private readonly kindContainer: TSKindContainer;
+    private readonly institution: TSInstitutionStammdaten;
     private anmeldungDTO: TSAnmeldungDTO = new TSAnmeldungDTO;
 
-    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS', 'DvDialog'];
-
-    constructor(private $state: StateService, private $log: ILogService,
-                private gesuchModelManager: GesuchModelManager, private $stateParams: IAngebotStateParams,
-                private betreuungRS: BetreuungRS, private dvDialog: DvDialog) {
+    constructor(private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly gesuchModelManager: GesuchModelManager, private readonly $stateParams: IAngebotStateParams,
+                private readonly betreuungRS: BetreuungRS) {
     }
 
     $onInit() {
@@ -78,7 +73,7 @@ export class CreateAngebotListViewController {
     }
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
-        let result: Array<TSInstitutionStammdaten> = [];
+        const result: Array<TSInstitutionStammdaten> = [];
         /*if (this.betreuungsangebot) {*/
         this.gesuchModelManager.getActiveInstitutionenList().forEach((instStamm: TSInstitutionStammdaten) => {
             if (this.ts) {
@@ -127,7 +122,7 @@ export class CreateAngebotListViewController {
                 if (!this.anmeldungDTO.betreuung.belegungTagesschule) {
                     this.anmeldungDTO.betreuung.belegungTagesschule = new TSBelegungTagesschule();
                     // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-                    let ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+                    const ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
                     if (DateUtil.today().isBefore(ersterSchultag)) {
                         this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum = ersterSchultag;
                     }
@@ -188,7 +183,7 @@ export class CreateAngebotListViewController {
 
     public backToHome(infoMessage: string | undefined = undefined) {
         this.form.$setPristine();
-        this.$state.go('gesuchstellerDashboard', {
+        this.$state.go('gesuchsteller.dashboard', {
             gesuchstellerDashboardStateParams: {infoMessage: infoMessage}
         });
     }

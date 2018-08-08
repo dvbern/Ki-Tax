@@ -28,7 +28,7 @@ describe('adminView', () => {
 
     beforeEach(angular.mock.inject(($injector: angular.auto.IInjectorService) => {
         $componentController = $injector.get('$componentController');
-        let $rootScope = $injector.get('$rootScope');
+        const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
 
@@ -37,7 +37,7 @@ describe('adminView', () => {
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.
          */
-        let bindings = {};
+        const bindings = {};
         component = $componentController('dvAdminView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });

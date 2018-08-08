@@ -13,12 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import * as $ from 'jquery';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
+import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
-import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
@@ -29,26 +31,24 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IInstitutionStateParams} from '../../admin.route';
-import {StateService} from '@uirouter/core';
 import IFormController = angular.IFormController;
 
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-let template = require('./institutionView.html');
-require('./institutionView.less');
-import $ = require('jquery');
+const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class InstitutionViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         traegerschaften: '<',
         mandant: '<'
     };
-    template: string = template;
-    controller: any = InstitutionViewController;
-    controllerAs: string = 'vm';
+    template = require('./institutionView.html');
+    controller = InstitutionViewController;
+    controllerAs = 'vm';
 }
 
 export class InstitutionViewController extends AbstractAdminViewController {
+
+    static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
 
     form: IFormController;
 
@@ -60,12 +60,14 @@ export class InstitutionViewController extends AbstractAdminViewController {
     betreuungsangebotValues: Array<any>;
     errormessage: string = undefined;
 
-    static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
-
-    constructor(private institutionRS: InstitutionRS, private institutionStammdatenRS: InstitutionStammdatenRS,
-                private errorService: ErrorService, private dvDialog: DvDialog, private ebeguUtil: EbeguUtil,
-                authServiceRS: AuthServiceRS, private $stateParams: IInstitutionStateParams,
-                private $state: StateService) {
+    constructor(private readonly institutionRS: InstitutionRS,
+                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                private readonly errorService: ErrorService,
+                private readonly dvDialog: DvDialog,
+                private readonly ebeguUtil: EbeguUtil,
+                authServiceRS: AuthServiceRS,
+                private readonly $stateParams: IInstitutionStateParams,
+                private readonly $state: StateService) {
         super(authServiceRS);
     }
 
@@ -124,7 +126,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
     }
 
     private goBack() {
-        this.$state.go('institutionen');
+        this.$state.go('admin.institutionen');
     }
 
     getInstitutionStammdatenList(): TSInstitutionStammdaten[] {
@@ -139,7 +141,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
             elementID: undefined,
         }).then(() => {   //User confirmed removal
             this.institutionStammdatenRS.removeInstitutionStammdaten(institutionStammdaten.id).then((result) => {
-                let index = EbeguUtil.getIndexOfElementwithID(institutionStammdaten, this.instStammdatenList);
+                const index = EbeguUtil.getIndexOfElementwithID(institutionStammdaten, this.instStammdatenList);
                 if (index > -1) {
                     this.instStammdatenList.splice(index, 1);
                 }
@@ -171,14 +173,14 @@ export class InstitutionViewController extends AbstractAdminViewController {
     }
 
     editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten) {
-        this.$state.go('institutionstammdaten', {
+        this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: institutionstammdaten.id
         });
     }
 
     createInstitutionStammdaten(): void {
-        this.$state.go('institutionstammdaten', {
+        this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: undefined
         });

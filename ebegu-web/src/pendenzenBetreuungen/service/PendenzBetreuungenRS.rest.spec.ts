@@ -20,7 +20,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from './PendenzBetreuungenRS.rest';
 
-describe('pendenzBetreuungenRS', function () {
+describe('pendenzBetreuungenRS', () => {
 
     let pendenzBetreuungenRS: PendenzBetreuungenRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -32,7 +32,7 @@ describe('pendenzBetreuungenRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -44,19 +44,19 @@ describe('pendenzBetreuungenRS', function () {
         mockPendenzBetreuungenRest = ebeguRestUtil.pendenzBetreuungenToRestObject({}, mockPendenzBetreuungen);
     });
 
-    describe('Public API', function () {
-        it('check Service name', function () {
+    describe('Public API', () => {
+        it('check Service name', () => {
             expect(pendenzBetreuungenRS.getServiceName()).toBe('PendenzBetreuungenRS');
         });
-        it('should include a getPendenzenBetreuungenList() function', function () {
+        it('should include a getPendenzenBetreuungenList() function', () => {
             expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('findBetreuung', () => {
             it('should return all pending Betreuungen', () => {
-                let arrayResult: Array<any> = [mockPendenzBetreuungenRest];
+                const arrayResult: Array<any> = [mockPendenzBetreuungenRest];
                 $httpBackend.expectGET(pendenzBetreuungenRS.serviceURL).respond(arrayResult);
 
                 let foundPendenzen: Array<TSPendenzBetreuung>;

@@ -14,27 +14,20 @@
  */
 
 import {NgModule} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
-import {UIRouterModule} from '@uirouter/angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {DvPosteingangController} from '../core/component/dv-posteingang/dv-posteingang';
-import {NgSharedModule} from '../shared/ng-shared.module';
+import {SharedModule} from '../app/shared/shared.module';
+import {OnboardingComponent} from '../app/core/component/dv-onboarding/onboarding.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
 @NgModule({
     imports: [
-        NgSharedModule,
-        TranslateModule,
-        UIRouterModule,
+        SharedModule,
     ],
     declarations: [
-        DvNgNavbar,
-        DvPosteingangController,
+        OnboardingComponent,
         FallToolbarComponent,
     ],
     entryComponents: [
-        DvNgNavbar,
-        DvPosteingangController,
+        OnboardingComponent,
         FallToolbarComponent,
     ],
 })

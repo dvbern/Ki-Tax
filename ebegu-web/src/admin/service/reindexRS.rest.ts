@@ -17,16 +17,15 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService} from 'angular';
 
 export class ReindexRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+
+    serviceURL: string;
+
+    constructor(public readonly http: IHttpService,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'admin/reindex';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     reindex(): IHttpPromise<any> {

@@ -13,53 +13,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import TSDownloadFile from '../../../models/TSDownloadFile';
-import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import DateUtil from '../../../utils/DateUtil';
-import {ApplicationPropertyRS} from '../../../admin/service/applicationPropertyRS.rest';
-import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./freigabeView.html');
-require('./freigabeView.less');
-let dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FreigabeViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./freigabeView.html');
     controller = FreigabeViewController;
     controllerAs = 'vm';
 }
 
 export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
-    bestaetigungFreigabequittung: boolean = false;
-    isFreigebenClicked: boolean = false;
-    private showGesuchFreigebenSimulationButton: boolean = false;
-    TSRoleUtil: any;
-
     static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager',
         'DvDialog', 'DownloadRS', '$scope', 'ApplicationPropertyRS', 'AuthServiceRS', '$timeout'];
 
-    /* @ngInject */
+    bestaetigungFreigabequittung: boolean = false;
+    isFreigebenClicked: boolean = false;
+    private showGesuchFreigebenSimulationButton: boolean = false;
+    TSRoleUtil = TSRoleUtil;
+
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private DvDialog: DvDialog,
-                private downloadRS: DownloadRS, $scope: IScope, private applicationPropertyRS: ApplicationPropertyRS,
-                private authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
+                wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
+                private readonly downloadRS: DownloadRS, $scope: IScope, private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
         this.initViewModel();
@@ -68,7 +65,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.initDevModeParameter();
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     public gesuchEinreichen(): IPromise<void> {
@@ -91,14 +87,14 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public gesuchFreigeben(): void {
-        let gesuchID = this.gesuchModelManager.getGesuch().id;
+        const gesuchID = this.gesuchModelManager.getGesuch().id;
         this.gesuchModelManager.antragFreigeben(gesuchID, null, null);
     }
 
     private initDevModeParameter() {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             // Simulation nur fuer SuperAdmin freischalten
-            let isSuperadmin: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
+            const isSuperadmin: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
             // Die Simulation ist nur im Dev-Mode moeglich und nur, wenn das Gesuch im Status FREIGABEQUITTUNG ist
             this.showGesuchFreigebenSimulationButton = (response && this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) && isSuperadmin);
         });
@@ -120,7 +116,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public openFreigabequittungPDF(forceCreation: boolean): IPromise<void> {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id, forceCreation)
             .then((downloadFile: TSDownloadFile) => {
                 // wir laden das Gesuch neu, da die Erstellung des Dokumentes auch Aenderungen im Gesuch verursacht

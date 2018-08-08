@@ -19,7 +19,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 
-describe('erwerbspensumView', function () {
+describe('erwerbspensumView', () => {
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
     beforeEach(angular.mock.module('ebeguWeb.admin'));
@@ -31,26 +31,26 @@ describe('erwerbspensumView', function () {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
-        let $rootScope = $injector.get('$rootScope');
+        const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
 
-    beforeEach(function () {
+    beforeEach(() => {
         gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
-        let tsGesuchsperiode = new TSGesuchsperiode();
+        const tsGesuchsperiode = new TSGesuchsperiode();
         tsGesuchsperiode.id = '123';
         gesuchModelManager.getGesuch().gesuchsperiode = tsGesuchsperiode;
     });
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         /*
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.
          */
-        let bindings = {};
+        const bindings = {};
         component = $componentController('erwerbspensumView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
 import TSGesuch from '../../models/TSGesuch';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -21,22 +21,21 @@ import TSMahnung from '../../models/TSMahnung';
 
 export default class MahnungRS implements IEntityRS {
 
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+
+    serviceURL: string;
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'mahnung';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public saveMahnung(mahnung: TSMahnung): IPromise<TSMahnung> {
         let sentMahnung = {};
         sentMahnung = this.ebeguRestUtil.mahnungToRestObject(sentMahnung, mahnung);
-        return this.http.post(this.serviceURL, sentMahnung, {
+        return this.$http.post(this.serviceURL, sentMahnung, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -47,14 +46,14 @@ export default class MahnungRS implements IEntityRS {
     }
 
     public findMahnungen(gesuchId: string): IPromise<TSMahnung[]> {
-        return this.http.get(this.serviceURL + '/' + encodeURIComponent(gesuchId))
+        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(gesuchId))
             .then((response: any) => {
                 return this.ebeguRestUtil.parseMahnungen(response.data);
             });
     }
 
     public mahnlaufBeenden(gesuch: TSGesuch): IPromise<TSGesuch> {
-        return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuch.id), {
+        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuch.id), {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -65,7 +64,7 @@ export default class MahnungRS implements IEntityRS {
     }
 
     public getInitialeBemerkungen(gesuch: TSGesuch): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/bemerkungen/' + encodeURIComponent(gesuch.id), {
+        return this.$http.get(this.serviceURL + '/bemerkungen/' + encodeURIComponent(gesuch.id), {
             headers: {
                 'Content-Type': 'text/plain'
             }

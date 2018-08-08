@@ -215,7 +215,7 @@ export default class TSEWKPerson extends TSAbstractEntity {
     }
 
     public getWohnadresse(): TSEWKAdresse {
-        for (let adresse of this.adressen) {
+        for (const adresse of this.adressen) {
             if (adresse.adresstyp === '1') {
                 return adresse;
             }

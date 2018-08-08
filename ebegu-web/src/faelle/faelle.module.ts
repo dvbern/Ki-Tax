@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.module';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {faelleRun} from './faelle.route';
 import {FaelleListViewComponentConfig} from './component/faelleListView';
 

@@ -96,7 +96,7 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
  * @returns {TSAntragStatus[]}
  */
 export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntragStatus> {
-    let allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
+    const allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
     switch (userrole) {
         case TSRole.SACHBEARBEITER_JA:
         case TSRole.ADMIN:
@@ -118,7 +118,7 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntrag
 }
 
 export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
-    let validStates: Array<TSAntragStatus> = [
+    const validStates: Array<TSAntragStatus> = [
         TSAntragStatus.NUR_SCHULAMT,
         TSAntragStatus.FREIGEGEBEN,
         TSAntragStatus.ERSTE_MAHNUNG,

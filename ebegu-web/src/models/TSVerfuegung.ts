@@ -110,12 +110,7 @@ export default class TSVerfuegung extends TSAbstractEntity {
      * Checks whether all Zeitabschnitte have the same data as the previous (vorgaenger) Verfuegung.
      */
     public areSameVerfuegungsdaten(): boolean {
-        for (let i = 0; i < this._zeitabschnitte.length; i++) {
-            if (this._zeitabschnitte[i].sameVerfuegungsdaten !== true) {
-                return false;
-            }
-        }
-        return true;
+        return this._zeitabschnitte.every(za => za.sameVerfuegungsdaten);
     }
 
     /**
@@ -123,6 +118,7 @@ export default class TSVerfuegung extends TSAbstractEntity {
      * have the same Verguenstigung as the previous (vorgaenger) Verfuegung.
      */
     public isSameVerrechneteVerguenstigung(): boolean {
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             if (this._zeitabschnitte[i].sameVerguenstigung !== true
                 && (this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET

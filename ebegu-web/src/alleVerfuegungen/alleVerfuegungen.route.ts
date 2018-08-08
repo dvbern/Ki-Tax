@@ -13,29 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function alleVerfuegungenRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
-}
-
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguAlleVerfuegungenState()
-    ];
+    routerHelper.configureStates(ng1States, ng2States);
 }
 
 //STATES
 
-export class EbeguAlleVerfuegungenState implements Ng1StateDeclaration {
-    name = 'alleVerfuegungen';
-    template = '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">';
-    url = '/alleVerfuegungen/:dossierId';
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'alleVerfuegungen',
+    },
+    {
+        name: 'alleVerfuegungen.view',
+        template: '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">',
+        url: '/alleVerfuegungen/:dossierId',
+    }
+];
+
+const ng2States: Ng2StateDeclaration[] = [];
 
 // PARAMS
 

@@ -17,10 +17,14 @@ package ch.dvbern.ebegu.rest.test;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.servlet.ServletOutputStream;
@@ -36,6 +40,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.tets.util.LoginmoduleAndCacheSetupTask;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OverProtocol;
@@ -47,11 +52,14 @@ import org.jboss.resteasy.core.ResteasyHttpServletResponseWrapper;
 import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+import org.junit.Assert;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -274,10 +282,14 @@ public abstract class AbstractEbeguRestTest {
 	public static Archive<?> createTestArchive(@Nullable Class[] classesToAdd) {
 
 		PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml");
-		File[] runtimeDeps = pom.importRuntimeDependencies().resolve()
+		File[] runtimeDepsBefore = pom.importRuntimeDependencies().resolve()
 			.using(new RejectDependenciesStrategy(false, "ch.dvbern.ebegu:ebegu-dbschema")) //wir wollen flyway nicht im test
 			.asFile();
 		File[] testDeps = pom.importTestDependencies().resolve().withoutTransitivity().asFile();
+
+		File serverFile = findEbeguServerJarFile(runtimeDepsBefore);
+		JavaArchive serverJar = createEbeguServerJar(serverFile);
+		File[] runtimeDeps = removeEbeguServerJar(runtimeDepsBefore, serverFile);
 
 		// wir fuegen die packages einzeln hinzu weil sonst klassen die im shared sind und das gleiche package haben doppelt eingefuegt werden
 		WebArchive webArchive = ShrinkWrap.create(WebArchive.class, "rest-test.war")
@@ -288,6 +300,7 @@ public abstract class AbstractEbeguRestTest {
 			.addPackages(true, "ch/dvbern/ebegu/api")
 			.addPackages(true, "ch/dvbern/ebegu/rest/test")
 			.addAsLibraries(runtimeDeps)
+			.addAsLibraries(serverJar) // import the created serverJar without persistence.xml again
 			.addAsLibraries(testDeps)
 			.addAsManifestResource("META-INF/TEST-MANIFEST.MF", "MANIFEST.MF")
 
@@ -310,6 +323,41 @@ public abstract class AbstractEbeguRestTest {
 		//Folgende Zeile gibt im /tmp dir das archiv aus zum debuggen nuetzlich
 		new ZipExporterImpl(webArchive).exportTo(new File(System.getProperty("java.io.tmpdir"), "myWebRestArchive.war"), true);
 		return webArchive;
+	}
+
+	/**
+	 * Takes the ebegu-server.jar out of the runtimeDependencies.
+	 */
+	@Nonnull
+	private static File findEbeguServerJarFile(File[] runtimeDeps) {
+		List<File> serverFile = Arrays.stream(runtimeDeps).filter(file -> file.getName().contains("ebegu-server-"))
+			.collect(Collectors.toList());
+
+		Assert.assertEquals(1, serverFile.size());
+		return serverFile.get(0);
+	}
+
+	/**
+	 *
+	 */
+	private static File[] removeEbeguServerJar(File[] runtimeDepsBefore, File serverFile) {
+		return ArrayUtils.removeElement(runtimeDepsBefore, serverFile);
+	}
+
+	/**
+	 * Removes the persistence.xml from the given (jar) file
+	 * We need the test-persistence.xml for testing but the jar ebegu-server.jar already has the production persistence.xml. So we
+	 * need to remove the last one because there can only be one persistenceUnit defined.
+	 */
+	@Nonnull
+	private static JavaArchive createEbeguServerJar(@Nonnull File serverJarFile) {
+		JavaArchive serverJar = ShrinkWrap
+			.create(ZipImporter.class, serverJarFile.getName())
+			.importFrom(serverJarFile)
+			.as(JavaArchive.class);
+		serverJar.delete("/META-INF/persistence.xml");
+
+		return serverJar;
 	}
 
 	public JaxGesuchsperiode saveGesuchsperiodeInStatusEntwurf(JaxGesuchsperiode gesuchsperiode) {

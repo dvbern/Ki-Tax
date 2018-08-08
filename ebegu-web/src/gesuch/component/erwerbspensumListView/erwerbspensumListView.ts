@@ -13,60 +13,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import BerechnungsManager from '../../service/berechnungsManager';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {IComponentOptions} from 'angular';
+import * as moment from 'moment';
+import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import * as moment from 'moment';
-import {IDVFocusableController} from '../../../core/component/IDVFocusableController';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
+import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template: string = require('./erwerbspensumListView.html');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
-require('./erwerbspensumListView.less');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class ErwerbspensumListViewComponentConfig implements IComponentOptions {
-    transclude: boolean;
-    bindings: any;
-    template: string;
-    controller: any;
-    controllerAs: string;
-
-    constructor() {
-        this.transclude = false;
-        this.bindings = {};
-        this.template = template;
-        this.controller = ErwerbspensumListViewController;
-        this.controllerAs = 'vm';
-    }
+    transclude = false;
+    bindings = {};
+    template = require('./erwerbspensumListView.html');
+    controller = ErwerbspensumListViewController;
+    controllerAs = 'vm';
 }
 
 export class ErwerbspensumListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
+
+    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$log', 'DvDialog',
+        'ErrorService', 'WizardStepManager', '$scope', 'AuthServiceRS', '$timeout'];
 
     erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
     erwerbspensenGS2: Array<TSErwerbspensumContainer>;
     erwerbspensumRequired: boolean;
 
-    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$log', 'DvDialog',
-        'ErrorService', 'WizardStepManager', '$scope', 'AuthServiceRS', '$timeout'];
-
-    /* @ngInject */
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private $log: ILogService, private dvDialog: DvDialog, private errorService: ErrorService,
-                wizardStepManager: WizardStepManager, $scope: IScope, private authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                private readonly $log: ILogService, private readonly dvDialog: DvDialog, private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager, $scope: IScope, private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ERWERBSPENSUM, $timeout);
         this.initViewModel();
     }
@@ -86,7 +75,7 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
         if (this.erwerbspensenGS1 === undefined) {
             if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1 &&
                 this.gesuchModelManager.getGesuch().gesuchsteller1.erwerbspensenContainer) {
-                let gesuchsteller1: TSGesuchstellerContainer = this.gesuchModelManager.getGesuch().gesuchsteller1;
+                const gesuchsteller1: TSGesuchstellerContainer = this.gesuchModelManager.getGesuch().gesuchsteller1;
                 this.erwerbspensenGS1 = gesuchsteller1.erwerbspensenContainer;
 
             } else {
@@ -100,7 +89,7 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
         if (this.erwerbspensenGS2 === undefined) {
             if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2 &&
                 this.gesuchModelManager.getGesuch().gesuchsteller2.erwerbspensenContainer) {
-                let gesuchsteller2: TSGesuchstellerContainer = this.gesuchModelManager.getGesuch().gesuchsteller2;
+                const gesuchsteller2: TSGesuchstellerContainer = this.gesuchModelManager.getGesuch().gesuchsteller2;
                 this.erwerbspensenGS2 = gesuchsteller2.erwerbspensenContainer;
 
             } else {
@@ -117,8 +106,8 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
 
     removePensum(pensum: TSErwerbspensumContainer, gesuchstellerNumber: number, element_id: string, index: any): void {
         // Spezielle Meldung, wenn es ein GS ist, der in einer Mutation loescht
-        let gsInMutation: boolean = (this.authServiceRS.getPrincipalRole() === TSRole.GESUCHSTELLER && pensum.vorgaengerId !== undefined);
-        let pensumLaufendOderVergangen: boolean = pensum.erwerbspensumJA.gueltigkeit.gueltigAb.isBefore(moment(moment.now()));
+        const gsInMutation: boolean = (this.authServiceRS.getPrincipalRole() === TSRole.GESUCHSTELLER && pensum.vorgaengerId !== undefined);
+        const pensumLaufendOderVergangen: boolean = pensum.erwerbspensumJA.gueltigkeit.gueltigAb.isBefore(moment(moment.now()));
         this.errorService.clearAll();
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             deleteText: (gsInMutation && pensumLaufendOderVergangen) ? 'ERWERBSPENSUM_LOESCHEN_GS_MUTATION' : '',
@@ -135,7 +124,7 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
     }
 
     editPensum(pensum: any, gesuchstellerNumber: any): void {
-        let index: number = this.gesuchModelManager.findIndexOfErwerbspensum(parseInt(gesuchstellerNumber), pensum);
+        const index: number = this.gesuchModelManager.findIndexOfErwerbspensum(parseInt(gesuchstellerNumber), pensum);
         this.openErwerbspensumView(gesuchstellerNumber, index);
     }
 
@@ -153,7 +142,7 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
      * @returns {boolean}
      */
     public isSaveDisabled(): boolean {
-        let erwerbspensenNumber: number = 0;
+        const erwerbspensenNumber: number = 0;
         if (this.erwerbspensumRequired) {
             if (this.getErwerbspensenListGS1() && this.getErwerbspensenListGS1().length <= 0) {
                 return true;
