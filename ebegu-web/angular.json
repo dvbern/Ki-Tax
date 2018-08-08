@@ -30,6 +30,7 @@
                     },
                     "configurations": {
                         "production": {
+                            "baseHref": "/web/",
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": true,
