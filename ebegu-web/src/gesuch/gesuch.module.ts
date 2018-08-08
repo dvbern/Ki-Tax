@@ -14,6 +14,7 @@
  */
 
 import * as angular from 'angular';
+import {downgradeComponent} from '@angular/upgrade/static';
 import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
@@ -78,9 +79,6 @@ export const EbeguWebGesuch =
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
-        .directive(
-            'dvFallToolbar',
-            downgradeComponent({component: FallToolbarComponent}) as angular.IDirectiveFactory
-        )
+        .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
 ;
 

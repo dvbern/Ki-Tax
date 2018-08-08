@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
@@ -40,11 +39,10 @@ describe('EbeguUtil', () => {
             return value;
         };
         $provide.value('translateFilter', mockTranslateFilter);
-        $provide.value('CONSTANTS', CONSTANTS);
     }));
 
     beforeEach(angular.mock.inject($injector => {
-        ebeguUtil = new EbeguUtil($injector.get('$filter'), $injector.get('CONSTANTS'), undefined, undefined);
+        ebeguUtil = new EbeguUtil($injector.get('$filter'), undefined, undefined);
     }));
 
     describe('translateStringList', () => {
