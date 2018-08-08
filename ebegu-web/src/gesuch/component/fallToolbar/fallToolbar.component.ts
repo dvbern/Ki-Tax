@@ -15,8 +15,7 @@
 
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
-import {of} from 'rxjs';
-import {Observable} from 'rxjs';
+import {of, Observable} from 'rxjs';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEingangsartFromRole} from '../../../models/enums/TSEingangsart';
