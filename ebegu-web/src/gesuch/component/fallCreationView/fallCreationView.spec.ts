@@ -13,17 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TestDataUtil from '../../../utils/TestDataUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {FallCreationViewController} from './fallCreationView';
 import {StateService} from '@uirouter/core';
 
-describe('fallCreationView', function () {
+describe('fallCreationView', () => {
 
     let fallCreationview: FallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -37,7 +37,7 @@ describe('fallCreationView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockLazyGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
         $state = $injector.get('$state');
@@ -51,9 +51,7 @@ describe('fallCreationView', function () {
             $injector.get('$translate'), $q, $rootScope, $injector.get('AuthServiceRS'), $injector.get('GesuchsperiodeRS'),
             $injector.get('$timeout'));
         fallCreationview.form = form;
-        spyOn(fallCreationview, 'isGesuchValid').and.callFake(function () {
-            return form.$valid;
-        });
+        spyOn(fallCreationview, 'isGesuchValid').and.callFake(() => form.$valid);
         gesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
     }));
@@ -61,7 +59,7 @@ describe('fallCreationView', function () {
     describe('nextStep', () => {
         it('submitted but rejected -> it does not go to the next step', () => {
             spyOn($state, 'go');
-            let reject = $q.reject({}).catch(() => {
+            const reject = $q.reject({}).catch(() => {
                 //need to catch rejected promise
             });
             spyOn(gesuchModelManager, 'saveGesuchAndFall').and.returnValue(reject);
@@ -93,7 +91,7 @@ describe('fallCreationView', function () {
             expect(fallCreationview.getTitle()).toBe('Änderung Ihrer Daten');
         });
         it('should return Ki-Tax – Erstgesuch der Periode', () => {
-            let gesuchsperiode: TSGesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
+            const gesuchsperiode: TSGesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);

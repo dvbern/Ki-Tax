@@ -24,8 +24,8 @@ export default class GlobalCacheService {
 
     static $inject = ['$cacheFactory'];
 
-    constructor(private $cacheFactory: ICacheFactoryService) {
-        for (let cache of getTSCacheTypValues()) {
+    constructor(private readonly $cacheFactory: ICacheFactoryService) {
+        for (const cache of getTSCacheTypValues()) {
             $cacheFactory(TSCacheTyp[cache]);
         }
     }

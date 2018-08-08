@@ -21,10 +21,10 @@ PosteingangFilter.$inject = ['$filter', 'EbeguUtil', 'CONSTANTS'];
 // Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden Comparator aufgerufen.
 // Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach implementiert wird.
 export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS: any) {
-    let filterFilter = $filter('filter');
-    let dateFilter = $filter('date');
+    const filterFilter = $filter('filter');
+    const dateFilter = $filter('date');
 
-    let standardComparator = function standardComparator(obj: any, text: any) {
+    const standardComparator = (obj: any, text: any) => {
         text = ('' + text).toLowerCase();
         return ('' + obj).toLowerCase().indexOf(text) > -1;
     };
@@ -37,7 +37,7 @@ export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
             }
             // Fall-Nummer
             if (expression.dossier && expression.dossier.fall && expression.dossier.fall.fallNummer && expression.dossier.fall.fallNummer === expected) {
-                let actualString = EbeguUtil.addZerosToFallNummer(actual);
+                const actualString = EbeguUtil.addZerosToFallNummer(actual);
                 return actualString.indexOf(expected) >= 0;
             }
             // Familie
@@ -61,7 +61,7 @@ export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
     };
 
     function compareDates (actual: any, expected: any): boolean {
-        let datum = dateFilter(new Date(actual), 'dd.MM.yyyy');
+        const datum = dateFilter(new Date(actual), 'dd.MM.yyyy');
         return datum === expected;
     }
 }

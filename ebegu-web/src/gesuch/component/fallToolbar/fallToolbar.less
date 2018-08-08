@@ -18,50 +18,55 @@
 
 .fall-toolbar {
     background-color: @white;
-}
 
-.fall-toolbar-content {
-    div {
-        display: inline-block;
+    .fall-toolbar-content {
+        div {
+            display: inline-block;
+        }
+        button {
+            border: 0;
+            text-align: center;
+        }
+
+        .fall-toolbar-element {
+            display: flex;
+            color: @blue;
+            font-weight: bold;
+            width: 20rem;
+            min-height: @toolbar-height;
+            vertical-align: middle;
+
+            span, i {
+                line-height: @toolbar-height;
+                padding-left: 1rem;
+            }
+        }
     }
-    button {
-        border: 0;
-        text-align: center;
-    }
-}
 
-.fall-toolbar .dossier-list {
-    margin-left: auto;
-}
+    .dossier-list {
+        margin-left: auto;
 
-.dossier-inactive {
-    background-color: @grey;
-}
+        .dossier-element {
+            background-color: @grey;
+            color: @contrast-lightest;
+            font-weight: bold;
+            width: 20rem;
+            min-height: @toolbar-height;
+            line-height: @toolbar-height;
+            margin-right: 2rem;
+            text-align: center;
+            padding: 0;
 
-.dossier-active {
-    background-color: @blue;
-}
+            &.fall-nummer {
+                color: @blue;
+                width: auto;
+                background-color: transparent;
+                font-weight: normal;
+            }
+        }
 
-.fall-toolbar .fall-toolbar-content .dossier-list .dossier-element {
-    color: @contrast-lightest;
-    font-weight: bold;
-    width: 20rem;
-    min-height: @toolbar-height;
-    line-height: @toolbar-height;
-    margin-left: 2rem;
-    text-align: center;
-}
-
-.fall-toolbar .fall-toolbar-content .fall-toolbar-element {
-    display: flex;
-    color: @blue;
-    font-weight: bold;
-    width: 20rem;
-    min-height: @toolbar-height;
-    vertical-align: middle;
-
-    span, i {
-        line-height: @toolbar-height;
-        padding-left: 1rem;
+        .dossier-active {
+            background-color: @blue;
+        }
     }
 }

@@ -14,29 +14,27 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import {ReplaySubject} from 'rxjs/ReplaySubject';
-import {Subject} from 'rxjs/Subject';
+import {Log, LogFactory} from '../../app/core/logging/LogFactory';
 import {TSPostEingangEvent} from '../../models/enums/TSPostEingangEvent';
-import {Log} from '../../utils/LogFactory';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class PosteingangService {
 
-    private LOG: Log = Log.createLog(PosteingangService);
+    private readonly LOG: Log = LogFactory.createLog(PosteingangService.name);
 
-    private _posteingangSubject: Subject<TSPostEingangEvent> = new ReplaySubject(); // use ReplaySubject because we don't have an initial value
-
-    constructor() {}
+    private readonly _posteingangSubject$: Subject<TSPostEingangEvent> = new ReplaySubject(1); // use ReplaySubject because we don't have an initial value
 
     public posteingangChanged(): void {
-        this.LOG.info('Thwrowing TSPostEingangEvent.POSTEINGANG_MAY_CHANGED because the number of elements in Posteingang may have changed');
-        this._posteingangSubject.next(TSPostEingangEvent.POSTEINGANG_MAY_CHANGED);
+        this.LOG.info('Thwrowing TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED because the number of elements in Posteingang might have changed');
+        this._posteingangSubject$.next(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);
     }
 
     public get$(event: TSPostEingangEvent): Observable<TSPostEingangEvent> {
-        return this._posteingangSubject
+        return this._posteingangSubject$
             .asObservable()
             .pipe(filter(value => value === event)) as Observable<TSPostEingangEvent>;
     }

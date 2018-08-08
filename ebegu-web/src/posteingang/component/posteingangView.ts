@@ -13,27 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
+import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import MitteilungRS from '../../core/service/mitteilungRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {StateService} from '@uirouter/core';
-let template = require('./posteingangView.html');
-require('./posteingangView.less');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./posteingangView.html');
     controller = PosteingangViewController;
     controllerAs = 'vm';
 }
 
 export class PosteingangViewController {
+
+    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
 
     displayedCollection: Array<TSMitteilung> = []; //Liste die im Gui angezeigt wird
     pagination: any = {};
@@ -46,12 +46,8 @@ export class PosteingangViewController {
     selectedMitteilungsstatus: TSMitteilungStatus;
     includeClosed: boolean = false;
 
-
-
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
-
-    constructor(private mitteilungRS: MitteilungRS, private ebeguUtil: EbeguUtil, private CONSTANTS: any, private $state: StateService,
-                private authServiceRS: AuthServiceRS, private $log: ILogService) {
+    constructor(private readonly mitteilungRS: MitteilungRS, private readonly ebeguUtil: EbeguUtil, private readonly CONSTANTS: any, private readonly $state: StateService,
+                private readonly authServiceRS: AuthServiceRS, private readonly $log: ILogService) {
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
@@ -59,14 +55,14 @@ export class PosteingangViewController {
     }
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
-        this.$state.go('mitteilungen', {
+        this.$state.go('mitteilungen.view', {
             dossierId: mitteilung.dossier.id,
             fallId: mitteilung.dossier.fall.id,
         });
     }
 
     isCurrentUserSchulamt(): boolean {
-        let isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
+        const isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
         return isUserSchulamt;
     }
 
@@ -89,7 +85,7 @@ export class PosteingangViewController {
         return this.mitteilungRS.searchMitteilungen(tableFilterState, this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
             this.setResult(result);
         });
-    }
+    };
 
     private setResult(result: TSMtteilungSearchresultDTO): void {
         if (result) {

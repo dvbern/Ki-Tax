@@ -14,23 +14,22 @@
  */
 
 import * as moment from 'moment';
-import {CONSTANTS} from '../core/constants/CONSTANTS';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
 import EbeguUtil from './EbeguUtil';
-import TestDataUtil from './TestDataUtil';
+import TestDataUtil from './TestDataUtil.spec';
 
-describe('EbeguUtil', function () {
+describe('EbeguUtil', () => {
 
     let ebeguUtil: EbeguUtil;
 
     // Das wird nur fuer tests gebraucht in denen etwas uebersetzt wird. Leider muss man dieses erstellen
     // bevor man den Injector erstellt hat. Deshalb muss es fuer alle Tests definiert werden
-    beforeEach(angular.mock.module(function ($provide: angular.auto.IProvideService) {
-        let mockTranslateFilter = function (value: any) {
+    beforeEach(angular.mock.module(($provide: angular.auto.IProvideService) => {
+        const mockTranslateFilter = (value: any) => {
             if (value === 'FIRST') {
                 return 'Erster';
             }
@@ -40,17 +39,16 @@ describe('EbeguUtil', function () {
             return value;
         };
         $provide.value('translateFilter', mockTranslateFilter);
-        $provide.value('CONSTANTS', CONSTANTS);
     }));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
-        ebeguUtil = new EbeguUtil($injector.get('$filter'), $injector.get('CONSTANTS'), undefined, undefined);
+    beforeEach(angular.mock.inject($injector => {
+        ebeguUtil = new EbeguUtil($injector.get('$filter'), undefined, undefined);
     }));
 
     describe('translateStringList', () => {
         it('should translate the given list of words', () => {
-            let list: Array<string> = ['FIRST', 'SECOND'];
-            let returnedList: Array<any> = ebeguUtil.translateStringList(list);
+            const list: Array<string> = ['FIRST', 'SECOND'];
+            const returnedList: Array<any> = ebeguUtil.translateStringList(list);
             expect(returnedList.length).toEqual(2);
             expect(returnedList[0].key).toEqual('FIRST');
             expect(returnedList[0].value).toEqual('Erster');
@@ -77,19 +75,19 @@ describe('EbeguUtil', function () {
             expect(ebeguUtil.calculateBetreuungsId(undefined, undefined, undefined, 0, 0)).toBe('');
         });
         it('it returns empty string for undefined kindContainer', () => {
-            let fall: TSFall = new TSFall();
-            let gemeinde: TSGemeinde = new TSGemeinde();
+            const fall: TSFall = new TSFall();
+            const gemeinde: TSGemeinde = new TSGemeinde();
             expect(ebeguUtil.calculateBetreuungsId(undefined, fall, gemeinde, 0, 0)).toBe('');
         });
         it('it returns empty string for undefined betreuung', () => {
-            let gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode();
+            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode();
             expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, undefined, undefined, 0, 0)).toBe('');
         });
         it('it returns the right ID: YY(gesuchsperiodeBegin).fallNummer.gemeindeNummer.Kind.Betreuung', () => {
-            let fall: TSFall = new TSFall(254);
-            let gemeinde: TSGemeinde = new TSGemeinde();
+            const fall: TSFall = new TSFall(254);
+            const gemeinde: TSGemeinde = new TSGemeinde();
             gemeinde.gemeindeNummer = 99;
-            let gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
+            const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
             expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, fall, gemeinde, 1, 1)).toBe('16.000254.099.1.1');
         });
     });
@@ -98,18 +96,18 @@ describe('EbeguUtil', function () {
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(undefined)).toBe('');
         });
         it('it returns empty string for undefined daterange in the Gesuchsperiode', () => {
-            let gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, undefined);
+            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, undefined);
             gesuchsperiode.gueltigkeit = undefined;
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns empty string for undefined gueltigAb', () => {
-            let daterange: TSDateRange = new TSDateRange(undefined, moment('31.07.2017', 'DD.MM.YYYY'));
-            let gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
+            const daterange: TSDateRange = new TSDateRange(undefined, moment('31.07.2017', 'DD.MM.YYYY'));
+            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns 01.08.2016', () => {
-            let daterange: TSDateRange = new TSDateRange(moment('01.08.2016', 'DD.MM.YYYY'), moment('31.07.2017', 'DD.MM.YYYY'));
-            let gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
+            const daterange: TSDateRange = new TSDateRange(moment('01.08.2016', 'DD.MM.YYYY'), moment('31.07.2017', 'DD.MM.YYYY'));
+            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('01.08.2016');
         });
     });

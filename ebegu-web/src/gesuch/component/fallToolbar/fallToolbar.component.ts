@@ -15,10 +15,10 @@
 
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
+import {of} from 'rxjs';
+import {Observable} from 'rxjs';
+import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvNgGemeindeDialogComponent} from '../../../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {getTSEingangsartFromRole} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
@@ -47,7 +47,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     @Input() defaultGemeindeName: string;
 
     dossierList: TSDossier[] = [];
-    selectedDossier: TSDossier;
+    selectedDossier?: TSDossier;
     fallNummer: string;
     availableGemeindeList: TSGemeinde[] = [];
 
@@ -122,7 +122,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     public createNewDossier(): void {
         this.getGemeindeIDFromDialog().subscribe(
             (chosenGemeindeId) => {
-                let params: INewFallStateParams = {
+                const params: INewFallStateParams = {
                     gesuchsperiodeId: null,
                     createMutation: null,
                     createNewFall: 'false',

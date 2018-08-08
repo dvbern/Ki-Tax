@@ -13,12 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions} from 'angular';
+import * as moment from 'moment';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
@@ -33,22 +35,18 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from '../betreuungView/betreuungView';
-import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import moment = require('moment');
+import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import IFormController = angular.IFormController;
 
-let template = require('./betreuungTagesschuleView.html');
-require('./betreuungTagesschuleView.less');
-let dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungTagesschuleViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         betreuung: '=',
         onSave: '&',
         cancel: '&',
@@ -57,12 +55,15 @@ export class BetreuungTagesschuleViewComponentConfig implements IComponentOption
         anmeldungSchulamtFalscheInstitution: '&',
         form: '='
     };
-    template = template;
+    template = require('./betreuungTagesschuleView.html');
     controller = BetreuungTagesschuleViewController;
     controllerAs = 'vm';
 }
 
 export class BetreuungTagesschuleViewController extends BetreuungViewController {
+
+    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
+        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
 
     onSave: () => void;
     form: IFormController;
@@ -73,10 +74,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     showMutiert: boolean = false;
     aktuellGueltig: boolean = true;
 
-    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
-
-    /* @ngInject */
     constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
                 $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
                 authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,
@@ -113,10 +110,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getTagesschuleAnmeldungNotYetReadyText(): string {
-        let gp: TSGesuchsperiode = this.gesuchModelManager.getGesuch().gesuchsperiode;
+        const gp: TSGesuchsperiode = this.gesuchModelManager.getGesuch().gesuchsperiode;
         if (gp.hasTagesschulenAnmeldung()) {
             if (gp.isTagesschulenAnmeldungKonfiguriert()) {
-                let terminValue: string = DateUtil.momentToLocalDateFormat(gp.datumFreischaltungTagesschule, 'DD.MM.YYYY');
+                const terminValue: string = DateUtil.momentToLocalDateFormat(gp.datumFreischaltungTagesschule, 'DD.MM.YYYY');
                 return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
                     termin: terminValue
                 });
@@ -151,13 +148,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
      * Gibt true zurueck wenn das gegebene Modul fuer die ausgewaehlte TS definiert wurde und zwar mit zeitBis und zeitVon.
      */
     public isModulDefinedInSelectedTS(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): boolean {
-        let modulTS: TSModulTagesschule = this.getModul(modulName, weekday);
+        const modulTS: TSModulTagesschule = this.getModul(modulName, weekday);
         return !!(modulTS && modulTS.zeitBis && modulTS.zeitVon);
     }
 
     public getModul(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): TSModulTagesschule {
         if (this.getBetreuungModel().belegungTagesschule && this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
-            for (let modulTS of this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
+            for (const modulTS of this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
                 if (modulTS.modulTagesschuleName === modulName && modulTS.wochentag === weekday) {
                     return modulTS;
                 }
@@ -206,12 +203,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getModulName(modulName: TSModulTagesschuleName): string {
-        let modul: TSModulTagesschule = this.getModul(modulName, TSDayOfWeek.MONDAY); // monday ist der Vertreter fuer die ganze Woche
+        const modul: TSModulTagesschule = this.getModul(modulName, TSDayOfWeek.MONDAY); // monday ist der Vertreter fuer die ganze Woche
         return this.$translate.instant(TSModulTagesschuleName[modulName]) + this.getModulTimeAsString(modul);
     }
 
     public getModulTimeAsStringViaName(modulName: TSModulTagesschuleName): string {
-        let modul: TSModulTagesschule = this.getModul(modulName, TSDayOfWeek.MONDAY);
+        const modul: TSModulTagesschule = this.getModul(modulName, TSDayOfWeek.MONDAY);
         if (modul) {
             return modul.zeitVon.format('HH:mm') + ' - ' + modul.zeitBis.format('HH:mm');
         }

@@ -14,28 +14,24 @@
  */
 
 import {IComponentOptions, IFormController} from 'angular';
-import './ferieninselView.less';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import {TSDateRange} from '../../../models/types/TSDateRange';
-import AbstractAdminViewController from '../../abstractAdminView';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {FerieninselStammdatenRS} from '../../service/ferieninselStammdatenRS.rest';
-import TSFerieninselStammdaten from '../../../models/TSFerieninselStammdaten';
 import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerienname';
+import TSFerieninselStammdaten from '../../../models/TSFerieninselStammdaten';
 import TSFerieninselZeitraum from '../../../models/TSFerieninselZeitraum';
-import ITimeoutService = angular.ITimeoutService;
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-
-let template = require('./ferieninselView.html');
-let style = require('./ferieninselView.less');
+import AbstractAdminViewController from '../../abstractAdminView';
+import {FerieninselStammdatenRS} from '../../service/ferieninselStammdatenRS.rest';
+import ITimeoutService = angular.ITimeoutService;
 
 export class FerieninselViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    template: string = template;
-    controller: any = FerieninselViewController;
-    controllerAs: string = 'vm';
+    transclude = false;
+    template = require('./ferieninselView.html');
+    controller = FerieninselViewController;
+    controllerAs = 'vm';
 }
 
 export class FerieninselViewController extends AbstractAdminViewController {
@@ -48,15 +44,12 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     ferieninselStammdatenMap: { [key: string]: TSFerieninselStammdaten; } = {};
 
-    TSRoleUtil: TSRoleUtil;
+    TSRoleUtil = TSRoleUtil;
 
-
-    /* @ngInject */
-    constructor(private gesuchsperiodeRS: GesuchsperiodeRS,
-                private ferieninselStammdatenRS: FerieninselStammdatenRS,
-                private $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+    constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
+                private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
-        this.TSRoleUtil = TSRoleUtil;
         this.$timeout(() => {
             this.readGesuchsperioden();
         });
@@ -64,7 +57,7 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     private readGesuchsperioden(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: Array<TSGesuchsperiode>) => {
-            this.gesuchsperiodenList =  response;
+            this.gesuchsperiodenList = response;
         });
     }
 
@@ -80,8 +73,8 @@ export class FerieninselViewController extends AbstractAdminViewController {
     private readFerieninselStammdatenByGesuchsperiode(): void {
         this.ferieninselStammdatenMap = {};
         this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiode(this.gesuchsperiode.id).then((response: TSFerieninselStammdaten[]) => {
-            let ferieninselStammdatenList: TSFerieninselStammdaten[] =  response;
-            for (let obj of ferieninselStammdatenList) {
+            const ferieninselStammdatenList: TSFerieninselStammdaten[] = response;
+            for (const obj of ferieninselStammdatenList) {
                 this.ferieninselStammdatenMap[obj.ferienname] = obj;
             }
             this.resetErrors();
@@ -121,12 +114,12 @@ export class FerieninselViewController extends AbstractAdminViewController {
     }
 
     public removeFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten, ferieninselZeitraum: TSFerieninselZeitraum): void {
-        let index: number = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
+        const index: number = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
         ferieninselStammdaten.zeitraumList.splice(index, 1);
     }
 
     public isFerieninselStammdatenValid(ferieninselStammdaten: TSFerieninselStammdaten): boolean {
-        let fiValid: boolean = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
+        const fiValid: boolean = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigAb)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigBis));
 
@@ -155,9 +148,9 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     public isDatumBisRequired(ferieninselZeitraum: TSFerieninselZeitraum, ferieninselStammdaten: TSFerieninselStammdaten) {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum ab
-       return EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
+        return EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || (EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit)
-               && EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit.gueltigAb));
+                && EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit.gueltigAb));
     }
 
     /**

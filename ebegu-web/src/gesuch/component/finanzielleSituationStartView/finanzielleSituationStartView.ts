@@ -14,51 +14,47 @@
  */
 
 import {IComponentOptions} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSFinanzielleSituation from '../../../models/TSFinanzielleSituation';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import TSGesuch from '../../../models/TSGesuch';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
+import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
-import IPromise = angular.IPromise;
-import AbstractGesuchViewController from '../abstractGesuchView';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSFinanzModel from '../../../models/TSFinanzModel';
-import TSGesuch from '../../../models/TSGesuch';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 
-let template = require('./finanzielleSituationStartView.html');
-require('./finanzielleSituationStartView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FinanzielleSituationStartViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./finanzielleSituationStartView.html');
     controller = FinanzielleSituationStartViewController;
     controllerAs = 'vm';
 }
 
 export class FinanzielleSituationStartViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
+    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+        'WizardStepManager', '$q', '$scope', '$timeout', 'DvDialog'];
+
     finanzielleSituationRequired: boolean;
     areThereOnlySchulamtangebote: boolean;
     areThereOnlyFerieninsel: boolean;
     allowedRoles: Array<TSRoleUtil>;
-    private initialModel: TSFinanzModel;
+    private readonly initialModel: TSFinanzModel;
 
-
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', '$timeout', 'DvDialog'];
-
-    /* @ngInject */
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager, private errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private $q: IQService, $scope: IScope, $timeout: ITimeoutService,
-                private dvDialog: DvDialog) {
+    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService,
+                private readonly dvDialog: DvDialog) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
 
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null);
@@ -169,12 +165,12 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
      */
     private initSteuerFragen() {
         if (this.model.finanzielleSituationContainerGS1) {
-            let gs1FinanzielleSituationJA = this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
+            const gs1FinanzielleSituationJA = this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
             gs1FinanzielleSituationJA.steuererklaerungAusgefuellt = !gs1FinanzielleSituationJA.steuererklaerungAusgefuellt ? false : gs1FinanzielleSituationJA.steuererklaerungAusgefuellt;
             gs1FinanzielleSituationJA.steuerveranlagungErhalten = !gs1FinanzielleSituationJA.steuerveranlagungErhalten ? false : gs1FinanzielleSituationJA.steuerveranlagungErhalten;
         }
         if (this.model.finanzielleSituationContainerGS2) {
-            let gs2FinanzielleSituationJA = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+            const gs2FinanzielleSituationJA = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
             gs2FinanzielleSituationJA.steuererklaerungAusgefuellt = !gs2FinanzielleSituationJA.steuererklaerungAusgefuellt ? false : gs2FinanzielleSituationJA.steuererklaerungAusgefuellt;
             gs2FinanzielleSituationJA.steuerveranlagungErhalten = !gs2FinanzielleSituationJA.steuerveranlagungErhalten ? false : gs2FinanzielleSituationJA.steuerveranlagungErhalten;
 

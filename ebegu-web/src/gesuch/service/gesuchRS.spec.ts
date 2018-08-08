@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.module';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import GesuchRS from './gesuchRS.rest';
 
-describe('gesuch', function () {
+describe('gesuch', () => {
 
     let gesuchRS: GesuchRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -29,30 +29,30 @@ describe('gesuch', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchRS = $injector.get('GesuchRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
         REST_API = $injector.get('REST_API');
     }));
 
-    describe('Public API', function () {
+    describe('Public API', () => {
 
-        it('should include a createGesuch() function', function () {
+        it('should include a createGesuch() function', () => {
             expect(gesuchRS.createGesuch).toBeDefined();
         });
 
-        it('should include a findGesuch() function', function () {
+        it('should include a findGesuch() function', () => {
             expect(gesuchRS.findGesuch).toBeDefined();
         });
 
-        it('should include a updateGesuch() function', function () {
+        it('should include a updateGesuch() function', () => {
             expect(gesuchRS.updateGesuch).toBeDefined();
         });
 
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
 
     });
 });

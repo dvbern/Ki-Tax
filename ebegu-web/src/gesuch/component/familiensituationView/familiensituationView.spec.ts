@@ -16,22 +16,21 @@
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebGesuch} from '../../gesuch.module';
 
-describe('familiensituationView', function () {
+describe('familiensituationView', () => {
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    let component: any;
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
-        let $rootScope = $injector.get('$rootScope');
+        const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
 
-    it('should be defined', function () {
+    it('should be defined', () => {
     });
 });

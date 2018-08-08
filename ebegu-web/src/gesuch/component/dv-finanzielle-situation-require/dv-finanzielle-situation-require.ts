@@ -18,23 +18,23 @@ import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
 import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
-declare let require: any;
-let template = require('./dv-finanzielle-situation-require.html');
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         areThereOnlySchulamtangebote: '=',
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '='
     };
-    template = template;
+    template = require('./dv-finanzielle-situation-require.html');
     controller = DVFinanzielleSituationRequireController;
     controllerAs = 'vm';
 }
 
 export class DVFinanzielleSituationRequireController {
+
+    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
 
     finanzielleSituationRequired: boolean;
     areThereOnlySchulamtangebote: boolean;
@@ -43,10 +43,7 @@ export class DVFinanzielleSituationRequireController {
 
     maxMassgebendesEinkommen: string;
 
-    static $inject: any[] = ['EbeguParameterRS', 'GesuchModelManager'];
-
-    /* @ngInject */
-    constructor(private ebeguParameterRS: EbeguParameterRS, private gesuchModelManager: GesuchModelManager) {
+    constructor(private readonly ebeguParameterRS: EbeguParameterRS, private readonly gesuchModelManager: GesuchModelManager) {
     }
 
     $onInit() {

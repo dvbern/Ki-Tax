@@ -26,9 +26,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <npm.arguments>run build:dev -- --no-color --progress false</npm.arguments>
-        <skipTests>false</skipTests>
-
         <!-- exclude files from sonar analysis (must match tsconfig.json exclusions -->
         <sonar.exclusions>build/**/*,dist/**/*,node_modules/**/*,temp/**/*,target/**/*,tslint.json</sonar.exclusions>
         <!-- disable coverage calculations for unit test files -->
@@ -39,17 +36,6 @@
         <sonar.junit.reportPaths>build/karma-results.xml</sonar.junit.reportPaths>
         <sonar.typescript.lcov.reportPaths>build/coverage/lcov.info</sonar.typescript.lcov.reportPaths>
     </properties>
-
-    <profiles>
-        <profile>
-            <!--bei einem eigentlichen release wollen wir in ein anderes nexus deployen-->
-            <!--stellt sich die frage ob wir zwei builds machen, ist mir noch unklar-->
-            <id>release-mode</id>
-            <properties>
-                <npm.arguments>run build:prod -- --no-color --progress false</npm.arguments>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <plugins>
@@ -81,42 +67,40 @@
                     </execution>
 
                     <execution>
-                        <id>npm install</id>
+                        <id>npm ci</id>
                         <phase>initialize</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <!-- Optional configuration which provides for running any npm command -->
-                        <configuration>
-                            <arguments>install</arguments>
-                            <installDirectory>target</installDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>npm build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <!-- Optional configuration which provides for running any npm command -->
-                        <configuration>
-                            <arguments>${npm.arguments}</arguments>
+                         <configuration>
+                            <arguments>ci</arguments>
                         </configuration>
                     </execution>
 
                     <!--run karma tests-->
                     <execution>
                         <id>javascript karma tests</id>
+                        <phase>test</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>test</phase>
                         <configuration>
-                            <arguments>run test</arguments>
+                            <arguments>run test:ci</arguments>
                             <skip>${skipTests}</skip>
                         </configuration>
                     </execution>
 
+                    <execution>
+                        <id>npm build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <!-- Optional configuration which provides for running any npm command -->
+                        <configuration>
+                            <arguments>run build:ci</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -127,7 +111,6 @@
                 <configuration>
                     <descriptors>
                         <descriptor>assembly.xml</descriptor>
-
                     </descriptors>
                 </configuration>
                 <executions>

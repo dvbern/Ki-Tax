@@ -26,7 +26,7 @@ export default class DateUtil {
         if (localDateTimeString === null || localDateTimeString === undefined) { // cannot use EbeguUtil. cycle dependency
             return undefined;
         }
-        let theMoment: Moment = moment(localDateTimeString, ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm:ss.SSSZ'], true);
+        const theMoment: Moment = moment(localDateTimeString, ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm:ss.SSSZ'], true);
         if (!theMoment.isValid()) {
             console.warn('Trying to parse a invalid date to moment', theMoment);
             return undefined;
@@ -80,7 +80,7 @@ export default class DateUtil {
      * @returns {?moment}
      */
     public static localDateToMoment(localDateString: string): Moment {
-        let theMoment = moment(localDateString, 'YYYY-MM-DD', true);
+        const theMoment = moment(localDateString, 'YYYY-MM-DD', true);
         return theMoment.isValid() ? theMoment : undefined;
     }
 

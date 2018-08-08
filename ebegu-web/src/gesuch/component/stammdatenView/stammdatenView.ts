@@ -14,10 +14,9 @@
  */
 
 import {IComponentOptions} from 'angular';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import EwkRS from '../../../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import EwkRS from '../../../core/service/ewkRS.rest';
-import TSGesuchstellerSprache from '../../../models/dto/TSSelectableSprache';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
@@ -37,7 +36,6 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
-import './stammdatenView.less';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
@@ -45,40 +43,43 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./stammdatenView.html');
-require('./stammdatenView.less');
-
 export class StammdatenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./stammdatenView.html');
     controller = StammdatenViewController;
     controllerAs = 'vm';
 }
 
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
+
+    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+        'WizardStepManager', 'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
+
     geschlechter: Array<string>;
     showKorrespondadr: boolean;
     showKorrespondadrGS: boolean;
     showRechnungsadr: boolean;
     showRechnungsadrGS: boolean;
-    ebeguRestUtil: EbeguRestUtil;
     allowedRoles: Array<TSRole>;
     gesuchstellerNumber: number;
     private initialModel: TSGesuchstellerContainer;
     private isLastVerfuegtesGesuch: boolean = false;
 
-    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
-        'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
-
-    /* @ngInject */
-    constructor($stateParams: IStammdatenStateParams, ebeguRestUtil: EbeguRestUtil, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private CONSTANTS: any, private $q: IQService, $scope: IScope,
-                private $translate: ITranslateService, private authServiceRS: AuthServiceRS, private $rootScope: IRootScopeService,
-                private ewkRS: EwkRS, $timeout: ITimeoutService) {
+    constructor($stateParams: IStammdatenStateParams,
+                public readonly ebeguRestUtil: EbeguRestUtil,
+                gesuchModelManager: GesuchModelManager,
+                berechnungsManager: BerechnungsManager,
+                private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager,
+                private readonly CONSTANTS: any,
+                private readonly $q: IQService,
+                $scope: IScope,
+                private readonly $translate: ITranslateService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $rootScope: IRootScopeService,
+                private readonly ewkRS: EwkRS, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCHSTELLER, $timeout);
-        this.ebeguRestUtil = ebeguRestUtil;
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
     }
@@ -218,8 +219,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private initAdresse(adresstyp: TSAdressetyp) {
-        let adresseContanier: TSAdresseContainer = new TSAdresseContainer();
-        let adresse = new TSAdresse();
+        const adresseContanier: TSAdresseContainer = new TSAdresseContainer();
+        const adresse = new TSAdresse();
         adresse.adresseTyp = adresstyp;
         adresseContanier.showDatumVon = false;
         adresseContanier.adresseJA = adresse;
@@ -227,14 +228,14 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private initKorrespondenzAdresseJA() {
-        let addr = new TSAdresse();
+        const addr = new TSAdresse();
         addr.adresseTyp = TSAdressetyp.KORRESPONDENZADRESSE;
         this.model.korrespondenzAdresse.adresseJA = addr;
         this.model.korrespondenzAdresse.showDatumVon = false;
     }
 
     private initRechnungsAdresseJA() {
-        let addr = new TSAdresse();
+        const addr = new TSAdresse();
         addr.adresseTyp = TSAdressetyp.RECHNUNGSADRESSE;
         this.model.rechnungsAdresse.adresseJA = addr;
         this.model.rechnungsAdresse.showDatumVon = false;
@@ -242,14 +243,14 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public getTextAddrKorrekturJA(adresseContainer: TSAdresseContainer): string {
         if (adresseContainer && adresseContainer.adresseGS) {
-            let adr: TSAdresse = adresseContainer.adresseGS;
-            let organisation: string = adr.organisation ? adr.organisation : '-';
-            let strasse: string = adr.strasse ? adr.strasse : '-';
-            let hausnummer: string = adr.hausnummer ? adr.hausnummer : '-';
-            let zusatzzeile: string = adr.zusatzzeile ? adr.zusatzzeile : '-';
-            let plz: string = adr.plz ? adr.plz : '-';
-            let ort: string = adr.ort ? adr.ort : '-';
-            let land: string = this.$translate.instant('Land_' + adr.land);
+            const adr: TSAdresse = adresseContainer.adresseGS;
+            const organisation: string = adr.organisation ? adr.organisation : '-';
+            const strasse: string = adr.strasse ? adr.strasse : '-';
+            const hausnummer: string = adr.hausnummer ? adr.hausnummer : '-';
+            const zusatzzeile: string = adr.zusatzzeile ? adr.zusatzzeile : '-';
+            const plz: string = adr.plz ? adr.plz : '-';
+            const ort: string = adr.ort ? adr.ort : '-';
+            const land: string = this.$translate.instant('Land_' + adr.land);
             return this.$translate.instant('JA_KORREKTUR_ADDR', {
                 organisation: organisation,
                 strasse: strasse,

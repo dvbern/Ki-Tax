@@ -15,7 +15,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {UIRouter} from '@uirouter/core';
-import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRole} from '../models/enums/TSRole';
 import TSGemeinde from '../models/TSGemeinde';
 import TSInstitution from '../models/TSInstitution';
@@ -25,12 +25,10 @@ import TSUser from '../models/TSUser';
 import AuthenticationUtil from '../utils/AuthenticationUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 
-require('./dummyAuthentication.less');
-
-
 @Component({
     selector: 'dummy-authentication-view',
-    template: require('./dummyAuthentication.html'),
+    templateUrl: './dummyAuthentication.html',
+    styleUrls: ['./dummyAuthentication.less'],
 })
 export class DummyAuthenticationListViewComponent {
 
@@ -81,9 +79,8 @@ export class DummyAuthenticationListViewComponent {
     private readonly traegerschaftStadtBern: TSTraegerschaft;
     private readonly traegerschaftLeoLea: TSTraegerschaft;
     private readonly traegerschaftSGF: TSTraegerschaft;
-    private traegerschaftFamex: TSTraegerschaft;
+    private readonly traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
-
 
     constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
                 @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -101,6 +98,87 @@ export class DummyAuthenticationListViewComponent {
             this.devMode = response;
         });
         this.initUsers();
+    }
+
+    /**
+     * Der Mandant wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     * @returns {TSMandant}
+     */
+    private static getMandant(): TSMandant {
+        const mandant = new TSMandant();
+        mandant.name = 'TestMandant';
+        mandant.id = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+        return mandant;
+    }
+
+    /**
+     * Gemeinde Bern wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     * @returns {TSGemeinde}
+     */
+    private static getGemeindeBern(): TSGemeinde {
+        const bern = new TSGemeinde();
+        bern.name = 'Bern';
+        bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+        bern.gemeindeNummer = 1;
+        bern.enabled = true;
+        return bern;
+    }
+
+    /**
+     * Gemeinde Ostermundigen wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     * @returns {TSGemeinde}
+     */
+    private static getGemeindeOstermundigen(): TSGemeinde {
+        const ostermundigen = new TSGemeinde();
+        ostermundigen.name = 'Ostermundigen';
+        ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
+        ostermundigen.gemeindeNummer = 2;
+        ostermundigen.enabled = true;
+        return ostermundigen;
+    }
+
+    /**
+     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     */
+    private static getTraegerschaftStadtBern(): TSTraegerschaft {
+        const traegerschaft = new TSTraegerschaft();
+        traegerschaft.name = 'Kitas & Tagis Stadt Bern';
+        traegerschaft.mail = 'kitasundtagis@example.com';
+        traegerschaft.id = 'f9ddee82-81a1-4cda-b273-fb24e9299308';
+        return traegerschaft;
+    }
+
+    /**
+     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     */
+    private static getTraegerschaftLeoLea(): TSTraegerschaft {
+        const traegerschaft = new TSTraegerschaft();
+        traegerschaft.name = 'LeoLea';
+        traegerschaft.mail = 'leolea@example.com';
+        traegerschaft.id = 'd667e2d0-3702-4933-8fb7-be7a39755232';
+        return traegerschaft;
+    }
+
+    /**
+     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     */
+    private static getTraegerschaftSGF(): TSTraegerschaft {
+        const traegerschaft = new TSTraegerschaft();
+        traegerschaft.name = 'SGF';
+        traegerschaft.mail = 'sgf@example.com';
+        traegerschaft.id = 'bb5d4bd8-84c9-4cb6-8134-a97312dead67';
+        return traegerschaft;
+    }
+
+    /**
+     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     */
+    private static getTraegerschaftFamex(): TSTraegerschaft {
+        const traegerschaft = new TSTraegerschaft();
+        traegerschaft.name = 'FAMEX';
+        traegerschaft.mail = 'famex@example.com';
+        traegerschaft.id = '4a552145-5ccd-4bf8-b827-c77c930daaa8';
+        return traegerschaft;
     }
 
     private initUsers(): void {
@@ -180,7 +258,6 @@ export class DummyAuthenticationListViewComponent {
         this.sachbearbeiterTSBernOstermundigen = new TSUser('Julien', 'Bucheli', 'buju', 'password1', 'julien.schuler@example.com',
             this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
 
-
         this.steueramtBernOstermundigen = new TSUser('Rodolfo', 'Hermann', 'hero', 'password1', 'rodolfo.geldmacher@example.com',
             this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
         this.revisorBernOstermundigen = new TSUser('Reto', 'Hug', 'hure', 'password1', 'reto.revisor@example.com',
@@ -190,97 +267,16 @@ export class DummyAuthenticationListViewComponent {
     }
 
     /**
-     * Der Mandant wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     * @returns {TSMandant}
-     */
-    private static getMandant(): TSMandant {
-        let mandant = new TSMandant();
-        mandant.name = 'TestMandant';
-        mandant.id = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
-        return mandant;
-    }
-
-    /**
-     * Gemeinde Bern wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     * @returns {TSGemeinde}
-     */
-    private static getGemeindeBern(): TSGemeinde {
-        let bern = new TSGemeinde();
-        bern.name = 'Bern';
-        bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
-        bern.gemeindeNummer = 1;
-        bern.enabled = true;
-        return bern;
-    }
-
-    /**
-     * Gemeinde Ostermundigen wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     * @returns {TSGemeinde}
-     */
-    private static getGemeindeOstermundigen(): TSGemeinde {
-        let ostermundigen = new TSGemeinde();
-        ostermundigen.name = 'Ostermundigen';
-        ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
-        ostermundigen.gemeindeNummer = 2;
-        ostermundigen.enabled = true;
-        return ostermundigen;
-    }
-
-    /**
      * Die Institution wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
     private getInsitution(): TSInstitution {
-        let institution = new TSInstitution();
+        const institution = new TSInstitution();
         institution.name = 'Kita Brünnen';
         institution.id = '1b6f476f-e0f5-4380-9ef6-836d688853a3';
         institution.mail = 'kita.bruennen@example.com';
         institution.traegerschaft = this.traegerschaftStadtBern;
         institution.mandant = this.mandant;
         return institution;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftStadtBern(): TSTraegerschaft {
-        let traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'Kitas & Tagis Stadt Bern';
-        traegerschaft.mail = 'kitasundtagis@example.com';
-        traegerschaft.id = 'f9ddee82-81a1-4cda-b273-fb24e9299308';
-        return traegerschaft;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftLeoLea(): TSTraegerschaft {
-        let traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'LeoLea';
-        traegerschaft.mail = 'leolea@example.com';
-        traegerschaft.id = 'd667e2d0-3702-4933-8fb7-be7a39755232';
-        return traegerschaft;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftSGF(): TSTraegerschaft {
-        let traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'SGF';
-        traegerschaft.mail = 'sgf@example.com';
-        traegerschaft.id = 'bb5d4bd8-84c9-4cb6-8134-a97312dead67';
-        return traegerschaft;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftFamex(): TSTraegerschaft {
-        let traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'FAMEX';
-        traegerschaft.mail = 'famex@example.com';
-        traegerschaft.id = '4a552145-5ccd-4bf8-b827-c77c930daaa8';
-        return traegerschaft;
     }
 
     public logIn(user: TSUser): void {

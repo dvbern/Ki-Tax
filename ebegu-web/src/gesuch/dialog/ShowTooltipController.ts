@@ -14,7 +14,7 @@
  */
 
 import {IPromise} from 'angular';
-import {IDVFocusableController} from '../../core/component/IDVFocusableController';
+import {IDVFocusableController} from '../../app/core/component/IDVFocusableController';
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -25,8 +25,8 @@ export class ShowTooltipController {
     title: string;
     text: string;
 
-    constructor(private $mdDialog: IDialogService, $translate: ITranslateService, title: string, text: string,
-                private parentController: IDVFocusableController) {
+    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, text: string,
+                private readonly parentController: IDVFocusableController) {
         if (text !== undefined && text !== null) {
             this.text = $translate.instant(text);
         } else {

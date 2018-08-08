@@ -1,4 +1,7 @@
 {
+    "rulesDirectory": [
+        "node_modules/rxjs-tslint"
+    ],
     "extends": [
         "tslint-eslint-rules",
         "rxjs-tslint-rules"
@@ -13,13 +16,33 @@
             true,
             "spaces"
         ],
+        "only-arrow-functions": [
+            true,
+            "allow-declarations",
+            "allow-named-functions"
+        ],
+        "prefer-const": true,
+        "prefer-for-of": true,
+        "prefer-method-signature": true,
+        "prefer-object-spread": true,
+        "prefer-readonly": [
+            true
+        ],
         "max-line-length": [
             true,
             200
         ],
         "member-ordering": [
             true,
-            "variables-before-functions"
+            {
+                "order": [
+                    "static-field",
+                    "instance-field",
+                    "constructor",
+                    "static-method",
+                    "instance-method"
+                ]
+            }
         ],
         "no-arg": true,
         "no-construct": true,
@@ -28,6 +51,23 @@
         "no-eval": true,
         "no-internal-module": true,
         "trailing-comma": true,
+        "no-submodule-imports": [
+            true,
+            "@angular/core/testing",
+            "@angular/cdk",
+            "@angular/common/http",
+            "@angular/common/locales",
+            "@angular/platform-browser",
+            "@angular/platform-browser-dynamic/testing",
+            "@angular/router/testing",
+            "@angular/upgrade/static",
+            "angular-i18n/angular-locale_de-ch",
+            "core-js",
+            "js2xmlparser/lib/main",
+            "rxjs/operators",
+            "webpack/lib",
+            "zone.js"
+        ],
         "no-trailing-whitespace": true,
         "no-unused-expression": true,
         "no-unused-variable": false,
@@ -44,7 +84,7 @@
             "single",
             "avoid-escape"
         ],
-        "semicolon": true,
+        "semicolon": [true, "always", "ignore-bound-class-methods"],
         "triple-equals": [
             true,
             "allow-null-check"
@@ -68,8 +108,31 @@
             "check-separator",
             "check-type"
         ],
+        "rxjs-finnish": {
+            "severity": "error"
+        },
+        "rxjs-no-create": {
+            "severity": "error"
+        },
+        "rxjs-no-do": {
+            "severity": "error"
+        },
+//        "rxjs-no-ignored-error": {
+//            "severity": "error"
+//        },
+        "rxjs-no-subject-unsubscribe": {
+            "severity": "error"
+        },
         "rxjs-no-unsafe-takeuntil": {
             "severity": "error"
-        }
+        },
+        "rxjs-no-unsafe-switchmap": {
+            "severity": "error"
+        },
+        "rxjs-collapse-imports": true,
+        "rxjs-pipeable-operators-only": true,
+        "rxjs-no-static-observable-methods": true,
+        "rxjs-proper-imports": true,
+        "rxjs-no-internal": true
     }
 }

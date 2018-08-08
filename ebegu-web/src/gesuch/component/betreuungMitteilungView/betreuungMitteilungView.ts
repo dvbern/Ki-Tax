@@ -13,36 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {StateService} from '@uirouter/core';
-import IScope = angular.IScope;
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IFormController = angular.IFormController;
+import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
-
-let template = require('./betreuungMitteilungView.html');
-require('./betreuungMitteilungView.less');
 
 export class BetreuungMitteilungViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./betreuungMitteilungView.html');
     controller = BetreuungMitteilungViewController;
     controllerAs = 'vm';
 }
 
 export class BetreuungMitteilungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
-    form: IFormController;
-
     static $inject = ['$state', 'GesuchModelManager', '$scope', 'BerechnungsManager', 'WizardStepManager', '$timeout'];
 
-    /* @ngInject */
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, $scope: IScope,
+    form: IFormController;
+
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, $scope: IScope,
                 berechnungsManager: BerechnungsManager, wizardStepManager: WizardStepManager, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
     }

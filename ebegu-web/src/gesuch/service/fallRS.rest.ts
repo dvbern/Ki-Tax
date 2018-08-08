@@ -13,21 +13,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpService, ILogService, IPromise} from 'angular';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSFall from '../../models/TSFall';
 
 export default class FallRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+    serviceURL: string;
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'falle';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public createFall(fall: TSFall): IPromise<any> {
@@ -42,7 +41,7 @@ export default class FallRS {
         let fallObject = {};
         fallObject = this.ebeguRestUtil.fallToRestObject(fallObject, fall);
 
-        return this.http.put(this.serviceURL, fallObject, {
+        return this.$http.put(this.serviceURL, fallObject, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -54,7 +53,7 @@ export default class FallRS {
     }
 
     public findFall(fallID: string): IPromise<any> {
-        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(fallID))
+        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(fallID))
             .then((response: any) => {
                 this.$log.debug('PARSING fall REST object ', response.data);
                 return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
@@ -62,7 +61,7 @@ export default class FallRS {
     }
 
     public findFallByCurrentBenutzerAsBesitzer(): IPromise<any> {
-        return this.http.get(this.serviceURL + '/currentbenutzer/')
+        return this.$http.get(this.serviceURL + '/currentbenutzer/')
             .then((response: any) => {
                 this.$log.debug('PARSING fall REST object ', response.data);
                 return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
@@ -74,7 +73,7 @@ export default class FallRS {
     }
 
     public createFallForCurrentBenutzerAsBesitzer(): IPromise<TSFall> {
-        return this.http.put(this.serviceURL + '/createforcurrentbenutzer/', null, {
+        return this.$http.put(this.serviceURL + '/createforcurrentbenutzer/', null, {
             headers: {
                 'Content-Type': 'application/json'
             }

@@ -13,26 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 
 statistikRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function statistikRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguStatistikState()
-    ];
-}
-
-//STATES
-
-export class EbeguStatistikState implements Ng1StateDeclaration {
-    name = 'statistik';
-    template = '<statistik-view flex="auto" class="overflow-scroll">';
-    url = '/statistik';
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'statistik',
+    },
+    {
+        name: 'statistik.view',
+        template: '<statistik-view flex="auto" class="overflow-scroll">',
+        url: '/statistik',
+    },
+];

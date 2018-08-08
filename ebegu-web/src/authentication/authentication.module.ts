@@ -22,11 +22,11 @@ import {StartComponentConfig} from './component/startView/startView';
 import {SchulungComponentConfig} from './schulung';
 
 export const EbeguAuthentication: angular.IModule =
-    angular.module('dvbAngular.authentication', ['ngCookies', 'utf8-base64'])
+    angular.module('dvbAngular.authentication', ['ngCookies'])
         .run(authenticationRun)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('startView', new StartComponentConfig())
-        .component('schulungView', new SchulungComponentConfig())
-        .component('authenticationView', new AuthenticationComponentConfig());
+        .component('startView', StartComponentConfig)
+        .component('schulungView', SchulungComponentConfig)
+        .component('authenticationView', AuthenticationComponentConfig);

@@ -20,7 +20,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
 import EbeguWebAdmin from '../../../admin/admin.module';
 
-describe('finanzielleSituationRequire', function () {
+describe('finanzielleSituationRequire', () => {
 
     beforeEach(angular.mock.module(EbeguWebAdmin.name));
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
@@ -28,14 +28,13 @@ describe('finanzielleSituationRequire', function () {
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
-    let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
     let controller: DVFinanzielleSituationRequireController;
     let gesuchModelManager: GesuchModelManager;
     let ebeguParameterRS: EbeguParameterRS;
     let $q: angular.IQService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         ebeguParameterRS = $injector.get('EbeguParameterRS');
         $q = $injector.get('$q');
@@ -44,9 +43,9 @@ describe('finanzielleSituationRequire', function () {
         controller = new DVFinanzielleSituationRequireController(ebeguParameterRS, gesuchModelManager);
     }));
 
-    it('should be defined', function () {
-        let bindings: {};
-        component = $componentController('dvFinanzielleSituationRequire', {$scope: scope}, bindings);
+    it('should be defined', () => {
+        const bindings = {};
+        component = $componentController('dvFinanzielleSituationRequire', {}, bindings);
         expect(component).toBeDefined();
     });
 

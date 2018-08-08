@@ -5,3 +5,4 @@ node_modules/
 .tscache/
 npm-debug.log
 .cache-loader
+src/environments/version.ts

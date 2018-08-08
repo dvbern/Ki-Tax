@@ -13,55 +13,51 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSFamiliensituation from '../../../models/TSFamiliensituation';
-import './familiensituationView.less';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {getTSGesuchstellerKardinalitaetValues, TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
 import {TSRole} from '../../../models/enums/TSRole';
-import WizardStepManager from '../../service/wizardStepManager';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import TSFamiliensituation from '../../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
 import FamiliensituationRS from '../../service/familiensituationRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./familiensituationView.html');
-require('./familiensituationView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FamiliensituationViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./familiensituationView.html');
     controller = FamiliensituationViewController;
     controllerAs = 'vm';
 }
 
 export class FamiliensituationViewController extends AbstractGesuchViewController<TSFamiliensituationContainer> {
+
+    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
+        'DvDialog', '$translate', '$q', '$scope', 'FamiliensituationRS', '$timeout'];
     familienstatusValues: Array<TSFamilienstatus>;
     gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     allowedRoles: Array<TSRole>;
     initialFamiliensituation: TSFamiliensituation;
     savedClicked: boolean = false;
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
-        'DvDialog', '$translate', '$q', '$scope', 'FamiliensituationRS', '$timeout'];
-
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private errorService: ErrorService, wizardStepManager: WizardStepManager, private DvDialog: DvDialog,
-                private $translate: ITranslateService, private $q: IQService, $scope: IScope,
-                private familiensituationRS: FamiliensituationRS, $timeout: ITimeoutService) {
+                private readonly errorService: ErrorService, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
+                private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope,
+                private readonly familiensituationRS: FamiliensituationRS, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FAMILIENSITUATION, $timeout);
         this.gesuchModelManager.initFamiliensituation();
@@ -91,7 +87,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             }
 
             if (this.isConfirmationRequired()) {
-                let descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
+                const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.gesuchModelManager.getGesuch().gesuchsteller2
                         ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : ''
                 });

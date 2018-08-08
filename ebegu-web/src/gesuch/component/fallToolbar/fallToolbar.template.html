@@ -16,30 +16,30 @@
 <div class="fall-toolbar">
     <div layout="row" class="row fall-toolbar-content">
 
-        <div *ngIf="useDefaultValues()" class="dossier-list col-md-8">
-            <div class="dossier-element dossier-active" >
+        <div class="dossier-list col-md-12">
+            <div class="dossier-element dossier-active" *ngIf="useDefaultValues(); else Dossiers">
                 <span [textContent]="defaultGemeindeName"></span>
             </div>
-        </div>
 
-        <div *ngIf="!useDefaultValues()" class="dossier-list col-md-8">
-			<button *ngFor="let dossier of dossierList" class="dossier-element"
-                    [ngClass]="{'dossier-inactive': !isDossierActive(dossier), 'dossier-active': isDossierActive(dossier)}"
-					(click)="openDossier(dossier)">
-				{{dossier.extractGemeindeName()}}
-			</button>
-        </div>
+            <ng-template #Dossiers>
+                <button *ngFor="let dossier of dossierList" class="dossier-element"
+                        [ngClass]="{'dossier-active': isDossierActive(dossier)}"
+                        (click)="openDossier(dossier)">
+                    {{dossier.extractGemeindeName()}}
+                </button>
 
-        <div *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-             class="fall-toolbar-element col-md-2">
-            <button (click)="createNewDossier()">
-                <i class="fa fa-plus"></i>
-            </button>
-        </div>
+                <div *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                     class="fall-toolbar-element col-md-2">
+                    <button (click)="createNewDossier()">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
 
-        <div *ngIf="!useDefaultValues()" class="fall-toolbar-element col-md-2">
-            <span [textContent]="fallNummer"></span>
-            <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
+                <div *ngIf="!useDefaultValues()" class="fall-toolbar-element col-md-2">
+                    <span [textContent]="fallNummer"></span>
+                    <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
+                </div>
+            </ng-template>
         </div>
     </div>
 </div>
