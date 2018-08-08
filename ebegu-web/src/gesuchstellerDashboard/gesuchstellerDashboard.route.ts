@@ -40,6 +40,7 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         parent: 'app',
         abstract: true,
+        name: 'gesuchsteller',
     },
     {
         name: 'gesuchsteller.dashboard',
