@@ -15,13 +15,11 @@
 
 import {IComponentOptions, IController, IFilterService, ILogService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
@@ -106,21 +104,15 @@ export class DVAntragListController implements IController {
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly $window: IWindowService,
                 private readonly gemeindeRS: GemeindeRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+    ) {
     }
 
-    private initViewModel() {
+    public $onInit(): void {
         //statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
-    }
 
-    $onInit() {
         if (!this.addButtonText) {
             this.addButtonText = 'add item';
         }
@@ -132,7 +124,7 @@ export class DVAntragListController implements IController {
         }
     }
 
-    $onDestroy() {
+    public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
@@ -209,7 +201,6 @@ export class DVAntragListController implements IController {
 
     /**
      * Alle Betreuungsangebot typen fuer das Filterdropdown
-     * @returns {Array<TSBetreuungsangebotTyp>}
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
         return getTSBetreuungsangebotTypValues();
