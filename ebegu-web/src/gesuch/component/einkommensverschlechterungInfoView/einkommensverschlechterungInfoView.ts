@@ -69,7 +69,6 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
         basisjahr: this.gesuchModelManager.getBasisjahr()
     };
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly errorService: ErrorService, private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
                 private readonly DvDialog: DvDialog, private readonly $q: IQService, private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,

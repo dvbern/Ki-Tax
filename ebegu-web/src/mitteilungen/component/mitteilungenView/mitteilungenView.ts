@@ -37,7 +37,6 @@ export class MitteilungenViewController {
     dossierId: string;
     TSRoleUtil = TSRoleUtil;
 
-    /* @ngInject */
     constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
                 private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
     }

@@ -41,8 +41,6 @@ import GesuchRS from '../../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 
-const templateX = require('./gesuchToolbar.html');
-const templateGS = require('./gesuchToolbarGesuchsteller.html');
 const showKontaktTemplate = require('../../../gesuch/dialog/showKontaktTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
@@ -58,7 +56,7 @@ export class GesuchToolbarComponentConfig implements IComponentOptions {
         forceLoadingFromFall: '@'
     };
 
-    template = templateX;
+    template = require('./gesuchToolbar.html');
     controller = GesuchToolbarController;
     controllerAs = 'vmx';
 }
@@ -72,7 +70,7 @@ export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOpti
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
     };
-    template = templateGS;
+    template = require('./gesuchToolbarGesuchsteller.html');
     controller = GesuchToolbarController;
     // Darf, wie es scheint nicht 'vm' heissen, sonst werden im gesuchToolBarGesuchsteller.html keine Funktionen gefunden. Bug?!
     controllerAs = 'vmgs';
@@ -88,7 +86,7 @@ export class GesuchToolbarController implements IDVFocusableController {
     gesuchid: string;
     isDashboardScreen: boolean;
     hideActionButtons: boolean;
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
     forceLoadingFromFall: boolean;
     dossierId: string;
     dossier: TSDossier;
@@ -120,7 +118,6 @@ export class GesuchToolbarController implements IDVFocusableController {
         this.updateAntragDTOList();
         //add watchers
         this.addWatchers(this.$scope);
-        this.TSRoleUtil = TSRoleUtil;
         this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             // Die neueste ist zuoberst
             this.neuesteGesuchsperiode = response[0];

@@ -15,7 +15,6 @@ import {StateService} from '@uirouter/core';
  */
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -32,8 +31,6 @@ import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
 
-const okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
-
 export class CreateAngebotListViewConfig implements IComponentOptions {
     transclude = false;
     template = require('./createAngebotView.html');
@@ -43,7 +40,7 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
 
 export class CreateAngebotListViewController {
 
-    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS', 'DvDialog'];
+    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
 
     form: IFormController;
     einschulungTypValues: Array<TSEinschulungTyp>;
@@ -55,7 +52,7 @@ export class CreateAngebotListViewController {
 
     constructor(private readonly $state: StateService, private readonly $log: ILogService,
                 private readonly gesuchModelManager: GesuchModelManager, private readonly $stateParams: IAngebotStateParams,
-                private readonly betreuungRS: BetreuungRS, private readonly dvDialog: DvDialog) {
+                private readonly betreuungRS: BetreuungRS) {
     }
 
     $onInit() {

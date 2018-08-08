@@ -27,7 +27,6 @@ import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSUser from '../../models/TSUser';
-import EbeguUtil from '../../utils/EbeguUtil';
 import {StateService} from '@uirouter/core';
 
 import TestDataUtil from '../../utils/TestDataUtil.spec';

@@ -50,7 +50,6 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
     resultatBasisjahr: TSFinanzielleSituationResultateDTO;
     resultatProzent: string;
 
-    /* @ngInject */
     constructor($stateParams: IEinkommensverschlechterungResultateStateParams, gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,

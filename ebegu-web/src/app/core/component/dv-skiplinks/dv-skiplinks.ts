@@ -21,13 +21,12 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
 
-const template = require('./dv-skiplinks.html');
 const showKontaktTemplate = require('../../../../gesuch/dialog/showKontaktTemplate.html');
 
 export class DvSkiplinksComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {};
-    template = template;
+    template = require('./dv-skiplinks.html');
     controller = DvSkiplinksController;
     controllerAs = 'vm';
 }
@@ -36,12 +35,11 @@ export class DvSkiplinksController implements IDVFocusableController {
 
     static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
 
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
     constructor(private readonly $state: StateService,
                 private readonly DvDialog: DvDialog,
                 private readonly ebeguUtil: EbeguUtil) {
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     public goBackHome(): void {

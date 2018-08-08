@@ -95,7 +95,7 @@ export class DVAntragListController implements IController {
     onFilterChange: (changedTableState: any) => IPromise<any>;
     onEdit: (pensumToEdit: any) => void;
     onAdd: () => void;
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
     constructor(private readonly ebeguUtil: EbeguUtil,
                 private readonly $filter: IFilterService,
@@ -108,7 +108,6 @@ export class DVAntragListController implements IController {
                 private readonly gemeindeRS: GemeindeRS,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
 
-        this.TSRoleUtil = TSRoleUtil;
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => this.initViewModel());

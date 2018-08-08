@@ -34,7 +34,6 @@ export class BenutzerListViewComponentConfig implements IComponentOptions {
 
 export class BenutzerListViewController extends AbstractAdminViewController {
 
-
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'UserRS'];
 
     totalResultCount: string = '0';

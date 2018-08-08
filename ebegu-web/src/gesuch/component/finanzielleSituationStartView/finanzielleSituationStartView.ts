@@ -52,7 +52,6 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     allowedRoles: Array<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService,
                 private readonly dvDialog: DvDialog) {

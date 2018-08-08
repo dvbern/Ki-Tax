@@ -19,7 +19,7 @@ export class DvAccordionComponentConfig implements IComponentOptions {
     transclude = true;
     template = require('./dv-accordion.html');
     controller = DvAccordionController;
-    controllerAs = 'vma'; // TODO hefa really vma!?
+    controllerAs = 'vm';
     bindings = {
         allowMultipleSections: '<',
         selectedTabId: '<'
@@ -27,7 +27,9 @@ export class DvAccordionComponentConfig implements IComponentOptions {
 }
 
 export class DvAccordionController implements IOnChanges {
+
     static $inject: ReadonlyArray<string> = [];
+
     accordion: string[] = [];
     allowMultipleSections: boolean;
     selectedTabId: string;

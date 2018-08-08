@@ -36,12 +36,9 @@ export class ParameterViewController extends AbstractAdminViewController {
         '$log', '$state', '$timeout', 'AuthServiceRS'];
 
     form: IFormController;
-
     gesuchsperiodenList: Array<TSGesuchsperiode> = [];
-
     jahr: number;
     ebeguJahresabhParameter: TSEbeguParameter[] = []; // enthält alle Jahresabhängigen Params für alle Jahre
-
     ebeguParameterListJahr: TSEbeguParameter[]; // enthält alle Params für nur 1 Jahr
 
     constructor(public readonly ebeguParameterRS: EbeguParameterRS,

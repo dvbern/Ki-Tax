@@ -93,8 +93,6 @@ export default (env: string): webpack.Configuration => {
         },
 
         plugins: [
-            // clean dist before we start
-
             // skip the emitting phase whenever there are errors while compiling
             new NoEmitOnErrorsPlugin(),
 

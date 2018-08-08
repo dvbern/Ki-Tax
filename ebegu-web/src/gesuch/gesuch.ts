@@ -44,11 +44,10 @@ export class GesuchRouteController {
     static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil', 'ErrorService',
         'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS', '$log', '$rootScope'];
 
-    TSRole: any;
-    TSRoleUtil: any;
+    TSRole = TSRole;
+    TSRoleUtil = TSRoleUtil;
     openEwkSidenav: boolean;
 
-    /* @ngInject */
     constructor(private readonly gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly wizardStepManager: WizardStepManager, private readonly ebeguUtil: EbeguUtil,
                 private readonly errorService: ErrorService,
@@ -58,8 +57,6 @@ export class GesuchRouteController {
                 private readonly $log: ILogService, private readonly $rootScope: IRootScopeService) {
         //super(gesuchModelManager, berechnungsManager, wizardStepManager);
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
-        this.TSRole = TSRole;
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     showFinanzielleSituationStart(): boolean {

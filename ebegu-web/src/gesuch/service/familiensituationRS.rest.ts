@@ -22,20 +22,19 @@ export default class FamiliensituationRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService,
                 private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'familiensituation';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public saveFamiliensituation(familiensituation: TSFamiliensituationContainer, gesuchId: string): IPromise<TSFamiliensituationContainer> {
         let returnedFamiliensituation = {};
         returnedFamiliensituation = this.ebeguRestUtil.familiensituationContainerToRestObject(returnedFamiliensituation, familiensituation);
-        return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), returnedFamiliensituation, {
+        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), returnedFamiliensituation, {
             headers: {
                 'Content-Type': 'application/json'
             }

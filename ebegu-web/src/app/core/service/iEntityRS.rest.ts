@@ -18,6 +18,6 @@ import {IHttpService} from 'angular';
 
 export interface IEntityRS {
     serviceURL: string;
-    http: IHttpService;
+    $http: IHttpService;
     ebeguRestUtil: EbeguRestUtil;
 }

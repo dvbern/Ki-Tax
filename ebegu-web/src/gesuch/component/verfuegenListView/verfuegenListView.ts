@@ -70,8 +70,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private tempAntragStatus: TSAntragStatus;
     finSitStatus: Array<string>;
 
-    /* @ngInject */
-
     constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
                 private readonly downloadRS: DownloadRS, private readonly mahnungRS: MahnungRS, private readonly $log: ILogService,

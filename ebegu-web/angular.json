@@ -65,9 +65,6 @@
                         "host": "0.0.0.0"
                     },
                     "configurations": {
-                        "prod": {
-                            "browserTarget": "ebegu:build:prod"
-                        },
                         "production": {
                             "browserTarget": "ebegu:build:production"
                         }

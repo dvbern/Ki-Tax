@@ -53,7 +53,6 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
     erwerbspensenGS2: Array<TSErwerbspensumContainer>;
     erwerbspensumRequired: boolean;
 
-    /* @ngInject */
     constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly $log: ILogService, private readonly dvDialog: DvDialog, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, $scope: IScope, private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {

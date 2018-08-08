@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 
 ngServicesMock.$inject = ['$provide'];

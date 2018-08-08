@@ -23,7 +23,7 @@ export class NavigationLogger {
     static $inject = ['$rootScope', '$log'];
 
     active: boolean = false;
-    /* @ngInject */
+
     constructor($rootScope: IRootScopeService, private readonly $log: ILogService) {
 
         $rootScope.$on('$stateChangeStart',  (event, toState, toParams, fromState, fromParams)  => {

@@ -98,7 +98,7 @@ public class EbeguParameterServiceTest extends AbstractEbeguLoginTest {
 	public void getAllEbeguParameterByDateTest() {
 		Assert.assertNotNull(parameterService);
 		createAndPersistParameter(EbeguParameterKey.PARAM_ANZAL_TAGE_MAX_KITA, Constants.GESUCHSPERIODE_17_18);
-		Collection<EbeguParameter> allEbeguParameterByDate = parameterService.getAllEbeguParameterByDate(LocalDate.now());
+		Collection<EbeguParameter> allEbeguParameterByDate = parameterService.getAllEbeguParameterByDate(LocalDate.of(2018, Month.MARCH, 1));
 		Assert.assertEquals(1, allEbeguParameterByDate.size());
 	}
 
@@ -131,7 +131,7 @@ public class EbeguParameterServiceTest extends AbstractEbeguLoginTest {
 		Collection<EbeguParameter> allParameter = parameterService.getAllEbeguParameter();
 		Assert.assertTrue(allParameter.isEmpty());
 
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createDefaultGesuchsperiode();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2015, Month.AUGUST, 1), LocalDate.of(2016, Month.JULY, 31)));
 
 		createAndPersistParameter(EbeguParameterKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode.getGueltigkeit());
@@ -162,7 +162,7 @@ public class EbeguParameterServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertFalse(allParameter.isEmpty());
 		Assert.assertEquals(1, allParameter.size());
 
-		Gesuchsperiode gesuchsperiode18 = TestDataUtil.createDefaultGesuchsperiode();
+		Gesuchsperiode gesuchsperiode18 = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode18.setGueltigkeit(Constants.GESUCHSPERIODE_18_19);
 
 		parameterService.copyEbeguParameterListToNewGesuchsperiode(gesuchsperiode18);
@@ -251,7 +251,7 @@ public class EbeguParameterServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	private Gesuchsperiode createAndPersistPeriode1718() {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createDefaultGesuchsperiode();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setGueltigkeit(Constants.GESUCHSPERIODE_17_18);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.ENTWURF);
 		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);

@@ -31,12 +31,11 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
 import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
 
-const template = require('./gesuchsperiodeView.html');
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
     transclude: boolean = false;
-    template: string = template;
+    template: string = require('./gesuchsperiodeView.html');
     controller: any = GesuchsperiodeViewController;
     controllerAs: string = 'vm';
 }

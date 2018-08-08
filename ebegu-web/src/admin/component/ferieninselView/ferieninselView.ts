@@ -44,13 +44,12 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     ferieninselStammdatenMap: { [key: string]: TSFerieninselStammdaten; } = {};
 
-    TSRoleUtil: TSRoleUtil;
+    TSRoleUtil = TSRoleUtil;
 
     constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                 private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
                 private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
-        this.TSRoleUtil = TSRoleUtil;
         this.$timeout(() => {
             this.readGesuchsperioden();
         });

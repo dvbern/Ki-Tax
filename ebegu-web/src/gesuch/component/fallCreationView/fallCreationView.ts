@@ -22,7 +22,6 @@ import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStat
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -44,20 +43,16 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         'WizardStepManager', '$translate', '$q', '$scope', 'AuthServiceRS', 'GesuchsperiodeRS', '$timeout'];
     private gesuchsperiodeId: string;
 
-    TSRoleUtil: any;
-
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt wird
     // sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     showError: boolean = false;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly errorService: ErrorService, private readonly $stateParams: INewFallStateParams, wizardStepManager: WizardStepManager,
                 private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCH_ERSTELLEN, $timeout);
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     $onInit() {

@@ -24,7 +24,6 @@ import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
-const template = require('./dv-vorlage-list.html');
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DVVorlageListConfig implements IComponentOptions {
@@ -35,7 +34,7 @@ export class DVVorlageListConfig implements IComponentOptions {
         gesuchsperiode: '<',
         proGesuchsperiode: '<'
     };
-    template = template;
+    template = require('./dv-vorlage-list.html');
     controller = DVVorlageListController;
     controllerAs = 'vm';
 }

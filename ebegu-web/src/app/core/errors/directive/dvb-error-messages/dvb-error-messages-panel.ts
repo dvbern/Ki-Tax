@@ -43,7 +43,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
 
     errors: Array<TSExceptionReport> = [];
-    TSRoleUtil: any;
+    TSRoleUtil = TSRoleUtil;
 
     constructor(private readonly $scope: IScope,
                 private readonly errorService: ErrorService,
@@ -52,7 +52,6 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     }
 
     $onInit() {
-        this.TSRoleUtil = TSRoleUtil;
         this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.INFO_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.CLEAR], () => {

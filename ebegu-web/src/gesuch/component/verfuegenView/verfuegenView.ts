@@ -60,7 +60,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private sameVerfuegungsdaten: boolean;
     private sameVerrechneteVerguenstigung: boolean;
 
-    /* @ngInject */
     constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly ebeguUtil: EbeguUtil, $scope: IScope, wizardStepManager: WizardStepManager,
                 private readonly DvDialog: DvDialog, private readonly downloadRS: DownloadRS, private readonly $log: ILogService, $stateParams: IBetreuungStateParams,

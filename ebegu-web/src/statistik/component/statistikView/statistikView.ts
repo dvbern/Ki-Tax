@@ -56,8 +56,8 @@ export class StatistikViewController {
     private polling: angular.IPromise<any>;
     private _statistikParameter: TSStatistikParameter;
     private _gesuchsperioden: Array<TSGesuchsperiode>;
-    TSRole: any;
-    TSRoleUtil: any;
+    TSRole = TSRole;
+    TSRoleUtil = TSRoleUtil;
     private readonly DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
     private maxDate: moment.Moment;
@@ -85,8 +85,6 @@ export class StatistikViewController {
                 this.minDate = DateUtil.localDateToMoment('2017-01-01');
             }
         });
-        this.TSRole = TSRole;
-        this.TSRoleUtil = TSRoleUtil;
 
         this.refreshUserJobs();
         this.initBatchJobPolling();

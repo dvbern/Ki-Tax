@@ -50,7 +50,6 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     kinderDubletten: TSKindDublette[] = [];
 
-    /* @ngInject */
     constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog,
                 wizardStepManager: WizardStepManager, $scope: IScope, private readonly CONSTANTS: any, $timeout: ITimeoutService) {

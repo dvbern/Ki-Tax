@@ -45,7 +45,6 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
 
     private readonly initialModel: TSFinanzModel;
 
-    /* @ngInject */
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, $scope: IScope, $timeout: ITimeoutService) {

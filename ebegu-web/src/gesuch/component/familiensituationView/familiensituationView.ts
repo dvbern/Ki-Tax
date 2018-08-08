@@ -54,7 +54,6 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     initialFamiliensituation: TSFamiliensituation;
     savedClicked: boolean = false;
 
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly errorService: ErrorService, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
                 private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope,
