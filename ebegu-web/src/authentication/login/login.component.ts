@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, ITimeoutService, IWindowService} from 'angular';
-import {IAuthenticationStateParams} from './authentication.route';
-import AuthServiceRS from './service/AuthServiceRS.rest';
+import {IAuthenticationStateParams} from '../authentication.route';
+import AuthServiceRS from '../service/AuthServiceRS.rest';
 
-export const AuthenticationComponentConfig: IComponentOptions = {
+export const LoginComponentConfig: IComponentOptions = {
     transclude: false,
-    template: require('./authentication.html'),
+    template: require('./login.component.html'),
     controllerAs: 'vm',
 };
 
-export class AuthenticationListViewController implements IController {
+export class LoginComponentController implements IController {
 
     static $inject: string[] = ['$state', '$stateParams', '$window', '$httpParamSerializer', '$timeout', 'AuthServiceRS'
         , '$location'];
@@ -125,4 +126,4 @@ export class AuthenticationListViewController implements IController {
     }
 }
 
-AuthenticationComponentConfig.controller = AuthenticationListViewController;
+LoginComponentConfig.controller = LoginComponentController;

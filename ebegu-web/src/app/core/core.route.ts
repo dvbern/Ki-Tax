@@ -82,7 +82,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         if (($state.current.data && $state.current.data.isPublic) || loginConnectorPaths.some(path => currentPath.includes(path))) {
             LOG.debug('supressing redirect to ', currentPath);
         } else {
-            $state.go('onboarding.start', {relayPath: currentPath, type: 'login'});
+            $state.go('authentication.login', {relayPath: currentPath, type: 'login'});
         }
     }
 

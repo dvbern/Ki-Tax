@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import HttpAuthInterceptor from './service/HttpAuthInterceptor';
 import {authenticationRun} from './authentication.route';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import HttpBuffer from './service/HttpBuffer';
-import {AuthenticationComponentConfig} from './authenticaton';
-import {StartComponentConfig} from './component/startView/startView';
-import {SchulungComponentConfig} from './schulung';
+import {LoginComponentConfig} from './login/login.component';
+import {StartComponentConfig} from './start/start.component';
+import {SchulungComponentConfig} from './schulung/schulung.component';
 
 export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
@@ -27,6 +28,6 @@ export const EbeguAuthentication: angular.IModule =
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('startView', StartComponentConfig)
-        .component('schulungView', SchulungComponentConfig)
-        .component('authenticationView', AuthenticationComponentConfig);
+        .component('dvStart', StartComponentConfig)
+        .component('dvSchulung', SchulungComponentConfig)
+        .component('dvLogin', LoginComponentConfig);

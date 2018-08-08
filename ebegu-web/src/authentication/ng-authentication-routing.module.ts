@@ -20,12 +20,12 @@ import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
-import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
+import {LocalLoginComponent} from './local-login/local-login.component';
 
 export const localLoginState: Ng2StateDeclaration = {
     name: 'authentication.locallogin',
     url: '/locallogin',
-    component: DummyAuthenticationListViewComponent,
+    component: LocalLoginComponent,
     resolve: [
         {
             token: 'locallogin',

@@ -13,18 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSUser from '../../../models/TSUser';
-import {EbeguAuthentication} from '../../authentication.module';
-import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
-import AuthServiceRS from '../../service/AuthServiceRS.rest';
-import {StartViewController} from './startView';
+import * as angular from 'angular';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {TSRole} from '../../models/enums/TSRole';
+import TSUser from '../../models/TSUser';
+import {EbeguAuthentication} from '../authentication.module';
+import {AuthLifeCycleService} from '../service/authLifeCycle.service';
+import AuthServiceRS from '../service/AuthServiceRS.rest';
+import {StartController} from './start.component';
 import {StateService} from '@uirouter/core';
 
-describe('startView', () => {
+describe('StartComponent', () => {
 
     //evtl ist modulaufteilung hier nicht ganz sauber, wir brauchen sowohl core als auch auth modul
     beforeEach(angular.mock.module(EbeguWebCore.name));
@@ -34,7 +35,7 @@ describe('startView', () => {
 
     let authLifeCycleService: AuthLifeCycleService;
     let $componentController: angular.IComponentControllerService;
-    let startViewController: StartViewController;
+    let startViewController: StartController;
     let authService: AuthServiceRS;
     let mockPrincipal: TSUser;
     let state: StateService;
@@ -44,7 +45,7 @@ describe('startView', () => {
         authLifeCycleService = $injector.get('AuthLifeCycleService');
         authService = $injector.get('AuthServiceRS');
         state = $injector.get('$state');
-        startViewController = new StartViewController(state, authLifeCycleService, authService);
+        startViewController = new StartController(state, authLifeCycleService, authService);
 
     }));
     beforeEach(() => {
