@@ -279,8 +279,8 @@ export class LocalLoginComponent {
         return institution;
     }
 
-    public logIn(user: TSUser): void {
-        this.authServiceRS.loginRequest(user).then(() => {
+    public logIn(credentials: TSUser): void {
+        this.authServiceRS.loginRequest(credentials).then(user => {
             AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
         });
     }

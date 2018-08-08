@@ -13,16 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
-import {of} from 'rxjs';
-import {TSAuthEvent} from '../models/enums/TSAuthEvent';
+declare module 'randomcolor' {
+    interface RandomColorOptions {
+        hue?: number | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'monochrome' | 'random';
+        luminosity?: 'bright' | 'light' | 'dark' | 'random';
+        count?: number;
+        seed?: number | string;
+        format?: 'hsvArray' | 'hslArray' | 'hsl' | 'hsla' | 'rgbArray' | 'rgb' | 'rgba' | 'hex';
+    }
 
-ngServicesMock.$inject = ['$provide'];
-
-export function ngServicesMock($provide: angular.auto.IProvideService) {
-    $provide.service('AuthLifeCycleService', function () {
-        this.get$ = (event: TSAuthEvent) => of(event);
-        this.changeAuthStatus = (status: TSAuthEvent, message?: string) => {
-        };
-    });
+    declare function randomColor(options?: RandomColorOptions): string;
 }
+
