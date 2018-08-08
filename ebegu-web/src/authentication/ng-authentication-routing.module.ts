@@ -49,7 +49,7 @@ export class NgAuthenticationRoutingModule {
 
 export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService): IPromise<boolean> {
 
-    // todo ein Guard machen!!!! schauen ob es in ui-router gibt
+    // todo ein Guard machen!!!! schauen ob es in ui-router gibt : einen Hook einbauen
     const LOG = LogFactory.createLog(readDummyLoginEnabled.name);
 
     return applicationPropertyRS.isDummyMode()

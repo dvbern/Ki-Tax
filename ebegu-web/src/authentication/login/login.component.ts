@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService, TargetState} from '@uirouter/core';
 import * as angular from 'angular';
-import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, ITimeoutService, IWindowService} from 'angular';
 import {IAuthenticationStateParams} from '../authentication.route';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
@@ -23,6 +23,9 @@ export const LoginComponentConfig: IComponentOptions = {
     transclude: false,
     template: require('./login.component.html'),
     controllerAs: 'vm',
+    bindings: {
+        returnTo: '<'
+    }
 };
 
 export class LoginComponentController implements IController {
@@ -37,6 +40,8 @@ export class LoginComponentController implements IController {
     private logoutHref: string;
     private redirecting: boolean;
     private countdown: number = 0;
+
+    public returnTo: TargetState;
 
     constructor(private readonly $state: StateService, private readonly $stateParams: IAuthenticationStateParams,
                 private readonly $window: IWindowService, private readonly $httpParamSerializer: IHttpParamSerializer,
@@ -53,6 +58,15 @@ export class LoginComponentController implements IController {
                 if (this.countdown > 0) {
                     this.$timeout(this.doCountdown, 1000);
                 }
+
+                // TODO hefa back to the original state. See https://stackblitz.com/github/ui-router/sample-app-angular-hybrid/tree/angular-cli?file=src%2Fapp%2Fhome%2Flogin.component.ts
+                const returnToOriginalState = () => {
+                    const state = this.returnTo.state();
+                    const params = this.returnTo.params();
+                    const options = angular.extend({}, this.returnTo.options(), {reload: true});
+                    this.$state.go(state, params, options);
+                };
+
                 this.$timeout(() => this.redirect(), this.countdown * 1000);
             }
         });

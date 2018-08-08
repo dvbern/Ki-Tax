@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, Transition, TransitionService} from '@uirouter/core';
+import {StateService, Transition, TransitionService, Trace} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
@@ -43,20 +43,37 @@ const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
+    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS', '$trace'];
 
-export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
-                       mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: IWindowService,
-                       $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
-                       gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
+export function appRun(angularMomentConfig: any,
+                       routerHelper: RouterHelper,
+                       listResourceRS: ListResourceRS,
+                       mandantRS: MandantRS,
+                       $injector: IInjectorService,
+                       authLifeCycleService: AuthLifeCycleService,
+                       hotkeys: any,
+                       $timeout: ITimeoutService,
+                       authServiceRS: AuthServiceRS,
+                       $state: StateService,
+                       $location: ILocationService,
+                       $window: IWindowService,
+                       $log: ILogService,
+                       errorService: ErrorService,
+                       gesuchModelManager: GesuchModelManager,
+                       gesuchsperiodeRS: GesuchsperiodeRS,
+                       institutionsStammdatenRS: InstitutionStammdatenRS,
+                       globalCacheService: GlobalCacheService,
+                       $transitions: TransitionService,
+                       gemeindeRS: GemeindeRS,
+                       $trace: Trace) {
     // navigationLogger.toggle();
+    $trace.enable(1); // TODO hefa disable
 
-    $transitions.onStart({}, transition => stateChangeStart(transition));
+    // $transitions.onStart({}, transition => stateChangeStart(transition));
     $transitions.onSuccess({}, ignore => errorService.clearAll());
     $transitions.onError({}, transition => LOG.error('Fehler beim Navigieren', transition));
 
+    // TODO hefa move to a new hook
     function stateChangeStart(transition: Transition) {
         // TODO HEFA migrate to state definition
         //Normale Benutzer duefen nicht auf admin Seite
@@ -69,6 +86,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         }
     }
 
+    // TODO hefa move to authentication hook
     function onNotAuthenticated() {
         const currentPath = angular.copy($location.absUrl());
         LOG.debug('going to login page with current path ', currentPath);
@@ -108,12 +126,6 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
             () => onLoginSuccess(),
-            err => LOG.error(err)
-        );
-
-    authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
-        .subscribe(
-            () => onNotAuthenticated(),
             err => LOG.error(err)
         );
 

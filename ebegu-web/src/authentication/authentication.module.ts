@@ -14,17 +14,19 @@
  */
 
 import * as angular from 'angular';
-import HttpAuthInterceptor from './service/HttpAuthInterceptor';
-import {authenticationRun} from './authentication.route';
-import AuthServiceRS from './service/AuthServiceRS.rest';
-import HttpBuffer from './service/HttpBuffer';
+import {authHookRunBlock} from './authentication.hook';
+import {authenticationRoutes} from './authentication.route';
 import {LoginComponentConfig} from './login/login.component';
-import {StartComponentConfig} from './start/start.component';
 import {SchulungComponentConfig} from './schulung/schulung.component';
+import AuthServiceRS from './service/AuthServiceRS.rest';
+import HttpAuthInterceptor from './service/HttpAuthInterceptor';
+import HttpBuffer from './service/HttpBuffer';
+import {StartComponentConfig} from './start/start.component';
 
 export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
-        .run(authenticationRun)
+        .run(authHookRunBlock)
+        .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)

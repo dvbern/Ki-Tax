@@ -21,9 +21,9 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 
-authenticationRun.$inject = ['RouterHelper'];
+authenticationRoutes.$inject = ['RouterHelper'];
 
-export function authenticationRun(routerHelper: RouterHelper) {
+export function authenticationRoutes(routerHelper: RouterHelper) {
     routerHelper.configureStates(ng1States, []);
 }
 
