@@ -97,12 +97,12 @@ export class UserselectController implements IController {
 
     private updateUserList(): void {
         if (this.schulamt) {
-            this.userRS.getBenutzerSCHorAdminSCH().then((response: any) => {
-                this.userList = angular.copy(response);
+            this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+                this.userList = response;
             });
         } else {
-            this.userRS.getBenutzerJAorAdmin().then((response: any) => {
-                this.userList = angular.copy(response);
+            this.userRS.getBenutzerJAorAdmin().then(response => {
+                this.userList = response;
             });
         }
     }
