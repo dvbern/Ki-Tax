@@ -4,6 +4,7 @@ import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 const LOG = LogFactory.createLog('OnboardingComponent');
 
@@ -17,9 +18,15 @@ export class OnboardingComponent {
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
 
-    constructor(private readonly gemeindeRs: GemeindeRS) {
+    public isDummyMode$: Observable<boolean>;
+
+    constructor(private readonly gemeindeRs: GemeindeRS,
+                private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {
         this.gemeinden$ = from(this.gemeindeRs.getAllGemeinden())
             .pipe(map(gemeinden => gemeinden.sort((a, b) => a.name.localeCompare(b.name))));
+
+        this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
 
     public onSubmit(): void {
