@@ -16,6 +16,7 @@
 import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {UIRouter, UrlService} from '@uirouter/core';
+import {visualizer} from '@uirouter/visualizer';
 import * as angular from 'angular';
 import {appModuleAngularJS} from './app/app.angularjs.module';
 import {AppModule} from './app/app.module';
@@ -44,4 +45,4 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     .catch(err => console.error('App bootstrap error:', err));
 
 // Show ui-router-visualizer
-// appModuleAngularJS.run(['$uiRouter', $uiRouter => visualizer($uiRouter)]);
+appModuleAngularJS.run(['$uiRouter', visualizer]);

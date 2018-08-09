@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng2StateDeclaration} from '@uirouter/angular';
+import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {Ng1StateDeclaration, StateProvider, UIRouter} from '@uirouter/angularjs';
 import {ILocationProvider, IServiceProvider} from 'angular';
 
@@ -48,4 +48,8 @@ export default class RouterHelperProvider implements IServiceProvider {
     $get(): RouterHelper {
         return this.routerHelper;
     }
+}
+
+export function hasFromState(transition: Transition): boolean {
+    return transition.from() && transition.from().name !== '';
 }

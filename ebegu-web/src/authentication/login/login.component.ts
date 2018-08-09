@@ -14,7 +14,7 @@
  */
 
 import {StateService, TargetState} from '@uirouter/core';
-import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, ITimeoutService, IWindowService} from 'angular';
+import {IComponentOptions, IController, ILocationService, ITimeoutService, IWindowService} from 'angular';
 import {TSRole} from '../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {IAuthenticationStateParams} from '../authentication.route';
@@ -31,20 +31,22 @@ export const LoginComponentConfig: IComponentOptions = {
 
 export class LoginComponentController implements IController {
 
-    static $inject: string[] = ['$state', '$stateParams', '$window', '$httpParamSerializer', '$timeout', 'AuthServiceRS', '$location'];
+    static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location'];
 
-    private redirectionUrl: string = '/ebegu/saml2/jsp/fedletSSOInit.jsp';
     private redirectionHref: string;
-
     private logoutHref: string;
     private redirecting: boolean;
     private countdown: number = 0;
 
     public returnTo: TargetState;
 
-    constructor(private readonly $state: StateService, private readonly $stateParams: IAuthenticationStateParams,
-                private readonly $window: IWindowService, private readonly $httpParamSerializer: IHttpParamSerializer,
-                private readonly $timeout: ITimeoutService, private readonly authService: AuthServiceRS, private readonly $location: ILocationService) {
+    constructor(private readonly $state: StateService,
+                private readonly $stateParams: IAuthenticationStateParams,
+                private readonly $window: IWindowService,
+                private readonly $timeout: ITimeoutService,
+                private readonly authService: AuthServiceRS,
+                private readonly $location: ILocationService,
+    ) {
     }
 
     public $onInit(): void {
@@ -52,9 +54,8 @@ export class LoginComponentController implements IController {
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params, {absolute: true});
 
         this.authService.initSSOLogin(relayUrl)
-            .then(response => {
-                this.redirectionUrl = response;
-                this.redirectionHref = response;
+            .then(url => {
+                this.redirectionHref = url;
                 if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
                     this.doLogout();
                 } else {
@@ -63,16 +64,9 @@ export class LoginComponentController implements IController {
                         this.$timeout(this.doCountdown, 1000);
                     }
 
-                    this.$timeout(() => this.redirect(), this.countdown * 1000);
+                    this.$timeout(() => this.redirect(url), this.countdown * 1000);
                 }
             });
-
-        if (this.authService.getPrincipal()) {  // wenn logged in
-            this.authService.initSingleLogout(this.getBaseURL())
-                .then((responseLogut) => {
-                    this.logoutHref = responseLogut;
-                });
-        }
     }
 
     public getBaseURL(): string {
@@ -107,8 +101,7 @@ export class LoginComponentController implements IController {
         return this.authService.getPrincipal() ? true : false;
     }
 
-    private redirect() {
-        const urlToGoTo = this.redirectionHref;
+    private redirect(urlToGoTo: string) {
         console.log('redirecting to login', urlToGoTo);
 
         this.$window.open(urlToGoTo, '_self');
@@ -124,8 +117,10 @@ export class LoginComponentController implements IController {
                 this.logoutHref = responseLogut;
                 this.singlelogout();
             });
+        } else {
+            // wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
+            navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
         }
-
     }
 
     private readonly doCountdown = () => {

@@ -110,18 +110,19 @@ export default class AuthServiceRS {
         return this.$http.post(this.CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
             this.principal = undefined;
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
+            this.principalSubject$.next(null);
             return res;
         });
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
-        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath: encodeURIComponent(relayPath)}}).then((res: any) => {
+        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath}}).then((res: any) => {
             return res.data;
         });
     }
 
     public initSingleLogout(relayPath: string): IPromise<string> {
-        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleLogout', {params: {relayPath: relayPath}}).then((res: any) => {
+        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleLogout', {params: {relayPath}}).then((res: any) => {
             return res.data;
         });
     }

@@ -15,6 +15,7 @@
 
 import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
+import {hasFromState} from '../dvbModules/router/route-helper-provider';
 import {TSRole} from '../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../utils/AuthenticationUtil';
 import {OnBeforePriorities} from './onBeforePriorities';
@@ -85,8 +86,4 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
             })
         )
         .toPromise();
-}
-
-function hasFromState(transition: Transition): boolean {
-    return transition.from() && transition.from().name !== '';
 }
