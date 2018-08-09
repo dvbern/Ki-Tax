@@ -14,8 +14,9 @@
  */
 
 import * as angular from 'angular';
-import {authHookRunBlock} from './authentication.hook';
+import {authenticationHookRunBlock} from './authentication.hook';
 import {authenticationRoutes} from './authentication.route';
+import {authorisationHookRunBlock} from './authorisation.hook';
 import {LoginComponentConfig} from './login/login.component';
 import {SchulungComponentConfig} from './schulung/schulung.component';
 import AuthServiceRS from './service/AuthServiceRS.rest';
@@ -25,7 +26,8 @@ import {StartComponentConfig} from './start/start.component';
 
 export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
-        .run(authHookRunBlock)
+        .run(authenticationHookRunBlock)
+        .run(authorisationHookRunBlock)
         .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)

@@ -39,7 +39,10 @@ export default class AuthServiceRS {
 
     private principal?: TSUser;
 
+    // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
+    // Thus the session restoration from the cookie is completed before the authenticationHook checks for authentication.
     private principalSubject$ = new ReplaySubject<TSUser | null>(1);
+
     public principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
 
     constructor(private readonly $http: IHttpService,

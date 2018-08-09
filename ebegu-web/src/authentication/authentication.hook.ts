@@ -13,11 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, StateService, TransitionHookFn, TransitionService} from '@uirouter/core';
+import {HookMatchCriteria, HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import EbeguUtil from '../utils/EbeguUtil';
 import AuthServiceRS from './service/AuthServiceRS.rest';
+
+const LOG = LogFactory.createLog('authenticationHookRunBlock');
 
 /**
  * This file contains a Transition Hook which protects a
@@ -27,41 +29,40 @@ import AuthServiceRS from './service/AuthServiceRS.rest';
  * - The user is not authenticated
  * - The user is navigating to a state that requires authentication
  */
-authHookRunBlock.$inject = ['$transitions'];
+authenticationHookRunBlock.$inject = ['$transitions'];
 
-export function authHookRunBlock($transitions: TransitionService) {
-    // Matches if the destination state's data property has a truthy 'requiresAuth' property
+export function authenticationHookRunBlock($transitions: TransitionService) {
+    // Matches all states except those that have a truthy data.isPublic property.
     const requiresAuthCriteria: HookMatchCriteria = {
         to: (state) => {
             return EbeguUtil.isNullOrUndefined(state.data) || !state.data.isPublic;
         },
     };
 
-    // Function that returns a redirect for the current transition to the login state
-    // if the user is not currently authenticated (according to the AuthService)
-    const redirectToLogin: TransitionHookFn = (transition) => {
-        const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
-        const $state: StateService = transition.router.stateService;
-
-        return authService.principal$
-            .pipe(
-                take(1),
-                map(principal => {
-                    if (!principal) {
-                        const LOG = LogFactory.createLog(authHookRunBlock.name);
-                        LOG.info('redirecting to login page');
-
-                        // TODO hefa redirect to authentication.login
-                        return $state.target('authentication.locallogin', undefined, {location: false});
-                    }
-
-                    return true;
-                })
-            )
-            .toPromise();
-    };
-
-    // Register the "requires auth" hook with the TransitionsService
-    $transitions.onBefore(requiresAuthCriteria, redirectToLogin, {priority: 1001});
+    // Register the "requires authentication" hook with the TransitionsService
+    $transitions.onBefore(requiresAuthCriteria, redirectToLogin, {priority: 10});
 }
 
+// Function that returns a redirect for the current transition to the login state
+// if the user is not currently authenticated (according to the AuthService)
+function redirectToLogin(transition: Transition): HookResult {
+    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+    const $state: StateService = transition.router.stateService;
+
+    return authService.principal$
+        .pipe(
+            take(1),
+            map(principal => {
+                if (!principal) {
+                    LOG.debug('redirecting to login page');
+
+                    // TODO hefa redirect to authentication.login
+                    return $state.target('authentication.locallogin', undefined, {location: false});
+                }
+
+                // continue the original transition
+                return true;
+            })
+        )
+        .toPromise();
+}

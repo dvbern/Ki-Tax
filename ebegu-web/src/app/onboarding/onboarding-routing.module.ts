@@ -16,6 +16,7 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {TSRole} from '../../models/enums/TSRole';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 
 const states: Ng2StateDeclaration[] = [
@@ -26,6 +27,7 @@ const states: Ng2StateDeclaration[] = [
         data: {
             // all substates are public too!
             isPublic: true,
+            roles: [TSRole.ANONYMOUS]
         }
     },
     {
