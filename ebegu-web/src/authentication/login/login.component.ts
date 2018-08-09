@@ -14,8 +14,9 @@
  */
 
 import {StateService, TargetState} from '@uirouter/core';
-import * as angular from 'angular';
 import {IComponentOptions, IController, IHttpParamSerializer, ILocationService, ITimeoutService, IWindowService} from 'angular';
+import {TSRole} from '../../models/enums/TSRole';
+import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {IAuthenticationStateParams} from '../authentication.route';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 
@@ -30,11 +31,9 @@ export const LoginComponentConfig: IComponentOptions = {
 
 export class LoginComponentController implements IController {
 
-    static $inject: string[] = ['$state', '$stateParams', '$window', '$httpParamSerializer', '$timeout', 'AuthServiceRS'
-        , '$location'];
+    static $inject: string[] = ['$state', '$stateParams', '$window', '$httpParamSerializer', '$timeout', 'AuthServiceRS', '$location'];
 
     private redirectionUrl: string = '/ebegu/saml2/jsp/fedletSSOInit.jsp';
-    private readonly relayString: string;
     private redirectionHref: string;
 
     private logoutHref: string;
@@ -46,30 +45,27 @@ export class LoginComponentController implements IController {
     constructor(private readonly $state: StateService, private readonly $stateParams: IAuthenticationStateParams,
                 private readonly $window: IWindowService, private readonly $httpParamSerializer: IHttpParamSerializer,
                 private readonly $timeout: ITimeoutService, private readonly authService: AuthServiceRS, private readonly $location: ILocationService) {
+    }
+
+    public $onInit(): void {
         //wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
-        this.relayString = angular.copy(this.$stateParams.relayPath ? (this.$stateParams.relayPath) : '');
-        this.authService.initSSOLogin(this.relayString).then((response) => {
-            this.redirectionUrl = response;
-            this.redirectionHref = response;
-            if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
-                this.doLogout();
-            } else {
-                this.redirecting = true;
-                if (this.countdown > 0) {
-                    this.$timeout(this.doCountdown, 1000);
+        const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params, {absolute: true});
+
+        this.authService.initSSOLogin(relayUrl)
+            .then(response => {
+                this.redirectionUrl = response;
+                this.redirectionHref = response;
+                if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
+                    this.doLogout();
+                } else {
+                    this.redirecting = true;
+                    if (this.countdown > 0) {
+                        this.$timeout(this.doCountdown, 1000);
+                    }
+
+                    this.$timeout(() => this.redirect(), this.countdown * 1000);
                 }
-
-                // TODO hefa back to the original state. See https://stackblitz.com/github/ui-router/sample-app-angular-hybrid/tree/angular-cli?file=src%2Fapp%2Fhome%2Flogin.component.ts
-                const returnToOriginalState = () => {
-                    const state = this.returnTo.state();
-                    const params = this.returnTo.params();
-                    const options = angular.extend({}, this.returnTo.options(), {reload: true});
-                    this.$state.go(state, params, options);
-                };
-
-                this.$timeout(() => this.redirect(), this.countdown * 1000);
-            }
-        });
+            });
 
         if (this.authService.getPrincipal()) {  // wenn logged in
             this.authService.initSingleLogout(this.getBaseURL())
@@ -100,7 +96,8 @@ export class LoginComponentController implements IController {
             if (this.logoutHref !== '' || this.logoutHref === undefined) {
                 this.$window.open(this.logoutHref, '_self');
             } else {
-                this.$state.go('authentication.start');  // wenn wir nicht in iam ausloggen gehen wir auf start
+                // wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
+                navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
             }
         });
     }

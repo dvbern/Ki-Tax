@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
+import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {TSRole} from '../models/enums/TSRole';
+import {getRoleBasedTargetState} from '../utils/AuthenticationUtil';
+import {OnBeforePriorities} from './onBeforePriorities';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 
 /**
@@ -36,7 +38,7 @@ export function authorisationHookRunBlock($transitions: TransitionService) {
 
     // Register the "requires authorisation" hook with the TransitionsService.
     // The priority is lower than the priority of the authentication hook.
-    $transitions.onBefore(requiresAuthCriteria, abortWhenUnauthorised, {priority: 9});
+    $transitions.onBefore(requiresAuthCriteria, abortWhenUnauthorised, {priority: OnBeforePriorities.AUTHORISATION});
 }
 
 function abortWhenUnauthorised(transition: Transition): HookResult {
@@ -50,21 +52,41 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
 
                 if (!principal) {
                     // since we don't have a principal, the state may be access only when it allows ANONYMOUS users
-                    return allowedRoles.some(role => role === TSRole.ANONYMOUS);
+                    if (allowedRoles.some(role => role === TSRole.ANONYMOUS)) {
+                        // ANONYMOUS access granted
+                        return true;
+                    }
+
+                    // no principal and not allowed to access the target state: redirect to default ANONYMOUS state
+                    return getRoleBasedTargetState(TSRole.ANONYMOUS, transition.router.stateService);
                 }
 
-                return allowedRoles.some(role => role === principal.getCurrentRole());
-            }),
-            map(isAuthorised => {
-                if (!isAuthorised && (!transition.from() || transition.from().name === '')) {
-                    // redirect to an allowed state
-                    const $state: StateService = transition.router.stateService;
-
-                    return $state.target('authentication.start');
+                const currentRole = principal.getCurrentRole();
+                if (allowedRoles.some(role => role === currentRole)) {
+                    // the principal has one of the required roles -> access granted
+                    return true;
                 }
 
-                return isAuthorised;
+                if (!hasFromState(transition)) {
+                    // the principal is not allowed to access the state. Since it is not yet on any state, navigate to a role-based landing state
+                    return getRoleBasedTargetState(currentRole, transition.router.stateService);
+                }
+
+                if (transition.from().name === 'authentication.locallogin') {
+                    // when changing the user via locallogin and the selected user is not allowed to return to the previous state, navigate to the role-based landing state
+                    return getRoleBasedTargetState(currentRole, transition.router.stateService);
+                }
+
+                // the principal is not allowed to access the state. Show an error and abort the transition (and stay on the current state)
+                const errorService = transition.injector().get('ErrorService');
+                errorService.addMesageAsError('ERROR_UNAUTHORIZED');
+
+                return false;
             })
         )
         .toPromise();
+}
+
+function hasFromState(transition: Transition): boolean {
+    return transition.from() && transition.from().name !== '';
 }

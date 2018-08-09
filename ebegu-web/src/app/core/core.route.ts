@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, Transition, TransitionService, Trace} from '@uirouter/core';
+import {Category, StateService, Trace, Transition, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
@@ -67,7 +67,7 @@ export function appRun(angularMomentConfig: any,
                        gemeindeRS: GemeindeRS,
                        $trace: Trace) {
     // navigationLogger.toggle();
-    $trace.enable(1); // TODO hefa disable
+    $trace.enable(Category.TRANSITION); // TODO hefa disable
 
     // $transitions.onStart({}, transition => stateChangeStart(transition));
     $transitions.onSuccess({}, ignore => errorService.clearAll());
@@ -89,7 +89,7 @@ export function appRun(angularMomentConfig: any,
     // TODO hefa move to authentication hook
     function onNotAuthenticated() {
         const currentPath = angular.copy($location.absUrl());
-        LOG.debug('going to login page with current path ', currentPath);
+        LOG.info('going to login page with current path ', currentPath);
 
         const loginConnectorPaths = [
             'fedletSSOInit',
@@ -126,6 +126,12 @@ export function appRun(angularMomentConfig: any,
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
             () => onLoginSuccess(),
+            err => LOG.error(err)
+        );
+
+    authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
+        .subscribe(
+            () => onNotAuthenticated(),
             err => LOG.error(err)
         );
 

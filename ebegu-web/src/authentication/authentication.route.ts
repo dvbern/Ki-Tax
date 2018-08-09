@@ -14,12 +14,10 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {StateService} from '@uirouter/core';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
+import {TargetState, Transition} from '@uirouter/core';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import ILogService = angular.ILogService;
-import IPromise = angular.IPromise;
-import IQService = angular.IQService;
+import {getTSRoleValues, TSRole} from '../models/enums/TSRole';
+import {getRoleBasedTargetState} from '../utils/AuthenticationUtil';
 
 authenticationRoutes.$inject = ['RouterHelper'];
 
@@ -38,8 +36,11 @@ const ng1States: Ng1StateDeclaration[] = [
         component: 'dvLogin',
         //HINWEIS: Soweit ich sehen kann koennen url navigationen mit mehr als einem einzigen slash am Anfang nicht manuell in der Adressbar aufgerufen werden?
         url: '/login?type&relayPath',
+        resolve: {
+            returnTo: returnTo
+        },
         data: {
-            isPublic: true,
+            roles: getTSRoleValues()
         }
     },
     {
@@ -47,17 +48,10 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'authentication.schulung',
         template: '<dv-schulung flex="auto" class="overflow-scroll">',
         url: '/schulung',
-        resolve: {
-            dummyLoginEnabled: readDummyLoginEnabled
-        },
         data: {
-            isPublic: true,
+            roles: getTSRoleValues(),
+            requiresDummyLogin: true,
         }
-    },
-    {
-        name: 'authentication.start',
-        component: 'dvStart',
-        url: '/start',
     }
 ];
 
@@ -66,23 +60,30 @@ export class IAuthenticationStateParams {
     type: string;
 }
 
-readDummyLoginEnabled.$inject = ['ApplicationPropertyRS', '$state', '$q', '$log'];
+/**
+ * A resolve function for 'login' state which figures out what state to return to, after a successful login.
+ *
+ * If the user was initially redirected to login state (due to the requiresAuth redirect), then return the toState/params
+ * they were redirected from.  Otherwise, if they transitioned directly, return the fromState/params.  Otherwise
+ * return the main "home" state.
+ */
+returnTo.$inject = ['$transition$'];
 
-export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService, $q: IQService,
-                                      $log: ILogService): IPromise<boolean> {
-    return applicationPropertyRS.isDummyMode()
-        .then((response: boolean) => {
-            if (response === false) {
-                $log.debug('page is disabled');
-                $state.go('authentication.start');
-            }
-            return response;
-        }).catch(() => {
-            const deferred = $q.defer<boolean>();
-            deferred.resolve(undefined);
-            $state.go('authentication.login');
-            return deferred.promise;
-        });
+export function returnTo($transition$: Transition): TargetState {
+    if ($transition$.redirectedFrom() != null) {
+        // The user was redirected to the login state (e.g., via the requiresAuth hook when trying to activate contacts)
+        // Return to the original attempted target state (e.g., contacts)
+        return $transition$.redirectedFrom().targetState();
+    }
 
+    const $state = $transition$.router.stateService;
+
+    // The user was not redirected to the login state; they directly activated the login state somehow.
+    // Return them to the state they came from.
+    if ($transition$.from().name !== '') {
+        return $state.target($transition$.from(), $transition$.params('from'));
+    }
+
+    // If the fromState's name is empty, then this was the initial transition. Just return them to the default ANONYMOUS state
+    return getRoleBasedTargetState(TSRole.ANONYMOUS, $state);
 }
-

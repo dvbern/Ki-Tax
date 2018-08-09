@@ -31,7 +31,7 @@ export class RouterHelper {
             this.stateProvider.state(state);
         });
 
-        this.uiRouterProvider.urlService.rules.otherwise('/start');
+        this.uiRouterProvider.urlService.rules.otherwise('/');
     }
 }
 

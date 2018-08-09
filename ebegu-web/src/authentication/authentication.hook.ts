@@ -16,7 +16,8 @@
 import {HookMatchCriteria, HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../app/core/logging/LogFactory';
-import EbeguUtil from '../utils/EbeguUtil';
+import {TSRole} from '../models/enums/TSRole';
+import {OnBeforePriorities} from './onBeforePriorities';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 
 const LOG = LogFactory.createLog('authenticationHookRunBlock');
@@ -32,15 +33,15 @@ const LOG = LogFactory.createLog('authenticationHookRunBlock');
 authenticationHookRunBlock.$inject = ['$transitions'];
 
 export function authenticationHookRunBlock($transitions: TransitionService) {
-    // Matches all states except those that have a truthy data.isPublic property.
+    // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
         to: (state) => {
-            return EbeguUtil.isNullOrUndefined(state.data) || !state.data.isPublic;
+            return state.data && Array.isArray(state.data.roles) && !state.data.roles.some((role: TSRole) => role === TSRole.ANONYMOUS);
         },
     };
 
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore(requiresAuthCriteria, redirectToLogin, {priority: 10});
+    $transitions.onBefore(requiresAuthCriteria, redirectToLogin, {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state
@@ -56,8 +57,7 @@ function redirectToLogin(transition: Transition): HookResult {
                 if (!principal) {
                     LOG.debug('redirecting to login page');
 
-                    // TODO hefa redirect to authentication.login
-                    return $state.target('authentication.locallogin', undefined, {location: false});
+                    return $state.target('authentication.login', undefined, {location: false});
                 }
 
                 // continue the original transition

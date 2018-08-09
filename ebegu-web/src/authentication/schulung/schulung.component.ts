@@ -21,7 +21,7 @@ import TSInstitution from '../../models/TSInstitution';
 import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import TSUser from '../../models/TSUser';
-import AuthenticationUtil from '../../utils/AuthenticationUtil';
+import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 
@@ -113,9 +113,8 @@ export class SchulungViewController implements IController {
     }
 
     public logIn(credentials: TSUser): void {
-        this.authServiceRS.loginRequest(credentials).then(user => {
-            AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
-        });
+        this.authServiceRS.loginRequest(credentials)
+            .then(user => navigateToStartPageForRole(user.getCurrentRole(), this.$state));
     }
 }
 

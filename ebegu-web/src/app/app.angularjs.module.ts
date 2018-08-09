@@ -22,6 +22,7 @@ import {EbeguWebFaelle} from '../faelle/faelle.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
 import {EbeguWebGesuchstellerDashboard} from '../gesuchstellerDashboard/gesuchstellerDashboard.module';
 import {EbeguWebMitteilungen} from '../mitteilungen/mitteilungen.module';
+import {getTSRoleValues, TSRole} from '../models/enums/TSRole';
 import {EbeguWebPendenzen} from '../pendenzen/pendenzen.module';
 import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen/pendenzenBetreuungen.module';
 import {EbeguWebPendenzenSteueramt} from '../pendenzenSteueramt/pendenzenSteueramt.module';
@@ -32,8 +33,8 @@ import {EbeguWebStatistik} from '../statistik/statistik.module';
 import {EbeguWebVerlauf} from '../verlauf/verlauf.module';
 import {EbeguWebZahlung} from '../zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
-import {EbeguWebCore} from './core/core.angularjs.module';
 import {AppAngularjsComponent} from './app.angularjs.component';
+import {EbeguWebCore} from './core/core.angularjs.module';
 
 export const appModuleAngularJS = angular.module('ebeguWeb', [
         upgradeModule.name,
@@ -54,6 +55,10 @@ function conf($stateProvider: StateProvider): void {
         {
             name: 'app',
             component: 'appRoot',
+            data: {
+                // FIXME dies erlaubt die Navigation zu allen Substates! Die Substates sollten ein spezifischers Rollen Array erhalten. Danach kann diese Definition entfernt werden
+                roles: getTSRoleValues().filter(role => role !== TSRole.ANONYMOUS)
+            }
         },
     );
 }

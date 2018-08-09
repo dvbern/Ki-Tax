@@ -115,7 +115,7 @@ export default class AuthServiceRS {
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
-        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath: relayPath}}).then((res: any) => {
+        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath: encodeURIComponent(relayPath)}}).then((res: any) => {
             return res.data;
         });
     }
