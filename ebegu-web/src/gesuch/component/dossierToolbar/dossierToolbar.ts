@@ -231,7 +231,7 @@ export class DossierToolbarController implements IDVFocusableController {
                 if (response) {
                     this.dossier = response;
                     if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-                        this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.fall.id).then((response) => {
+                        this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then((response) => {
                             this.antragList = angular.copy(response);
                             this.updateGesuchperiodeList();
                             this.updateGesuchNavigationList();
@@ -240,7 +240,7 @@ export class DossierToolbarController implements IDVFocusableController {
                             this.antragErneuernPossible();
                         });
                     } else if (this.dossier) {
-                        this.gesuchRS.getAllAntragDTOForDossier(this.dossier.fall.id).then((response) => {
+                        this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
                             this.antragList = angular.copy(response);
                             if (response && response.length > 0) {
                                 const newest = this.getNewest(this.antragList);
