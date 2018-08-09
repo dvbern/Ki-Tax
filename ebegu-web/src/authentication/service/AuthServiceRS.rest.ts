@@ -41,7 +41,7 @@ export default class AuthServiceRS {
 
     // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
     // Thus the session restoration from the cookie is completed before the authenticationHook checks for authentication.
-    private principalSubject$ = new ReplaySubject<TSUser | null>(1);
+    private readonly principalSubject$ = new ReplaySubject<TSUser | null>(1);
 
     public principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
 
@@ -56,6 +56,9 @@ export default class AuthServiceRS {
                 private readonly userRS: UserRS) {
     }
 
+    /**
+     * @deprecated use getPrincipal$ instead
+     */
     public getPrincipal(): TSUser | undefined {
         return this.principal;
     }
@@ -67,7 +70,11 @@ export default class AuthServiceRS {
         return undefined;
     }
 
-    public loginRequest(userCredentials: TSUser): IPromise<TSUser> {
+    public loginRequest(userCredentials: TSUser): IPromise<TSUser> | undefined {
+        if (!userCredentials) {
+            return undefined;
+        }
+
         return this.$http.post(this.CONSTANTS.REST_API + 'auth/login', this.ebeguRestUtil.userToRestObject({}, userCredentials))
             .then(() => {
                 // try to reload buffered requests
@@ -109,8 +116,8 @@ export default class AuthServiceRS {
     public logoutRequest() {
         return this.$http.post(this.CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
             this.principal = undefined;
-            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             this.principalSubject$.next(null);
+            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             return res;
         });
     }
