@@ -15,8 +15,10 @@
 
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
-import {of, Observable} from 'rxjs';
+import {StateService} from '@uirouter/core';
+import {Observable, of} from 'rxjs';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEingangsartFromRole} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -28,16 +30,16 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import DossierRS from '../../service/dossierRS.rest';
 import GemeindeRS from '../../service/gemeindeRS.rest';
-import {StateService} from '@uirouter/core';
 import GesuchRS from '../../service/gesuchRS.rest';
-
-require('./fallToolbar.less');
 
 @Component({
     selector: 'dv-fall-toolbar',
-    template: require('./fallToolbar.template.html'),
+    templateUrl: './fallToolbar.template.html',
+    styleUrls: ['./fallToolbar.less'],
 })
 export class FallToolbarComponent implements OnInit, OnChanges {
+
+    private readonly LOG: Log = LogFactory.createLog(FallToolbarComponent.name);
 
     TSRoleUtil: any = TSRoleUtil;
 
@@ -106,14 +108,17 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      */
     public openDossier(dossier: TSDossier): void {
         if (dossier) {
-            this.selectedDossier = dossier;
-
-            this.gesuchRS.getIdOfNewestGesuchForDossier(this.selectedDossier.id).then(newestGesuchID => {
-                NavigationUtil.navigateToStartsiteOfGesuchForRole(
-                    this.authServiceRS.getPrincipalRole(),
-                    this.$state,
-                    newestGesuchID,
-                );
+            this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
+                if (newestGesuchID) {
+                    this.selectedDossier = dossier;
+                    NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                        this.authServiceRS.getPrincipalRole(),
+                        this.$state,
+                        newestGesuchID,
+                    );
+                } else {
+                    this.LOG.warn(`newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
+                }
             });
         }
     }
@@ -121,17 +126,19 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     public createNewDossier(): void {
         this.getGemeindeIDFromDialog().subscribe(
             (chosenGemeindeId) => {
-                const params: INewFallStateParams = {
-                    gesuchsperiodeId: null,
-                    createMutation: null,
-                    createNewFall: 'false',
-                    createNewDossier: 'true',
-                    gesuchId: null,
-                    dossierId: null,
-                    gemeindeId: chosenGemeindeId,
-                    eingangsart: this.getEingangsArt(),
-                };
-                this.$state.go('gesuch.fallcreation', params);
+                if (chosenGemeindeId) {
+                    const params: INewFallStateParams = {
+                        gesuchsperiodeId: null,
+                        createMutation: null,
+                        createNewFall: 'false',
+                        createNewDossier: 'true',
+                        gesuchId: null,
+                        dossierId: null,
+                        gemeindeId: chosenGemeindeId,
+                        eingangsart: this.getEingangsArt(),
+                    };
+                    this.$state.go('gesuch.fallcreation', params);
+                }
             }
         );
     }

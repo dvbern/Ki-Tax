@@ -28,14 +28,12 @@
                     {{dossier.extractGemeindeName()}}
                 </button>
 
-                <div *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                     class="fall-toolbar-element col-md-2">
-                    <button (click)="createNewDossier()">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </div>
+                <button *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                        (click)="createNewDossier()" class="dossier-element add-dossier">
+                    <i class="fa fa-plus"></i>
+                </button>
 
-                <div *ngIf="!useDefaultValues()" class="fall-toolbar-element col-md-2">
+                <div class="pull-right dossier-element fall-nummer">
                     <span [textContent]="fallNummer"></span>
                     <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
                 </div>

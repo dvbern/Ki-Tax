@@ -17,7 +17,6 @@ import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
 import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
 import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module';
-import {AuthLifeCycleService} from './service/authLifeCycle.service';
 
 @NgModule({
     imports: [
@@ -31,7 +30,7 @@ import {AuthLifeCycleService} from './service/authLifeCycle.service';
         DummyAuthenticationListViewComponent,
     ],
     providers: [
-        AuthLifeCycleService,
+        // use providedIn in the class instead
     ],
 })
 

@@ -116,8 +116,8 @@ export default class GesuchRS implements IEntityRS {
         return this.$http.put(this.serviceURL + '/status/' + encodeURIComponent(gesuchID) + '/' + status, null);
     }
 
-    public getAllAntragDTOForFall(fallId: string): IPromise<TSAntragDTO[]> {
-        return this.$http.get(this.serviceURL + '/fall/' + encodeURIComponent(fallId)).then((response: any) => {
+    public getAllAntragDTOForDossier(dossierId: string): IPromise<TSAntragDTO[]> {
+        return this.$http.get(this.serviceURL + '/dossier/' + encodeURIComponent(dossierId)).then((response: any) => {
             return this.ebeguRestUtil.parseAntragDTOs(response.data);
         });
     }

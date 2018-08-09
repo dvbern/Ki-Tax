@@ -26,20 +26,7 @@
         button {
             border: 0;
             text-align: center;
-        }
-
-        .fall-toolbar-element {
-            display: flex;
-            color: @blue;
-            font-weight: bold;
-            width: 20rem;
-            min-height: @toolbar-height;
-            vertical-align: middle;
-
-            span, i {
-                line-height: @toolbar-height;
-                padding-left: 1rem;
-            }
+            border-right: 1px solid #fff;
         }
     }
 
@@ -53,7 +40,6 @@
             width: 20rem;
             min-height: @toolbar-height;
             line-height: @toolbar-height;
-            margin-right: 2rem;
             text-align: center;
             padding: 0;
 
@@ -62,6 +48,11 @@
                 width: auto;
                 background-color: transparent;
                 font-weight: normal;
+                margin-right: 2rem;
+            }
+
+            &.add-dossier {
+                width: 4rem;
             }
         }
 

@@ -26,8 +26,12 @@ import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dial
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
+import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
+import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {MaterialModule} from './material.module';
+import {UIRouterModule} from '@uirouter/angular';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
@@ -38,6 +42,7 @@ export function createTranslateLoader(http: HttpClient) {
         CommonModule,
         HttpClientModule,
         FormsModule,
+        UIRouterModule,
 
         MaterialModule,
         TranslateModule.forRoot({
@@ -57,6 +62,9 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        NavbarComponent,
+        DvNgShowElementDirective,
+        DvPosteingangComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -64,7 +72,9 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
-        DvHelpmenuComponent
+        DvHelpmenuComponent,
+        NavbarComponent,
+        DvPosteingangComponent,
     ],
     exports: [
         CommonModule,
@@ -82,6 +92,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
+        DvNgShowElementDirective,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

@@ -1,17 +1,11 @@
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
-import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
-import {DvPosteingangComponent} from './component/dv-posteingang/dv-posteingang';
+import {TranslatePipe} from '@ngx-translate/core';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
-import {DvNgShowElementDirective} from './directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-import {NavbarComponent} from './component/navbar/navbar.component';
-import {UIRouterModule} from '@uirouter/angular';
 
 @NgModule({
     imports: [
         // only those modules required by the providers/components of the core module (other global modules go to shared module)
-        TranslateModule,
-        UIRouterModule,
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
@@ -19,15 +13,9 @@ import {UIRouterModule} from '@uirouter/angular';
         TranslatePipe,
     ],
     declarations: [
-        // Insert app wide single use components (NavComponent, SpinnerComponent)
-        NavbarComponent,
-        DvNgShowElementDirective,
-        DvPosteingangComponent,
+        // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
+        // This module should be used only to provide services
     ],
-    entryComponents: [
-        NavbarComponent,
-        DvPosteingangComponent,
-    ]
 })
 export class CoreModule {
 

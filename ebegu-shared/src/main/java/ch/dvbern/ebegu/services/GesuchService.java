@@ -146,10 +146,10 @@ public interface GesuchService {
 	List<Gesuch> getAntraegeByCurrentBenutzer();
 
 	/**
-	 * Gibt ein DTO mit saemtlichen Antragen eins bestimmten Falls zurueck
+	 * Gibt ein DTO mit saemtlichen Antragen eins bestimmten Dossiers zurueck
 	 */
 	@Nonnull
-	List<JaxAntragDTO> getAllAntragDTOForFall(String fallId);
+	List<JaxAntragDTO> getAllAntragDTOForDossier(String dossierId);
 
 	/**
 	 * Erstellt eine neue Mutation fuer die Gesuchsperiode und Fall des uebergebenen Antrags. Es wird immer der letzt

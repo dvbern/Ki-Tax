@@ -59,7 +59,7 @@ export default class DossierRS implements IEntityRS {
     }
 
     public findDossiersByFall(fallId: string): IPromise<TSDossier[]> {
-        return this.http.get(this.serviceURL + '/fall/' + encodeURIComponent(fallId))
+        return this.$http.get(this.serviceURL + '/fall/' + encodeURIComponent(fallId))
             .then((response: any) => {
                 this.$log.debug('PARSING dossierList REST object ', response.data);
                 return this.ebeguRestUtil.parseDossierList(response.data);

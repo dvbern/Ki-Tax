@@ -56,6 +56,11 @@ public interface Authorizer {
 	void checkReadAuthorizationFall(String fallId);
 
 	/**
+	 * Returns true when the user is authorized to read the dossier
+	 */
+	boolean isReadAuthorizedDossier(@Nullable Dossier dossier);
+
+	/**
 	 * prueft ob der aktuell eingeloggte benutzer den Fall mit id schreibend bearbeiten darf
 	 */
 	void checkWriteAuthorization(@Nullable Fall fall);
@@ -79,6 +84,11 @@ public interface Authorizer {
 	 * prueft ob der aktuell eingeloggte benutzer fuer ALLE uebergebnen Dossiers berechtigt ist
 	 */
 	void checkReadAuthorizationDossiers(@Nullable Collection<Dossier> dossiers);
+
+	/**
+	 * prueft, ob der aktuell eingeloggte Benutzer das uebergebene Dossier lesen darf
+	 */
+	void checkReadAuthorizationDossier(@Nonnull String dossierId);
 
 	/**
 	 * prueft, ob der aktuell eingeloggte Benutzer das uebergebene Dossier lesen darf

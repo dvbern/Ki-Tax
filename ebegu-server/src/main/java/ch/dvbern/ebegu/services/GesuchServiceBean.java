@@ -431,7 +431,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	/**
-	 * Diese Methode sucht alle Antraege die zu dem gegebenen Fall gehoeren.
+	 * Diese Methode sucht alle Antraege die zu dem gegebenen Dossier gehoeren.
 	 * Die Antraege werden aber je nach Benutzerrolle gefiltert.
 	 * - SACHBEARBEITER_TRAEGERSCHAFT oder SACHBEARBEITER_INSTITUTION - werden nur diejenige Antraege zurueckgegeben,
 	 * die mindestens ein Angebot fuer die InstituionEn des Benutzers haben
@@ -442,8 +442,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@Override
 	@PermitAll
-	public List<JaxAntragDTO> getAllAntragDTOForFall(String fallId) {
-		authorizer.checkReadAuthorizationFall(fallId);
+	public List<JaxAntragDTO> getAllAntragDTOForDossier(String dossierId) {
+		authorizer.checkReadAuthorizationDossier(dossierId);
 
 		final Optional<Benutzer> optBenutzer = benutzerService.getCurrentBenutzer();
 		if (optBenutzer.isPresent()) {
@@ -487,11 +487,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				besitzerJoin.get(Benutzer_.username) //wir machen hier extra vorher einen left join
 			).distinct(true);
 
-			ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
+			ParameterExpression<String> dossierIdParam = cb.parameter(String.class, "dossierId");
 
 			List<Predicate> predicatesToUse = new ArrayList<>();
-			Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallIdParam);
-			predicatesToUse.add(fallPredicate);
+			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
+			predicatesToUse.add(dossierPredicate);
 
 			// Alle AUSSER Gesuchsteller, Institution und Trägerschaft muessen im Status eingeschraenkt werden,
 			// d.h. sie duerfen IN_BEARBEITUNG_GS und FREIGABEQUITTUNG NICHT sehen
@@ -528,7 +528,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			query.orderBy(cb.asc(root.get(Gesuch_.laufnummer)));
 			TypedQuery<JaxAntragDTO> q = persistence.getEntityManager().createQuery(query);
-			q.setParameter(fallIdParam, fallId);
+			q.setParameter(dossierIdParam, dossierId);
 
 			return q.getResultList();
 		}

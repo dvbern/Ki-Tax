@@ -14,11 +14,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {PosteingangService} from './service/posteingang.service';
 
 @NgModule({
     providers: [
-        PosteingangService,
+        // use providedIn in the class instead
     ],
 })
 export class NgPosteingangModule {

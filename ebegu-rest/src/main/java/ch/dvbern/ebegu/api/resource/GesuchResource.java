@@ -341,13 +341,13 @@ public class GesuchResource {
 		responseContainer = "List", response = JaxAntragDTO.class)
 	@Nonnull
 	@GET
-	@Path("/fall/{fallId}")
+	@Path("/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxAntragDTO> getAllAntragDTOForFall(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
-		Objects.requireNonNull(fallJAXPId.getId());
-		return gesuchService.getAllAntragDTOForFall(converter.toEntityId(fallJAXPId));
+	public List<JaxAntragDTO> getAllAntragDTOForDossier(
+		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
+		Objects.requireNonNull(dossierJAXPId.getId());
+		return gesuchService.getAllAntragDTOForDossier(converter.toEntityId(dossierJAXPId));
 	}
 
 	@ApiOperation(value = "Creates a new Antrag of type Mutation in the database", response = JaxGesuch.class)
