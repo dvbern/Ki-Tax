@@ -30,7 +30,7 @@ import AuthServiceRS from './service/AuthServiceRS.rest';
 authorisationHookRunBlock.$inject = ['$transitions'];
 
 export function authorisationHookRunBlock($transitions: TransitionService) {
-    // Matches if the destination state's data property has a truthy 'requiresAuth' property
+    // Matches if the destination state has a data.roles array
     const requiresAuthCriteria: HookMatchCriteria = {
         to: (state) => {
             return state.data && Array.isArray(state.data.roles);
@@ -38,7 +38,7 @@ export function authorisationHookRunBlock($transitions: TransitionService) {
     };
 
     // Register the "requires authorisation" hook with the TransitionsService.
-    // The priority is lower than the priority of the authentication hook.
+    // The priority is lower than the priority of the authentication hook (thus it runs later).
     $transitions.onBefore(requiresAuthCriteria, abortWhenUnauthorised, {priority: OnBeforePriorities.AUTHORISATION});
 }
 
@@ -52,8 +52,8 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                 const allowedRoles: TSRole[] = transition.to().data.roles;
 
                 if (!principal) {
-                    // since we don't have a principal, the state may be access only when it allows ANONYMOUS users
-                    if (allowedRoles.some(role => role === TSRole.ANONYMOUS)) {
+                    // since we don't have a principal, the state may be accessed only when it allows ANONYMOUS users
+                    if (allowedRoles.includes(TSRole.ANONYMOUS)) {
                         // ANONYMOUS access granted
                         return true;
                     }
@@ -63,7 +63,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                 }
 
                 const currentRole = principal.getCurrentRole();
-                if (allowedRoles.some(role => role === currentRole)) {
+                if (allowedRoles.includes(currentRole)) {
                     // the principal has one of the required roles -> access granted
                     return true;
                 }

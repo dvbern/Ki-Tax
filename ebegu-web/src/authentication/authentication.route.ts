@@ -34,8 +34,7 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         name: 'authentication.login',
         component: 'dvLogin',
-        //HINWEIS: Soweit ich sehen kann koennen url navigationen mit mehr als einem einzigen slash am Anfang nicht manuell in der Adressbar aufgerufen werden?
-        url: '/login?type&relayPath',
+        url: '/login?type',
         resolve: {
             returnTo: returnTo
         },
@@ -56,7 +55,6 @@ const ng1States: Ng1StateDeclaration[] = [
 ];
 
 export class IAuthenticationStateParams {
-    relayPath: string;
     type: string;
 }
 

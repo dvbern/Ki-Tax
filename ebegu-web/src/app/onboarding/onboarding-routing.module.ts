@@ -23,17 +23,15 @@ const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'onboarding',
-        abstract: true,
-        data: {
-            // all substates are public too!
-            isPublic: true,
-            roles: [TSRole.ANONYMOUS]
-        }
+        abstract: true
     },
     {
         name: 'onboarding.start',
         url: '/',
         component: OnboardingComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS]
+        }
     },
 ];
 

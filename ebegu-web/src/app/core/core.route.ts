@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Category, RejectType, StateService, Trace, TransitionService} from '@uirouter/core';
+import {RejectType, StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
@@ -44,7 +44,7 @@ const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
     '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS', '$trace'];
+    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
 export function appRun(angularMomentConfig: any,
                        routerHelper: RouterHelper,
@@ -66,9 +66,9 @@ export function appRun(angularMomentConfig: any,
                        globalCacheService: GlobalCacheService,
                        $transitions: TransitionService,
                        gemeindeRS: GemeindeRS,
-                       $trace: Trace) {
+) {
     // navigationLogger.toggle();
-    $trace.enable(Category.TRANSITION); // TODO hefa disable
+    // $trace.enable(Category.TRANSITION);
 
     $transitions.onSuccess({}, ignore => errorService.clearAll());
     $transitions.onError({}, transition => {
@@ -84,7 +84,7 @@ export function appRun(angularMomentConfig: any,
     });
 
     function onNotAuthenticated() {
-        const currentPath = angular.copy($location.absUrl());
+        const currentPath: string = angular.copy($location.absUrl());
 
         const loginConnectorPaths = [
             'fedletSSOInit',

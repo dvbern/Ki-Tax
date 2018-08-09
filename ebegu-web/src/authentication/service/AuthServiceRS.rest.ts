@@ -81,7 +81,7 @@ export default class AuthServiceRS {
     }
 
     public initWithCookie(): IPromise<TSUser> {
-        LOG.info('initWithCookie');
+        LOG.debug('initWithCookie');
 
         const authIdbase64 = this.$cookies.get('authId');
         if (!authIdbase64) {
