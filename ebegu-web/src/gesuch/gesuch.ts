@@ -24,6 +24,7 @@ import {TSGesuchEvent} from '../models/enums/TSGesuchEvent';
 import {TSRole} from '../models/enums/TSRole';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
+import TSDossier from '../models/TSDossier';
 import TSEWKPerson from '../models/TSEWKPerson';
 import GesuchstellerRS from '../app/core/service/gesuchstellerRS.rest';
 import {ILogService, IRootScopeService} from 'angular';
@@ -213,11 +214,14 @@ export class GesuchRouteController {
         return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
     }
 
-    public getSelectedGemeindeName(): string {
-        if (this.getGesuch().dossier && this.getGesuch().dossier.gemeinde) {
-            return this.getGesuch().dossier.gemeinde.name;
+    /**
+     * this function will return the current Dossier if it has no ID
+     */
+    public getNewDossierToCreate(): TSDossier {
+        if (this.getGesuch().dossier && ! this.getDossierId()) {
+            return this.getGesuch().dossier;
         }
-        return '';
+        return undefined;
     }
 
     public getGesuchErstellenStepTitle(): string {

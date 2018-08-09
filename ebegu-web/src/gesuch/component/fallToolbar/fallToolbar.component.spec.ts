@@ -97,23 +97,24 @@ describe('fallToolbar', () => {
     describe('isDossierActive', () => {
         beforeEach(async(() => {
             initTestBed();
+            component.fallId = fall.id;
         }));
 
-        it('should return true for the selected dossier', () => {
-            component.openDossier(dossier1);
-            expect(component.isDossierActive(dossier1)).toBe(true);
-        });
+        it('should return true for the selected dossier', async(() => {
+            component.openDossier(dossier1).subscribe(
+                () => expect(component.isDossierActive(dossier1)).toBe(true));
+        }));
         it('should return false for a different dossier', () => {
-            component.openDossier(dossier1);
-            expect(component.isDossierActive(dossier2)).toBe(false);
+            component.openDossier(dossier1).subscribe(
+                () => expect(component.isDossierActive(dossier2)).toBe(false));
         });
         it('should return false for undefined', () => {
-            component.openDossier(dossier1);
-            expect(component.isDossierActive(undefined)).toBe(false);
+            component.openDossier(dossier1).subscribe(
+                () => expect(component.isDossierActive(undefined)).toBe(false));
         });
         it('should return false for the no selected dossier', () => {
-            component.openDossier(undefined);
-            expect(component.isDossierActive(dossier1)).toBe(false);
+            component.openDossier(undefined).subscribe(
+                () => expect(component.isDossierActive(dossier1)).toBe(false));
         });
     });
 
@@ -147,10 +148,11 @@ describe('fallToolbar', () => {
             initTestBed();
         }));
 
-        it('should return true for non default values and available Gemeinden', fakeAsync(() => {
+        it('should return true if newDossierToCreate is set and available Gemeinden', fakeAsync(() => {
             component.dossierId = dossier1.id;
             component.fallId = fall.id;
-            component.ngOnInit(); // to update all depending objects in the component
+            component.newDossierToCreate = undefined;
+            component.ngOnChanges({fallId: component.fallId}); // to update all depending objects in the component
 
             tick();
             expect(component.showCreateNewDossier()).toBe(true);

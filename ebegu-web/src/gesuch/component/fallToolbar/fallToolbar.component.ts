@@ -16,7 +16,7 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
-import {Observable, of} from 'rxjs';
+import {from as fromPromise, Observable, of} from 'rxjs';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -45,7 +45,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     @Input() fallId: string;
     @Input() dossierId: string;
-    @Input() defaultGemeindeName: string;
+    @Input() newDossierToCreate: TSDossier;
 
     dossierList: TSDossier[] = [];
     selectedDossier?: TSDossier;
@@ -62,16 +62,29 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.loadObjects();
+        // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 
     private loadObjects() {
-        if (!this.useDefaultValues()) {
+        if (this.fallId) {
             this.dossierRS.findDossiersByFall(this.fallId).then(dossiers => {
                 this.dossierList = dossiers;
                 this.setSelectedDossier();
+                this.addNewDossierToCreateToDossiersList();
                 this.retrieveListOfAvailableGemeinden();
             });
+        } else {
+            this.addNewDossierToCreateToDossiersList();
+        }
+    }
+
+    /**
+     * In case a newDossierToCreate exists and it is not already contained in the list then we add it
+     */
+    private addNewDossierToCreateToDossiersList() {
+        if (this.newDossierToCreate && !this.dossierList.includes(this.newDossierToCreate)) {
+            this.dossierList.push(this.newDossierToCreate);
+            this.selectedDossier = this.dossierList[this.dossierList.length - 1];
         }
     }
 
@@ -79,10 +92,6 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         if (changes['fallId'] || changes['dossierId']) {
             this.loadObjects();
         }
-    }
-
-    public useDefaultValues(): boolean {
-        return !this.dossierId && !this.fallId;
     }
 
     private setSelectedDossier() {
@@ -106,21 +115,25 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      * Opens a dossier
      * If it is undefined it doesn't do anything
      */
-    public openDossier(dossier: TSDossier): void {
+    public openDossier(dossier: TSDossier): Observable<TSDossier> {
         if (dossier) {
-            this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
-                if (newestGesuchID) {
-                    this.selectedDossier = dossier;
-                    NavigationUtil.navigateToStartsiteOfGesuchForRole(
-                        this.authServiceRS.getPrincipalRole(),
-                        this.$state,
-                        newestGesuchID,
-                    );
-                } else {
-                    this.LOG.warn(`newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
-                }
-            });
+            return fromPromise(
+                this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
+                    if (newestGesuchID) {
+                        this.selectedDossier = dossier;
+                        NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                            this.authServiceRS.getPrincipalRole(),
+                            this.$state,
+                            newestGesuchID,
+                        );
+                    } else {
+                        this.LOG.warn(`newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
+                    }
+                    return this.selectedDossier;
+                })
+            );
         }
+        return of(this.selectedDossier);
     }
 
     public createNewDossier(): void {
@@ -198,8 +211,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     public showCreateNewDossier(): boolean {
-        return !this.useDefaultValues()
-            && (!this.isOnlineGesuch() === !this.authServiceRS.isRole(TSRole.GESUCHSTELLER))
+        return !this.isOnlineGesuch() === !this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
             && this.availableGemeindeList.length !== 0;
     }
 }

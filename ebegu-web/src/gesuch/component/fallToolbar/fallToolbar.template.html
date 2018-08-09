@@ -17,27 +17,24 @@
     <div layout="row" class="row fall-toolbar-content">
 
         <div class="dossier-list col-md-12">
-            <div class="dossier-element dossier-active" *ngIf="useDefaultValues(); else Dossiers">
-                <span [textContent]="defaultGemeindeName"></span>
+
+            <button *ngFor="let dossier of dossierList" class="dossier-element"
+                    [ngClass]="{'dossier-active': isDossierActive(dossier)}"
+                    (click)="openDossier(dossier)">
+                {{dossier.extractGemeindeName()}}
+            </button>
+
+            <button *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                    (click)="createNewDossier()" class="dossier-element add-dossier">
+                <i class="fa fa-plus"></i>
+            </button>
+
+            <div class="pull-right dossier-element fall-nummer">
+                <span [textContent]="fallNummer"></span>
+                <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
             </div>
 
-            <ng-template #Dossiers>
-                <button *ngFor="let dossier of dossierList" class="dossier-element"
-                        [ngClass]="{'dossier-active': isDossierActive(dossier)}"
-                        (click)="openDossier(dossier)">
-                    {{dossier.extractGemeindeName()}}
-                </button>
-
-                <button *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                        (click)="createNewDossier()" class="dossier-element add-dossier">
-                    <i class="fa fa-plus"></i>
-                </button>
-
-                <div class="pull-right dossier-element fall-nummer">
-                    <span [textContent]="fallNummer"></span>
-                    <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
-                </div>
-            </ng-template>
         </div>
+
     </div>
 </div>
