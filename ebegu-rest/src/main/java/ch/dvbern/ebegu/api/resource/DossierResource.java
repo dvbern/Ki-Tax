@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -156,8 +158,10 @@ public class DossierResource {
 		String fallId = converter.toEntityId(fallJaxId);
 		Collection<Dossier> dossierList = dossierService.findDossiersByFall(fallId);
 
+		//noinspection ConstantConditions -> here JaxAbstractDTO::getTimestampErstellt cannot be null
 		return dossierList.stream()
 			.map(dossier -> converter.dossierToJAX(dossier))
+			.sorted(Comparator.comparing(JaxAbstractDTO::getTimestampErstellt))
 			.collect(Collectors.toList());
 	}
 
