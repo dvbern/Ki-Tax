@@ -18,6 +18,7 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRole} from '../../models/enums/TSRole';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -31,6 +32,14 @@ const states: Ng2StateDeclaration[] = [
         component: OnboardingComponent,
         data: {
             roles: [TSRole.ANONYMOUS]
+        }
+    },
+    {
+        name: 'onboarding.gs-abschliessen',
+        url: '/abschliessen',
+        component: OnboardingGsAbschliessenComponent,
+        data: {
+            roles: [TSRole.GESUCHSTELLER]
         }
     },
 ];

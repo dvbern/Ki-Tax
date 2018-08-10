@@ -1,0 +1,106 @@
+@import (reference) '../../../style/variables.less';
+
+.onboarding-text() {
+    font-size: 1.4rem;
+    color: @white;
+    letter-spacing: 0.05rem;
+    line-height: 1.9rem;
+}
+
+.onboarding-gs-angaben, .onboarding-gs-gemeinde {
+    float: left;
+    padding: 50px;
+    &-title {
+        padding: 20px;
+        background-color: @dgrey;
+        color: @white;
+        .onboarding-gs-gemeinde-aendern {
+            background-color: @white;
+            color: @black;
+        }
+    }
+    &-content {
+        padding: 20px;
+        background-color:  @white;
+        color: @black;
+
+        // TODO ab hier geht es irgendwie nicht mehr...
+        &-table {
+            border: 1px;
+            border-color: @black;
+
+            &-label {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.onboarding-gs-abschliessen {
+    height: 4rem;
+    width: 26.3rem;
+    min-width: 26.3rem;
+    max-width: 26.3rem;
+    margin-top: 1.7rem;
+    .onboarding-text();
+    background-color: @primary;
+    text-align: center;
+    flex: 1;
+    border: none;
+    text-transform: uppercase;
+}
+
+.onboarding {
+
+    &-container {
+        overflow-y: auto;
+        background: url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed; /* fallback */
+        background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
+        url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        color: white;
+    }
+
+    &-content {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+
+        &-login {
+            margin-top: 15vh;
+            text-align: center;
+            color: @white;
+            letter-spacing: 0.05rem;
+
+            a {
+                color: @red
+            }
+        }
+    }
+
+    &-title {
+        font-size: 7.2rem;
+        font-weight: bold;
+        line-height: 9.8rem;
+        letter-spacing: 0.15rem;
+        color: @white;
+        padding: 4vh;
+    }
+
+    &-subtitle {
+        font-size: 3.6rem;
+        font-weight: bold;
+        letter-spacing: 0.193rem;
+        line-height: 4.9rem;
+        color: @white;
+        margin: 5vh;
+    }
+}

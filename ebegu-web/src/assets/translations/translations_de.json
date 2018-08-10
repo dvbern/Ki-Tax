@@ -1323,5 +1323,12 @@
     "ONBOARDING_GEMEINDE_AUSWAEHLEN": "Gemeinde auswählen",
     "ONBOARDING_ACCOUNT_VORHANDEN": "Besitzen Sie bereits einen Account?",
     "ONBOARDING_ANMELDEN": "Anmelden",
-    "ONBOARDING_LOCAL_LOGIN": "Local Login"
+    "ONBOARDING_LOCAL_LOGIN": "Local Login",
+    "ONBOARDING_GS_ABSCHLIESSEN": "Registrierung abschliessen",
+    "ONBOARDING_GS_GEMEINDE_TITLE": "Ausgewählte Gemeinde",
+    "ONBOARDING_GS_GEMEINDE_AENDERN": "Ändern",
+    "ONBOARDING_GS_ANGABEN_TITLE": "BE-Login Daten",
+    "ONBOARDING_GS_ANGABEN_VORNAME": "Vorname",
+    "ONBOARDING_GS_ANGABEN_NAME": "Name",
+    "ONBOARDING_GS_ANGABEN_MAIL": "E-Mail"
 }

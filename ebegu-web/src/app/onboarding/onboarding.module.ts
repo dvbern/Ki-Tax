@@ -15,6 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
+import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 import {OnboardingRoutingModule} from './onboarding-routing.module';
 
@@ -24,7 +25,8 @@ import {OnboardingRoutingModule} from './onboarding-routing.module';
         OnboardingRoutingModule,
     ],
     declarations: [
-        OnboardingComponent
+        OnboardingComponent,
+        OnboardingGsAbschliessenComponent
     ]
 })
 class OnboardingModule {
