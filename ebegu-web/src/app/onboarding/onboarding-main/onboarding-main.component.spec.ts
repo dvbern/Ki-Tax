@@ -16,6 +16,9 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {UIRouterModule} from '@uirouter/angular';
+import {SharedModule} from '../../shared/shared.module';
 
 import {OnboardingMainComponent} from './onboarding-main.component';
 
@@ -25,6 +28,11 @@ describe('OnboardingMainComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                UIRouterModule.forRoot({useHash: true}),
+            ],
             declarations: [OnboardingMainComponent]
         })
             .compileComponents();

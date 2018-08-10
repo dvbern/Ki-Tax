@@ -15,28 +15,50 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {Transition, UIRouterModule} from '@uirouter/angular';
+import {SharedModule} from '../../shared/shared.module';
 
-import { OnboardingBeLogingComponent } from './onboarding-be-loging.component';
+import {OnboardingBeLogingComponent} from './onboarding-be-loging.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('OnboardingBeLogingComponent', () => {
-  let component: OnboardingBeLogingComponent;
-  let fixture: ComponentFixture<OnboardingBeLogingComponent>;
+    let component: OnboardingBeLogingComponent;
+    let fixture: ComponentFixture<OnboardingBeLogingComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ OnboardingBeLogingComponent ]
-    })
-    .compileComponents();
-  }));
+    const transitionSpy = createSpyObj<Transition>(Transition.name, ['params']);
+    const GEMEINDE_ID = '1';
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OnboardingBeLogingComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        transitionSpy.params.and.returnValue({gemeindeId: GEMEINDE_ID});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                UIRouterModule.forRoot({ useHash: true }),
+            ],
+            declarations: [OnboardingBeLogingComponent],
+            providers: [
+                {provide: Transition, useValue: transitionSpy}
+
+            ]
+        })
+            .compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(OnboardingBeLogingComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should read a gemeindeId state param', () => {
+        expect(transitionSpy.params).toHaveBeenCalled();
+    });
 });
