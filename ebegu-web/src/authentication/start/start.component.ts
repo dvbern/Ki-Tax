@@ -15,19 +15,19 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IOnInit} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import TSUser from '../../../models/TSUser';
-import AuthenticationUtil from '../../../utils/AuthenticationUtil';
-import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import TSUser from '../../models/TSUser';
+import AuthenticationUtil from '../../utils/AuthenticationUtil';
+import {AuthLifeCycleService} from '../service/authLifeCycle.service';
 
 export const StartComponentConfig: IComponentOptions = {
     transclude: false,
-    template: require('./startView.html'),
+    template: require('./start.component.html'),
     controllerAs: 'vm',
 };
 
-export class StartViewController implements IController, IOnInit {
+export class StartController implements IController, IOnInit {
 
     static $inject: string[] = ['$state', 'AuthLifeCycleService', 'AuthServiceRS'];
 
@@ -42,10 +42,10 @@ export class StartViewController implements IController, IOnInit {
         if (this.authService.getPrincipal()) {  // wenn logged in
             AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
         } else {
-            //wenn wir noch nicht eingeloggt sind werden wir das event welches das login prozedere anstoesst
+            //wenn wir noch nicht eingeloggt sind werfen wir das event, welches das login prozedere anstoesst
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, 'not logged in on startpage');
         }
     }
 }
 
-StartComponentConfig.controller = StartViewController;
+StartComponentConfig.controller = StartController;

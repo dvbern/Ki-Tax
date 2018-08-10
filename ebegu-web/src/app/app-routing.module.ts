@@ -9,15 +9,13 @@
  */
 
 import {NgModule} from '@angular/core';
-import {UIRouterModule} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule,
-        UIRouterModule.forChild({states: []}),
+        UIRouterUpgradeModule.forChild({states: []}),
     ],
-    exports: [UIRouterModule],
+    exports: [UIRouterUpgradeModule],
 })
 export class AppRoutingModule {
 }

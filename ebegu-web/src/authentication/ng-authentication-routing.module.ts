@@ -14,18 +14,18 @@
  */
 
 import {NgModule} from '@angular/core';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Ng2StateDeclaration} from '@uirouter/angular';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {LogFactory} from '../app/core/logging/LogFactory';
-import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
+import {LocalLoginComponent} from './local-login/local-login.component';
 
 export const localLoginState: Ng2StateDeclaration = {
     name: 'authentication.locallogin',
     url: '/locallogin',
-    component: DummyAuthenticationListViewComponent,
+    component: LocalLoginComponent,
     resolve: [
         {
             token: 'locallogin',
@@ -33,11 +33,14 @@ export const localLoginState: Ng2StateDeclaration = {
             resolveFn: readDummyLoginEnabled,
         }
     ],
+    data: {
+        isPublic: true
+    }
 };
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({ states: [ localLoginState ] })
+        UIRouterUpgradeModule.forChild({states: [localLoginState]})
     ],
     exports: [],
 })
