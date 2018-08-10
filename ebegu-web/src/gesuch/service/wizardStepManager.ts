@@ -16,16 +16,16 @@
 import {IPromise, IQService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TSWizardStepName';
-import TSWizardStep from '../../models/TSWizardStep';
-import WizardStepRS from './WizardStepRS.rest';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import TSGesuch from '../../models/TSGesuch';
+import TSWizardStep from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import WizardStepRS from './WizardStepRS.rest';
 
 export default class WizardStepManager {
 
@@ -38,7 +38,9 @@ export default class WizardStepManager {
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
-    constructor(private readonly authServiceRS: AuthServiceRS, private readonly wizardStepRS: WizardStepRS, private readonly $q: IQService,
+    constructor(private readonly authServiceRS: AuthServiceRS,
+                private readonly wizardStepRS: WizardStepRS,
+                private readonly $q: IQService,
                 private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
@@ -178,11 +180,7 @@ export default class WizardStepManager {
             return false;
         }
 
-        if (newStepStatus === TSWizardStepStatus.OK && oldStepStatus === TSWizardStepStatus.MUTIERT) {
-            return false;
-        }
-
-        return true;
+        return !(newStepStatus === TSWizardStepStatus.OK && oldStepStatus === TSWizardStepStatus.MUTIERT);
     }
 
     /**
@@ -204,7 +202,6 @@ export default class WizardStepManager {
             return this.findStepsFromGesuch(response.gesuchId);
         });
     }
-
 
     /**
      * Diese Methode ist eine Ausnahme. Im ersten Step haben wir das Problem, dass das Gesuch noch nicht existiert. Deswegen koennen
@@ -275,9 +272,9 @@ export default class WizardStepManager {
 
         if (step !== undefined) {
             return (this.isStepClickableForCurrentRole(step, gesuch)
-            || ((gesuch.typ === TSAntragTyp.ERSTGESUCH || gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH) && step.wizardStepStatus === TSWizardStepStatus.UNBESUCHT
-            && !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllButAdministratorJugendamtRole()) && stepName === TSWizardStepName.VERFUEGEN))
-            || (gesuch.typ === TSAntragTyp.MUTATION && step.wizardStepName === TSWizardStepName.FAMILIENSITUATION));
+                || ((gesuch.typ === TSAntragTyp.ERSTGESUCH || gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH) && step.wizardStepStatus === TSWizardStepStatus.UNBESUCHT
+                    && !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllButAdministratorJugendamtRole()) && stepName === TSWizardStepName.VERFUEGEN))
+                || (gesuch.typ === TSAntragTyp.MUTATION && step.wizardStepName === TSWizardStepName.FAMILIENSITUATION));
         }
         return false;  // wenn der step undefined ist geben wir mal verfuegbar zurueck
     }
@@ -317,8 +314,7 @@ export default class WizardStepManager {
             if (this.wizardSteps[i].wizardStepName === TSWizardStepName.BETREUUNG) {
                 if (!this.isStatusOk(this.wizardSteps[i].wizardStepStatus)
                     && this.wizardSteps[i].wizardStepStatus !== TSWizardStepStatus.PLATZBESTAETIGUNG
-                    && (this.wizardSteps[i].wizardStepStatus !== TSWizardStepStatus.NOK
-                    && !gesuch.isThereAnyBetreuung())) {
+                    && (this.wizardSteps[i].wizardStepStatus !== TSWizardStepStatus.NOK && !gesuch.isThereAnyBetreuung())) {
                     return false;
                 }
 

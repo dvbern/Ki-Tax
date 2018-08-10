@@ -14,19 +14,15 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import {ReportRS} from '../../app/core/service/reportRS.rest';
 import ZahlungRS from '../../app/core/service/zahlungRS.rest';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../gesuch/dialog/RemoveDialogController';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
@@ -46,12 +42,11 @@ export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class ZahlungsauftragViewController {
+export class ZahlungsauftragViewController implements IController {
 
     static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
-        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate', 'AuthLifeCycleService'];
+        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     form: IFormController;
     private zahlungsauftragen: Array<TSZahlungsauftrag>;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
@@ -72,29 +67,19 @@ export class ZahlungsauftragViewController {
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly ebeguUtil: EbeguUtil,
                 private readonly dvDialog: DvDialog,
-                private readonly $translate: ITranslateService,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+                private readonly $translate: ITranslateService) {
     }
 
     public getZahlungsauftragen() {
         return this.zahlungsauftragen;
     }
 
-    private initViewModel() {
+    public $onInit() {
         this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days'); // Testlauf darf auch nur in die Zukunft gemacht werden!
         this.updateZahlungsauftrag();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
-    }
-
-    $onDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     private updateZahlungsauftrag() {

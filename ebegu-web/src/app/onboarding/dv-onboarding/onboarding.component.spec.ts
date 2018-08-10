@@ -1,19 +1,23 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {SharedModule} from '../../../shared/shared.module';
+import {of} from 'rxjs';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {SharedModule} from '../../shared/shared.module';
 
 import {OnboardingComponent} from './onboarding.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('DvOnboardingComponent', () => {
+describe('OnboardingComponent', () => {
     let component: OnboardingComponent;
     let fixture: ComponentFixture<OnboardingComponent>;
 
     const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllGemeinden']);
+    const applicationPropertyRSSpy = createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAllGemeinden.and.returnValue([]);
+        gemeindeRSSpy.getAllGemeinden.and.returnValue(of([]).toPromise());
+        applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
 
         TestBed.configureTestingModule({
             imports: [
@@ -23,6 +27,7 @@ describe('DvOnboardingComponent', () => {
             declarations: [OnboardingComponent],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ]
         })
             .compileComponents();

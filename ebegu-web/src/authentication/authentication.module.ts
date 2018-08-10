@@ -13,20 +13,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import HttpAuthInterceptor from './service/HttpAuthInterceptor';
-import {authenticationRun} from './authentication.route';
+import * as angular from 'angular';
+import {authenticationHookRunBlock} from './authentication.hook';
+import {authenticationRoutes} from './authentication.route';
+import {authorisationHookRunBlock} from './authorisation.hook';
+import {dummyLoginHookRunBlock} from './dummyLogin.hook';
+import {LoginComponentConfig} from './login/login.component';
+import {SchulungComponentConfig} from './schulung/schulung.component';
 import AuthServiceRS from './service/AuthServiceRS.rest';
+import HttpAuthInterceptor from './service/HttpAuthInterceptor';
 import HttpBuffer from './service/HttpBuffer';
-import {AuthenticationComponentConfig} from './authenticaton';
-import {StartComponentConfig} from './component/startView/startView';
-import {SchulungComponentConfig} from './schulung';
 
 export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
-        .run(authenticationRun)
+        .run(authenticationHookRunBlock)
+        .run(authorisationHookRunBlock)
+        .run(dummyLoginHookRunBlock)
+        .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('startView', StartComponentConfig)
-        .component('schulungView', SchulungComponentConfig)
-        .component('authenticationView', AuthenticationComponentConfig);
+        .component('dvSchulung', SchulungComponentConfig)
+        .component('dvLogin', LoginComponentConfig);

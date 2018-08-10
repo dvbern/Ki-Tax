@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -15,19 +15,19 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
-import {TestFaelleRS} from '../admin/service/testFaelleRS.rest';
-import {TSRole} from '../models/enums/TSRole';
-import TSInstitution from '../models/TSInstitution';
-import {TSMandant} from '../models/TSMandant';
-import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import TSUser from '../models/TSUser';
-import AuthenticationUtil from '../utils/AuthenticationUtil';
-import AuthServiceRS from './service/AuthServiceRS.rest';
+import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
+import {TSRole} from '../../models/enums/TSRole';
+import TSInstitution from '../../models/TSInstitution';
+import {TSMandant} from '../../models/TSMandant';
+import {TSTraegerschaft} from '../../models/TSTraegerschaft';
+import TSUser from '../../models/TSUser';
+import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
+import AuthServiceRS from '../service/AuthServiceRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 
 export const SchulungComponentConfig: IComponentOptions = {
     transclude: false,
-    template: require('./schulung.html'),
+    template: require('./schulung.component.html'),
     controllerAs: 'vm',
 };
 
@@ -112,10 +112,9 @@ export class SchulungViewController implements IController {
         return institution;
     }
 
-    public logIn(user: TSUser): void {
-        this.authServiceRS.loginRequest(user).then(() => {
-            AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
-        });
+    public logIn(credentials: TSUser): void {
+        this.authServiceRS.loginRequest(credentials)
+            .then(user => navigateToStartPageForRole(user.getCurrentRole(), this.$state));
     }
 }
 

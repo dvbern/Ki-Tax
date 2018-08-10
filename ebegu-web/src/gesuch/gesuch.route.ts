@@ -13,9 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {OnboardingComponent} from '../app/core/component/dv-onboarding/onboarding.component';
 import KindRS from '../app/core/service/kindRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
@@ -39,18 +37,10 @@ const gesuchTpl = require('./gesuch.html');
 gesuchRun.$inject = ['RouterHelper'];
 
 export function gesuchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(ng1States, ng2States);
+    routerHelper.configureStates(ng1States, []);
 }
 
 //STATES
-
-const ng2States: Ng2StateDeclaration[] = [
-    {
-        name: 'onboarding',
-        url: '/',
-        component: OnboardingComponent,
-    },
-];
 
 export class EbeguGesuchState implements Ng1StateDeclaration {
     parent = 'app';
@@ -86,6 +76,10 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
     resolve = {
         gesuch: reloadGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    };
 }
 
 export class EbeguMutationState implements Ng1StateDeclaration {
@@ -103,6 +97,10 @@ export class EbeguMutationState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: createEmptyMutation
+    };
+
+    data = {
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
     };
 }
 
@@ -122,6 +120,10 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     resolve = {
         gesuch: createEmptyErneuerungsgesuch
     };
+
+    data = {
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+    };
 }
 
 export class EbeguFamiliensituationState implements Ng1StateDeclaration {
@@ -139,6 +141,10 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRoles()
     };
 }
 
@@ -161,6 +167,10 @@ export class EbeguStammdatenState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRoles()
+    };
 }
 
 export class EbeguUmzugState implements Ng1StateDeclaration {
@@ -178,6 +188,10 @@ export class EbeguUmzugState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRoles()
     };
 }
 
@@ -197,6 +211,10 @@ export class EbeguKinderListState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager,
         kinderDubletten: getKinderDubletten
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -219,6 +237,10 @@ export class EbeguKindState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguBetreuungListState implements Ng1StateDeclaration {
@@ -236,6 +258,10 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRoles()
     };
 }
 
@@ -259,6 +285,10 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRoles()
+    };
 }
 
 export class EbeguAbwesenheitState implements Ng1StateDeclaration {
@@ -277,6 +307,10 @@ export class EbeguAbwesenheitState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt()
+    };
 }
 
 export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
@@ -294,6 +328,10 @@ export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
 }
 
@@ -316,6 +354,10 @@ export class EbeguErwerbspensumState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    };
 }
 
 export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
@@ -337,6 +379,10 @@ export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration {
@@ -355,6 +401,10 @@ export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration 
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclaration {
@@ -372,6 +422,10 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -392,6 +446,10 @@ export class EbeguVerfuegenListState implements Ng1StateDeclaration {
         gesuch: getGesuchModelManager,
         mahnungList: getMahnungen
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt()
+    };
 }
 
 export class EbeguVerfuegenState implements Ng1StateDeclaration {
@@ -409,6 +467,10 @@ export class EbeguVerfuegenState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt()
     };
 }
 
@@ -428,6 +490,10 @@ export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclara
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDeclaration {
@@ -445,6 +511,10 @@ export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDecl
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -468,6 +538,10 @@ export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDeclaration {
@@ -488,6 +562,10 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -510,6 +588,10 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    };
 }
 
 export class EbeguFreigabeState implements Ng1StateDeclaration {
@@ -527,6 +609,10 @@ export class EbeguFreigabeState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
 }
 
@@ -548,6 +634,10 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRoles()
     };
 }
 

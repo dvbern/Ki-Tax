@@ -16,34 +16,33 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {Transition} from '@uirouter/core';
-import {getTSRoleValues} from '../models/enums/TSRole';
-import {returnTo} from './authentication.route';
-import {LocalLoginComponent} from './local-login/local-login.component';
+import {TSRole} from '../../models/enums/TSRole';
+import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 
-export const localLoginState: Ng2StateDeclaration = {
-    name: 'authentication.locallogin',
-    url: '/locallogin',
-    component: LocalLoginComponent,
-    resolve: [
-        {
-            token: 'returnTo',
-            deps: [Transition],
-            resolveFn: returnTo
+const states: Ng2StateDeclaration[] = [
+    {
+        parent: 'app',
+        name: 'onboarding',
+        abstract: true
+    },
+    {
+        name: 'onboarding.start',
+        url: '/',
+        component: OnboardingComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS]
         }
-    ],
-    data: {
-        roles: getTSRoleValues(),
-        requiresDummyLogin: true,
-    }
-};
+    },
+];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [localLoginState]})
+        UIRouterUpgradeModule.forChild({states}),
     ],
-    exports: [],
+    exports: [
+        UIRouterUpgradeModule
+    ],
+    declarations: []
 })
-export class NgAuthenticationRoutingModule {
+export class OnboardingRoutingModule {
 }
-

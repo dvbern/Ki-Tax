@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,6 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.autenticationView {
+declare module 'randomcolor' {
+    interface RandomColorOptions {
+        hue?: number | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'monochrome' | 'random';
+        luminosity?: 'bright' | 'light' | 'dark' | 'random';
+        count?: number;
+        seed?: number | string;
+        format?: 'hsvArray' | 'hslArray' | 'hsl' | 'hsla' | 'rgbArray' | 'rgb' | 'rgba' | 'hex';
+    }
 
+    declare function randomColor(options?: RandomColorOptions): string;
 }
+

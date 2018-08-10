@@ -1316,5 +1316,12 @@
     "DEUTSCH": "Deutsch",
     "FRANZOESISCH": "Französisch",
     "GEMEINDE_AUSWAEHLEN": "Gemeinde auswählen",
-    "AUSWAEHLEN": "Auswählen"
+    "AUSWAEHLEN": "Auswählen",
+    "KIBON": "kiBon",
+    "ONBOARDING_BG_BEANTRAGEN": "Betreuungsgutschein beantragen",
+    "ONBOARDING_GEMEINDE_AUSWAHL": "Betreuungsgutscheine sind in folgenden Gemeinden verfügbar",
+    "ONBOARDING_GEMEINDE_AUSWAEHLEN": "Gemeinde auswählen",
+    "ONBOARDING_ACCOUNT_VORHANDEN": "Besitzen Sie bereits einen Account?",
+    "ONBOARDING_ANMELDEN": "Anmelden",
+    "ONBOARDING_LOCAL_LOGIN": "Local Login"
 }

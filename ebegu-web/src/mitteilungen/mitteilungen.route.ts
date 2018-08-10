@@ -15,6 +15,7 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 mitteilungenRun.$inject = ['RouterHelper'];
 
@@ -27,6 +28,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'mitteilungen',
+        data: {
+            roles: TSRoleUtil.getAllRolesButSteueramt(),
+        },
     },
     {
         name: 'mitteilungen.view',

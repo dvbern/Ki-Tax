@@ -14,36 +14,20 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {Transition} from '@uirouter/core';
-import {getTSRoleValues} from '../models/enums/TSRole';
-import {returnTo} from './authentication.route';
-import {LocalLoginComponent} from './local-login/local-login.component';
-
-export const localLoginState: Ng2StateDeclaration = {
-    name: 'authentication.locallogin',
-    url: '/locallogin',
-    component: LocalLoginComponent,
-    resolve: [
-        {
-            token: 'returnTo',
-            deps: [Transition],
-            resolveFn: returnTo
-        }
-    ],
-    data: {
-        roles: getTSRoleValues(),
-        requiresDummyLogin: true,
-    }
-};
+import {SharedModule} from '../shared/shared.module';
+import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingRoutingModule} from './onboarding-routing.module';
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [localLoginState]})
+        SharedModule,
+        OnboardingRoutingModule,
     ],
-    exports: [],
+    declarations: [
+        OnboardingComponent
+    ]
 })
-export class NgAuthenticationRoutingModule {
+class OnboardingModule {
 }
 
+export {OnboardingModule};

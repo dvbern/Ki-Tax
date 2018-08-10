@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,24 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject} from '@angular/core';
-import {UIRouter} from '@uirouter/core';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
-import {TSRole} from '../models/enums/TSRole';
-import TSGemeinde from '../models/TSGemeinde';
-import TSInstitution from '../models/TSInstitution';
-import {TSMandant} from '../models/TSMandant';
-import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import TSUser from '../models/TSUser';
-import AuthenticationUtil from '../utils/AuthenticationUtil';
-import AuthServiceRS from './service/AuthServiceRS.rest';
+import {Component, Input} from '@angular/core';
+import {StateService, TargetState} from '@uirouter/core';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
+import {TSRole} from '../../models/enums/TSRole';
+import TSGemeinde from '../../models/TSGemeinde';
+import TSInstitution from '../../models/TSInstitution';
+import {TSMandant} from '../../models/TSMandant';
+import {TSTraegerschaft} from '../../models/TSTraegerschaft';
+import TSUser from '../../models/TSUser';
+import {returnToOriginalState} from '../../utils/AuthenticationUtil';
+import AuthServiceRS from '../service/AuthServiceRS.rest';
 
 @Component({
-    selector: 'dummy-authentication-view',
-    templateUrl: './dummyAuthentication.html',
-    styleUrls: ['./dummyAuthentication.less'],
+    selector: 'dv-local-login',
+    templateUrl: './local-login.component.html',
+    styleUrls: ['./local-login.component.less'],
 })
-export class DummyAuthenticationListViewComponent {
+export class LocalLoginComponent {
+
+    @Input() public returnTo: TargetState;
 
     // Allgemeine User
     public superadmin: TSUser;
@@ -82,17 +84,17 @@ export class DummyAuthenticationListViewComponent {
     private readonly traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
 
-    constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
-                @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
-                @Inject(UIRouter) private readonly uiRouter: UIRouter) {
+    constructor(private readonly authServiceRS: AuthServiceRS,
+                private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly stateService: StateService) {
 
-        this.mandant = DummyAuthenticationListViewComponent.getMandant();
-        this.gemeindeBern = DummyAuthenticationListViewComponent.getGemeindeBern();
-        this.gemeindeOstermundigen = DummyAuthenticationListViewComponent.getGemeindeOstermundigen();
-        this.traegerschaftStadtBern = DummyAuthenticationListViewComponent.getTraegerschaftStadtBern();
-        this.traegerschaftLeoLea = DummyAuthenticationListViewComponent.getTraegerschaftLeoLea();
-        this.traegerschaftSGF = DummyAuthenticationListViewComponent.getTraegerschaftSGF();
-        this.traegerschaftFamex = DummyAuthenticationListViewComponent.getTraegerschaftFamex();
+        this.mandant = LocalLoginComponent.getMandant();
+        this.gemeindeBern = LocalLoginComponent.getGemeindeBern();
+        this.gemeindeOstermundigen = LocalLoginComponent.getGemeindeOstermundigen();
+        this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern();
+        this.traegerschaftLeoLea = LocalLoginComponent.getTraegerschaftLeoLea();
+        this.traegerschaftSGF = LocalLoginComponent.getTraegerschaftSGF();
+        this.traegerschaftFamex = LocalLoginComponent.getTraegerschaftFamex();
         this.institution = this.getInsitution();
         this.applicationPropertyRS.isDevMode().then((response) => {
             this.devMode = response;
@@ -279,9 +281,8 @@ export class DummyAuthenticationListViewComponent {
         return institution;
     }
 
-    public logIn(user: TSUser): void {
-        this.authServiceRS.loginRequest(user).then(() => {
-            AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
-        });
+    public logIn(credentials: TSUser): void {
+        this.authServiceRS.loginRequest(credentials)
+            .then(() => returnToOriginalState(this.stateService, this.returnTo));
     }
 }
