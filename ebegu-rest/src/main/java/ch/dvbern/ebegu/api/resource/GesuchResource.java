@@ -63,7 +63,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -93,9 +92,6 @@ public class GesuchResource {
 
 	@Inject
 	private DossierService dossierService;
-
-	@Inject
-	private FallService fallService;
 
 	@Inject
 	private PrincipalBean principalBean;

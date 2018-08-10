@@ -831,9 +831,9 @@ function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchMo
 
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
-                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId, false); // TODO KIBON-91 testen. false??
+                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId, false);
             } else if (antragtyp === TSAntragTyp.MUTATION) {
-                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId, true); // TODO KIBON-91 testen. false??
+                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId, true);
             }
         }
     }
