@@ -15,6 +15,7 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 faelleRun.$inject = ['RouterHelper'];
 
@@ -27,6 +28,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'faelle',
+        data: {
+            roles: TSRoleUtil.getAllRolesForMenuAlleFaelle(),
+        },
     },
     {
         name: 'faelle.list',

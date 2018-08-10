@@ -15,6 +15,7 @@
 
 import * as angular from 'angular';
 import {Observable, ReplaySubject} from 'rxjs';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import UserRS from '../../app/core/service/userRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -34,7 +35,7 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 
 export default class AuthServiceRS {
 
-    static $inject = ['$http', 'CONSTANTS', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
+    static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
         'UserRS'];
 
     private principal?: TSUser;
@@ -46,7 +47,6 @@ export default class AuthServiceRS {
     public principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
 
     constructor(private readonly $http: IHttpService,
-                private readonly CONSTANTS: any,
                 private readonly $q: IQService,
                 private readonly $timeout: ITimeoutService,
                 private readonly $cookies: ICookiesService,
@@ -75,7 +75,7 @@ export default class AuthServiceRS {
             return undefined;
         }
 
-        return this.$http.post(this.CONSTANTS.REST_API + 'auth/login', this.ebeguRestUtil.userToRestObject({}, userCredentials))
+        return this.$http.post(CONSTANTS.REST_API + 'auth/login', this.ebeguRestUtil.userToRestObject({}, userCredentials))
             .then(() => {
                 // try to reload buffered requests
                 this.httpBuffer.retryAll((config: IRequestConfig) => config);
@@ -114,7 +114,7 @@ export default class AuthServiceRS {
     }
 
     public logoutRequest() {
-        return this.$http.post(this.CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
+        return this.$http.post(CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
             this.principal = undefined;
             this.principalSubject$.next(null);
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
@@ -123,13 +123,13 @@ export default class AuthServiceRS {
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
-        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath}}).then((res: any) => {
+        return this.$http.get(CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath}}).then((res: any) => {
             return res.data;
         });
     }
 
     public initSingleLogout(relayPath: string): IPromise<string> {
-        return this.$http.get(this.CONSTANTS.REST_API + 'auth/singleLogout', {params: {relayPath}}).then((res: any) => {
+        return this.$http.get(CONSTANTS.REST_API + 'auth/singleLogout', {params: {relayPath}}).then((res: any) => {
             return res.data;
         });
     }

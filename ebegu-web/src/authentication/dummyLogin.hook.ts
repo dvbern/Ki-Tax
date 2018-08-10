@@ -19,6 +19,12 @@ import {OnBeforePriorities} from './onBeforePriorities';
 
 dummyLoginHookRunBlock.$inject = ['$transitions'];
 
+/**
+ * This file contains a Transition Hook which protects a
+ * route that requires DummyLogin.
+ *
+ * This hook aborts a transition when the the application is not running in dummy mode
+ */
 export function dummyLoginHookRunBlock($transitions: TransitionService) {
     // Matches all states the require dummy login
     const requiresDummyLogin: HookMatchCriteria = {

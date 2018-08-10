@@ -15,7 +15,6 @@
 
 import * as angular from 'angular';
 import {IComponentOptions, IController, IFilterService, ILogService, IPromise, IWindowService} from 'angular';
-import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -59,7 +58,6 @@ export class DVAntragListController implements IController {
     static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
         'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     totalResultCount: number;
     displayedCollection: Array<TSAntragDTO> = []; //Liste die im Gui angezeigt wird
     pagination: any;
@@ -123,11 +121,6 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
-    }
-
-    public $onDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     public updateInstitutionenList(): void {

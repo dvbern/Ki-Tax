@@ -62,8 +62,9 @@ export class IAuthenticationStateParams {
  * A resolve function for 'login' state which figures out what state to return to, after a successful login.
  *
  * If the user was initially redirected to login state (due to the requiresAuth redirect), then return the toState/params
- * they were redirected from.  Otherwise, if they transitioned directly, return the fromState/params.  Otherwise
- * return the main "home" state.
+ * they were redirected from.
+ * Otherwise, if they transitioned directly, return the fromState/params.
+ * Otherwise return the main "home" state.
  */
 returnTo.$inject = ['$transition$'];
 

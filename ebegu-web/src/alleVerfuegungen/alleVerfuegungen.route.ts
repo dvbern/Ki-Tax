@@ -16,6 +16,7 @@
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
@@ -30,6 +31,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'alleVerfuegungen',
+        data: {
+            roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles(),
+        },
     },
     {
         name: 'alleVerfuegungen.view',

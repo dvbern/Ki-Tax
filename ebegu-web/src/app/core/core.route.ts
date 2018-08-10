@@ -73,7 +73,7 @@ export function appRun(angularMomentConfig: any,
     $transitions.onSuccess({}, ignore => errorService.clearAll());
     $transitions.onError({}, transition => {
         if (transition.error().type === RejectType.ABORTED && !hasFromState(transition)) {
-            // we have been blocket by some hook, but we are on no state -> open fallback state
+            // we have been blocked by some hook, but we are on no state -> open fallback state
             navigateToStartPageForRole(TSRole.ANONYMOUS, transition.router.stateService);
             return;
         }

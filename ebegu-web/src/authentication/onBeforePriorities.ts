@@ -13,6 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Transition Hooks can use different priorities.
+ * Hooks with higher priority run before lower priority.
+ */
 export enum OnBeforePriorities {
     AUTHENTICATION = 10,
     AUTHORISATION = 9,

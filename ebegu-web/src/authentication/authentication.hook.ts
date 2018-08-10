@@ -36,7 +36,7 @@ export function authenticationHookRunBlock($transitions: TransitionService) {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
         to: (state) => {
-            return state.data && Array.isArray(state.data.roles) && !state.data.roles.some((role: TSRole) => role === TSRole.ANONYMOUS);
+            return state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS);
         },
     };
 
