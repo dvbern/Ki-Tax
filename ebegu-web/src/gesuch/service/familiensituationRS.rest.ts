@@ -19,23 +19,22 @@ import WizardStepManager from './wizardStepManager';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
 
 export default class FamiliensituationRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService,
-                private wizardStepManager: WizardStepManager) {
+    serviceURL: string;
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService,
+                private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'familiensituation';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public saveFamiliensituation(familiensituation: TSFamiliensituationContainer, gesuchId: string): IPromise<TSFamiliensituationContainer> {
         let returnedFamiliensituation = {};
         returnedFamiliensituation = this.ebeguRestUtil.familiensituationContainerToRestObject(returnedFamiliensituation, familiensituation);
-        return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), returnedFamiliensituation, {
+        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), returnedFamiliensituation, {
             headers: {
                 'Content-Type': 'application/json'
             }

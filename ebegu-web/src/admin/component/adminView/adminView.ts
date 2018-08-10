@@ -13,24 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSApplicationProperty from '../../../models/TSApplicationProperty';
-import {ApplicationPropertyRS} from '../../service/applicationPropertyRS.rest';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IComponentOptions} from 'angular';
-import {ReindexRS} from '../../service/reindexRS.rest';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-require('./adminView.less');
-let template = require('./adminView.html');
+import TSApplicationProperty from '../../../models/TSApplicationProperty';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import AbstractAdminViewController from '../../abstractAdminView';
+import {ReindexRS} from '../../service/reindexRS.rest';
 
 export class AdminViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         applicationProperties: '<'
     };
-    template: string = template;
-    controller: any = AdminViewController;
-    controllerAs: string = 'vm';
+    template = require('./adminView.html');
+    controller = AdminViewController;
+    controllerAs = 'vm';
 }
 
 export class AdminViewController extends AbstractAdminViewController {
@@ -41,10 +39,8 @@ export class AdminViewController extends AbstractAdminViewController {
     applicationProperties: TSApplicationProperty[];
     ebeguRestUtil: EbeguRestUtil;
 
-
-    /* @ngInject */
     constructor(applicationPropertyRS: ApplicationPropertyRS, ebeguRestUtil: EbeguRestUtil,
-                private reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
+                private readonly reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.applicationProperty = undefined;
         this.applicationPropertyRS = applicationPropertyRS;
@@ -78,7 +74,7 @@ export class AdminViewController extends AbstractAdminViewController {
     }
 
     private getIndexOfElementwithID(prop: TSApplicationProperty) {
-        let idToSearch = prop.id;
+        const idToSearch = prop.id;
         for (let i = 0; i < this.applicationProperties.length; i++) {
             if (this.applicationProperties[i].id === idToSearch) {
                 return i;

@@ -14,30 +14,30 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {filter} from 'rxjs/operators';
-import {ReplaySubject} from 'rxjs/ReplaySubject';
-import {Subject} from 'rxjs/Subject';
+import {ReplaySubject, Observable} from 'rxjs';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {Log} from '../../utils/LogFactory';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 
 /**
  * This service can be used to throw TSAuthEvent. When a user logs in or out, throwing the right event
  * will let every class using this service know, that something happened.
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class AuthLifeCycleService {
 
-    private LOG: Log = Log.createLog(AuthLifeCycleService);
+    private readonly LOG = LogFactory.createLog(AuthLifeCycleService.name);
 
-    private _authLifeCycleSubject: Subject<TSAuthEvent> = new ReplaySubject(); // use ReplaySubject because we don't have an initial value
+    private readonly _authLifeCycleSubject$ = new ReplaySubject<TSAuthEvent>(1); // use ReplaySubject because we don't have an initial value
 
     constructor() {}
 
     public changeAuthStatus(status: TSAuthEvent, message?: string): void {
         if (status) {
             this.LOG.info(`An Auth Event has been thrown ${status}. Message: ${message}`);
-            this._authLifeCycleSubject.next(status);
+            this._authLifeCycleSubject$.next(status);
 
         } else {
             this.LOG.error(`An undefined AuthEvent is not allowed. No event thrown. Message: ${message}`);
@@ -45,11 +45,11 @@ export class AuthLifeCycleService {
     }
 
     public getAll$(): Observable<TSAuthEvent> {
-        return this._authLifeCycleSubject.asObservable();
+        return this._authLifeCycleSubject$.asObservable();
     }
 
     public get$(event: TSAuthEvent): Observable<TSAuthEvent> {
-        return this._authLifeCycleSubject
+        return this._authLifeCycleSubject$
             .asObservable()
             .pipe(filter(value => value === event)) as Observable<TSAuthEvent>;
     }

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -24,7 +24,7 @@ import AuthServiceRS from '../../service/AuthServiceRS.rest';
 import {StartViewController} from './startView';
 import {StateService} from '@uirouter/core';
 
-describe('startView', function () {
+describe('startView', () => {
 
     //evtl ist modulaufteilung hier nicht ganz sauber, wir brauchen sowohl core als auch auth modul
     beforeEach(angular.mock.module(EbeguWebCore.name));
@@ -33,14 +33,13 @@ describe('startView', function () {
     beforeEach(angular.mock.module(ngServicesMock));
 
     let authLifeCycleService: AuthLifeCycleService;
-    let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
     let startViewController: StartViewController;
     let authService: AuthServiceRS;
     let mockPrincipal: TSUser;
     let state: StateService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         authLifeCycleService = $injector.get('AuthLifeCycleService');
         authService = $injector.get('AuthServiceRS');
@@ -48,14 +47,14 @@ describe('startView', function () {
         startViewController = new StartViewController(state, authLifeCycleService, authService);
 
     }));
-    beforeEach(function () {
+    beforeEach(() => {
         mockPrincipal = new TSUser();
         mockPrincipal.nachname = 'mockprincipal';
         mockPrincipal.vorname = 'tester';
         mockPrincipal.currentBerechtigung.role = TSRole.GESUCHSTELLER;
     });
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         /*
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.
@@ -63,25 +62,25 @@ describe('startView', function () {
         expect(startViewController).toBeDefined();
     });
 
-    it('should  broadcast "AUTH_EVENTS.notAuthenticated" if no principal is available', function () {
-        let broadcast = spyOn(authLifeCycleService, 'changeAuthStatus');
+    it('should  broadcast "AUTH_EVENTS.notAuthenticated" if no principal is available', () => {
+        const broadcast = spyOn(authLifeCycleService, 'changeAuthStatus');
         startViewController.$onInit();
         expect(broadcast).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, 'not logged in on startpage');
     });
 
-    describe('should  redirect based on role of principal', function () {
-        it('should go to gesuchstellerDashboard if role is gesuchsteller', function () {
+    describe('should  redirect based on role of principal', () => {
+        it('should go to gesuchstellerDashboard if role is gesuchsteller', () => {
             spyOn(authService, 'getPrincipal').and.returnValue(mockPrincipal);
             spyOn(state, 'go');
             startViewController.$onInit();
-            expect(state.go).toHaveBeenCalledWith('gesuchstellerDashboard');
+            expect(state.go).toHaveBeenCalledWith('gesuchsteller.dashboard');
         });
-        it('should go to pendenzen if role is sachbearbeiter ja', function () {
+        it('should go to pendenzen if role is sachbearbeiter ja', () => {
             mockPrincipal.currentBerechtigung.role = TSRole.SACHBEARBEITER_JA;
             spyOn(authService, 'getPrincipal').and.returnValue(mockPrincipal);
             spyOn(state, 'go');
             startViewController.$onInit();
-            expect(state.go).toHaveBeenCalledWith('pendenzen');
+            expect(state.go).toHaveBeenCalledWith('pendenzen.list-view');
         });
     });
 });

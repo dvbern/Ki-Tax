@@ -14,27 +14,25 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import TSDossier from '../../models/TSDossier';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class DossierRS implements IEntityRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService) {
+    serviceURL: string;
+
+    constructor(public $http: IHttpService, REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'dossier';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public createDossier(dossier: TSDossier): IPromise<TSDossier> {
         let sentDossier = {};
         sentDossier = this.ebeguRestUtil.dossierToRestObject(sentDossier, dossier);
-        return this.http.post(this.serviceURL, sentDossier, {
+        return this.$http.post(this.serviceURL, sentDossier, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -45,7 +43,7 @@ export default class DossierRS implements IEntityRS {
     }
 
     public findDossier(dossierId: string): IPromise<TSDossier> {
-        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(dossierId))
+        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(dossierId))
             .then((response: any) => {
                 this.$log.debug('PARSING dossier REST object ', response.data);
                 return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
@@ -53,7 +51,7 @@ export default class DossierRS implements IEntityRS {
     }
 
     public getDossierForFallAndGemeinde(gemeindeId: string, fallId: string): IPromise<TSDossier> {
-        return this.http.get(this.serviceURL + '/gemeinde/' + encodeURIComponent(gemeindeId) + '/fall/' + encodeURIComponent(fallId))
+        return this.$http.get(this.serviceURL + '/gemeinde/' + encodeURIComponent(gemeindeId) + '/fall/' + encodeURIComponent(fallId))
             .then((response: any) => {
                 this.$log.debug('PARSING dossier REST object ', response.data);
                 return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
@@ -61,7 +59,7 @@ export default class DossierRS implements IEntityRS {
     }
 
     public getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId: string): IPromise<TSDossier> {
-        return this.http.put(this.serviceURL + '/createforcurrentbenutzer/' + encodeURIComponent(gemeindeId), {
+        return this.$http.put(this.serviceURL + '/createforcurrentbenutzer/' + encodeURIComponent(gemeindeId), {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -72,7 +70,7 @@ export default class DossierRS implements IEntityRS {
     }
 
     public setVerantwortlicherBG(dossierId: string, username: string): IHttpPromise<TSDossier> {
-        return this.http.put(this.serviceURL + '/verantwortlicherBG/' +  encodeURIComponent(dossierId), username, {
+        return this.$http.put(this.serviceURL + '/verantwortlicherBG/' +  encodeURIComponent(dossierId), username, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -80,7 +78,7 @@ export default class DossierRS implements IEntityRS {
     }
 
     public setVerantwortlicherTS(dossierId: string, username: string): IHttpPromise<TSDossier> {
-        return this.http.put(this.serviceURL + '/verantwortlicherTS/' +  encodeURIComponent(dossierId), username, {
+        return this.$http.put(this.serviceURL + '/verantwortlicherTS/' +  encodeURIComponent(dossierId), username, {
             headers: {
                 'Content-Type': 'application/json'
             }

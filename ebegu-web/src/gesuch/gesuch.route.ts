@@ -13,73 +13,51 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {TSAntragTyp} from '../models/enums/TSAntragTyp';
-import {GesuchRouteController} from './gesuch';
-import GesuchModelManager from './service/gesuchModelManager';
-import TSGesuch from '../models/TSGesuch';
-import BerechnungsManager from './service/berechnungsManager';
-import WizardStepManager from './service/wizardStepManager';
-import MahnungRS from './service/mahnungRS.rest';
-import {TSEingangsart} from '../models/enums/TSEingangsart';
-import KindRS from '../core/service/kindRS.rest';
+import {OnboardingComponent} from '../app/core/component/dv-onboarding/onboarding.component';
+import KindRS from '../app/core/service/kindRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../utils/TSRoleUtil';
-import TSMahnung from '../models/TSMahnung';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import {TSEingangsart} from '../models/enums/TSEingangsart';
+import TSGesuch from '../models/TSGesuch';
 import TSKindDublette from '../models/TSKindDublette';
+import TSMahnung from '../models/TSMahnung';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {GesuchRouteController} from './gesuch';
+import BerechnungsManager from './service/berechnungsManager';
+import GesuchModelManager from './service/gesuchModelManager';
+import MahnungRS from './service/mahnungRS.rest';
+import WizardStepManager from './service/wizardStepManager';
+import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import ILogService = angular.ILogService;
 
-let gesuchTpl = require('./gesuch.html');
+const gesuchTpl = require('./gesuch.html');
 
 gesuchRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function gesuchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
-}
-
-//array mit allen States
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguGesuchState(),
-        new EbeguFamiliensituationState(),
-        new EbeguStammdatenState(),
-        new EbeguUmzugState(),
-        new EbeguKinderListState(),
-        new EbeguFinanzielleSituationStartState(),
-        new EbeguFinanzielleSituationState(),
-        new EbeguFinanzielleSituationResultateState(),
-        new EbeguKindState(),
-        new EbeguErwerbspensenListState(),
-        new EbeguErwerbspensumState(),
-        new EbeguBetreuungListState(),
-        new EbeguBetreuungState(),
-        new EbeguAbwesenheitState(),
-        new EbeguNewFallState(),
-        new EbeguMutationState(),
-        new EbeguErneuerungsgesuchState(),
-        new EbeguVerfuegenListState(),
-        new EbeguVerfuegenState(),
-        new EbeguEinkommensverschlechterungInfoState(),
-        new EbeguEinkommensverschlechterungSteuernState(),
-        new EbeguEinkommensverschlechterungState(),
-        new EbeguEinkommensverschlechterungResultateState(),
-        new EbeguDokumenteState(),
-        new EbeguFreigabeState(),
-        new EbeguBetreuungMitteilungState()
-    ];
+    routerHelper.configureStates(ng1States, ng2States);
 }
 
 //STATES
 
+const ng2States: Ng2StateDeclaration[] = [
+    {
+        name: 'onboarding',
+        url: '/',
+        component: OnboardingComponent,
+    },
+];
+
 export class EbeguGesuchState implements Ng1StateDeclaration {
+    parent = 'app';
+    abstract = true;
     name = 'gesuch';
     template = gesuchTpl;
     url = '/gesuch';
-    abstract = true;
     controller = GesuchRouteController;
     controllerAs = 'vm';
 }
@@ -572,6 +550,36 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     };
 }
 
+const ng1States: Ng1StateDeclaration[] = [
+    new EbeguGesuchState(),
+    new EbeguFamiliensituationState(),
+    new EbeguStammdatenState(),
+    new EbeguUmzugState(),
+    new EbeguKinderListState(),
+    new EbeguFinanzielleSituationStartState(),
+    new EbeguFinanzielleSituationState(),
+    new EbeguFinanzielleSituationResultateState(),
+    new EbeguKindState(),
+    new EbeguErwerbspensenListState(),
+    new EbeguErwerbspensumState(),
+    new EbeguBetreuungListState(),
+    new EbeguBetreuungState(),
+    new EbeguAbwesenheitState(),
+    new EbeguNewFallState(),
+    new EbeguMutationState(),
+    new EbeguErneuerungsgesuchState(),
+    new EbeguVerfuegenListState(),
+    new EbeguVerfuegenState(),
+    new EbeguEinkommensverschlechterungInfoState(),
+    new EbeguEinkommensverschlechterungSteuernState(),
+    new EbeguEinkommensverschlechterungState(),
+    new EbeguEinkommensverschlechterungResultateState(),
+    new EbeguDokumenteState(),
+    new EbeguFreigabeState(),
+    new EbeguBetreuungMitteilungState(),
+    // new OnboardingTest()
+];
+
 //PARAMS
 
 export class IGesuchStateParams {
@@ -619,29 +627,27 @@ export class IEinkommensverschlechterungResultateStateParams {
 // FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function getMahnungen(MahnungRS: MahnungRS, $stateParams: IGesuchStateParams, $q: IQService, $log: ILogService) {
     // return [];
     if ($stateParams) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             return MahnungRS.findMahnungen(gesuchIdParam);
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    let deferred = $q.defer<TSMahnung[]>();
+    const deferred = $q.defer<TSMahnung[]>();
     deferred.resolve(undefined);
     return deferred.promise;
 }
 
 getGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                                       wizardStepManager: WizardStepManager, $stateParams: IGesuchStateParams, $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
                 || gesuchModelManager.getGesuch().emptyCopy) {
@@ -651,7 +657,7 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, be
                 berechnungsManager.clear();
                 return gesuchModelManager.openGesuch(gesuchIdParam);
             } else {
-                let deferred = $q.defer<TSGesuch>();
+                const deferred = $q.defer<TSGesuch>();
                 deferred.resolve(gesuchModelManager.getGesuch());
                 return deferred.promise;
             }
@@ -659,27 +665,26 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, be
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    let deferred = $q.defer<TSGesuch>();
+    const deferred = $q.defer<TSGesuch>();
     deferred.resolve(undefined);
     return deferred.promise;
 }
 
 reloadGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
 
-/* @ngInject */
 export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
                                          $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
         if ($stateParams.createNew === 'true') {
-            let eingangsart = $stateParams.eingangsart;
-            let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            let dossierId = $stateParams.dossierId;
-            let gemeindeId = $stateParams.gemeindeId;
+            const eingangsart = $stateParams.eingangsart;
+            const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
+            const dossierId = $stateParams.dossierId;
+            const gemeindeId = $stateParams.gemeindeId;
             //initialize gesuch
             return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId);
         } else {
-            let gesuchIdParam = $stateParams.gesuchId;
+            const gesuchIdParam = $stateParams.gesuchId;
             if (!gesuchIdParam) {
                 $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
             }
@@ -692,16 +697,15 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
 }
 
 getKinderDubletten.$inject = ['$stateParams', '$q', '$log', 'KindRS', 'AuthServiceRS'];
-/* @ngInject */
 
 // Die Kinderdubletten werden nur für SCH-Mitarbeiter oder JA-Mitarbeiter (inkl. Revisor und Jurist) angezeigt
 export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQService, $log: ILogService, KindRS: KindRS, authService: AuthServiceRS) {
-    let isUserAllowed: boolean = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
+    const isUserAllowed: boolean = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
     if (isUserAllowed && $stateParams && $stateParams.gesuchId) {
-        let gesuchIdParam = $stateParams.gesuchId;
+        const gesuchIdParam = $stateParams.gesuchId;
         return KindRS.getKindDubletten(gesuchIdParam);
     }
-    let deferred = $q.defer<TSKindDublette[]>();
+    const deferred = $q.defer<TSKindDublette[]>();
     deferred.resolve(undefined);
     return deferred.promise;
 }
@@ -721,10 +725,10 @@ export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelMana
 function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchModelManager: GesuchModelManager,
                                      $q: any, antragtyp: TSAntragTyp): IPromise<TSGesuch> {
     if ($stateParams) {
-        let gesuchId = $stateParams.gesuchId;
-        let eingangsart = $stateParams.eingangsart;
-        let gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        let dossierId = $stateParams.dossierId;
+        const gesuchId = $stateParams.gesuchId;
+        const eingangsart = $stateParams.eingangsart;
+        const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
+        const dossierId = $stateParams.dossierId;
 
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {

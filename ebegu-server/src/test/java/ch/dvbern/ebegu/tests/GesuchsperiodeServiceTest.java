@@ -115,7 +115,7 @@ public class GesuchsperiodeServiceTest extends AbstractEbeguLoginTest {
 	// HELP METHODS
 
 	private Gesuchsperiode insertNewEntity(boolean active, DateRange gueltigkeit) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createDefaultGesuchsperiode();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setGueltigkeit(gueltigkeit);
 		if (active) {
 			gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);

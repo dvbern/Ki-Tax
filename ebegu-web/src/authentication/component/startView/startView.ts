@@ -13,36 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IController, IOnInit} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import AuthenticationUtil from '../../../utils/AuthenticationUtil';
-import TSUser from '../../../models/TSUser';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import TSUser from '../../../models/TSUser';
+import AuthenticationUtil from '../../../utils/AuthenticationUtil';
 import {AuthLifeCycleService} from '../../service/authLifeCycle.service';
-let template = require('./startView.html');
-require('./startView.less');
 
-export class StartComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = template;
-    controller = StartViewController;
-    controllerAs = 'vm';
-}
+export const StartComponentConfig: IComponentOptions = {
+    transclude: false,
+    template: require('./startView.html'),
+    controllerAs: 'vm',
+};
 
-export class StartViewController {
-
+export class StartViewController implements IController, IOnInit {
 
     static $inject: string[] = ['$state', 'AuthLifeCycleService', 'AuthServiceRS'];
 
-    constructor(private $state: StateService, private authLifeCycleService: AuthLifeCycleService, private authService: AuthServiceRS) {
-
-
+    constructor(private readonly $state: StateService,
+                private readonly authLifeCycleService: AuthLifeCycleService,
+                private readonly authService: AuthServiceRS) {
     }
 
     $onInit() {
         // todo KIBON-143 warten bis das event login_success geworfen ist
-        let user: TSUser = this.authService.getPrincipal();
+        const user: TSUser = this.authService.getPrincipal();
         if (this.authService.getPrincipal()) {  // wenn logged in
             AuthenticationUtil.navigateToStartPageForRole(user, this.$state);
         } else {
@@ -51,3 +47,5 @@ export class StartViewController {
         }
     }
 }
+
+StartComponentConfig.controller = StartViewController;

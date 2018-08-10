@@ -16,16 +16,14 @@
 import {NgModule} from '@angular/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Ng2StateDeclaration} from '@uirouter/angular';
-import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {StateService} from '@uirouter/core';
-import {Log} from '../utils/LogFactory';
 import {IPromise} from 'angular';
+import {LogFactory} from '../app/core/logging/LogFactory';
 import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
 
-
-
 export const localLoginState: Ng2StateDeclaration = {
-    name: 'locallogin',
+    name: 'authentication.locallogin',
     url: '/locallogin',
     component: DummyAuthenticationListViewComponent,
     resolve: [
@@ -37,7 +35,6 @@ export const localLoginState: Ng2StateDeclaration = {
     ],
 };
 
-
 @NgModule({
     imports: [
         UIRouterUpgradeModule.forChild({ states: [ localLoginState ] })
@@ -47,26 +44,22 @@ export const localLoginState: Ng2StateDeclaration = {
 export class NgAuthenticationRoutingModule {
 }
 
-
-
-
-/* @ngInject */
 export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService): IPromise<boolean> {
 
     // todo ein Guard machen!!!! schauen ob es in ui-router gibt
-    const log: Log = Log.createLog(readDummyLoginEnabled);
+    const LOG = LogFactory.createLog(readDummyLoginEnabled.name);
 
     return applicationPropertyRS.isDummyMode()
         .then((response: boolean) => {
             if (response === false) {
-                log.debug('page is disabled');
-                $state.go('start');
+                LOG.debug('page is disabled');
+                $state.go('authentication.start');
             }
             return true;
         })
         .catch(() => {
-            log.error('there was an error while opening locallogin');
-            $state.go('login');
+            LOG.error('there was an error while opening locallogin');
+            $state.go('authentication.login');
             return false;
         });
 

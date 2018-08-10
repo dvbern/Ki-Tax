@@ -16,16 +16,15 @@
 import {IPromise} from 'angular';
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
-require('./dialogs.less');
 
 export class BemerkungenDialogController {
+
+    static $inject = ['$mdDialog', '$translate', 'title', 'bemerkungen'];
 
     title: string;
     bemerkungen: string;
 
-    static $inject = ['$mdDialog', '$translate', 'title', 'bemerkungen'];
-
-    constructor(private $mdDialog: IDialogService, $translate: ITranslateService, title: string, bemerkungen: string) {
+    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, bemerkungen: string) {
         this.title = $translate.instant(title);
         this.bemerkungen = bemerkungen;
     }

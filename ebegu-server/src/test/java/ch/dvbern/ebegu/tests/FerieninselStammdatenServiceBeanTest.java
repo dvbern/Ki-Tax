@@ -120,7 +120,7 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 	}
 
 	private FerieninselStammdaten createFerieninselStammdaten() {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createCurrentGesuchsperiode();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode = persistence.merge(gesuchsperiode);
 		FerieninselStammdaten ferieninselStammdaten = TestDataUtil.createDefaultFerieninselStammdaten(gesuchsperiode);
 		return ferieninselStammdatenService.saveFerieninselStammdaten(ferieninselStammdaten);

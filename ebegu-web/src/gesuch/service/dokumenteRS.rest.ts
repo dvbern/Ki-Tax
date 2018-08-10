@@ -25,18 +25,12 @@ import ICacheObject = angular.ICacheObject;
 
 
 export default class DokumenteRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+    serviceURL: string;
+
+    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService) {
         this.serviceURL = REST_API + 'dokumente';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public getDokumente(gesuch: TSGesuch): IPromise<TSDokumenteDTO> {

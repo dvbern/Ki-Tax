@@ -13,41 +13,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFormController, ILogService} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSGesuch from '../../../models/TSGesuch';
-import GesuchRS from '../../service/gesuchRS.rest';
-import DokumenteRS from '../../service/dokumenteRS.rest';
-import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
-import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
-import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import TSDokument from '../../../models/TSDokument';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
-import {UploadRS} from '../../../core/service/uploadRS.rest';
-import WizardStepManager from '../../service/wizardStepManager';
-import TSWizardStep from '../../../models/TSWizardStep';
-import GlobalCacheService from '../../service/globalCacheService';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import GesuchstellerRS from '../../../core/service/gesuchstellerRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import GesuchstellerRS from '../../../app/core/service/gesuchstellerRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
+import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
+import TSDokument from '../../../models/TSDokument';
+import TSDokumentGrund from '../../../models/TSDokumentGrund';
+import TSDownloadFile from '../../../models/TSDownloadFile';
+import TSGesuch from '../../../models/TSGesuch';
+import TSWizardStep from '../../../models/TSWizardStep';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import DokumenteRS from '../../service/dokumenteRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import GesuchRS from '../../service/gesuchRS.rest';
+import GlobalCacheService from '../../service/globalCacheService';
+import WizardStepManager from '../../service/wizardStepManager';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import ITranslateService = angular.translate.ITranslateService;
 import IRootScopeService = angular.IRootScopeService;
-let template = require('./kommentarView.html');
-require('./kommentarView.less');
-let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
-let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+import ITranslateService = angular.translate.ITranslateService;
+
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class KommentarViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./kommentarView.html');
     controller = KommentarViewController;
     controllerAs = 'vm';
 }
@@ -57,23 +56,22 @@ export class KommentarViewComponentConfig implements IComponentOptions {
  */
 export class KommentarViewController {
 
-    form: IFormController;
-    dokumentePapiergesuch: TSDokumentGrund;
-    TSRoleUtil: any;
-
     static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q', 'UploadRS',
         'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope', '$state', '$mdSidenav'];
-    /* @ngInject */
-    constructor(private $log: ILogService, private gesuchModelManager: GesuchModelManager, private gesuchRS: GesuchRS,
-                private dokumenteRS: DokumenteRS, private downloadRS: DownloadRS, private $q: IQService,
-                private uploadRS: UploadRS, private wizardStepManager: WizardStepManager, private globalCacheService: GlobalCacheService,
-                private dvDialog: DvDialog, private $translate: ITranslateService, private $window: ng.IWindowService, private gesuchstellerRS: GesuchstellerRS,
-                private $rootScope: IRootScopeService, private $state: StateService, private $mdSidenav: ng.material.ISidenavService) {
+
+    form: IFormController;
+    dokumentePapiergesuch: TSDokumentGrund;
+    TSRoleUtil = TSRoleUtil;
+
+    constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
+                private readonly dokumenteRS: DokumenteRS, private readonly downloadRS: DownloadRS, private readonly $q: IQService,
+                private readonly uploadRS: UploadRS, private readonly wizardStepManager: WizardStepManager, private readonly globalCacheService: GlobalCacheService,
+                private readonly dvDialog: DvDialog, private readonly $translate: ITranslateService, private readonly $window: ng.IWindowService, private readonly gesuchstellerRS: GesuchstellerRS,
+                private readonly $rootScope: IRootScopeService, private readonly $state: StateService, private readonly $mdSidenav: ng.material.ISidenavService) {
 
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
         }
-        this.TSRoleUtil = TSRoleUtil;
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
@@ -94,6 +92,7 @@ export class KommentarViewController {
     getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
     }
+
     public toggleEwkSidenav() {
         this.$mdSidenav('ewk').toggle();
     }
@@ -130,15 +129,15 @@ export class KommentarViewController {
     }
 
     download() {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.getPapiergesuchFromServer().then((promiseValue: any) => {
             if (!this.hasPapiergesuch()) {
                 this.$log.error('Kein Papiergesuch für Download vorhanden!');
             } else {
-                let newest: TSDokument = this.getNewest(this.dokumentePapiergesuch.dokumente);
+                const newest: TSDokument = this.getNewest(this.dokumentePapiergesuch.dokumente);
                 this.downloadRS.getAccessTokenDokument(newest.id)
                     .then((response) => {
-                        let tempDokument: TSDownloadFile = angular.copy(response);
+                        const tempDokument: TSDownloadFile = angular.copy(response);
                         this.downloadRS.startDownload(tempDokument.accessToken, newest.filename, false, win);
                     })
                     .catch((ex) => {
@@ -151,6 +150,7 @@ export class KommentarViewController {
 
     private getNewest(dokumente: Array<TSDokument>): TSDokument {
         let newest: TSDokument = dokumente[0];
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < dokumente.length; i++) {
             if (dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)) {
                 newest = dokumente[i];
@@ -165,13 +165,13 @@ export class KommentarViewController {
             if (this.hasPapiergesuch()) {
                 this.$log.error('Papiergesuch schon vorhanden');
             } else {
-                let gesuchID = this.getGesuch().id;
+                const gesuchID = this.getGesuch().id;
                 console.log('Uploading files on gesuch ' + gesuchID);
 
-                let filesTooBig: any[] = [];
-                let filesOk: any[] = [];
+                const filesTooBig: any[] = [];
+                const filesOk: any[] = [];
                 this.$log.debug('Uploading files on gesuch ' + gesuchID);
-                for (let file of files) {
+                for (const file of files) {
                     this.$log.debug('File: ' + file.name + ' size: ' + file.size);
                     if (file.size > 10000000) { // Maximale Filegrösse ist 10MB
                         filesTooBig.push(file);
@@ -184,7 +184,7 @@ export class KommentarViewController {
                     // DialogBox anzeigen für Files, welche zu gross sind!
                     let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
                     returnString += '<ul>';
-                    for (let file of filesTooBig) {
+                    for (const file of filesTooBig) {
                         returnString += '<li>';
                         returnString += file.name;
                         returnString += '</li>';
@@ -231,7 +231,7 @@ export class KommentarViewController {
         }).then(() => {
             return this.gesuchRS.gesuchBySTVFreigeben(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
-                this.$state.go('pendenzenSteueramt');
+                this.$state.go('pendenzenSteueramt.list-view');
             });
         });
     }

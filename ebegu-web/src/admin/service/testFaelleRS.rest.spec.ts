@@ -17,7 +17,7 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {EbeguWebAdmin} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
-describe('TestFaelleRS', function () {
+describe('TestFaelleRS', () => {
 
     let testFaelleRS: TestFaelleRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -26,24 +26,24 @@ describe('TestFaelleRS', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         testFaelleRS = $injector.get('TestFaelleRS');
         $httpBackend = $injector.get('$httpBackend');
     }));
 
-    describe('Public API', function () {
-        it('check URI', function () {
+    describe('Public API', () => {
+        it('check URI', () => {
             expect(testFaelleRS.serviceURL).toContain('testfaelle');
         });
-        it('check Service name', function () {
+        it('check Service name', () => {
             expect(testFaelleRS.getServiceName()).toBe('TestFaelleRS');
         });
-        it('should include a createTestFall() function', function () {
+        it('should include a createTestFall() function', () => {
             expect(testFaelleRS.createTestFall).toBeDefined();
         });
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
         describe('createTestFall', () => {
             it('should call createTestFall', () => {
                 $httpBackend.expectGET(testFaelleRS.serviceURL + '/testfall/' + encodeURIComponent('1') + '/null/null/false/false').respond({});

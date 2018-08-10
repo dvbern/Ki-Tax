@@ -13,39 +13,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
+import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {StateService} from '@uirouter/core';
-import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
-import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
-import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
-import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts';
 import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-
-let template = require('./pendenzenBetreuungenListView.html');
-require('./pendenzenBetreuungenListView.less');
+import EbeguUtil from '../../../utils/EbeguUtil';
+import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 
 export class PendenzenBetreuungenListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./pendenzenBetreuungenListView.html');
     controller = PendenzenBetreuungenListViewController;
     controllerAs = 'vm';
 }
 
 export class PendenzenBetreuungenListViewController {
+
+    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS',
+        'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     private pendenzenList: Array<TSPendenzBetreuung>;
@@ -60,21 +61,17 @@ export class PendenzenBetreuungenListViewController {
     itemsByPage: number = 20;
     numberOfPages: number = 1;
 
-    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS',
-        'AuthLifeCycleService'];
-
     constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
-                private ebeguUtil: EbeguUtil,
-                private institutionRS: InstitutionRS,
-                private institutionStammdatenRS: InstitutionStammdatenRS,
-                private gesuchsperiodeRS: GesuchsperiodeRS,
-                private gesuchModelManager: GesuchModelManager,
-                private berechnungsManager: BerechnungsManager,
-                private $state: StateService,
-                private gemeindeRS: GemeindeRS,
-                private authServiceRS: AuthServiceRS,
-                private authLifeCycleService: AuthLifeCycleService) {
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly institutionRS: InstitutionRS,
+                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly gesuchModelManager: GesuchModelManager,
+                private readonly berechnungsManager: BerechnungsManager,
+                private readonly $state: StateService,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
@@ -134,7 +131,9 @@ export class PendenzenBetreuungenListViewController {
 
     private updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => { this.gemeindenList = gemeinden; });
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     public getPendenzenList(): Array<TSPendenzBetreuung> {
@@ -143,29 +142,29 @@ export class PendenzenBetreuungenListViewController {
 
     public editPendenzBetreuungen(pendenz: TSPendenzBetreuung, event: any): void {
         if (pendenz) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             this.openBetreuung(pendenz, isCtrlKeyPressed);
         }
     }
 
     private openBetreuung(pendenz: TSPendenzBetreuung, isCtrlKeyPressed: boolean): void {
-        let numberParts: TSBetreuungsnummerParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
+        const numberParts: TSBetreuungsnummerParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
         if (numberParts && pendenz) {
-            let kindNumber: number = parseInt(numberParts.kindnummer);
-            let betreuungNumber: number = parseInt(numberParts.betreuungsnummer);
+            const kindNumber: number = parseInt(numberParts.kindnummer);
+            const betreuungNumber: number = parseInt(numberParts.betreuungsnummer);
             if (betreuungNumber > 0) {
                 this.berechnungsManager.clear(); // nur um sicher zu gehen, dass alle alte Werte geloescht sind
 
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
                 // last time
                 this.gesuchModelManager.clearGesuch();
-                let navObj: any = {
+                const navObj: any = {
                     betreuungNumber: betreuungNumber,
                     kindNumber: kindNumber,
                     gesuchId: pendenz.gesuchId
                 };
                 if (isCtrlKeyPressed) {
-                    let url = this.$state.href('gesuch.betreuung', navObj);
+                    const url = this.$state.href('gesuch.betreuung', navObj);
                     window.open(url, '_blank');
                 } else {
                     this.$state.go('gesuch.betreuung', navObj);

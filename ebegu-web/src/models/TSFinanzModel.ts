@@ -31,10 +31,10 @@ export default class TSFinanzModel {
     private _einkommensverschlechterungContainerGS2: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer;
 
-    private basisjahr: number;
-    private basisjahrPlus: number;
-    private gesuchsteller2Required: boolean;
-    private gesuchstellerNumber: number;
+    private readonly basisjahr: number;
+    private readonly basisjahrPlus: number;
+    private readonly gesuchsteller2Required: boolean;
+    private readonly gesuchstellerNumber: number;
 
     constructor(basisjahr: number, gesuchsteller2Required: boolean, gesuchstellerNumber: number, basisjahrPlus?: number) {
         this.basisjahr = basisjahr;

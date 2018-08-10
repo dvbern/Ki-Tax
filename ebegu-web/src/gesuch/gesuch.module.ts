@@ -13,10 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {downgradeComponent} from '@angular/upgrade/static';
-import 'angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {EbeguWebCore} from '../core/core.module';
+import * as angular from 'angular';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
@@ -45,7 +43,6 @@ import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdat
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
-import './gesuch.module.less';
 import {gesuchRun} from './gesuch.route';
 
 export const EbeguWebGesuch =
@@ -80,8 +77,5 @@ export const EbeguWebGesuch =
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
-        .directive(
-            'dvNgNavbar',
-            downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
-        );
+;
 

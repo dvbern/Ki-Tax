@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../core/core.module';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../core/errors/service/ErrorService';
+import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSInstitution from '../../../models/TSInstitution';
@@ -27,7 +27,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {AbwesenheitViewController, KindBetreuungUI} from './abwesenheitView';
 
-describe('abwesenheitView', function () {
+describe('abwesenheitView', () => {
 
     let abwesenheitController: AbwesenheitViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -44,7 +44,7 @@ describe('abwesenheitView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         wizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
@@ -57,32 +57,32 @@ describe('abwesenheitView', function () {
         $timeout = $injector.get('$timeout');
     }));
 
-    beforeEach(function () {
+    beforeEach(() => {
         abwesenheitController = new AbwesenheitViewController(gesuchModelManager, berechnungsManager,
             wizardStepManager, dialog, $translate, $q, errorService, $scope, $timeout);
     });
 
-    describe('getNameFromBetroffene', function () {
-        it('should return empty string for undefined kindBetreuung', function () {
-            let kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
+    describe('getNameFromBetroffene', () => {
+        it('should return empty string for undefined kindBetreuung', () => {
+            const kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
             expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
         });
-        it('should return empty string for empty data', function () {
-            let kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
+        it('should return empty string for empty data', () => {
+            const kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
             expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
         });
-        it('should return Name of KindBetreuung', function () {
-            let kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
-            let betreuung = new TSBetreuung();
-            let institutionStammdaten = new TSInstitutionStammdaten();
-            let ins = new TSInstitution();
+        it('should return Name of KindBetreuung', () => {
+            const kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
+            const betreuung = new TSBetreuung();
+            const institutionStammdaten = new TSInstitutionStammdaten();
+            const ins = new TSInstitution();
             ins.name = 'InstitutionTest';
             institutionStammdaten.institution = ins;
             betreuung.institutionStammdaten = institutionStammdaten;
             kindBetreuung.betreuung = betreuung;
 
-            let kind = new TSKindContainer();
-            let kindJA = new TSKind();
+            const kind = new TSKindContainer();
+            const kindJA = new TSKind();
             kindJA.vorname = 'Pedrito';
             kindJA.nachname = 'Contreras';
             kind.kindJA = kindJA;
@@ -92,8 +92,8 @@ describe('abwesenheitView', function () {
         });
     });
 
-    describe('createAbwesenheit', function () {
-        it('should return empty array for empty data', function () {
+    describe('createAbwesenheit', () => {
+        it('should return empty array for empty data', () => {
             expect(abwesenheitController.getAbwesenheiten().length).toBe(0);
             abwesenheitController.createAbwesenheit();
             expect(abwesenheitController.getAbwesenheiten().length).toBe(1);

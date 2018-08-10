@@ -22,14 +22,14 @@ import {IDeferred, IHttpService, IRequestConfig} from 'angular';
  */
 export default class HttpBuffer {
 
+    static $inject = ['$injector'];
+
     /** Holds all the requests, so they can be re-requested in future. */
     buffer: Array<any> = [];
 
     /** Service initialized later because of circular dependency problem. */
     $http: IHttpService;
-
-    static $inject = ['$injector'];
-    constructor(private $injector: IInjectorService) {
+    constructor(private readonly $injector: IInjectorService) {
     }
 
     private retryHttpRequest(config: IRequestConfig, deferred: IDeferred<any>) {
@@ -61,9 +61,7 @@ export default class HttpBuffer {
      */
     public rejectAll(reason: any) {
         if (reason) {
-            for (let i = 0; i < this.buffer.length; ++i) {
-                this.buffer[i].deferred.reject(reason);
-            }
+            this.buffer.forEach(b => b.deferred.reject(reason));
         }
         this.buffer = [];
     }
@@ -72,9 +70,7 @@ export default class HttpBuffer {
      * Retries all the buffered requests clears the buffer.
      */
     public retryAll(updater: any) {
-        for (let i = 0; i < this.buffer.length; ++i) {
-            this.retryHttpRequest(updater(this.buffer[i].config), this.buffer[i].deferred);
-        }
+        this.buffer.forEach(b => this.retryHttpRequest(updater(b.config), b.deferred));
         this.buffer = [];
     }
 }

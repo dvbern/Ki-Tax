@@ -281,7 +281,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createDefaultGesuch(AntragStatus status) {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setGesuchsperiode(createDefaultGesuchsperiode());
+		gesuch.setGesuchsperiode(createGesuchsperiode1718());
 		gesuch.setDossier(createDefaultDossier());
 		gesuch.setEingangsdatum(LocalDate.now());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
@@ -432,7 +432,7 @@ public final class TestDataUtil {
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
 		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
-		instStammdaten.setGueltigkeit(new DateRange());
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setAdresse(createDefaultAdresse());
@@ -444,7 +444,7 @@ public final class TestDataUtil {
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
 		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
-		instStammdaten.setGueltigkeit(new DateRange());
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setAdresse(createDefaultAdresse());
@@ -640,22 +640,6 @@ public final class TestDataUtil {
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensum.setPensum(80);
 		return betreuungspensum;
-	}
-
-	public static Gesuchsperiode createDefaultGesuchsperiode() {
-		return createCurrentGesuchsperiode();
-	}
-
-	public static Gesuchsperiode createCurrentGesuchsperiode() {
-		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-
-		boolean isSecondHalbjahr = LocalDate.now().isAfter(LocalDate.of(LocalDate.now().getYear(), Month.JULY, 31));
-		int startyear = isSecondHalbjahr ? LocalDate.now().getYear() : LocalDate.now().getYear() - 1;
-		LocalDate start = LocalDate.of(startyear, Month.AUGUST, 1);
-		LocalDate end = LocalDate.of(startyear + 1, Month.JULY, 31);
-		gesuchsperiode.setGueltigkeit(new DateRange(start, end));
-		return gesuchsperiode;
 	}
 
 	public static Gesuchsperiode createGesuchsperiode1718() {

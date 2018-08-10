@@ -1,0 +1,29 @@
+<form (ngSubmit)="onSubmit()" #form="ngForm" class="col-md-12 onboarding-container">
+    <div class="onboarding-content">
+        <div class="onboarding-title">kiBon</div>
+        <div class="onboarding-subtitle">Betreuungsgutschein beantragen</div>
+        <div class="onboarding-gemeinde-container">
+            <div class="onboarding-gemeinde-search-container">
+                <label class="onboarding-gemeinde-label">Betreuungsgutscheine sind in folgenden Gemeinden
+                    verfügbar</label>
+                <div class="onboarding-gemeinde-search">
+                    <div class="onboarding-gemeinde-search-input">
+                        <div class="dv-select-style">
+                            <select aria-describedby="" aria-labelledby=""
+                                    [(ngModel)]="gemeinde"
+                                    name="gemeinde"
+                                    class="form-control"
+                                    [required]="true">
+
+                                <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
+                                    {{gemeinde.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="onboarding-gemeinde-auswaehlen">GEMEINDE AUSWÄHLEN</button>
+        </div>
+    </div>
+</form>
