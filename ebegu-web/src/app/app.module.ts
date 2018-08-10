@@ -51,6 +51,7 @@ export class AppModule {
     constructor(private readonly upgrade: UpgradeModule) {
     }
 
+    // noinspection JSUnusedGlobalSymbols
     ngDoBootstrap() {
         // noinspection XHTMLIncompatabilitiesJS
         this.upgrade.bootstrap(document.body, [appModuleAngularJS.name], {strictDi: true});

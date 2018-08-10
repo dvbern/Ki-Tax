@@ -16,11 +16,12 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {TSRole} from '../../models/enums/TSRole';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 
 const states: Ng2StateDeclaration[] = [
     {
-        // parent: 'app', app-bar anzeigen oder nicht?
+        parent: 'app',
         name: 'onboarding',
         abstract: true
     },
@@ -28,6 +29,9 @@ const states: Ng2StateDeclaration[] = [
         name: 'onboarding.start',
         url: '/',
         component: OnboardingComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS]
+        }
     },
 ];
 

@@ -48,7 +48,11 @@
 
         <p class="onboarding-content-login">
             {{'ONBOARDING_ACCOUNT_VORHANDEN' | translate}}<br>
-            <a href="" uiSref="authentication.start">{{'ONBOARDING_ANMELDEN' | translate}}</a>
+            <a href="" uiSref="authentication.login">{{'ONBOARDING_ANMELDEN' | translate}}</a>
+            <ng-container *ngIf="isDummyMode$ | async">
+                <br>
+                <a href="" uiSref="authentication.locallogin">{{'ONBOARDING_LOCAL_LOGIN' | translate}}</a>
+            </ng-container>
         </p>
 
     </div>

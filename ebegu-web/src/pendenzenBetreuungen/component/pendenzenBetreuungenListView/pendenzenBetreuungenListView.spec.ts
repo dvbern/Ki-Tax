@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import * as angular from 'angular';
+import {StateService} from '@uirouter/core';
+import {IHttpBackendService, IQService, IScope} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
@@ -28,7 +31,6 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {EbeguWebPendenzenBetreuungen} from '../../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenListView';
-import {StateService} from '@uirouter/core';
 
 describe('pendenzenBetreuungenListView', () => {
 
@@ -37,9 +39,9 @@ describe('pendenzenBetreuungenListView', () => {
     let institutionStammdatenRS: InstitutionStammdatenRS;
     let pendenzBetreuungenRS: PendenzBetreuungenRS;
     let pendenzBetreuungenListViewController: PendenzenBetreuungenListViewController;
-    let $q: angular.IQService;
-    let $scope: angular.IScope;
-    let $httpBackend: angular.IHttpBackendService;
+    let $q: IQService;
+    let $scope: IScope;
+    let $httpBackend: IHttpBackendService;
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
     let $state: StateService;
@@ -77,8 +79,8 @@ describe('pendenzenBetreuungenListView', () => {
                 spyOn(gesuchsperiodeRS, 'getAllActiveGesuchsperioden').and.returnValue($q.when([TestDataUtil.createGesuchsperiode20162017()]));
                 pendenzBetreuungenListViewController = new PendenzenBetreuungenListViewController(pendenzBetreuungenRS, undefined,
                     institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state, gemeindeRS,
-                    authServiceRS, authLifeCycleService);
-                pendenzBetreuungenListViewController.initViewModel();
+                    authServiceRS);
+                pendenzBetreuungenListViewController.$onInit();
 
                 $scope.$apply();
                 expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toHaveBeenCalled();

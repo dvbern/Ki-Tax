@@ -132,7 +132,7 @@ export default class GesuchModelManager {
                 private readonly gemeindeRS: GemeindeRS) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
-            .subscribe(value => {
+            .subscribe(() => {
                     this.setGesuch(undefined);
                     this.log.debug('Cleared gesuch on logout');
                 },

@@ -16,10 +16,9 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {StateService} from '@uirouter/core';
-import {IPromise} from 'angular';
-import {LogFactory} from '../app/core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
+import {Transition} from '@uirouter/core';
+import {getTSRoleValues} from '../models/enums/TSRole';
+import {returnTo} from './authentication.route';
 import {LocalLoginComponent} from './local-login/local-login.component';
 
 export const localLoginState: Ng2StateDeclaration = {
@@ -28,13 +27,14 @@ export const localLoginState: Ng2StateDeclaration = {
     component: LocalLoginComponent,
     resolve: [
         {
-            token: 'locallogin',
-            deps: [ApplicationPropertyRS, StateService],
-            resolveFn: readDummyLoginEnabled,
+            token: 'returnTo',
+            deps: [Transition],
+            resolveFn: returnTo
         }
     ],
     data: {
-        isPublic: true
+        roles: getTSRoleValues(),
+        requiresDummyLogin: true,
     }
 };
 
@@ -47,23 +47,3 @@ export const localLoginState: Ng2StateDeclaration = {
 export class NgAuthenticationRoutingModule {
 }
 
-export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService): IPromise<boolean> {
-
-    // todo ein Guard machen!!!! schauen ob es in ui-router gibt
-    const LOG = LogFactory.createLog(readDummyLoginEnabled.name);
-
-    return applicationPropertyRS.isDummyMode()
-        .then((response: boolean) => {
-            if (response === false) {
-                LOG.debug('page is disabled');
-                $state.go('authentication.start');
-            }
-            return true;
-        })
-        .catch(() => {
-            LOG.error('there was an error while opening locallogin');
-            $state.go('authentication.login');
-            return false;
-        });
-
-}

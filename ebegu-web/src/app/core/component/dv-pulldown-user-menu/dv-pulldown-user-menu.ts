@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IOnDestroy, IOnInit} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
@@ -32,7 +32,7 @@ export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DvPulldownUserMenuController implements IOnInit, IOnDestroy {
+export class DvPulldownUserMenuController implements IController {
 
     static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
 

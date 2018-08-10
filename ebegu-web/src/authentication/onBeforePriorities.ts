@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,28 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {TSRoleUtil} from '../utils/TSRoleUtil';
-
-faelleRun.$inject = ['RouterHelper'];
-
-export function faelleRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(ng1States, []);
+/**
+ * Transition Hooks can use different priorities.
+ * Hooks with higher priority run before lower priority.
+ */
+export enum OnBeforePriorities {
+    AUTHENTICATION = 10,
+    AUTHORISATION = 9,
+    DUMMY_LOGIN = 8,
 }
-
-const ng1States: Ng1StateDeclaration[] = [
-    {
-        parent: 'app',
-        abstract: true,
-        name: 'faelle',
-        data: {
-            roles: TSRoleUtil.getAllRolesForMenuAlleFaelle(),
-        },
-    },
-    {
-        name: 'faelle.list',
-        template: '<faelle-list-view flex="auto" class="overflow-scroll">',
-        url: '/faelle',
-    }
-];

@@ -14,17 +14,13 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFilterService} from 'angular';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {IComponentOptions, IController, IFilterService} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
 import TSAntragDTO from '../../../models/TSAntragDTO';
@@ -54,12 +50,11 @@ export class DVQuicksearchListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVQuicksearchListController {
+export class DVQuicksearchListController implements IController {
 
     static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS', 'AuthLifeCycleService'];
+        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     antraege: Array<TSAntragDTO> = []; //muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
 
     itemsByPage: number;
@@ -95,18 +90,14 @@ export class DVQuicksearchListController {
                 private readonly CONSTANTS: any,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly gemeindeRS: GemeindeRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+    ) {
     }
 
     public userChanged(selectedUser: TSUser): void {
         this.onUserChanged({user: selectedUser});
     }
 
-    private initViewModel() {
+    public $onInit(): void {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();

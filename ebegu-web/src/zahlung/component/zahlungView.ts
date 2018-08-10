@@ -14,15 +14,11 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IOnDestroy} from 'angular';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {IComponentOptions, IController} from 'angular';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import {ReportRS} from '../../app/core/service/reportRS.rest';
 import ZahlungRS from '../../app/core/service/zahlungRS.rest';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
 import TSDownloadFile from '../../models/TSDownloadFile';
@@ -37,12 +33,10 @@ export class ZahlungViewComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class ZahlungViewController implements IOnDestroy {
+export class ZahlungViewController implements IController {
 
-    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
-        'AuthServiceRS', 'EbeguUtil', 'AuthLifeCycleService'];
+    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS', 'AuthServiceRS'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     private zahlungen: Array<TSZahlung>;
 
     itemsByPage: number = 20;
@@ -53,16 +47,10 @@ export class ZahlungViewController implements IOnDestroy {
                 private readonly $state: StateService,
                 private readonly downloadRS: DownloadRS,
                 private readonly reportRS: ReportRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+                private readonly authServiceRS: AuthServiceRS) {
     }
 
-    private initViewModel() {
+    public $onInit() {
         if (this.$stateParams.zahlungsauftragId && this.authServiceRS.getPrincipal()) {
             switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
                 case TSRole.SACHBEARBEITER_INSTITUTION:
@@ -84,11 +72,6 @@ export class ZahlungViewController implements IOnDestroy {
                     break;
             }
         }
-    }
-
-    $onDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     private gotToUebersicht(): void {
