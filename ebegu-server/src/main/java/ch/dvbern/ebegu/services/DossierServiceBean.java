@@ -108,9 +108,9 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
 
 		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
-		// todo KIBON-91 it still must filter out the dossier an institution cannot see
+
 		return dossiers.stream()
-			.filter(authorizer::isReadAuthorizedDossier).
+			.filter(authorizer::isReadCompletelyAuthorizedDossier).
 			collect(Collectors.toList());
 	}
 

@@ -559,7 +559,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@RolesAllowed({ ADMIN, SUPER_ADMIN })
 	@Nonnull
-	public List<String> getAllGesuchIDsForDossier(String dossierId) {
+	public List<String> getAllGesuchIDsForDossier(@Nonnull String dossierId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<Gesuch> root = query.from(Gesuch.class);
@@ -572,6 +572,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		query.where(dossierPredicate);
 		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
 		TypedQuery<String> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(dossierIdParam, dossierId);
+
+		return q.getResultList();
+	}
+
+	@Override
+	@PermitAll
+	@Nonnull
+	public List<Gesuch> getAllGesuchForDossier(@Nonnull String dossierId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		ParameterExpression<String> dossierIdParam = cb.parameter(String.class, "dossierId");
+
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier).get(AbstractEntity_.id), dossierIdParam);
+		query.where(dossierPredicate);
+		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
+		TypedQuery<Gesuch> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(dossierIdParam, dossierId);
 
 		return q.getResultList();
@@ -989,6 +1008,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(neustesGesuchFuerGesuch.get().getId(), gesuch.getId());
 	}
 
+	@Nonnull
 	@Override
 	@PermitAll
 	public Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier) {
@@ -1030,6 +1050,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	/**
 	 * Sucht
 	 */
+	@Override
 	@Nonnull
 	public Optional<String> getIdOfNeuestesGesuchForDossier(@Nonnull Dossier dossier) {
 		authorizer.checkReadAuthorizationDossier(dossier);
