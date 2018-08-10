@@ -74,7 +74,8 @@ export class FallToolbarComponent implements OnInit, OnChanges {
                 this.retrieveListOfAvailableGemeinden();
             });
         } else {
-            this.addNewDossierToCreateToDossiersList();
+            this.emptyDossierList(); // if there is no fall there cannot be any dossier
+            this.addNewDossierToCreateToDossiersList(); // only a new dossier can be added to a not yet created fall
         }
     }
 
@@ -223,5 +224,9 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     private removeAllExistingNewDossierToCreate() {
         this.dossierList = this.dossierList
             .filter(dossier => !dossier.isNew());
+    }
+
+    private emptyDossierList() {
+        this.dossierList = [];
     }
 }
