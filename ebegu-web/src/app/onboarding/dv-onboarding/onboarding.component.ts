@@ -51,6 +51,6 @@ export class OnboardingComponent {
             return;
         }
 
-        this.stateService.go('onboarding.be-login', {gemeinde: this.gemeinde}, {location: false});
+        this.stateService.go('onboarding.be-login', {gemeindeId: this.gemeinde.id});
     }
 }

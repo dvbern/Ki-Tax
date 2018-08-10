@@ -16,88 +16,66 @@
  */
 @import (reference) '../../../style/variables.less';
 
-.onboarding-text() {
-    font-size: 1.4rem;
-    color: @white;
-    letter-spacing: 0.05rem;
-    line-height: 1.9rem;
-}
-
-.onboarding {
-    &-content {
-        flex: 1;
+.onboarding-gemeinde {
+    &-container {
         display: flex;
         flex-flow: column;
-        align-items: center;
-
-        &-login {
-            margin-top: 10vh;
-            text-align: center;
-            color: @white;
-            letter-spacing: 0.05rem;
-
-            a {
-                color: @red
-            }
-        }
     }
 
-    &-gemeinde {
-        &-container {
-            display: flex;
-            flex-flow: column;
+    &-label {
+        width: 28rem;
+        margin-bottom: 1.7rem;
+    }
+
+    &-input-container {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+    }
+
+    &-search {
+        margin-bottom: 1.7rem;
+
+        &-input {
+            border: 0.5rem solid @primary;
         }
 
-        &-label {
-            height: 4rem;
-            width: 28rem;
-            margin-bottom: 1.7rem;
-        }
+        .dv-select-style {
+            border: 1px solid @anthracite;
 
-        &-input-container {
-            display: flex;
-            flex-flow: row wrap;
-        }
-
-        &-search {
-            margin-right: 12rem;
-            margin-bottom: 1.7rem;
-
-            &-input {
-                border: 0.5rem solid @primary;
+            select {
+                width: calc(25.2rem - 1px);
+                height: calc(3rem - 1px);
+                font-size: 1.4rem;
+                font-weight: normal;
             }
 
-            .dv-select-style {
-                border: 1px solid @anthracite;
-
-                select {
-                    width: calc(22.9rem - 1px);
-                    height: calc(3rem - 1px);
-                    font-size: 1.4rem;
-                    font-weight: normal;
-                }
-
-                &:after {
-                    top: 0.5rem;
-                }
+            &:after {
+                top: 0.5rem;
+                color: @black;
             }
-
         }
 
-        &-auswaehlen {
-            height: 4rem;
-            width: 26.3rem;
-            min-width: 26.3rem;
-            max-width: 26.3rem;
-            background-color: @primary;
-            text-align: center;
-            flex: 1;
-            border: none;
-            text-transform: uppercase;
-        }
+    }
+
+    &-auswaehlen {
+        width: 26.3rem;
+        text-transform: uppercase;
+        // wenn der button fokusiert ist braucht er 2px für den Outline
+        margin: 0 2px;
     }
 }
 
 .input-error {
     height: 4rem;
+}
+
+.onboarding-login {
+    margin-top: 10vh;
+    text-align: center;
+    line-height: 2.8rem;
+
+    a {
+        color: @red
+    }
 }

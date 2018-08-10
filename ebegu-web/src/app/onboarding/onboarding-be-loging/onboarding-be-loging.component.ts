@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
 
 @Component({
@@ -23,14 +23,12 @@ import {Transition} from '@uirouter/core';
     templateUrl: './onboarding-be-loging.component.html',
     styleUrls: ['../onboarding.less', './onboarding-be-loging.component.less']
 })
-export class OnboardingBeLogingComponent implements OnInit {
+export class OnboardingBeLogingComponent {
+
+    private readonly gemeindeId: string;
 
     constructor(private readonly transition: Transition,
     ) {
+        this.gemeindeId = this.transition.params().gemeindeId;
     }
-
-    public ngOnInit(): void {
-        console.log(this.transition.params());
-    }
-
 }

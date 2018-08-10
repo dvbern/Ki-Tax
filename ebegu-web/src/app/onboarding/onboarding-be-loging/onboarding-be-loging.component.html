@@ -15,6 +15,19 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>
-  onboarding-be-loging works!
-</p>
+<div class="onboarding-subtitle">{{'ONBOARDING_BG_LOGIN_REQUIRED' | translate}}</div>
+
+<p>{{'ONBOARDING_BE_LOGIN_DESCRIPTION' | translate}}</p>
+
+<div class="be-login-actions">
+    <!-- Note: we navigate to the desired target state. The authentication hooks will automatically redirect to the login page -->
+    <button class="dv-btn" uiSref="onboarding.gesuchsteller" [uiParams]="{gemeindeId: gemeindeId}">
+        {{'ONBOARDING_BE_LOGIN_ANMELDEN' | translate}}
+        <i class=" fa fa-external-link"></i>
+    </button>
+
+    <button class="dv-btn" uiSref="onboarding.gesuchsteller" [uiParams]="{gemeindeId: gemeindeId}">
+        {{'ONBOARDING_BE_LOGIN_REGISTRIEREN' | translate}}
+        <i class=" fa fa-external-link"></i>
+    </button>
+</div>
