@@ -13,48 +13,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ValidationErrors} from '@angular/forms';
 
 @Component({
     selector: 'dv-ng-error-messages',
     templateUrl: './dv-ng-error-messages.html',
     styleUrls: ['./dv-error-messages.less']
 })
-export class DvNgErrorMessages implements OnInit, OnChanges {
+export class DvNgErrorMessages implements OnChanges {
 
-    @Input() errorObject: any;
-    @Input() domObject: any;
+    @Input() errorObject: ValidationErrors | null;
+    @Input() show: boolean = false;
     @Input() inputid: string;
 
-    public errorsList: string[] = [];
-
-    constructor() {}
-
-    ngOnInit() {
-        this.getErrors();
-    }
-
-    public getErrors() {
-        this.errorsList = []; // always start with an empty list
-        if (this.isTouched() && this.errorObject && this.errorObject.currentValue) {
-            Object.keys(this.errorObject.currentValue)
-                .filter(key => this.errorObject.currentValue[key] === true)
-                .forEach(key => {
-                        this.errorsList.push(key);
-                    }
-                );
-        }
-    }
-
-    private isTouched(): boolean {
-        return this.domObject && this.domObject.touched;
-    }
+    public error: string = '';
 
     public ngOnChanges(changes: SimpleChanges): void {
-        // when the errors change we need to update our errorsList
+        // when the errors change we need to update our error
         if (changes && changes.errorObject) {
-            this.errorObject = changes.errorObject;
-            this.getErrors();
+            this.initError(changes.errorObject.currentValue);
         }
+    }
+
+    private initError(errors: ValidationErrors | null): void {
+        if (!errors) {
+            this.error = '';
+            return;
+        }
+
+        const firstErroneousKey = Object.keys(errors)
+            .find(key => errors[key] === true);
+
+        this.error = firstErroneousKey ? firstErroneousKey : '';
     }
 }
