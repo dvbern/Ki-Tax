@@ -12,15 +12,16 @@ import TSUser from '../../../models/TSUser';
 })
 export class OnboardingGsAbschliessenComponent {
 
-    public gemeinde: TSGemeinde;
-    public user: TSUser;
-
     public user$: Observable<TSUser>;
+    public gemeinde: TSGemeinde;
 
     constructor(public readonly authServiceRS: AuthServiceRS) {
     }
 
     ngOnInit() {
         this.user$ = this.authServiceRS.principal$;
+        //TODO: Das Dossier muss zu diesem Zeitpunkt schon bestehen! Muss (wenn principal da ist) vom Server gelesen werden
+        this.gemeinde = new TSGemeinde();
+        this.gemeinde.name = 'Bern';
     }
 }
