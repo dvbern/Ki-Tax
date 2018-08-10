@@ -55,10 +55,6 @@ function conf($stateProvider: StateProvider): void {
         {
             name: 'app',
             component: 'appRoot',
-            data: {
-                // FIXME dies erlaubt die Navigation zu allen Substates! Die Substates sollten ein spezifischers Rollen Array erhalten. Danach kann diese Definition entfernt werden
-                roles: getTSRoleValues().filter(role => role !== TSRole.ANONYMOUS)
-            }
         },
     );
 }
