@@ -14,23 +14,31 @@
  */
 
 import * as angular from 'angular';
-import {authenticationHookRunBlock} from './authentication.hook';
 import {authenticationRoutes} from './authentication.route';
-import {authorisationHookRunBlock} from './authorisation.hook';
-import {dummyLoginHookRunBlock} from './dummyLogin.hook';
-import {fedletToLoginHookRunBlock} from './fedletToLogin.hook';
 import {LoginComponentConfig} from './login/login.component';
 import {SchulungComponentConfig} from './schulung/schulung.component';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import HttpAuthInterceptor from './service/HttpAuthInterceptor';
 import HttpBuffer from './service/HttpBuffer';
+import {authenticationHookRunBlock} from './state-hooks/onBefore/authentication.hook';
+import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.hook';
+import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
+import {fedletToLoginHookRunBlock} from './state-hooks/onBefore/fedletToLogin.hook';
+import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
+import {errorLoggerHookRunBlock} from './state-hooks/onError/errorLogger.hook';
+import {errorRecoveryHookRunBlock} from './state-hooks/onError/errorRecovery.hook';
+import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook';
 
 export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
         .run(authenticationHookRunBlock)
         .run(authorisationHookRunBlock)
-        .run(fedletToLoginHookRunBlock)
         .run(dummyLoginHookRunBlock)
+        .run(fedletToLoginHookRunBlock)
+        .run(errorAfterLoginHookRunBlock)
+        .run(errorLoggerHookRunBlock)
+        .run(errorRecoveryHookRunBlock)
+        .run(clearErrorsHookRunBlock)
         .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
