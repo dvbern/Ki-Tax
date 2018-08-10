@@ -19,7 +19,7 @@ import * as moment from 'moment';
 import {IBenutzerStateParams} from '../../../../admin/admin.route';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
-import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
+import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSBerechtigung from '../../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../../models/TSBerechtigungHistory';
 import TSInstitution from '../../../../models/TSInstitution';
@@ -63,7 +63,8 @@ export class DVBenutzerController implements IOnInit {
         this._isDefaultVerantwortlicher = value;
     }
 
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS',
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate',
+        '$stateParams', 'UserRS',
         '$state', 'DvDialog', 'ApplicationPropertyRS'];
 
     form: IFormController;
@@ -100,8 +101,8 @@ export class DVBenutzerController implements IOnInit {
             this.userRS.findBenutzer(username).then((result) => {
                 this.selectedUser = result;
                 this.initSelectedUser();
-                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den "Default-Verantwortlichen" des
-                // entsprechenden Amtes handelt
+                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
+                // "Default-Verantwortlichen" des entsprechenden Amtes handelt
                 if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
                     this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
                         if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
@@ -142,10 +143,9 @@ export class DVBenutzerController implements IOnInit {
     }
 
     public getRollen(): Array<TSRole> {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            return getTSRoleValues();
-        }
-        return getTSRoleValuesWithoutSuperAdmin();
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+            ? TSRoleUtil.getAllRolesButSchulamt()
+            : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
     }
 
     public getTranslatedRole(role: TSRole): string {

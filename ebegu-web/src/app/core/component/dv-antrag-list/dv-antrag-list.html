@@ -75,10 +75,6 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="verantwortlicherTS" class="sortable row-ver" data-translate="VERANTWORTLICHER_SCHULAMT"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </th>
                     <th st-sort="verantwortlicherBG" class="sortable row-ver"
                         data-translate="VERANTWORTLICHER_JUGENDAMT"
                         dv-display-element
@@ -191,13 +187,6 @@
                     </th>
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
-                                       initial-all="true"
-                                       show-selection-all="true" selected-user="vm.selectedVerantwortlicherTS"
-                                       schulamt="true"></dv-userselect>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                         <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
                                        initial-all="true"
                                        show-selection-all="true"
@@ -257,10 +246,6 @@
                     <td class="ellipsis" title="{{row.institutionen | arrayToString }}"
                         ng-bind="row.institutionen | arrayToString"
                         dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </td>
-                    <td class="ellipsis" title="{{row.verantwortlicherTS}}"
-                        ng-bind="row.verantwortlicherTS" dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </td>
                     <td class="ellipsis" title="{{row.verantwortlicherBG}}"

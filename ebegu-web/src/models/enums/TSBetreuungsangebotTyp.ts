@@ -24,10 +24,7 @@ export enum TSBetreuungsangebotTyp {
 export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
     return [
         TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGI,
         TSBetreuungsangebotTyp.TAGESFAMILIEN,
-        TSBetreuungsangebotTyp.TAGESSCHULE,
-        TSBetreuungsangebotTyp.FERIENINSEL
     ];
 }
 
@@ -37,9 +34,7 @@ export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp>
 export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array<TSBetreuungsangebotTyp> {
     return [
         TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGI,
         TSBetreuungsangebotTyp.TAGESFAMILIEN,
-        TSBetreuungsangebotTyp.TAGESSCHULE
     ];
 }
 
