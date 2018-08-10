@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @import (reference) '../../../style/variables.less';
 
 .onboarding-text() {
@@ -25,18 +24,6 @@
 }
 
 .onboarding {
-    &-container {
-        overflow-y: auto;
-        background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
-        url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
-        background-size: cover;
-        height: 100%;
-        width: 100vw;
-        display: flex;
-        flex-direction: column;
-        padding: 1.7rem;
-    }
-
     &-content {
         flex: 1;
         display: flex;
@@ -55,24 +42,6 @@
         }
     }
 
-    &-title {
-        font-size: 7.2rem;
-        font-weight: bold;
-        line-height: 9.8rem;
-        letter-spacing: 0.15rem;
-        color: @white;
-        padding: 4vh;
-    }
-
-    &-subtitle {
-        font-size: 3.6rem;
-        font-weight: bold;
-        letter-spacing: 0.193rem;
-        line-height: 4.9rem;
-        color: @white;
-        margin: 5vh;
-    }
-
     &-gemeinde {
         &-container {
             display: flex;
@@ -82,7 +51,6 @@
         &-label {
             height: 4rem;
             width: 28rem;
-            .onboarding-text();
             margin-bottom: 1.7rem;
         }
 
@@ -121,7 +89,6 @@
             width: 26.3rem;
             min-width: 26.3rem;
             max-width: 26.3rem;
-            .onboarding-text();
             background-color: @primary;
             text-align: center;
             flex: 1;

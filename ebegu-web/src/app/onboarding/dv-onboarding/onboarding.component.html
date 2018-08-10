@@ -15,7 +15,7 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form (ngSubmit)="onSubmit()" #form="ngForm" class="onboarding-container">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm">
     <div class="onboarding-content">
         <div class="onboarding-title">{{'KIBON' | translate}}</div>
         <div class="onboarding-subtitle">{{'ONBOARDING_BG_BEANTRAGEN' | translate}}</div>
