@@ -20,10 +20,11 @@
         <div class="onboarding-title">{{'KIBON' | translate}}</div>
         <div class="onboarding-subtitle">{{'ONBOARDING_BG_BEANTRAGEN' | translate}}</div>
         <div class="onboarding-gemeinde-container">
-            <div class="onboarding-gemeinde-search-container">
-                <label class="onboarding-gemeinde-label" for="gemeinde">
-                    {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
-                </label>
+            <label class="onboarding-gemeinde-label" for="gemeinde">
+                {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
+            </label>
+
+            <div class="onboarding-gemeinde-input-container">
                 <div class="onboarding-gemeinde-search">
                     <div class="onboarding-gemeinde-search-input">
                         <div class="dv-select-style">
@@ -40,10 +41,17 @@
                         </div>
                     </div>
                 </div>
+                <button type="submit"
+                        class="onboarding-gemeinde-auswaehlen">{{'ONBOARDING_GEMEINDE_AUSWAEHLEN' | translate}}
+                </button>
             </div>
-            <button type="submit"
-                    class="onboarding-gemeinde-auswaehlen">{{'ONBOARDING_GEMEINDE_AUSWAEHLEN' | translate}}
-            </button>
+
+
+            <dv-ng-error-messages [errorObject]="form.controls.gemeinde?.errors"
+                                  [inputid]="'gemeinde'"
+                                  [show]="form.submitted"
+                                  class="input-error">
+            </dv-ng-error-messages>
         </div>
 
         <p class="onboarding-content-login">

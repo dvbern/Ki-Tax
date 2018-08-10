@@ -30,10 +30,11 @@
         background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
         url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
         background-size: cover;
-        height: 100vh;
+        height: 100%;
         width: 100vw;
         display: flex;
         flex-direction: column;
+        padding: 1.7rem;
     }
 
     &-content {
@@ -43,7 +44,7 @@
         align-items: center;
 
         &-login {
-            margin-top: 15vh;
+            margin-top: 10vh;
             text-align: center;
             color: @white;
             letter-spacing: 0.05rem;
@@ -75,33 +76,35 @@
     &-gemeinde {
         &-container {
             display: flex;
-            flex-flow: row wrap;
-            align-items: flex-end;
-        }
-
-        &-gemeinde-search-container {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
+            flex-flow: column;
         }
 
         &-label {
             height: 4rem;
-            width: 23.9rem;
+            width: 28rem;
             .onboarding-text();
             margin-bottom: 1.7rem;
         }
 
+        &-input-container {
+            display: flex;
+            flex-flow: row wrap;
+        }
+
         &-search {
-            border: 0.5rem solid @primary;
             margin-right: 12rem;
+            margin-bottom: 1.7rem;
+
+            &-input {
+                border: 0.5rem solid @primary;
+            }
 
             .dv-select-style {
                 border: 1px solid @anthracite;
 
                 select {
-                    width: 22.9rem;
-                    height: 3rem;
+                    width: calc(22.9rem - 1px);
+                    height: calc(3rem - 1px);
                     font-size: 1.4rem;
                     font-weight: normal;
                 }
@@ -118,7 +121,6 @@
             width: 26.3rem;
             min-width: 26.3rem;
             max-width: 26.3rem;
-            margin-top: 1.7rem;
             .onboarding-text();
             background-color: @primary;
             text-align: center;
@@ -127,4 +129,8 @@
             text-transform: uppercase;
         }
     }
+}
+
+.input-error {
+    height: 4rem;
 }
