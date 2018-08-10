@@ -18,6 +18,7 @@ import {authenticationHookRunBlock} from './authentication.hook';
 import {authenticationRoutes} from './authentication.route';
 import {authorisationHookRunBlock} from './authorisation.hook';
 import {dummyLoginHookRunBlock} from './dummyLogin.hook';
+import {fedletToLoginHookRunBlock} from './fedletToLogin.hook';
 import {LoginComponentConfig} from './login/login.component';
 import {SchulungComponentConfig} from './schulung/schulung.component';
 import AuthServiceRS from './service/AuthServiceRS.rest';
@@ -28,6 +29,7 @@ export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
         .run(authenticationHookRunBlock)
         .run(authorisationHookRunBlock)
+        .run(fedletToLoginHookRunBlock)
         .run(dummyLoginHookRunBlock)
         .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)

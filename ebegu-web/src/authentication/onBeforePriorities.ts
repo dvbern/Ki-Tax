@@ -18,6 +18,7 @@
  * Hooks with higher priority run before lower priority.
  */
 export enum OnBeforePriorities {
+    FEDLET_TO_LOGIN = 11,
     AUTHENTICATION = 10,
     AUTHORISATION = 9,
     DUMMY_LOGIN = 8,
