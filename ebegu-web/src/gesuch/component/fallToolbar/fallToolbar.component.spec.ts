@@ -148,10 +148,10 @@ describe('fallToolbar', () => {
             initTestBed();
         }));
 
-        it('should return true if newDossierToCreate is set and available Gemeinden', fakeAsync(() => {
+        it('should return true if currentDossier is set and available Gemeinden', fakeAsync(() => {
             component.dossierId = dossier1.id;
             component.fallId = fall.id;
-            component.newDossierToCreate = undefined;
+            component.currentDossier = undefined;
             component.ngOnChanges({fallId: component.fallId}); // to update all depending objects in the component
 
             tick();

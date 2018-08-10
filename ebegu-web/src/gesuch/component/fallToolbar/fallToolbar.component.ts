@@ -45,7 +45,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     @Input() fallId: string;
     @Input() dossierId: string;
-    @Input() newDossierToCreate: TSDossier;
+    @Input() currentDossier: TSDossier;
 
     dossierList: TSDossier[] = [];
     selectedDossier?: TSDossier;
@@ -79,17 +79,18 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     /**
-     * In case a newDossierToCreate exists and it is not already contained in the list then we add it
+     * In case a currentDossier exists and it is new and it is not already contained in the list then we add it
      */
     private addNewDossierToCreateToDossiersList() {
-        if (this.newDossierToCreate && !this.dossierList.includes(this.newDossierToCreate)) {
-            this.dossierList.push(this.newDossierToCreate);
+        if (this.currentDossier && this.currentDossier.isNew() && !this.dossierList.includes(this.currentDossier)) {
+            this.removeAllExistingNewDossierToCreate();
+            this.dossierList.push(this.currentDossier);
             this.selectedDossier = this.dossierList[this.dossierList.length - 1];
         }
     }
 
     ngOnChanges(changes: any) {
-        if (changes['fallId'] || changes['dossierId']) {
+        if (changes['fallId'] || changes['dossierId'] || changes['currentDossier']) {
             this.loadObjects();
         }
     }
@@ -213,5 +214,14 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     public showCreateNewDossier(): boolean {
         return !this.isOnlineGesuch() === !this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
             && this.availableGemeindeList.length !== 0;
+    }
+
+    /**
+     * It removes all existing NewDossierToCreate from the list. When a currentDossier comes we need to remove all existing ones
+     * that haven't been saved yet because only one new dossier can be created at a time
+     */
+    private removeAllExistingNewDossierToCreate() {
+        this.dossierList = this.dossierList
+            .filter(dossier => !dossier.isNew());
     }
 }

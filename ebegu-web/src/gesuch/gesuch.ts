@@ -210,18 +210,12 @@ export class GesuchRouteController {
         return this.getFall() ? this.getFall().id : undefined;
     }
 
-    public getDossierId(): string {
-        return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
+    public getDossier(): TSDossier {
+        return this.getGesuch() ? this.getGesuch().dossier : undefined;
     }
 
-    /**
-     * this function will return the current Dossier if it has no ID
-     */
-    public getNewDossierToCreate(): TSDossier {
-        if (this.getGesuch().dossier && ! this.getDossierId()) {
-            return this.getGesuch().dossier;
-        }
-        return undefined;
+    public getDossierId(): string {
+        return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
     }
 
     public getGesuchErstellenStepTitle(): string {
