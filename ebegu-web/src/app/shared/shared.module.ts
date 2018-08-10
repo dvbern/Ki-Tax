@@ -15,7 +15,7 @@ import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click
 import {MaterialModule} from './material.module';
 
 export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, '/assets/translations/translations_', '.json');
+    return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
 }
 
 @NgModule({
