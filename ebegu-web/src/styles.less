@@ -106,20 +106,16 @@ body {
     overflow: hidden;
     flex-direction: column;
 
-    ui-view-ng-upgrade {
-        flex: 1;
+    ui-view {
         display: flex;
+        flex: 1;
         max-height: 100%;
-        ui-view {
-            flex: 1;
-            display: flex;
 
-            & > * {
-                width: 100%;
-                height: auto;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
+        & > * {
+            width: 100%;
+            height: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     }
 }
@@ -491,7 +487,7 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
         text-transform: uppercase;
         flex: 1;
         margin: 0 auto;
-        max-width:25rem;
+        max-width: 25rem;
     }
 }
 
