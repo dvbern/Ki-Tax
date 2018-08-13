@@ -15,6 +15,7 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRole} from '../models/enums/TSRole';
 
 pendenzRun.$inject = ['RouterHelper'];
 
@@ -27,6 +28,10 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'pendenzenBetreuungen',
+        data: {
+            roles: [TSRole.SUPER_ADMIN, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+                TSRole.SACHBEARBEITER_INSTITUTION, TSRole.SACHBEARBEITER_TRAEGERSCHAFT]
+        }
     },
     {
         name: 'pendenzenBetreuungen.list-view',

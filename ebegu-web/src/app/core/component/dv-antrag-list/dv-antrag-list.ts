@@ -13,15 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {IComponentOptions, IController, IFilterService, ILogService, IPromise, IWindowService} from 'angular';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
@@ -60,7 +58,6 @@ export class DVAntragListController implements IController {
     static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
         'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     totalResultCount: number;
     displayedCollection: Array<TSAntragDTO> = []; //Liste die im Gui angezeigt wird
     pagination: any;
@@ -106,21 +103,15 @@ export class DVAntragListController implements IController {
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly $window: IWindowService,
                 private readonly gemeindeRS: GemeindeRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+    ) {
     }
 
-    private initViewModel() {
+    public $onInit(): void {
         //statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
-    }
 
-    $onInit() {
         if (!this.addButtonText) {
             this.addButtonText = 'add item';
         }
@@ -130,11 +121,6 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
-    }
-
-    $onDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     public updateInstitutionenList(): void {
@@ -209,7 +195,6 @@ export class DVAntragListController implements IController {
 
     /**
      * Alle Betreuungsangebot typen fuer das Filterdropdown
-     * @returns {Array<TSBetreuungsangebotTyp>}
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
         return getTSBetreuungsangebotTypValues();
@@ -221,7 +206,7 @@ export class DVAntragListController implements IController {
      * @param fallnummer
      */
     public addZerosToFallnummer(fallnummer: number): string {
-        return this.ebeguUtil.addZerosToNumber(fallnummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {

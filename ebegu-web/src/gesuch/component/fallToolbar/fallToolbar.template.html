@@ -1,0 +1,42 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2018 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div class="fall-toolbar">
+    <div layout="row" class="row fall-toolbar-content">
+
+        <div class="dossier-list col-md-12">
+
+            <button *ngFor="let dossier of dossierList" class="dossier-element"
+                    [ngClass]="{'dossier-active': isDossierActive(dossier)}"
+                    (click)="openDossier(dossier)"
+                    [disabled]="isNavigationDisabled()">
+                {{dossier.extractGemeindeName()}}
+            </button>
+
+            <button *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                    (click)="createNewDossier()" class="dossier-element add-dossier"
+                    [disabled]="isNavigationDisabled()">
+                <i class="fa fa-plus"></i>
+            </button>
+
+            <div class="pull-right dossier-element fall-nummer">
+                <span [textContent]="fallNummer"></span>
+                <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
+            </div>
+
+        </div>
+
+    </div>
+</div>

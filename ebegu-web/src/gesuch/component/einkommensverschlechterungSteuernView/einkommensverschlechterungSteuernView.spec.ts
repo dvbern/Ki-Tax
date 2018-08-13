@@ -41,7 +41,7 @@ describe('einkommensverschlechterungSteuernView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
         gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
     });

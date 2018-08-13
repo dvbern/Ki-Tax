@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import TSDossier from '../models/TSDossier';
 import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
@@ -33,10 +34,9 @@ import TSBetreuung from '../models/TSBetreuung';
  */
 export default class EbeguUtil {
 
-    static $inject = ['$filter', 'CONSTANTS', '$translate', '$log'];
+    static $inject = ['$filter', '$translate', '$log'];
 
     constructor(private readonly $filter: IFilterService,
-                private readonly CONSTANTS: any,
                 private readonly $translate: ITranslateService,
                 private readonly $log: ILogService) {
     }
@@ -56,6 +56,15 @@ export default class EbeguUtil {
             return fallnummerString;
         }
         return undefined;
+    }
+
+
+    public static addZerosToFallNummer(fallNummer: number): string {
+        return EbeguUtil.addZerosToNumber(fallNummer, CONSTANTS.FALLNUMMER_LENGTH);
+    }
+
+    public static addZerosToGemeindeNummer(gemeindeNummer: number): string {
+        return EbeguUtil.addZerosToNumber(gemeindeNummer, CONSTANTS.GEMEINDENUMMER_LENGTH);
     }
 
     public static getIndexOfElementwithID(entityToSearch: TSAbstractEntity, listToSearchIn: Array<any>): number {
@@ -208,8 +217,8 @@ export default class EbeguUtil {
         if (gesuchsperiode && fall) {
             betreuungsId =
                 gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
-                + '.' + this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH)
-                + '.' + this.addZerosToNumber(gemeinde.gemeindeNummer, this.CONSTANTS.GEMEINDENUMMER_LENGTH)
+                + '.' + EbeguUtil.addZerosToFallNummer(fall.fallNummer)
+                + '.' + EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer)
                 + '.' + kindContainerNumber
                 + '.' + betreuungNumber;
         }
@@ -222,8 +231,8 @@ export default class EbeguUtil {
         if (betreuung && fall) {
             betreuungsId =
                 betreuung.gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
-                + '.' + this.addZerosToNumber(fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH)
-                + '.' + this.addZerosToNumber(gemeinde.gemeindeNummer, this.CONSTANTS.GEMEINDENUMMER_LENGTH)
+                + '.' + EbeguUtil.addZerosToFallNummer(fall.fallNummer)
+                + '.' + EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer)
                 + '.' + betreuung.kindNummer
                 + '.' + betreuung.betreuungNummer;
         }
@@ -236,8 +245,8 @@ export default class EbeguUtil {
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
         const parts: Array<string> = betreuungsnummer.split('.');
-        if (!parts || parts.length !== this.CONSTANTS.PARTS_OF_BETREUUNGSNUMMER) {
-            this.$log.error('A Betreuungsnummer must always have ' + this.CONSTANTS.PARTS_OF_BETREUUNGSNUMMER + ' parts. The given one had ' + parts.length);
+        if (!parts || parts.length !== CONSTANTS.PARTS_OF_BETREUUNGSNUMMER) {
+            this.$log.error('A Betreuungsnummer must always have ' + CONSTANTS.PARTS_OF_BETREUUNGSNUMMER + ' parts. The given one had ' + parts.length);
             return undefined;
         }
         return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3], parts[4]);
@@ -252,7 +261,7 @@ export default class EbeguUtil {
         let text = '';
         if (gesuch && gesuch.dossier) {
             if (gesuch.dossier.fall) {
-                text = this.addZerosToNumber(gesuch.dossier.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+                text = EbeguUtil.addZerosToFallNummer(gesuch.dossier.fall.fallNummer);
             }
             if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.extractNachname()) {
                 text = text + ' ' + gesuch.gesuchsteller1.extractNachname();
@@ -268,7 +277,7 @@ export default class EbeguUtil {
     public getGesuchNameFromDossier(dossier: TSDossier): string {
         let text = '';
         if (dossier && dossier.fall) {
-            text = this.addZerosToNumber(dossier.fall.fallNummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+            text = EbeguUtil.addZerosToFallNummer(dossier.fall.fallNummer);
             if (dossier.fall.besitzer && dossier.fall.besitzer.getFullName()) {
                 text = text + ' ' + dossier.fall.besitzer.getFullName();
             }

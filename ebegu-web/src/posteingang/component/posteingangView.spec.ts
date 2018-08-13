@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import BerechnungsManager from '../../gesuch/service/berechnungsManager';
@@ -50,6 +51,7 @@ describe('posteingangView', () => {
     let CONSTANTS: any;
     let wizardStepManager: WizardStepManager;
     let mockMitteilung: TSMitteilung;
+    let authLifeCycleService: AuthLifeCycleService;
 
     beforeEach(angular.mock.module(EbeguWebPosteingang.name));
 
@@ -70,13 +72,14 @@ describe('posteingangView', () => {
         CONSTANTS = $injector.get('CONSTANTS');
         wizardStepManager = $injector.get('WizardStepManager');
         mockMitteilung = mockGetMitteilung();
+        authLifeCycleService = $injector.get('AuthLifeCycleService');
     }));
 
     describe('API Usage', () => {
         describe('searchMitteilungen', () => {
             it('should return the list of Mitteilungen', () => {
                 mockRestCalls();
-                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, undefined, $log);
+                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, undefined, undefined, $log, authLifeCycleService);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(result => {

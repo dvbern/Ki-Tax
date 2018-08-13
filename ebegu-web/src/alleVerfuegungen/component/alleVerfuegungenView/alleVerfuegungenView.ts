@@ -78,6 +78,13 @@ export class AlleVerfuegungenViewController implements IController {
         }
     }
 
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
+    }
+
     public getAlleVerfuegungen(): Array<TSAntragStatusHistory> {
         return this.alleVerfuegungen;
     }

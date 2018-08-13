@@ -31,7 +31,6 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
-import IPromise = angular.IPromise;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
@@ -56,42 +55,34 @@ export class GesuchstellerDashboardViewController {
     constructor(private readonly $state: StateService, private readonly $log: ILogService,
                 private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS, private readonly ebeguUtil: EbeguUtil,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $translate: ITranslateService,
-                private readonly mitteilungRS: MitteilungRS, private readonly gesuchRS: GesuchRS, private readonly errorService: ErrorService, private readonly dossierRS: DossierRS) {
+                private readonly mitteilungRS: MitteilungRS, private readonly gesuchRS: GesuchRS, private readonly errorService: ErrorService,
+                private readonly dossierRS: DossierRS) {
     }
 
     $onInit() {
-        if (this.$state.params.gesuchstellerDashboardStateParams && this.$state.params.gesuchstellerDashboardStateParams.infoMessage) {
-            this.errorService.addMesageAsInfo(this.$translate.instant(this.$state.params.gesuchstellerDashboardStateParams.infoMessage));
+        if (this.$state.params.gesuchstellerDashboardStateParams) {
+            if (this.$state.params.gesuchstellerDashboardStateParams.infoMessage) {
+                this.errorService.addMesageAsInfo(this.$translate.instant(this.$state.params.gesuchstellerDashboardStateParams.infoMessage));
+            }
+            if (this.$state.params.gesuchstellerDashboardStateParams.dossierId) {
+                this.initViewModel(this.$state.params.gesuchstellerDashboardStateParams.dossierId);
+            } else {
+                //TODO: Das zuletzt verwendete dossier lesen
+            }
+        } else {
+            //TODO: Das zuletzt verwendete dossier lesen
         }
-        this.initViewModel();
     }
 
-    private initViewModel() {
-        this.updateAntragList().then(() => {
-            this.getAmountNewMitteilungen();
-            this.updateActiveGesuchsperiodenList();
-        });
-    }
-
-    private updateAntragList(): IPromise<any> {
-        //TODO (KIBON-6) Gemeinde!
-        return this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer('unknown').then((createdDossier: TSDossier) => {
-            this.dossier = createdDossier;
+    private initViewModel(dossierId: string) {
+        return this.dossierRS.findDossier(dossierId).then((dossierFromParam: TSDossier) => {
+            this.dossier = dossierFromParam;
             return this.searchRS.getAntraegeGesuchstellerList().then((response: any) => {
                 this.antragList = angular.copy(response);
+                this.getAmountNewMitteilungen();
+                this.updateActiveGesuchsperiodenList();
                 return this.antragList;
             });
-        });
-    }
-
-    private readDossierOfCurrentBenutzer(fallId: string) {
-        //TODO (KIBON-6) Gemeinde!
-        this.dossierRS.getDossierForFallAndGemeinde('unnknown', fallId).then((resultDossier: TSDossier) => {
-            if (resultDossier) {
-                this.dossier = resultDossier;
-            } else {
-                this.dossier = undefined;
-            }
         });
     }
 
@@ -108,7 +99,7 @@ export class GesuchstellerDashboardViewController {
             this._activeGesuchsperiodenList = angular.copy(response);
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
             for (const gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.id).then(response => {
+                this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
                 });
             }
@@ -121,8 +112,16 @@ export class GesuchstellerDashboardViewController {
 
     public goToMitteilungenOeffen() {
         this.$state.go('mitteilungen.view', {
-            dossierId: this.dossier.id
+            dossierId: this.dossier.id,
+            fallId: this.dossier.fall.id,
         });
+    }
+
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
     }
 
     public getAntragList(): Array<TSAntragDTO> {
@@ -149,7 +148,7 @@ export class GesuchstellerDashboardViewController {
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
@@ -178,7 +177,7 @@ export class GesuchstellerDashboardViewController {
             } else {
                 // Dies ist das erste Gesuch
                 this.$state.go('gesuch.fallcreation', {
-                    createNew: true,
+                    createNewFall: true,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: null,
                     gesuchsperiodeId: periode.id,
@@ -242,7 +241,7 @@ export class GesuchstellerDashboardViewController {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
                 this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

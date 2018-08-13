@@ -75,16 +75,14 @@ describe('DVQuicksearchList', () => {
         describe('translateBetreuungsangebotTypList', () => {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS,
-                    authLifeCycleService);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
                 const list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
                     .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS,
-                    authLifeCycleService);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
@@ -97,8 +95,7 @@ describe('DVQuicksearchList', () => {
                 spyOn($state, 'go');
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS,
-                    authLifeCycleService);
+                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
 
                 const tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
@@ -106,7 +103,7 @@ describe('DVQuicksearchList', () => {
                 quicksearchListViewController.editAntrag(mockAntrag, undefined); //antrag wird eidtiert
                 $scope.$apply();
 
-                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNew: false, gesuchId: '66345345', dossierId: mockAntrag.dossierId});
+                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNewFall: false, gesuchId: '66345345', dossierId: mockAntrag.dossierId});
 
             });
         });

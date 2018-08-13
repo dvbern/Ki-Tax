@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {PendenzenBetreuungenListViewComponentConfig} from './component/pendenzenBetreuungenListView/pendenzenBetreuungenListView';
 import {pendenzRun} from './pendenzenBetreuungen.route';

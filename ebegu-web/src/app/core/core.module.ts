@@ -1,17 +1,31 @@
+/*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
-import {DvPosteingangComponent} from './component/dv-posteingang/dv-posteingang';
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
-import {DvNgShowElementDirective} from './directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-import {NavbarComponent} from './component/navbar/navbar.component';
-import {UIRouterModule} from '@uirouter/angular';
 
 @NgModule({
     imports: [
         // only those modules required by the providers/components of the core module (other global modules go to shared module)
         TranslateModule,
-        UIRouterModule,
+        UIRouterUpgradeModule,
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
@@ -19,15 +33,9 @@ import {UIRouterModule} from '@uirouter/angular';
         TranslatePipe,
     ],
     declarations: [
-        // Insert app wide single use components (NavComponent, SpinnerComponent)
-        NavbarComponent,
-        DvNgShowElementDirective,
-        DvPosteingangComponent,
+        // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
+        // This module should be used only to provide services
     ],
-    entryComponents: [
-        NavbarComponent,
-        DvPosteingangComponent,
-    ]
 })
 export class CoreModule {
 

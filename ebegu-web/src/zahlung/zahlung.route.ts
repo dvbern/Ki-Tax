@@ -16,6 +16,7 @@
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 zahlungRun.$inject = ['RouterHelper'];
 
@@ -28,6 +29,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'zahlung',
+        data: {
+            roles: TSRoleUtil.getAllRolesForZahlungen(),
+        },
     },
     {
         name: 'zahlung.view',
