@@ -20,6 +20,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
+import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -48,7 +49,7 @@ const states: Ng2StateDeclaration[] = [
     {
         name: 'onboarding.gesuchsteller',
         url: '/registration/:gemeindeId',
-        component: OnboardingBeLoginComponent, // TODO replace with component from KIBON-130
+        component: OnboardingGsAbschliessenComponent,
         data: {
             roles: [TSRole.GESUCHSTELLER]
         },
