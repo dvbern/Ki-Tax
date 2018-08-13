@@ -9,7 +9,7 @@
                 <span>{{'ONBOARDING_GS_GEMEINDE_TITLE' | translate}}</span>
             </div>
             <div class="onboarding-gs-gemeinde-content">
-                <span *ngIf="gemeinde">{{gemeinde.name}}</span>
+                <span>{{(gemeinde$ | async)?.name}}</span>
             </div>
             <button type="submit" (debounceClick)="createDossier()"
                     class="onboarding-gs-abschliessen">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}

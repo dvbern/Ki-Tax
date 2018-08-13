@@ -74,8 +74,8 @@ export class GesuchstellerDashboardViewController {
     }
 
     private updateAntragList(): IPromise<any> {
-        //TODO (KIBON-6) Gemeinde!
-        return this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer('unknown').then((createdDossier: TSDossier) => {
+        //TODO (KIBON-6) Gemeinde! Wir sollten die Gemeinde bzw. die DossierId als Parameter übergeben
+        return this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer('ea02b313-e7c3-4b26-9ef7-e413f4046db2').then((createdDossier: TSDossier) => {
             this.dossier = createdDossier;
             return this.searchRS.getAntraegeGesuchstellerList().then((response: any) => {
                 this.antragList = angular.copy(response);
@@ -85,8 +85,8 @@ export class GesuchstellerDashboardViewController {
     }
 
     private readDossierOfCurrentBenutzer(fallId: string) {
-        //TODO (KIBON-6) Gemeinde!
-        this.dossierRS.getDossierForFallAndGemeinde('unnknown', fallId).then((resultDossier: TSDossier) => {
+        //TODO (KIBON-6) Gemeinde! Wir sollten die Gemeinde bzw. die DossierId als Parameter übergeben
+        this.dossierRS.getDossierForFallAndGemeinde('ea02b313-e7c3-4b26-9ef7-e413f4046db2', fallId).then((resultDossier: TSDossier) => {
             if (resultDossier) {
                 this.dossier = resultDossier;
             } else {

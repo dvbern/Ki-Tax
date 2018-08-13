@@ -14,6 +14,7 @@
  */
 
 import {Provider} from '@angular/core';
+import DossierRS from '../../gesuch/service/dossierRS.rest';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
@@ -183,6 +184,17 @@ export const downloadRSProvider = {
     deps: ['$injector']
 };
 
+// DossierRS
+export function dossierRSServiceFactory(i: any) {
+    return i.get('DossierRS');
+}
+
+export const dossierRSProvider = {
+    provide: DossierRS,
+    useFactory: dossierRSServiceFactory,
+    deps: ['$injector']
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -198,4 +210,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     gemeindeRSProvider,
     mitteilungRSProvider,
     downloadRSProvider,
+    dossierRSProvider,
 ];
