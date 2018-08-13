@@ -19,11 +19,11 @@ import {Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
 
 @Component({
-    selector: 'dv-onboarding-be-loging',
-    templateUrl: './onboarding-be-loging.component.html',
-    styleUrls: ['../onboarding.less', './onboarding-be-loging.component.less']
+    selector: 'dv-onboarding-be-login',
+    templateUrl: './onboarding-be-login.component.html',
+    styleUrls: ['../onboarding.less', './onboarding-be-login.component.less']
 })
-export class OnboardingBeLogingComponent {
+export class OnboardingBeLoginComponent {
 
     private readonly gemeindeId: string;
 

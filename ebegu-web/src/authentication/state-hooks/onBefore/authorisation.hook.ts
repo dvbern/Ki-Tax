@@ -34,9 +34,7 @@ authorisationHookRunBlock.$inject = ['$transitions'];
 export function authorisationHookRunBlock($transitions: TransitionService) {
     // Matches if the destination state has a data.roles array
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: (state) => {
-            return state.data && Array.isArray(state.data.roles);
-        },
+        to: state => state.data && Array.isArray(state.data.roles),
     };
 
     // Register the "requires authorisation" hook with the TransitionsService.
