@@ -49,18 +49,10 @@ const states: Ng2StateDeclaration[] = [
     {
         name: 'onboarding.gesuchsteller',
         url: '/registration/:gemeindeId',
-        component: OnboardingBeLoginComponent, // TODO replace with component from KIBON-130
-        data: {
-            roles: [TSRole.GESUCHSTELLER]
-        },
-    },
-    {
-        name: 'onboarding.gs-abschliessen',
-        url: '/abschliessen',
         component: OnboardingGsAbschliessenComponent,
         data: {
             roles: [TSRole.GESUCHSTELLER]
-        }
+        },
     },
 ];
 

@@ -1,45 +1,43 @@
-<form #form="ngForm" class="onboarding-container">
-    <div class="onboarding-content">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm">
 
-        <div class="onboarding-title">{{'KIBON' | translate}}</div>
-        <div class="onboarding-subtitle">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}</div>
+    <div class="onboarding-subtitle">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}</div>
 
-        <div class="onboarding-gs-container">
+    <div class="onboarding-gs-container">
 
-            <div class="onboarding-gs-gemeinde">
-                <div class="onboarding-gs-gemeinde-title">
-                    <span>{{'ONBOARDING_GS_GEMEINDE_TITLE' | translate}}</span>
-                </div>
-                <div class="onboarding-gs-gemeinde-content">
-                    <span>{{gemeinde.name}}</span>
-                </div>
-                <button type="button" uiSref="gesuchsteller.dashboard"
-                        class="onboarding-gs-abschliessen">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}
-                </button>
+        <div class="onboarding-gs-gemeinde">
+            <div class="onboarding-gs-gemeinde-title">
+                <span>{{'ONBOARDING_GS_GEMEINDE_TITLE' | translate}}</span>
             </div>
-
-            <div class="onboarding-gs-angaben">
-                <div class="onboarding-gs-angaben-title">
-                    <span>{{'ONBOARDING_GS_ANGABEN_TITLE' | translate}}</span>
-                </div>
-                <div class="onboarding-gs-angaben-content">
-                    <table class="onboarding-gs-angaben-content-table">
-                        <tr>
-                            <td class="onboarding-gs-angaben-table-label">Vorname</td>
-                            <td>{{(user$ | async).vorname}}</td>
-                        </tr>
-                        <tr>
-                            <td class="onboarding-gs-angaben-table-label">Name</td>
-                            <td>{{(user$ | async).nachname}}</td>
-                        </tr>
-                        <tr>
-                            <td class="onboarding-gs-angaben-table-label">E-Mail</td>
-                            <td>{{(user$ | async).email}}</td>
-                        </tr>
-                    </table>
-                </div>
+            <div class="onboarding-gs-gemeinde-content">
+                <span *ngIf="gemeinde">{{gemeinde.name}}</span>
             </div>
-
+            <button type="submit" (debounceClick)="createDossier()"
+                    class="onboarding-gs-abschliessen">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}
+            </button>
         </div>
+
+        <div class="onboarding-gs-angaben">
+            <div class="onboarding-gs-angaben-title">
+                <span>{{'ONBOARDING_GS_ANGABEN_TITLE' | translate}}</span>
+            </div>
+            <div class="onboarding-gs-angaben-content">
+                <table class="onboarding-gs-angaben-content-table">
+                    <tr>
+                        <td class="onboarding-gs-angaben-table-label">Vorname</td>
+                        <td>{{(user$ | async).vorname}}</td>
+                    </tr>
+                    <tr>
+                        <td class="onboarding-gs-angaben-table-label">Name</td>
+                        <td>{{(user$ | async).nachname}}</td>
+                    </tr>
+                    <tr>
+                        <td class="onboarding-gs-angaben-table-label">E-Mail</td>
+                        <td>{{(user$ | async).email}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
     </div>
+
 </form>
