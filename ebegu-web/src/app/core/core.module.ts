@@ -18,10 +18,7 @@
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
 import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {DvPosteingangComponent} from './component/dv-posteingang/dv-posteingang';
-import {NavbarComponent} from './component/navbar/navbar.component';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
-import {DvNgShowElementDirective} from './directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
 
 @NgModule({
@@ -36,15 +33,9 @@ import {UPGRADED_PROVIDERS} from './upgraded-providers';
         TranslatePipe,
     ],
     declarations: [
-        // Insert app wide single use components (NavComponent, SpinnerComponent)
-        NavbarComponent,
-        DvNgShowElementDirective,
-        DvPosteingangComponent,
+        // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
+        // This module should be used only to provide services
     ],
-    entryComponents: [
-        NavbarComponent,
-        DvPosteingangComponent,
-    ]
 })
 export class CoreModule {
 

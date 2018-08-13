@@ -379,7 +379,7 @@ export class NavigatorController implements IController {
 
         if (stepName === TSWizardStepName.GESUCH_ERSTELLEN) {
             this.state.go('gesuch.fallcreation', {
-                createNew: 'false',
+                createNewFall: 'false',
                 createMutation: 'false',
                 eingangsart: this.gesuchModelManager.getGesuch().eingangsart,
                 gesuchId: gesuchId,

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -107,7 +108,10 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
 
 		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
-		return dossiers;
+
+		return dossiers.stream()
+			.filter(authorizer::isReadCompletelyAuthorizedDossier).
+			collect(Collectors.toList());
 	}
 
 	@Nonnull

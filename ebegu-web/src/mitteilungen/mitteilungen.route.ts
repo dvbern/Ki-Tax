@@ -35,7 +35,7 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         name: 'mitteilungen.view',
         template: '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">',
-        url: '/mitteilungen/:dossierId/:betreuungId',
+        url: '/mitteilungen/:fallId/:dossierId/:betreuungId',
         params: {
             betreuungId: '',
         }
@@ -44,6 +44,7 @@ const ng1States: Ng1StateDeclaration[] = [
 
 // TODO hefa nicht alle Params wurden bei der StateDefinition deklariert!
 export class IMitteilungenStateParams {
+    fallId: string;
     dossierId: string;
     betreuungId: string;
     mitteilungId: string;

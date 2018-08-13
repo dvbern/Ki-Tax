@@ -41,7 +41,7 @@ describe('dokumenteView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
     });
 
     it('should be defined', () => {

@@ -13,11 +13,14 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<gesuch-toolbar-gesuchsteller flex="nogrow"
-                              class="gesuch-toolbar-gesuchsteller"
-                              dossier-id="{{vm.dossier.id}}"
-                              is-dashboard-screen="{{true}}">
-</gesuch-toolbar-gesuchsteller>
+<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossier.id">
+</dv-fall-toolbar>
+
+<dossier-toolbar-gesuchsteller flex="nogrow"
+                               class="dossier-toolbar-gesuchsteller"
+                               dossier-id="{{vm.dossier.id}}"
+                               is-dashboard-screen="{{true}}">
+</dossier-toolbar-gesuchsteller>
 
 <div class="gesuchstellerDashboardView" flex="auto">
     <h1 class="access-for-all-title" data-translate="AFA_DASHBOARD"></h1>
