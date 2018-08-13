@@ -14,20 +14,34 @@
  */
 
 import * as angular from 'angular';
-import HttpAuthInterceptor from './service/HttpAuthInterceptor';
-import {authenticationRun} from './authentication.route';
-import AuthServiceRS from './service/AuthServiceRS.rest';
-import HttpBuffer from './service/HttpBuffer';
+import {authenticationRoutes} from './authentication.route';
 import {LoginComponentConfig} from './login/login.component';
-import {StartComponentConfig} from './start/start.component';
 import {SchulungComponentConfig} from './schulung/schulung.component';
+import AuthServiceRS from './service/AuthServiceRS.rest';
+import HttpAuthInterceptor from './service/HttpAuthInterceptor';
+import HttpBuffer from './service/HttpBuffer';
+import {authenticationHookRunBlock} from './state-hooks/onBefore/authentication.hook';
+import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.hook';
+import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
+import {fedletToLoginHookRunBlock} from './state-hooks/onBefore/fedletToLogin.hook';
+import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
+import {errorLoggerHookRunBlock} from './state-hooks/onError/errorLogger.hook';
+import {errorRecoveryHookRunBlock} from './state-hooks/onError/errorRecovery.hook';
+import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook';
 
 export const EbeguAuthentication: angular.IModule =
     angular.module('dvbAngular.authentication', ['ngCookies'])
-        .run(authenticationRun)
+        .run(authenticationHookRunBlock)
+        .run(authorisationHookRunBlock)
+        .run(dummyLoginHookRunBlock)
+        .run(fedletToLoginHookRunBlock)
+        .run(errorAfterLoginHookRunBlock)
+        .run(errorLoggerHookRunBlock)
+        .run(errorRecoveryHookRunBlock)
+        .run(clearErrorsHookRunBlock)
+        .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('dvStart', StartComponentConfig)
         .component('dvSchulung', SchulungComponentConfig)
         .component('dvLogin', LoginComponentConfig);

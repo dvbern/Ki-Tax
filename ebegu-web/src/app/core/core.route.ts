@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, Transition, TransitionService} from '@uirouter/core';
+import {StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
@@ -26,8 +26,6 @@ import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../../models/TSApplicationProperty';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import ErrorService from './errors/service/ErrorService';
 import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
@@ -42,47 +40,44 @@ import ITimeoutService = angular.ITimeoutService;
 const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
-    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
+    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
     'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
-export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
-                       mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: IWindowService,
-                       $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
-                       gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
+export function appRun(angularMomentConfig: any,
+                       routerHelper: RouterHelper,
+                       listResourceRS: ListResourceRS,
+                       mandantRS: MandantRS,
+                       $injector: IInjectorService,
+                       authLifeCycleService: AuthLifeCycleService,
+                       hotkeys: any,
+                       $timeout: ITimeoutService,
+                       authServiceRS: AuthServiceRS,
+                       $state: StateService,
+                       $location: ILocationService,
+                       $window: IWindowService,
+                       $log: ILogService,
+                       gesuchModelManager: GesuchModelManager,
+                       gesuchsperiodeRS: GesuchsperiodeRS,
+                       institutionsStammdatenRS: InstitutionStammdatenRS,
+                       globalCacheService: GlobalCacheService,
+                       $transitions: TransitionService,
+                       gemeindeRS: GemeindeRS,
+) {
     // navigationLogger.toggle();
-
-    $transitions.onStart({}, transition => stateChangeStart(transition));
-    $transitions.onSuccess({}, ignore => errorService.clearAll());
-    $transitions.onError({}, transition => LOG.error('Fehler beim Navigieren', transition));
-
-    function stateChangeStart(transition: Transition) {
-        // TODO HEFA migrate to state definition
-        //Normale Benutzer duefen nicht auf admin Seite
-        const forbiddenPlaces = ['admin.view', 'admin.institution', 'admin.parameter', 'admin.traegerschaft'];
-        const isAdmin: boolean = authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRevisorRole());
-        if (forbiddenPlaces.indexOf(transition.to().name) !== -1 && authServiceRS.getPrincipal() && !isAdmin) {
-            errorService.addMesageAsError('ERROR_UNAUTHORIZED');
-            $log.debug('prevented navigation to page because user is not admin');
-            event.preventDefault();
-        }
-    }
+    // $trace.enable(Category.TRANSITION);
 
     function onNotAuthenticated() {
-        const currentPath = angular.copy($location.absUrl());
-        LOG.debug('going to login page with current path ', currentPath);
+        const currentPath: string = angular.copy($location.absUrl());
 
         const loginConnectorPaths = [
             'fedletSSOInit',
             'sendRedirectForValidation'
         ];
 
-        //wenn wir schon auf der loginseite oder im redirect sind redirecten wir nicht
-        if (($state.current.data && $state.current.data.isPublic) || loginConnectorPaths.some(path => currentPath.includes(path))) {
+        if (loginConnectorPaths.some(path => currentPath.includes(path))) {
             LOG.debug('supressing redirect to ', currentPath);
         } else {
-            $state.go('authentication.login', {relayPath: currentPath, type: 'login'});
+            $state.go('authentication.login');
         }
     }
 
@@ -104,7 +99,6 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
         gesuchModelManager.updateFachstellenList();
     }
 
-    // not used anymore?
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
             () => onLoginSuccess(),
@@ -140,9 +134,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: () => {
-            $timeout(() => angular.element('.next').last().click());
-        }
+        callback: () => $timeout(() => angular.element('.next').last().trigger('click'))
     });
 
 }

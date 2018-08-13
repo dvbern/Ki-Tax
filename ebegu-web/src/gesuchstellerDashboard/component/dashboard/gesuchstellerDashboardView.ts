@@ -108,7 +108,7 @@ export class GesuchstellerDashboardViewController {
             this._activeGesuchsperiodenList = angular.copy(response);
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
             for (const gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuch(gp.id, this.dossier.id).then(response => {
+                this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
                 });
             }
@@ -121,8 +121,16 @@ export class GesuchstellerDashboardViewController {
 
     public goToMitteilungenOeffen() {
         this.$state.go('mitteilungen.view', {
-            dossierId: this.dossier.id
+            dossierId: this.dossier.id,
+            fallId: this.dossier.fall.id,
         });
+    }
+
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
     }
 
     public getAntragList(): Array<TSAntragDTO> {
@@ -149,7 +157,7 @@ export class GesuchstellerDashboardViewController {
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
@@ -178,7 +186,7 @@ export class GesuchstellerDashboardViewController {
             } else {
                 // Dies ist das erste Gesuch
                 this.$state.go('gesuch.fallcreation', {
-                    createNew: true,
+                    createNewFall: true,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: null,
                     gesuchsperiodeId: periode.id,
@@ -242,7 +250,7 @@ export class GesuchstellerDashboardViewController {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
                 this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
-                this.$state.go('gesuch.fallcreation', {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

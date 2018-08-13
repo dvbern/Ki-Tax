@@ -16,30 +16,41 @@
  */
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
-import {LogFactory} from '../../core/logging/LogFactory';
-
-const LOG = LogFactory.createLog('OnboardingComponent');
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 @Component({
     selector: 'dv-onboarding',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding.component.html',
-    styleUrls: ['./onboarding.component.less'],
+    styleUrls: ['../onboarding.less', './onboarding.component.less'],
 })
 export class OnboardingComponent {
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
 
-    constructor(private readonly gemeindeRs: GemeindeRS) {
+    public isDummyMode$: Observable<boolean>;
+
+    constructor(private readonly gemeindeRs: GemeindeRS,
+                private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly stateService: StateService,
+    ) {
         this.gemeinden$ = from(this.gemeindeRs.getAllGemeinden())
             .pipe(map(gemeinden => gemeinden.sort((a, b) => a.name.localeCompare(b.name))));
+
+        this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
 
-    public onSubmit(): void {
-        LOG.info('submitted', this.gemeinde);
+    public onSubmit(form: NgForm): void {
+        if (!form.valid) {
+            return;
+        }
+
+        this.stateService.go('onboarding.be-login', {gemeindeId: this.gemeinde.id});
     }
 }

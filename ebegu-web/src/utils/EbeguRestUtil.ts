@@ -693,6 +693,18 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public parseDossierList(data: any): TSDossier[] {
+        let dossierListTS: TSDossier[] = [];
+        if (data && Array.isArray(data)) {
+            for (let i = 0; i < data.length; i++) {
+                dossierListTS[i] = this.parseDossier(new TSDossier(), data[i]);
+            }
+        } else {
+            dossierListTS[0] = this.parseDossier(new TSDossier(), data);
+        }
+        return dossierListTS;
+    }
+
     public parseDossier(dossierTS: TSDossier, dossierFromServer: any): TSDossier {
         if (dossierFromServer) {
             this.parseAbstractEntity(dossierTS, dossierFromServer);

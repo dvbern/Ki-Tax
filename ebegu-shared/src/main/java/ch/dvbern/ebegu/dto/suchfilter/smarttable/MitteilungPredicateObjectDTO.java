@@ -32,15 +32,15 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 
 	private static final long serialVersionUID = -2248051428962150142L;
 
-	private String sender; 			// mitteilung.sender.fullName
-	private String fallNummer; 		// mitteilung.fall.fallNummer
-	private String familienName; 	// mitteilung.fall.besitzer.fullName
-	private String subject; 		// mitteilung.subject
-	private String sentDatum;		// mitteilung.sentDatum
-	private String empfaenger; 		// mitteilung.empfaenger.fullName
-	private String empfaengerAmt; 	// mitteilung.empfaengerAmt;
+	private String sender;            // mitteilung.sender.fullName
+	private String fallNummer;        // mitteilung.fall.fallNummer
+	private String familienName;    // mitteilung.fall.besitzer.fullName
+	private String subject;        // mitteilung.subject
+	private String sentDatum;        // mitteilung.sentDatum
+	private String empfaenger;        // mitteilung.empfaenger.fullName
+	private String empfaengerAmt;    // mitteilung.empfaengerAmt;
 	private String mitteilungStatus;// mitteilung.status
-
+	private String gemeinde;
 
 	public String getSender() {
 		return sender;
@@ -106,6 +106,14 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 		this.mitteilungStatus = mitteilungStatus;
 	}
 
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -117,6 +125,7 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 			.append("empfaenger", empfaenger)
 			.append("emfaengerAmt", empfaengerAmt)
 			.append("mitteilungStatus", mitteilungStatus)
+			.append("gemeinde", gemeinde)
 			.toString();
 	}
 }

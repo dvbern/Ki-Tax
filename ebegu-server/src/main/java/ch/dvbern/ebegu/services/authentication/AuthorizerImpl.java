@@ -59,7 +59,9 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -94,6 +96,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private DossierService dossierService;
+
+	@Inject
+	private GesuchService gesuchService;
 
 	@Inject
 	private InstitutionService institutionService;
@@ -174,10 +182,18 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
+	public void checkReadAuthorizationDossier(@Nonnull String dossierId) {
+		Optional<Dossier> dossierOptional = dossierService.findDossier(dossierId);
+		dossierOptional.ifPresent(this::checkReadAuthorizationDossier);
+	}
+
+	@Override
 	public void checkReadAuthorizationDossier(@Nullable Dossier dossier) {
-		boolean allowed = isReadAuthorizedDossier(dossier);
-		if (!allowed) {
-			throwViolation(dossier);
+		if (dossier != null) {
+			boolean allowed = isReadAuthorizedDossier(dossier);
+			if (!allowed) {
+				throwViolation(dossier);
+			}
 		}
 	}
 
@@ -227,7 +243,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	private boolean isReadAuthorizedDossier(@Nullable final Dossier dossier) {
+	@Override
+	public boolean isReadAuthorizedDossier(@Nullable final Dossier dossier) {
 		if (dossier == null) {
 			return true;
 		}
@@ -245,6 +262,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		//TODO (team) hier muss dann spaeter die Rolle genauer geprüft werden!
 		//Gesuchstellereigentuemer pruefen
 		return this.isGSOwner(dossier::getFall, principalBean.getPrincipal().getName());
+	}
+
+	@Override
+	public boolean isReadCompletelyAuthorizedDossier(@Nullable Dossier dossier) {
+		if (dossier == null) {
+			return true;
+		}
+		if (!isReadAuthorizedDossier(dossier)) {
+			return false;
+		}
+
+		return gesuchService.getAllGesuchForDossier(dossier.getId()).stream()
+			.anyMatch(this::isReadAuthorized);
+
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")

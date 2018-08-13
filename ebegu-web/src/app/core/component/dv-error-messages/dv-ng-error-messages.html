@@ -13,27 +13,26 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!--suppress XmlDuplicatedId -->
-<div class="dv-error-messages">
-    <div *ngIf="errorsList" [ngSwitch]="errorsList[0]">
-        <div *ngSwitchCase="'required'" id="{{inputid + '-error'}}" [textContent]="'ERROR_REQUIRED' | translate"></div>
-        <div *ngSwitchCase="'minlength'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MIN_LENG' | translate"></div>
-        <div *ngSwitchCase="'maxlength'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MAX_LENG' | translate"></div>
-        <div *ngSwitchCase="'number'" id="{{inputid + '-error'}}" [textContent]="'ERROR_NUMBER' | translate"></div>
-        <div *ngSwitchCase="'dvMaxLength'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MAX_LENG' | translate"></div>
-        <div *ngSwitchCase="'email'" id="{{inputid + '-error'}}" [textContent]="'ERROR_EMAIL' | translate"></div>
-        <div *ngSwitchCase="'pattern'" id="{{inputid + '-error'}}" [textContent]="'ERROR_FORMAT' | translate"></div>
-        <div *ngSwitchCase="'date'" id="{{inputid + '-error'}}" [textContent]="'ERROR_DATE' | translate"></div>
-        <div *ngSwitchCase="'moment'" id="{{inputid + '-error'}}" [textContent]="'ERROR_FORMAT' | translate"></div>
-        <div *ngSwitchCase="'max'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MAX' | translate"></div>
-        <div *ngSwitchCase="'valueinput'" id="{{inputid + '-error'}}" [textContent]="'ERROR_VALUE' | translate"></div>
-        <div *ngSwitchCase="'dvMinDate'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MIN_DATE' | translate"></div>
-        <div *ngSwitchCase="'dvMaxDate'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MAX_DATE' | translate"></div>
-        <div *ngSwitchCase="'dateTime'" id="{{inputid + '-error'}}" [textContent]="'ERROR_DATETIME' | translate"></div>
-        <div *ngSwitchCase="'dvMinDateTime'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MIN_DATETIME' | translate"></div>
-        <div *ngSwitchCase="'dvMaxDateTime'" id="{{inputid + '-error'}}" [textContent]="'ERROR_MAX_DATETIME' | translate"></div>
-        <div *ngSwitchCase="'dvNoFutureDate'" id="{{inputid + '-error'}}" [textContent]="'ERROR_NO_FUTURE_DATE' | translate"></div>
-        <div *ngSwitchCase="'dvNoFutureDateTime'" id="{{inputid + '-error'}}" [textContent]="'ERROR_NO_FUTURE_DATETIME' | translate"></div>
-        <div *ngSwitchCase="'parse'" role="alert" [textContent]="'ERROR_PARSE' | translate"></div>
+<div class="dv-error-messages" *ngIf="show">
+    <div [ngSwitch]="(error)" id="{{inputid + '-error'}}">
+        <ng-container *ngSwitchCase="'required'">{{'ERROR_REQUIRED' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'minlength'">{{'ERROR_MIN_LENG' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'maxlength'">{{'ERROR_MAX_LENG' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'number'">{{'ERROR_NUMBER' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMaxLength'">{{'ERROR_MAX_LENG' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'email'">{{'ERROR_EMAIL' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'pattern'">{{'ERROR_FORMAT' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'date'">{{'ERROR_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'moment'">{{'ERROR_FORMAT' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'max'">{{'ERROR_MAX' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'valueinput'">{{'ERROR_VALUE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMinDate'">{{'ERROR_MIN_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMaxDate'">{{'ERROR_MAX_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dateTime'">{{'ERROR_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMinDateTime'">{{'ERROR_MIN_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMaxDateTime'">{{'ERROR_MAX_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvNoFutureDate'">{{'ERROR_NO_FUTURE_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvNoFutureDateTime'">{{'ERROR_NO_FUTURE_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'parse'">{{'ERROR_PARSE' | translate}}</ng-container>
     </div>
 </div>

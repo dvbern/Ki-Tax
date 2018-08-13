@@ -16,14 +16,19 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -38,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -135,6 +141,28 @@ public class DossierResource {
 		Optional<Dossier> dossierOptional = dossierService.findDossierByGemeindeAndFall(gemeindeId, fallId);
 
 		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
+	}
+
+	@ApiOperation(value = "Returns all Dossiers of the given Fall that are visible for the current user",
+		responseContainer = "List", response = JaxDossier.class)
+	@Nullable
+	@GET
+	@Path("/fall/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxDossier> findDossiersByFall(
+		@Nonnull @NotNull @Valid @PathParam("fallId") JaxId fallJaxId) {
+
+		Objects.requireNonNull(fallJaxId.getId());
+
+		String fallId = converter.toEntityId(fallJaxId);
+		Collection<Dossier> dossierList = dossierService.findDossiersByFall(fallId);
+
+		//noinspection ConstantConditions -> here JaxAbstractDTO::getTimestampErstellt cannot be null
+		return dossierList.stream()
+			.map(dossier -> converter.dossierToJAX(dossier))
+			.sorted(Comparator.comparing(JaxAbstractDTO::getTimestampErstellt))
+			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Creates a new Dossier in the database if it doesnt exist with the current user as owner.", response = JaxDossier.class)

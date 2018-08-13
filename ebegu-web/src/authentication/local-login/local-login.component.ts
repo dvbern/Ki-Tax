@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject} from '@angular/core';
-import {UIRouter} from '@uirouter/core';
+import {Component, Input} from '@angular/core';
+import {StateService, TargetState} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import TSGemeinde from '../../models/TSGemeinde';
@@ -22,7 +22,7 @@ import TSInstitution from '../../models/TSInstitution';
 import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import TSUser from '../../models/TSUser';
-import AuthenticationUtil from '../../utils/AuthenticationUtil';
+import {returnToOriginalState} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 
 @Component({
@@ -31,6 +31,8 @@ import AuthServiceRS from '../service/AuthServiceRS.rest';
     styleUrls: ['./local-login.component.less'],
 })
 export class LocalLoginComponent {
+
+    @Input() public returnTo: TargetState;
 
     // Allgemeine User
     public superadmin: TSUser;
@@ -82,9 +84,9 @@ export class LocalLoginComponent {
     private readonly traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
 
-    constructor(@Inject(AuthServiceRS) private readonly authServiceRS: AuthServiceRS,
-                @Inject(ApplicationPropertyRS) private readonly applicationPropertyRS: ApplicationPropertyRS,
-                @Inject(UIRouter) private readonly uiRouter: UIRouter) {
+    constructor(private readonly authServiceRS: AuthServiceRS,
+                private readonly applicationPropertyRS: ApplicationPropertyRS,
+                private readonly stateService: StateService) {
 
         this.mandant = LocalLoginComponent.getMandant();
         this.gemeindeBern = LocalLoginComponent.getGemeindeBern();
@@ -279,9 +281,8 @@ export class LocalLoginComponent {
         return institution;
     }
 
-    public logIn(user: TSUser): void {
-        this.authServiceRS.loginRequest(user).then(() => {
-            AuthenticationUtil.navigateToStartPageForRole(user, this.uiRouter.stateService);
-        });
+    public logIn(credentials: TSUser): void {
+        this.authServiceRS.loginRequest(credentials)
+            .then(() => returnToOriginalState(this.stateService, this.returnTo));
     }
 }

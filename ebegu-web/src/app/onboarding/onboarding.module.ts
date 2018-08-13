@@ -16,7 +16,9 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingRoutingModule} from './onboarding-routing.module';
+import { OnboardingMainComponent } from './onboarding-main/onboarding-main.component';
 
 @NgModule({
     imports: [
@@ -24,7 +26,9 @@ import {OnboardingRoutingModule} from './onboarding-routing.module';
         OnboardingRoutingModule,
     ],
     declarations: [
-        OnboardingComponent
+        OnboardingComponent,
+        OnboardingBeLoginComponent,
+        OnboardingMainComponent
     ]
 })
 class OnboardingModule {

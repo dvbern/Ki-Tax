@@ -14,42 +14,51 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
+<div class="onboarding-subtitle">{{'ONBOARDING_BG_BEANTRAGEN' | translate}}</div>
 
-<form (ngSubmit)="onSubmit()" #form="ngForm" class="onboarding-container">
-    <div class="onboarding-content">
-        <div class="onboarding-title">{{'KIBON' | translate}}</div>
-        <div class="onboarding-subtitle">{{'ONBOARDING_BG_BEANTRAGEN' | translate}}</div>
-        <div class="onboarding-gemeinde-container">
-            <div class="onboarding-gemeinde-search-container">
-                <label class="onboarding-gemeinde-label" for="gemeinde">
-                    {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
-                </label>
-                <div class="onboarding-gemeinde-search">
-                    <div class="onboarding-gemeinde-search-input">
-                        <div class="dv-select-style">
-                            <select [(ngModel)]="gemeinde"
-                                    name="gemeinde"
-                                    class="form-control"
-                                    id="gemeinde"
-                                    [required]="true">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <div class="onboarding-gemeinde-container">
+        <label class="onboarding-gemeinde-label" for="gemeinde">
+            {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
+        </label>
 
-                                <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
-                                    {{gemeinde.name}}
-                                </option>
-                            </select>
-                        </div>
+        <div class="onboarding-gemeinde-input-container">
+            <div class="onboarding-gemeinde-search">
+                <div class="onboarding-gemeinde-search-input">
+                    <div class="dv-select-style">
+                        <select [(ngModel)]="gemeinde"
+                                name="gemeinde"
+                                class="form-control"
+                                id="gemeinde"
+                                [required]="true">
+
+                            <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
+                                {{gemeinde.name}}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>
+
             <button type="submit"
-                    class="onboarding-gemeinde-auswaehlen">{{'ONBOARDING_GEMEINDE_AUSWAEHLEN' | translate}}
+                    class="dv-btn onboarding-gemeinde-auswaehlen">{{'ONBOARDING_GEMEINDE_AUSWAEHLEN' | translate}}
             </button>
         </div>
 
-        <p class="onboarding-content-login">
-            {{'ONBOARDING_ACCOUNT_VORHANDEN' | translate}}<br>
-            <a href="" uiSref="authentication.start">{{'ONBOARDING_ANMELDEN' | translate}}</a>
-        </p>
 
+        <dv-ng-error-messages [errorObject]="form.controls.gemeinde?.errors"
+                              [inputid]="'gemeinde'"
+                              [show]="form.submitted"
+                              class="input-error">
+        </dv-ng-error-messages>
     </div>
 </form>
+
+<p class="onboarding-login">
+    {{'ONBOARDING_ACCOUNT_VORHANDEN' | translate}}<br>
+    <a href="" uiSref="authentication.login">{{'ONBOARDING_ANMELDEN' | translate}}</a>
+    <ng-container *ngIf="isDummyMode$ | async">
+        <br>
+        <a href="" uiSref="authentication.locallogin">{{'ONBOARDING_LOCAL_LOGIN' | translate}}</a>
+    </ng-container>
+</p>

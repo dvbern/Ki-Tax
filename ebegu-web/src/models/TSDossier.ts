@@ -68,4 +68,8 @@ export default class TSDossier extends TSAbstractEntity {
     public isHauptverantwortlicherTS(): boolean {
         return this.getHauptverantwortlicher() && this.getHauptverantwortlicher() === this.verantwortlicherTS;
     }
+
+    public extractGemeindeName(): string {
+        return this.gemeinde ? this.gemeinde.name : '';
+    }
 }

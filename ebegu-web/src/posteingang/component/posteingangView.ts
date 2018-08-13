@@ -15,14 +15,23 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
+import TSGemeinde from '../../models/TSGemeinde';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+
+let template = require('./posteingangView.html');
+require('./posteingangView.less');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -33,7 +42,8 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 
 export class PosteingangViewController {
 
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', '$log'];
+    private readonly unsubscribe$ = new Subject<void>();
+
 
     displayedCollection: Array<TSMitteilung> = []; //Liste die im Gui angezeigt wird
     pagination: any = {};
@@ -45,24 +55,50 @@ export class PosteingangViewController {
     selectedAmt: string;
     selectedMitteilungsstatus: TSMitteilungStatus;
     includeClosed: boolean = false;
+    gemeindenList: Array<TSGemeinde> = [];
 
-    constructor(private readonly mitteilungRS: MitteilungRS, private readonly ebeguUtil: EbeguUtil, private readonly CONSTANTS: any, private readonly $state: StateService,
-                private readonly authServiceRS: AuthServiceRS, private readonly $log: ILogService) {
+    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS',
+        '$log', 'AuthLifeCycleService'];
+
+    constructor(private readonly mitteilungRS: MitteilungRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly CONSTANTS: any,
+                private readonly $state: StateService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly $log: ILogService,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
+
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => this.initViewModel());
+    }
+
+    initViewModel() {
+        this.updateGemeindenList();
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
-        return this.ebeguUtil.addZerosToNumber(fallnummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
         this.$state.go('mitteilungen.view', {
-            dossierId: mitteilung.dossier.id
+            dossierId: mitteilung.dossier.id,
+            fallId: mitteilung.dossier.fall.id,
         });
     }
 
     isCurrentUserSchulamt(): boolean {
         const isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
         return isUserSchulamt;
+    }
+
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     getAemter(): Array<TSAmt> {
@@ -81,7 +117,8 @@ export class PosteingangViewController {
         this.pagination = tableFilterState.pagination;
         this.myTableFilterState = tableFilterState;
 
-        return this.mitteilungRS.searchMitteilungen(tableFilterState, this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
+        return this.mitteilungRS.searchMitteilungen(tableFilterState,
+            this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
             this.setResult(result);
         });
     };

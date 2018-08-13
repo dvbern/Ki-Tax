@@ -54,9 +54,10 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
+    url = '/fall/:createNewFall/:createNewDossier/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
     params = {
         eingangsart: '',
+        createNewDossier: 'false',
         gesuchsperiodeId: '',
         gesuchId: '',
         dossierId: '',
@@ -74,6 +75,10 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: reloadGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
 }
 
@@ -93,6 +98,10 @@ export class EbeguMutationState implements Ng1StateDeclaration {
     resolve = {
         gesuch: createEmptyMutation
     };
+
+    data = {
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+    };
 }
 
 export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
@@ -111,6 +120,10 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     resolve = {
         gesuch: createEmptyErneuerungsgesuch
     };
+
+    data = {
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+    };
 }
 
 export class EbeguFamiliensituationState implements Ng1StateDeclaration {
@@ -128,6 +141,10 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -150,6 +167,10 @@ export class EbeguStammdatenState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous()
+    };
 }
 
 export class EbeguUmzugState implements Ng1StateDeclaration {
@@ -167,6 +188,10 @@ export class EbeguUmzugState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -186,6 +211,10 @@ export class EbeguKinderListState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager,
         kinderDubletten: getKinderDubletten
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -208,6 +237,10 @@ export class EbeguKindState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguBetreuungListState implements Ng1StateDeclaration {
@@ -225,6 +258,10 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -248,6 +285,10 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous()
+    };
 }
 
 export class EbeguAbwesenheitState implements Ng1StateDeclaration {
@@ -266,6 +307,10 @@ export class EbeguAbwesenheitState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt()
+    };
 }
 
 export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
@@ -283,6 +328,10 @@ export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
 }
 
@@ -305,6 +354,10 @@ export class EbeguErwerbspensumState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    };
 }
 
 export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
@@ -326,6 +379,10 @@ export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration {
@@ -344,6 +401,10 @@ export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration 
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclaration {
@@ -361,6 +422,10 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -381,6 +446,10 @@ export class EbeguVerfuegenListState implements Ng1StateDeclaration {
         gesuch: getGesuchModelManager,
         mahnungList: getMahnungen
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt()
+    };
 }
 
 export class EbeguVerfuegenState implements Ng1StateDeclaration {
@@ -398,6 +467,10 @@ export class EbeguVerfuegenState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt()
     };
 }
 
@@ -417,6 +490,10 @@ export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclara
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDeclaration {
@@ -434,6 +511,10 @@ export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDecl
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -457,6 +538,10 @@ export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    };
 }
 
 export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDeclaration {
@@ -477,6 +562,10 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -499,6 +588,10 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
     resolve = {
         gesuch: getGesuchModelManager
     };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    };
 }
 
 export class EbeguFreigabeState implements Ng1StateDeclaration {
@@ -516,6 +609,10 @@ export class EbeguFreigabeState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
 }
 
@@ -537,6 +634,10 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
 
     resolve = {
         gesuch: getGesuchModelManager
+    };
+
+    data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -591,7 +692,8 @@ export class IBetreuungStateParams {
 }
 
 export class INewFallStateParams {
-    createNew: string;
+    createNewFall: string;
+    createNewDossier: string;
     createMutation: string;
     eingangsart: TSEingangsart;
     gesuchsperiodeId: string;
@@ -666,21 +768,28 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
                                          $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        if ($stateParams.createNew === 'true') {
-            const eingangsart = $stateParams.eingangsart;
-            const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            const dossierId = $stateParams.dossierId;
-            const gemeindeId = $stateParams.gemeindeId;
+
+        const eingangsart = $stateParams.eingangsart;
+        const gemeindeId = $stateParams.gemeindeId;
+
+        if ($stateParams.createNewFall === 'true') {
             //initialize gesuch
-            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId);
-        } else {
-            const gesuchIdParam = $stateParams.gesuchId;
-            if (!gesuchIdParam) {
-                $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
-            }
-            berechnungsManager.clear();
-            return gesuchModelManager.openGesuch(gesuchIdParam);
+            return gesuchModelManager.createNewFall(eingangsart, gemeindeId);
         }
+
+        const createNewDossierParam = $stateParams.createNewDossier;
+        if (createNewDossierParam === 'true') {
+            return gesuchModelManager.createNewDossierForCurrentFall(eingangsart, gemeindeId);
+        }
+
+        const gesuchIdParam = $stateParams.gesuchId;
+        if (!gesuchIdParam) {
+            $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
+        }
+
+        berechnungsManager.clear();
+        return gesuchModelManager.openGesuch(gesuchIdParam);
+
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
     return $q.defer(gesuchModelManager.getGesuch());
@@ -722,9 +831,9 @@ function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchMo
 
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
-                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId, false);
             } else if (antragtyp === TSAntragTyp.MUTATION) {
-                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId, true);
             }
         }
     }

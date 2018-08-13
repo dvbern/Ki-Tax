@@ -15,13 +15,18 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
+import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
 @NgModule({
     imports: [
         SharedModule,
     ],
-    declarations: [],
-    entryComponents: [],
+    declarations: [
+        FallToolbarComponent,
+    ],
+    entryComponents: [
+        FallToolbarComponent,
+    ],
 })
 
 export class NgGesuchModule {

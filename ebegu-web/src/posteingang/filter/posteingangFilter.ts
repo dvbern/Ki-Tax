@@ -37,7 +37,7 @@ export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
             }
             // Fall-Nummer
             if (expression.dossier && expression.dossier.fall && expression.dossier.fall.fallNummer && expression.dossier.fall.fallNummer === expected) {
-                const actualString = ebeguUtil.addZerosToNumber(actual, CONSTANTS.FALLNUMMER_LENGTH);
+                const actualString = EbeguUtil.addZerosToFallNummer(actual);
                 return actualString.indexOf(expected) >= 0;
             }
             // Familie

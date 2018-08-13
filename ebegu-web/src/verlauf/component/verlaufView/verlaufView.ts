@@ -64,7 +64,7 @@ export class VerlaufViewController {
                 this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode).then((response: TSAntragStatusHistory[]) => {
                     this.verlauf = response;
                 });
-                this.gesuchRS.getAllAntragDTOForFall(this.dossier.fall.id).then((response) => {
+                this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
                     response.forEach((item) => {
                         this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(item.antragTyp, item.eingangsdatum, item.laufnummer);
                     });
@@ -77,6 +77,13 @@ export class VerlaufViewController {
 
     public getVerlaufList(): Array<TSAntragStatusHistory> {
         return this.verlauf;
+    }
+
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
     }
 
     public cancel(): void {
