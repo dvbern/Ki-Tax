@@ -13,22 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RejectType, StateService, TransitionService} from '@uirouter/core';
+import {StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {hasFromState, RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
 import {environment} from '../../environments/environment';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
-import {TSRole} from '../../models/enums/TSRole';
 import TSApplicationProperty from '../../models/TSApplicationProperty';
-import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
-import ErrorService from './errors/service/ErrorService';
 import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
@@ -43,7 +40,7 @@ import ITimeoutService = angular.ITimeoutService;
 const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
-    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
+    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
     'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
 export function appRun(angularMomentConfig: any,
@@ -59,7 +56,6 @@ export function appRun(angularMomentConfig: any,
                        $location: ILocationService,
                        $window: IWindowService,
                        $log: ILogService,
-                       errorService: ErrorService,
                        gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS,
                        institutionsStammdatenRS: InstitutionStammdatenRS,
@@ -69,19 +65,6 @@ export function appRun(angularMomentConfig: any,
 ) {
     // navigationLogger.toggle();
     // $trace.enable(Category.TRANSITION);
-
-    $transitions.onSuccess({}, ignore => errorService.clearAll());
-    $transitions.onError({}, transition => {
-        if (transition.error().type === RejectType.ABORTED && !hasFromState(transition)) {
-            // we have been blocked by some hook, but we are on no state -> open fallback state
-            navigateToStartPageForRole(TSRole.ANONYMOUS, transition.router.stateService);
-            return;
-        }
-
-        if (transition.error().type !== RejectType.SUPERSEDED) {
-            LOG.error('Fehler beim Navigieren', transition);
-        }
-    });
 
     function onNotAuthenticated() {
         const currentPath: string = angular.copy($location.absUrl());

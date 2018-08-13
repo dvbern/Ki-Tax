@@ -14,117 +14,68 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @import (reference) '../../../style/variables.less';
 
-.onboarding-text() {
-    font-size: 1.4rem;
-    color: @white;
-    letter-spacing: 0.05rem;
-    line-height: 1.9rem;
-}
-
-.onboarding {
+.onboarding-gemeinde {
     &-container {
-        overflow-y: auto;
-        background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
-        url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
-        background-size: cover;
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        flex-direction: column;
-    }
-
-    &-content {
-        flex: 1;
         display: flex;
         flex-flow: column;
-        align-items: center;
-
-        &-login {
-            margin-top: 15vh;
-            text-align: center;
-            color: @white;
-            letter-spacing: 0.05rem;
-
-            a {
-                color: @red
-            }
-        }
     }
 
-    &-title {
-        font-size: 7.2rem;
-        font-weight: bold;
-        line-height: 9.8rem;
-        letter-spacing: 0.15rem;
-        color: @white;
-        padding: 4vh;
+    &-label {
+        width: 28rem;
+        margin-bottom: 1.7rem;
     }
 
-    &-subtitle {
-        font-size: 3.6rem;
-        font-weight: bold;
-        letter-spacing: 0.193rem;
-        line-height: 4.9rem;
-        color: @white;
-        margin: 5vh;
+    &-input-container {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
     }
 
-    &-gemeinde {
-        &-container {
-            display: flex;
-            flex-flow: row wrap;
-            align-items: flex-end;
-        }
+    &-search {
+        margin-bottom: 1.7rem;
 
-        &-gemeinde-search-container {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        &-label {
-            height: 4rem;
-            width: 23.9rem;
-            .onboarding-text();
-            margin-bottom: 1.7rem;
-        }
-
-        &-search {
+        &-input {
             border: 0.5rem solid @primary;
-            margin-right: 12rem;
+        }
 
-            .dv-select-style {
-                border: 1px solid @anthracite;
+        .dv-select-style {
+            border: 1px solid @anthracite;
 
-                select {
-                    width: 22.9rem;
-                    height: 3rem;
-                    font-size: 1.4rem;
-                    font-weight: normal;
-                }
-
-                &:after {
-                    top: 0.5rem;
-                }
+            select {
+                width: calc(25.2rem - 1px);
+                height: calc(3rem - 1px);
+                font-size: 1.4rem;
+                font-weight: normal;
             }
 
+            &:after {
+                top: 0.5rem;
+                color: @black;
+            }
         }
 
-        &-auswaehlen {
-            height: 4rem;
-            width: 26.3rem;
-            min-width: 26.3rem;
-            max-width: 26.3rem;
-            margin-top: 1.7rem;
-            .onboarding-text();
-            background-color: @primary;
-            text-align: center;
-            flex: 1;
-            border: none;
-            text-transform: uppercase;
-        }
+    }
+
+    &-auswaehlen {
+        width: 26.3rem;
+        text-transform: uppercase;
+        // wenn der button fokusiert ist braucht er 2px für den Outline
+        margin: 0 2px;
+    }
+}
+
+.input-error {
+    height: 4rem;
+}
+
+.onboarding-login {
+    margin-top: 10vh;
+    text-align: center;
+    line-height: 2.8rem;
+
+    a {
+        color: @red
     }
 }

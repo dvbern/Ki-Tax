@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -23,6 +24,7 @@ describe('OnboardingComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
+                UIRouterModule.forRoot({useHash: true})
             ],
             declarations: [OnboardingComponent],
             providers: [
