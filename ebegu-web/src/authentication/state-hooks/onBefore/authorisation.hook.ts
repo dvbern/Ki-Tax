@@ -1,25 +1,27 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
-import {hasFromState} from '../dvbModules/router/route-helper-provider';
-import {TSRole} from '../models/enums/TSRole';
-import {getRoleBasedTargetState} from '../utils/AuthenticationUtil';
+import {hasFromState} from '../../../dvbModules/router/route-helper-provider';
+import {TSRole} from '../../../models/enums/TSRole';
+import {getRoleBasedTargetState} from '../../../utils/AuthenticationUtil';
+import AuthServiceRS from '../../service/AuthServiceRS.rest';
 import {OnBeforePriorities} from './onBeforePriorities';
-import AuthServiceRS from './service/AuthServiceRS.rest';
 
 /**
  * This file contains a Transition Hook which protects a
@@ -32,9 +34,7 @@ authorisationHookRunBlock.$inject = ['$transitions'];
 export function authorisationHookRunBlock($transitions: TransitionService) {
     // Matches if the destination state has a data.roles array
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: (state) => {
-            return state.data && Array.isArray(state.data.roles);
-        },
+        to: state => state.data && Array.isArray(state.data.roles),
     };
 
     // Register the "requires authorisation" hook with the TransitionsService.

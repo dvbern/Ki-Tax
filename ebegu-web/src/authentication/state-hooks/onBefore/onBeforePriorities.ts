@@ -13,25 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../shared/shared.module';
-import {OnboardingComponent} from './dv-onboarding/onboarding.component';
-import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
-import {OnboardingRoutingModule} from './onboarding-routing.module';
-import { OnboardingMainComponent } from './onboarding-main/onboarding-main.component';
-
-@NgModule({
-    imports: [
-        SharedModule,
-        OnboardingRoutingModule,
-    ],
-    declarations: [
-        OnboardingComponent,
-        OnboardingBeLoginComponent,
-        OnboardingMainComponent
-    ]
-})
-class OnboardingModule {
+/**
+ * Transition Hooks can use different priorities.
+ * Hooks with higher priority run before lower priority.
+ */
+export enum OnBeforePriorities {
+    FEDLET_TO_LOGIN = 11,
+    AUTHENTICATION = 10,
+    AUTHORISATION = 9,
+    DUMMY_LOGIN = 8,
 }
-
-export {OnboardingModule};

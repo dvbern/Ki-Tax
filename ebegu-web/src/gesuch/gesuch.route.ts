@@ -145,7 +145,7 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
     };
 
     data = {
-        roles: TSRoleUtil.getAllRoles()
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -170,7 +170,7 @@ export class EbeguStammdatenState implements Ng1StateDeclaration {
     };
 
     data = {
-        roles: TSRoleUtil.getAllRoles()
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -192,7 +192,7 @@ export class EbeguUmzugState implements Ng1StateDeclaration {
     };
 
     data = {
-        roles: TSRoleUtil.getAllRoles()
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -262,7 +262,7 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
     };
 
     data = {
-        roles: TSRoleUtil.getAllRoles()
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -288,7 +288,7 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
     };
 
     data = {
-        roles: TSRoleUtil.getAllRoles()
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -638,7 +638,7 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     };
 
     data = {
-        roles: TSRoleUtil.getAllRoles()
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 

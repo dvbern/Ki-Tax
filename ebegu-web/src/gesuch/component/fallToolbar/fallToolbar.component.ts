@@ -231,6 +231,14 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         this.dossierList = [];
     }
 
+    /**
+     * Navigation will always be disabled when any dossier is new. This solves a lot of problems that arrive when the user leaves
+     * the "opened" but not yet existing dossier.
+     */
+    public isNavigationDisabled(): boolean {
+        return this.dossierList.some(dossier => dossier.isNew());
+    }
+
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }

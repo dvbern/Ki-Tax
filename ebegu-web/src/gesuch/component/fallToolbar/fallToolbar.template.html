@@ -21,12 +21,14 @@
             <button *ngFor="let dossier of dossierList" class="dossier-element"
                     [ngClass]="{'dossier-active-gesuchsteller': isDossierActive(dossier) && isGesuchsteller(),
                                 'dossier-active': isDossierActive(dossier) && !isGesuchsteller()}"
-                    (click)="openDossier(dossier)">
+                    (click)="openDossier(dossier)"
+                    [disabled]="isNavigationDisabled()">
                 {{dossier.extractGemeindeName()}}
             </button>
 
             <button *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                    (click)="createNewDossier()" class="dossier-element add-dossier">
+                    (click)="createNewDossier()" class="dossier-element add-dossier"
+                    [disabled]="isNavigationDisabled()">
                 <i class="fa fa-plus"></i>
             </button>
 

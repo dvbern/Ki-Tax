@@ -51,7 +51,7 @@ export class LoginComponentController implements IController {
 
     public $onInit(): void {
         //wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
-        const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params, {absolute: true});
+        const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
 
         this.authService.initSSOLogin(relayUrl)
             .then(url => {
