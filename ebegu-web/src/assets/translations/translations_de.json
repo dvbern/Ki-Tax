@@ -131,7 +131,7 @@
     "KORRESPONDENZSPRACHE": "Gewünschte Korrespondenzsprache",
     "DUBLETTEN": "Dubletten",
     "UMZUG": "geplanter Umzug",
-    "NICHT_IN_BERN_WOHNHAFT": "Nicht in Bern wohnhaft",
+    "NICHT_IN_GEMEINDE_WOHNHAFT": "Nicht in {{gemeinde}} wohnhaft",
     "TELEFON_AUSLAND": "Telefon Ausland",
     "KEIN_EINTRAG": "Es ist aktuell kein Eintrag vorhanden",
     "GESUCHSTELLER_DIPLOMATENSTATUS": "Diplomatenstatus",

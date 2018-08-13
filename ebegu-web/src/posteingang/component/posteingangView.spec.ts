@@ -17,6 +17,7 @@ import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.s
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import BerechnungsManager from '../../gesuch/service/berechnungsManager';
+import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
@@ -52,6 +53,7 @@ describe('posteingangView', () => {
     let wizardStepManager: WizardStepManager;
     let mockMitteilung: TSMitteilung;
     let authLifeCycleService: AuthLifeCycleService;
+    let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(EbeguWebPosteingang.name));
 
@@ -73,13 +75,15 @@ describe('posteingangView', () => {
         wizardStepManager = $injector.get('WizardStepManager');
         mockMitteilung = mockGetMitteilung();
         authLifeCycleService = $injector.get('AuthLifeCycleService');
+        gemeindeRS = $injector.get('GemeindeRS');
     }));
 
     describe('API Usage', () => {
         describe('searchMitteilungen', () => {
             it('should return the list of Mitteilungen', () => {
                 mockRestCalls();
-                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, undefined, undefined, $log, authLifeCycleService);
+                spyOn(gemeindeRS, 'getGemeindenForPrincipal').and.returnValue($q.when([]));
+                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, authServiceRS, gemeindeRS, $log, authLifeCycleService);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(result => {

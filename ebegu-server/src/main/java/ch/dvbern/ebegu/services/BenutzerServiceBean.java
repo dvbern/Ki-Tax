@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +49,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
@@ -59,6 +61,7 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -82,6 +85,8 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 
 /**
  * Service fuer Benutzer
@@ -150,17 +155,31 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles) {
+
+		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getBenutzersOfRole", "Non logged in user should never reach this", new Serializable[0]));
+
+		List<Predicate> predicates = new ArrayList<>();
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+		SetJoin<Berechtigung, Gemeinde> joinGemeinde =
+			joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.LEFT);
 		query.select(root);
 
-		Predicate predicateActive = cb.between(cb.literal(LocalDate.now()),
+		predicates.add(cb.between(
+			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(roles);
-		query.where(predicateActive, predicateRole);
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
+		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
+
+		getGemeindeFilterForCurrentUser(currentBenutzer, joinGemeinde, predicates);
+
+		query.where(predicates.toArray(NEW));
+		query.distinct(true);
+
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -174,7 +193,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
 		query.select(root);
 
-		Predicate predicateActive = cb.between(cb.literal(LocalDate.now()),
+		Predicate predicateActive = cb.between(
+			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER);
@@ -187,7 +207,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
 	public void removeBenutzer(@Nonnull String username) {
 		Objects.requireNonNull(username);
-		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException("removeBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
+		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"removeBenutzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			username));
 		// Den Benutzer ausloggen und seine AuthBenutzer loeschen
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(username);
 		removeBerechtigungHistoryForBenutzer(benutzer);
@@ -232,7 +255,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			foundUser.setEmail(benutzer.getEmail());
 			return saveBenutzer(foundUser);
 		} else {
-			// Wir kennen den Benutzer noch nicht: Wir uebernehmen alles, setzen aber grundsätzlich die Rolle auf GESUCHSTELLER
+			// Wir kennen den Benutzer noch nicht: Wir uebernehmen alles, setzen aber grundsätzlich die Rolle auf
+			// GESUCHSTELLER
 			Berechtigung berechtigung = new Berechtigung();
 			berechtigung.setRole(UserRole.GESUCHSTELLER);
 			berechtigung.setInstitution(null);
@@ -249,7 +273,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
 	public Benutzer sperren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
-			-> new EbeguEntityNotFoundException("sperren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + username));
+			-> new EbeguEntityNotFoundException(
+			"sperren",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchId invalid: " + username));
 
 		benutzerFromDB.setGesperrt(Boolean.TRUE);
 		int deletedAuthBenutzer = authService.logoutAndDeleteAuthorisierteBenutzerForUser(username);
@@ -272,7 +299,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
 	public Benutzer reaktivieren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
-			-> new EbeguEntityNotFoundException("reaktivieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + username));
+			-> new EbeguEntityNotFoundException(
+			"reaktivieren",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchId invalid: " + username));
 		benutzerFromDB.setGesperrt(Boolean.FALSE);
 		logReaktivierenBenutzer(benutzerFromDB);
 		return persistence.merge(benutzerFromDB);
@@ -298,7 +328,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 		if (futureBerechtigung != null) {
 			// Die aktuelle Berechtigung per Startdatum der zukünftigen beenden
-			currentBerechtigung.getGueltigkeit().setGueltigBis(futureBerechtigung.getGueltigkeit().getGueltigAb().minusDays(1));
+			currentBerechtigung.getGueltigkeit()
+				.setGueltigBis(futureBerechtigung.getGueltigkeit().getGueltigAb().minusDays(1));
 		} else {
 			// Wenn keine zukünftige Berechtigung: Sicherstellen, dass Gueltigkeit unendlich
 			currentBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
@@ -342,22 +373,28 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
-	private Pair<Long, List<Benutzer>> searchBenutzer(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO, @Nonnull SearchMode mode) {
+	private Pair<Long, List<Benutzer>> searchBenutzer(
+		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
+		@Nonnull SearchMode mode) {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		@SuppressWarnings("rawtypes") // Je nach Abfrage ist es String oder Long
-		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, "searchBenutzer");
+			CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, "searchBenutzer");
 
 		// Construct from-clause
 		@SuppressWarnings("unchecked") // Je nach Abfrage ist das Query String oder Long
-		Root<Benutzer> root = query.from(Benutzer.class);
+			Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> currentBerechtigung = root.join(Benutzer_.berechtigungen);
-		Join<Berechtigung, Institution> institution = currentBerechtigung.join(Berechtigung_.institution, JoinType.LEFT);
-		Join<Berechtigung, Traegerschaft> traegerschaft = currentBerechtigung.join(Berechtigung_.traegerschaft, JoinType.LEFT);
+		Join<Berechtigung, Institution> institution =
+			currentBerechtigung.join(Berechtigung_.institution, JoinType.LEFT);
+		Join<Berechtigung, Traegerschaft> traegerschaft =
+			currentBerechtigung.join(Berechtigung_.traegerschaft, JoinType.LEFT);
 
 		List<Predicate> predicates = new ArrayList<>();
 
 		// General role based predicates
-		Benutzer user = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged in"));
+		Benutzer user =
+			getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged "
+				+ "in"));
 
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// Admins duerfen alle Benutzer ihres Mandanten sehen
@@ -395,13 +432,17 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// role;
 			if (predicateObjectDto.getRole() != null) {
-				predicates.add(cb.equal(currentBerechtigung.get(Berechtigung_.role), UserRole.valueOf(predicateObjectDto.getRole())));
+				predicates.add(cb.equal(
+					currentBerechtigung.get(Berechtigung_.role),
+					UserRole.valueOf(predicateObjectDto.getRole())));
 			}
 			// roleGueltigBis;
 			if (predicateObjectDto.getRoleGueltigBis() != null) {
 				try {
-					LocalDate searchDate = LocalDate.parse(predicateObjectDto.getRoleGueltigBis(), Constants.DATE_FORMATTER);
-					predicates.add(cb.equal(currentBerechtigung.get(Berechtigung_.gueltigkeit).get(DateRange_.gueltigBis), searchDate));
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getRoleGueltigBis(), Constants.DATE_FORMATTER);
+					predicates.add(cb.equal(currentBerechtigung.get(Berechtigung_.gueltigkeit)
+						.get(DateRange_.gueltigBis), searchDate));
 				} catch (DateTimeParseException e) {
 					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
 					return new ImmutablePair<>(0L, Collections.emptyList());
@@ -413,7 +454,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// traegerschaft;
 			if (predicateObjectDto.getTraegerschaft() != null) {
-				predicates.add(cb.equal(traegerschaft.get(Traegerschaft_.name), predicateObjectDto.getTraegerschaft()));
+				predicates.add(cb.equal(
+					traegerschaft.get(Traegerschaft_.name),
+					predicateObjectDto.getTraegerschaft()));
 			}
 			// gesperrt;
 			if (predicateObjectDto.getGesperrt() != null) {
@@ -428,7 +471,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (!predicates.isEmpty()) {
 				query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			}
-			constructOrderByClause(benutzerTableFilterDTO, cb, query, root, currentBerechtigung, institution, traegerschaft);
+			constructOrderByClause(
+				benutzerTableFilterDTO,
+				cb,
+				query,
+				root,
+				currentBerechtigung,
+				institution,
+				traegerschaft);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
@@ -443,12 +493,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Pair<Long, List<Benutzer>> result = null;
 		switch (mode) {
 		case SEARCH:
-			List<String> benutzerIds = persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
+			List<String> benutzerIds =
+				persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
 			List<Benutzer> pagedResult;
 			if (benutzerTableFilterDTO.getPagination() != null) {
 				int firstIndex = benutzerTableFilterDTO.getPagination().getStart();
 				Integer maxresults = benutzerTableFilterDTO.getPagination().getNumber();
-				List<String> orderedIdsToLoad = SearchUtil.determineDistinctIdsToLoad(benutzerIds, firstIndex, maxresults);
+				List<String> orderedIdsToLoad =
+					SearchUtil.determineDistinctIdsToLoad(benutzerIds, firstIndex, maxresults);
 				pagedResult = findBenutzer(orderedIdsToLoad);
 			} else {
 				pagedResult = findBenutzer(benutzerIds);
@@ -463,11 +515,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return result;
 	}
 
-	private void constructOrderByClause(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto, CriteriaBuilder cb, CriteriaQuery query,
-			Root<Benutzer> root,
-			Join<Benutzer, Berechtigung> currentBerechtigung,
-			Join<Berechtigung, Institution> institution,
-			Join<Berechtigung, Traegerschaft> traegerschaft) {
+	private void constructOrderByClause(
+		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto, CriteriaBuilder cb, CriteriaQuery query,
+		Root<Benutzer> root,
+		Join<Benutzer, Berechtigung> currentBerechtigung,
+		Join<Berechtigung, Institution> institution,
+		Join<Berechtigung, Traegerschaft> traegerschaft) {
 		Expression<?> expression;
 		if (benutzerTableFilterDto.getSort() != null && benutzerTableFilterDto.getSort().getPredicate() != null) {
 			switch (benutzerTableFilterDto.getSort().getPredicate()) {
@@ -499,7 +552,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				expression = root.get(Benutzer_.gesperrt);
 				break;
 			default:
-				LOG.warn("Using default sort by Timestamp mutiert because there is no specific clause for predicate {}",
+				LOG.warn(
+					"Using default sort by Timestamp mutiert because there is no specific clause for predicate {}",
 					benutzerTableFilterDto.getSort().getPredicate());
 				expression = root.get(Benutzer_.timestampMutiert);
 				break;
@@ -542,7 +596,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> currentBerechtigung = root.join(Benutzer_.berechtigungen);
-		Predicate predicateAbgelaufen = cb.lessThan(currentBerechtigung.get(Berechtigung_.gueltigkeit).get(DateRange_.gueltigBis), stichtag);
+		Predicate predicateAbgelaufen =
+			cb.lessThan(currentBerechtigung.get(Berechtigung_.gueltigkeit).get(DateRange_.gueltigBis), stichtag);
 		query.where(predicateAbgelaufen);
 		List<Benutzer> userMitAbgelaufenerRolle = persistence.getCriteriaResults(query);
 
@@ -556,9 +611,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			try {
 				Berechtigung aktuelleBerechtigung = getAktuellGueltigeBerechtigungFuerBenutzer(benutzer);
 				persistence.merge(aktuelleBerechtigung);
-			} catch(NoResultException nre) {
-				// Sonderfall: Die letzte Berechtigung ist abgelaufen. Wir erstellen sofort eine neue anschliessende Berechtigung als Gesuchsteller
-				Berechtigung futureGesuchstellerBerechtigung = createFutureBerechtigungAsGesuchsteller(LocalDate.now(), benutzer);
+			} catch (NoResultException nre) {
+				// Sonderfall: Die letzte Berechtigung ist abgelaufen. Wir erstellen sofort eine neue anschliessende
+				// Berechtigung als Gesuchsteller
+				Berechtigung futureGesuchstellerBerechtigung =
+					createFutureBerechtigungAsGesuchsteller(LocalDate.now(), benutzer);
 				persistence.persist(futureGesuchstellerBerechtigung);
 			}
 			// Die abgelaufene Rolle löschen
@@ -593,7 +650,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ParameterExpression<LocalDate> dateParam = cb.parameter(LocalDate.class, "date");
 
 		Predicate predicateBenutzer = cb.equal(root.get(Berechtigung_.benutzer), benutzerParam);
-		Predicate predicateZeitraum = cb.between(dateParam,
+		Predicate predicateZeitraum = cb.between(
+			dateParam,
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 
@@ -608,7 +666,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			throw new NoResultException("No Berechtigung found for Benutzer" + benutzer.getUsername());
 		}
 		if (resultList.size() > 1) {
-			throw new NonUniqueResultException("More than one Berechtigung found for Benutzer " + benutzer.getUsername());
+			throw new NonUniqueResultException("More than one Berechtigung found for Benutzer "
+				+ benutzer.getUsername());
 		}
 		return resultList.get(0);
 	}
@@ -631,7 +690,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted) {
 		BerechtigungHistory newBerechtigungsHistory = new BerechtigungHistory(berechtigung, deleted);
 		newBerechtigungsHistory.setTimestampErstellt(LocalDateTime.now());
-		String userMutiert = berechtigung.getUserMutiert() != null ? berechtigung.getUserMutiert() : Constants.SYSTEM_USER_USERNAME;
+		String userMutiert =
+			berechtigung.getUserMutiert() != null ? berechtigung.getUserMutiert() : Constants.SYSTEM_USER_USERNAME;
 		newBerechtigungsHistory.setUserErstellt(userMutiert);
 		persistence.persist(newBerechtigungsHistory);
 	}

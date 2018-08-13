@@ -95,6 +95,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
 
 /**
  * Service zum Suchen.
@@ -184,7 +185,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Predicate inClauseStatus = root.get(Gesuch_.status).in(allowedAntragStatus);
 		predicates.add(inClauseStatus);
 
-		filterGemeinde(user, joinGemeinde, predicates);
+		getGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Special role based predicates
 		switch (role) {
@@ -358,14 +359,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		}
 		return result;
-	}
-
-	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
-		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			Collection<Gemeinde> gemeindenForUser = user.extractGemeindenForUser();
-			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
-			predicates.add(inGemeinde);
-		}
 	}
 
 	private Set<AntragStatus> getAntragStatuses(boolean searchForPendenzen, UserRole role) {

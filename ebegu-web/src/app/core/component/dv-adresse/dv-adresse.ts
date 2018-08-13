@@ -18,6 +18,8 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import TSAdresseContainer from '../../../../models/TSAdresseContainer';
+import TSDossier from '../../../../models/TSDossier';
+import TSGemeinde from '../../../../models/TSGemeinde';
 import TSLand from '../../../../models/types/TSLand';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import AdresseRS from '../../service/adresseRS.rest';
@@ -28,6 +30,7 @@ export class AdresseComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {
         adresse: '<',
+        gemeinde: '<?',
         prefix: '@',
         organisation: '<',
         showNichtInGemeinde: '<',
@@ -43,6 +46,7 @@ export class DvAdresseController {
     static $inject = ['AdresseRS', 'ListResourceRS', 'GesuchModelManager', '$translate', 'AuthServiceRS'];
 
     adresse: TSAdresseContainer;
+    gemeinde: TSGemeinde;
     prefix: string;
     parentForm: IFormController;
     laenderList: TSLand[];
