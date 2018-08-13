@@ -3009,8 +3009,6 @@ public class JaxBConverter {
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());
 		jaxMitteilung.setSentDatum(persistedMitteilung.getSentDatum());
-		jaxMitteilung.setGemeinde(persistedMitteilung.getDossier().getGemeinde().getName());
-
 		return jaxMitteilung;
 	}
 
