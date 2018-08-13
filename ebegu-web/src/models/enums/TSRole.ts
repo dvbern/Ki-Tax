@@ -39,5 +39,3 @@ export function getTSRoleValuesWithoutSuperAdmin(): Array<TSRole> {
 export function rolePrefix(): string {
     return 'TSRole_';
 }
-
-
