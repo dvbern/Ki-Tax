@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services.authentication;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -273,7 +274,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 
-		return gesuchService.getAllGesuchForDossier(dossier.getId()).stream()
+		final List<Gesuch> allGesuchForDossier = gesuchService.getAllGesuchForDossier(dossier.getId());
+
+		return allGesuchForDossier.isEmpty() || allGesuchForDossier.stream()
 			.anyMatch(this::isReadAuthorized);
 
 	}
