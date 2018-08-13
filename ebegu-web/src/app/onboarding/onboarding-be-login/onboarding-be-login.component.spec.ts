@@ -20,12 +20,12 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingBeLogingComponent} from './onboarding-be-loging.component';
+import {OnboardingBeLoginComponent} from './onboarding-be-login.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('OnboardingBeLogingComponent', () => {
-    let component: OnboardingBeLogingComponent;
-    let fixture: ComponentFixture<OnboardingBeLogingComponent>;
+describe('OnboardingBeLoginComponent', () => {
+    let component: OnboardingBeLoginComponent;
+    let fixture: ComponentFixture<OnboardingBeLoginComponent>;
 
     const transitionSpy = createSpyObj<Transition>(Transition.name, ['params']);
     const GEMEINDE_ID = '1';
@@ -39,7 +39,7 @@ describe('OnboardingBeLogingComponent', () => {
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({ useHash: true }),
             ],
-            declarations: [OnboardingBeLogingComponent],
+            declarations: [OnboardingBeLoginComponent],
             providers: [
                 {provide: Transition, useValue: transitionSpy}
 
@@ -49,7 +49,7 @@ describe('OnboardingBeLogingComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingBeLogingComponent);
+        fixture = TestBed.createComponent(OnboardingBeLoginComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

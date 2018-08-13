@@ -34,7 +34,7 @@ fedletToLoginHookRunBlock.$inject = ['$transitions'];
 export function fedletToLoginHookRunBlock($transitions: TransitionService) {
     const navigationToLoginState: HookMatchCriteria = {
         to: 'authentication.login',
-        // no state name: we are navigation from somewhere unknown
+        // no state name: we are navigating from somewhere unknown
         from: state => !state.name
     };
 
