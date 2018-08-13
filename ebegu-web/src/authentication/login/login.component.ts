@@ -63,7 +63,6 @@ export class LoginComponentController implements IController {
                     if (this.countdown > 0) {
                         this.$timeout(this.doCountdown, 1000);
                     }
-
                     this.$timeout(() => this.redirect(url), this.countdown * 1000);
                 }
             });
