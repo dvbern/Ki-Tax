@@ -13,25 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 zahlungsauftragRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function zahlungsauftragRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguZahlungsauftragState()
-    ];
-}
-
-//STATES
-export class EbeguZahlungsauftragState implements Ng1StateDeclaration {
-    name = 'zahlungsauftrag';
-    template = '<zahlungsauftrag-view flex="auto" class="overflow-scroll">';
-    url = '/zahlungsauftrag';
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'zahlungsauftrag',
+        data: {
+            roles: TSRoleUtil.getAllRolesForStatistik(),
+        },
+    },
+    {
+        name: 'zahlungsauftrag.view',
+        template: '<zahlungsauftrag-view flex="auto" class="overflow-scroll">',
+        url: '/zahlungsauftrag',
+    }
+];

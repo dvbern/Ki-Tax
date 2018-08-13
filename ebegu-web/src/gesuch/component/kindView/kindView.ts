@@ -14,41 +14,40 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
-import {IKindStateParams} from '../../gesuch.route';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSKind from '../../../models/TSKind';
-import {EnumEx} from '../../../utils/EnumEx';
-import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
-import BerechnungsManager from '../../service/berechnungsManager';
-import TSKindContainer from '../../../models/TSKindContainer';
-import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSRole} from '../../../models/enums/TSRole';
-import DateUtil from '../../../utils/DateUtil';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import * as moment from 'moment';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSKind from '../../../models/TSKind';
+import TSKindContainer from '../../../models/TSKindContainer';
+import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
+import DateUtil from '../../../utils/DateUtil';
+import {EnumEx} from '../../../utils/EnumEx';
+import {IKindStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
-import ITranslateService = angular.translate.ITranslateService;
-import ITimeoutService = angular.ITimeoutService;
 import IScope = angular.IScope;
-
-let template = require('./kindView.html');
-require('./kindView.less');
+import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class KindViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./kindView.html');
     controller = KindViewController;
     controllerAs = 'vm';
 }
 
 export class KindViewController extends AbstractGesuchViewController<TSKindContainer> {
+
+    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'CONSTANTS', '$scope',
+        'ErrorService', 'WizardStepManager', '$q', '$translate', '$timeout'];
     geschlechter: Array<string>;
     kinderabzugValues: Array<TSKinderabzug>;
     einschulungTypValues: Array<TSEinschulungTyp>;
@@ -57,16 +56,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     fachstelleId: string; //der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     allowedRoles: Array<TSRole>;
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'CONSTANTS', '$scope',
-        'ErrorService', 'WizardStepManager', '$q', '$translate', '$timeout'];
-
-    /* @ngInject */
     constructor($stateParams: IKindStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private CONSTANTS: any, $scope: IScope, private errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private $q: IQService, private $translate: ITranslateService, $timeout: ITimeoutService) {
+                berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager, private readonly $q: IQService, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
-            let kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber));
+            const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber));
             if (kindIndex >= 0) {
                 this.model = angular.copy(this.gesuchModelManager.getGesuch().kindContainers[kindIndex]);
                 this.gesuchModelManager.setKindIndex(kindIndex);
@@ -74,7 +69,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         } else {
             //wenn kind nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
             this.model = this.initEmptyKind(undefined);
-            let kindIndex: number = this.gesuchModelManager.getGesuch().kindContainers ? this.gesuchModelManager.getGesuch().kindContainers.length : 0;
+            const kindIndex: number = this.gesuchModelManager.getGesuch().kindContainers ? this.gesuchModelManager.getGesuch().kindContainers.length : 0;
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
         this.initViewModel();
@@ -127,11 +122,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public setSelectedFachsstelle() {
-        let fachstellenList = this.getFachstellenList();
-        for (let i: number = 0; i < fachstellenList.length; i++) {
-            if (fachstellenList[i].id === this.fachstelleId) {
-                this.getModel().pensumFachstelle.fachstelle = fachstellenList[i];
-            }
+        const fachstellenList = this.getFachstellenList();
+        const found = fachstellenList.find(f => f.id === this.fachstelleId);
+        if (found) {
+            this.getModel().pensumFachstelle.fachstelle = found;
         }
     }
 
@@ -191,9 +185,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public getTextFachstelleKorrekturJA(): string {
         if (this.getContainer().kindGS && this.getContainer().kindGS.pensumFachstelle) {
-            let fachstelle: TSPensumFachstelle = this.getContainer().kindGS.pensumFachstelle;
-            let vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
-            let bisText = fachstelle.gueltigkeit.gueltigBis ? DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') : '31.12.9999';
+            const fachstelle: TSPensumFachstelle = this.getContainer().kindGS.pensumFachstelle;
+            const vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+            const bisText = fachstelle.gueltigkeit.gueltigBis ? DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') : '31.12.9999';
             return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
                 name: fachstelle.fachstelle.name,
                 pensum: fachstelle.pensum,
@@ -206,7 +200,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initEmptyKind(kindNumber: number): TSKindContainer {
-        let tsKindContainer = new TSKindContainer(undefined, new TSKind());
+        const tsKindContainer = new TSKindContainer(undefined, new TSKind());
         tsKindContainer.kindNummer = kindNumber;
         return tsKindContainer;
     }

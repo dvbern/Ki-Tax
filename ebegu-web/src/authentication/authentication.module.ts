@@ -13,20 +13,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import HttpAuthInterceptor from './service/HttpAuthInterceptor';
-import {authenticationRun} from './authentication.route';
+import * as angular from 'angular';
+import {authenticationRoutes} from './authentication.route';
+import {LoginComponentConfig} from './login/login.component';
+import {SchulungComponentConfig} from './schulung/schulung.component';
 import AuthServiceRS from './service/AuthServiceRS.rest';
+import HttpAuthInterceptor from './service/HttpAuthInterceptor';
 import HttpBuffer from './service/HttpBuffer';
-import {AuthenticationComponentConfig} from './authenticaton';
-import {StartComponentConfig} from './component/startView/startView';
-import {SchulungComponentConfig} from './schulung';
+import {authenticationHookRunBlock} from './state-hooks/onBefore/authentication.hook';
+import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.hook';
+import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
+import {fedletToLoginHookRunBlock} from './state-hooks/onBefore/fedletToLogin.hook';
+import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
+import {errorLoggerHookRunBlock} from './state-hooks/onError/errorLogger.hook';
+import {errorRecoveryHookRunBlock} from './state-hooks/onError/errorRecovery.hook';
+import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook';
 
 export const EbeguAuthentication: angular.IModule =
-    angular.module('dvbAngular.authentication', ['ngCookies', 'utf8-base64'])
-        .run(authenticationRun)
+    angular.module('dvbAngular.authentication', ['ngCookies'])
+        .run(authenticationHookRunBlock)
+        .run(authorisationHookRunBlock)
+        .run(dummyLoginHookRunBlock)
+        .run(fedletToLoginHookRunBlock)
+        .run(errorAfterLoginHookRunBlock)
+        .run(errorLoggerHookRunBlock)
+        .run(errorRecoveryHookRunBlock)
+        .run(clearErrorsHookRunBlock)
+        .run(authenticationRoutes)
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('startView', new StartComponentConfig())
-        .component('schulungView', new SchulungComponentConfig())
-        .component('authenticationView', new AuthenticationComponentConfig());
+        .component('dvSchulung', SchulungComponentConfig)
+        .component('dvLogin', LoginComponentConfig);

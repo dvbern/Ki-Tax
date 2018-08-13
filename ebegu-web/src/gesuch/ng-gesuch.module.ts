@@ -14,26 +14,14 @@
  */
 
 import {NgModule} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
-import {UIRouterModule} from '@uirouter/angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {DvPosteingangController} from '../core/component/dv-posteingang/dv-posteingang';
-import {NgSharedModule} from '../shared/ng-shared.module';
+import {SharedModule} from '../app/shared/shared.module';
 
 @NgModule({
     imports: [
-        NgSharedModule,
-        TranslateModule,
-        UIRouterModule,
+        SharedModule,
     ],
-    declarations: [
-        DvNgNavbar,
-        DvPosteingangController,
-    ],
-    entryComponents: [
-        DvNgNavbar,
-        DvPosteingangController,
-    ],
+    declarations: [],
+    entryComponents: [],
 })
 
 export class NgGesuchModule {

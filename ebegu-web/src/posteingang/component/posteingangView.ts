@@ -13,12 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import MitteilungRS from '../../core/service/mitteilungRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -28,14 +29,13 @@ import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {StateService} from '@uirouter/core';
 
 let template = require('./posteingangView.html');
 require('./posteingangView.less');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./posteingangView.html');
     controller = PosteingangViewController;
     controllerAs = 'vm';
 }
@@ -43,11 +43,12 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 export class PosteingangViewController {
 
     private readonly unsubscribe$ = new Subject<void>();
+
+
     displayedCollection: Array<TSMitteilung> = []; //Liste die im Gui angezeigt wird
     pagination: any = {};
     totalResultCount: string = '0';
-    myTableFilterState: any; // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox
-                             // vorhanden ist
+    myTableFilterState: any; // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
 
     itemsByPage: number = 20;
     numberOfPages: number = 1;
@@ -59,14 +60,14 @@ export class PosteingangViewController {
     static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS',
         '$log', 'AuthLifeCycleService'];
 
-    constructor(private mitteilungRS: MitteilungRS,
-                private ebeguUtil: EbeguUtil,
-                private CONSTANTS: any,
-                private $state: StateService,
-                private authServiceRS: AuthServiceRS,
-                private gemeindeRS: GemeindeRS,
-                private $log: ILogService,
-                private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly mitteilungRS: MitteilungRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly CONSTANTS: any,
+                private readonly $state: StateService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly $log: ILogService,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
@@ -82,13 +83,13 @@ export class PosteingangViewController {
     }
 
     private gotoMitteilung(mitteilung: TSMitteilung) {
-        this.$state.go('mitteilungen', {
+        this.$state.go('mitteilungen.view', {
             dossierId: mitteilung.dossier.id
         });
     }
 
     isCurrentUserSchulamt(): boolean {
-        let isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
+        const isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
         return isUserSchulamt;
     }
 
@@ -119,7 +120,7 @@ export class PosteingangViewController {
             this.includeClosed).then((result: TSMtteilungSearchresultDTO) => {
             this.setResult(result);
         });
-    }
+    };
 
     private setResult(result: TSMtteilungSearchresultDTO): void {
         if (result) {

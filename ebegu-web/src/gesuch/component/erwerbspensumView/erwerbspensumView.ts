@@ -14,60 +14,48 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import {IErwerbspensumStateParams} from '../../gesuch.route';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
-import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
-import {getTSZuschlagsgruendeForGS, getTSZuschlagsgrunde, TSZuschlagsgrund} from '../../../models/enums/TSZuschlagsgrund';
-import TSErwerbspensum from '../../../models/TSErwerbspensum';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
-import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
-import GlobalCacheService from '../../service/globalCacheService';
 import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
+import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {getTSZuschlagsgruendeForGS, getTSZuschlagsgrunde, TSZuschlagsgrund} from '../../../models/enums/TSZuschlagsgrund';
+import TSEbeguParameter from '../../../models/TSEbeguParameter';
+import TSErwerbspensum from '../../../models/TSErwerbspensum';
+import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
+import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IErwerbspensumStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import GlobalCacheService from '../../service/globalCacheService';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
 
-let template: string = require('./erwerbspensumView.html');
-require('./erwerbspensumView.less');
-
 export class ErwerbspensumViewComponentConfig implements IComponentOptions {
-    transclude: boolean;
-    bindings: any;
-    template: string;
-    controller: any;
-    controllerAs: string;
-
-    constructor() {
-        this.transclude = false;
-        this.bindings = {};
-        this.template = template;
-        this.controller = ErwerbspensumViewController;
-        this.controllerAs = 'vm';
-    }
+    transclude = false;
+    bindings = {};
+    template = require('./erwerbspensumView.html');
+    controller = ErwerbspensumViewController;
+    controllerAs = 'vm';
 }
 
 export class ErwerbspensumViewController extends AbstractGesuchViewController<TSErwerbspensumContainer> {
+
+    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
+        'CONSTANTS', '$scope', 'ErrorService', 'AuthServiceRS', 'WizardStepManager', '$q', '$translate', 'EbeguParameterRS', 'GlobalCacheService', '$timeout'];
 
     gesuchsteller: TSGesuchstellerContainer;
     patternPercentage: string;
     maxZuschlagsprozent: number = 100;
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
-        'CONSTANTS', '$scope', 'ErrorService', 'AuthServiceRS', 'WizardStepManager', '$q', '$translate', 'EbeguParameterRS', 'GlobalCacheService', '$timeout'];
-
-    /* @ngInject */
     constructor($stateParams: IErwerbspensumStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private CONSTANTS: any, $scope: IScope, private errorService: ErrorService,
-                private authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private $q: IQService,
-                private $translate: ITranslateService, private ebeguParameterRS: EbeguParameterRS, private globalCacheService: GlobalCacheService,
+                berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
+                private readonly authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private readonly $q: IQService,
+                private readonly $translate: ITranslateService, private readonly ebeguParameterRS: EbeguParameterRS, private readonly globalCacheService: GlobalCacheService,
                 $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ERWERBSPENSUM, $timeout);
         this.patternPercentage = this.CONSTANTS.PATTERN_PERCENTAGE;
@@ -75,7 +63,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         this.gesuchsteller = this.gesuchModelManager.getStammdatenToWorkWith();
         if (this.gesuchsteller) {
             if ($stateParams.erwerbspensumNum) {
-                let ewpNum = parseInt($stateParams.erwerbspensumNum) | 0;
+                const ewpNum = parseInt($stateParams.erwerbspensumNum) | 0;
                 this.model = angular.copy(this.gesuchsteller.erwerbspensenContainer[ewpNum]);
             } else {
                 //wenn erwerbspensum nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
@@ -88,11 +76,10 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         ebeguParameterRS.getEbeguParameterByGesuchsperiodeCached(
             this.gesuchModelManager.getGesuchsperiode().id,
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_PARAMETER)).then((response: TSEbeguParameter[]) => {
-            for (let i = 0; i < response.length; i++) {
-                if (response[i].name === TSEbeguParameterKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM) {
-                    // max Wert für Zuschlag Erwerbspensum
-                    this.maxZuschlagsprozent = Number(response[i].value);
-                }
+            const found = response.find(r => r.name === TSEbeguParameterKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
+            if (found) {
+                // max Wert für Zuschlag Erwerbspensum
+                this.maxZuschlagsprozent = Number(found.value);
             }
         });
     }
@@ -139,10 +126,9 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         this.form.$setPristine();
     }
 
-
     private initEmptyEwpContainer(): TSErwerbspensumContainer {
-        let ewp = new TSErwerbspensum();
-        let ewpContainer = new TSErwerbspensumContainer();
+        const ewp = new TSErwerbspensum();
+        const ewpContainer = new TSErwerbspensumContainer();
         ewpContainer.erwerbspensumJA = ewp;
         return ewpContainer;
 
@@ -169,8 +155,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     public getTextZuschlagErwerbspensumKorrekturJA(): string {
         if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.zuschlagZuErwerbspensum === true) {
-            let ewp: TSErwerbspensum = this.model.erwerbspensumGS;
-            let grundText = this.$translate.instant(ewp.zuschlagsgrund.toString());
+            const ewp: TSErwerbspensum = this.model.erwerbspensumGS;
+            const grundText = this.$translate.instant(ewp.zuschlagsgrund.toString());
             return this.$translate.instant('JA_KORREKTUR_ZUSCHLAG_ERWERBSPENSUM', {
                 zuschlagsgrund: grundText,
                 zuschlagsprozent: ewp.zuschlagsprozent

@@ -23,7 +23,7 @@ export class OkDialogController {
 
     title: string;
 
-    constructor(private $mdDialog: IDialogService, $translate: ITranslateService, title: string, okText: string) {
+    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, okText: string) {
 
         if (title !== undefined && title !== null) {
             this.title = $translate.instant(title);

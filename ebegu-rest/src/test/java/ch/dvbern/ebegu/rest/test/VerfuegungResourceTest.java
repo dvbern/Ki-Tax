@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.api.resource.VerfuegungResource;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -55,7 +54,7 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	private Persistence persistence;
 
 	@Test
-	public void saveVerfuegungTest() throws EbeguException {
+	public void saveVerfuegungTest() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
@@ -73,7 +72,7 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void nichtEintretenTest() throws EbeguException {
+	public void nichtEintretenTest() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
@@ -95,7 +94,7 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void testCalculateVerfuegung() throws EbeguException {
+	public void testCalculateVerfuegung() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
 

@@ -21,16 +21,15 @@ import IPromise = angular.IPromise;
 
 
 export class TestFaelleRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+
+    serviceURL: string;
+
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'testfaelle';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public getServiceName(): string {

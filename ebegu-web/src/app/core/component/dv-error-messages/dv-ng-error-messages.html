@@ -1,0 +1,38 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div class="dv-error-messages" *ngIf="show">
+    <div [ngSwitch]="(error)" id="{{inputid + '-error'}}">
+        <ng-container *ngSwitchCase="'required'">{{'ERROR_REQUIRED' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'minlength'">{{'ERROR_MIN_LENG' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'maxlength'">{{'ERROR_MAX_LENG' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'number'">{{'ERROR_NUMBER' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMaxLength'">{{'ERROR_MAX_LENG' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'email'">{{'ERROR_EMAIL' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'pattern'">{{'ERROR_FORMAT' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'date'">{{'ERROR_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'moment'">{{'ERROR_FORMAT' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'max'">{{'ERROR_MAX' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'valueinput'">{{'ERROR_VALUE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMinDate'">{{'ERROR_MIN_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMaxDate'">{{'ERROR_MAX_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dateTime'">{{'ERROR_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMinDateTime'">{{'ERROR_MIN_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvMaxDateTime'">{{'ERROR_MAX_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvNoFutureDate'">{{'ERROR_NO_FUTURE_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'dvNoFutureDateTime'">{{'ERROR_NO_FUTURE_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'parse'">{{'ERROR_PARSE' | translate}}</ng-container>
+    </div>
+</div>

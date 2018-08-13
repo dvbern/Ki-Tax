@@ -14,44 +14,40 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
-import TSGesuch from '../../../models/TSGesuch';
-import WizardStepManager from '../../service/wizardStepManager';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSFinanzModel from '../../../models/TSFinanzModel';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import TSGesuch from '../../../models/TSGesuch';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./einkommensverschlechterungSteuernView.html');
-require('./einkommensverschlechterungSteuernView.less');
-
 export class EinkommensverschlechterungSteuernViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungSteuernView.html');
     controller = EinkommensverschlechterungSteuernViewController;
     controllerAs = 'vm';
 }
 
 export class EinkommensverschlechterungSteuernViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    allowedRoles: Array<TSRole>;
-    initialModel: TSFinanzModel;
-
     static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$q', '$scope', '$timeout'];
 
-    /* @ngInject */
+    allowedRoles: Array<TSRole>;
+    initialModel: TSFinanzModel;
+
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private errorService: ErrorService, wizardStepManager: WizardStepManager,
-                private $q: IQService, $scope: IScope, $timeout: ITimeoutService) {
+                private readonly errorService: ErrorService, wizardStepManager: WizardStepManager,
+                private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null);
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
@@ -128,7 +124,7 @@ export class EinkommensverschlechterungSteuernViewController extends AbstractGes
     private gemeinsameStekClicked_BjP1(): void {
         // Wenn neu NEIN -> Fragen loeschen
 
-        let ekvJaBasisJahrPlus1WasAlreadyEntered = this.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1
+        const ekvJaBasisJahrPlus1WasAlreadyEntered = this.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1
             && !this.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1.isNew();
         if (this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP1 === false && ekvJaBasisJahrPlus1WasAlreadyEntered) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man sicher noch weiter muss!
@@ -148,12 +144,12 @@ export class EinkommensverschlechterungSteuernViewController extends AbstractGes
      * Es muss ein Wert geschrieben werden, um ekv persisierten zu können
      */
     private initSteuerFragen() {
-        let gs1EkvJABasisJahrPlus1 = this.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1;
+        const gs1EkvJABasisJahrPlus1 = this.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1;
         if (gs1EkvJABasisJahrPlus1) {
             gs1EkvJABasisJahrPlus1.steuererklaerungAusgefuellt = !gs1EkvJABasisJahrPlus1.steuererklaerungAusgefuellt ? false : gs1EkvJABasisJahrPlus1.steuererklaerungAusgefuellt;
             gs1EkvJABasisJahrPlus1.steuerveranlagungErhalten = !gs1EkvJABasisJahrPlus1.steuerveranlagungErhalten ? false : gs1EkvJABasisJahrPlus1.steuerveranlagungErhalten;
         }
-        let gs2EkvJABasisJahrPlus1 = this.model.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1;
+        const gs2EkvJABasisJahrPlus1 = this.model.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1;
         if (gs2EkvJABasisJahrPlus1) {
             gs2EkvJABasisJahrPlus1.steuererklaerungAusgefuellt = !gs2EkvJABasisJahrPlus1.steuererklaerungAusgefuellt ? false : gs2EkvJABasisJahrPlus1.steuererklaerungAusgefuellt;
             gs2EkvJABasisJahrPlus1.steuerveranlagungErhalten = !gs2EkvJABasisJahrPlus1.steuerveranlagungErhalten ? false : gs2EkvJABasisJahrPlus1.steuerveranlagungErhalten;

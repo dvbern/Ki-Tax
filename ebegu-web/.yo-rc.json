@@ -24,11 +24,11 @@
     "modules": [
       {
         "name": "ebeguWeb",
-        "file": "src/app.module.ts"
+        "file": "src/app.angularjs.module.ts"
       },
       {
         "name": "ebeguWeb.core",
-        "file": "src/core/core.module.ts"
+        "file": "src/core/core.angularjs.module.ts"
       },
       {
         "name": "ebeguWeb.admin",

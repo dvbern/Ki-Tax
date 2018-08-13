@@ -14,60 +14,36 @@
  */
 
 import {NgModule} from '@angular/core';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Ng2StateDeclaration} from '@uirouter/angular';
-import {ApplicationPropertyRS} from '../admin/service/applicationPropertyRS.rest';
-import {StateService} from '@uirouter/core';
-import {Log} from '../utils/LogFactory';
-import {IPromise} from 'angular';
-import {DummyAuthenticationListViewComponent} from './dummyAuthenticaton';
-
-
+import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {Transition} from '@uirouter/core';
+import {getTSRoleValues} from '../models/enums/TSRole';
+import {returnTo} from './authentication.route';
+import {LocalLoginComponent} from './local-login/local-login.component';
 
 export const localLoginState: Ng2StateDeclaration = {
-    name: 'locallogin',
+    name: 'authentication.locallogin',
     url: '/locallogin',
-    component: DummyAuthenticationListViewComponent,
+    component: LocalLoginComponent,
     resolve: [
         {
-            token: 'locallogin',
-            deps: [ApplicationPropertyRS, StateService],
-            resolveFn: readDummyLoginEnabled,
+            token: 'returnTo',
+            deps: [Transition],
+            resolveFn: returnTo
         }
     ],
+    data: {
+        roles: getTSRoleValues(),
+        requiresDummyLogin: true,
+    }
 };
-
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({ states: [ localLoginState ] })
+        UIRouterUpgradeModule.forChild({states: [localLoginState]})
     ],
     exports: [],
 })
 export class NgAuthenticationRoutingModule {
 }
 
-
-
-
-/* @ngInject */
-export function readDummyLoginEnabled(applicationPropertyRS: ApplicationPropertyRS, $state: StateService): IPromise<boolean> {
-
-    // todo ein Guard machen!!!! schauen ob es in ui-router gibt
-    const log: Log = Log.createLog(readDummyLoginEnabled);
-
-    return applicationPropertyRS.isDummyMode()
-        .then((response: boolean) => {
-            if (response === false) {
-                log.debug('page is disabled');
-                $state.go('start');
-            }
-            return true;
-        })
-        .catch(() => {
-            log.error('there was an error while opening locallogin');
-            $state.go('login');
-            return false;
-        });
-
-}

@@ -13,51 +13,48 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
+import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSBetroffene} from '../../../models/enums/TSBetroffene';
 import TSAdresse from '../../../models/TSAdresse';
-import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
-import TSUmzugAdresse from '../../../models/TSUmzugAdresse';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import TSAdresseContainer from '../../../models/TSAdresseContainer';
+import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import TSUmzugAdresse from '../../../models/TSUmzugAdresse';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import ITranslateService = angular.translate.ITranslateService;
-import ITimeoutService = angular.ITimeoutService;
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
+import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./umzugView.html');
-require('./umzugView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class UmzugViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./umzugView.html');
     controller = UmzugViewController;
     controllerAs = 'vm';
 }
 
 export class UmzugViewController extends AbstractGesuchViewController<Array<TSUmzugAdresse>> {
 
-    dirty = false;
-
     static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'ErrorService', '$translate',
         'DvDialog', '$q', '$scope', '$timeout'];
 
-    /* @ngInject */
+    dirty = false;
+
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private errorService: ErrorService,
-                private $translate: ITranslateService, private DvDialog: DvDialog, private $q: IQService,
+                wizardStepManager: WizardStepManager, private readonly errorService: ErrorService,
+                private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog, private readonly $q: IQService,
                 $scope: IScope, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.UMZUG, $timeout);
@@ -102,7 +99,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
      * Es koennte einen GS2 geben obwohl die neue Familiensituation "ledig" sagt
      */
     public getBetroffenenList(): Array<TSBetroffene> {
-        let betroffenenList: Array<TSBetroffene> = [];
+        const betroffenenList: Array<TSBetroffene> = [];
         if (this.gesuchModelManager.getGesuch()) {
             if (this.gesuchModelManager.getGesuch().gesuchsteller1) {
                 betroffenenList.push(TSBetroffene.GESUCHSTELLER_1);
@@ -173,7 +170,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
     }
 
     public removeUmzugAdresse(adresse: TSUmzugAdresse): void {
-        let remTitleText = this.$translate.instant('UMZUG_LOESCHEN');
+        const remTitleText = this.$translate.instant('UMZUG_LOESCHEN');
         this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: '',
@@ -181,7 +178,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
             elementID: undefined
         }).then(() => {   //User confirmed removal
             this.dirty = true;
-            let indexOf = this.model.lastIndexOf(adresse);
+            const indexOf = this.model.lastIndexOf(adresse);
             if (indexOf >= 0) {
                 this.model.splice(indexOf, 1);
             }
@@ -193,8 +190,8 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
      * Erstellt eine neue leere Adresse vom Typ WOHNADRESSE
      */
     public createUmzugAdresse(): void {
-        let adresseContainer = this.createAdressContainer();
-        let umzugAdresse: TSUmzugAdresse = new TSUmzugAdresse(undefined, adresseContainer);
+        const adresseContainer = this.createAdressContainer();
+        const umzugAdresse: TSUmzugAdresse = new TSUmzugAdresse(undefined, adresseContainer);
 
         this.model.push(umzugAdresse);
         this.dirty = true;
@@ -203,8 +200,8 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
     }
 
     private createAdressContainer() {
-        let adresseContainer: TSAdresseContainer = new TSAdresseContainer();
-        let adresse: TSAdresse = new TSAdresse();
+        const adresseContainer: TSAdresseContainer = new TSAdresseContainer();
+        const adresse: TSAdresse = new TSAdresse();
         adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
         adresseContainer.showDatumVon = true;
         adresseContainer.adresseJA = adresse;

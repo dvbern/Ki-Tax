@@ -13,26 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
-import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
-import {IComponentOptions, IFormController, ILogService} from 'angular';
-import './parameterView.less';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import AbstractAdminViewController from '../../abstractAdminView';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
-import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
-
-let template = require('./parameterView.html');
-let style = require('./parameterView.less');
+import {IComponentOptions, IFormController, ILogService} from 'angular';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import TSEbeguParameter from '../../../models/TSEbeguParameter';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import AbstractAdminViewController from '../../abstractAdminView';
+import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
+import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class ParameterViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    template: string = template;
-    controller: any = ParameterViewController;
-    controllerAs: string = 'vm';
+    transclude = false;
+    template = require('./parameterView.html');
+    controller = ParameterViewController;
+    controllerAs = 'vm';
 }
 
 export class ParameterViewController extends AbstractAdminViewController {
@@ -40,23 +36,19 @@ export class ParameterViewController extends AbstractAdminViewController {
         '$log', '$state', '$timeout', 'AuthServiceRS'];
 
     form: IFormController;
-
-    ebeguParameterRS: EbeguParameterRS;
-
     gesuchsperiodenList: Array<TSGesuchsperiode> = [];
-
     jahr: number;
     ebeguJahresabhParameter: TSEbeguParameter[] = []; // enthält alle Jahresabhängigen Params für alle Jahre
-
     ebeguParameterListJahr: TSEbeguParameter[]; // enthält alle Params für nur 1 Jahr
 
-
-    /* @ngInject */
-    constructor(ebeguParameterRS: EbeguParameterRS, private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $translate: ITranslateService, private $log: ILogService, private $state: StateService,
-                private $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+    constructor(public readonly ebeguParameterRS: EbeguParameterRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $translate: ITranslateService,
+                private readonly $log: ILogService,
+                private readonly $state: StateService,
+                private readonly $timeout: ITimeoutService,
+                authServiceRS: AuthServiceRS) {
         super(authServiceRS);
-        this.ebeguParameterRS = ebeguParameterRS;
         $timeout(() => {
             this.readGesuchsperioden();
             this.updateJahresabhParamList();
@@ -65,7 +57,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     private readGesuchsperioden(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: Array<TSGesuchsperiode>) => {
-            this.gesuchsperiodenList =  response; //angular.copy(response);
+            this.gesuchsperiodenList = response; //angular.copy(response);
         });
     }
 
@@ -77,7 +69,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     gesuchsperiodeClicked(gesuchsperiode: any) {
         if (gesuchsperiode.isSelected) {
-            this.$state.go('gesuchsperiode', {
+            this.$state.go('admin.gesuchsperiode', {
                 gesuchsperiodeId: gesuchsperiode.id
             });
         }
@@ -89,7 +81,7 @@ export class ParameterViewController extends AbstractAdminViewController {
     }
 
     createGesuchsperiode(): void {
-        this.$state.go('gesuchsperiode', {
+        this.$state.go('admin.gesuchsperiode', {
             gesuchsperiodeId: undefined
         });
     }
@@ -116,7 +108,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     public saveParameterByJahr(): void {
         if (this.ebeguParameterListJahr.length === 1) {
-            let param = this.ebeguParameterListJahr[0];
+            const param = this.ebeguParameterListJahr[0];
             this.ebeguParameterRS.saveEbeguParameter(param).then((response) => {
                 this.updateJahresabhParamList();
             });
@@ -133,7 +125,7 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     public jahresParamsEditable(): boolean {
         // Wenn die Periode, die in dem Jahr *endet* noch ENTWURF ist
-        for (let gp of this.gesuchsperiodenList) {
+        for (const gp of this.gesuchsperiodenList) {
             if (gp.gueltigkeit.gueltigBis.year() === this.jahr) {
                 return this.periodenParamsEditableForPeriode(gp);
             }

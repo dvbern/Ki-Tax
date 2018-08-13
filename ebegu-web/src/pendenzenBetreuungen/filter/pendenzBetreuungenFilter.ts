@@ -21,10 +21,10 @@ PendenzBetreuungenFilter.$inject = ['$filter', 'EbeguUtil'];
 // Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach implementiert wird.
 export function PendenzBetreuungenFilter($filter: any, ebeguUtil: EbeguUtil) {
 
-    let filterFilter = $filter('filter');
-    let dateFilter = $filter('date');
+    const filterFilter = $filter('filter');
+    const dateFilter = $filter('date');
 
-    let standardComparator = function standardComparator(obj: any, text: any) {
+    const standardComparator = function standardComparator(obj: any, text: any) {
         text = ('' + text).toLowerCase();
         return ('' + obj).toLowerCase().indexOf(text) > -1;
     };
@@ -38,11 +38,11 @@ export function PendenzBetreuungenFilter($filter: any, ebeguUtil: EbeguUtil) {
                 }
             }
             if (expression.eingangsdatum && expression.eingangsdatum === expected) {
-                let actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
+                const actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
                 return actualDate === expected;
             }
             if (expression.geburtsdatum && expression.geburtsdatum === expected) {
-                let actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
+                const actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
                 return actualDate === expected;
             }
             return standardComparator(actual, expected);

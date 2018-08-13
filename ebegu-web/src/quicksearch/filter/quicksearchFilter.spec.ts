@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
@@ -25,7 +25,7 @@ import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus'
 import EbeguUtil from '../../utils/EbeguUtil';
 import {QuicksearchFilter} from './quicksearchFilter';
 
-describe('quicksearchFilter', function () {
+describe('quicksearchFilter', () => {
 
     let quicksearchFilter: any;
     let quicksearchArray: Array<TSAntragDTO>;
@@ -37,17 +37,17 @@ describe('quicksearchFilter', function () {
 
     beforeEach(angular.mock.module('pascalprecht.translate'));
 
-    beforeEach(angular.mock.module(function ($provide: angular.auto.IProvideService) {
+    beforeEach(angular.mock.module(($provide: angular.auto.IProvideService) => {
         $provide.value('CONSTANTS', CONSTANTS);
         $provide.service('EbeguUtil', EbeguUtil);
         $provide.service('quicksearchFilterFilter', QuicksearchFilter);
     }));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         quicksearchFilter = $injector.get('$filter')('quicksearchFilter');
 
-        let ab = moment('31.08.2016', 'DD.MM.YYYY');
-        let bis = moment('01.07.2017', 'DD.MM.YYYY');
+        const ab = moment('31.08.2016', 'DD.MM.YYYY');
+        const bis = moment('01.07.2017', 'DD.MM.YYYY');
         gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(ab, bis));
 
         quicksearchArray = [];
@@ -69,47 +69,47 @@ describe('quicksearchFilter', function () {
 
     }));
 
-    describe('API usage', function () {
-        it('should return an array with only the element with the given Fallnummer', function () {
+    describe('API usage', () => {
+        it('should return an array with only the element with the given Fallnummer', () => {
             expect(quicksearchFilter(quicksearchArray, {fallNummer: '1'})).toEqual([antrag1]);
             expect(quicksearchFilter(quicksearchArray, {fallNummer: '01'})).toEqual([antrag1]);
             expect(quicksearchFilter(quicksearchArray, {fallNummer: '0002'})).toEqual([antrag2]);
             expect(quicksearchFilter(quicksearchArray, {fallNummer: '4'})).toEqual([]); // the fallnummer doesn't exist
         });
-        it('should return an array with only the elements with the given Familienname or containing the given string', function () {
+        it('should return an array with only the elements with the given Familienname or containing the given string', () => {
             expect(quicksearchFilter(quicksearchArray, {familienName: 'Hernandez'})).toEqual([antrag1]);
             expect(quicksearchFilter(quicksearchArray, {familienName: 'ez'})).toEqual([antrag1, antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {familienName: ''})).toEqual([antrag1, antrag2, antrag3]); // empty string returns all elements
             expect(quicksearchFilter(quicksearchArray, {familienName: 'rrr'})).toEqual([]); // no familienname with this pattern
         });
-        it('should return an array with only the elements of the given antragTyp', function () {
+        it('should return an array with only the elements of the given antragTyp', () => {
             expect(quicksearchFilter(quicksearchArray, {antragTyp: TSAntragTyp.ERSTGESUCH})).toEqual([antrag1, antrag2]);
             expect(quicksearchFilter(quicksearchArray, {antragTyp: TSAntragTyp.MUTATION})).toEqual([antrag3]);
             expect(quicksearchFilter(quicksearchArray, {antragTyp: ''})).toEqual([antrag1, antrag2, antrag3]); // empty string returns all elements
             expect(quicksearchFilter(quicksearchArray, {antragTyp: 'error'})).toEqual([]);
         });
-        it('should return an array with only the elements of the given gesuchsperiodeGueltigAb', function () {
+        it('should return an array with only the elements of the given gesuchsperiodeGueltigAb', () => {
             expect(quicksearchFilter(quicksearchArray, {gesuchsperiodeGueltigAb: '31.08.2016'})).toEqual([antrag1, antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {gesuchsperiodeGueltigAb: ''})).toEqual([antrag1, antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {gesuchsperiodeGueltigAb: '2020/2021'})).toEqual([]);
         });
-        it('should return an array with only the elements of the given eingangsdatum', function () {
+        it('should return an array with only the elements of the given eingangsdatum', () => {
             expect(quicksearchFilter(quicksearchArray, {eingangsdatum: '31.08.2016'})).toEqual([antrag1, antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {eingangsdatum: ''})).toEqual([antrag1, antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {eingangsdatum: '31.08.2017'})).toEqual([]);
         });
-        it('should return an array with only the elements of the given angebotstyp', function () {
+        it('should return an array with only the elements of the given angebotstyp', () => {
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.KITA})).toEqual([antrag1, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESFAMILIEN})).toEqual([antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {angebote: TSBetreuungsangebotTyp.TAGESSCHULE})).toEqual([]);
             expect(quicksearchFilter(quicksearchArray, {angebote: ''})).toEqual([antrag1, antrag2, antrag3]);
         });
-        it('should return an array with only the elements of the given institutionen', function () {
+        it('should return an array with only the elements of the given institutionen', () => {
             expect(quicksearchFilter(quicksearchArray, {institutionen: 'Instit1'})).toEqual([antrag1, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {institutionen: 'Instit2'})).toEqual([antrag2, antrag3]);
             expect(quicksearchFilter(quicksearchArray, {institutionen: ''})).toEqual([antrag1, antrag2, antrag3]);
         });
-        it('should return the elements containing all given params, for a multiple filtering', function () {
+        it('should return the elements containing all given params, for a multiple filtering', () => {
             expect(quicksearchFilter(quicksearchArray, {
                 familienName: 'Hernandez',
                 institutionen: 'Instit1'

@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.module';
+import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import DossierRS from './dossierRS.rest';
 
-describe('dossier', function () {
+describe('dossier', () => {
 
     let dossierRS: DossierRS;
     let $httpBackend: angular.IHttpBackendService;
@@ -29,22 +29,22 @@ describe('dossier', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         dossierRS = $injector.get('DossierRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
         REST_API = $injector.get('REST_API');
     }));
 
-    describe('Public API', function () {
+    describe('Public API', () => {
 
-        it('should include a createDossier() function', function () {
+        it('should include a createDossier() function', () => {
             expect(dossierRS.createDossier).toBeDefined();
         });
 
     });
 
-    describe('API Usage', function () {
+    describe('API Usage', () => {
 
     });
 });

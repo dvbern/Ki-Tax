@@ -13,30 +13,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 searchRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function searchRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguSearchListState()
-    ];
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'search',
+        data: {
+            roles: TSRoleUtil.getAllRolesButGesuchsteller(),
+        },
+    },
+    {
+        name: 'search.list-view',
+        template: '<search-list-view flex="auto" class="overflow-scroll">',
+        url: '/search/:searchString',
+    }
+];
 
-//STATES
-
-export class EbeguSearchListState implements Ng1StateDeclaration {
-    name = 'search';
-    template = '<search-list-view flex="auto" class="overflow-scroll">';
-    url = '/search/:searchString';
-}
-
+// TODO hefa implizite Parameter definition
 export class ISearchResultateStateParams {
     searchString: string;
 }

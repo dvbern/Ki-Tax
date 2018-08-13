@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
 import * as moment from 'moment';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -32,7 +32,7 @@ import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSMahnung from '../../../models/TSMahnung';
-import AuthenticationUtil from '../../../utils/AuthenticationUtil';
+import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {BemerkungenDialogController} from '../../dialog/BemerkungenDialogController';
@@ -45,23 +45,24 @@ import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./verfuegenListView.html');
-require('./verfuegenListView.less');
-let removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-let bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
+const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+const bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
 
 export class VerfuegenListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {
+    bindings = {
         // Bereits vorhandene Mahnungen
         mahnungList: '<'
     };
-    template = template;
+    template = require('./verfuegenListView.html');
     controller = VerfuegenListViewController;
     controllerAs = 'vm';
 }
 
 export class VerfuegenListViewController extends AbstractGesuchViewController<any> {
+
+    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', 'WizardStepManager',
+        'DvDialog', 'DownloadRS', 'MahnungRS', '$log', 'AuthServiceRS', '$scope', 'GesuchRS', '$timeout'];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
     mahnungList: TSMahnung[];
@@ -69,15 +70,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private tempAntragStatus: TSAntragStatus;
     finSitStatus: Array<string>;
 
-    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', 'WizardStepManager',
-        'DvDialog', 'DownloadRS', 'MahnungRS', '$log', 'AuthServiceRS', '$scope', 'GesuchRS', '$timeout'];
-
-    /* @ngInject */
-
-    constructor(private $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager, private DvDialog: DvDialog,
-                private downloadRS: DownloadRS, private mahnungRS: MahnungRS, private $log: ILogService,
-                private authServiceRs: AuthServiceRS, $scope: IScope, private gesuchRS: GesuchRS,
+    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
+                private readonly downloadRS: DownloadRS, private readonly mahnungRS: MahnungRS, private readonly $log: ILogService,
+                private readonly authServiceRs: AuthServiceRS, $scope: IScope, private readonly gesuchRS: GesuchRS,
                 $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -144,7 +140,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public openVerfuegung(kind: TSKindContainer, betreuung: TSBetreuung): void {
         if (this.kannVerfuegungOeffnen(betreuung)) {
             if (kind && betreuung) {
-                let kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
+                const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
                     this.$state.go('gesuch.verfuegenView', {
@@ -162,7 +158,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private isDetailAvailableForGesuchstatus(): boolean {
-        let isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         //gesuchsteller hat sicher mal nur Zugriff auf verfuegungsdetail wenn das gesuch mindestens freiggeben ist
         if (isGesuchsteller) {
             return isAtLeastFreigegeben(this.getAntragStatus());
@@ -172,8 +168,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
-        let isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        let allowedBetstatus: Array<TSBetreuungsstatus> = [TSBetreuungsstatus.VERFUEGT, TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT];
+        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const allowedBetstatus: Array<TSBetreuungsstatus> = [TSBetreuungsstatus.VERFUEGT, TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT];
         //Annahme: alle ausser Gesuchsteller duerfen bestaetigte betreuungen sehen wenn sie uberhaupt auf die Seite kommen
         if (!isGesuchsteller) {
             allowedBetstatus.push(TSBetreuungsstatus.BESTAETIGT);
@@ -189,7 +185,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         if (!this.gesuchModelManager.isFinanzielleSituationEnabled() || !this.gesuchModelManager.isFinanzielleSituationDesired()) {
             return false;
         }
-        let isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         if (isGesuchsteller) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus()) && this.getGesuch().hasFSDokument && !this.isFinSitAbglehnt();
         }
@@ -202,7 +198,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isBegleitschreibenVisible(): boolean {
-        let isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         if (isGesuchsteller) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus()) && !this.gesuchModelManager.areThereOnlySchulamtAngebote() && !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung();
         }
@@ -210,12 +206,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isKompletteKorrespondenzVisible(): boolean {
-        let status = this.getAntragStatus();
+        const status = this.getAntragStatus();
         return this.isBegleitschreibenVisible() && isAnyStatusOfVerfuegt(status) && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getJugendamtAndSchulamtRole());
     }
 
     private getAntragStatus(): TSAntragStatus {
-        let status: TSAntragStatus = this.getGesuch() ? this.getGesuch().status : TSAntragStatus.IN_BEARBEITUNG_GS;
+        const status: TSAntragStatus = this.getGesuch() ? this.getGesuch().status : TSAntragStatus.IN_BEARBEITUNG_GS;
         return status;
     }
 
@@ -270,7 +266,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setGesuchStatusVerfuegen(): IPromise<TSGesuch> {
-        let deleteTextValue: string = 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN';
+        const deleteTextValue: string = 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN';
         return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
             deleteText: deleteTextValue,
@@ -287,7 +283,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes for the role JA and is only
                     // available for the role SCHULAMT/ADMINISTRATOR_SCHULAMT, so JA doesn't need the PDFs to be created. When a Schulamt worker opens this
                     // Gesuch, she can generate the PDFs by clicking on the corresponding links
-                    AuthenticationUtil.navigateToStartPageForRole(this.authServiceRs.getPrincipal(), this.$state);
+                    navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
                     return this.gesuchModelManager.getGesuch();
                 } else { // for NUR_SCHULAMT this makes no sense
                     this.gesuchModelManager.setGesuch(response);
@@ -301,7 +297,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private hasOffeneMahnungen(): boolean {
-        for (let mahn of this.mahnungList) {
+        for (const mahn of this.mahnungList) {
             if (!mahn.timestampAbgeschlossen) {
                 return true;
             }
@@ -484,7 +480,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openFinanzielleSituationPDF(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
@@ -497,7 +493,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openBegleitschreibenPDF(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
@@ -510,7 +506,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openKompletteKorrespondenzPDF(): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
@@ -523,7 +519,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openMahnungPDF(mahnung: TSMahnung): void {
-        let win: Window = this.downloadRS.prepareDownloadWindow();
+        const win: Window = this.downloadRS.prepareDownloadWindow();
         if (mahnung == null) {
             mahnung = this.mahnung;
         }
@@ -548,7 +544,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showAbschliessen(): boolean {
-        let status: TSAntragStatus = this.getAntragStatus();
+        const status: TSAntragStatus = this.getAntragStatus();
         return (TSAntragStatus.IN_BEARBEITUNG_JA === status || TSAntragStatus.GEPRUEFT === status)
             && this.gesuchModelManager.areThereOnlySchulamtAngebote() && this.gesuchModelManager.getGesuch().isThereAnyBetreuung();
     }
