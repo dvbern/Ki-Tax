@@ -65,6 +65,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'admin',
+        data: {
+            roles: TSRoleUtil.getAdministratorRoles(),
+        },
     },
     {
         name: 'admin.view',
@@ -75,7 +78,7 @@ const ng1States: Ng1StateDeclaration[] = [
         },
         data: {
             roles: TSRoleUtil.getAdministratorRevisorRole(),
-        }
+        },
     },
     {
         name: 'admin.benutzerlist',
@@ -97,7 +100,7 @@ const ng1States: Ng1StateDeclaration[] = [
         },
         data: {
             roles: TSRoleUtil.getAdministratorRevisorRole(),
-        }
+        },
     },
     {
         name: 'admin.institution',
@@ -123,6 +126,9 @@ const ng1States: Ng1StateDeclaration[] = [
         params: {
             institutionStammdatenId: '',
         },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.parameter',
@@ -130,7 +136,7 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/parameter',
         data: {
             roles: TSRoleUtil.getAdministratorRevisorRole(),
-        }
+        },
     },
     {
         name: 'admin.gesuchsperiode',
@@ -140,10 +146,16 @@ const ng1States: Ng1StateDeclaration[] = [
         params: {
             gesuchsperiodeId: '',
         },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.ferieninsel',
         template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
         url: '/ferieninsel',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
 ];

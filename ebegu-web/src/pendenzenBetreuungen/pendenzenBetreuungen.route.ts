@@ -29,7 +29,8 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'pendenzenBetreuungen',
         data: {
-            roles: [TSRole.SUPER_ADMIN, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.SACHBEARBEITER_TRAEGERSCHAFT]
+            roles: [TSRole.SUPER_ADMIN, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+                TSRole.SACHBEARBEITER_INSTITUTION, TSRole.SACHBEARBEITER_TRAEGERSCHAFT]
         }
     },
     {
