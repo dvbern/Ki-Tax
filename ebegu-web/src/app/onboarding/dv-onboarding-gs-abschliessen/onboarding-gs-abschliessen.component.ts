@@ -3,7 +3,6 @@ import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs/index';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {IGesuchstellerDashboardParams} from '../../../gesuch/gesuch.route';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSDossier from '../../../models/TSDossier';
