@@ -42,6 +42,6 @@ describe('kinderListView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
     });
 });

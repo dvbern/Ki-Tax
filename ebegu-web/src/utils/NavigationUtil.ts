@@ -13,21 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../app/shared/shared.module';
-import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
+import {TSRole} from '../models/enums/TSRole';
+import {StateService} from '@uirouter/core';
+import {TSRoleUtil} from './TSRoleUtil';
 
-@NgModule({
-    imports: [
-        SharedModule,
-    ],
-    declarations: [
-        FallToolbarComponent,
-    ],
-    entryComponents: [
-        FallToolbarComponent,
-    ],
-})
+export class NavigationUtil {
 
-export class NgGesuchModule {
+    public static navigateToStartsiteOfGesuchForRole(role: TSRole, state: StateService, gesuchID: string): void {
+        if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role) === true) {
+            state.go('gesuch.betreuungen', {
+                gesuchId: gesuchID
+            });
+
+        } else if (role === TSRole.STEUERAMT) {
+            state.go('gesuch.familiensituation', {
+                gesuchId: gesuchID
+            });
+
+        } else {
+            state.go('gesuch.fallcreation', {
+                createNewFall: false, gesuchId: gesuchID
+            });
+        }
+    }
 }

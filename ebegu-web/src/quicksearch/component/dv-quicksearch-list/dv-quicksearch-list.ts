@@ -147,7 +147,7 @@ export class DVQuicksearchListController implements IController {
      * @param fallnummer
      */
     public addZerosToFallnummer(fallnummer: number): string {
-        return this.ebeguUtil.addZerosToNumber(fallnummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
@@ -182,14 +182,17 @@ export class DVQuicksearchListController implements IController {
             const url = this.$state.href('mitteilungen.view', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
-            this.$state.go('mitteilungen.view', {dossierId: fallAntrag.dossierId});
+            this.$state.go('mitteilungen.view', {
+                dossierId: fallAntrag.dossierId,
+                fallId: fallAntrag.fallID,
+            });
         }
     }
 
     private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean) {
         if (antragDTO.antragId) {
             const navObj: any = {
-                createNew: false,
+                createNewFall: false,
                 gesuchId: antragDTO.antragId,
                 dossierId: antragDTO.dossierId
             };

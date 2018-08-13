@@ -31,6 +31,7 @@ import TSDossier from '../../../models/TSDossier';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 
@@ -46,7 +47,7 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 // TODO hefa multiple components in 1 file!?
 
-export class GesuchToolbarComponentConfig implements IComponentOptions {
+export class DossierToolbarComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {
         gesuchid: '@',
@@ -56,12 +57,12 @@ export class GesuchToolbarComponentConfig implements IComponentOptions {
         forceLoadingFromFall: '@'
     };
 
-    template = require('./gesuchToolbar.html');
-    controller = GesuchToolbarController;
+    template = require('./dossierToolbar.html');
+    controller = DossierToolbarController;
     controllerAs = 'vmx';
 }
 
-export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOptions {
+export class DossierToolbarGesuchstellerComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {
         gesuchid: '@',
@@ -70,13 +71,13 @@ export class GesuchToolbarGesuchstellerComponentConfig implements IComponentOpti
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
     };
-    template = require('./gesuchToolbarGesuchsteller.html');
-    controller = GesuchToolbarController;
-    // Darf, wie es scheint nicht 'vm' heissen, sonst werden im gesuchToolBarGesuchsteller.html keine Funktionen gefunden. Bug?!
+    template = require('./dossierToolbarGesuchsteller.html');
+    controller = DossierToolbarController;
+    // Darf, wie es scheint nicht 'vm' heissen, sonst werden im dossierToolBarGesuchsteller.html keine Funktionen gefunden. Bug?!
     controllerAs = 'vmgs';
 }
 
-export class GesuchToolbarController implements IDVFocusableController {
+export class DossierToolbarController implements IDVFocusableController {
 
     static $inject = ['EbeguUtil', 'GesuchRS', '$state',
         '$scope', 'GesuchModelManager', 'AuthServiceRS', '$mdSidenav', '$log', 'GesuchsperiodeRS',
@@ -230,7 +231,7 @@ export class GesuchToolbarController implements IDVFocusableController {
                 if (response) {
                     this.dossier = response;
                     if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-                        this.gesuchRS.getAllAntragDTOForFall(this.getGesuch().dossier.fall.id).then((response) => {
+                        this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then((response) => {
                             this.antragList = angular.copy(response);
                             this.updateGesuchperiodeList();
                             this.updateGesuchNavigationList();
@@ -239,7 +240,7 @@ export class GesuchToolbarController implements IDVFocusableController {
                             this.antragErneuernPossible();
                         });
                     } else if (this.dossier) {
-                        this.gesuchRS.getAllAntragDTOForFall(this.dossier.fall.id).then((response) => {
+                        this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
                             this.antragList = angular.copy(response);
                             if (response && response.length > 0) {
                                 const newest = this.getNewest(this.antragList);
@@ -305,7 +306,8 @@ export class GesuchToolbarController implements IDVFocusableController {
             if (!this.gesuchNavigationList[gs]) {
                 this.gesuchNavigationList[gs] = [];
             }
-            this.gesuchNavigationList[gs].push(this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer));
+            this.gesuchNavigationList[gs].push(this.ebeguUtil
+                .getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer));
         }
     }
 
@@ -331,18 +333,6 @@ export class GesuchToolbarController implements IDVFocusableController {
             }
         }
         return keys;
-    }
-
-    /**
-     * Tries to get the "gesuchName" out of the gesuch contained in the gesuchModelManager. If this doesn't
-     * succeed it gets the "gesuchName" out of the fall
-     */
-    public getGesuchName(): string {
-        let gesuchName = this.gesuchModelManager.getGesuchName();
-        if (!gesuchName || gesuchName.length <= 0) {
-            gesuchName = this.ebeguUtil.getGesuchNameFromDossier(this.dossier);
-        }
-        return gesuchName;
     }
 
     public getGesuch(): TSGesuch {
@@ -396,15 +386,11 @@ export class GesuchToolbarController implements IDVFocusableController {
      */
     private goToOpenGesuch(gesuchId: string): void {
         if (gesuchId) {
-            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                this.$state.go('gesuch.betreuungen', {gesuchId: gesuchId});
-            } else if (this.authServiceRS.isRole(TSRole.STEUERAMT)) {
-                this.$state.go('gesuch.familiensituation', {gesuchId: gesuchId});
-            } else {
-                this.$state.go('gesuch.fallcreation', {
-                    createNew: false, gesuchId: gesuchId
-                });
-            }
+            NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                this.authServiceRS.getPrincipalRole(),
+                this.$state,
+                gesuchId
+            );
         }
     }
 
@@ -539,23 +525,10 @@ export class GesuchToolbarController implements IDVFocusableController {
         return undefined;
     }
 
-    private hasBesitzer(): boolean {
-        return this.dossier
-            && this.dossier.fall
-            && this.dossier.fall.besitzer !== null
-            && this.dossier.fall.besitzer !== undefined;
-    }
-
-    private getBesitzer(): string {
-        if (this.hasBesitzer()) {
-            return this.dossier.fall.besitzer.getFullName();
-        }
-        return '';
-    }
-
     public openMitteilungen(): void {
         this.$state.go('mitteilungen.view', {
-            dossierId: this.dossier.id
+            dossierId: this.dossier.id,
+            fallId: this.dossier.fall.id,
         });
     }
 
@@ -602,10 +575,10 @@ export class GesuchToolbarController implements IDVFocusableController {
                     this.$state.go('gesuchsteller.dashboard');
                 });
             } else {
-                this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(result => {
+                this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(() => {
                     if (this.antragList.length > 1) {
                         const navObj: any = {
-                            createNew: false,
+                            createNewFall: false,
                             gesuchId: this.antragList[0].antragId,
                             dossierId: this.antragList[0].dossierId
                         };

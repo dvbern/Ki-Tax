@@ -116,8 +116,8 @@ export default class GesuchRS implements IEntityRS {
         return this.$http.put(this.serviceURL + '/status/' + encodeURIComponent(gesuchID) + '/' + status, null);
     }
 
-    public getAllAntragDTOForFall(fallId: string): IPromise<TSAntragDTO[]> {
-        return this.$http.get(this.serviceURL + '/fall/' + encodeURIComponent(fallId)).then((response: any) => {
+    public getAllAntragDTOForDossier(dossierId: string): IPromise<TSAntragDTO[]> {
+        return this.$http.get(this.serviceURL + '/dossier/' + encodeURIComponent(dossierId)).then((response: any) => {
             return this.ebeguRestUtil.parseAntragDTOs(response.data);
         });
     }
@@ -248,8 +248,16 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public getIdOfNewestGesuch(gesuchsperiodeId: string, dossierId: string): IPromise<string> {
-        return this.$http.get(this.serviceURL + '/newestid/' + encodeURIComponent(gesuchsperiodeId) + '/' + encodeURIComponent(dossierId))
+    public getIdOfNewestGesuchForGesuchsperiode(gesuchsperiodeId: string, dossierId: string): IPromise<string> {
+        return this.$http.get(this.serviceURL + '/newestid/gesuchsperiode/' + encodeURIComponent(gesuchsperiodeId)
+            + '/dossier/' + encodeURIComponent(dossierId))
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public getIdOfNewestGesuchForDossier(dossierId: string): IPromise<string> {
+        return this.$http.get(this.serviceURL + '/newestid/fall/' + encodeURIComponent(dossierId))
             .then((response: any) => {
                 return response.data;
             });

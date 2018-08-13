@@ -127,7 +127,10 @@ export class DvQuicksearchboxController {
                 }
             } else if (this.selectedItem.entity === 'DOSSIER') {
                 //open mitteilung
-                this.$state.go('mitteilungen.view', {dossierId: this.selectedItem.dossierId});
+                this.$state.go('mitteilungen.view', {
+                    dossierId: this.selectedItem.dossierId,
+                    fallId: this.selectedItem.fallID,
+                });
             } else {
                 this.$state.go('search.list-view', {searchString: this.searchString});
             }
@@ -143,10 +146,10 @@ export class DvQuicksearchboxController {
     private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab?: boolean): void {
         if (antrag) {
             if (inNewTab) {
-                const url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                const url = this.$state.href(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

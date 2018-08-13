@@ -54,9 +54,10 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNew/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
+    url = '/fall/:createNewFall/:createNewDossier/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
     params = {
         eingangsart: '',
+        createNewDossier: 'false',
         gesuchsperiodeId: '',
         gesuchId: '',
         dossierId: '',
@@ -691,7 +692,8 @@ export class IBetreuungStateParams {
 }
 
 export class INewFallStateParams {
-    createNew: string;
+    createNewFall: string;
+    createNewDossier: string;
     createMutation: string;
     eingangsart: TSEingangsart;
     gesuchsperiodeId: string;
@@ -766,21 +768,28 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
                                          $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
-        if ($stateParams.createNew === 'true') {
-            const eingangsart = $stateParams.eingangsart;
-            const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-            const dossierId = $stateParams.dossierId;
-            const gemeindeId = $stateParams.gemeindeId;
+
+        const eingangsart = $stateParams.eingangsart;
+        const gemeindeId = $stateParams.gemeindeId;
+
+        if ($stateParams.createNewFall === 'true') {
             //initialize gesuch
-            return gesuchModelManager.initGesuchWithEingangsart(true, eingangsart, gesuchsperiodeId, dossierId, gemeindeId);
-        } else {
-            const gesuchIdParam = $stateParams.gesuchId;
-            if (!gesuchIdParam) {
-                $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
-            }
-            berechnungsManager.clear();
-            return gesuchModelManager.openGesuch(gesuchIdParam);
+            return gesuchModelManager.createNewFall(eingangsart, gemeindeId);
         }
+
+        const createNewDossierParam = $stateParams.createNewDossier;
+        if (createNewDossierParam === 'true') {
+            return gesuchModelManager.createNewDossierForCurrentFall(eingangsart, gemeindeId);
+        }
+
+        const gesuchIdParam = $stateParams.gesuchId;
+        if (!gesuchIdParam) {
+            $log.error('opened fallCreation without gesuchId parameter in edit mode', $stateParams);
+        }
+
+        berechnungsManager.clear();
+        return gesuchModelManager.openGesuch(gesuchIdParam);
+
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
     return $q.defer(gesuchModelManager.getGesuch());
@@ -822,9 +831,9 @@ function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchMo
 
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
-                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId, false);
             } else if (antragtyp === TSAntragTyp.MUTATION) {
-                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
+                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId, true);
             }
         }
     }

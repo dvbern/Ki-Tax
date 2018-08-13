@@ -27,6 +27,7 @@ import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import UserRS from './service/userRS.rest';
 import ZahlungRS from './service/zahlungRS.rest';
+import DossierRS from '../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 
