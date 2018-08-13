@@ -53,10 +53,17 @@ export class GesuchstellerDashboardViewController {
     amountNewMitteilungen: number;
     mapOfNewestAntraege: { [key: string]: string } = {}; // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
 
-    constructor(private readonly $state: StateService, private readonly $log: ILogService,
-                private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS, private readonly ebeguUtil: EbeguUtil,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS, private readonly $translate: ITranslateService,
-                private readonly mitteilungRS: MitteilungRS, private readonly gesuchRS: GesuchRS, private readonly errorService: ErrorService, private readonly dossierRS: DossierRS) {
+    constructor(private readonly $state: StateService,
+                private readonly $log: ILogService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly searchRS: SearchRS,
+                private readonly ebeguUtil: EbeguUtil,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $translate: ITranslateService,
+                private readonly mitteilungRS: MitteilungRS,
+                private readonly gesuchRS: GesuchRS,
+                private readonly errorService: ErrorService,
+                private readonly dossierRS: DossierRS) {
     }
 
     $onInit() {
@@ -186,10 +193,11 @@ export class GesuchstellerDashboardViewController {
             } else {
                 // Dies ist das erste Gesuch
                 this.$state.go('gesuch.fallcreation', {
-                    createNewFall: true,
+                    createNewFall: false,
+                    createNewGesuch: true,
                     eingangsart: TSEingangsart.ONLINE,
-                    gesuchId: null,
                     gesuchsperiodeId: periode.id,
+                    gemeindeId: this.dossier.gemeinde.id,
                     dossierId: this.dossier.id
                 });
             }

@@ -84,6 +84,7 @@ export class NavbarComponent {
                         createMutation: null,
                         createNewFall: 'true',
                         createNewDossier: 'false',
+                        createNewGesuch: 'false',
                         gesuchId: null,
                         dossierId: null,
                         gemeindeId: gemeindeId,

@@ -19,7 +19,8 @@
         <div class="dossier-list col-md-12">
 
             <button *ngFor="let dossier of dossierList" class="dossier-element"
-                    [ngClass]="{'dossier-active': isDossierActive(dossier)}"
+                    [ngClass]="{'dossier-active-gesuchsteller': isDossierActive(dossier) && isGesuchsteller(),
+                                'dossier-active': isDossierActive(dossier) && !isGesuchsteller()}"
                     (click)="openDossier(dossier)">
                 {{dossier.extractGemeindeName()}}
             </button>
@@ -29,9 +30,11 @@
                 <i class="fa fa-plus"></i>
             </button>
 
-            <div class="pull-right dossier-element fall-nummer">
+            <div class="pull-right dossier-element fall-nummer"
+                 [ngClass]="{'fall-nummer-gesuchsteller': isGesuchsteller()}">
                 <span [textContent]="fallNummer"></span>
-                <i class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
+                <i *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()"
+                   class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
             </div>
 
         </div>

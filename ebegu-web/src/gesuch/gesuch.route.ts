@@ -54,10 +54,11 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNewFall/:createNewDossier/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
+    url = '/fall/:createNewFall/:createNewDossier/:createNewGesuch/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
     params = {
         eingangsart: '',
         createNewDossier: 'false',
+        createNewGesuch: 'false',
         gesuchsperiodeId: '',
         gesuchId: '',
         dossierId: '',
@@ -694,6 +695,7 @@ export class IBetreuungStateParams {
 export class INewFallStateParams {
     createNewFall: string;
     createNewDossier: string;
+    createNewGesuch: string;
     createMutation: string;
     eingangsart: TSEingangsart;
     gesuchsperiodeId: string;
@@ -766,11 +768,12 @@ reloadGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 
 
 export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
-                                         $log: ILogService): IPromise<TSGesuch> {
+                                         $log: ILogService): IPromise<any> {
     if ($stateParams) {
 
         const eingangsart = $stateParams.eingangsart;
         const gemeindeId = $stateParams.gemeindeId;
+        const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
 
         if ($stateParams.createNewFall === 'true') {
             //initialize gesuch
@@ -780,6 +783,11 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
         const createNewDossierParam = $stateParams.createNewDossier;
         if (createNewDossierParam === 'true') {
             return gesuchModelManager.createNewDossierForCurrentFall(eingangsart, gemeindeId);
+        }
+
+        const createNewGesuchParam = $stateParams.createNewGesuch;
+        if (createNewGesuchParam === 'true') {
+            return gesuchModelManager.initGesuch(eingangsart, false, false, gesuchsperiodeId);
         }
 
         const gesuchIdParam = $stateParams.gesuchId;
@@ -831,9 +839,9 @@ function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchMo
 
         if (gesuchId && eingangsart) {
             if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
-                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId, false);
+                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
             } else if (antragtyp === TSAntragTyp.MUTATION) {
-                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId, true);
+                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
             }
         }
     }

@@ -260,7 +260,9 @@ export class DossierToolbarController implements IDVFocusableController {
                                 // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
                                 if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.getGesuch().isNew()) {
                                     // in this case there is no Gesuch for this fall, so we remove all content
-                                    this.gesuchModelManager.setGesuch(new TSGesuch());
+                                    const gesuch = new TSGesuch();
+                                    gesuch.dossier = angular.copy(this.dossier);
+                                    this.gesuchModelManager.setGesuch(gesuch);
                                     this.resetNavigationParameters();
                                 }
                             }

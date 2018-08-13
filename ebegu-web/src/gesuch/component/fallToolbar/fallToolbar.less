@@ -16,6 +16,9 @@
 
 @toolbar-height: 4rem;
 
+@toolbar-color: @blue;
+@toolbar-color-gesuchsteller: @red;
+
 .fall-toolbar {
     background-color: @white;
 
@@ -44,10 +47,17 @@
             padding: 0;
 
             &.fall-nummer {
-                color: @blue;
+                color: @toolbar-color;
+                font-weight: normal;
                 width: auto;
                 background-color: transparent;
-                font-weight: normal;
+                margin-right: 2rem;
+            }
+            &.fall-nummer-gesuchsteller {
+                color: @black;
+                font-weight: bold;
+                width: auto;
+                background-color: transparent;
                 margin-right: 2rem;
             }
 
@@ -57,7 +67,12 @@
         }
 
         .dossier-active {
-            background-color: @blue;
+            background-color: @toolbar-color;
+
+            &-gesuchsteller {
+                background-color: @toolbar-color-gesuchsteller;
+            }
         }
+
     }
 }

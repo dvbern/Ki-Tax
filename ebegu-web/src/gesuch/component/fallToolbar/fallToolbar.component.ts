@@ -147,6 +147,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
                         createMutation: null,
                         createNewFall: 'false',
                         createNewDossier: 'true',
+                        createNewGesuch: 'false',
                         gesuchId: null,
                         dossierId: null,
                         gemeindeId: chosenGemeindeId,
@@ -228,5 +229,9 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     private emptyDossierList() {
         this.dossierList = [];
+    }
+
+    public isGesuchsteller(): boolean {
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 }
