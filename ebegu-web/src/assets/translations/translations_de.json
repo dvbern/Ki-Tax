@@ -1015,6 +1015,7 @@
     "KITAX_ERNEUERUNGSGESUCH_PERIODE": "Ki-Tax – Folgegesuch der Periode {{periode}}",
     "POSTEINGANG": "Posteingang",
     "POSTEINGANG_VON_UPPER": "VON",
+    "POSTEINGANG_GEMEINDE_UPPER": "GEMEINDE",
     "POSTEINGANG_FALL_UPPER": "FALL",
     "POSTEINGANG_FAMILIE_UPPER": "FAMILIE",
     "POSTEINGANG_BETREFF_UPPER": "BETREFF",
@@ -1327,5 +1328,12 @@
     "ONBOARDING_BG_LOGIN_REQUIRED": "BE-Login benötigt",
     "ONBOARDING_BE_LOGIN_DESCRIPTION": "Für die Anmeldung zu kiBon benötigen Sie ein BE-Login. Bitte registrieren Sie sich auf der Webseite des BE-Login. Sobald die Registrierung abgeschlossen ist, können Sie auf dieser Webseite fortfahren. Sofern Sie bereits ein BE-Login besitzen können Sie sich einfach anmelden und werden danach wieder hier weitergeleitet.",
     "ONBOARDING_BE_LOGIN_ANMELDEN": "Mit BE-Login anmelden",
-    "ONBOARDING_BE_LOGIN_REGISTRIEREN": "Auf BE-Login registrieren"
+    "ONBOARDING_BE_LOGIN_REGISTRIEREN": "Auf BE-Login registrieren",
+    "ONBOARDING_GS_ABSCHLIESSEN": "Registrierung abschliessen",
+    "ONBOARDING_GS_GEMEINDE_TITLE": "Ausgewählte Gemeinde",
+    "ONBOARDING_GS_GEMEINDE_AENDERN": "Ändern",
+    "ONBOARDING_GS_ANGABEN_TITLE": "BE-Login Daten",
+    "ONBOARDING_GS_ANGABEN_VORNAME": "Vorname",
+    "ONBOARDING_GS_ANGABEN_NAME": "Name",
+    "ONBOARDING_GS_ANGABEN_MAIL": "E-Mail"
 }

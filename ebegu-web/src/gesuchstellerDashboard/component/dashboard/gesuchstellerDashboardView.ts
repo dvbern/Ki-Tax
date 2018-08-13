@@ -31,7 +31,6 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
-import IPromise = angular.IPromise;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
@@ -67,38 +66,29 @@ export class GesuchstellerDashboardViewController {
     }
 
     $onInit() {
-        if (this.$state.params.gesuchstellerDashboardStateParams && this.$state.params.gesuchstellerDashboardStateParams.infoMessage) {
-            this.errorService.addMesageAsInfo(this.$translate.instant(this.$state.params.gesuchstellerDashboardStateParams.infoMessage));
+        if (this.$state.params.gesuchstellerDashboardStateParams) {
+            if (this.$state.params.gesuchstellerDashboardStateParams.infoMessage) {
+                this.errorService.addMesageAsInfo(this.$translate.instant(this.$state.params.gesuchstellerDashboardStateParams.infoMessage));
+            }
+            if (this.$state.params.gesuchstellerDashboardStateParams.dossierId) {
+                this.initViewModel(this.$state.params.gesuchstellerDashboardStateParams.dossierId);
+            } else {
+                //TODO: Das zuletzt verwendete dossier lesen
+            }
+        } else {
+            //TODO: Das zuletzt verwendete dossier lesen
         }
-        this.initViewModel();
     }
 
-    private initViewModel() {
-        this.updateAntragList().then(() => {
-            this.getAmountNewMitteilungen();
-            this.updateActiveGesuchsperiodenList();
-        });
-    }
-
-    private updateAntragList(): IPromise<any> {
-        //TODO (KIBON-6) Gemeinde!
-        return this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer('unknown').then((createdDossier: TSDossier) => {
-            this.dossier = createdDossier;
+    private initViewModel(dossierId: string) {
+        return this.dossierRS.findDossier(dossierId).then((dossierFromParam: TSDossier) => {
+            this.dossier = dossierFromParam;
             return this.searchRS.getAntraegeGesuchstellerList().then((response: any) => {
                 this.antragList = angular.copy(response);
+                this.getAmountNewMitteilungen();
+                this.updateActiveGesuchsperiodenList();
                 return this.antragList;
             });
-        });
-    }
-
-    private readDossierOfCurrentBenutzer(fallId: string) {
-        //TODO (KIBON-6) Gemeinde!
-        this.dossierRS.getDossierForFallAndGemeinde('unnknown', fallId).then((resultDossier: TSDossier) => {
-            if (resultDossier) {
-                this.dossier = resultDossier;
-            } else {
-                this.dossier = undefined;
-            }
         });
     }
 
