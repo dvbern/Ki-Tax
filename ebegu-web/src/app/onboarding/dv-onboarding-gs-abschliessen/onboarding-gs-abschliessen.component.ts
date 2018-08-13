@@ -3,8 +3,10 @@ import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs/index';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {IGesuchstellerDashboardParams} from '../../../gesuch/gesuch.route';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSUser from '../../../models/TSUser';
 
@@ -40,7 +42,10 @@ export class OnboardingGsAbschliessenComponent {
         if (!form.valid) {
             return;
         }
-        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId);
-        this.stateService.go('gesuchsteller.dashboard', {gemeindeId: this.gemeindeId});
+        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
+            this.stateService.go('gesuchsteller.dashboard', {
+                gesuchstellerDashboardStateParams: {dossierId: dossier.id}
+            });
+        });
     }
 }
