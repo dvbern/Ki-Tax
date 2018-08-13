@@ -30,7 +30,7 @@ import TSUser from '../../../models/TSUser';
     selector: 'dv-onboarding-gs-abschliessen',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-gs-abschliessen.component.html',
-    styleUrls: ['./onboarding-gs-abschliessen.component.less'],
+    styleUrls: ['../onboarding.less', './onboarding-gs-abschliessen.component.less'],
 })
 export class OnboardingGsAbschliessenComponent {
 

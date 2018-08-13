@@ -14,7 +14,6 @@
  */
 
 import {Provider} from '@angular/core';
-import DossierRS from '../../gesuch/service/dossierRS.rest';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
