@@ -18,12 +18,15 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRole} from '../../models/enums/TSRole';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
+import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 
 const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'onboarding',
-        abstract: true
+        abstract: true,
+        component: OnboardingMainComponent
     },
     {
         name: 'onboarding.start',
@@ -32,6 +35,23 @@ const states: Ng2StateDeclaration[] = [
         data: {
             roles: [TSRole.ANONYMOUS]
         }
+    },
+    {
+        name: 'onboarding.be-login',
+        url: '/:gemeindeId',
+        component: OnboardingBeLoginComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS]
+        },
+    },
+
+    {
+        name: 'onboarding.gesuchsteller',
+        url: '/registration/:gemeindeId',
+        component: OnboardingBeLoginComponent, // TODO replace with component from KIBON-130
+        data: {
+            roles: [TSRole.GESUCHSTELLER]
+        },
     },
 ];
 
