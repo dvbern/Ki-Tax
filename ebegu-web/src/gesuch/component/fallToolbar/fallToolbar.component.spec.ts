@@ -15,6 +15,7 @@
 
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
+import {TranslateModule} from '@ngx-translate/core';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -57,6 +58,7 @@ describe('fallToolbar', () => {
             'getPrincipalRole': Promise.resolve(TSRole.SUPER_ADMIN),
             'getPrincipal': Promise.resolve(user),
             'isRole': false,
+            'isOneOfRoles': false,
         });
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
             'findDossiersByFall': Promise.resolve([dossier1, dossier2])
@@ -69,6 +71,7 @@ describe('fallToolbar', () => {
         TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
+                TranslateModule
             ],
             providers: [
                 {provide: DossierRS, useValue: dossierServiceSpy},

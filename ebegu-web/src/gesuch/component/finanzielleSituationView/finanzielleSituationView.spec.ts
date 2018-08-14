@@ -48,7 +48,7 @@ describe('finanzielleSituationView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
         gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
         gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());

@@ -402,30 +402,26 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN }) //TODO (team) evt. umbenennen: getGesucheDashboardGesuchsteller
-	// TODO KIBON hier muessten wir eigentlich das Dossier mitgeben, damit man nur die Antraege eines Dossiers holt
-	public List<Gesuch> getAntraegeByCurrentBenutzer() {
-		Optional<Fall> fallOptional = fallService.findFallByCurrentBenutzerAsBesitzer();
-		if (fallOptional.isPresent()) {
-			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN })
+	public List<Gesuch> getAntraegeOfDossier(@Nonnull Dossier dossier) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
-			Root<Gesuch> root = query.from(Gesuch.class);
-			// Fall
-			Predicate predicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall), fallOptional.get());
-			// Keine Papier-Antraege, die noch nicht verfuegt sind
-			Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER);
-			Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
-			Predicate predicateUnverfuegtesPapiergesuch = CriteriaQueryHelper.concatenateExpressions(cb, predicatePapier, predicateStatus);
-			if (predicateUnverfuegtesPapiergesuch != null) {
-				Predicate predicateNichtUnverfuegtePapierGesuch = predicateUnverfuegtesPapiergesuch.not();
-				query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
-				query.where(predicate, predicateNichtUnverfuegtePapierGesuch);
+		Root<Gesuch> root = query.from(Gesuch.class);
+		// Fall
+		Predicate predicate = cb.equal(root.get(Gesuch_.dossier), dossier);
+		// Keine Papier-Antraege, die noch nicht verfuegt sind
+		Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), Eingangsart.PAPIER); // todo remove ???
+		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates()).not();
+		Predicate predicateUnverfuegtesPapiergesuch = CriteriaQueryHelper.concatenateExpressions(cb, predicatePapier, predicateStatus);
+		if (predicateUnverfuegtesPapiergesuch != null) {
+			Predicate predicateNichtUnverfuegtePapierGesuch = predicateUnverfuegtesPapiergesuch.not();
+			query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
+			query.where(predicate, predicateNichtUnverfuegtePapierGesuch);
 
-				List<Gesuch> gesuche = persistence.getCriteriaResults(query);
-				authorizer.checkReadAuthorizationGesuche(gesuche);
-				return gesuche;
-			}
+			List<Gesuch> gesuche = persistence.getCriteriaResults(query);
+			authorizer.checkReadAuthorizationGesuche(gesuche);
+			return gesuche;
 		}
 		return Collections.emptyList();
 	}

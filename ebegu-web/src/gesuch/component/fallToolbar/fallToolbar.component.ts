@@ -16,6 +16,7 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {from as fromPromise, Observable, of} from 'rxjs';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
@@ -51,6 +52,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     selectedDossier?: TSDossier;
     fallNummer: string;
     availableGemeindeList: TSGemeinde[] = [];
+    gemeindeText: string;
 
 
     constructor(private dossierRS: DossierRS,
@@ -119,44 +121,80 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      */
     public openDossier(dossier: TSDossier): Observable<TSDossier> {
         if (dossier) {
-            return fromPromise(
-                this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
-                    if (newestGesuchID) {
-                        this.selectedDossier = dossier;
-                        NavigationUtil.navigateToStartsiteOfGesuchForRole(
-                            this.authServiceRS.getPrincipalRole(),
-                            this.$state,
-                            newestGesuchID,
-                        );
-                    } else {
-                        this.LOG.warn(`newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
-                    }
-                    return this.selectedDossier;
-                })
-            );
+            if (this.isGesuchsteller()) {
+                this.selectedDossier = dossier;
+                this.navigateToDashboard();
+            } else {
+                return this.openNewestGesuchOfDossier(dossier);
+            }
         }
         return of(this.selectedDossier);
     }
 
+    private openNewestGesuchOfDossier(dossier: TSDossier): Observable<TSDossier> {
+        return fromPromise(this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
+            if (newestGesuchID) {
+                this.selectedDossier = dossier;
+                NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                    this.authServiceRS.getPrincipalRole(),
+                    this.$state,
+                    newestGesuchID,
+                );
+            } else {
+                this.LOG.warn(`newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
+            }
+            return this.selectedDossier;
+        }));
+    }
+
     public createNewDossier(): void {
         this.getGemeindeIDFromDialog().subscribe(
-            (chosenGemeindeId) => {
+            (chosenGemeindeId: string) => {
                 if (chosenGemeindeId) {
-                    const params: INewFallStateParams = {
-                        gesuchsperiodeId: null,
-                        createMutation: null,
-                        createNewFall: 'false',
-                        createNewDossier: 'true',
-                        createNewGesuch: 'false',
-                        gesuchId: null,
-                        dossierId: null,
-                        gemeindeId: chosenGemeindeId,
-                        eingangsart: this.getEingangsArt(),
-                    };
-                    this.$state.go('gesuch.fallcreation', params);
+                    if (this.isGesuchsteller()) {
+                        this.createDossier(chosenGemeindeId).then(() => {
+                            this.navigateToDashboard();
+                        });
+                    } else {
+                        this.navigateToFallCreation(chosenGemeindeId);
+                    }
                 }
             }
         );
+    }
+
+    /**
+     * Creates a new Dossier based on the selectedDossier (which must always be defined at this point) but with
+     * the gemeinde given as param.
+     */
+    private createDossier(chosenGemeindeId: string): IPromise<any> {
+        const newDossier = new TSDossier();
+        newDossier.fall = this.selectedDossier.fall;
+        newDossier.gemeinde = this.availableGemeindeList.find(gemeinde => gemeinde.id === chosenGemeindeId);
+        return this.dossierRS.createDossier(newDossier).then(() => {
+            this.currentDossier = newDossier;
+        });
+    }
+
+    private navigateToDashboard(): void {
+        this.$state.go('gesuchsteller.dashboard', {
+            gesuchstellerDashboardStateParams: {dossierId: this.selectedDossier.id}
+        });
+    }
+
+    private navigateToFallCreation(chosenGemeindeId: string): void {
+        const params: INewFallStateParams = {
+            gesuchsperiodeId: null,
+            createMutation: null,
+            createNewFall: 'false',
+            createNewDossier: 'true',
+            createNewGesuch: 'false',
+            gesuchId: null,
+            dossierId: null,
+            gemeindeId: chosenGemeindeId,
+            eingangsart: this.getEingangsArt(),
+        };
+        this.$state.go('gesuch.fallcreation', params);
     }
 
     private getEingangsArt() {
@@ -241,5 +279,18 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+    }
+
+    /**
+     * Only for a Gesuchsteller it introduces Text in the variable gemeindeText when it is not defined or sets it to undefined when it already has a text
+     */
+    public toggleGemeindeText(): void {
+        if (this.isGesuchsteller()) {
+            this.gemeindeText = this.gemeindeText ? undefined : 'GEMEINDE_HINZUFUEGEN';
+        }
+    }
+
+    public showAddGemeindeText(): boolean {
+        return !!this.gemeindeText;
     }
 }

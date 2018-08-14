@@ -250,9 +250,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 
+		// fixme no exception should be thrown in this method. it returns boolean
 		validateMandantMatches(dossier.getFall());
 
-		validateGemeindeMatches(dossier);
+		if (!isUserAllowedForGemeinde(dossier.getGemeinde())) {
+			return false;
+		}
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA,
@@ -265,6 +268,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return this.isGSOwner(dossier::getFall, principalBean.getPrincipal().getName());
 	}
 
+
+	// todo diese Methode immer verwenden. in die MEthode isReadAuthorizedDossier integrieren
 	@Override
 	public boolean isReadCompletelyAuthorizedDossier(@Nullable Dossier dossier) {
 		if (dossier == null) {

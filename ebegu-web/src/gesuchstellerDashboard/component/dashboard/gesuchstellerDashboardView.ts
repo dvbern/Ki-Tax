@@ -71,25 +71,37 @@ export class GesuchstellerDashboardViewController {
                 this.errorService.addMesageAsInfo(this.$translate.instant(this.$state.params.gesuchstellerDashboardStateParams.infoMessage));
             }
             if (this.$state.params.gesuchstellerDashboardStateParams.dossierId) {
-                this.initViewModel(this.$state.params.gesuchstellerDashboardStateParams.dossierId);
+                this.loadDossierById();
             } else {
-                //TODO: Das zuletzt verwendete dossier lesen
+                this.loadNewestDossierForGesuchsteller();
             }
         } else {
-            //TODO: Das zuletzt verwendete dossier lesen
+            this.loadNewestDossierForGesuchsteller();
         }
     }
 
-    private initViewModel(dossierId: string) {
-        return this.dossierRS.findDossier(dossierId).then((dossierFromParam: TSDossier) => {
-            this.dossier = dossierFromParam;
-            return this.searchRS.getAntraegeGesuchstellerList().then((response: any) => {
-                this.antragList = angular.copy(response);
-                this.getAmountNewMitteilungen();
-                this.updateActiveGesuchsperiodenList();
-                return this.antragList;
-            });
+    private initViewModel(dossierFromParam: TSDossier) {
+        this.dossier = dossierFromParam;
+        return this.searchRS.getAntraegeOfDossier(this.dossier.id).then((response: any) => {
+            this.antragList = angular.copy(response);
+            this.getAmountNewMitteilungen();
+            this.updateActiveGesuchsperiodenList();
+            return this.antragList;
         });
+    }
+
+    private loadDossierById() {
+        this.dossierRS.findDossier(this.$state.params.gesuchstellerDashboardStateParams.dossierId)
+            .then((dossierFromParam: TSDossier) => {
+                this.initViewModel(dossierFromParam);
+            });
+    }
+
+    private loadNewestDossierForGesuchsteller() {
+        this.dossierRS.findNewestDossierByCurrentBenutzerAsBesitzer()
+            .then((dossierFromParam: TSDossier) => {
+                this.initViewModel(dossierFromParam);
+            });
     }
 
     private getAmountNewMitteilungen(): void {

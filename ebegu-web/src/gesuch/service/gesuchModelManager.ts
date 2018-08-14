@@ -561,6 +561,7 @@ export default class GesuchModelManager {
         this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, createNewFall, createNewDossier);
         this.setDefaultValuesToGesuch(eingangsart);
 
+        // todo kibon-87 refactor
         if (gesuchsperiodeId) {
             return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
                 this.gesuch.gesuchsperiode = periode;

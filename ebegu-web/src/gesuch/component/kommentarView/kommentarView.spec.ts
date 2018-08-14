@@ -41,7 +41,7 @@ describe('kommentarView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
     });
 
     it('should be defined', () => {

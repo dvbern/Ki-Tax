@@ -28,8 +28,10 @@
 
             <button *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
                     (click)="createNewDossier()" class="dossier-element add-dossier"
+                    (mouseover)="toggleGemeindeText()" (mouseout)="toggleGemeindeText()"
                     [disabled]="isNavigationDisabled()">
-                <i class="fa fa-plus"></i>
+                <i class="fa fa-plus" *ngIf="!showAddGemeindeText()"></i>
+                {{gemeindeText | translate}}
             </button>
 
             <div class="pull-right dossier-element fall-nummer"

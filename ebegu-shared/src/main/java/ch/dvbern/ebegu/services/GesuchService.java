@@ -143,7 +143,7 @@ public interface GesuchService {
 	 * Gibt alle Antraege des aktuell eingeloggten Benutzers
 	 */
 	@Nonnull
-	List<Gesuch> getAntraegeByCurrentBenutzer();
+	List<Gesuch> getAntraegeOfDossier(@Nonnull Dossier dossier);
 
 	/**
 	 * Gibt ein DTO mit saemtlichen Antragen eins bestimmten Dossiers zurueck
