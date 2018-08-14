@@ -304,7 +304,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
                 {
-                    createNew: 'false',
+                    createNewFall: 'false',
                     createMutation: 'false',
                     eingangsart: 'ONLINE',
                     gesuchId: '123',

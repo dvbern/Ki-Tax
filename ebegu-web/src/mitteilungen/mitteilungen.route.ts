@@ -15,6 +15,7 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 mitteilungenRun.$inject = ['RouterHelper'];
 
@@ -27,11 +28,14 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'mitteilungen',
+        data: {
+            roles: TSRoleUtil.getAllRolesButSteueramt(),
+        },
     },
     {
         name: 'mitteilungen.view',
         template: '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">',
-        url: '/mitteilungen/:dossierId/:betreuungId',
+        url: '/mitteilungen/:fallId/:dossierId/:betreuungId',
         params: {
             betreuungId: '',
         }
@@ -40,6 +44,7 @@ const ng1States: Ng1StateDeclaration[] = [
 
 // TODO hefa nicht alle Params wurden bei der StateDefinition deklariert!
 export class IMitteilungenStateParams {
+    fallId: string;
     dossierId: string;
     betreuungId: string;
     mitteilungId: string;

@@ -52,7 +52,7 @@ export class FreigabeController {
             if (response) {
                 if (response.canBeFreigegeben()) {
                     this.gesuch = response;
-                    this.fallNummer = ebeguUtil.addZerosToNumber(response.fallNummer, CONSTANTS.FALLNUMMER_LENGTH);
+                    this.fallNummer = EbeguUtil.addZerosToFallNummer(response.fallNummer);
                     this.familie = response.familienName;
                     this.setVerantwortliche();
                 } else {

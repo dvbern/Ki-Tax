@@ -13,8 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, Transition, TransitionService} from '@uirouter/core';
+import {StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
+import {IWindowService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
@@ -25,8 +26,6 @@ import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../../models/TSApplicationProperty';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import ErrorService from './errors/service/ErrorService';
 import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
@@ -41,89 +40,78 @@ import ITimeoutService = angular.ITimeoutService;
 const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
-    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'ErrorService', 'GesuchModelManager', 'GesuchsperiodeRS',
+    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
     'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
 
-export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, listResourceRS: ListResourceRS,
-                       mandantRS: MandantRS, $injector: IInjectorService, authLifeCycleService: AuthLifeCycleService, hotkeys: any, $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS, $state: StateService, $location: ILocationService, $window: ng.IWindowService,
-                       $log: ILogService, errorService: ErrorService, gesuchModelManager: GesuchModelManager,
-                       gesuchsperiodeRS: GesuchsperiodeRS, institutionsStammdatenRS: InstitutionStammdatenRS, globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService, gemeindeRS: GemeindeRS) {
+export function appRun(angularMomentConfig: any,
+                       routerHelper: RouterHelper,
+                       listResourceRS: ListResourceRS,
+                       mandantRS: MandantRS,
+                       $injector: IInjectorService,
+                       authLifeCycleService: AuthLifeCycleService,
+                       hotkeys: any,
+                       $timeout: ITimeoutService,
+                       authServiceRS: AuthServiceRS,
+                       $state: StateService,
+                       $location: ILocationService,
+                       $window: IWindowService,
+                       $log: ILogService,
+                       gesuchModelManager: GesuchModelManager,
+                       gesuchsperiodeRS: GesuchsperiodeRS,
+                       institutionsStammdatenRS: InstitutionStammdatenRS,
+                       globalCacheService: GlobalCacheService,
+                       $transitions: TransitionService,
+                       gemeindeRS: GemeindeRS,
+) {
     // navigationLogger.toggle();
+    // $trace.enable(Category.TRANSITION);
 
-    $transitions.onStart({}, transition => {
-        stateChangeStart(transition);
-        transition.promise
-            .then(() => stateChangeSuccess())
-            .catch(() => stateChangeError(transition));
-        // .finally(() => stateChangeSuccess());
-    });
+    function onNotAuthenticated() {
+        const currentPath: string = angular.copy($location.absUrl());
 
-    // Fehler beim Navigieren ueber ui-route ins Log schreiben
-    function stateChangeError(transition: Transition) {
-        $log.error('Fehler beim Navigieren');
-        $log.error('$stateChangeError --- event, toState, toParams, fromState, fromParams, error');
-        $log.error(transition);
-    }
+        const loginConnectorPaths = [
+            'fedletSSOInit',
+            'sendRedirectForValidation'
+        ];
 
-    function stateChangeStart(transition: Transition) {
-        // TODO HEFA migrate to state definition
-        //Normale Benutzer duefen nicht auf admin Seite
-        const forbiddenPlaces = ['admin.view', 'admin.institution', 'admin.parameter', 'admin.traegerschaft'];
-        const isAdmin: boolean = authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRevisorRole());
-        if (forbiddenPlaces.indexOf(transition.to().name) !== -1 && authServiceRS.getPrincipal() && !isAdmin) {
-            errorService.addMesageAsError('ERROR_UNAUTHORIZED');
-            $log.debug('prevented navigation to page because user is not admin');
-            event.preventDefault();
+        if (loginConnectorPaths.some(path => currentPath.includes(path))) {
+            LOG.debug('supressing redirect to ', currentPath);
+        } else {
+            $state.go('authentication.login');
         }
     }
 
-    function stateChangeSuccess() {
-        errorService.clearAll();
+    function onLoginSuccess() {
+        if (!environment.test) {
+            listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
+            mandantRS.getFirst();
+        }
+        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
+        //since we will need these lists anyway we already load on login
+        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
+            if (gesuchsperioden.length > 0) {
+                const newestGP = gesuchsperioden[0];
+                institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
+            }
+        });
+        gemeindeRS.getAllGemeinden();
+        gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
+        gesuchModelManager.updateFachstellenList();
     }
 
-    angularMomentConfig.format = 'DD.MM.YYYY';
-    // dieser call macht mit tests probleme, daher wird er fuer test auskommentiert
-
-    // not used anymore?
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-        .subscribe(() => {
-            if (!environment.test) {
-                listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
-                mandantRS.getFirst();
-            }
-            globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
-            //since we will need these lists anyway we already load on login
-            gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
-                if (gesuchsperioden.length > 0) {
-                    const newestGP = gesuchsperioden[0];
-                    institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
-                }
-            });
-            gemeindeRS.getAllGemeinden();
-            gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-            gesuchModelManager.updateFachstellenList();
-        });
+        .subscribe(
+            () => onLoginSuccess(),
+            err => LOG.error(err)
+        );
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
-        .subscribe(() => {
-            //user is not yet authenticated, show loginpage
+        .subscribe(
+            () => onNotAuthenticated(),
+            err => LOG.error(err)
+        );
 
-            const currentPath = angular.copy($location.absUrl());
-            LOG.debug('going to login page with current path ', currentPath);
-
-            //wenn wir schon auf der lognseite oder im redirect sind redirecten wir nicht
-            if (currentPath.indexOf('fedletSSOInit') === -1
-                && ($state.current !== undefined && $state.current.name !== 'authentication.login')
-                && ($state.current !== undefined && $state.current.name !== 'authentication.locallogin')
-                && ($state.current !== undefined && $state.current.name !== 'authentication.schulung')
-                && currentPath.indexOf('sendRedirectForValidation') === -1) {
-                $state.go('authentication.login', {relayPath: currentPath, type: 'login'});
-            } else {
-                LOG.debug('supressing redirect to ', currentPath);
-            }
-        });
+    angularMomentConfig.format = 'DD.MM.YYYY';
 
     // Attempt to restore a user session upon startup
     authServiceRS.initWithCookie().then(() => {
@@ -146,9 +134,7 @@ export function appRun(angularMomentConfig: any, routerHelper: RouterHelper, lis
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: () => {
-            $timeout(() => angular.element('.next').last().click());
-        }
+        callback: () => $timeout(() => angular.element('.next').last().trigger('click'))
     });
 
 }

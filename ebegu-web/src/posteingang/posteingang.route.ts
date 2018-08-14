@@ -15,6 +15,7 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 posteingangRun.$inject = ['RouterHelper'];
 
@@ -27,6 +28,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'posteingang',
+        data: {
+            roles: TSRoleUtil.getAdministratorOrAmtRole(),
+        },
     },
     {
         name: 'posteingang.view',

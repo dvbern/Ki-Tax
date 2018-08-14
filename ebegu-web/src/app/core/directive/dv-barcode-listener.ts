@@ -71,11 +71,11 @@ export class DVBarcodeController implements IController {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(value => this.handleLoginSuccessEvent(keypressEvent));
+            .subscribe(() => this.handleLoginSuccessEvent(keypressEvent));
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(value => this.handleLogoutSuccessEvent(keypressEvent));
+            .subscribe(() => this.handleLogoutSuccessEvent(keypressEvent));
 
     }
 

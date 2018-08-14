@@ -32,7 +32,7 @@ import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSMahnung from '../../../models/TSMahnung';
-import AuthenticationUtil from '../../../utils/AuthenticationUtil';
+import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {BemerkungenDialogController} from '../../dialog/BemerkungenDialogController';
@@ -283,7 +283,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes for the role JA and is only
                     // available for the role SCHULAMT/ADMINISTRATOR_SCHULAMT, so JA doesn't need the PDFs to be created. When a Schulamt worker opens this
                     // Gesuch, she can generate the PDFs by clicking on the corresponding links
-                    AuthenticationUtil.navigateToStartPageForRole(this.authServiceRs.getPrincipal(), this.$state);
+                    navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
                     return this.gesuchModelManager.getGesuch();
                 } else { // for NUR_SCHULAMT this makes no sense
                     this.gesuchModelManager.setGesuch(response);

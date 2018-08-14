@@ -82,7 +82,7 @@ describe('gesuchModelManager', () => {
     describe('API Usage', () => {
         describe('removeBetreuungFromKind', () => {
             it('should remove the current Betreuung from the list of the current Kind', () => {
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 createKindContainer();
                 createBetreuung();
                 expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
@@ -94,7 +94,7 @@ describe('gesuchModelManager', () => {
         });
         describe('saveBetreuung', () => {
             it('updates a betreuung', () => {
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 createKindContainer();
                 const betreuung: TSBetreuung = createBetreuung();
                 gesuchModelManager.getKindToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
@@ -126,7 +126,7 @@ describe('gesuchModelManager', () => {
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 gesuchModelManager.saveGesuchAndFall();
 
                 scope.$apply();
@@ -137,7 +137,7 @@ describe('gesuchModelManager', () => {
                 spyOn(gesuchRS, 'updateGesuch').and.returnValue($q.when({}));
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 gesuchModelManager.getGesuch().timestampErstellt = DateUtil.today();
                 gesuchModelManager.saveGesuchAndFall();
 
@@ -152,7 +152,7 @@ describe('gesuchModelManager', () => {
             it('links the fall with the undefined user', () => {
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
 
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
 
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
                 expect(gesuchModelManager.getFall()).toBeDefined();
@@ -163,7 +163,7 @@ describe('gesuchModelManager', () => {
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(currentUser);
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
 
                 scope.$apply();
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
@@ -174,42 +174,30 @@ describe('gesuchModelManager', () => {
                 const currentUser: TSUser = new TSUser('Test', 'User', 'username');
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(currentUser);
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(false);
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
 
                 expect(gesuchModelManager.getGesuch()).toBeDefined();
                 expect(gesuchModelManager.getFall()).toBeDefined();
                 expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBeUndefined();
             });
-            it('does not force to create a new fall and gesuch', () => {
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-            });
-            it('does force to create a new fall and gesuch', () => {
-                gesuchModelManager.initGesuch(true, TSEingangsart.PAPIER);
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-            });
-            it('forces to create a new gesuch and fall even though one already exists', () => {
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
-                const oldGesuch: TSGesuch = gesuchModelManager.getGesuch();
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
+            it('does not create a new fall, so the new gesuch/dossier is linked to the existing fall', () => {
+                // create a first dossier
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
+                const previousFall = gesuchModelManager.getFall();
+                const previousDossier = gesuchModelManager.getDossier();
+                const previousGesuch = gesuchModelManager.getGesuch();
+                //creates a second dossier for the previous fall
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, false, true, undefined);
 
-                gesuchModelManager.initGesuch(true, TSEingangsart.PAPIER);
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(oldGesuch).not.toBe(gesuchModelManager.getGesuch());
-            });
-            it('does not force to create a new gesuch and fall and the old ones will remain', () => {
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
-                const oldGesuch: TSGesuch = gesuchModelManager.getGesuch();
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(oldGesuch).toBe(gesuchModelManager.getGesuch());
+                expect(gesuchModelManager.getDossier()).not.toBe(previousDossier);
+                expect(gesuchModelManager.getGesuch()).not.toBe(previousGesuch);
+                expect(gesuchModelManager.getFall()).toBe(previousFall);
+                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBeUndefined();
             });
         });
         describe('setUserAsFallVerantwortlicherBG', () => {
             it('puts the given user as the verantwortlicherBG for the fall', () => {
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
                 spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
                 const user: TSUser = new TSUser('Emiliano', 'Camacho');
@@ -271,7 +259,7 @@ describe('gesuchModelManager', () => {
         describe('saveGesuchStatus', () => {
             it('should update the status of the Gesuch im Server und Client', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue($q.when({}));
                 spyOn(antragStatusHistoryRS, 'loadLastStatusChange').and.returnValue($q.when({}));
 
@@ -284,7 +272,7 @@ describe('gesuchModelManager', () => {
         describe('saveVerfuegung', () => {
             it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
                 createKindContainer();
                 createBetreuung();
                 gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
@@ -352,7 +340,7 @@ describe('gesuchModelManager', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 spyOn(wizardStepManager, 'hideStep').and.returnValue(undefined);
                 spyOn(wizardStepManager, 'unhideStep').and.returnValue(undefined);
-                gesuchModelManager.initGesuch(true, TSEingangsart.ONLINE);
+                gesuchModelManager.initGesuch(TSEingangsart.ONLINE, true, true, undefined);
 
                 expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.UMZUG);
                 expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
@@ -362,7 +350,7 @@ describe('gesuchModelManager', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 spyOn(wizardStepManager, 'hideStep').and.returnValue(undefined);
                 spyOn(wizardStepManager, 'unhideStep').and.returnValue(undefined);
-                gesuchModelManager.initGesuch(true, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
 
                 expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.UMZUG);
                 expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
@@ -413,7 +401,7 @@ describe('gesuchModelManager', () => {
                 const promise: angular.IPromise<Array<TSBetreuung>> = gesuchModelManager.updateBetreuungen([], true);
                 expect(promise).toBeDefined();
                 let promiseExecuted: boolean = false;
-                promise.then((response) => {
+                promise.then(() => {
                     promiseExecuted = true;
                 });
                 scope.$apply();
@@ -488,7 +476,7 @@ describe('gesuchModelManager', () => {
         describe('areThereOnlySchulamtAngebote', () => {
             beforeEach(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
             });
             it('should be true if only Schulamtangebote', () => {
                 createKindWithBetreuung();

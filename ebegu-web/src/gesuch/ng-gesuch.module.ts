@@ -15,17 +15,17 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
-import {OnboardingComponent} from '../app/core/component/dv-onboarding/onboarding.component';
+import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
 @NgModule({
     imports: [
         SharedModule,
     ],
     declarations: [
-        OnboardingComponent,
+        FallToolbarComponent,
     ],
     entryComponents: [
-        OnboardingComponent,
+        FallToolbarComponent,
     ],
 })
 

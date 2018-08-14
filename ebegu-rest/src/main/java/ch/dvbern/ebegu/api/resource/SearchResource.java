@@ -38,17 +38,22 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAntragSearchresultDTO;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxPendenzBetreuungen;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.SearchService;
@@ -73,6 +78,9 @@ public class SearchResource {
 
 	@Inject
 	private SearchService searchService;
+
+	@Inject
+	private DossierService dossierService;
 
 	@Inject
 	private BetreuungService betreuungService;
@@ -171,18 +179,21 @@ public class SearchResource {
 		return pendenzenList;
 	}
 
-	/**
-	 * Gibt eine Liste der Faelle des Gesuchstellers zurueck.
-	 */
-	@ApiOperation(value = "Gibt alle Antraege des eingeloggten Gesuchstellers zurueck.",
+	@ApiOperation(value = "Gibt alle Antraege des eingegebenen Dossiers fuer den eingeloggten Gesuchsteller zurueck.",
 		responseContainer = "List", response = JaxAntragDTO.class)
 	@Nonnull
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/gesuchsteller")
-	public List<JaxAntragDTO> getAllAntraegeGesuchsteller() {
-		List<Gesuch> antraege = gesuchService.getAntraegeByCurrentBenutzer();
+	@Path("/gesuchsteller/{dossierId}")
+	public List<JaxAntragDTO> getAllAntraegeOfDossier(
+		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId
+	) {
+		Objects.requireNonNull(dossierJAXPId.getId());
+		Dossier dossier = dossierService.findDossier(dossierJAXPId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getAllAntraegeOfDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAXPId.getId()));
+
+		List<Gesuch> antraege = gesuchService.getAntraegeOfDossier(dossier);
 		final List<JaxAntragDTO> jaxAntragDTOS = new ArrayList<>();
 		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
 

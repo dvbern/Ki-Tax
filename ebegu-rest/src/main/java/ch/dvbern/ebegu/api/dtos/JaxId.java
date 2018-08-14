@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import javax.validation.constraints.NotNull;
 
 /**
- * Wrapper fuer ID der DTO Klassen. Dient zum einfachen verwalten der Validierungsannotationen von
+ * Wrapper fuer ID der DTO Klassen. Dient zum einfachen verwalten der Validierungsannotationen
  */
 public class JaxId {
 

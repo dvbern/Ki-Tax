@@ -242,11 +242,8 @@ public class Benutzer extends AbstractEntity {
 	 * A user whose role is linked to 1..n Gemeinden can see only those Gemeinden
 	 */
 	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
-		if (getRole().isRoleGemeindeabhaengig()) {
-			return getCurrentBerechtigung().getGemeindeList()
-				.stream()
-				.anyMatch(gemeinde::equals);
-		}
-		return true;
+		return getRole().isRoleGemeindeabhaengig()
+			? getCurrentBerechtigung().getGemeindeList().stream().anyMatch(gemeinde::equals)
+			: true;
 	}
 }
