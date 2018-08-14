@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.services;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
@@ -36,6 +35,7 @@ import ch.dvbern.ebegu.entities.Einstellung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
@@ -54,13 +54,15 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 
 	@Override
+	@Nonnull
 	public Einstellung saveEinstellung(@Nonnull Einstellung einstellung) {
 		Objects.requireNonNull(einstellung);
 		return persistence.merge(einstellung);
 	}
 
 	@Override
-	public Optional<Einstellung> findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	@Nonnull
+	public Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
 
@@ -82,10 +84,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		query.orderBy(cb.desc(root.get(Einstellung_.gemeinde)), cb.desc(root.get(Einstellung_.mandant)));
 		query.select(root);
 		List<Einstellung> criteriaResults = persistence.getCriteriaResults(query, 1);
-		if (!criteriaResults.isEmpty()) {
-			return Optional.of(criteriaResults.get(0));
+		if (criteriaResults.isEmpty()) {
+			throw new NoEinstellungFoundException(key, gemeinde);
 		}
-		//TODO; Hier sollte eine Exception geworfen werden!
-		return Optional.empty();
+		return criteriaResults.get(0);
 	}
 }

@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -26,6 +24,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -97,61 +96,77 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void findEinstellung() {
-		// Noch keine Einstellungen
-		Optional<Einstellung> einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
-		Assert.assertFalse(einstellungOptional.isPresent());
 		// Einstellung für 16/17, ohne Gemeinde, ohne Mandant
 		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "System_1617", gesuchsperiode1617, null, null, null));
 
 		// Suche fuer 16/17: Bern -> ok
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("System_1617", einstellungOptional.get().getValue());
+		Einstellung einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern,
+			gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("System_1617", einstellungFound.getValue());
 		// Suche fuer 16/17: Luzern -> dasselbe Resultat
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeLuzern, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("System_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeLuzern, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("System_1617", einstellungFound.getValue());
 		// Suche fuer 17/18: Bern -> nok
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1718);
-		Assert.assertFalse(einstellungOptional.isPresent());
+		try {
+			einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1718);
+		} catch (NoEinstellungFoundException nefe) {
+			Assert.assertNotNull(nefe);
+		}
 
 		// Einstellung für 16/17, Gemeinde BERN, ohne Mandant
 		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeBern_1617", gesuchsperiode1617, null, gemeindeBern, null));
 
 		// Suche fuer 16/17: Bern -> Das spezifische Resultat
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("GmdeBern_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("GmdeBern_1617", einstellungFound.getValue());
 		// Suche fuer 16/17: Ostermundigen -> immer noch der System-Wert
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeOstermundigen, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("System_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeOstermundigen, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("System_1617", einstellungFound.getValue());
 		// Suche fuer 16/17: Luzern -> immer noch der System-Wert
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeLuzern, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("System_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeLuzern, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("System_1617", einstellungFound.getValue());
 		// Suche fuer 17/18: Bern -> nok
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1718);
-		Assert.assertFalse(einstellungOptional.isPresent());
+		try {
+			einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1718);
+		} catch (NoEinstellungFoundException nefe) {
+			Assert.assertNotNull(nefe);
+		}
 
 		// Einstellung für 16/17, Mandant KantonBern
 		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "KantonBern_1617", gesuchsperiode1617, kantonBern, null,null));
 
-
 		// Suche fuer 16/17: Bern -> Das spezifische Resultat
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("GmdeBern_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("GmdeBern_1617", einstellungFound.getValue());
 		// Suche fuer 16/17: Ostermundigen -> der Kantons-Wert
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeOstermundigen, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("KantonBern_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeOstermundigen, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("KantonBern_1617", einstellungFound.getValue());
 		// Suche fuer 16/17: Luzern -> immer noch der System-Wert
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeLuzern, gesuchsperiode1617);
-		Assert.assertTrue(einstellungOptional.isPresent());
-		Assert.assertEquals("System_1617", einstellungOptional.get().getValue());
+		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeLuzern, gesuchsperiode1617);
+		Assert.assertNotNull(einstellungFound);
+		Assert.assertEquals("System_1617", einstellungFound.getValue());
 		// Suche fuer 17/18: Bern -> nok
-		einstellungOptional = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1718);
-		Assert.assertFalse(einstellungOptional.isPresent());
+		try {
+			einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1718);
+		} catch (NoEinstellungFoundException nefe) {
+			Assert.assertNotNull(nefe);
+		}
+
+		// Eine zweite mit Mandant=null einfügen
+		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeOstermundigen_1617", gesuchsperiode1617, null,
+			gemeindeBern, null));
+	}
+
+	@Test(expected = NoEinstellungFoundException.class)
+	public void findEinstellung_NotFound() {
+		// Noch keine Einstellungen
+		einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
 	}
 }

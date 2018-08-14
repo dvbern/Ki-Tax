@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -34,6 +32,7 @@ public interface EinstellungService {
 	/**
 	 * Speichert eine Einstellung
 	 */
+	@Nonnull
 	Einstellung saveEinstellung(@Nonnull Einstellung einstellung);
 
 	/**
@@ -41,8 +40,9 @@ public interface EinstellungService {
 	 * (1) Wenn Einstellung dem gewünschten Key spezifisch für die gewünschte Gemeinde vorhanden ist, wird diese zurueckgegeben
 	 * (2) Wenn nicht, wird geschaut, ob es eine spezifische Einstellung für den Mandanten der gewünschten Gemeinde gibt
 	 * (3) Wenn nicht, wird die allgemeine, systemweite Einstellung zurückgegeben
-	 * @throws Exception, wenn auf *keiner* Stufe ein Resultat gefunden wird
+	 * @throws NoEinstellungFoundException, wenn auf *keiner* Stufe ein Resultat gefunden wird
 	 */
-	Optional<Einstellung> findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+	@Nonnull
+	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
 }
