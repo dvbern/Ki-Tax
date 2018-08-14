@@ -14,10 +14,10 @@
  */
 
 import {Injectable} from '@angular/core';
+import {Observable, ReplaySubject} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import {ReplaySubject, Observable} from 'rxjs';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {LogFactory} from '../../app/core/logging/LogFactory';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 
 /**
  * This service can be used to throw TSAuthEvent. When a user logs in or out, throwing the right event
@@ -30,17 +30,15 @@ export class AuthLifeCycleService {
 
     private readonly LOG = LogFactory.createLog(AuthLifeCycleService.name);
 
-    private readonly _authLifeCycleSubject$ = new ReplaySubject<TSAuthEvent>(1); // use ReplaySubject because we don't have an initial value
-
-    constructor() {}
+    // use ReplaySubject because we don't have an initial value
+    private readonly _authLifeCycleSubject$ = new ReplaySubject<TSAuthEvent>(1);
 
     public changeAuthStatus(status: TSAuthEvent, message?: string): void {
         if (status) {
-            this.LOG.info(`An Auth Event has been thrown ${status}. Message: ${message}`);
+            this.LOG.info(`An Auth Event has been thrown ${status}`, message);
             this._authLifeCycleSubject$.next(status);
-
         } else {
-            this.LOG.error(`An undefined AuthEvent is not allowed. No event thrown. Message: ${message}`);
+            this.LOG.error('An undefined AuthEvent is not allowed. No event thrown', message);
         }
     }
 

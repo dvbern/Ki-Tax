@@ -337,13 +337,13 @@ public class GesuchResource {
 		responseContainer = "List", response = JaxAntragDTO.class)
 	@Nonnull
 	@GET
-	@Path("/fall/{fallId}")
+	@Path("/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxAntragDTO> getAllAntragDTOForFall(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId) {
-		Objects.requireNonNull(fallJAXPId.getId());
-		return gesuchService.getAllAntragDTOForFall(converter.toEntityId(fallJAXPId));
+	public List<JaxAntragDTO> getAllAntragDTOForDossier(
+		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
+		Objects.requireNonNull(dossierJAXPId.getId());
+		return gesuchService.getAllAntragDTOForDossier(converter.toEntityId(dossierJAXPId));
 	}
 
 	@ApiOperation(value = "Creates a new Antrag of type Mutation in the database", response = JaxGesuch.class)
@@ -815,7 +815,7 @@ public class GesuchResource {
 		+ "gibt, wird null zurueckgegeben", response = String.class)
 	@Nonnull
 	@GET
-	@Path("/newestid/{gesuchsperiodeId}/{dossierId}")
+	@Path("/newestid/gesuchsperiode/{gesuchsperiodeId}/dossier/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getIdOfNewestGesuch(@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
@@ -834,7 +834,32 @@ public class GesuchResource {
 			throw new EbeguEntityNotFoundException("getIdOfNewestGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeJaxId.getId());
 		}
 
-		Optional<String> idOfNeuestesGesuch = gesuchService.getIdOfNeuestesGesuch(gesuchsperiode.get(), dossier.get());
+		Optional<String> idOfNeuestesGesuch = gesuchService.getIdOfNeuestesGesuchForDossierAndGesuchsperiode(gesuchsperiode.get(), dossier.get());
+		if (idOfNeuestesGesuch.isPresent()) {
+			return Response.ok(idOfNeuestesGesuch.get()).build();
+		}
+		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Gibt die ID des neuesten Gesuchs dieses Dossiers zurueck. Wenn es noch keinen Fall, kein Gesuch oder keine Gesuchsperiode "
+		+ "gibt, wird null zurueckgegeben", response = String.class)
+	@Nonnull
+	@GET
+	@Path("/newestid/fall/{fallId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response getIdOfNewestGesuchForDossier(
+		@Nonnull @NotNull @PathParam("fallId") JaxId dossierJaxId) {
+
+		Objects.requireNonNull(dossierJaxId.getId());
+
+		Optional<Dossier> dossier = dossierService.findDossier(dossierJaxId.getId());
+
+		if (!dossier.isPresent()) {
+			throw new EbeguEntityNotFoundException("getIdOfNewestGesuchForDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJaxId.getId());
+		}
+
+		Optional<String> idOfNeuestesGesuch = gesuchService.getIdOfNeuestesGesuchForDossier(dossier.get());
 		if (idOfNeuestesGesuch.isPresent()) {
 			return Response.ok(idOfNeuestesGesuch.get()).build();
 		}

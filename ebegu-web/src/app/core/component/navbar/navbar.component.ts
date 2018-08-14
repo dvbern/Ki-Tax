@@ -82,7 +82,9 @@ export class NavbarComponent {
                     const params: INewFallStateParams = {
                         gesuchsperiodeId: null,
                         createMutation: null,
-                        createNew: 'true',
+                        createNewFall: 'true',
+                        createNewDossier: 'false',
+                        createNewGesuch: 'false',
                         gesuchId: null,
                         dossierId: null,
                         gemeindeId: gemeindeId,

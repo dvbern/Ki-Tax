@@ -14,17 +14,13 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFilterService} from 'angular';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {IComponentOptions, IController, IFilterService} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
 import TSAntragDTO from '../../../models/TSAntragDTO';
@@ -54,12 +50,11 @@ export class DVQuicksearchListConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class DVQuicksearchListController {
+export class DVQuicksearchListController implements IController {
 
     static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS', 'AuthLifeCycleService'];
+        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     antraege: Array<TSAntragDTO> = []; //muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
 
     itemsByPage: number;
@@ -95,18 +90,14 @@ export class DVQuicksearchListController {
                 private readonly CONSTANTS: any,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly gemeindeRS: GemeindeRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+    ) {
     }
 
     public userChanged(selectedUser: TSUser): void {
         this.onUserChanged({user: selectedUser});
     }
 
-    private initViewModel() {
+    public $onInit(): void {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
@@ -156,7 +147,7 @@ export class DVQuicksearchListController {
      * @param fallnummer
      */
     public addZerosToFallnummer(fallnummer: number): string {
-        return this.ebeguUtil.addZerosToNumber(fallnummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
@@ -191,14 +182,17 @@ export class DVQuicksearchListController {
             const url = this.$state.href('mitteilungen.view', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
-            this.$state.go('mitteilungen.view', {dossierId: fallAntrag.dossierId});
+            this.$state.go('mitteilungen.view', {
+                dossierId: fallAntrag.dossierId,
+                fallId: fallAntrag.fallID,
+            });
         }
     }
 
     private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean) {
         if (antragDTO.antragId) {
             const navObj: any = {
-                createNew: false,
+                createNewFall: false,
                 gesuchId: antragDTO.antragId,
                 dossierId: antragDTO.dossierId
             };

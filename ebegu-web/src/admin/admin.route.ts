@@ -19,6 +19,7 @@ import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {MandantRS} from '../app/core/service/mandantRS.rest';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 adminRun.$inject = ['RouterHelper'];
 
@@ -64,6 +65,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'admin',
+        data: {
+            roles: TSRoleUtil.getAdministratorRoles(),
+        },
     },
     {
         name: 'admin.view',
@@ -71,7 +75,10 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/admin',
         resolve: {
             applicationProperties: applicationPropertiesResolver
-        }
+        },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.benutzerlist',
@@ -88,10 +95,12 @@ const ng1States: Ng1StateDeclaration[] = [
         template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
         + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
         url: '/institutionen',
-
         resolve: {
             institutionen: institutionenResolver,
-        }
+        },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.institution',
@@ -102,10 +111,12 @@ const ng1States: Ng1StateDeclaration[] = [
         params: {
             institutionId: '',
         },
-
         resolve: {
             traegerschaften: traegerschaftenResolver,
             mandant: mandantResolver
+        },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
         }
     },
     {
@@ -115,11 +126,17 @@ const ng1States: Ng1StateDeclaration[] = [
         params: {
             institutionStammdatenId: '',
         },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.parameter',
         template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
         url: '/parameter',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.gesuchsperiode',
@@ -129,10 +146,16 @@ const ng1States: Ng1StateDeclaration[] = [
         params: {
             gesuchsperiodeId: '',
         },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.ferieninsel',
         template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
         url: '/ferieninsel',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
     },
 ];

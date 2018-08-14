@@ -24,10 +24,12 @@ import {TSGesuchEvent} from '../models/enums/TSGesuchEvent';
 import {TSRole} from '../models/enums/TSRole';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
+import TSDossier from '../models/TSDossier';
 import TSEWKPerson from '../models/TSEWKPerson';
 import GesuchstellerRS from '../app/core/service/gesuchstellerRS.rest';
 import {ILogService, IRootScopeService} from 'angular';
 import TSEWKResultat from '../models/TSEWKResultat';
+import TSFall from '../models/TSFall';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
@@ -198,6 +200,22 @@ export class GesuchRouteController {
             return this.gesuchModelManager.getGesuch();
         }
         return undefined;
+    }
+
+    public getFall(): TSFall {
+        return this.gesuchModelManager.getFall() ? this.gesuchModelManager.getFall() : undefined;
+    }
+
+    public getFallId(): string {
+        return this.getFall() ? this.getFall().id : undefined;
+    }
+
+    public getDossier(): TSDossier {
+        return this.getGesuch() ? this.getGesuch().dossier : undefined;
+    }
+
+    public getDossierId(): string {
+        return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
     }
 
     public getGesuchErstellenStepTitle(): string {

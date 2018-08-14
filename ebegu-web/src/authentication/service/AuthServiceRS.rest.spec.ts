@@ -74,7 +74,7 @@ describe('AuthServiceRS', () => {
             let cookieUser: TSUser;
             //if we can decode the cookie the client application assumes the user is logged in for ui purposes
             TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
-            authServiceRS.loginRequest(user).then((response: TSUser) => {
+            authServiceRS.loginRequest(user).then(response => {
                 cookieUser = response;
             });
             $rootScope.$apply();

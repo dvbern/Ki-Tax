@@ -66,8 +66,8 @@ export default class SearchRS implements IEntityRS {
             });
     }
 
-    public getAntraegeGesuchstellerList(): IPromise<Array<TSAntragDTO>> {
-        return this.$http.get(this.serviceURL + '/gesuchsteller')
+    public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {
+        return this.$http.get(this.serviceURL + '/gesuchsteller/' + encodeURIComponent(dossierId))
             .then((response: any) => {
                 this.$log.debug('PARSING pendenz REST object ', response.data);
                 return this.ebeguRestUtil.parseAntragDTOs(response.data);

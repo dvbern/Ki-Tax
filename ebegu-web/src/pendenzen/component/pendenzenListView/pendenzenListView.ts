@@ -66,7 +66,7 @@ export class PendenzenListViewController {
             this.navigate('gesuch.familiensituation', navObj, isCtrlKeyPressed);
         } else {
             const navObj: any = {
-                createNew: false,
+                createNewFall: false,
                 gesuchId: pendenz.antragId,
                 dossierId: pendenz.dossierId
             };

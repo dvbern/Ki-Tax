@@ -16,6 +16,7 @@
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import GesuchModelManager from '../gesuch/service/gesuchModelManager';
+import {TSRole} from '../models/enums/TSRole';
 import TSGesuch from '../models/TSGesuch';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
@@ -34,6 +35,7 @@ export class IAngebotStateParams {
 
 export class IGesuchstellerDashboardStateParams {
     infoMessage: string;
+    dossierId: string;
 }
 
 const ng1States: Ng1StateDeclaration[] = [
@@ -41,6 +43,9 @@ const ng1States: Ng1StateDeclaration[] = [
         parent: 'app',
         abstract: true,
         name: 'gesuchsteller',
+        data: {
+            roles: [TSRole.GESUCHSTELLER]
+        }
     },
     {
         name: 'gesuchsteller.dashboard',

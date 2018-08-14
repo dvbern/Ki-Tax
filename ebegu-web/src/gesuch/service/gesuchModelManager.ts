@@ -30,7 +30,14 @@ import {InstitutionStammdatenRS} from '../../app/core/service/institutionStammda
 import KindRS from '../../app/core/service/kindRS.rest';
 import VerfuegungRS from '../../app/core/service/verfuegungRS.rest';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt, TSAntragStatus} from '../../models/enums/TSAntragStatus';
+import {
+    getStartAntragStatusFromEingangsart,
+    isAnyStatusOfVerfuegt,
+    isAtLeastFreigegeben,
+    isAtLeastFreigegebenOrFreigabequittung,
+    isStatusVerfuegenVerfuegt,
+    TSAntragStatus
+} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
@@ -45,6 +52,7 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import TSAdresse from '../../models/TSAdresse';
 import TSAdresseContainer from '../../models/TSAdresseContainer';
+import TSAntragStatusHistory from '../../models/TSAntragStatusHistory';
 import TSBetreuung from '../../models/TSBetreuung';
 import TSDossier from '../../models/TSDossier';
 import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
@@ -132,7 +140,7 @@ export default class GesuchModelManager {
                 private readonly gemeindeRS: GemeindeRS) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
-            .subscribe(value => {
+            .subscribe(() => {
                     this.setGesuch(undefined);
                     this.log.debug('Cleared gesuch on logout');
                 },
@@ -147,7 +155,7 @@ export default class GesuchModelManager {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) { // Superadmin muss als "normale" Benutzer betrachtet werden
             return this.gesuchRS.findGesuchForInstitution(gesuchId)
                 .then((response: TSGesuch) => {
-                    return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(bla => {
+                    return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                         if (response) {
                             this.setGesuch(response);
                         }
@@ -157,7 +165,7 @@ export default class GesuchModelManager {
         } else {
             return this.gesuchRS.findGesuch(gesuchId)
                 .then((response: TSGesuch) => {
-                    return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(bla => {
+                    return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                         if (response) {
                             this.setGesuch(response);
                         }
@@ -548,67 +556,63 @@ export default class GesuchModelManager {
      * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht erstellt wurde i.e. es null/undefined ist
      * Wenn force werden Gesuch und Fall immer erstellt.
      */
-    public initGesuch(forced: boolean, eingangsart: TSEingangsart) {
-        if (forced || (!forced && !this.gesuch)) {
-            this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart);
+    public initGesuch(eingangsart: TSEingangsart, createNewFall: boolean, createNewDossier: boolean,
+                      gesuchsperiodeId: string): IPromise<TSAntragStatusHistory> {
+        this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, createNewFall, createNewDossier);
+        this.setDefaultValuesToGesuch(eingangsart);
+
+        // todo kibon-87 refactor
+        if (gesuchsperiodeId) {
+            return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
+                this.gesuch.gesuchsperiode = periode;
+                return this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
+            });
+        } else {
+            return this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
         }
-        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
     }
 
     /**
      * Erstellt ein neues Gesuch mit der angegebenen Eingangsart und Gesuchsperiode. Damit dies im resolve des
      * routing gemacht werden kann, wird das ganze als promise gehandhabt
-     * @param forced
-     * @param eingangsart
-     * @param gesuchsperiodeId
-     * @param dossierId
-     * @param gemeindeId
      * @return a void promise that is resolved once all subpromises are done
      */
-    public initGesuchWithEingangsart(forced: boolean, eingangsart: TSEingangsart, gesuchsperiodeId: string,
-                                     dossierId: string, gemeindeId: string): IPromise<TSGesuch> {
+    public createNewFall(eingangsart: TSEingangsart, gemeindeId: string): IPromise<TSGesuch> {
+        return this.createNewDossier(eingangsart, gemeindeId, true);
+    }
 
-        this.initGesuch(forced, eingangsart);
-        let setGesuchsperiodeProm: IPromise<void>;
-        if (gesuchsperiodeId) {
-            setGesuchsperiodeProm = this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
-                this.gesuch.gesuchsperiode = periode;
-            });
-        }
+    /**
+     * Creates a new Dossier for the current Fall. Also a new Gesuch will be created.
+     */
+    public createNewDossierForCurrentFall(eingangsart: TSEingangsart, gemeindeId: string): IPromise<TSGesuch> {
+        return this.createNewDossier(eingangsart, gemeindeId, false);
+    }
 
-        let setDossierPromise: angular.IPromise<void>;
-        if (dossierId) {
-            setDossierPromise = this.dossierRS.findDossier(dossierId).then(foundDossier => {
-                this.gesuch.dossier = foundDossier;
-            });
-        }
+    /**
+     * Creates a complete new Dossier. Depending on the value of createNewFall the new dossier will be added to the existing Fall
+     * or a complete new Fall will be created instead.
+     */
+    private createNewDossier(eingangsart: TSEingangsart, gemeindeId: string, createNewFall: boolean): IPromise<TSGesuch> {
+        this.initGesuch(eingangsart, createNewFall, true, undefined);
 
-        let setGemeindePromise: angular.IPromise<void>;
-        if (gemeindeId) {
-            setGemeindePromise = this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
-                this.gesuch.dossier.gemeinde = foundGemeinde;
-            });
-        }
-
-        if (forced) {
-            if (TSEingangsart.ONLINE === eingangsart) {
-                this.gesuch.status = TSAntragStatus.IN_BEARBEITUNG_GS;
-            } else {
-                this.gesuch.status = TSAntragStatus.IN_BEARBEITUNG_JA;
-            }
-            //ewk zuruecksetzen
-            if (this.ewkRS) {
-                this.ewkRS.gesuchsteller1 = undefined;
-                this.ewkRS.gesuchsteller2 = undefined;
-            }
-        }
-
-        // this creates a list of promises and resolves them all. once all promises are resolved the .then function is triggered
-        return this.$q.all([setGesuchsperiodeProm, setDossierPromise, setGemeindePromise]).then(() => {
+        return this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
+            this.gesuch.dossier.gemeinde = foundGemeinde;
             this.log.debug('initialized new gesuch ', this.gesuch);
             return this.gesuch;
-
         });
+
+    }
+
+    /**
+     * these values must be set here because we need to show them to the user and the data haven't been saved in the server yet
+     */
+    private setDefaultValuesToGesuch(eingangsart: TSEingangsart) {
+        this.gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
+        //ewk zuruecksetzen
+        if (this.ewkRS) {
+            this.ewkRS.gesuchsteller1 = undefined;
+            this.ewkRS.gesuchsteller2 = undefined;
+        }
     }
 
     /**
@@ -629,27 +633,34 @@ export default class GesuchModelManager {
         this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.ERNEUERUNGSGESUCH);
     }
 
-    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string, antragTyp: TSAntragTyp): void {
+    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string,
+                             antragTyp: TSAntragTyp): void {
+
         this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
             this.gesuch.gesuchsperiode = periode;
         });
-        this.initAntrag(antragTyp, eingangsart);
+
+        this.initAntrag(antragTyp, eingangsart, false, false);
+
         this.dossierRS.findDossier(dossierId).then(foundDossier => {
             this.gesuch.dossier = foundDossier;
         });
+
         this.gesuch.id = gesuchID; //setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
-        if (TSEingangsart.ONLINE === eingangsart) {
-            this.gesuch.status = TSAntragStatus.IN_BEARBEITUNG_GS;
-        } else {
-            this.gesuch.status = TSAntragStatus.IN_BEARBEITUNG_JA;
-        }
+
+        this.gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
+
         this.gesuch.emptyCopy = true;
     }
 
-    private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart): void {
+    private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart, createNewFall: boolean,
+                       createNewDossier: boolean): void {
+        const currentFall: TSFall = this.getFall();
+        const currentDossier: TSDossier = this.getDossier();
+
         this.gesuch = new TSGesuch();
-        this.gesuch.dossier = new TSDossier();
-        this.gesuch.dossier.fall = new TSFall();
+        this.gesuch.dossier = createNewDossier ? new TSDossier() : currentDossier;
+        this.gesuch.dossier.fall = createNewFall ? new TSFall() : currentFall;
         this.gesuch.typ = antragTyp; // by default ist es ein Erstgesuch
         this.gesuch.eingangsart = eingangsart;
         this.setHiddenSteps();

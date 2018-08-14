@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSRole} from './TSRole';
+
 export enum TSEingangsart {
     ONLINE = <any> 'ONLINE',
     PAPIER = <any> 'PAPIER'
@@ -23,4 +25,11 @@ export function getTSEingangsartValues(): Array<TSEingangsart> {
         TSEingangsart.ONLINE,
         TSEingangsart.PAPIER
     ];
+}
+
+export function getTSEingangsartFromRole(role: TSRole): TSEingangsart {
+    if (role === TSRole.GESUCHSTELLER) {
+        return TSEingangsart.ONLINE;
+    }
+    return TSEingangsart.PAPIER;
 }

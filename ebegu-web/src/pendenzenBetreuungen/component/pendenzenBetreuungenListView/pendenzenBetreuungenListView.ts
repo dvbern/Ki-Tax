@@ -14,19 +14,15 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {IComponentOptions, IController} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import TSBetreuungsnummerParts from '../../../models/dto/TSBetreuungsnummerParts';
-import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -42,13 +38,11 @@ export class PendenzenBetreuungenListViewComponentConfig implements IComponentOp
     controllerAs = 'vm';
 }
 
-export class PendenzenBetreuungenListViewController {
+export class PendenzenBetreuungenListViewController implements IController {
 
     static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS',
-        'AuthLifeCycleService'];
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS'];
 
-    private readonly unsubscribe$ = new Subject<void>();
     private pendenzenList: Array<TSPendenzBetreuung>;
     selectedBetreuungsangebotTyp: string;
     selectedInstitution: string;
@@ -71,24 +65,15 @@ export class PendenzenBetreuungenListViewController {
                 private readonly $state: StateService,
                 private readonly gemeindeRS: GemeindeRS,
                 private readonly authServiceRS: AuthServiceRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+    ) {
     }
 
-    initViewModel() {
+    public $onInit(): void {
         this.updatePendenzenList();
         this.updateInstitutionenList();
         this.updateBetreuungsangebotTypList();
         this.updateActiveGesuchsperiodenList();
         this.updateGemeindenList();
-    }
-
-    $onDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     public getTotalResultCount(): number {

@@ -14,8 +14,8 @@
  */
 
 import {Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {debounceTime, merge, throttleTime} from 'rxjs/operators';
-import {Subject, Subscription} from 'rxjs';
+import {debounceTime, throttleTime} from 'rxjs/operators';
+import {Subject, Subscription, merge} from 'rxjs';
 
 
 /**
@@ -52,12 +52,12 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
         // ---click-----click-----click--------------------------click---------------
         // ---action/disable--------------enable-----------------action/disable---enable---
 
-        this.subscription = this.clicks$.pipe(
-            throttleTime(this.delay),
-            merge(this.clicks$.pipe(
-                debounceTime(this.delay)
-            )),
-        ).subscribe(e => {
+        this.subscription =
+            merge(
+                this.clicks$.pipe(throttleTime(this.delay)),
+                this.clicks$.pipe(debounceTime(this.delay))
+            )
+        .subscribe(e => {
                 if (this.isDomElementEnabled()) {
                     this.debounceClick.emit(e);
                 }

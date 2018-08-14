@@ -14,6 +14,7 @@
  */
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
+import TSGemeinde from '../../../../models/TSGemeinde';
 import ITranslateService = angular.translate.ITranslateService;
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import TSUser from '../../../../models/TSUser';
@@ -22,6 +23,7 @@ import UserRS from '../../service/userRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import TSGesuch from '../../../../models/TSGesuch';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+
 
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
@@ -41,6 +43,7 @@ export class DvVerantwortlicherselect implements IDirective {
         return directive;
     }
 }
+
 /**
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
@@ -67,17 +70,26 @@ export class VerantwortlicherselectController implements IController {
     public updateUserList(): void {
         //not needed for Gesuchsteller
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) {
+
+            const dossierGemeinde = this.getGesuch().dossier.gemeinde;
+
             if (this.schulamt === true) {
-                this.userRS.getBenutzerSCHorAdminSCH().then((response) => {
-                    this.userList = angular.copy(response);
+                this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+                    this.userList = this.filterUsers(response, dossierGemeinde);
                 });
 
             } else {
-                this.userRS.getBenutzerJAorAdmin().then((response) => {
-                    this.userList = angular.copy(response);
+                this.userRS.getBenutzerJAorAdmin().then(response => {
+                    this.userList = this.filterUsers(response, dossierGemeinde);
                 });
             }
         }
+    }
+
+    private filterUsers(userList: Array<TSUser>, dossierGemeinde: TSGemeinde): Array<TSUser> {
+        return userList.filter(user => user.berechtigungen
+            .some(berechtigung => berechtigung.gemeindeList
+                .some(gemeinde => dossierGemeinde.id === gemeinde.id)));
     }
 
     public getTitel(): string {

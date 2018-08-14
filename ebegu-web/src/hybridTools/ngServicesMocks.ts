@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {of} from 'rxjs';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 

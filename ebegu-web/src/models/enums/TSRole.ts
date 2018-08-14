@@ -14,33 +14,22 @@
  */
 
 export enum TSRole {
-    SUPER_ADMIN = <any> 'SUPER_ADMIN',
-    ADMIN = <any> 'ADMIN',
-    SACHBEARBEITER_JA = <any> 'SACHBEARBEITER_JA',
-    SACHBEARBEITER_INSTITUTION = <any> 'SACHBEARBEITER_INSTITUTION',
-    SACHBEARBEITER_TRAEGERSCHAFT = <any> 'SACHBEARBEITER_TRAEGERSCHAFT',
-    GESUCHSTELLER = <any> 'GESUCHSTELLER',
-    JURIST = <any> 'JURIST',
-    REVISOR = <any> 'REVISOR',
-    STEUERAMT = <any> 'STEUERAMT',
-    ADMINISTRATOR_SCHULAMT = <any> 'ADMINISTRATOR_SCHULAMT',
-    SCHULAMT = <any> 'SCHULAMT'
+    SUPER_ADMIN = 'SUPER_ADMIN',
+    ADMIN = 'ADMIN',
+    SACHBEARBEITER_JA = 'SACHBEARBEITER_JA',
+    SACHBEARBEITER_INSTITUTION = 'SACHBEARBEITER_INSTITUTION',
+    SACHBEARBEITER_TRAEGERSCHAFT = 'SACHBEARBEITER_TRAEGERSCHAFT',
+    GESUCHSTELLER = 'GESUCHSTELLER',
+    JURIST = 'JURIST',
+    REVISOR = 'REVISOR',
+    STEUERAMT = 'STEUERAMT',
+    ADMINISTRATOR_SCHULAMT = 'ADMINISTRATOR_SCHULAMT',
+    SCHULAMT = 'SCHULAMT',
+    ANONYMOUS = 'ANONYMOUS',
 }
 
 export function getTSRoleValues(): Array<TSRole> {
-    return [
-        TSRole.SUPER_ADMIN,
-        TSRole.ADMIN,
-        TSRole.SACHBEARBEITER_JA,
-        TSRole.SACHBEARBEITER_INSTITUTION,
-        TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-        TSRole.GESUCHSTELLER,
-        TSRole.JURIST,
-        TSRole.REVISOR,
-        TSRole.STEUERAMT,
-        TSRole.ADMINISTRATOR_SCHULAMT,
-        TSRole.SCHULAMT,
-    ];
+    return Object.values(TSRole);
 }
 
 export function getTSRoleValuesWithoutSuperAdmin(): Array<TSRole> {
@@ -50,5 +39,3 @@ export function getTSRoleValuesWithoutSuperAdmin(): Array<TSRole> {
 export function rolePrefix(): string {
     return 'TSRole_';
 }
-
-

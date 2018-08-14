@@ -177,11 +177,12 @@
             <div class="col-xs-12 dv-input-container-question">
                 <div class="checkbox">
                     <md-checkbox ng-model="vm.getModel().adresseJA.nichtInGemeinde" name="nichtInGemeinde"
-                                 aria-label="{{'NICHT_IN_BERN_WOHNHAFT' | translate}}"
+                                 aria-label="{{'NICHT_IN_GEMEINDE_WOHNHAFT' | translate:'{ gemeinde: &quot;' + vm.gemeinde.name + '&quot;}'}}"
                                  dv-enable-element
                                  dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                                  dv-enable-expression="vm.enableNichtInGemeinde()">
-                        <span data-translate="NICHT_IN_BERN_WOHNHAFT"></span>
+                        <span data-translate="NICHT_IN_GEMEINDE_WOHNHAFT"
+                        data-translate-value-gemeinde="{{vm.gemeinde.name}}"></span>
                     </md-checkbox>
                     <dv-error-messages for="adresseForm.adresseNichtInGemeinde.$error"
                                        class="error"></dv-error-messages>

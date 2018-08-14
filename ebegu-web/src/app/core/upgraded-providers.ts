@@ -26,6 +26,7 @@ import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import UserRS from './service/userRS.rest';
 import ZahlungRS from './service/zahlungRS.rest';
+import DossierRS from '../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 
@@ -183,6 +184,17 @@ export const downloadRSProvider = {
     deps: ['$injector']
 };
 
+// DossierRS
+export function dossierRSServiceFactory(i: any) {
+    return i.get('DossierRS');
+}
+
+export const dossierRSProvider = {
+    provide: DossierRS,
+    useFactory: dossierRSServiceFactory,
+    deps: ['$injector']
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -198,4 +210,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     gemeindeRSProvider,
     mitteilungRSProvider,
     downloadRSProvider,
+    dossierRSProvider,
 ];
