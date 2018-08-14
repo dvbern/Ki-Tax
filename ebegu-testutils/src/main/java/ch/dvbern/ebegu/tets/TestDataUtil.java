@@ -366,6 +366,8 @@ public final class TestDataUtil {
 		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
 		gemeinde.setName("Ostermundigen");
 		gemeinde.setEnabled(true);
+		gemeinde.setGemeindeNummer(2);
+		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
 	}
 
