@@ -18,18 +18,15 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import TSPendenzBetreuung from '../../models/TSPendenzBetreuung';
 
 export default class PendenzBetreuungenRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
-    log: ILogService;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    /* @ngInject */
-    constructor($http: IHttpService, private REST_API: string, ebeguRestUtil: EbeguRestUtil, $log: ILogService) {
+    serviceURL: string;
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                public $log: ILogService) {
         this.serviceURL = REST_API + 'search/pendenzenBetreuungen';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
-        this.log = $log;
     }
 
     public getServiceName(): string {
@@ -37,9 +34,9 @@ export default class PendenzBetreuungenRS {
     }
 
     public getPendenzenBetreuungenList(): IPromise<Array<TSPendenzBetreuung>> {
-        return this.http.get(this.serviceURL)
+        return this.$http.get(this.serviceURL)
             .then((response: any) => {
-                this.log.debug('PARSING pendenzenBetreuungen REST object ', response.data);
+                this.$log.debug('PARSING pendenzenBetreuungen REST object ', response.data);
                 return this.ebeguRestUtil.parsePendenzBetreuungenList(response.data);
             });
     }

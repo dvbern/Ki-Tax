@@ -163,13 +163,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		} else {
 			gesuchsperiode = getNeuesteGesuchsperiode();
 		}
-		Gemeinde gemeinde;
-		if (StringUtils.isNotEmpty(gemeindeId)) {
-			gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
-		} else {
-			gemeinde = gemeindeService.getFirst();
-		}
+
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
 
@@ -284,13 +280,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Override
 	@SuppressWarnings("PMD.NcssMethodCount")
 	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId) {
-		Gemeinde gemeinde;
-		if (StringUtils.isNotEmpty(gemeindeId)) {
-			gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
-		} else {
-			gemeinde = gemeindeService.getFirst();
-		}
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		Gesuchsperiode gesuchsperiode = getNeuesteGesuchsperiode();
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();

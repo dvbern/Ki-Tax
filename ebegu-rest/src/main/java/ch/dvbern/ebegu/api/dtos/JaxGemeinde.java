@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 /**
  * DTO fuer Gemeinden
  */
@@ -61,5 +63,19 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public int compareTo(@Nonnull JaxAbstractDTO o) {
+		CompareToBuilder builder = new CompareToBuilder();
+		builder.append(this.getId(), o.getId());
+		if (o instanceof JaxGemeinde) {
+			JaxGemeinde parsedEntity = (JaxGemeinde) o;
+			builder.append(this.getName(), parsedEntity.getName());
+			builder.append(this.getGemeindeNummer(), parsedEntity.getGemeindeNummer());
+			builder.append(this.isEnabled(), parsedEntity.isEnabled());
+			return builder.toComparison();
+		}
+		return builder.toComparison();
 	}
 }

@@ -16,37 +16,36 @@
 import {IPromise, IQService} from 'angular';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
+import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TSWizardStepName';
-import TSWizardStep from '../../models/TSWizardStep';
-import WizardStepRS from './WizardStepRS.rest';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import TSGesuch from '../../models/TSGesuch';
+import TSWizardStep from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import WizardStepRS from './WizardStepRS.rest';
 
 export default class WizardStepManager {
 
+    static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
+
     private allowedSteps: Array<TSWizardStepName> = [];
-    private hiddenSteps: Array<TSWizardStepName> = []; // alle Steps die obwohl allowed, ausgeblendet werden muessen
+    private readonly hiddenSteps: Array<TSWizardStepName> = []; // alle Steps die obwohl allowed, ausgeblendet werden muessen
     private wizardSteps: Array<TSWizardStep> = [];
     private currentStepName: TSWizardStepName; // keeps track of the name of the current step
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
-
-    static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
-    /* @ngInject */
-    constructor(private authServiceRS: AuthServiceRS, private wizardStepRS: WizardStepRS, private $q: IQService,
-                private authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly authServiceRS: AuthServiceRS,
+                private readonly wizardStepRS: WizardStepRS,
+                private readonly $q: IQService,
+                private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(value => {
-                this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole());
-            });
+            .subscribe(() => this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole()));
     }
 
     public getCurrentStep(): TSWizardStep {
@@ -154,7 +153,7 @@ export default class WizardStepManager {
      * @returns {any}
      */
     public updateWizardStepStatus(stepName: TSWizardStepName, newStepStatus: TSWizardStepStatus): IPromise<void> {
-        let step: TSWizardStep = this.getStepByName(stepName);
+        const step: TSWizardStep = this.getStepByName(stepName);
         step.verfuegbar = true;
         if (this.needNewStatusSave(step.wizardStepStatus, newStepStatus)) { // nur wenn der Status sich geaendert hat updaten und steps laden
             step.wizardStepStatus = newStepStatus;
@@ -181,11 +180,7 @@ export default class WizardStepManager {
             return false;
         }
 
-        if (newStepStatus === TSWizardStepStatus.OK && oldStepStatus === TSWizardStepStatus.MUTIERT) {
-            return false;
-        }
-
-        return true;
+        return !(newStepStatus === TSWizardStepStatus.OK && oldStepStatus === TSWizardStepStatus.MUTIERT);
     }
 
     /**
@@ -208,7 +203,6 @@ export default class WizardStepManager {
         });
     }
 
-
     /**
      * Diese Methode ist eine Ausnahme. Im ersten Step haben wir das Problem, dass das Gesuch noch nicht existiert. Deswegen koennen
      * wir die Kommentare nicht direkt speichern. Die Loesung ist: nach dem das Gesuch erstellt wird und somit auch die WizardSteps,
@@ -217,7 +211,7 @@ export default class WizardStepManager {
      * @returns {IPromise<void>}
      */
     public updateFirstWizardStep(gesuchId: string): IPromise<void> {
-        let firstStepBemerkungen = angular.copy(this.getCurrentStep().bemerkungen);
+        const firstStepBemerkungen = angular.copy(this.getCurrentStep().bemerkungen);
         return this.findStepsFromGesuch(gesuchId).then(() => {
             this.getCurrentStep().bemerkungen = firstStepBemerkungen;
             return this.updateCurrentWizardStep();
@@ -246,8 +240,8 @@ export default class WizardStepManager {
     }
 
     public getNextStep(gesuch: TSGesuch): TSWizardStepName {
-        let allVisibleStepNames = this.getVisibleSteps();
-        let currentPosition: number = allVisibleStepNames.indexOf(this.getCurrentStepName()) + 1;
+        const allVisibleStepNames = this.getVisibleSteps();
+        const currentPosition: number = allVisibleStepNames.indexOf(this.getCurrentStepName()) + 1;
         for (let i = currentPosition; i < allVisibleStepNames.length; i++) {
             if (this.isStepAvailableViaBtn(allVisibleStepNames[i], gesuch)) {
                 return allVisibleStepNames[i];
@@ -260,8 +254,8 @@ export default class WizardStepManager {
      * iterate through the existing steps and get the previous one based on the current position
      */
     public getPreviousStep(gesuch: TSGesuch): TSWizardStepName {
-        let allVisibleStepNames = this.getVisibleSteps();
-        let currentPosition: number = allVisibleStepNames.indexOf(this.getCurrentStepName()) - 1;
+        const allVisibleStepNames = this.getVisibleSteps();
+        const currentPosition: number = allVisibleStepNames.indexOf(this.getCurrentStepName()) - 1;
         for (let i = currentPosition; i >= 0; i--) {
             if (this.isStepAvailableViaBtn(allVisibleStepNames[i], gesuch)) {
                 return allVisibleStepNames[i];
@@ -274,13 +268,13 @@ export default class WizardStepManager {
      * gibt true zurueck wenn step mit next/prev button erreichbar sein soll
      */
     private isStepAvailableViaBtn(stepName: TSWizardStepName, gesuch: TSGesuch): boolean {
-        let step: TSWizardStep = this.getStepByName(stepName);
+        const step: TSWizardStep = this.getStepByName(stepName);
 
         if (step !== undefined) {
             return (this.isStepClickableForCurrentRole(step, gesuch)
-            || ((gesuch.typ === TSAntragTyp.ERSTGESUCH || gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH) && step.wizardStepStatus === TSWizardStepStatus.UNBESUCHT
-            && !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllButAdministratorJugendamtRole()) && stepName === TSWizardStepName.VERFUEGEN))
-            || (gesuch.typ === TSAntragTyp.MUTATION && step.wizardStepName === TSWizardStepName.FAMILIENSITUATION));
+                || ((gesuch.typ === TSAntragTyp.ERSTGESUCH || gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH) && step.wizardStepStatus === TSWizardStepStatus.UNBESUCHT
+                    && !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllButAdministratorJugendamtRole()) && stepName === TSWizardStepName.VERFUEGEN))
+                || (gesuch.typ === TSAntragTyp.MUTATION && step.wizardStepName === TSWizardStepName.FAMILIENSITUATION));
         }
         return false;  // wenn der step undefined ist geben wir mal verfuegbar zurueck
     }
@@ -315,12 +309,12 @@ export default class WizardStepManager {
      *  - Der Status von VERFUEGEN wird gar nicht beruecksichtigt
      */
     public areAllStepsOK(gesuch: TSGesuch): boolean {
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.wizardSteps.length; i++) {
             if (this.wizardSteps[i].wizardStepName === TSWizardStepName.BETREUUNG) {
                 if (!this.isStatusOk(this.wizardSteps[i].wizardStepStatus)
                     && this.wizardSteps[i].wizardStepStatus !== TSWizardStepStatus.PLATZBESTAETIGUNG
-                    && (this.wizardSteps[i].wizardStepStatus !== TSWizardStepStatus.NOK
-                    && !gesuch.isThereAnyBetreuung())) {
+                    && (this.wizardSteps[i].wizardStepStatus !== TSWizardStepStatus.NOK && !gesuch.isThereAnyBetreuung())) {
                     return false;
                 }
 

@@ -127,6 +127,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -171,7 +172,8 @@ public final class TestDataUtil {
 	public static final LocalDate STICHTAG_EKV_2_GUELTIG = STICHTAG_EKV_2.plusMonths(1);
 	public static final String TEST_STRASSE = "Nussbaumstrasse";
 
-	public static final String GEMEINDE_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
+	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
+	public static final String GEMEINDE_OSTERMUNDIGEN_ID = "4c453263-f992-48af-86b5-dc04cd7e8777";
 
 	private TestDataUtil() {
 	}
@@ -255,7 +257,7 @@ public final class TestDataUtil {
 	public static Einkommensverschlechterung createDefaultEinkommensverschlechterung() {
 		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
 		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
-		einkommensverschlechterung.setNettolohnJan(BigDecimal.ONE);
+		einkommensverschlechterung.setNettolohnJan(MathUtil.DEFAULT.from(BigDecimal.ONE));
 		return einkommensverschlechterung;
 	}
 
@@ -279,7 +281,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createDefaultGesuch(AntragStatus status) {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setGesuchsperiode(createDefaultGesuchsperiode());
+		gesuch.setGesuchsperiode(createGesuchsperiode1718());
 		gesuch.setDossier(createDefaultDossier());
 		gesuch.setEingangsdatum(LocalDate.now());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
@@ -317,10 +319,10 @@ public final class TestDataUtil {
 	}
 
 	public static Gemeinde getTestGemeinde(Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_ID);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
 			gemeinde = new Gemeinde();
-			gemeinde.setId(GEMEINDE_ID);
+			gemeinde.setId(GEMEINDE_BERN_ID);
 			gemeinde.setName("Testgemeinde");
 			gemeinde.setEnabled(true);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
@@ -331,7 +333,7 @@ public final class TestDataUtil {
 
 	@Nonnull
 	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_BERN);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeBern();
 			persistence.persist(gemeinde.getMandant());
@@ -342,7 +344,7 @@ public final class TestDataUtil {
 
 	@Nonnull
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeOstermundigen();
 			return persistence.persist(gemeinde);
@@ -350,9 +352,10 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
+	@Nonnull
 	public static Gemeinde createGemeindeBern() {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_BERN);
+		gemeinde.setId(GEMEINDE_BERN_ID);
 		gemeinde.setName("Bern");
 		gemeinde.setEnabled(true);
 		gemeinde.setGemeindeNummer(1);
@@ -360,9 +363,10 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
+	@Nonnull
 	public static Gemeinde createGemeindeOstermundigen() {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(AbstractTestfall.ID_GEMEINDE_OSTERMUNDIGEN);
+		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
 		gemeinde.setName("Ostermundigen");
 		gemeinde.setEnabled(true);
 		return gemeinde;
@@ -428,7 +432,7 @@ public final class TestDataUtil {
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
 		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
-		instStammdaten.setGueltigkeit(new DateRange());
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setAdresse(createDefaultAdresse());
@@ -440,7 +444,7 @@ public final class TestDataUtil {
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
 		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
-		instStammdaten.setGueltigkeit(new DateRange());
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setAdresse(createDefaultAdresse());
@@ -636,22 +640,6 @@ public final class TestDataUtil {
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensum.setPensum(80);
 		return betreuungspensum;
-	}
-
-	public static Gesuchsperiode createDefaultGesuchsperiode() {
-		return createCurrentGesuchsperiode();
-	}
-
-	public static Gesuchsperiode createCurrentGesuchsperiode() {
-		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-
-		boolean isSecondHalbjahr = LocalDate.now().isAfter(LocalDate.of(LocalDate.now().getYear(), Month.JULY, 31));
-		int startyear = isSecondHalbjahr ? LocalDate.now().getYear() : LocalDate.now().getYear() - 1;
-		LocalDate start = LocalDate.of(startyear, Month.AUGUST, 1);
-		LocalDate end = LocalDate.of(startyear + 1, Month.JULY, 31);
-		gesuchsperiode.setGueltigkeit(new DateRange(start, end));
-		return gesuchsperiode;
 	}
 
 	public static Gesuchsperiode createGesuchsperiode1718() {
@@ -1041,7 +1029,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
-		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.getDossier().setGemeinde(gemeinde);
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
 		persistence.persist(gesuch.getFall());
 

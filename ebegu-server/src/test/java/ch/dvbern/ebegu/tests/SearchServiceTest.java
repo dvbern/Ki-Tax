@@ -201,7 +201,6 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testSearchWithRoleSachbearbeiterInst() {
-		loginAsAdmin();
 		Gesuch gesDagmar = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), AntragStatus.IN_BEARBEITUNG_GS);
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -209,7 +208,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 		Pair<Long, List<Gesuch>> firstResult = searchService.searchAllAntraege(filterDTO);
-		Assert.assertEquals(Long.valueOf(1), firstResult.getLeft()); //Admin sieht Gesuch im Status IN_BEARBEITUNG_GS nicht, soll anscheinend so sein
+		Assert.assertEquals(Long.valueOf(2), firstResult.getLeft()); //SuperAdmin sieht alles
 
 		//Die Gesuche sollten im Status IN_BEARBEITUNG_GS sein und zu keinem oder einem Traegerschafts Sachbearbeiter gehoeren, trotzdem sollten wir sie finden
 		//		Benutzer user = TestDataUtil.createDummySuperAdmin(persistence);

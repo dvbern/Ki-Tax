@@ -14,26 +14,23 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import {IStammdatenStateParams} from '../../gesuch.route';
-import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
-import BerechnungsManager from '../../service/berechnungsManager';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSFinanzModel from '../../../models/TSFinanzModel';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import {IStammdatenStateParams} from '../../gesuch.route';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./finanzielleSituationResultateView.html');
-require('./finanzielleSituationResultateView.less');
-
 export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./finanzielleSituationResultateView.html');
     controller = FinanzielleSituationResultateViewController;
     controllerAs = 'vm';
 }
@@ -43,14 +40,13 @@ export class FinanzielleSituationResultateViewComponentConfig implements ICompon
  */
 export class FinanzielleSituationResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    private initialModel: TSFinanzModel;
-
     static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$scope', '$timeout'];
 
-    /* @ngInject */
+    private readonly initialModel: TSFinanzModel;
+
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private errorService: ErrorService,
+                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
                 wizardStepManager: WizardStepManager, $scope: IScope, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
 

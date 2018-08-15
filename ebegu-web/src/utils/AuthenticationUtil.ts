@@ -13,37 +13,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSUser from '../models/TSUser';
-import {StateService} from '@uirouter/core';
-import {TSRoleUtil} from './TSRoleUtil';
+import {StateService, TargetState, TransitionPromise} from '@uirouter/core';
 import {TSRole} from '../models/enums/TSRole';
 
-export default class AuthenticationUtil {
+/**
+ *  Navigiert basierend auf der Rolle zu einer anderen Startseite
+ */
+export function navigateToStartPageForRole(currentRole: TSRole, $state: StateService): TransitionPromise {
+    return $state.go(getRoleBasedTargetState(currentRole, $state).$state());
+}
 
-    /**
-     *  Navigiert basierend auf der Rolle zu einer anderen Startseite
-     */
-    public static navigateToStartPageForRole(user: TSUser, $state: StateService): void {
-        let currentRole: TSRole = user.getCurrentRole();
-        if (currentRole === TSRole.SUPER_ADMIN) {
-            $state.go('faelle');
-        } else if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(currentRole) > -1) {
-            $state.go('pendenzen');
-        } else if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('pendenzenBetreuungen');
-        } else if (TSRoleUtil.getSchulamtOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('pendenzen');
-        } else if (TSRoleUtil.getSteueramtOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('pendenzenSteueramt');
-        } else if (TSRoleUtil.getGesuchstellerOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('gesuchstellerDashboard');
-        } else if (TSRoleUtil.getJuristOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('faelle');
-        } else if (TSRoleUtil.getRevisorOnlyRoles().indexOf(currentRole) > -1) {
-            $state.go('faelle');
-        } else {
-            console.error('Achtung, keine Startpage definiert fuer Rolle ', user.getRoleKey(), ', nehme gesuchstellerDashboard');
-            $state.go('gesuchstellerDashboard');
-        }
-    }
+export function getRoleBasedTargetState(currentRole: TSRole, $state: StateService): TargetState {
+    const stateByRole: { [key in TSRole]: string } = {
+        [TSRole.SUPER_ADMIN]: 'faelle.list',
+        [TSRole.ADMIN]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_JA]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_INSTITUTION]: 'pendenzenBetreuungen.list-view',
+        [TSRole.SACHBEARBEITER_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
+        [TSRole.GESUCHSTELLER]: 'gesuchsteller.dashboard',
+        [TSRole.JURIST]: 'faelle.list',
+        [TSRole.REVISOR]: 'faelle.list',
+        [TSRole.STEUERAMT]: 'pendenzenSteueramt.list-view',
+        [TSRole.ADMINISTRATOR_SCHULAMT]: 'pendenzen.list-view',
+        [TSRole.SCHULAMT]: 'pendenzen.list-view',
+        [TSRole.ANONYMOUS]: 'onboarding.start',
+    };
+
+    return $state.target(stateByRole[currentRole]);
+}
+
+export function returnToOriginalState($state: StateService, returnTo: TargetState): TransitionPromise {
+    const state = returnTo.state();
+    const params = returnTo.params();
+    const options = {...returnTo.options(), ...{reload: true}};
+
+    return $state.go(state, params, options);
 }

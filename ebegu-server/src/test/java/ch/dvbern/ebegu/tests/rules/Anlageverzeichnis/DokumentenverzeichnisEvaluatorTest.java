@@ -66,7 +66,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	public void setUpCalculator() {
 
 		testgesuch = new Gesuch();
-		testgesuch.setGesuchsperiode(TestDataUtil.createDefaultGesuchsperiode());
+		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
 		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
 		testgesuch.setKindContainers(new HashSet<>());
@@ -584,7 +584,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		createEinkommensverschlechterungGS(1, testgesuch, "Sämi", false);
 		createEinkommensverschlechterungGS(2, testgesuch, "Alex", false);
 		createEinkommensverschlechterungInfo();
-		final Gesuchsperiode gesuchsperiode = TestDataUtil.createDefaultGesuchsperiode();
+		final Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2016, 8, 1), Constants.GESUCHSPERIODE_17_18_AB));
 
 		testgesuch.setGesuchsperiode(gesuchsperiode);

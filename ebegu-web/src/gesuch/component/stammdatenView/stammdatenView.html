@@ -99,6 +99,27 @@
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
+                        <!-- Korrespondenz-Sprache -->
+                        <div class="col-sm-12 dv-input-container-medium" ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
+                            <div class="form-group">
+                                <label class="md-no-float required" data-translate="KORRESPONDENZSPRACHE" for="korrespondenzSprache">
+                                </label>
+                                <div class="dv-select-style dv-input-container-medium-select">
+                                    <select name="korrespondenzSprache" id="korrespondenzSprache" class="form-control"
+                                            aria-describedby="korrespondenzSprache-error"
+                                            ng-model="vm.getModelJA().korrespondenzSprache"
+                                            ng-options="lang | translate for lang in vm.getSprachen()"
+                                            ng-required="true">
+                                    </select>
+                                    <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprache"
+                                               ja="vm.getModel().gesuchstellerJA.korrespondenzSprache"
+                                               specific-bisher-text="vm.getTextKorrespondenzSprachenKorrektur()"></dv-bisher>
+                                    <dv-error-messages for="vm.form.korrespondenzSprache.$error"
+                                                       input-id="korrespondenzSprache"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row" dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()">
@@ -133,8 +154,10 @@
                     <!-- Adresse. Bei Mutationen nicht editierbar-->
                     <fieldset ng-disabled="vm.disableWohnadresseFor2GS()" class="dv-adresse__fieldset">
                         <!-- Dieses disabled wird vom obigen disabled ueberschrieben wenn VERFUEGT -->
-                        <dv-adresse adresse="vm.getModel().getWohnAdresse()" show-nicht-in-gemeinde="true"
-                                    prefix="wohn"></dv-adresse>
+                        <dv-adresse adresse="vm.getModel().getWohnAdresse()"
+                                    show-nicht-in-gemeinde="true"
+                                    prefix="wohn"
+                                    gemeinde="vm.gesuchModelManager.getDossier().gemeinde"></dv-adresse>
                     </fieldset>
 
                     <!-- Diplomatenstatus -->

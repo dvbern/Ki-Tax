@@ -22,7 +22,7 @@ import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 
 export default class TSAntragDTO extends TSAbstractAntragDTO {
-    private static YEAR_2000 = 2000;
+    private static readonly YEAR_2000 = 2000;
 
     private _antragId: string;
     private _antragTyp: TSAntragTyp;
@@ -304,7 +304,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     }
 
     public hasAnySchulamtAngebot(): boolean {
-        for (let angebot of this.angebote) {
+        for (const angebot of this.angebote) {
             if (TSBetreuungsangebotTyp.TAGESSCHULE === angebot || TSBetreuungsangebotTyp.FERIENINSEL === angebot) {
                 return true;
             }
@@ -313,7 +313,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     }
 
     public hasOnlyFerieninsel(): boolean {
-        for (let angebot of this.angebote) {
+        for (const angebot of this.angebote) {
             if (TSBetreuungsangebotTyp.FERIENINSEL !== angebot) {
                 return false;
             }
@@ -322,7 +322,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     }
 
     public hasAnyJugendamtAngebot(): boolean {
-        for (let angebot of this.angebote) {
+        for (const angebot of this.angebote) {
             if (TSBetreuungsangebotTyp.TAGESSCHULE !== angebot && TSBetreuungsangebotTyp.FERIENINSEL !== angebot) {
                 return true;
             }

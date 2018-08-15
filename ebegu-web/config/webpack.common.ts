@@ -19,22 +19,18 @@ import * as webpack from 'webpack';
 import {ContextReplacementPlugin, NoEmitOnErrorsPlugin, ProvidePlugin} from 'webpack';
 import {chunksSort, root} from './helpers';
 import rules from './rules';
-import CircularDependencyPlugin = require('circular-dependency-plugin');
-import CleanWebpackPlugin = require('clean-webpack-plugin');
-import CopyWebpackPlugin = require('copy-webpack-plugin');
-import ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 import HtmlWebpackPlugin = require('html-webpack-plugin');
 import DefinePlugin = require('webpack/lib/DefinePlugin');
 import CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
-let contents = fs.readFileSync(__dirname + '/../pom.xml').toString();
+const contents = fs.readFileSync(__dirname + '/../pom.xml').toString();
 
-let re = new RegExp('<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>', 'im');
-let myMatchArray = re.exec(contents);
-let parsedversion = (myMatchArray === null) ? 'unknown' : myMatchArray[1];
+const re = new RegExp('<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>', 'im');
+const myMatchArray = re.exec(contents);
+const parsedversion = (myMatchArray === null) ? 'unknown' : myMatchArray[1];
 console.log('Parsed Version from pom is ' + parsedversion);
 
-let currentTime = new Date();
+const currentTime = new Date();
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
@@ -82,8 +78,7 @@ export default (env: string): webpack.Configuration => {
     return {
         entry: {
             'polyfills': root('src', 'polyfills.ts'),
-            'vendor': root('src', 'vendor.ts'),
-            'main': root('src', 'bootstrap.ts'),
+            'main': root('src', 'main.ts'),
         },
         output: {
             path: path.join(process.cwd(), 'dist'),
@@ -98,26 +93,8 @@ export default (env: string): webpack.Configuration => {
         },
 
         plugins: [
-            // clean dist before we start
-            new CleanWebpackPlugin(['dist'], {
-                root: process.cwd(),
-            }),
-
             // skip the emitting phase whenever there are errors while compiling
             new NoEmitOnErrorsPlugin(),
-
-            new ForkTsCheckerWebpackPlugin({
-                checkSyntacticErrors: true,
-                // tslint runs through tslint-loader
-                tslint: true,
-                tsconfig: root('src', 'tsconfig.json')
-            }),
-
-            // Detect modules with circular dependencies when bundling with webpack
-            new CircularDependencyPlugin({
-                exclude: /([\\\/])node_modules([\\\/])/,
-                failOnError: false,
-            }),
 
             // run TypeScript checker in a separate thread for build performance gain
             new ProvidePlugin({
@@ -153,16 +130,6 @@ export default (env: string): webpack.Configuration => {
 
             // Bundle main chunk
             new CommonsChunkPlugin(mainChunk),
-
-            // Plugin: CopyWebpackPlugin
-            // Description: Copy files and directories in webpack.
-            //
-            // Copies project static assets.
-            //
-            // See: https://www.npmjs.com/package/copy-webpack-plugin
-            new CopyWebpackPlugin([
-                {from: 'src/assets', to: 'src/assets'},
-            ]),
 
             // Plugin: HtmlWebpackPlugin
             // Description: Simplifies creation of HTML files to serve your webpack bundles.

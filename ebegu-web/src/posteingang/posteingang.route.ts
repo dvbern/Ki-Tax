@@ -13,25 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 posteingangRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function posteingangRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates(), '/start');
+    routerHelper.configureStates(ng1States, []);
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        new EbeguPosteingangState()
-    ];
-}
-
-//STATES
-export class EbeguPosteingangState implements Ng1StateDeclaration {
-    name = 'posteingang';
-    template = '<posteingang-view flex="auto" class="overflow-scroll">';
-    url = '/posteingang';
-}
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'posteingang',
+        data: {
+            roles: TSRoleUtil.getAdministratorOrAmtRole(),
+        },
+    },
+    {
+        name: 'posteingang.view',
+        template: '<posteingang-view flex="auto" class="overflow-scroll">',
+        url: '/posteingang',
+    },
+];

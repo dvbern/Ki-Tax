@@ -22,40 +22,40 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 
-let template = require('./mitteilungenView.html');
-require('./mitteilungenView.less');
-
 export class MitteilungenViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./mitteilungenView.html');
     controller = MitteilungenViewController;
     controllerAs = 'vm';
 }
 
 export class MitteilungenViewController {
 
-    form: IFormController;
-    dossierId: string;
-    TSRoleUtil = TSRoleUtil;
-
     static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
 
-    /* @ngInject */
-    constructor(private $state: StateService, private $stateParams: IMitteilungenStateParams,
-                private authServiceRS: AuthServiceRS, private $timeout: ITimeoutService) {
+    form: IFormController;
+    dossierId: string;
+    fallId: string;
+    TSRoleUtil = TSRoleUtil;
+
+    constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
+                private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
     }
 
     $onInit() {
         if (this.$stateParams.dossierId) {
             this.dossierId = this.$stateParams.dossierId;
         }
+        if (this.$stateParams.fallId) {
+            this.fallId = this.$stateParams.fallId;
+        }
     }
 
     public cancel(): void {
         if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            this.$state.go('gesuchstellerDashboard');
+            this.$state.go('gesuchsteller.dashboard');
         } else {
-            this.$state.go('posteingang');
+            this.$state.go('posteingang.view');
         }
     }
 

@@ -15,34 +15,30 @@
 
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import UserRS from '../../../core/service/userRS.rest';
+import UserRS from '../../../app/core/service/userRS.rest';
 import TSUser from '../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
-import './benutzerListView.less';
 import {StateService} from '@uirouter/core';
 
-let template = require('./benutzerListView.html');
-let style = require('./benutzerListView.less');
 
 export class BenutzerListViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    bindings: any = {
+    transclude = false;
+    bindings = {
         benutzer: '<',
     };
-    template: string = template;
-    controller: any = BenutzerListViewController;
-    controllerAs: string = 'vm';
+    template = require('./benutzerListView.html');
+    controller = BenutzerListViewController;
+    controllerAs = 'vm';
 }
 
 export class BenutzerListViewController extends AbstractAdminViewController {
 
-    totalResultCount: string = '0';
-
-
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'UserRS'];
 
-    constructor(private $state: StateService, private $log: ILogService, authServiceRS: AuthServiceRS, private userRS: UserRS) {
+    totalResultCount: string = '0';
+
+    constructor(private readonly $state: StateService, private readonly $log: ILogService, authServiceRS: AuthServiceRS, private readonly userRS: UserRS) {
         super(authServiceRS);
     }
 
@@ -63,7 +59,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
      */
     public editBenutzer(user: TSUser, event: any): void {
         if (user) {
-            this.$state.go('benutzer', {benutzerId: user.username});
+            this.$state.go('admin.benutzer', {benutzerId: user.username});
         }
     }
 }

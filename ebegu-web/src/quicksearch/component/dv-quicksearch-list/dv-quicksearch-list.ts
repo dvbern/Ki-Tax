@@ -14,10 +14,10 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFilterService} from 'angular';
+import {IComponentOptions, IController, IFilterService} from 'angular';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -31,13 +31,10 @@ import TSInstitution from '../../../models/TSInstitution';
 import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
-let template = require('./dv-quicksearch-list.html');
-require('./dv-quicksearch-list.less');
-
 export class DVQuicksearchListConfig implements IComponentOptions {
     transclude = false;
 
-    bindings: any = {
+    bindings = {
         antraege: '<',
         itemsByPage: '<',
         initialAll: '=',
@@ -48,12 +45,15 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         tableTitle: '<'
     };
 
-    template = template;
+    template = require('./dv-quicksearch-list.html');
     controller = DVQuicksearchListController;
     controllerAs = 'vm';
 }
 
-export class DVQuicksearchListController {
+export class DVQuicksearchListController implements IController {
+
+    static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
+        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
 
     antraege: Array<TSAntragDTO> = []; //muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
 
@@ -82,31 +82,25 @@ export class DVQuicksearchListController {
     gemeindenList: Array<TSGemeinde>;
     onUserChanged: (user: any) => void;
 
-    static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
-
-    constructor(private ebeguUtil: EbeguUtil,
-                private $filter: IFilterService,
-                private institutionRS: InstitutionRS,
-                private gesuchsperiodeRS: GesuchsperiodeRS,
-                private $state: StateService,
-                private CONSTANTS: any,
-                private authServiceRS: AuthServiceRS,
-                private gemeindeRS: GemeindeRS) {
-    }
-
-    $onInit() {
-        this.initViewModel();
+    constructor(private readonly ebeguUtil: EbeguUtil,
+                private readonly $filter: IFilterService,
+                private readonly institutionRS: InstitutionRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                private readonly $state: StateService,
+                private readonly CONSTANTS: any,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gemeindeRS: GemeindeRS,
+    ) {
     }
 
     public userChanged(selectedUser: TSUser): void {
         this.onUserChanged({user: selectedUser});
     }
 
-    private initViewModel() {
+    public $onInit(): void {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
-        this.updateGemeinden();
+        this.updateGemeindenList();
     }
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -136,10 +130,11 @@ export class DVQuicksearchListController {
         });
     }
 
-    public updateGemeinden(): void {
-        this.gemeindeRS.getAllGemeinden().then(response => {
-            this.gemeindenList = angular.copy(response);
-        });
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
+            .then(gemeinden => {
+                this.gemeindenList = gemeinden;
+            });
     }
 
     public getQuicksearchList(): Array<TSAntragDTO> {
@@ -152,7 +147,7 @@ export class DVQuicksearchListController {
      * @param fallnummer
      */
     public addZerosToFallnummer(fallnummer: number): string {
-        return this.ebeguUtil.addZerosToNumber(fallnummer, this.CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
@@ -160,8 +155,9 @@ export class DVQuicksearchListController {
         if (betreuungsangebotTypList) {
             let prefix: string = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
+                // tslint:disable-next-line:prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
-                    let tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
+                    const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
                     result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
                     prefix = ', ';
                 }
@@ -172,7 +168,7 @@ export class DVQuicksearchListController {
 
     public editAntrag(abstractAntrag: TSAbstractAntragDTO, event: any): void {
         if (abstractAntrag) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             if (abstractAntrag instanceof TSAntragDTO) {
                 this.navigateToGesuch(abstractAntrag, isCtrlKeyPressed);
             } else if (abstractAntrag instanceof TSFallAntragDTO) {
@@ -183,22 +179,25 @@ export class DVQuicksearchListController {
 
     private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO) {
         if (isCtrlKeyPressed) {
-            let url = this.$state.href('mitteilungen', {dossierId: fallAntrag.dossierId});
+            const url = this.$state.href('mitteilungen.view', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
         } else {
-            this.$state.go('mitteilungen', {dossierId: fallAntrag.dossierId});
+            this.$state.go('mitteilungen.view', {
+                dossierId: fallAntrag.dossierId,
+                fallId: fallAntrag.fallID,
+            });
         }
     }
 
     private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean) {
         if (antragDTO.antragId) {
-            let navObj: any = {
-                createNew: false,
+            const navObj: any = {
+                createNewFall: false,
                 gesuchId: antragDTO.antragId,
                 dossierId: antragDTO.dossierId
             };
             if (isCtrlKeyPressed) {
-                let url = this.$state.href('gesuch.fallcreation', navObj);
+                const url = this.$state.href('gesuch.fallcreation', navObj);
                 window.open(url, '_blank');
             } else {
                 this.$state.go('gesuch.fallcreation', navObj);

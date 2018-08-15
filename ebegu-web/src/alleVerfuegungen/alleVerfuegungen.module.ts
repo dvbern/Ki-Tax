@@ -13,9 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.module';
-import {AlleVerfuegungenViewComponentConfig} from './component/alleVerfuegungenView/alleVerfuegungenView';
+import * as angular from 'angular';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {alleVerfuegungenRun} from './alleVerfuegungen.route';
+import {AlleVerfuegungenViewComponentConfig} from './component/alleVerfuegungenView/alleVerfuegungenView';
 
 export const EbeguWebAlleVerfuegungen =
     angular.module('ebeguWeb.alleVerfuegungen', [EbeguWebCore.name])

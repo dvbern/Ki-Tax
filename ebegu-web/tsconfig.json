@@ -1,0 +1,29 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": [
+            "dom",
+            "es2017",
+            "es2018.promise"
+        ],
+        "locale": "en",
+        "moduleResolution": "node",
+        "newLine": "lf",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "preserveConstEnums": true,
+        "outDir": "./dist/out-tsc",
+        "pretty": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": false,
+        "target": "es5",
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    }
+}

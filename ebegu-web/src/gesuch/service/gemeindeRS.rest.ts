@@ -13,38 +13,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
-import {IEntityRS} from '../../core/service/iEntityRS.rest';
+import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
+import TSUser from '../../models/TSUser';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
+
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q'];
     serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
-
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil, private $log: ILogService, private globalCacheService: GlobalCacheService) {
+    constructor(public $http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
+                private readonly globalCacheService: GlobalCacheService, private readonly $q: IQService) {
         this.serviceURL = REST_API + 'gemeinde';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
-    public getAllGemeinden(): IPromise<Array<TSGemeinde>> {
-        let cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
-        return this.http.get(this.serviceURL + '/all', {cache: cache})
+    public getAllGemeinden(): IPromise<TSGemeinde[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
+        return this.$http.get(this.serviceURL + '/all', {cache: cache})
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeindeList(response.data);
             });
     }
 
+    public getGemeindenForPrincipal(user: TSUser): IPromise<Array<TSGemeinde>> {
+        if (!user) {
+            return this.$q.when([]); // empty list for unknown user
+        }
+        if (TSRoleUtil.isGemeindeabhaengig(user.getCurrentRole())) {
+            return this.$q.when(angular.copy(user.extractCurrentGemeinden()));
+        } else {
+            return this.getAllGemeinden().then(response => {
+                return response;
+            });
+        }
+    }
+
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
-        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(gemeindeId))
+        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(gemeindeId))
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);

@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ApplicationPropertyRS} from '../../admin/service/applicationPropertyRS.rest';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import UserRS from '../../core/service/userRS.rest';
+import UserRS from '../../app/core/service/userRS.rest';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSUser from '../../models/TSUser';
 import EbeguUtil from '../../utils/EbeguUtil';
@@ -43,16 +43,16 @@ export class FreigabeController {
     private errorMessage: string;
     TSRoleUtil = TSRoleUtil;
 
-    constructor(private docID: string, private $mdDialog: IDialogService, private gesuchRS: GesuchRS,
-                private userRS: UserRS, private authService: AuthServiceRS, private ebeguUtil: EbeguUtil,
-                CONSTANTS: any, private $translate: ITranslateService, private applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly docID: string, private readonly $mdDialog: IDialogService, private readonly gesuchRS: GesuchRS,
+                private readonly userRS: UserRS, private readonly authService: AuthServiceRS, private readonly ebeguUtil: EbeguUtil,
+                CONSTANTS: any, private readonly $translate: ITranslateService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value
             if (response) {
                 if (response.canBeFreigegeben()) {
                     this.gesuch = response;
-                    this.fallNummer = ebeguUtil.addZerosToNumber(response.fallNummer, CONSTANTS.FALLNUMMER_LENGTH);
+                    this.fallNummer = EbeguUtil.addZerosToFallNummer(response.fallNummer);
                     this.familie = response.familienName;
                     this.setVerantwortliche();
                 } else {

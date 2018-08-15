@@ -27,6 +27,7 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
@@ -45,6 +46,7 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchstelleradresse_container_gesuchstellerContainer_id"))
 	private GesuchstellerContainer gesuchstellerContainer;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchstelleradresse_container_gesuchstellergs_id"))
@@ -66,11 +68,12 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 		this.gesuchstellerContainer = gesuchstellerContainer;
 	}
 
+	@Nullable
 	public GesuchstellerAdresse getGesuchstellerAdresseGS() {
 		return gesuchstellerAdresseGS;
 	}
 
-	public void setGesuchstellerAdresseGS(GesuchstellerAdresse gesuchstellerAdresseGS) {
+	public void setGesuchstellerAdresseGS(@Nullable GesuchstellerAdresse gesuchstellerAdresseGS) {
 		this.gesuchstellerAdresseGS = gesuchstellerAdresseGS;
 	}
 
@@ -188,28 +191,14 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 	}
 
 	@Nonnull
-	private GesuchstellerAdresseContainer copyForMutationOrErneuerung(@Nonnull GesuchstellerAdresseContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerContainer) {
-		mutation.setGesuchstellerContainer(gesuchstellerContainer);
-		mutation.setGesuchstellerAdresseGS(null);
-		return mutation;
-	}
-
-	@Nonnull
-	public GesuchstellerAdresseContainer copyForMutation(@Nonnull GesuchstellerAdresseContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerContainer) {
-		super.copyForMutation(mutation);
+	public GesuchstellerAdresseContainer copyGesuchstellerAdresseContainer(@Nonnull GesuchstellerAdresseContainer target, @Nonnull AntragCopyType copyType, @Nonnull GesuchstellerContainer gsContainer) {
+		super.copyAbstractEntity(target, copyType);
+		target.setGesuchstellerContainer(gsContainer);
+		target.setGesuchstellerAdresseGS(null);
 		if (this.getGesuchstellerAdresseJA() != null) {
-			mutation.setGesuchstellerAdresseJA(this.getGesuchstellerAdresseJA().copyForMutation(new GesuchstellerAdresse()));
+			target.setGesuchstellerAdresseJA(this.getGesuchstellerAdresseJA().copyGesuchstellerAdresse(new GesuchstellerAdresse(), copyType));
 		}
-		return copyForMutationOrErneuerung(mutation, gesuchstellerContainer);
-	}
-
-	@Nonnull
-	public GesuchstellerAdresseContainer copyForErneuerung(@Nonnull GesuchstellerAdresseContainer mutation, @Nonnull GesuchstellerContainer gesuchstellerContainer) {
-		super.copyForErneuerung(mutation);
-		if (this.getGesuchstellerAdresseJA() != null) {
-			mutation.setGesuchstellerAdresseJA(this.getGesuchstellerAdresseJA().copyForErneuerung(new GesuchstellerAdresse()));
-		}
-		return copyForMutationOrErneuerung(mutation, gesuchstellerContainer);
+		return target;
 	}
 
 	@Override

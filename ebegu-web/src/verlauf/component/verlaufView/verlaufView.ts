@@ -16,8 +16,8 @@
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import {StateService} from '@uirouter/core';
+import AntragStatusHistoryRS from '../../../app/core/service/antragStatusHistoryRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../models/TSDossier';
@@ -27,44 +27,44 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IVerlaufStateParams} from '../../verlauf.route';
 
-let template = require('./verlaufView.html');
-require('./verlaufView.less');
-
 export class VerlaufViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./verlaufView.html');
     controller = VerlaufViewController;
     controllerAs = 'vm';
 }
 
 export class VerlaufViewController {
 
+    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS', 'EbeguUtil'];
+
     form: IFormController;
     dossier: TSDossier;
-    gesuche: {[gesuchId: string]: string} = {};
+    gesuche: { [gesuchId: string]: string } = {};
     itemsByPage: number = 20;
     TSRoleUtil = TSRoleUtil;
     verlauf: Array<TSAntragStatusHistory>;
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS', 'EbeguUtil'];
-    /* @ngInject */
-    constructor(private $state: StateService, private $stateParams: IVerlaufStateParams,
-                private authServiceRS: AuthServiceRS, private gesuchRS: GesuchRS,
-                private antragStatusHistoryRS: AntragStatusHistoryRS, private ebeguUtil: EbeguUtil) {
+    constructor(private readonly $state: StateService,
+                private readonly $stateParams: IVerlaufStateParams,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gesuchRS: GesuchRS,
+                private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+                private readonly ebeguUtil: EbeguUtil) {
     }
 
     $onInit() {
         if (this.$stateParams.gesuchId) {
             this.gesuchRS.findGesuch(this.$stateParams.gesuchId).then((gesuchResponse: TSGesuch) => {
                 this.dossier = gesuchResponse.dossier;
-                let gesuchsperiode: TSGesuchsperiode = gesuchResponse.gesuchsperiode;
+                const gesuchsperiode: TSGesuchsperiode = gesuchResponse.gesuchsperiode;
                 if (this.dossier === undefined) {
                     this.cancel();
                 }
                 this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode).then((response: TSAntragStatusHistory[]) => {
                     this.verlauf = response;
                 });
-                this.gesuchRS.getAllAntragDTOForFall(this.dossier.fall.id).then((response) => {
+                this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
                     response.forEach((item) => {
                         this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(item.antragTyp, item.eingangsdatum, item.laufnummer);
                     });
@@ -79,11 +79,18 @@ export class VerlaufViewController {
         return this.verlauf;
     }
 
+    public getFallId(): string {
+        if (this.dossier && this.dossier.fall) {
+            return this.dossier.fall.id;
+        }
+        return '';
+    }
+
     public cancel(): void {
         if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            this.$state.go('gesuchstellerDashboard');
+            this.$state.go('gesuchsteller.dashboard');
         } else {
-            this.$state.go('pendenzen');
+            this.$state.go('pendenzen.list-view');
         }
     }
 

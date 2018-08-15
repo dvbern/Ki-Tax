@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.authentication;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -28,6 +29,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -143,8 +145,22 @@ public class PrincipalBean {
 		return Arrays.stream(role).map(Enum::name).anyMatch(this::isCallerInRole);
 	}
 
+	public boolean isCallerInAnyOfRole(@Nonnull List<UserRole> roles) {
+		checkNotNull(roles);
+		return roles.stream().anyMatch(this::isCallerInRole);
+	}
+
 	public boolean isCallerInRole(@Nonnull UserRole role) {
 		checkNotNull(role);
 		return this.isCallerInRole(role.name());
+	}
+
+	/**
+	 * A role that is not linked to a Gemeinde can see all Gemeinden
+	 * A role that is linked to 1..n Gemeinden can see only those Gemeinden
+	 */
+	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
+		final Benutzer currentBenutzer = this.getBenutzer();
+		return currentBenutzer.belongsToGemeinde(gemeinde);
 	}
 }

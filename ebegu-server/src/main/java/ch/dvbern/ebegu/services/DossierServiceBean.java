@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -107,7 +108,10 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
 
 		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
-		return dossiers;
+
+		return dossiers.stream()
+			.filter(authorizer::isReadCompletelyAuthorizedDossier).
+			collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -128,13 +132,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE") // TODO Imanol brauchts dann auch nicht mehr...
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
-		//TODO Imanol: entfernen
-		Gemeinde gemeinde = dossier.getGemeinde();
-		//noinspection ConstantConditions:
-		if (gemeinde == null) {
-			gemeinde = gemeindeService.getFirst();
-			dossier.setGemeinde(gemeinde);
-		}
 		authorizer.checkWriteAuthorizationDossier(dossier);
 		return persistence.merge(dossier);
 	}
@@ -171,7 +168,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (!fallOptional.isPresent()) {
 			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		}
-		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId!
+		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId! <- dies muss behoben werden wenn der GS schon eine gemeinde hat
 		Gemeinde gemeinde = null;
 		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
 		gemeinde = gemeindeOptional.orElseGet(() -> gemeindeService.getFirst());
@@ -181,7 +178,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}
-		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen
+		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen <- dies muss behoben werden wenn der GS schon eine gemeinde hat
 		Dossier dossier = new Dossier();
 		dossier.setFall(fallOptional.get());
 		dossier.setGemeinde(gemeinde);

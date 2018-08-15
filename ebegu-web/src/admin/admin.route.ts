@@ -14,17 +14,17 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {InstitutionRS} from '../core/service/institutionRS.rest';
-import {MandantRS} from '../core/service/mandantRS.rest';
-import {TraegerschaftRS} from '../core/service/traegerschaftRS.rest';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
+import {InstitutionRS} from '../app/core/service/institutionRS.rest';
+import {MandantRS} from '../app/core/service/mandantRS.rest';
+import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 adminRun.$inject = ['RouterHelper'];
 
-/* @ngInject */
 export function adminRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(getStates());
+    routerHelper.configureStates(ng1States);
 }
 
 export class IGesuchsperiodeStateParams {
@@ -44,114 +44,118 @@ export class IBenutzerStateParams {
     benutzerId: string;
 }
 
-function getStates(): Ng1StateDeclaration[] {
-    return [
-        {
-            name: 'admin',
-            template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
-            url: '/admin',
-            resolve: {
-                applicationProperties: getApplicationProperties
-            }
+const applicationPropertiesResolver = ['ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
+    return applicationPropertyRS.getAllApplicationProperties();
+}];
+
+const institutionenResolver = ['InstitutionRS', (institutionRS: InstitutionRS) => {
+    return institutionRS.getAllActiveInstitutionen();
+}];
+
+const traegerschaftenResolver = ['TraegerschaftRS', (traegerschaftRS: TraegerschaftRS) => {
+    return traegerschaftRS.getAllActiveTraegerschaften();
+}];
+
+const mandantResolver = ['MandantRS', (mandantRS: MandantRS) => {
+    return mandantRS.getFirst();
+}];
+
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'admin',
+        data: {
+            roles: TSRoleUtil.getAdministratorRoles(),
         },
-        {
-            name: 'benutzerlist',
-            template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
-            url: '/benutzerlist',
+    },
+    {
+        name: 'admin.view',
+        template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
+        url: '/admin',
+        resolve: {
+            applicationProperties: applicationPropertiesResolver
         },
-        {
-            name: 'benutzer',
-            template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
-            url: '/benutzerlist/benutzer/:benutzerId',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
         },
-        {
-            name: 'institutionen',
-            template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
-            + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
-            url: '/institutionen',
-
-            resolve: {
-                institutionen: getInstitutionen,
-            }
+    },
+    {
+        name: 'admin.benutzerlist',
+        template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
+        url: '/benutzerlist',
+    },
+    {
+        name: 'admin.benutzer',
+        template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
+        url: '/benutzerlist/benutzer/:benutzerId',
+    },
+    {
+        name: 'admin.institutionen',
+        template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
+        + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
+        url: '/institutionen',
+        resolve: {
+            institutionen: institutionenResolver,
         },
-        {
-            name: 'institution',
-            template: '<dv-institution-view flex="auto" class="overflow-scroll"'
-            + ' traegerschaften="$resolve.traegerschaften"'
-            + ' mandant="$resolve.mandant"></dv-institution-view>',
-            url: '/institutionen/institution/:institutionId',
-            params: {
-                institutionId: '',
-            },
-
-            resolve: {
-                traegerschaften: getTraegerschaften,
-                mandant: getMandant
-            }
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
         },
-        {
-            name: 'institutionstammdaten',
-            template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
-            url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
-            params: {
-                institutionStammdatenId: '',
-            },
+    },
+    {
+        name: 'admin.institution',
+        template: '<dv-institution-view flex="auto" class="overflow-scroll"'
+        + ' traegerschaften="$resolve.traegerschaften"'
+        + ' mandant="$resolve.mandant"></dv-institution-view>',
+        url: '/institutionen/institution/:institutionId',
+        params: {
+            institutionId: '',
         },
-        {
-            name: 'parameter',
-            template: '<dv-parameter-view flex="auto" class="overflow-scroll" ebeguParameter="vm.ebeguParameter"></dv-parameter-view>',
-            url: '/parameter',
+        resolve: {
+            traegerschaften: traegerschaftenResolver,
+            mandant: mandantResolver
         },
-        {
-            name: 'gesuchsperiode',
-            template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
-            + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
-            url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
-            params: {
-                gesuchsperiodeId: '',
-            },
-
-            resolve: {
-                traegerschaften: getTraegerschaften,
-                mandant: getMandant
-            }
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        }
+    },
+    {
+        name: 'admin.institutionstammdaten',
+        template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
+        url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
+        params: {
+            institutionStammdatenId: '',
         },
-        {
-            name: 'ferieninsel',
-            template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
-            url: '/ferieninsel',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
         },
-    ];
-}
-
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getApplicationProperties.$inject = ['ApplicationPropertyRS'];
-
-/* @ngInject */
-function getApplicationProperties(ApplicationPropertyRS: ApplicationPropertyRS) {
-    return ApplicationPropertyRS.getAllApplicationProperties();
-}
-
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getInstitutionen.$inject = ['InstitutionRS'];
-
-/* @ngInject */
-function getInstitutionen(InstitutionRS: InstitutionRS) {
-    return InstitutionRS.getAllActiveInstitutionen();
-}
-
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getTraegerschaften.$inject = ['TraegerschaftRS'];
-
-/* @ngInject */
-function getTraegerschaften(TraegerschaftRS: TraegerschaftRS) {
-    return TraegerschaftRS.getAllActiveTraegerschaften();
-}
-
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
-getMandant.$inject = ['MandantRS'];
-
-/* @ngInject */
-function getMandant(MandantRS: MandantRS) {
-    return MandantRS.getFirst();
-}
+    },
+    {
+        name: 'admin.parameter',
+        template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
+        url: '/parameter',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
+    },
+    {
+        name: 'admin.gesuchsperiode',
+        template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
+        + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
+        url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
+        params: {
+            gesuchsperiodeId: '',
+        },
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
+    },
+    {
+        name: 'admin.ferieninsel',
+        template: '<dv-ferieninsel-view flex="auto" class="overflow-scroll"></dv-ferieninsel-view>',
+        url: '/ferieninsel',
+        data: {
+            roles: TSRoleUtil.getAdministratorRevisorRole(),
+        },
+    },
+];

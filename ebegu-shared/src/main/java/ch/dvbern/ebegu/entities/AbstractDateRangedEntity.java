@@ -22,6 +22,7 @@ import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -77,15 +78,10 @@ public class AbstractDateRangedEntity extends AbstractEntity implements Gueltigk
 			.toString();
 	}
 
-	public AbstractDateRangedEntity copyForMutation(AbstractDateRangedEntity mutation) {
-		super.copyForMutation(mutation);
-		mutation.setGueltigkeit(new DateRange(this.getGueltigkeit()));
-		return mutation;
-	}
-
-	public AbstractDateRangedEntity copyForErneuerung(AbstractDateRangedEntity mutation) {
-		super.copyForErneuerung(mutation);
-		mutation.setGueltigkeit(new DateRange(this.getGueltigkeit()));
-		return mutation;
+	@Nonnull
+	public AbstractDateRangedEntity copyAbstractDateRangedEntity(@Nonnull AbstractDateRangedEntity target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		target.setGueltigkeit(new DateRange(this.getGueltigkeit()));
+		return target;
 	}
 }

@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -55,6 +56,19 @@ public interface Authorizer {
 	void checkReadAuthorizationFall(String fallId);
 
 	/**
+	 * Returns true when the user is authorized to read the dossier
+	 */
+	boolean isReadAuthorizedDossier(@Nullable Dossier dossier);
+
+	/**
+	 * Returns true when the user is authorized to read the dossier and all subobjects it contains. This is method is useful for some cases
+	 * like when an Institution must get a dossier since it is only allowed when some gesuch of the dossier has a Betreuung of the
+	 * given institution
+	 * IMPORTANT. this method will do a deep check into the dossier so it will take more time. It should only be used when really needed.
+	 */
+	boolean isReadCompletelyAuthorizedDossier(@Nullable Dossier dossier);
+
+	/**
 	 * prueft ob der aktuell eingeloggte benutzer den Fall mit id schreibend bearbeiten darf
 	 */
 	void checkWriteAuthorization(@Nullable Fall fall);
@@ -82,12 +96,22 @@ public interface Authorizer {
 	/**
 	 * prueft, ob der aktuell eingeloggte Benutzer das uebergebene Dossier lesen darf
 	 */
+	void checkReadAuthorizationDossier(@Nonnull String dossierId);
+
+	/**
+	 * prueft, ob der aktuell eingeloggte Benutzer das uebergebene Dossier lesen darf
+	 */
 	void checkReadAuthorizationDossier(@Nullable Dossier dossier);
 
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer die betreuung lesen darf
 	 */
 	void checkReadAuthorization(@Nullable Betreuung betr);
+
+	/**
+	 * Prueft, ob der aktuell eingeloggte Benutzer den uebergebenen Benutzer lesen darf
+	 */
+	void checkReadAuthorization(@Nonnull Benutzer benutzer);
 
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer die betreuung schreibend bearbeiten darf

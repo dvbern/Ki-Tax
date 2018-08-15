@@ -13,34 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AbstractGesuchViewController from '../abstractGesuchView';
 import {IComponentOptions, IPromise} from 'angular';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSBetreuung from '../../../models/TSBetreuung';
 import TSAbwesenheitContainer from '../../../models/TSAbwesenheitContainer';
+import TSBetreuung from '../../../models/TSBetreuung';
 import TSKindContainer from '../../../models/TSKindContainer';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import ErrorService from '../../../core/errors/service/ErrorService';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import ITranslateService = angular.translate.ITranslateService;
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
-let template = require('./abwesenheitView.html');
-require('./abwesenheitView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class AbwesenheitViewComponentConfig implements IComponentOptions {
     transclude = false;
-    bindings: any = {};
-    template = template;
+    bindings = {};
+    template = require('./abwesenheitView.html');
     controller = AbwesenheitViewController;
     controllerAs = 'vm';
 }
@@ -62,17 +60,16 @@ export class AbwesenheitUI {
 
 export class AbwesenheitViewController extends AbstractGesuchViewController<Array<AbwesenheitUI>> {
 
-    betreuungList: Array<KindBetreuungUI>;
-    private removed: boolean;
-    private changedBetreuungen: Array<TSBetreuung> = [];
-
     static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'DvDialog',
         '$translate', '$q', 'ErrorService', '$scope', '$timeout'];
 
-    /* @ngInject */
+    betreuungList: Array<KindBetreuungUI>;
+    private removed: boolean;
+    private readonly changedBetreuungen: Array<TSBetreuung> = [];
+
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private DvDialog: DvDialog, private $translate: ITranslateService,
-                private $q: IQService, private errorService: ErrorService, $scope: IScope, $timeout: ITimeoutService) {
+                wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog, private readonly $translate: ITranslateService,
+                private readonly $q: IQService, private readonly errorService: ErrorService, $scope: IScope, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ABWESENHEIT, $timeout);
         this.initViewModel();
@@ -90,10 +87,10 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * wird eine neue Liste gemacht, die ein Object fuer jedes Kind und Betreuung hat
      */
     private setBetreuungList(): void {
-        let kinderList: Array<TSKindContainer> = this.gesuchModelManager.getKinderWithBetreuungList();
+        const kinderList: Array<TSKindContainer> = this.gesuchModelManager.getKinderWithBetreuungList();
         this.betreuungList = [];
         kinderList.forEach((kind) => {
-            let betreuungenFromKind: Array<TSBetreuung> = kind.betreuungen;
+            const betreuungenFromKind: Array<TSBetreuung> = kind.betreuungen;
             betreuungenFromKind.forEach((betreuung) => {
                 if (betreuung.institutionStammdaten && betreuung.institutionStammdaten.betreuungsangebotTyp &&
                     (betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
@@ -129,7 +126,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             }
 
             //Zuerst loeschen wir alle Abwesenheiten jeder Betreuung
-            let kinderList: Array<TSKindContainer> = this.gesuchModelManager.getKinderWithBetreuungList();
+            const kinderList: Array<TSKindContainer> = this.gesuchModelManager.getKinderWithBetreuungList();
             kinderList.forEach((kindContainer: TSKindContainer) => {
                 kindContainer.betreuungen.forEach((betreuung: TSBetreuung) => {
                     betreuung.abwesenheitContainers.length = 0;
@@ -171,7 +168,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      */
     public removeAbwesenheitConfirm(abwesenheit: AbwesenheitUI): void {
         if (abwesenheit.abwesenheit.id) {
-            let remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
+            const remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
             this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: remTitleText,
                 deleteText: '',
@@ -186,7 +183,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     }
 
     private removeAbwesenheit(abwesenheit: AbwesenheitUI) {
-        let indexOf = this.model.lastIndexOf(abwesenheit);
+        const indexOf = this.model.lastIndexOf(abwesenheit);
         if (indexOf >= 0) {
             if (abwesenheit.kindBetreuung) {
                 this.removed = true;
@@ -234,7 +231,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         if (oldKindID && oldKindID !== '' && oldBetreuungID && oldBetreuungID !== '') {
             this.gesuchModelManager.findKindById(oldKindID);
             this.gesuchModelManager.findBetreuungById(oldBetreuungID);
-            let betreuungToWorkWith: TSBetreuung = this.gesuchModelManager.getBetreuungToWorkWith();
+            const betreuungToWorkWith: TSBetreuung = this.gesuchModelManager.getBetreuungToWorkWith();
             if (betreuungToWorkWith && betreuungToWorkWith.id) {
                 this.addChangedBetreuungToList(betreuungToWorkWith);
             }

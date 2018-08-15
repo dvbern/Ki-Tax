@@ -13,10 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {downgradeComponent} from '@angular/upgrade/static';
-import 'angular';
-import {DvNgNavbar} from '../core/component/dv-ng-navbar/dv-ng-navbar';
-import {EbeguWebCore} from '../core/core.module';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
@@ -32,12 +31,13 @@ import {EinkommensverschlechterungViewComponentConfig} from './component/einkomm
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
+import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
 import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituationResultateView/finanzielleSituationResultateView';
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
-import {GesuchToolbarComponentConfig, GesuchToolbarGesuchstellerComponentConfig} from './component/gesuchToolbar/gesuchToolbar';
+import {DossierToolbarComponentConfig, DossierToolbarGesuchstellerComponentConfig} from './component/dossierToolbar/dossierToolbar';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
@@ -45,7 +45,6 @@ import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdat
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
-import './gesuch.module.less';
 import {gesuchRun} from './gesuch.route';
 
 export const EbeguWebGesuch =
@@ -69,8 +68,8 @@ export const EbeguWebGesuch =
         .component('fallCreationView', new FallCreationViewComponentConfig())
         .component('verfuegenListView', new VerfuegenListViewComponentConfig())
         .component('verfuegenView', new VerfuegenViewComponentConfig())
-        .component('gesuchToolbar', new GesuchToolbarComponentConfig())
-        .component('gesuchToolbarGesuchsteller', new GesuchToolbarGesuchstellerComponentConfig())
+        .component('dossierToolbar', new DossierToolbarComponentConfig())
+        .component('dossierToolbarGesuchsteller', new DossierToolbarGesuchstellerComponentConfig())
         .component('einkommensverschlechterungInfoView', new EinkommensverschlechterungInfoViewComponentConfig())
         .component('einkommensverschlechterungSteuernView', new EinkommensverschlechterungSteuernViewComponentConfig())
         .component('einkommensverschlechterungView', new EinkommensverschlechterungViewComponentConfig())
@@ -80,8 +79,6 @@ export const EbeguWebGesuch =
         .component('kommentarView', new KommentarViewComponentConfig())
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
-        .directive(
-            'dvNgNavbar',
-            downgradeComponent({component: DvNgNavbar}) as angular.IDirectiveFactory
-        );
+        .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
+;
 

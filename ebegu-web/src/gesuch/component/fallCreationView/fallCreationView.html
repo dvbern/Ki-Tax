@@ -1,3 +1,4 @@
+
 <!--
   ~ Ki-Tax: System for the management of external childcare subsidies
   ~ Copyright (C) 2017 City of Bern Switzerland
@@ -80,19 +81,24 @@
                         </div>
                     </div>
 
-                    <!-- Regeln gültig ab (Datum) -->
+                    <!-- Regeln gueltig ab (Datum) -->
                     <div class="row" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="REGELN_GUELTIG_AB" for="regelnGueltigAb_ID">
+                                <label class="md-no-float" for="regelnGueltigAb_ID">
+                                    <span data-translate="REGELN_GUELTIG_AB"></span>
+                                    <dv-tooltip input-id="regelnGueltigAb_ID"
+                                                text="'REGELN_GUELTIG_AB_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-datepicker input-id="regelnGueltigAb_ID" name="regelnGueltigAb"
-                                               ng-model="vm.getGesuchModel().regelnGueltigAb" ng-required="false"
-                                               class="input-element">
-                                </dv-datepicker>
-                                <dv-error-messages input-id="regelnGueltigAb_ID" for="vm.form.regelnGueltigAb.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-label">
+                                    <dv-datepicker input-id="regelnGueltigAb_ID" name="regelnGueltigAb"
+                                                   ng-model="vm.getGesuchModel().regelnGueltigAb" ng-required="false"
+                                                   class="input-element">
+                                    </dv-datepicker>
+                                    <dv-error-messages input-id="regelnGueltigAb_ID" for="vm.form.regelnGueltigAb.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>

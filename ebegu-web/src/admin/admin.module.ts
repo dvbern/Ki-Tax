@@ -13,33 +13,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'angular';
-import 'angular-smart-table';
 import {downgradeComponent} from '@angular/upgrade/static';
-import {EbeguWebCore} from '../core/core.module';
-import {InstitutionRS} from '../core/service/institutionRS.rest';
-import './admin.module.less';
+import * as angular from 'angular';
+import 'angular-smart-table';
+import {EbeguWebCore} from '../app/core/core.angularjs.module';
+import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
+import {FerieninselViewComponentConfig} from './component/ferieninselView/ferieninselView';
+import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
 import {InstitutionenListViewComponentConfig} from './component/institutionenListView/institutionenListView';
 import {InstitutionStammdatenViewComponentConfig} from './component/institutionStammdatenView/institutionStammdatenView';
 import {InstitutionViewComponentConfig} from './component/institutionView/institutionView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
+import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {ApplicationPropertyRS} from './service/applicationPropertyRS.rest';
+import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguParameterRS} from './service/ebeguParameterRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
+import {FerieninselStammdatenRS} from './service/ferieninselStammdatenRS.rest';
 import {ReindexRS} from './service/reindexRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
-import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
-import {FerieninselStammdatenRS} from './service/ferieninselStammdatenRS.rest';
-import {FerieninselViewComponentConfig} from './component/ferieninselView/ferieninselView';
-import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
-import {DailyBatchRS} from './service/dailyBatchRS.rest';
 
 export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name, 'smart-table'])
-    .service('ApplicationPropertyRS', ApplicationPropertyRS)
     .service('InstitutionRS', InstitutionRS)
     .service('EbeguParameterRS', EbeguParameterRS)
     .service('EbeguVorlageRS', EbeguVorlageRS)
@@ -53,16 +51,11 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .component('dvInstitutionStammdatenView', new InstitutionStammdatenViewComponentConfig())
     .component('dvParameterView', new ParameterViewComponentConfig())
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
-    .directive(
-        'dvTraegerschaftView',
-        downgradeComponent({component: TraegerschaftViewComponent}) as angular.IDirectiveFactory
-    )
-    .directive(
-        'testdatenView',
-        downgradeComponent({component: TestdatenViewComponent}) as angular.IDirectiveFactory
-    )
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())
+    .directive('dvTraegerschaftView', downgradeComponent({component: TraegerschaftViewComponent}))
+    .directive('dvTestdatenView', downgradeComponent({component: TestdatenViewComponent}))
+    .directive('dvBatchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
     .run(adminRun);
 
 export default EbeguWebAdmin;

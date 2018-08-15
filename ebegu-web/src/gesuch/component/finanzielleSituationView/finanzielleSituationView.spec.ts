@@ -24,7 +24,7 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 
-describe('finanzielleSituationView', function () {
+describe('finanzielleSituationView', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
@@ -37,26 +37,26 @@ describe('finanzielleSituationView', function () {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
-        let wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
+        const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         berechnungsManager = $injector.get('BerechnungsManager');
-        let $rootScope = $injector.get('$rootScope');
+        const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
 
-    beforeEach(function () {
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+    beforeEach(() => {
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
         gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
         gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
     });
 
-    it('should be defined', function () {
+    it('should be defined', () => {
         spyOn(berechnungsManager, 'calculateFinanzielleSituation').and.returnValue({});
-        let bindings: {};
+        const bindings = {};
         component = $componentController('finanzielleSituationView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });

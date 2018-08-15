@@ -21,23 +21,22 @@ import IPromise = angular.IPromise;
 
 
 export class TestFaelleRS {
-    serviceURL: string;
-    http: IHttpService;
-    ebeguRestUtil: EbeguRestUtil;
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    /* @ngInject */
-    constructor($http: IHttpService, REST_API: string, ebeguRestUtil: EbeguRestUtil) {
+
+    serviceURL: string;
+
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'testfaelle';
-        this.http = $http;
-        this.ebeguRestUtil = ebeguRestUtil;
     }
 
     public getServiceName(): string {
         return 'TestFaelleRS';
     }
 
-    public createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IHttpPromise<String> {
+    public createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/testfallgs/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + gemeindeId
             + '/' + bestaetigt + '/' + verfuegen + '/' + encodeURIComponent(username));
     }
@@ -49,12 +48,12 @@ export class TestFaelleRS {
 
 
 
-    public createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): IHttpPromise<String> {
+    public createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/testfall/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + gemeindeId
             + '/' + bestaetigt + '/' + verfuegen);
     }
 
-    public mutiereFallHeirat(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<String> {
+    public mutiereFallHeirat(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/mutationHeirat/' + dossierid + '/' +
             encodeURIComponent(gesuchsperiodeid), {
             params: {
@@ -64,7 +63,7 @@ export class TestFaelleRS {
         });
     }
 
-    public mutiereFallScheidung(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<String> {
+    public mutiereFallScheidung(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/mutationScheidung/' + dossierid + '/' +
             encodeURIComponent(gesuchsperiodeid), {
             params: {
@@ -74,19 +73,19 @@ export class TestFaelleRS {
         });
     }
 
-    public resetSchulungsdaten(): IHttpPromise<String> {
+    public resetSchulungsdaten(): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/schulung/reset');
     }
 
-    public createSchulungsdaten(): IHttpPromise<String> {
+    public createSchulungsdaten(): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/schulung/create');
     }
 
-    public deleteSchulungsdaten(): IHttpPromise<String> {
+    public deleteSchulungsdaten(): IHttpPromise<string> {
         return this.http.delete(this.serviceURL + '/schulung/delete');
     }
 
-    public getSchulungBenutzer(): IPromise<String[]> {
+    public getSchulungBenutzer(): IPromise<string[]> {
         return this.http.get(this.serviceURL + '/schulung/public/user').then((response: any) => {
             return response.data;
         });

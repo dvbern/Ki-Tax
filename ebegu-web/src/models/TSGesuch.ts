@@ -13,21 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSKindContainer from './TSKindContainer';
-import TSAbstractAntragEntity from './TSAbstractAntragEntity';
-import TSFamiliensituation from './TSFamiliensituation';
-import TSEinkommensverschlechterungInfo from './TSEinkommensverschlechterungInfo';
+import * as moment from 'moment';
+import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
-import TSGesuchstellerContainer from './TSGesuchstellerContainer';
-import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
-import TSFamiliensituationContainer from './TSFamiliensituationContainer';
-import {TSEingangsart} from './enums/TSEingangsart';
 import {getSchulamtBetreuungsangebotTypValues, isOfAnyBetreuungsangebotTyp, TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
-import {TSAntragStatus} from './enums/TSAntragStatus';
-import * as moment from 'moment';
-import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
+import {TSEingangsart} from './enums/TSEingangsart';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';
+import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
+import TSAbstractAntragEntity from './TSAbstractAntragEntity';
+import TSEinkommensverschlechterungInfo from './TSEinkommensverschlechterungInfo';
+import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
+import TSFamiliensituation from './TSFamiliensituation';
+import TSFamiliensituationContainer from './TSFamiliensituationContainer';
+import TSGesuchstellerContainer from './TSGesuchstellerContainer';
+import TSKindContainer from './TSKindContainer';
 
 export default class TSGesuch extends TSAbstractAntragEntity {
 
@@ -235,18 +235,14 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         if (this.gesuchsteller1 && this.gesuchsteller1.getUmzugAdressen().length > 0) {
             return true;
         }
-        if (this.gesuchsteller2 && this.gesuchsteller2.getUmzugAdressen().length > 0) {
-            return true;
-        }
-        return false;
+        return this.gesuchsteller2 && this.gesuchsteller2.getUmzugAdressen().length > 0;
     }
 
     /**
-     *
-     * @returns {any} Alle KindContainer in denen das Kind Betreuung benoetigt
+     * Alle KindContainer in denen das Kind Betreuung benoetigt
      */
     public getKinderWithBetreuungList(): Array<TSKindContainer> {
-        let listResult: Array<TSKindContainer> = [];
+        const listResult: Array<TSKindContainer> = [];
         if (this.kindContainers) {
             this.kindContainers.forEach((kind) => {
                 if (kind.kindJA.familienErgaenzendeBetreuung) {
@@ -262,12 +258,12 @@ export default class TSGesuch extends TSAbstractAntragEntity {
      * ACHTUNG! Diese Methode gibt auch true zurueck wenn es keine Betreuungen gibt, was nicht immer richtig ist
      */
     private areThereOnlyAngeboteOfType(types: TSBetreuungsangebotTyp[]): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
         }
-        for (let kind of kinderWithBetreuungList) {
-            for (let betreuung of kind.betreuungen) {
+        for (const kind of kinderWithBetreuungList) {
+            for (const betreuung of kind.betreuungen) {
                 if (betreuung.institutionStammdaten && !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp, types)) {
                     return false;
                 }
@@ -296,12 +292,12 @@ export default class TSGesuch extends TSAbstractAntragEntity {
      * Returns true when all Betreuungen are geschlossen ohne verfuegung
      */
     public areThereOnlyGeschlossenOhneVerfuegung(): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
         }
-        for (let kind of kinderWithBetreuungList) {
-            for (let betreuung of kind.betreuungen) {
+        for (const kind of kinderWithBetreuungList) {
+            for (const betreuung of kind.betreuungen) {
                 if (betreuung.betreuungsstatus !== TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
                     return false;
                 }
@@ -311,9 +307,9 @@ export default class TSGesuch extends TSAbstractAntragEntity {
     }
 
     public hasBetreuungInStatusWarten(): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
-        for (let kind of kinderWithBetreuungList) {
-            for (let betreuung of kind.betreuungen) {
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        for (const kind of kinderWithBetreuungList) {
+            for (const betreuung of kind.betreuungen) {
                 if (betreuung.betreuungsstatus === TSBetreuungsstatus.WARTEN) {
                     return true;
                 }
@@ -352,8 +348,8 @@ export default class TSGesuch extends TSAbstractAntragEntity {
      * @returns {boolean}
      */
     public isThereAnyBetreuung(): boolean {
-        let kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
-        for (let kind of kinderWithBetreuungList) {
+        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        for (const kind of kinderWithBetreuungList) {
             if (kind.betreuungen && kind.betreuungen.length > 0) {
                 return true;
             }
@@ -361,13 +357,9 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         return false;
     }
 
-    public extractKindFromKindNumber(kindNumber: number): TSKindContainer {
+    public extractKindFromKindNumber(kindNumber: number): TSKindContainer | undefined {
         if (this.kindContainers && kindNumber > 0) {
-            for (let i = 0; i < this.kindContainers.length; i++) {
-                if (this.kindContainers[i].kindNummer === kindNumber) {
-                    return this.kindContainers[i];
-                }
-            }
+            return this.kindContainers.find(kc => kc.kindNummer === kindNumber);
         }
         return undefined;
     }

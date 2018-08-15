@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSSprache} from './enums/TSSprache';
 import TSAbstractPersonEntity from './TSAbstractPersonEntity';
 import {TSGeschlecht} from './enums/TSGeschlecht';
 import * as moment from 'moment';
@@ -26,10 +27,11 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     private _diplomatenstatus: boolean;
     private _ewkPersonId: string;
     private _ewkAbfrageDatum: moment.Moment;
+    private _korrespondenzSprache: TSSprache;
 
     constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht,
                 email?: string, mobile?: string, telefon?: string, telefonAusland?: string,
-                diplomatenstatus?: boolean, ewkPersonId?: string, ewkAbfrageDatum?: moment.Moment) {
+                diplomatenstatus?: boolean, ewkPersonId?: string, ewkAbfrageDatum?: moment.Moment, korrespondenzSprache?: TSSprache) {
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._mail = email;
         this._mobile = mobile;
@@ -38,6 +40,7 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
         this._diplomatenstatus = diplomatenstatus;
         this._ewkPersonId = ewkPersonId;
         this._ewkAbfrageDatum = ewkAbfrageDatum;
+        this._korrespondenzSprache = korrespondenzSprache;
     }
 
     public get mail(): string {
@@ -94,6 +97,14 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
 
     set ewkAbfrageDatum(value: moment.Moment) {
         this._ewkAbfrageDatum = value;
+    }
+
+    get korrespondenzSprache(): TSSprache {
+        return this._korrespondenzSprache;
+    }
+
+    set korrespondenzSprache(value: TSSprache) {
+        this._korrespondenzSprache = value;
     }
 
     public getPhone(): string {

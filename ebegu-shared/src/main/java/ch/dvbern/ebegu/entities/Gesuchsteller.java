@@ -19,12 +19,17 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
@@ -65,6 +70,12 @@ public class Gesuchsteller extends AbstractPersonEntity {
 
 	@NotNull
 	private boolean diplomatenstatus;
+
+	@Nullable
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private Sprache korrespondenzSprache;
+
 
 	public Gesuchsteller() {
 	}
@@ -125,28 +136,27 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		this.diplomatenstatus = diplomatenstatus;
 	}
 
-	@Nonnull
-	private Gesuchsteller copyForMutationOrErneuerung(@Nonnull Gesuchsteller mutation) {
-		mutation.setMail(this.getMail());
-		mutation.setMobile(this.getMobile());
-		mutation.setTelefon(this.getTelefon());
-		mutation.setTelefonAusland(this.getTelefonAusland());
-		mutation.setEwkPersonId(this.getEwkPersonId());
-		mutation.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
-		mutation.setDiplomatenstatus(this.isDiplomatenstatus());
-		return mutation;
+	@Nullable
+	public Sprache getKorrespondenzSprache() {
+		return korrespondenzSprache;
+	}
+
+	public void setKorrespondenzSprache(@Nullable Sprache korrespondenzSprachen) {
+		this.korrespondenzSprache = korrespondenzSprachen;
 	}
 
 	@Nonnull
-	public Gesuchsteller copyForMutation(@Nonnull Gesuchsteller mutation) {
-		super.copyForMutation(mutation);
-		return copyForMutationOrErneuerung(mutation);
-	}
-
-	@Nonnull
-	public Gesuchsteller copyForErneuerung(@Nonnull Gesuchsteller mutation) {
-		super.copyForErneuerung(mutation);
-		return copyForMutationOrErneuerung(mutation);
+	public Gesuchsteller copyGesuchsteller(@Nonnull Gesuchsteller target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractPersonEntity(target, copyType);
+		target.setMail(this.getMail());
+		target.setMobile(this.getMobile());
+		target.setTelefon(this.getTelefon());
+		target.setTelefonAusland(this.getTelefonAusland());
+		target.setEwkPersonId(this.getEwkPersonId());
+		target.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
+		target.setDiplomatenstatus(this.isDiplomatenstatus());
+		target.setKorrespondenzSprache(this.getKorrespondenzSprache());
+		return target;
 	}
 
 	@Override
@@ -170,7 +180,7 @@ public class Gesuchsteller extends AbstractPersonEntity {
 			Objects.equals(getTelefon(), otherGesuchsteller.getTelefon()) &&
 			Objects.equals(getTelefonAusland(), otherGesuchsteller.getTelefonAusland()) &&
 			EbeguUtil.isSameOrNullStrings(getEwkPersonId(), otherGesuchsteller.getEwkPersonId()) &&
-			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus());
+			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus()) &&
+			Objects.equals(getKorrespondenzSprache(), otherGesuchsteller.getKorrespondenzSprache());
 	}
-
 }

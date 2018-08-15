@@ -137,7 +137,7 @@ export default class TSGesuchstellerContainer extends TSAbstractEntity {
      */
     public getUmzugAdressen(): Array<TSAdresseContainer> {
         if (this.adressen && this.adressen.length > 0) {
-            let adressenCopy: Array<TSAdresseContainer> = angular.copy(this.adressen);
+            const adressenCopy: Array<TSAdresseContainer> = angular.copy(this.adressen);
             adressenCopy.splice(0, 1);
             return adressenCopy;
         }

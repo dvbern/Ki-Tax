@@ -1,0 +1,53 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<mat-dialog-content role="document" tabindex="-1" id="dialogContent">
+
+    <div>
+        <h2 [textContent]="'FACHLICHE_HILFE' | translate"></h2>
+        <p>Gesundheits- und Fürsorgedirektion des Kantons Bern</p>
+        <p>Sozialamt</p>
+        <p>Rathausgasse 1</p>
+        <p>3011 Bern</p>
+        <p><a href="mailto:kibon@gef.be.ch">kibon@gef.be.ch</a></p>
+        <p><a href="tel:+41 31 123 45 67">+41 31 123 45 67</a></p>
+    </div>
+
+    <div class="marginTop40">
+        <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
+        <p>DV Bern AG</p>
+        <p>Nussbaumstrasse 21</p>
+        <p>3021 Bern</p>
+        <p><a href="mailto:kibon@dvbern.ch">kibon@dvbern.ch</a></p>
+        <p><a href="tel:+41 31 123 45 67">+41 31 123 45 67</a></p>
+    </div>
+
+    <div class="marginTop40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a href="" (click)="download()">
+                <i class="fa fa-file-pdf-o" aria-label="PDF"></i>
+                <span>&nbsp;PDF</span>
+            </a>
+        </p>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions  class="marginTop40" layout-align="center center">
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+    </div>
+</mat-dialog-actions>

@@ -143,13 +143,13 @@ public interface GesuchService {
 	 * Gibt alle Antraege des aktuell eingeloggten Benutzers
 	 */
 	@Nonnull
-	List<Gesuch> getAntraegeByCurrentBenutzer();
+	List<Gesuch> getAntraegeOfDossier(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt ein DTO mit saemtlichen Antragen eins bestimmten Falls zurueck
+	 * Gibt ein DTO mit saemtlichen Antragen eins bestimmten Dossiers zurueck
 	 */
 	@Nonnull
-	List<JaxAntragDTO> getAllAntragDTOForFall(String fallId);
+	List<JaxAntragDTO> getAllAntragDTOForDossier(String dossierId);
 
 	/**
 	 * Erstellt eine neue Mutation fuer die Gesuchsperiode und Fall des uebergebenen Antrags. Es wird immer der letzt
@@ -196,6 +196,12 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	List<String> getAllGesuchIDsForDossier(@Nonnull String dossierId);
+
+	/**
+	 * Alle Gesuche des Dossiers zurueckgeben
+	 */
+	@Nonnull
+	List<Gesuch> getAllGesuchForDossier(@Nonnull String dossierId);
 
 	/**
 	 * Alle Gesuche fuer den gegebenen Fall in der gegebenen Periode
@@ -256,11 +262,18 @@ public interface GesuchService {
 	boolean isNeustesGesuch(@Nonnull Gesuch gesuch);
 
 	/**
-	 * Gibt die ID des neuesten Gesuchs fuer einen Fall und eine Gesuchsperiode zurueck. Dieses kann auch ein
+	 * Gibt die ID des neuesten Gesuchs fuer ein Dossier und eine Gesuchsperiode zurueck. Dieses kann auch ein
 	 * Gesuch sein, fuer welches ich nicht berechtigt bin!
 	 */
 	@Nonnull
-	Optional<String> getIdOfNeuestesGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier);
+	Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier);
+
+
+	/**
+	 * Returns the newest Gesuch for the given Fall. It will return the newest Gesuch for which the user has read-rights
+	 */
+	@Nonnull
+	Optional<String> getIdOfNeuestesGesuchForDossier(@Nonnull Dossier dossier);
 
 	/**
 	 * Gibt das Geusch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das Flag FinSitStatus

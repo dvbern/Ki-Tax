@@ -13,46 +13,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IFilterService} from 'angular';
 import {StateService} from '@uirouter/core';
+import {IComponentOptions, IFilterService} from 'angular';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
+import SearchRS from '../../gesuch/service/searchRS.rest';
+import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
-import SearchRS from '../../gesuch/service/searchRS.rest';
-let template = require('./faelleListView.html');
-require('./faelleListView.less');
+import IPromise = angular.IPromise;
 
 export class FaelleListViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./faelleListView.html');
     controller = FaelleListViewController;
     controllerAs = 'vm';
 }
 
 export class FaelleListViewController {
 
+    static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
+
     private antragList: Array<TSAntragDTO>;
     totalResultCount: string = '0';
 
-
-    static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
-
-    constructor(private $filter: IFilterService, private gesuchModelManager: GesuchModelManager,
-                private $state: StateService, private $log: ILogService,
-                private authServiceRS: AuthServiceRS, private searchRS: SearchRS) {
-        this.initViewModel();
+    constructor(private readonly $filter: IFilterService, private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $state: StateService, private readonly $log: ILogService,
+                private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS) {
     }
-
-    private initViewModel() {
-        // this.updateAntragList();
-
-    }
-
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
@@ -76,17 +66,23 @@ export class FaelleListViewController {
      */
     public editFall(antrag: TSAntragDTO, event: any): void {
         if (antrag) {
-            let isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since last time
                 this.gesuchModelManager.clearGesuch();
                 if (isAnyStatusOfVerfuegt(antrag.status)) {
-                    this.openGesuch(antrag, 'gesuch.verfuegen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.verfuegen',
+                        {gesuchId: antrag.antragId},
+                        isCtrlKeyPressed);
                 } else {
-                    this.openGesuch(antrag, 'gesuch.betreuungen', isCtrlKeyPressed);
+                    this.openGesuch(antrag, 'gesuch.betreuungen',
+                        {gesuchId: antrag.antragId},
+                        isCtrlKeyPressed);
                 }
             } else {
-                this.openGesuch(antrag, 'gesuch.fallcreation', isCtrlKeyPressed);
+                this.openGesuch(antrag, 'gesuch.fallcreation',
+                    {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId},
+                    isCtrlKeyPressed);
             }
         }
     }
@@ -95,15 +91,16 @@ export class FaelleListViewController {
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
      * @param antrag
      * @param urlToGoTo
+     * @param params
      * @param isCtrlKeyPressed true if user pressed ctrl when clicking
      */
-    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, isCtrlKeyPressed: boolean): void {
+    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, params: any, isCtrlKeyPressed: boolean): void {
         if (antrag) {
             if (isCtrlKeyPressed) {
-                let url = this.$state.href(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                const url = this.$state.href(urlToGoTo, params);
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNew: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go(urlToGoTo, params);
             }
         }
     }

@@ -22,6 +22,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -71,10 +72,19 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 		return builder.toComparison();
 	}
 
-	public Betreuungspensum copyForMutation(Betreuungspensum mutation) {
-		super.copyForMutation(mutation);
-		mutation.setNichtEingetreten(this.getNichtEingetreten());
-		return mutation;
+	@Nonnull
+	public Betreuungspensum copyBetreuungspensum(@Nonnull Betreuungspensum target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractPensumEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setNichtEingetreten(this.getNichtEingetreten());
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Override

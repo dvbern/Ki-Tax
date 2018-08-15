@@ -14,44 +14,46 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import * as moment from 'moment';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {getTSMonthValues, getTSMonthWithVorjahrValues, TSMonth} from '../../../models/enums/TSMonth';
-import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
-import WizardStepManager from '../../service/wizardStepManager';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSEinkommensverschlechterungInfoContainer from '../../../models/TSEinkommensverschlechterungInfoContainer';
-import EinkommensverschlechterungInfoRS from '../../service/einkommensverschlechterungInfoRS.rest';
-import * as moment from 'moment';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
+import TSEinkommensverschlechterungInfo from '../../../models/TSEinkommensverschlechterungInfo';
+import TSEinkommensverschlechterungInfoContainer from '../../../models/TSEinkommensverschlechterungInfoContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {RemoveDialogController} from '../../dialog/RemoveDialogController';
+import BerechnungsManager from '../../service/berechnungsManager';
 import EinkommensverschlechterungContainerRS from '../../service/einkommensverschlechterungContainerRS.rest';
-import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
+import EinkommensverschlechterungInfoRS from '../../service/einkommensverschlechterungInfoRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import WizardStepManager from '../../service/wizardStepManager';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./einkommensverschlechterungInfoView.html');
-require('./einkommensverschlechterungInfoView.less');
-let removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungInfoView.html');
     controller = EinkommensverschlechterungInfoViewController;
     controllerAs = 'vm';
 }
 
 export class EinkommensverschlechterungInfoViewController extends AbstractGesuchViewController<TSEinkommensverschlechterungInfoContainer> {
+
+    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
+        , 'WizardStepManager', 'DvDialog', '$q', 'EinkommensverschlechterungInfoRS', '$scope', 'AuthServiceRS',
+        'EinkommensverschlechterungContainerRS', '$timeout'];
 
     monthsStichtage: Array<TSMonth>;
     monthsStichtageWithVorjahr: Array<TSMonth>;
@@ -67,15 +69,10 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
         basisjahr: this.gesuchModelManager.getBasisjahr()
     };
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
-        , 'WizardStepManager', 'DvDialog', '$q', 'EinkommensverschlechterungInfoRS', '$scope', 'AuthServiceRS',
-        'EinkommensverschlechterungContainerRS', '$timeout'];
-
-    /* @ngInject */
     constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private errorService: ErrorService, private ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
-                private DvDialog: DvDialog, private $q: IQService, private einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
-                $scope: IScope, private authServiceRS: AuthServiceRS, private ekvContainerRS: EinkommensverschlechterungContainerRS,
+                private readonly errorService: ErrorService, private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
+                private readonly DvDialog: DvDialog, private readonly $q: IQService, private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
+                $scope: IScope, private readonly authServiceRS: AuthServiceRS, private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
                 $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
         this.initialEinkVersInfo = angular.copy(this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer);
@@ -143,7 +140,7 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
      */
     private getStichtagFromMonat(monat: TSMonth, basisJahrPlus: number): moment.Moment {
         if (monat) {
-            let jahr: number = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
+            const jahr: number = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
             if (monat === TSMonth.VORJAHR) {
                 return moment([jahr - 1, 11]); // 1. Dezember des Vorjahres
             }

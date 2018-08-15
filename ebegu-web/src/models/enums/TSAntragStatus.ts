@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSEingangsart} from './TSEingangsart';
 import {TSRole} from './TSRole';
 
 export enum TSAntragStatus {
@@ -96,7 +97,7 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
  * @returns {TSAntragStatus[]}
  */
 export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntragStatus> {
-    let allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
+    const allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
     switch (userrole) {
         case TSRole.SACHBEARBEITER_JA:
         case TSRole.ADMIN:
@@ -118,7 +119,7 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntrag
 }
 
 export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
-    let validStates: Array<TSAntragStatus> = [
+    const validStates: Array<TSAntragStatus> = [
         TSAntragStatus.NUR_SCHULAMT,
         TSAntragStatus.FREIGEGEBEN,
         TSAntragStatus.ERSTE_MAHNUNG,
@@ -171,4 +172,12 @@ export function isStatusVerfuegenVerfuegt(status: TSAntragStatus): boolean {
 export function isAnyStatusOfMahnung(status: TSAntragStatus): boolean {
     return status === TSAntragStatus.ERSTE_MAHNUNG || status === TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN
         || status === TSAntragStatus.ZWEITE_MAHNUNG || status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN;
+}
+
+export function  getStartAntragStatusFromEingangsart(eingangsart: TSEingangsart) {
+    if (TSEingangsart.ONLINE === eingangsart) {
+        return TSAntragStatus.IN_BEARBEITUNG_GS;
+    } else {
+        return TSAntragStatus.IN_BEARBEITUNG_JA;
+    }
 }

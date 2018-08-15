@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '../variables.less';
-@import '../mixins.less';
+@import (reference) '../variables.less';
+@import (reference) '../mixins.less';
 
 //    error styling
 md-input-container {
@@ -84,6 +84,11 @@ input[type="number"] {
     position: relative !important;
     display: block;
     background: none;
+    &.dv-dialog-select {
+        select {
+            background: @contrast-lighter;
+        }
+    }
     select {
         width: 100%;
         margin: 0;

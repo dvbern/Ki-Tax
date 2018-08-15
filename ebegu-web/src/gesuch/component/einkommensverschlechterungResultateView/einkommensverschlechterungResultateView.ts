@@ -14,30 +14,27 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import AbstractGesuchViewController from '../abstractGesuchView';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
+import TSFinanzModel from '../../../models/TSFinanzModel';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IEinkommensverschlechterungResultateStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
-import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSFinanzModel from '../../../models/TSFinanzModel';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import AbstractGesuchViewController from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-let template = require('./einkommensverschlechterungResultateView.html');
-require('./einkommensverschlechterungResultateView.less');
-
 export class EinkommensverschlechterungResultateViewComponentConfig implements IComponentOptions {
     transclude = false;
-    template = template;
+    template = require('./einkommensverschlechterungResultateView.html');
     controller = EinkommensverschlechterungResultateViewController;
     controllerAs = 'vm';
 }
@@ -47,19 +44,18 @@ export class EinkommensverschlechterungResultateViewComponentConfig implements I
  */
 export class EinkommensverschlechterungResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    resultatBasisjahr: TSFinanzielleSituationResultateDTO;
-    resultatProzent: string;
-
     static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$q', '$scope', 'AuthServiceRS', '$timeout'];
 
-    /* @ngInject */
+    resultatBasisjahr: TSFinanzielleSituationResultateDTO;
+    resultatProzent: string;
+
     constructor($stateParams: IEinkommensverschlechterungResultateStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private $q: IQService, $scope: IScope, private authServiceRS: AuthServiceRS,
+                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
                 $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
-        let parsedBasisJahrPlusNum = parseInt($stateParams.basisjahrPlus, 10);
+        const parsedBasisJahrPlusNum = parseInt($stateParams.basisjahrPlus, 10);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null, parsedBasisJahrPlusNum);
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
@@ -75,7 +71,7 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
 
     showResult(): boolean {
         if (this.model.getBasisJahrPlus() === 1) {
-            let ekvFuerBasisJahrPlus1 = this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1
+            const ekvFuerBasisJahrPlus1 = this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1
                 && this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 === true;
             return ekvFuerBasisJahrPlus1 === true;
 
@@ -207,8 +203,8 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
     public calculateVeraenderung(): string {
         if (this.resultatBasisjahr) {
 
-            let massgebendesEinkVorAbzFamGr = this.getResultate().massgebendesEinkVorAbzFamGr;
-            let massgebendesEinkVorAbzFamGrBJ = this.resultatBasisjahr.massgebendesEinkVorAbzFamGr;
+            const massgebendesEinkVorAbzFamGr = this.getResultate().massgebendesEinkVorAbzFamGr;
+            const massgebendesEinkVorAbzFamGrBJ = this.resultatBasisjahr.massgebendesEinkVorAbzFamGr;
             if (massgebendesEinkVorAbzFamGr && massgebendesEinkVorAbzFamGrBJ) {
 
                 // we divide it by 10000 because we need a result with two decimals

@@ -13,30 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import './traegerschaftView.less';
+import * as angular from 'angular';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatSort, MatSortable, MatTableDataSource} from '@angular/material';
-import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
+import {MatDialog, MatDialogConfig, MatSort, MatSortable, MatTableDataSource} from '@angular/material';
+import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
-let style = require('./traegerschaftView.less');
-let okDialogTempl = require('../../../gesuch/dialog/okDialogTemplate.html');
-let okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
-let removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-
-
 @Component({
     selector: 'dv-traegerschaft-view',
-    template: require('./traegerschaftView.html'),
+    templateUrl: './traegerschaftView.html',
+    styleUrls: ['./traegerschaftView.less']
 })
-export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit {
+export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
     @Input() traegerschaften: TSTraegerschaft[];
 
@@ -48,8 +42,11 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     @ViewChild(MatSort) sort: MatSort;
 
 
-    constructor(private traegerschaftRS: TraegerschaftRS, private errorService: ErrorService, private dvDialog: DvDialog,
+    constructor(private readonly traegerschaftRS: TraegerschaftRS,
+                private readonly errorService: ErrorService,
+                private readonly dialog: MatDialog,
                 authServiceRS: AuthServiceRS) {
+
         super(authServiceRS);
     }
 
@@ -74,21 +71,25 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     }
 
     removeTraegerschaft(traegerschaft: any): void {
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            deleteText: '',
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE',
-            parentController: undefined,
-            elementID: undefined
-        })
-            .then(() => {   //User confirmed removal
-                this.traegerschaft = undefined;
-                this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then((response) => {
-                    let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                    if (index > -1) {
-                        this.traegerschaften.splice(index, 1);
-                        this.refreshTraegerschaftenList();
-                    }
-                });
+        };
+
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe((userAccepted) => {   //User confirmed removal
+                if (userAccepted) {
+                    this.traegerschaft = undefined;
+                    this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
+                        const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                        if (index > -1) {
+                            this.traegerschaften.splice(index, 1);
+                            this.refreshTraegerschaftenList();
+                        }
+                    });
+                }
             });
     }
 
@@ -100,12 +101,12 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     saveTraegerschaft(): void {
         if (this.form.valid) {
             this.errorService.clearAll();
-            let newTraegerschaft: boolean = this.traegerschaft.isNew();
+            const newTraegerschaft: boolean = this.traegerschaft.isNew();
             this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
                 if (newTraegerschaft) {
                     this.traegerschaften.push(traegerschaft);
                 } else {
-                    let index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                    const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
                     if (index > -1) {
                         this.traegerschaften[index] = traegerschaft;
                         EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);

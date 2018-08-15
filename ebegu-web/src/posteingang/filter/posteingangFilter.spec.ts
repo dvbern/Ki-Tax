@@ -23,7 +23,7 @@ import TSMitteilung from '../../models/TSMitteilung';
 import TSUser from '../../models/TSUser';
 import {EbeguWebPosteingang} from '../posteingang.module';
 
-describe('posteingangFilter', function () {
+describe('posteingangFilter', () => {
 
     let posteingangFilter: any;
     let mitteilungArray: Array<TSMitteilung> = [];
@@ -37,39 +37,39 @@ describe('posteingangFilter', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         posteingangFilter = $injector.get('$filter')('posteingangFilter');
 
-        let ja1 = new TSUser();
+        const ja1 = new TSUser();
         ja1.nachname = 'Blaser';
         ja1.vorname = 'Kurt';
 
-        let ja2 = new TSUser();
+        const ja2 = new TSUser();
         ja2.nachname = 'Becker';
         ja2.vorname = 'Julian';
 
-        let gesuchsteller1 = new TSUser();
+        const gesuchsteller1 = new TSUser();
         gesuchsteller1.nachname = 'Berger';
         gesuchsteller1.vorname = 'Michael';
-        let fall1 = new TSFall();
+        const fall1 = new TSFall();
         fall1.fallNummer = 112;
         fall1.besitzer = gesuchsteller1;
-        let dossier1 = new TSDossier();
+        const dossier1 = new TSDossier();
         dossier1.fall = fall1;
 
-        let gesuchsteller2 = new TSUser();
+        const gesuchsteller2 = new TSUser();
         gesuchsteller2.nachname = 'Gerber';
         gesuchsteller2.vorname = 'Emma';
-        let fall2 = new TSFall();
+        const fall2 = new TSFall();
         fall2.fallNummer = 108;
         fall2.besitzer = gesuchsteller2;
-        let dossier2 = new TSDossier();
+        const dossier2 = new TSDossier();
         dossier2.fall = fall2;
 
-        let fallNoBesitzer = new TSFall();
+        const fallNoBesitzer = new TSFall();
         fallNoBesitzer.fallNummer = 1010;
         fallNoBesitzer.besitzer = undefined;
-        let dossierNoBesitzer = new TSDossier();
+        const dossierNoBesitzer = new TSDossier();
         dossierNoBesitzer.fall = fallNoBesitzer;
 
         mitteilungArray = [];
@@ -96,39 +96,39 @@ describe('posteingangFilter', function () {
 
     }));
 
-    describe('API usage', function () {
-        it('should return an array with only the elements with the given Sender', function () {
+    describe('API usage', () => {
+        it('should return an array with only the elements with the given Sender', () => {
             expect(posteingangFilter(mitteilungArray, {sender: 'berger'})).toEqual([mitteilung1, mitteilung2]);
             expect(posteingangFilter(mitteilungArray, {sender: 'er'})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {sender: ''})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {sender: 'rrr'})).toEqual([]); // no familienname with this
                                                                                      // pattern
         });
-        it('should return an array with only the element with the given Fallnummer', function () {
+        it('should return an array with only the element with the given Fallnummer', () => {
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '000'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '0001'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '1'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'fallNummer': '12'}}})).toEqual([mitteilung1, mitteilung2]);
         });
-        it('should return an array with only the elements with the given Familie (Besitzer)', function () {
+        it('should return an array with only the elements with the given Familie (Besitzer)', () => {
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': 'berger'}}})).toEqual([mitteilung1, mitteilung2]);
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': 'er'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4]);
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': ''}}})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {'dossier' : {'fall': {'besitzer': 'rrr'}}})).toEqual([]);
         });
-        it('should return an array with only the elements with the given subject', function () {
+        it('should return an array with only the elements with the given subject', () => {
             expect(posteingangFilter(mitteilungArray, {subject: 'frage'})).toEqual([mitteilung1, mitteilung3]);
             expect(posteingangFilter(mitteilungArray, {subject: 'Dok'})).toEqual([mitteilung3]);
             expect(posteingangFilter(mitteilungArray, {subject: ''})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {subject: 'rrr'})).toEqual([]); // no familienname with this
                                                                                       // pattern
         });
-        it('should return an array with only the elements of the given sentDatum', function () {
+        it('should return an array with only the elements of the given sentDatum', () => {
             expect(posteingangFilter(mitteilungArray, {sentDatum: '02.02.2016'})).toEqual([mitteilung2, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {sentDatum: ''})).toEqual([mitteilung1, mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {sentDatum: '2016-05-05'})).toEqual([]);
         });
-        it('should return an array with only the elements of the given verantwortlicherBG/empfaenger', function () {
+        it('should return an array with only the elements of the given verantwortlicherBG/empfaenger', () => {
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'Julian Becker'})).toEqual([mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'Blaser'})).toEqual([mitteilung1, mitteilung2]);
             expect(posteingangFilter(mitteilungArray, {empfaenger: 'ser'})).toEqual([mitteilung1, mitteilung2]);

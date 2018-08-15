@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EwkRS from '../../../core/service/ewkRS.rest';
+import EwkRS from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -24,7 +24,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {StammdatenViewController} from './stammdatenView';
 
-describe('stammdatenView', function () {
+describe('stammdatenView', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let stammdatenViewController: StammdatenViewController;
@@ -39,13 +39,13 @@ describe('stammdatenView', function () {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(function ($injector: angular.auto.IInjectorService) {
+    beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
-        let wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
+        const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         $stateParams = $injector.get('$stateParams');
         $stateParams.gesuchstellerNumber = '1';
-        gesuchModelManager.initGesuch(false, TSEingangsart.PAPIER);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         ewkRS = $injector.get('EwkRS');
@@ -56,31 +56,31 @@ describe('stammdatenView', function () {
             undefined, $rootScope, ewkRS, $timeout);
     }));
 
-    describe('disableWohnadresseFor2GS', function () {
-        it('should return false for 1GS und Erstgesuch', function () {
+    describe('disableWohnadresseFor2GS', () => {
+        it('should return false for 1GS und Erstgesuch', () => {
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             expect(stammdatenViewController.disableWohnadresseFor2GS()).toBe(false);
         });
-        it('should return false for new 2GS und Mutation', function () {
+        it('should return false for new 2GS und Mutation', () => {
             stammdatenViewController.gesuchstellerNumber = 2;
             gesuchModelManager.setStammdatenToWorkWith(new TSGesuchstellerContainer(new TSGesuchsteller()));
             gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
             stammdatenViewController.model = gesuchModelManager.getStammdatenToWorkWith();
             expect(stammdatenViewController.disableWohnadresseFor2GS()).toBe(false);
         });
-        it('should return true for old 2GS und Mutation', function () {
+        it('should return true for old 2GS und Mutation', () => {
             gesuchModelManager.setGesuchstellerNumber(2);
-            let gs2 = new TSGesuchstellerContainer(new TSGesuchsteller());
+            const gs2 = new TSGesuchstellerContainer(new TSGesuchsteller());
             gs2.vorgaengerId = '123';
             gesuchModelManager.setStammdatenToWorkWith(gs2);
             gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
             expect(stammdatenViewController.disableWohnadresseFor2GS()).toBe(true);
         });
-        it('should return false for 1GS und Erstgesuch', function () {
+        it('should return false for 1GS und Erstgesuch', () => {
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             expect(stammdatenViewController.disableWohnadresseFor2GS()).toBe(false);
         });
-        it('should return true for 1GS und Mutation', function () {
+        it('should return true for 1GS und Mutation', () => {
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
             expect(stammdatenViewController.disableWohnadresseFor2GS()).toBe(true);

@@ -13,69 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {MAT_DATE_LOCALE, MatDatepickerModule, MatRadioModule, MatSelectModule, MatSortModule} from '@angular/material';
-import {MatMomentDateModule} from '@angular/material-moment-adapter';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateModule} from '@ngx-translate/core';
-import {
-    dailyBatchRSProvider,
-    databaseMigrationRSProvider,
-    dvDialogProvider,
-    errorServiceProvider,
-    gemeindeRSProvider,
-    gesuchRSProvider,
-    gesuchsperiodeRSProvider,
-    testFaelleRSProvider,
-    traegerschaftRSProvider,
-    userRSProvider,
-    zahlungRSProvider
-} from '../hybridTools/ajs-upgraded-providers';
-import {NgSharedModule} from '../shared/ng-shared.module';
+import {SharedModule} from '../app/shared/shared.module';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
-import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
     imports: [
-        CommonModule,
-        TranslateModule,
+        SharedModule,
         NgAdminRoutingModule,
-        FormsModule,
-        MatTableModule,
-        MatSortModule,
-        MatRadioModule,
-        MatDatepickerModule,
-        MatMomentDateModule,
-        MatSelectModule,
-        NoopAnimationsModule, // we don't want material animations in the project yet
-        NgSharedModule,
     ],
     declarations: [
         TraegerschaftViewComponent,
-        TestdatenViewComponent
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent,
     ],
     entryComponents: [
         TraegerschaftViewComponent,
-        TestdatenViewComponent
+        TestdatenViewComponent,
+        BatchjobTriggerViewComponent,
     ],
-    providers: [
-        traegerschaftRSProvider,
-        testFaelleRSProvider,
-        userRSProvider,
-        databaseMigrationRSProvider,
-        zahlungRSProvider,
-        gesuchRSProvider,
-        dailyBatchRSProvider,
-        errorServiceProvider,
-        dvDialogProvider,
-        gesuchsperiodeRSProvider,
-        {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
-        gemeindeRSProvider
-    ],
+    providers: [],
 })
 export class NgAdminModule {
 }

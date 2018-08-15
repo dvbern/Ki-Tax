@@ -13,73 +13,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// @AngularClass
-
 'use strict';
-var path = require('path');
+const path = require('path');
 
 module.exports = function (config) {
-    var testWebpackConfig = require('./config/webpack.test.ts').default({environment: 'test'});
-
     config.set({
-
-        // base path that will be used to resolve all patterns (e.g. files, exclude)
         basePath: '',
-
-        // frameworks to use
-        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine'],
-
+        frameworks: ['jasmine', '@angular-devkit/build-angular'],
+        plugins: [
+            require('karma-jasmine'),
+            require('karma-chrome-launcher'),
+            require('karma-firefox-launcher'),
+            require('karma-phantomjs-launcher'),
+            require('karma-junit-reporter'),
+            require('karma-mocha-reporter'),
+            require('karma-coverage-istanbul-reporter'),
+            require('@angular-devkit/build-angular/plugins/karma')
+        ],
         // list of files / patterns to load in the browser
         // we are building the test environment in ./spec-bundle.ts
         files: [
-            'src/polyfills.ts',
-            // Required (scoped) vendor modules
-            'src/vendor.ts',
-
-            // Global vendor modules (modules listed in webpack.ProvidePlugin need to be included here)
-            'node_modules/jquery/dist/jquery.js',
-            'node_modules/moment/moment.js',
-
-            // Unit Testing vendor modules
-            'node_modules/angular-mocks/angular-mocks.js',
-
-            // The app itself
-            'src/app.module.ts',
-
-            // Tests
-            'test.ts',    //ng2 tests
-            'config/spec-bundle.ts' //ng1  tests
-            // alterntavie zum spec bundle. Dauert aber zu lange, da für jedes spec file 1 Webpack bundle erstellt wird
-            // 'src/**/*.spec.ts'
+            {pattern: 'src/assets/**', included: false, serve: true},
         ],
-
-        // preprocess matching files before serving them to the browser
-        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        preprocessors: {
-            'src/vendor.ts': ['webpack'],
-            'src/polyfills.ts': ['webpack'],
-            'src/app.module.ts': ['webpack', 'sourcemap'],
-            'config/spec-bundle.ts': ['webpack'],
-            'test.ts': ['webpack'],
-            // 'src/**/*.spec.ts': ['webpack']
+        client: {
+            clearContext: false // leave Jasmine Spec Runner output visible in browser
         },
 
         // needed for Chrome
-        mime: {
-            'text/x-typescript': ['ts','tsx']
-        },
-
-        // Webpack Config at ./webpack.test.ts
-        webpack: testWebpackConfig,
-
-        // Webpack please don't spam the console when running in karma!
-        webpackServer: {noInfo: true},
-
-        // test results reporter to use
-        // possible values: 'dots', 'progress'
-        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha', 'junit', 'coverage-istanbul'],
+        // mime: {
+        //     'text/x-typescript': ['ts','tsx']
+        // },
 
         // any of these options are valid:
         // tslint:disable-next-line:max-line-length
@@ -92,7 +55,7 @@ module.exports = function (config) {
 
             // base output directory. If you include %browser% in the path it will be replaced with the karma browser
             // name
-            dir: path.join(__dirname, 'build/coverage'),
+            dir: path.join(__dirname, 'build', 'coverage'),
 
             // if using webpack and pre-loaders, work around webpack breaking the source path
             fixWebpackSourcePaths: true,
@@ -115,10 +78,8 @@ module.exports = function (config) {
 
             // to enforce thresholds see https://github.com/mattlewis92/karma-coverage-istanbul-reporter
         },
-
-        // suppress skipped tests in reporter
-        mochaReporter: {
-            ignoreSkipped: true
+        angularCli: {
+            environment: 'dev'
         },
 
         junitReporter: {
@@ -126,6 +87,16 @@ module.exports = function (config) {
             useBrowserName: false,
             xmlVersion: 1
         },
+
+        // suppress skipped tests in reporter
+        mochaReporter: {
+            ignoreSkipped: true
+        },
+
+        // test results reporter to use
+        // possible values: 'dots', 'progress'
+        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        reporters: ['mocha', 'junit', 'coverage-istanbul'],
 
         // web server port
         port: 9876,
@@ -136,24 +107,25 @@ module.exports = function (config) {
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO ||
         // config.LOG_DEBUG
-        logLevel: config.LOG_WARN,
+        logLevel: config.LOG_INFO,
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: false,
+        autoWatch: true,
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [
             // 'Chrome',
-            'PhantomJS'
+            'ChromeHeadless'
         ],
 
         // timeout when there's no activity, increased because the start up time is quite long with webpack
+        captureTimeout: 120000,
+        browserDisconnectTimeout: 30000,
         browserNoActivityTimeout: 120000,
 
-        // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
-        singleRun: true
+        singleRun: false
     });
 
 };

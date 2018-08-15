@@ -43,6 +43,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
@@ -71,6 +72,8 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -632,13 +635,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// Sobald irgendein Antrag dieser Periode geperrt ist, darf keine Mutationsmeldungs-Mutation erstellt werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
 				throw new EbeguRuntimeException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT);
-			} else if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
+			}
+			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
 				throw new EbeguRuntimeException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN);
-			} else if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus()) && neustesGesuch.isMutation()) {
+			}
+			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus()) && neustesGesuch.isMutation()) {
 				//betreuungsaenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich um ein PAPIER) Antrag handeln
 				applyBetreuungsmitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
-			} else if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
+			}
+			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
 				final Optional<Gesuch> mutationOpt = this.gesuchService.antragMutieren(gesuch.getId(), LocalDate.now());
 				if (mutationOpt.isPresent()) {
@@ -746,7 +752,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked", "PMD.NcssMethodCount"}) // Je nach Abfrage ist es String oder Long
-	private Pair<Long, List<Mitteilung>> searchMitteilungen(@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto, @Nonnull Boolean includeClosed, @Nonnull SearchMode mode) {
+	private Pair<Long, List<Mitteilung>> searchMitteilungen(
+		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
+		@Nonnull Boolean includeClosed,
+		@Nonnull SearchMode mode) {
+
+		Benutzer user = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, "searchMitteilungen");
 
@@ -756,6 +769,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// Join all the relevant relations
 		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
+
+		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
 
 		Join<Fall, Benutzer> joinBesitzer = joinFall.join(Fall_.besitzer, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinSender = root.join(Mitteilung_.sender, JoinType.LEFT);
@@ -776,6 +791,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
 		Predicate predicateEmpfaengerTyp = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
 		predicates.add(predicateEmpfaengerTyp);
+
+		filterGemeinde(user, joinGemeinde, predicates);
 
 		if (predicateObjectDto != null) {
 
@@ -849,6 +866,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Predicate predicateNichtErledigt = cb.notEqual(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT);
 				predicates.add(predicateNichtErledigt);
 			}
+			// gemeinde
+			if (predicateObjectDto.getGemeinde() != null) {
+
+				Predicate gemeindePredicate = cb.equal(
+					joinDossier.get(Dossier_.gemeinde).get(Gemeinde_.name),
+					predicateObjectDto.getGemeinde());
+				predicates.add(gemeindePredicate);
+			}
 		}
 
 		// Construct the select- and where-clause
@@ -887,6 +912,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			break;
 		}
 		return result;
+	}
+
+	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
+		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			Collection<Gemeinde> gemeindenForUser = user.extractGemeindenForUser();
+			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
+			predicates.add(inGemeinde);
+		}
 	}
 
 
