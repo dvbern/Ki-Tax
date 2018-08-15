@@ -18,6 +18,9 @@ package ch.dvbern.ebegu.rules.anlageverzeichnis;
 import java.time.LocalDate;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -33,7 +36,8 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
  * Dokumente für Erwerbspensum:
  * <p>
  * Arbeitsvertrag / Stundennachweise / sonstiger Nachweis über Erwerbspensum:
- * Wird nur bei Mutation des Erwerbspensums Angestellt verlangt oder bei Neueintritt im Job. Neueintritt = DatumVon >= Periodenstart
+ * Wird nur bei Mutation des Erwerbspensums Angestellt verlangt oder bei Neueintritt im Job. Neueintritt = DatumVon
+ * >= Periodenstart
  * <p>
  * Nachweis Selbständigkeit oder AHV-Bestätigung:
  * z.B. für Künstler, müssen Projekte belegen
@@ -81,7 +85,12 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, 2, gueltigAb);
 	}
 
-	private void getAllDokumenteGesuchsteller(Set<DokumentGrund> anlageVerzeichnis, GesuchstellerContainer gesuchsteller, Integer gesuchstellerNumber, LocalDate gueltigAb) {
+	private void getAllDokumenteGesuchsteller(
+		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+		@Nullable GesuchstellerContainer gesuchsteller,
+		@Nonnull Integer gesuchstellerNumber,
+		LocalDate gueltigAb) {
+
 		if (gesuchsteller == null || gesuchsteller.getErwerbspensenContainers().isEmpty()) {
 			return;
 		}
@@ -90,81 +99,121 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 
 		for (ErwerbspensumContainer erwerbspensenContainer : erwerbspensenContainers) {
 			final Erwerbspensum erwerbspensumJA = erwerbspensenContainer.getErwerbspensumJA();
-			add(getDokument(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensumJA, gueltigAb, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_RAV, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_ERWERBSPENSUM,
+				erwerbspensumJA,
+				gueltigAb,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_AUSBILDUNG,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_RAV,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.BESTAETIGUNG_ARZT,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
 
-			add(getDokument(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_UNREG_ARBEITSZ,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_LANG_ARBEITSWEG,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(
+				DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN,
+				erwerbspensumJA,
+				erwerbspensumJA.getName(),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
 		}
 	}
 
 	@Override
 	public boolean isDokumentNeeded(DokumentTyp dokumentTyp, Erwerbspensum erwerbspensum, LocalDate periodenstart) {
-		if (erwerbspensum != null) {
-			switch (dokumentTyp) {
-			case NACHWEIS_ERWERBSPENSUM:
-				// Wird nur bei Neueintritt im Job verlangt. Neueintritt = DatumVon >= Periodenstart. Bei Mutationen
-				// wird das Erwerbspensum immer beendet und ein neues erfasst. Daher gilt diese Regel immer
-				return !erwerbspensum.getGueltigkeit().getGueltigAb().isBefore(periodenstart) &&
-					erwerbspensum.getTaetigkeit() == Taetigkeit.ANGESTELLT;
-			default:
-				return isDokumentNeeded(dokumentTyp, erwerbspensum);
-			}
-		}
-		return false;
+		return isDokumentNeeded(dokumentTyp, erwerbspensum);
 	}
 
 	@Override
 	public boolean isDokumentNeeded(DokumentTyp dokumentTyp, Erwerbspensum erwerbspensum) {
-		if (erwerbspensum != null) {
-			switch (dokumentTyp) {
-			case NACHWEIS_ERWERBSPENSUM:
-				// braucht Periodenstart-Datum als Parameter
-				return false;
-			case NACHWEIS_SELBSTAENDIGKEIT:
-				return erwerbspensum.getTaetigkeit() == Taetigkeit.SELBSTAENDIG;
-			case NACHWEIS_AUSBILDUNG:
-				return erwerbspensum.getTaetigkeit() == Taetigkeit.AUSBILDUNG;
-			case NACHWEIS_RAV:
-				return erwerbspensum.getTaetigkeit() == Taetigkeit.RAV;
-			case BESTAETIGUNG_ARZT:
-				return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
-			case NACHWEIS_UNREG_ARBEITSZ:
-				return erwerbspensum.getZuschlagZuErwerbspensum()
-					&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN;
-			case NACHWEIS_LANG_ARBEITSWEG:
-				return erwerbspensum.getZuschlagZuErwerbspensum()
-					&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.LANGER_ARBWEITSWEG;
-			case NACHWEIS_SONSTIGEN_ZUSCHLAG:
-				return erwerbspensum.getZuschlagZuErwerbspensum()
-					&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.ANDERE;
-			case NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT:
-				return erwerbspensum.getZuschlagZuErwerbspensum()
-					&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UEBERLAPPENDE_ARBEITSZEITEN;
-			case NACHWEIS_FIXE_ARBEITSZEITEN:
-				return erwerbspensum.getZuschlagZuErwerbspensum()
-					&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.FIXE_ARBEITSZEITEN;
-			default:
-				return false;
-			}
+		if (erwerbspensum == null) {
+			return false;
 		}
-		return false;
+
+		switch (dokumentTyp) {
+		case NACHWEIS_ERWERBSPENSUM:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.ANGESTELLT;
+		case NACHWEIS_SELBSTAENDIGKEIT:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.SELBSTAENDIG;
+		case NACHWEIS_AUSBILDUNG:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.AUSBILDUNG;
+		case NACHWEIS_RAV:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.RAV;
+		case BESTAETIGUNG_ARZT:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
+		case NACHWEIS_UNREG_ARBEITSZ:
+			return erwerbspensum.getZuschlagZuErwerbspensum()
+				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN;
+		case NACHWEIS_LANG_ARBEITSWEG:
+			return erwerbspensum.getZuschlagZuErwerbspensum()
+				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.LANGER_ARBWEITSWEG;
+		case NACHWEIS_SONSTIGEN_ZUSCHLAG:
+			return erwerbspensum.getZuschlagZuErwerbspensum()
+				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.ANDERE;
+		case NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT:
+			return erwerbspensum.getZuschlagZuErwerbspensum()
+				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UEBERLAPPENDE_ARBEITSZEITEN;
+		case NACHWEIS_FIXE_ARBEITSZEITEN:
+			return erwerbspensum.getZuschlagZuErwerbspensum()
+				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.FIXE_ARBEITSZEITEN;
+		default:
+			return false;
+		}
 	}
 
 }
