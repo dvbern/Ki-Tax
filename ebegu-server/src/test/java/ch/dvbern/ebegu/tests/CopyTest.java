@@ -281,12 +281,12 @@ public class CopyTest {
 		Assert.assertNotNull(mutation.getDokumentGrunds());
 		Assert.assertEquals(1, mutation.getDokumentGrunds().size());
 
-		Assert.assertNull(erneuerung.getDokumentGrunds());
+		Assert.assertTrue(erneuerung.getDokumentGrunds().isEmpty());
 
 		Assert.assertNotNull(mutationNeuesDossier.getDokumentGrunds());
 		Assert.assertEquals(1, mutationNeuesDossier.getDokumentGrunds().size());
 
-		Assert.assertNull(erneuerungNeuesDossier.getDokumentGrunds());
+		Assert.assertTrue(erneuerungNeuesDossier.getDokumentGrunds().isEmpty());
 	}
 
 	@Test
