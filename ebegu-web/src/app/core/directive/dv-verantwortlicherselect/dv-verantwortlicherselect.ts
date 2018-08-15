@@ -33,7 +33,8 @@ export class DvVerantwortlicherselect implements IDirective {
     controllerAs = 'vm';
     bindToController = {
         schulamt: '<',
-        antragList: '<'
+        antragList: '<',
+        userList: '<',
     };
     template = require('./dv-verantwortlicherselect.html');
 
@@ -62,35 +63,6 @@ export class VerantwortlicherselectController implements IController {
                 private readonly $translate: ITranslateService) {
     }
 
-    //wird von angular aufgerufen
-    $onInit() {
-        this.updateUserList();
-    }
-
-    public updateUserList(): void {
-        //not needed for Gesuchsteller
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) {
-
-            const dossierGemeinde = this.getGesuch().dossier.gemeinde;
-
-            if (this.schulamt === true) {
-                this.userRS.getBenutzerSCHorAdminSCH().then(response => {
-                    this.userList = this.filterUsers(response, dossierGemeinde);
-                });
-
-            } else {
-                this.userRS.getBenutzerJAorAdmin().then(response => {
-                    this.userList = this.filterUsers(response, dossierGemeinde);
-                });
-            }
-        }
-    }
-
-    private filterUsers(userList: Array<TSUser>, dossierGemeinde: TSGemeinde): Array<TSUser> {
-        return userList.filter(user => user.berechtigungen
-            .some(berechtigung => berechtigung.gemeindeList
-                .some(gemeinde => dossierGemeinde.id === gemeinde.id)));
-    }
 
     public getTitel(): string {
         if (this.schulamt) {

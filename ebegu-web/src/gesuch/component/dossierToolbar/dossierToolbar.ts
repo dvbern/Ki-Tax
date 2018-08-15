@@ -19,8 +19,13 @@ import {IDVFocusableController} from '../../../app/core/component/IDVFocusableCo
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import UserRS from '../../../app/core/service/userRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfVerfuegt,
+    isAtLeastFreigegebenOrFreigabequittung,
+    isStatusVerfuegenVerfuegt
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -28,8 +33,10 @@ import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSDossier from '../../../models/TSDossier';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -73,7 +80,8 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
     };
     template = require('./dossierToolbarGesuchsteller.html');
     controller = DossierToolbarController;
-    // Darf, wie es scheint nicht 'vm' heissen, sonst werden im dossierToolBarGesuchsteller.html keine Funktionen gefunden. Bug?!
+    // Darf, wie es scheint nicht 'vm' heissen, sonst werden im dossierToolBarGesuchsteller.html keine Funktionen
+    // gefunden. Bug?!
     controllerAs = 'vmgs';
 }
 
@@ -81,7 +89,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     static $inject = ['EbeguUtil', 'GesuchRS', '$state',
         '$scope', 'GesuchModelManager', 'AuthServiceRS', '$mdSidenav', '$log', 'GesuchsperiodeRS',
-        'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS'];
+        'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS', 'UserRS'];
 
     antragList: Array<TSAntragDTO>;
     gesuchid: string;
@@ -93,8 +101,11 @@ export class DossierToolbarController implements IDVFocusableController {
     dossier: TSDossier;
 
     gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
-    gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den Namen der Antraege
+    gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den
+                                                                   // Namen der Antraege
     antragTypList: { [key: string]: TSAntragDTO } = {};
+    jugendAmtUserList: Array<TSUser> = [];
+    schulAmtUserList: Array<TSUser> = [];
     mutierenPossibleForCurrentAntrag: boolean = false;
     erneuernPossibleForCurrentAntrag: boolean = false;
     neuesteGesuchsperiode: TSGesuchsperiode;
@@ -111,7 +122,8 @@ export class DossierToolbarController implements IDVFocusableController {
                 private readonly dvDialog: DvDialog,
                 private readonly unsavedWarningSharedService: any,
                 private readonly mitteilungRS: MitteilungRS,
-                private readonly dossierRS: DossierRS) {
+                private readonly dossierRS: DossierRS,
+                private readonly userRS: UserRS) {
 
     }
 
@@ -177,7 +189,7 @@ export class DossierToolbarController implements IDVFocusableController {
                     }
                 });
             }
-            //watcher fuer fall id change
+            //watcher fuer dossier id change
             $scope.$watch(() => {
                 return this.dossierId;
             }, (newValue, oldValue) => {
@@ -195,6 +207,14 @@ export class DossierToolbarController implements IDVFocusableController {
                         this.antragMutierenPossible(); //neu berechnen ob mutieren moeglich ist
                         this.antragErneuernPossible();
                     }
+                }
+            });
+            $scope.$watch(() => {
+                return this.dossier;
+            }, (newValue, oldValue) => {
+                if (newValue !== oldValue) {
+                    this.updateJugendAmtUserList();
+                    this.updateSchulAmtUserList();
                 }
             });
             // Wenn eine Mutationsmitteilung uebernommen wird und deshalb eine neue Mutation erstellt wird, muss
@@ -319,7 +339,9 @@ export class DossierToolbarController implements IDVFocusableController {
         for (let i = 0; i < this.antragList.length; i++) {
             const antrag: TSAntragDTO = this.antragList[i];
             if (this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
-                const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer);
+                const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp,
+                    antrag.eingangsdatum,
+                    antrag.laufnummer);
 
                 this.antragTypList[txt] = antrag;
             }
@@ -351,7 +373,9 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public getAntragTyp(): string {
         if (this.getGesuch()) {
-            return this.ebeguUtil.getAntragTextDateAsString(this.getGesuch().typ, this.getGesuch().eingangsdatum, this.getGesuch().laufnummer);
+            return this.ebeguUtil.getAntragTextDateAsString(this.getGesuch().typ,
+                this.getGesuch().eingangsdatum,
+                this.getGesuch().laufnummer);
         } else {
             return '';
         }
@@ -407,7 +431,9 @@ export class DossierToolbarController implements IDVFocusableController {
         for (let i = 0; i < this.antragList.length; i++) {
             const antrag: TSAntragDTO = this.antragList[i];
             if (this.gesuchsperiodeList[gesuchperiodeKey][0].gesuchsperiodeGueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
-                const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer);
+                const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp,
+                    antrag.eingangsdatum,
+                    antrag.laufnummer);
                 tmpAntragList[txt] = antrag;
             }
         }
@@ -439,7 +465,8 @@ export class DossierToolbarController implements IDVFocusableController {
                 const antragItem: TSAntragDTO = this.antragList[i];
                 // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
                 if (antragItem.gesuchsperiodeString === this.getCurrentGesuchsperiode()) {
-                    // Falls wir ein Gesuch finden das nicht verfuegt ist oder eine Beschwerde hängig ist, darf nicht mutiert werden
+                    // Falls wir ein Gesuch finden das nicht verfuegt ist oder eine Beschwerde hängig ist, darf nicht
+                    // mutiert werden
                     if (antragItem.verfuegt === false || antragItem.beschwerdeHaengig === true) {
                         mutierenGesperrt = true;
                         break;
@@ -481,8 +508,9 @@ export class DossierToolbarController implements IDVFocusableController {
                     erneuernGesperrt = true;
                     break;
                 }
-                // Wenn das Erstgesuch der Periode ein Online Gesuch war, darf dieser *nur* durch den GS selber erneuert werden. JA/SCH muss
-                // einen neuen Fall eröffnen, da Papier und Online Gesuche nie vermischt werden duerfen!
+                // Wenn das Erstgesuch der Periode ein Online Gesuch war, darf dieser *nur* durch den GS selber
+                // erneuert werden. JA/SCH muss einen neuen Fall eröffnen, da Papier und Online Gesuche nie vermischt
+                // werden duerfen!
                 if (antragItem.eingangsart === TSEingangsart.ONLINE && antragItem.antragTyp !== TSAntragTyp.MUTATION) {
                     if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
                         erneuernGesperrt = true;
@@ -628,5 +656,23 @@ export class DossierToolbarController implements IDVFocusableController {
      */
     public setFocusBack(elementID: string): void {
         angular.element('#kontaktButton').first().focus();
+    }
+
+    public updateSchulAmtUserList(): void {
+        this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+            this.schulAmtUserList = this.filterUsers(response, this.dossier.gemeinde);
+        });
+    }
+
+    public updateJugendAmtUserList(): void {
+        this.userRS.getBenutzerJAorAdmin().then(response => {
+            this.jugendAmtUserList = this.filterUsers(response, this.dossier.gemeinde);
+        });
+    }
+
+    private filterUsers(userList: Array<TSUser>, dossierGemeinde: TSGemeinde): Array<TSUser> {
+        return userList.filter(user => user.berechtigungen
+            .some(berechtigung => berechtigung.gemeindeList
+                .some(gemeinde => dossierGemeinde.id === gemeinde.id)));
     }
 }
