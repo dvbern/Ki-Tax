@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import EbeguUtil from '../../utils/EbeguUtil';
+
 export enum TSBetreuungsangebotTyp {
     KITA = <any> 'KITA',
     TAGESFAMILIEN = <any> 'TAGESFAMILIEN',
@@ -22,20 +24,37 @@ export enum TSBetreuungsangebotTyp {
 }
 
 export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
-    return [
-        TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
-    ];
+    if (EbeguUtil.isTagesschulangebotEnabled()) {
+        return [
+            TSBetreuungsangebotTyp.KITA,
+            TSBetreuungsangebotTyp.TAGESFAMILIEN,
+            TSBetreuungsangebotTyp.TAGESSCHULE,
+            TSBetreuungsangebotTyp.FERIENINSEL
+        ];
+    } else {
+        return [
+            TSBetreuungsangebotTyp.KITA,
+            TSBetreuungsangebotTyp.TAGESFAMILIEN,
+        ];
+    }
 }
 
 /**
  * These are all BetreuungsangebotTyp for a period without Tagesschuleanmeldungen, normally 17/18
  */
 export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array<TSBetreuungsangebotTyp> {
-    return [
-        TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
-    ];
+    if (EbeguUtil.isTagesschulangebotEnabled()) {
+        return [
+            TSBetreuungsangebotTyp.KITA,
+            TSBetreuungsangebotTyp.TAGESFAMILIEN,
+        ];
+    } else {
+        return [
+            TSBetreuungsangebotTyp.KITA,
+            TSBetreuungsangebotTyp.TAGESFAMILIEN,
+            TSBetreuungsangebotTyp.TAGESSCHULE
+        ];
+    }
 }
 
 export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {

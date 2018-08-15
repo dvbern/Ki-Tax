@@ -53,8 +53,11 @@
                         <th st-sort="angebote" class="sortable row-angebot" data-translate="ANGEBOT_UPPER"></th>
                         <th st-sort="institutionen[0]" class="sortable row-inst"
                             data-translate="INSTITUTION_UPPER"></th>
+                        <th st-sort="verantwortlicherTS" class="sortable row-ver"
+                            data-translate="VERANTWORTLICHER_SCHULAMT"
+                            ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()"></th>
                         <th st-sort="verantwortlicherBG" class="sortable row-ver"
-                            data-translate="VERANTWORTLICHER_JUGENDAMT"></th>
+                            data-translate="{{vm.ebeguUtil.isTagesschulangebotEnabled() ? 'VERANTWORTLICHER_JUGENDAMT' : 'VERANTWORTLICHER_OHNE_SCHULAMT'}}"></th>
                     </tr>
                     <!--Filterspalten-->
                     <tr>
@@ -138,6 +141,12 @@
                                 </select>
                             </div>
                         </th>
+                        <th ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()">
+                            <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
+                                           initial-all="vm.initialAll" show-selection-all="vm.showSelectionAll"
+                                           on-user-changed="vm.userChanged(user)" schulamt="true"
+                                           selected-user="vm.selectedVerantwortlicherTS"></dv-userselect>
+                        </th>
                         <th>
                             <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
                                            initial-all="vm.initialAll" show-selection-all="vm.showSelectionAll"
@@ -176,6 +185,8 @@
                         </td>
                         <td class="ellipsis" title="{{row.institutionen | arrayToString}}"
                             ng-bind="row.institutionen | arrayToString"></td>
+                        <td class="ellipsis" title="{{row.verantwortlicherTS}}"
+                            ng-bind="row.verantwortlicherTS" ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()"></td>
                         <td class="ellipsis" title="{{row.verantwortlicherBG}}"
                             ng-bind="row.verantwortlicherBG"></td>
                     </tr>

@@ -19,7 +19,7 @@ import * as moment from 'moment';
 import {IBenutzerStateParams} from '../../../../admin/admin.route';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
-import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
+import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSBerechtigung from '../../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../../models/TSBerechtigungHistory';
 import TSInstitution from '../../../../models/TSInstitution';
@@ -27,6 +27,7 @@ import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUser from '../../../../models/TSUser';
 import {TSDateRange} from '../../../../models/types/TSDateRange';
 import DateUtil from '../../../../utils/DateUtil';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
@@ -46,22 +47,6 @@ export class DVBenutzerConfig implements IComponentOptions {
 
 export class DVBenutzerController implements IOnInit {
 
-    // todo fragen warum hier oben????
-    public get currentBerechtigung(): TSBerechtigung {
-        return this._currentBerechtigung;
-    }
-
-    public get futureBerechtigungen(): TSBerechtigung[] {
-        return this._futureBerechtigungen;
-    }
-
-    public get isDefaultVerantwortlicher(): boolean {
-        return this._isDefaultVerantwortlicher;
-    }
-
-    public set isDefaultVerantwortlicher(value: boolean) {
-        this._isDefaultVerantwortlicher = value;
-    }
 
     static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate',
         '$stateParams', 'UserRS',
@@ -143,9 +128,15 @@ export class DVBenutzerController implements IOnInit {
     }
 
     public getRollen(): Array<TSRole> {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-            ? TSRoleUtil.getAllRolesButSchulamt()
-            : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
+        if (EbeguUtil.isTagesschulangebotEnabled()) {
+            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+                ? getTSRoleValues()
+                : getTSRoleValuesWithoutSuperAdmin();
+        } else {
+            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+                ? TSRoleUtil.getAllRolesButSchulamt()
+                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
+        }
     }
 
     public getTranslatedRole(role: TSRole): string {
@@ -281,5 +272,21 @@ export class DVBenutzerController implements IOnInit {
 
     public isBerechtigungEnabled(berechtigung: TSBerechtigung): boolean {
         return berechtigung && berechtigung.enabled;
+    }
+
+    public get currentBerechtigung(): TSBerechtigung {
+        return this._currentBerechtigung;
+    }
+
+    public get futureBerechtigungen(): TSBerechtigung[] {
+        return this._futureBerechtigungen;
+    }
+
+    public get isDefaultVerantwortlicher(): boolean {
+        return this._isDefaultVerantwortlicher;
+    }
+
+    public set isDefaultVerantwortlicher(value: boolean) {
+        this._isDefaultVerantwortlicher = value;
     }
 }
