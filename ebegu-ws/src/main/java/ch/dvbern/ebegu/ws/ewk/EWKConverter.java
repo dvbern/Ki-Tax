@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.dto.personensuche.EWKEinwohnercode;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.enums.Geschlecht;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Konverter zwischen EWK-Objekten und unseren DTOs
@@ -112,6 +113,7 @@ public final class EWKConverter {
 		return ewkAdresse;
 	}
 
+	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 	public static EWKBeziehung convertFromEWK(@Nonnull Beziehung beziehung) {
 		EWKBeziehung ewkBeziehung = new EWKBeziehung();
 		ewkBeziehung.setPersonID(beziehung.getPersonID());

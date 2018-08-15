@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -28,6 +29,7 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -47,6 +49,7 @@ public class BetreuungspensumContainer extends AbstractEntity implements Compara
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_container_betreuung_id"), nullable = false)
 	private Betreuung betreuung;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_container_betreuungspensum_gs"))
@@ -68,11 +71,12 @@ public class BetreuungspensumContainer extends AbstractEntity implements Compara
 		this.betreuung = betreuung;
 	}
 
+	@Nullable
 	public Betreuungspensum getBetreuungspensumGS() {
 		return betreuungspensumGS;
 	}
 
-	public void setBetreuungspensumGS(Betreuungspensum betreuungspensumGS) {
+	public void setBetreuungspensumGS(@Nullable Betreuungspensum betreuungspensumGS) {
 		this.betreuungspensumGS = betreuungspensumGS;
 	}
 
@@ -127,11 +131,21 @@ public class BetreuungspensumContainer extends AbstractEntity implements Compara
 		return builder.toComparison();
 	}
 
-	public BetreuungspensumContainer copyForMutation(@Nonnull BetreuungspensumContainer mutation, @Nonnull Betreuung betreuungMutation) {
-		super.copyForMutation(mutation);
-		mutation.setBetreuung(betreuungMutation);
-		mutation.setBetreuungspensumGS(null);
-		mutation.setBetreuungspensumJA(this.getBetreuungspensumJA().copyForMutation(new Betreuungspensum()));
-		return mutation;
+	@Nonnull
+	public BetreuungspensumContainer copyBetreuungspensumContainer(
+			@Nonnull BetreuungspensumContainer target, @Nonnull AntragCopyType copyType, @Nonnull Betreuung targetBetreuung) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setBetreuung(targetBetreuung);
+			target.setBetreuungspensumGS(null);
+			target.setBetreuungspensumJA(this.getBetreuungspensumJA().copyBetreuungspensum(new Betreuungspensum(), copyType));
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }

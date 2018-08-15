@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.persistence;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -55,6 +56,7 @@ public class PersistenceService implements Persistence {
 	}
 
 	@Override
+	@Nullable
 	public <T> T find(final Class<T> entityClass, final Object primaryKey) {
 		return em.find(entityClass, primaryKey);
 	}

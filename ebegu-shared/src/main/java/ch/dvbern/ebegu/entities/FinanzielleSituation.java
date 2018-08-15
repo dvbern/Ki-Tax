@@ -17,11 +17,13 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
@@ -84,12 +86,21 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
-	public FinanzielleSituation copyForMutation(FinanzielleSituation mutation) {
-		super.copyForMutation(mutation);
-		mutation.setNettolohn(this.getNettolohn());
-		mutation.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
-		mutation.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
-		return mutation;
+	@Nonnull
+	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			super.copyAbstractFinanzielleSituation(target, copyType);
+			target.setNettolohn(this.getNettolohn());
+			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
+			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Override

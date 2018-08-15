@@ -36,7 +36,7 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1451729857998697429L;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	private DokumentGrundTyp dokumentGrundTyp;
 

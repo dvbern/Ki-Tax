@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EbeguLocalDateBridge;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -44,7 +45,7 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 
 	private static final long serialVersionUID = -9037857320548372570L;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@NotNull
 	private Geschlecht geschlecht;
@@ -52,13 +53,13 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@NotNull
-	@Field()
+	@Field
 	private String vorname;
 
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@NotNull
 	@Column(nullable = false)
-	@Field()
+	@Field
 	private String nachname;
 
 	@Column(nullable = false)
@@ -103,28 +104,17 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 	}
 
 	public String getFullName() {
-		return vorname + " " + nachname;
+		return vorname + ' ' + nachname;
 	}
 
 	@Nonnull
-	public AbstractPersonEntity copyForMutation(@Nonnull AbstractPersonEntity mutation) {
-		super.copyForMutation(mutation);
-		return copyForMutationOrErneuerung(mutation);
-	}
-
-	@Nonnull
-	public AbstractPersonEntity copyForErneuerung(@Nonnull AbstractPersonEntity folgeEntity) {
-		super.copyForErneuerung(folgeEntity);
-		return copyForMutationOrErneuerung(folgeEntity);
-	}
-
-	@Nonnull
-	private AbstractPersonEntity copyForMutationOrErneuerung(@Nonnull AbstractPersonEntity mutation) {
-		mutation.setGeschlecht(this.getGeschlecht());
-		mutation.setVorname(this.getVorname());
-		mutation.setNachname(this.getNachname());
-		mutation.setGeburtsdatum(this.getGeburtsdatum());
-		return mutation;
+	public AbstractPersonEntity copyAbstractPersonEntity(@Nonnull AbstractPersonEntity target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		target.setGeschlecht(this.getGeschlecht());
+		target.setVorname(this.getVorname());
+		target.setNachname(this.getNachname());
+		target.setGeburtsdatum(this.getGeburtsdatum());
+		return target;
 	}
 
 	@Override

@@ -82,17 +82,17 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
-		Assert.assertEquals(TestDataUtil.createGesuchsperiode1718().getBasisJahrPlus1(), erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
+		Assert.assertEquals(TestDataUtil.createGesuchsperiode1617().getBasisJahrPlus1(), erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
 	}
 
 	@Test
 	public void createErstgesuchForAnotherPeriode() {
-		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
-		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, gesuchsperiode1617, LocalDate.now(), LocalDateTime.now());
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, gesuchsperiode1718, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
-		Assert.assertEquals(2016, erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
+		Assert.assertEquals(2017, erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
 	}
 
 	@Test

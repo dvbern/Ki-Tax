@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -24,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 /**
@@ -70,17 +72,25 @@ public class Dokument extends FileMetadata {
 	@Override
 	public String toString() {
 		return "Dokument{" +
-			"dokumentName='" + getFilename() + "\'" +
-			", dokumentPfad='" + getFilepfad() + "\'" +
-			", dokumentSize='" + getFilesize() + "\'" +
-			"}";
+			"dokumentName='" + getFilename() + '\'' +
+			", dokumentPfad='" + getFilepfad() + '\'' +
+			", dokumentSize='" + getFilesize() + '\'' +
+			'}';
 	}
 
-	public Dokument copyForMutation(Dokument mutation, DokumentGrund dokumentGrundMutation) {
-		super.copyForMutation(mutation);
-		mutation.setDokumentGrund(dokumentGrundMutation);
-		mutation.setTimestampUpload(timestampUpload);
-		return mutation;
+	@Nonnull
+	public Dokument copyDokument(@Nonnull Dokument target, @Nonnull AntragCopyType copyType, @Nonnull DokumentGrund targetDokumentGrund) {
+		super.copyFileMetadata(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setDokumentGrund(targetDokumentGrund);
+			target.setTimestampUpload(getTimestampUpload());
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
-
 }

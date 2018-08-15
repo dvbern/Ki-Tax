@@ -15,12 +15,14 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -49,20 +51,11 @@ public class PensumFachstelle extends AbstractPensumEntity {
 		this.fachstelle = fachstelle;
 	}
 
-	public PensumFachstelle copyForMutation(PensumFachstelle mutation) {
-		super.copyForMutation(mutation);
-		copyForMutationOrErneuerung(mutation);
-		return mutation;
-	}
-
-	public PensumFachstelle copyForErneuerung(PensumFachstelle mutation) {
-		super.copyForErneuerung(mutation);
-		copyForMutationOrErneuerung(mutation);
-		return mutation;
-	}
-
-	private void copyForMutationOrErneuerung(PensumFachstelle mutation) {
-		mutation.setFachstelle(this.getFachstelle());
+	@Nonnull
+	public PensumFachstelle copyPensumFachstelle(@Nonnull PensumFachstelle target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractPensumEntity(target, copyType);
+		target.setFachstelle(this.getFachstelle());
+		return target;
 	}
 
 	@Override
