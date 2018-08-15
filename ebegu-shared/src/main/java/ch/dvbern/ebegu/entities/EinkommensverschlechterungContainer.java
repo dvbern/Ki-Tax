@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -52,11 +53,13 @@ public class EinkommensverschlechterungContainer extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einkommensverschlechterungcontainer_gesuchstellerContainer_id"), nullable = false)
 	private GesuchstellerContainer gesuchstellerContainer;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einkommensverschlechterungcontainer_ekvGSBasisJahrPlus1_id"), nullable = true)
 	private Einkommensverschlechterung ekvGSBasisJahrPlus1;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einkommensverschlechterungcontainer_ekvGSBasisJahrPlus2_id"), nullable = true)
@@ -91,19 +94,21 @@ public class EinkommensverschlechterungContainer extends AbstractEntity {
 		this.ekvJABasisJahrPlus1 = ekvJABasisJahrPlus1;
 	}
 
+	@Nullable
 	public Einkommensverschlechterung getEkvGSBasisJahrPlus2() {
 		return ekvGSBasisJahrPlus2;
 	}
 
-	public void setEkvGSBasisJahrPlus2(final Einkommensverschlechterung ekvGSBasisJahrPlus2) {
+	public void setEkvGSBasisJahrPlus2(@Nullable final Einkommensverschlechterung ekvGSBasisJahrPlus2) {
 		this.ekvGSBasisJahrPlus2 = ekvGSBasisJahrPlus2;
 	}
 
+	@Nullable
 	public Einkommensverschlechterung getEkvGSBasisJahrPlus1() {
 		return ekvGSBasisJahrPlus1;
 	}
 
-	public void setEkvGSBasisJahrPlus1(final Einkommensverschlechterung ekvGSBasisJahrPlus1) {
+	public void setEkvGSBasisJahrPlus1(@Nullable final Einkommensverschlechterung ekvGSBasisJahrPlus1) {
 		this.ekvGSBasisJahrPlus1 = ekvGSBasisJahrPlus1;
 	}
 

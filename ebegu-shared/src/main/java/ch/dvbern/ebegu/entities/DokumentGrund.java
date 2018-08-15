@@ -249,7 +249,7 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			target.setDokumentGrundTyp(this.getDokumentGrundTyp());
-			target.setFullName(this.getFullName());
+			target.setFullName(this.getFullName()); // todo deprecated
 			target.setTag(this.getTag());
 			target.setPersonNumber(this.getPersonNumber());
 			target.setPersonType(this.getPersonType());

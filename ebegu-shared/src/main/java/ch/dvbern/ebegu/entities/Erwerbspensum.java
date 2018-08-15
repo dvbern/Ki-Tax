@@ -131,12 +131,10 @@ public class Erwerbspensum extends AbstractPensumEntity {
 	}
 
 	public String getName() {
-
 		if (bezeichnung == null || bezeichnung.isEmpty()) {
 			return ServerMessageUtil.translateEnumValue(taetigkeit) + ' ' + getPensum() + '%';
-		} else {
-			return bezeichnung;
 		}
+		return bezeichnung;
 	}
 
 	@Nullable

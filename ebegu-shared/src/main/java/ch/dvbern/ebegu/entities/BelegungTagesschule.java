@@ -90,7 +90,7 @@ public class BelegungTagesschule extends AbstractEntity {
 		switch (copyType) {
 		case MUTATION:
 			target.setEintrittsdatum(LocalDate.from(eintrittsdatum));
-			// Don't copy them, because it's a ManyToMany realation
+			// Don't copy them, because it's a ManyToMany relation
 			target.getModuleTagesschule().clear();
 			target.getModuleTagesschule().addAll(moduleTagesschule);
 			break;

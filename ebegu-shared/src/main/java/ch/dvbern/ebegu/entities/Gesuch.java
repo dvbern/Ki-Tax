@@ -195,10 +195,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenPruefungSTV;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "gesuch")
-	private Set<DokumentGrund> dokumentGrunds;
+	private Set<DokumentGrund> dokumentGrunds = new HashSet<>();
 
 	@NotNull
 	@Min(0)
@@ -297,16 +297,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	public boolean addDokumentGrund(@NotNull final DokumentGrund dokumentGrund) {
 		dokumentGrund.setGesuch(this);
-
-		if (this.dokumentGrunds == null) {
-			this.dokumentGrunds = new HashSet<>();
-		}
-
 		return this.dokumentGrunds.add(dokumentGrund);
 	}
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
-		if (extractFamiliensituation() != null && Objects.requireNonNull(extractFamiliensituation()).hasSecondGesuchsteller()) {
+		final Familiensituation familiensituation = extractFamiliensituation();
+		if (familiensituation != null && familiensituation.hasSecondGesuchsteller()) {
 			return finanzDatenDTO_zuZweit;
 		}
 		return finanzDatenDTO_alleine;
@@ -424,12 +420,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.gesuchBetreuungenStatus = gesuchBetreuungenStatus;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<DokumentGrund> getDokumentGrunds() {
 		return dokumentGrunds;
 	}
 
-	public void setDokumentGrunds(@Nullable Set<DokumentGrund> dokumentGrunds) {
+	public void setDokumentGrunds(@Nonnull Set<DokumentGrund> dokumentGrunds) {
 		this.dokumentGrunds = dokumentGrunds;
 	}
 
@@ -655,7 +651,8 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		//noinspection SimplifyStreamApiCallChains
 		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.collect(Collectors.toList());
-		return !allBetreuungen.isEmpty() && allBetreuungen.stream().allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
+		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
+			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
 	}
 
 	@Transient
@@ -694,6 +691,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 			});
 	}
 
+	@Nullable
 	@Transient
 	public LocalDate getRegelStartDatum() {
 		if (null != getRegelnGueltigAb()) {
@@ -747,11 +745,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		copyFamiliensituation(target, copyType, this.isMutation());
 		copyGesuchsteller1(target, copyType);
 
+		copyKindContainer(target, copyType);
+
 		switch (copyType) {
 		case MUTATION:
 			target.setLaufnummer(this.getLaufnummer() + 1);
 			copyGesuchsteller2(target, copyType);
-			copyKindContainer(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
 			break;
@@ -759,12 +758,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
 			copyGesuchsteller2IfStillNeeded(target, copyType);
-			copyKindContainer(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für das neue Dossier wieder mit 0 an
 			copyGesuchsteller2(target, copyType);
-			copyKindContainer(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
 			break;
@@ -810,42 +807,40 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	private void copyKindContainer(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		for (KindContainer kindContainer : this.getKindContainers()) {
-			target.addKindContainer(kindContainer.copyKindContainer(new KindContainer(), copyType, target, target.getGesuchsperiode()));
-		}
+		this.getKindContainers().forEach(
+			kindContainer -> target.addKindContainer(kindContainer.copyKindContainer(new KindContainer(), copyType, target, target.getGesuchsperiode()))
+		);
 	}
 
 	private void copyDokumentGruende(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		if (this.getDokumentGrunds() != null) {
-			target.setDokumentGrunds(new HashSet<>());
-			for (DokumentGrund dokumentGrund : this.getDokumentGrunds()) {
-				target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
-			}
-		}
+		this.getDokumentGrunds().forEach(
+			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
+		);
 	}
 
 	@Nonnull
 	public Gesuch copyForMutation(
-			@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsart) {
-		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsart, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode());
+			@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget) {
+		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsartOfTarget, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode());
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerung(
-			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
-		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsart, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiode);
+			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull Eingangsart eingangsartOfTarget) {
+		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsartOfTarget, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiodeOfTarget);
 	}
 
 	@Nonnull
 	public Gesuch copyForErneuerungsgesuchNeuesDossier(
-			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsart, @Nonnull AntragTyp typ, @Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
-		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsart, typ, dossier, gesuchsperiode);
+			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget,
+			@Nonnull Dossier dossierOfTarget, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget) {
+		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, gesuchsperiodeOfTarget);
 	}
 
 	@Nonnull
 	public Gesuch copyForMutationNeuesDossier(
-			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsart, @Nonnull AntragTyp typ, @Nonnull Dossier dossier) {
-		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsart, typ, dossier, this.getGesuchsperiode());
+			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull Dossier dossierOfTarget) {
+		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, this.getGesuchsperiode());
 	}
 
 	@Nonnull

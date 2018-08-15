@@ -38,45 +38,59 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 
 	private static final long serialVersionUID = -8959552696602183511L;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnJan;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnFeb;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnMrz;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnApr;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnMai;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnJun;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnJul;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnAug;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnSep;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnOkt;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnNov;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnDez;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohnZus;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 

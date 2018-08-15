@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -46,6 +47,7 @@ public class AbwesenheitContainer extends AbstractEntity implements Comparable<A
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_abwesenheit_container_betreuung_id"), nullable = false)
 	private Betreuung betreuung;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_abwesenheit_container_abwesenheit_gs"))
@@ -67,11 +69,12 @@ public class AbwesenheitContainer extends AbstractEntity implements Comparable<A
 		this.betreuung = betreuung;
 	}
 
+	@Nullable
 	public Abwesenheit getAbwesenheitGS() {
 		return abwesenheitGS;
 	}
 
-	public void setAbwesenheitGS(Abwesenheit abwesenheitGS) {
+	public void setAbwesenheitGS(@Nullable Abwesenheit abwesenheitGS) {
 		this.abwesenheitGS = abwesenheitGS;
 	}
 

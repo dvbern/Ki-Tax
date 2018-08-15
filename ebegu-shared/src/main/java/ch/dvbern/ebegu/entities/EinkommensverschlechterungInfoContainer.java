@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -42,6 +43,7 @@ public class EinkommensverschlechterungInfoContainer extends AbstractEntity {
 
 	private static final long serialVersionUID = 7458803905310712257L;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ekvinfocontainer_einkommensverschlechterunginfogs_id"), nullable = true)
@@ -71,11 +73,12 @@ public class EinkommensverschlechterungInfoContainer extends AbstractEntity {
 		}
 	}
 
+	@Nullable
 	public EinkommensverschlechterungInfo getEinkommensverschlechterungInfoGS() {
 		return einkommensverschlechterungInfoGS;
 	}
 
-	public void setEinkommensverschlechterungInfoGS(EinkommensverschlechterungInfo einkommensverschlechterungInfoGS) {
+	public void setEinkommensverschlechterungInfoGS(@Nullable EinkommensverschlechterungInfo einkommensverschlechterungInfoGS) {
 		this.einkommensverschlechterungInfoGS = einkommensverschlechterungInfoGS;
 	}
 

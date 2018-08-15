@@ -129,10 +129,9 @@ public class FamiliensituationContainer extends AbstractEntity {
 		Objects.requireNonNull(getFamiliensituationJA());
 		if (getFamiliensituationJA().getAenderungPer() == null || getFamiliensituationJA().getAenderungPer().isBefore(stichtag)) {
 			return getFamiliensituationJA();
-		} else {
-			Objects.requireNonNull(getFamiliensituationErstgesuch());
-			return getFamiliensituationErstgesuch();
 		}
+		Objects.requireNonNull(getFamiliensituationErstgesuch());
+		return getFamiliensituationErstgesuch();
 	}
 
 	@Override

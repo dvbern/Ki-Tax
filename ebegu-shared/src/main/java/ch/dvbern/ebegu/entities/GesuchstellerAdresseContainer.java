@@ -46,6 +46,7 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchstelleradresse_container_gesuchstellerContainer_id"))
 	private GesuchstellerContainer gesuchstellerContainer;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchstelleradresse_container_gesuchstellergs_id"))
@@ -67,11 +68,12 @@ public class GesuchstellerAdresseContainer extends AbstractEntity {
 		this.gesuchstellerContainer = gesuchstellerContainer;
 	}
 
+	@Nullable
 	public GesuchstellerAdresse getGesuchstellerAdresseGS() {
 		return gesuchstellerAdresseGS;
 	}
 
-	public void setGesuchstellerAdresseGS(GesuchstellerAdresse gesuchstellerAdresseGS) {
+	public void setGesuchstellerAdresseGS(@Nullable GesuchstellerAdresse gesuchstellerAdresseGS) {
 		this.gesuchstellerAdresseGS = gesuchstellerAdresseGS;
 	}
 

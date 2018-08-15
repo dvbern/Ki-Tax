@@ -45,7 +45,7 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 
 	private static final long serialVersionUID = -9037857320548372570L;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@NotNull
 	private Geschlecht geschlecht;
@@ -53,13 +53,13 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@NotNull
-	@Field()
+	@Field
 	private String vorname;
 
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@NotNull
 	@Column(nullable = false)
-	@Field()
+	@Field
 	private String nachname;
 
 	@Column(nullable = false)
@@ -104,7 +104,7 @@ public abstract class AbstractPersonEntity extends AbstractEntity {
 	}
 
 	public String getFullName() {
-		return vorname + " " + nachname;
+		return vorname + ' ' + nachname;
 	}
 
 	@Nonnull

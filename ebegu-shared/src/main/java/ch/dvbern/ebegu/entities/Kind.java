@@ -156,8 +156,6 @@ public class Kind extends AbstractPersonEntity {
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			break;
 		case ERNEUERUNG:
-			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
-			break;
 		case ERNEUERUNG_NEUES_DOSSIER:
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			break;

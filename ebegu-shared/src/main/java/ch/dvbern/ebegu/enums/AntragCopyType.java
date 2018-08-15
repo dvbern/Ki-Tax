@@ -19,8 +19,8 @@ package ch.dvbern.ebegu.enums;
  * Enum fuer den Status Events vom Gesuch.
  */
 public enum AntragCopyType {
-	MUTATION,
-	ERNEUERUNG,
-	MUTATION_NEUES_DOSSIER,
-	ERNEUERUNG_NEUES_DOSSIER
+	MUTATION, // entspricht einer Mutation im selben Dossier/Gemeinde
+	ERNEUERUNG, // Erneuerungsgesuch im selben Dossier/Gemeinde
+	MUTATION_NEUES_DOSSIER, // Antrag in einem neuen Dossier/Gemeinde in der selben Gesuchsperiode
+	ERNEUERUNG_NEUES_DOSSIER // Erneuerungsgesuch in einem neuen Dossier/Gemeinde
 }

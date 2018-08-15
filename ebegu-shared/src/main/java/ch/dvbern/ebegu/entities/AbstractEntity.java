@@ -129,6 +129,7 @@ public abstract class AbstractEntity implements Serializable {
 	@Column(nullable = false, length = Constants.UUID_LENGTH)
 	private String userMutiert;
 
+	@Nullable
 	@Column(nullable = true, length = Constants.UUID_LENGTH)
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
 	private String vorgaengerId;
@@ -200,11 +201,12 @@ public abstract class AbstractEntity implements Serializable {
 		this.userMutiert = userMutiert;
 	}
 
+	@Nullable
 	public String getVorgaengerId() {
 		return vorgaengerId;
 	}
 
-	public void setVorgaengerId(String vorgaengerId) {
+	public void setVorgaengerId(@Nullable String vorgaengerId) {
 		this.vorgaengerId = vorgaengerId;
 	}
 
