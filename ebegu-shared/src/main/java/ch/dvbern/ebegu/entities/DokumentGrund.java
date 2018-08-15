@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,6 +35,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -240,28 +242,37 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		return getDokumente() == null || getDokumente().size() <= 0;
 	}
 
-	public DokumentGrund copyForMutation(DokumentGrund mutation) {
-		super.copyForMutation(mutation);
-		mutation.setDokumentGrundTyp(this.getDokumentGrundTyp());
-		mutation.setFullName(this.getFullName());
-		mutation.setTag(this.getTag());
-		mutation.setPersonNumber(this.getPersonNumber());
-		mutation.setPersonType(this.getPersonType());
-		mutation.setDokumentTyp(this.getDokumentTyp());
-		if (this.getDokumente() != null) {
-			if (mutation.getDokumente() == null) {
-				mutation.setDokumente(new HashSet<>());
+	@Nonnull
+	public DokumentGrund copyDokumentGrund(@Nonnull DokumentGrund target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setDokumentGrundTyp(this.getDokumentGrundTyp());
+			target.setFullName(this.getFullName()); // todo deprecated
+			target.setTag(this.getTag());
+			target.setPersonNumber(this.getPersonNumber());
+			target.setPersonType(this.getPersonType());
+			target.setDokumentTyp(this.getDokumentTyp());
+			if (this.getDokumente() != null) {
+				if (target.getDokumente() == null) {
+					target.setDokumente(new HashSet<>());
+				}
+				for (Dokument dokument : this.getDokumente()) {
+					target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
+				}
 			}
-			for (Dokument dokument : this.getDokumente()) {
-				mutation.getDokumente().add(dokument.copyForMutation(new Dokument(), mutation));
+			if (DokumentGrundTyp.isSonstigeOrPapiergesuch(this.getDokumentGrundTyp())) {
+				target.setNeeded(false);
+			} else {
+				target.setNeeded(this.isNeeded());
 			}
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
 		}
-		if (DokumentGrundTyp.isSonstigeOrPapiergesuch(this.getDokumentGrundTyp())) {
-			mutation.setNeeded(false);
-		} else {
-			mutation.setNeeded(this.isNeeded());
-		}
-		return mutation;
+		return target;
 	}
 
 	@Override

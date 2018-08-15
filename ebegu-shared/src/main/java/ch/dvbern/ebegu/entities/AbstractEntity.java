@@ -35,6 +35,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
@@ -128,6 +129,7 @@ public abstract class AbstractEntity implements Serializable {
 	@Column(nullable = false, length = Constants.UUID_LENGTH)
 	private String userMutiert;
 
+	@Nullable
 	@Column(nullable = true, length = Constants.UUID_LENGTH)
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
 	private String vorgaengerId;
@@ -199,11 +201,12 @@ public abstract class AbstractEntity implements Serializable {
 		this.userMutiert = userMutiert;
 	}
 
+	@Nullable
 	public String getVorgaengerId() {
 		return vorgaengerId;
 	}
 
-	public void setVorgaengerId(String vorgaengerId) {
+	public void setVorgaengerId(@Nullable String vorgaengerId) {
 		this.vorgaengerId = vorgaengerId;
 	}
 
@@ -261,15 +264,18 @@ public abstract class AbstractEntity implements Serializable {
 	}
 
 	@Nonnull
-	public AbstractEntity copyForMutation(@Nonnull AbstractEntity mutation) {
-		mutation.setVorgaengerId(this.getId());
-		return mutation;
-	}
-
-	@Nonnull
-	public AbstractEntity copyForErneuerung(@Nonnull AbstractEntity folgeEntity) {
-		folgeEntity.setVorgaengerId(null); // Wir verlinken exlizit nicht mit der Vorperiode
-		return folgeEntity;
+	public AbstractEntity copyAbstractEntity(@Nonnull AbstractEntity target, @Nonnull AntragCopyType copyType) {
+		switch (copyType) {
+		case MUTATION:
+			target.setVorgaengerId(this.getId());
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			target.setVorgaengerId(null);
+			break;
+		}
+		return target;
 	}
 
 	public abstract boolean isSame(AbstractEntity other);

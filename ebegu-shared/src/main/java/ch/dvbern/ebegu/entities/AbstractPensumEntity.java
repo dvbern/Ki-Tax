@@ -24,6 +24,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 /**
@@ -70,19 +71,10 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 			&& Objects.equals(this.getPensum(), otherAbstDateRangedEntity.getPensum());
 	}
 
-	public AbstractPensumEntity copyForMutation(AbstractPensumEntity mutation) {
-		super.copyForMutation(mutation);
-		copyForMutationOrErneuerung(mutation);
-		return mutation;
-	}
-
-	public AbstractPensumEntity copyForErneuerung(AbstractPensumEntity mutation) {
-		super.copyForErneuerung(mutation);
-		copyForMutationOrErneuerung(mutation);
-		return mutation;
-	}
-
-	private void copyForMutationOrErneuerung(AbstractPensumEntity mutation) {
-		mutation.setPensum(this.getPensum());
+	@Nonnull
+	public AbstractPensumEntity copyAbstractPensumEntity(@Nonnull AbstractPensumEntity target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractDateRangedEntity(target, copyType);
+		target.setPensum(this.getPensum());
+		return target;
 	}
 }

@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.services.GesuchstellerAdresseService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -65,6 +66,7 @@ public class GesuchstellerAdresseServiceBeanTest extends AbstractEbeguLoginTest 
 		Assert.assertNotNull(adresseService);
 		GesuchstellerAdresseContainer insertedAdresses = insertNewEntity();
 		Optional<GesuchstellerAdresseContainer> adresse = adresseService.findAdresse(insertedAdresses.getId());
+		Assert.assertTrue(adresse.isPresent());
 		Assert.assertEquals("21", adresse.get().extractHausnummer());
 
 		adresse.get().getGesuchstellerAdresseJA().setHausnummer("99");
@@ -110,14 +112,14 @@ public class GesuchstellerAdresseServiceBeanTest extends AbstractEbeguLoginTest 
 		GesuchstellerAdresseContainer korrAddr = TestDataUtil.createDefaultGesuchstellerAdresseContainer(storedPers);
 		korrAddr.getGesuchstellerAdresseJA().setAdresseTyp(AdresseTyp.KORRESPONDENZADRESSE);
 		storedPers.addAdresse(korrAddr);
-		GesuchstellerAdresse gsKorrAddresse = korrAddr.getGesuchstellerAdresseJA().copyForMutation(new GesuchstellerAdresse());
+		GesuchstellerAdresse gsKorrAddresse = korrAddr.getGesuchstellerAdresseJA().copyGesuchstellerAdresse(new GesuchstellerAdresse(), AntragCopyType.MUTATION);
 		korrAddr.setGesuchstellerAdresseGS(gsKorrAddresse);
 		korrAddr.setGesuchstellerAdresseJA(null);
 
 		GesuchstellerAdresseContainer rechnungsAddr = TestDataUtil.createDefaultGesuchstellerAdresseContainer(storedPers);
 		rechnungsAddr.getGesuchstellerAdresseJA().setAdresseTyp(AdresseTyp.RECHNUNGSADRESSE);
 		storedPers.addAdresse(rechnungsAddr);
-		GesuchstellerAdresse gsRechnungsAddresse = rechnungsAddr.getGesuchstellerAdresseJA().copyForMutation(new GesuchstellerAdresse());
+		GesuchstellerAdresse gsRechnungsAddresse = rechnungsAddr.getGesuchstellerAdresseJA().copyGesuchstellerAdresse(new GesuchstellerAdresse(), AntragCopyType.MUTATION);
 		rechnungsAddr.setGesuchstellerAdresseGS(gsRechnungsAddresse);
 		rechnungsAddr.setGesuchstellerAdresseJA(null);
 

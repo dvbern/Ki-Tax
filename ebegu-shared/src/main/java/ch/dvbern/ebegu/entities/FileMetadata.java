@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -24,6 +25,7 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
@@ -108,12 +110,21 @@ public abstract class FileMetadata extends AbstractEntity {
 			.toString();
 	}
 
-	public FileMetadata copyForMutation(FileMetadata mutation) {
-		super.copyForMutation(mutation);
-		mutation.setFilename(this.filename);
-		mutation.setFilepfad(this.filepfad);
-		mutation.setFilesize(this.filesize);
-		return mutation;
+	@Nonnull
+	public FileMetadata copyFileMetadata(@Nonnull FileMetadata target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setFilename(this.getFilename());
+			target.setFilepfad(this.getFilepfad());
+			target.setFilesize(this.getFilesize());
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Override

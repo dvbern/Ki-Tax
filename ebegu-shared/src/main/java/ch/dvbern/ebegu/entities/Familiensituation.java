@@ -27,6 +27,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -149,26 +150,23 @@ public class Familiensituation extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Familiensituation copyForMutation(@Nonnull Familiensituation mutation) {
-		super.copyForMutation(mutation);
-		mutation.setAenderungPer(this.aenderungPer);
-		return copyForMutationOrErneuerung(mutation);
-	}
-
-	@Nonnull
-	public Familiensituation copyForErneuerung(@Nonnull Familiensituation folgeEntity) {
-		super.copyForErneuerung(folgeEntity);
-		return copyForMutationOrErneuerung(folgeEntity);
-	}
-
-	@Nonnull
-	private Familiensituation copyForMutationOrErneuerung(@Nonnull Familiensituation mutation) {
-		mutation.setFamilienstatus(this.getFamilienstatus());
-		mutation.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
-		mutation.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
-		mutation.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
-		mutation.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
-		return mutation;
+	public Familiensituation copyFamiliensituation(@Nonnull Familiensituation target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		target.setFamilienstatus(this.getFamilienstatus());
+		target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
+		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
+		target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
+		target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
+		switch (copyType) {
+		case MUTATION:
+			target.setAenderungPer(this.getAenderungPer());
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Override

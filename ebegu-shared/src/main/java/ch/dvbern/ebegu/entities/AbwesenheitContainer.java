@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -27,6 +28,7 @@ import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -45,6 +47,7 @@ public class AbwesenheitContainer extends AbstractEntity implements Comparable<A
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_abwesenheit_container_betreuung_id"), nullable = false)
 	private Betreuung betreuung;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_abwesenheit_container_abwesenheit_gs"))
@@ -66,11 +69,12 @@ public class AbwesenheitContainer extends AbstractEntity implements Comparable<A
 		this.betreuung = betreuung;
 	}
 
+	@Nullable
 	public Abwesenheit getAbwesenheitGS() {
 		return abwesenheitGS;
 	}
 
-	public void setAbwesenheitGS(Abwesenheit abwesenheitGS) {
+	public void setAbwesenheitGS(@Nullable Abwesenheit abwesenheitGS) {
 		this.abwesenheitGS = abwesenheitGS;
 	}
 
@@ -115,11 +119,21 @@ public class AbwesenheitContainer extends AbstractEntity implements Comparable<A
 		return builder.toComparison();
 	}
 
-	public AbwesenheitContainer copyForMutation(AbwesenheitContainer mutation, @Nonnull Betreuung betreuungMutation) {
-		super.copyForMutation(mutation);
-		mutation.setBetreuung(betreuungMutation);
-		mutation.setAbwesenheitGS(null);
-		mutation.setAbwesenheitJA(this.getAbwesenheitJA().copyForMutation(new Abwesenheit()));
-		return mutation;
+	@Nonnull
+	public AbwesenheitContainer copyAbwesenheitContainer(
+			@Nonnull AbwesenheitContainer target, @Nonnull AntragCopyType copyType, @Nonnull Betreuung targetAbwesenheit) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setBetreuung(targetAbwesenheit);
+			target.setAbwesenheitGS(null);
+			target.setAbwesenheitJA(this.getAbwesenheitJA().copyAbwesenheit(new Abwesenheit(), copyType));
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }
