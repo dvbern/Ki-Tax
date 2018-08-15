@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
@@ -96,7 +98,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	private Erwerbspensum createErwerbspensum(Gesuch gesuch, String vorname, Taetigkeit taetigkeit,
-		boolean gesundheitlicheEinschraenkungen, boolean zuschlagZuErwerbspensum, Zuschlagsgrund zuschlagsgrund) {
+		boolean gesundheitlicheEinschraenkungen, boolean zuschlagZuErwerbspensum, @Nullable Zuschlagsgrund zuschlagsgrund) {
 		final ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
 
 		final Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
@@ -221,7 +223,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void erwpDokuemntNeueintrittAfterTest() {
+	public void erwpDokumentNeueintrittAfterTest() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, false, null);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
@@ -236,7 +238,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void erwpDokuemntNeueintrittBeforeTest() {
+	public void erwpDokumentNeueintrittBeforeTest() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, false, null);
 
 		erwerbspensum.getGueltigkeit().setGueltigAb(LocalDate.of(2000, 7, 1));
@@ -245,7 +247,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void erwpDokuemntSelbständigTest() {
+	public void erwpDokumentSelbständigTest() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.SELBSTAENDIG, false, false, null);
 
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -259,7 +261,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void erwpDokuemntAusbildung() {
+	public void erwpDokumentAusbildung() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.AUSBILDUNG, false, false, null);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -273,7 +275,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void erwpDokuemntRAV() {
+	public void erwpDokumentRAV() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.RAV, false, false, null);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
@@ -287,7 +289,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void erwpDokuemntArzt() {
+	public void erwpDokumentArzt() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, true, false, null);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
