@@ -77,10 +77,11 @@
                     </th>
                     <th st-sort="verantwortlicherTS" class="sortable row-ver" data-translate="VERANTWORTLICHER_SCHULAMT"
                         dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()">
                     </th>
                     <th st-sort="verantwortlicherBG" class="sortable row-ver"
-                        data-translate="VERANTWORTLICHER_JUGENDAMT"
+                        data-translate="{{vm.ebeguUtil.isTagesschulangebotEnabled() ? 'VERANTWORTLICHER_JUGENDAMT' : 'VERANTWORTLICHER_OHNE_SCHULAMT'}}"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
@@ -190,7 +191,8 @@
                         </div>
                     </th>
                     <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()">
                         <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
                                        initial-all="true"
                                        show-selection-all="true" selected-user="vm.selectedVerantwortlicherTS"
@@ -260,8 +262,10 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </td>
                     <td class="ellipsis" title="{{row.verantwortlicherTS}}"
-                        ng-bind="row.verantwortlicherTS" dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        ng-bind="row.verantwortlicherTS"
+                        dv-display-element
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()">
                     </td>
                     <td class="ellipsis" title="{{row.verantwortlicherBG}}"
                         ng-bind="row.verantwortlicherBG" dv-display-element

@@ -27,6 +27,7 @@ import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUser from '../../../../models/TSUser';
 import {TSDateRange} from '../../../../models/types/TSDateRange';
 import DateUtil from '../../../../utils/DateUtil';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
@@ -46,24 +47,9 @@ export class DVBenutzerConfig implements IComponentOptions {
 
 export class DVBenutzerController implements IOnInit {
 
-    // todo fragen warum hier oben????
-    public get currentBerechtigung(): TSBerechtigung {
-        return this._currentBerechtigung;
-    }
 
-    public get futureBerechtigungen(): TSBerechtigung[] {
-        return this._futureBerechtigungen;
-    }
-
-    public get isDefaultVerantwortlicher(): boolean {
-        return this._isDefaultVerantwortlicher;
-    }
-
-    public set isDefaultVerantwortlicher(value: boolean) {
-        this._isDefaultVerantwortlicher = value;
-    }
-
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate', '$stateParams', 'UserRS',
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$translate',
+        '$stateParams', 'UserRS',
         '$state', 'DvDialog', 'ApplicationPropertyRS'];
 
     form: IFormController;
@@ -100,8 +86,8 @@ export class DVBenutzerController implements IOnInit {
             this.userRS.findBenutzer(username).then((result) => {
                 this.selectedUser = result;
                 this.initSelectedUser();
-                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den "Default-Verantwortlichen" des
-                // entsprechenden Amtes handelt
+                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
+                // "Default-Verantwortlichen" des entsprechenden Amtes handelt
                 if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
                     this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
                         if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
@@ -142,10 +128,15 @@ export class DVBenutzerController implements IOnInit {
     }
 
     public getRollen(): Array<TSRole> {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            return getTSRoleValues();
+        if (EbeguUtil.isTagesschulangebotEnabled()) {
+            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+                ? getTSRoleValues()
+                : getTSRoleValuesWithoutSuperAdmin();
+        } else {
+            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+                ? TSRoleUtil.getAllRolesButSchulamt()
+                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
         }
-        return getTSRoleValuesWithoutSuperAdmin();
     }
 
     public getTranslatedRole(role: TSRole): string {
@@ -281,5 +272,21 @@ export class DVBenutzerController implements IOnInit {
 
     public isBerechtigungEnabled(berechtigung: TSBerechtigung): boolean {
         return berechtigung && berechtigung.enabled;
+    }
+
+    public get currentBerechtigung(): TSBerechtigung {
+        return this._currentBerechtigung;
+    }
+
+    public get futureBerechtigungen(): TSBerechtigung[] {
+        return this._futureBerechtigungen;
+    }
+
+    public get isDefaultVerantwortlicher(): boolean {
+        return this._isDefaultVerantwortlicher;
+    }
+
+    public set isDefaultVerantwortlicher(value: boolean) {
+        this._isDefaultVerantwortlicher = value;
     }
 }

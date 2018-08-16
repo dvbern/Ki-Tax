@@ -20,6 +20,7 @@ import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUser from '../../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
@@ -117,10 +118,15 @@ export class DVBenutzerListController implements IOnInit {
     };
 
     public getRollen(): Array<TSRole> {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            return getTSRoleValues();
+        if (EbeguUtil.isTagesschulangebotEnabled()) {
+            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+                ? getTSRoleValues()
+                : getTSRoleValuesWithoutSuperAdmin();
+        } else {
+            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+                ? TSRoleUtil.getAllRolesButSchulamt()
+                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
         }
-        return getTSRoleValuesWithoutSuperAdmin();
     }
 
     public getTranslatedRole(role: TSRole): string {
