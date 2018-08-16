@@ -34,7 +34,6 @@ export class DvVerantwortlicherselect implements IDirective {
     controllerAs = 'vm';
     bindToController = {
         schulamt: '<',
-        antragList: '<',
         userList: '<',
     };
     template = require('./dv-verantwortlicherselect.html');
@@ -55,7 +54,6 @@ export class VerantwortlicherselectController implements IController {
 
     userList: Array<TSUser>;
     TSRoleUtil = TSRoleUtil;
-    antragList: Array<TSAntragDTO>;
     schulamt: boolean;
 
     constructor(private readonly userRS: UserRS,
@@ -71,10 +69,6 @@ export class VerantwortlicherselectController implements IController {
 
     public getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
-    }
-
-    public hasGesuch(): boolean {
-        return this.antragList && this.antragList.length > 0;
     }
 
     public getVerantwortlicherFullName(): string {
