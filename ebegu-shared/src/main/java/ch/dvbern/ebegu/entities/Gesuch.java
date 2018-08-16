@@ -195,10 +195,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenPruefungSTV;
 
-	@Nonnull
+	@Nullable
 	@Valid
-	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "gesuch")
-	private Set<DokumentGrund> dokumentGrunds = new HashSet<>();
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "gesuch", fetch = FetchType.LAZY)
+	private Set<DokumentGrund> dokumentGrunds;
 
 	@NotNull
 	@Min(0)
@@ -296,6 +296,9 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public boolean addDokumentGrund(@NotNull final DokumentGrund dokumentGrund) {
+		if (dokumentGrunds == null) {
+			dokumentGrunds = new HashSet<>();
+		}
 		dokumentGrund.setGesuch(this);
 		return this.dokumentGrunds.add(dokumentGrund);
 	}
@@ -420,7 +423,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.gesuchBetreuungenStatus = gesuchBetreuungenStatus;
 	}
 
-	@Nonnull
+	@Nullable
 	public Set<DokumentGrund> getDokumentGrunds() {
 		return dokumentGrunds;
 	}
@@ -813,9 +816,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	private void copyDokumentGruende(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		this.getDokumentGrunds().forEach(
-			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
-		);
+		if (this.getDokumentGrunds() != null){
+			target.setDokumentGrunds(new HashSet<>());
+			this.getDokumentGrunds().forEach(
+				dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
+			);
+		}
 	}
 
 	@Nonnull
