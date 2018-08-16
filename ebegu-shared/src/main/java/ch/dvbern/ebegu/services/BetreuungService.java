@@ -91,13 +91,13 @@ public interface BetreuungService {
 	 * @param bgNummer BGNummer der Betreuung
 	 * @return Betreuung mit der angegebenen ID (z.B. 18.000116.1.2) oder null falls nicht vorhanden
 	 */
-	List<Betreuung> findBetreuungenByBGNummer(@Nonnull String bgNummer);
+	List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer);
 
 	/**
 	 * @param bgNummer BGNummer der Betreuung
 	 * @return Betreuung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
 	 */
-	List<Betreuung> findNewestBetreuungByBGNummer(@Nonnull String bgNummer);
+	List<Betreuung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
 
 	/**
 	 * Gibt die aktuell gültige Betreuung für die übergebene BG Nummer zurück (z.B. 18.000116.1.2)
