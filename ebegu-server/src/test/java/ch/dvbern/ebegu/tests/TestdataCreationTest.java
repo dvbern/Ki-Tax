@@ -82,7 +82,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
-		Assert.assertEquals(TestDataUtil.createCurrentGesuchsperiode().getBasisJahrPlus1(), erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
+		Assert.assertEquals(2017, erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
 	}
 
 	@Test
