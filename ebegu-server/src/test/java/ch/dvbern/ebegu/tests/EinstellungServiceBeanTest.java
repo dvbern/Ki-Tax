@@ -88,16 +88,17 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void saveEinstellung() {
-		Einstellung einstellung = new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "Value", gesuchsperiode1617, null, null, null);
+		Einstellung einstellung = new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "Value", gesuchsperiode1617, null, null);
 		Einstellung mergedEinstellung = einstellungService.saveEinstellung(einstellung);
 		Assert.assertNotNull(mergedEinstellung);
 		Assert.assertNotNull(mergedEinstellung.getTimestampErstellt());
 	}
 
+	@SuppressWarnings("ReuseOfLocalVariable")
 	@Test
 	public void findEinstellung() {
 		// Einstellung für 16/17, ohne Gemeinde, ohne Mandant
-		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "System_1617", gesuchsperiode1617, null, null, null));
+		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "System_1617", gesuchsperiode1617, null, null));
 
 		// Suche fuer 16/17: Bern -> ok
 		Einstellung einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern,
@@ -116,7 +117,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		}
 
 		// Einstellung für 16/17, Gemeinde BERN, ohne Mandant
-		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeBern_1617", gesuchsperiode1617, null, gemeindeBern, null));
+		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeBern_1617", gesuchsperiode1617, null, gemeindeBern));
 
 		// Suche fuer 16/17: Bern -> Das spezifische Resultat
 		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
@@ -138,7 +139,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		}
 
 		// Einstellung für 16/17, Mandant KantonBern
-		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "KantonBern_1617", gesuchsperiode1617, kantonBern, null,null));
+		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "KantonBern_1617", gesuchsperiode1617, kantonBern, null));
 
 		// Suche fuer 16/17: Bern -> Das spezifische Resultat
 		einstellungFound = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeindeBern, gesuchsperiode1617);
@@ -160,8 +161,8 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		}
 
 		// Eine zweite mit Mandant=null einfügen
-		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeOstermundigen_1617", gesuchsperiode1617, null,
-			gemeindeBern, null));
+		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeOstermundigen_1617", gesuchsperiode1617,
+			null, gemeindeBern));
 	}
 
 	@Test(expected = NoEinstellungFoundException.class)

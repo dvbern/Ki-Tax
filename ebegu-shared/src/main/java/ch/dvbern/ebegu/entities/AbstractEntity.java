@@ -51,53 +51,50 @@ import org.hibernate.envers.Audited;
 @EntityListeners(AbstractEntityListener.class)
 //Mappings for the native quries used by the report
 @SqlResultSetMappings({
-	@SqlResultSetMapping(name = "GesuchStichtagDataRowMapping", classes = {
-		@ConstructorResult(targetClass = GesuchStichtagDataRow.class,
-			columns = {
-				@ColumnResult(name = "bgNummer", type = String.class),
-				@ColumnResult(name = "gesuchLaufNr", type = Integer.class),
-				@ColumnResult(name = "institution", type = String.class),
-				@ColumnResult(name = "betreuungsTyp", type = String.class),
-				@ColumnResult(name = "periode", type = String.class),
-				@ColumnResult(name = "nichtFreigegeben", type = Integer.class),
-				@ColumnResult(name = "mahnungen", type = Integer.class),
-				@ColumnResult(name = "beschwerde", type = Integer.class) }
-		) }
-	),
-	@SqlResultSetMapping(name = "GesuchZeitraumDataRowMapping", classes = {
-		@ConstructorResult(targetClass = GesuchZeitraumDataRow.class,
-			columns = {
-				@ColumnResult(name = "bgNummer", type = String.class),
-				@ColumnResult(name = "gesuchLaufNr", type = Integer.class),
-				@ColumnResult(name = "institution", type = String.class),
-				@ColumnResult(name = "betreuungsTyp", type = String.class),
-				@ColumnResult(name = "periode", type = String.class),
-				@ColumnResult(name = "anzahlGesuchOnline", type = Integer.class),
-				@ColumnResult(name = "anzahlGesuchPapier", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationOnline", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationPapier", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationAbwesenheit", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationBetreuung", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationEV", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationEwerbspensum", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationFamilienSitutation", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationFinanzielleSituation", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationGesuchsteller", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationKinder", type = Integer.class),
-				@ColumnResult(name = "anzahlMutationUmzug", type = Integer.class),
-				@ColumnResult(name = "anzahlMahnungen", type = Integer.class),
-				@ColumnResult(name = "anzahlSteueramtAusgeloest", type = Integer.class),
-				@ColumnResult(name = "anzahlSteueramtGeprueft", type = Integer.class),
-				@ColumnResult(name = "anzahlBeschwerde", type = Integer.class),
-				@ColumnResult(name = "anzahlVerfuegungen", type = Integer.class),
-				@ColumnResult(name = "anzahlVerfuegungenNormal", type = Integer.class),
-				@ColumnResult(name = "anzahlVerfuegungenMaxEinkommen", type = Integer.class),
-				@ColumnResult(name = "anzahlVerfuegungenKeinPensum", type = Integer.class),
-				@ColumnResult(name = "anzahlVerfuegungenZuschlagZumPensum", type = Integer.class),
-				@ColumnResult(name = "anzahlVerfuegungenNichtEintreten", type = Integer.class) }
-		) }
-	)
+	@SqlResultSetMapping(name = "GesuchStichtagDataRowMapping", classes = @ConstructorResult(targetClass = GesuchStichtagDataRow.class,
+		columns = {
+			@ColumnResult(name = "bgNummer", type = String.class),
+			@ColumnResult(name = "gesuchLaufNr", type = Integer.class),
+			@ColumnResult(name = "institution", type = String.class),
+			@ColumnResult(name = "betreuungsTyp", type = String.class),
+			@ColumnResult(name = "periode", type = String.class),
+			@ColumnResult(name = "nichtFreigegeben", type = Integer.class),
+			@ColumnResult(name = "mahnungen", type = Integer.class),
+			@ColumnResult(name = "beschwerde", type = Integer.class) }
+	)),
+	@SqlResultSetMapping(name = "GesuchZeitraumDataRowMapping", classes = @ConstructorResult(targetClass = GesuchZeitraumDataRow.class,
+		columns = {
+			@ColumnResult(name = "bgNummer", type = String.class),
+			@ColumnResult(name = "gesuchLaufNr", type = Integer.class),
+			@ColumnResult(name = "institution", type = String.class),
+			@ColumnResult(name = "betreuungsTyp", type = String.class),
+			@ColumnResult(name = "periode", type = String.class),
+			@ColumnResult(name = "anzahlGesuchOnline", type = Integer.class),
+			@ColumnResult(name = "anzahlGesuchPapier", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationOnline", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationPapier", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationAbwesenheit", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationBetreuung", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationEV", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationEwerbspensum", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationFamilienSitutation", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationFinanzielleSituation", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationGesuchsteller", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationKinder", type = Integer.class),
+			@ColumnResult(name = "anzahlMutationUmzug", type = Integer.class),
+			@ColumnResult(name = "anzahlMahnungen", type = Integer.class),
+			@ColumnResult(name = "anzahlSteueramtAusgeloest", type = Integer.class),
+			@ColumnResult(name = "anzahlSteueramtGeprueft", type = Integer.class),
+			@ColumnResult(name = "anzahlBeschwerde", type = Integer.class),
+			@ColumnResult(name = "anzahlVerfuegungen", type = Integer.class),
+			@ColumnResult(name = "anzahlVerfuegungenNormal", type = Integer.class),
+			@ColumnResult(name = "anzahlVerfuegungenMaxEinkommen", type = Integer.class),
+			@ColumnResult(name = "anzahlVerfuegungenKeinPensum", type = Integer.class),
+			@ColumnResult(name = "anzahlVerfuegungenZuschlagZumPensum", type = Integer.class),
+			@ColumnResult(name = "anzahlVerfuegungenNichtEintreten", type = Integer.class) }
+	))
 })
+// todo add AbstractWithVorgaengerEntity
 public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = -979317154050183445L;

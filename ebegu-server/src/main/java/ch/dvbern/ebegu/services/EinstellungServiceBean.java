@@ -62,6 +62,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@Nonnull
+	// todo KIBON-171 Methode überlegen und evtl. nicht mit sortBy umsetzen
 	public Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);

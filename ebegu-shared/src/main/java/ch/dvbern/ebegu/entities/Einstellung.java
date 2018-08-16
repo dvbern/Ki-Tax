@@ -45,7 +45,8 @@ import org.hibernate.envers.Audited;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "einstellung_key", "gesuchsperiode_id", "mandant_id", "gemeinde_id" }, name = "UK_einstellung")
 )
-public class Einstellung extends AbstractDateRangedEntity {
+// todo fragen vorgaengerId wird uebernommen!!
+public class Einstellung extends AbstractEntity {
 
 	private static final long serialVersionUID = 8704632842261673111L;
 
@@ -57,10 +58,6 @@ public class Einstellung extends AbstractDateRangedEntity {
 	@NotNull
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String value;
-
-	@Nullable
-	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String description;
 
 	@Nullable
 	@ManyToOne(optional = true)
@@ -85,15 +82,13 @@ public class Einstellung extends AbstractDateRangedEntity {
 		this.key = key;
 		this.value = value;
 		this.gesuchsperiode = gesuchsperiode;
-		this.setGueltigkeit(gesuchsperiode.getGueltigkeit()); // Aktuell "doppelt", da vermutlich fuer Gmde Bern auch jahresabhängige Einstellungen
 	}
 
 	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode,
-			@Nullable Mandant mandant, @Nullable Gemeinde gemeinde, @Nullable String description) {
+			@Nullable Mandant mandant, @Nullable Gemeinde gemeinde) {
 		this(key, value, gesuchsperiode);
 		this.mandant = mandant;
 		this.gemeinde = gemeinde;
-		this.description = description;
 	}
 
 	public EinstellungKey getKey() {
@@ -110,15 +105,6 @@ public class Einstellung extends AbstractDateRangedEntity {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	@Nullable
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(@Nullable String description) {
-		this.description = description;
 	}
 
 	@Nullable
@@ -152,21 +138,21 @@ public class Einstellung extends AbstractDateRangedEntity {
 	 * Erstellt eine Kopie der Einstellung für eine neue Gesuchsperiode
 	 */
 	public Einstellung copyGesuchsperiode(@Nonnull Gesuchsperiode newGesuchsperiode) {
-		return new Einstellung(this.getKey(), this.getValue(), newGesuchsperiode, this.getMandant(), this.getGemeinde(), this.getDescription());
+		return new Einstellung(this.getKey(), this.getValue(), newGesuchsperiode, this.getMandant(), this.getGemeinde());
 	}
 
 	/**
 	 * Erstellt eine mandant-spezifische Kopie der Einstellung
 	 */
 	public Einstellung copyForMandant(@Nonnull Mandant newMandant) {
-		return new Einstellung(this.getKey(), this.getValue(), this.getGesuchsperiode(), newMandant, this.getGemeinde(), this.getDescription());
+		return new Einstellung(this.getKey(), this.getValue(), this.getGesuchsperiode(), newMandant, null);
 	}
 
 	/**
 	 * Erstellt eine gemeinde-spezifische Kopie der Einstellung
 	 */
 	public Einstellung copyForGemeinde(@Nonnull Gemeinde newGemeinde) {
-		return new Einstellung(this.getKey(), this.getValue(), this.getGesuchsperiode(), newGemeinde.getMandant(), newGemeinde, this.getDescription());
+		return new Einstellung(this.getKey(), this.getValue(), this.getGesuchsperiode(), newGemeinde.getMandant(), newGemeinde);
 	}
 
 	public BigDecimal getValueAsBigDecimal() {
@@ -184,9 +170,6 @@ public class Einstellung extends AbstractDateRangedEntity {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!super.isSame(other)) {
 			return false;
 		}
 		if (!(other instanceof Einstellung)) {

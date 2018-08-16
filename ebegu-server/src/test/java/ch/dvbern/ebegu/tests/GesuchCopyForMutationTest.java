@@ -34,8 +34,9 @@ import org.junit.Test;
  * Test copy for mutation
  */
 public class GesuchCopyForMutationTest {
+
 	@Test
-	public void copyForMutation() throws Exception {
+	public void copyForMutation() {
 
 		Collection<InstitutionStammdaten> instStammdaten = new ArrayList<>();
 
