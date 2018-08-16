@@ -87,7 +87,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
 		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
-		benutzer = benutzerService.saveBenutzer(benutzer);
+		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 
 		berechtigungen = benutzer.getBerechtigungen();
 		Assert.assertNotNull(berechtigungen);
@@ -128,7 +128,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		secondBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
-		benutzer = benutzerService.saveBenutzer(benutzer);
+		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
 		Assert.assertEquals(2, berechtigungen.size());
 

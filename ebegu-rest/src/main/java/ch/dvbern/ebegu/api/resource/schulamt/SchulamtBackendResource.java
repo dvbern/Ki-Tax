@@ -138,7 +138,7 @@ public class SchulamtBackendResource {
 				return createBgNummerFormatError();
 			}
 
-			final List<Betreuung> betreuungen = betreuungService.findNewestBetreuungByBGNummer(bgNummer);
+			final List<Betreuung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(bgNummer);
 
 			if (betreuungen == null || betreuungen.isEmpty()) {
 				// Betreuung not found

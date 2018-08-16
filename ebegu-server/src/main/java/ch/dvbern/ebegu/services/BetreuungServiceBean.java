@@ -153,7 +153,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final Betreuung mergedBetreuung = persistence.merge(betreuung);
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
-		final List<Betreuung> betreuungByBGNummer = findBetreuungenByBGNummer(mergedBetreuung.getBGNummer());
+		final List<Betreuung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
 		betreuungByBGNummer.stream().filter(b -> b.isAngebotSchulamt() && !Objects.equals(betreuung.getId(), b.getId())).forEach(b -> {
 			b.copyAnmeldung(betreuung);
 			persistence.merge(b);
@@ -309,17 +309,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public List<Betreuung> findBetreuungenByBGNummer(@Nonnull String bgNummer) {
-		return findBetreuungenByBGNummer(bgNummer, false);
+	public List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer) {
+		return findAnmeldungenByBGNummer(bgNummer, false);
 	}
 
 	@Override
-	public List<Betreuung> findNewestBetreuungByBGNummer(@Nonnull String bgNummer) {
-		return findBetreuungenByBGNummer(bgNummer, true);
+	public List<Betreuung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
+		return findAnmeldungenByBGNummer(bgNummer, true);
 	}
 
 	@Nonnull
-	private List<Betreuung> findBetreuungenByBGNummer(@Nonnull String bgNummer, boolean getOnlyAktuelle) {
+	private List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer, boolean getOnlyAktuelle) {
 		final int betreuungNummer = getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
@@ -343,7 +343,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
 
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
-		Predicate predBetreuungAusgeloest = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.betreuungsstatusAusgeloest);
+		Predicate predBetreuungAusgeloest = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -364,6 +364,50 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	@RolesAllowed({SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA})
+	@Nonnull
+	public Optional<Betreuung> findGueltigeBetreuungByBGNummer(@Nonnull String bgNummer) {
+		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
+		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
+		final Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+		if (!gesuchsperiodeOptional.isPresent()) {
+			return Optional.empty();
+		}
+
+		final Gesuchsperiode gesuchsperiode = gesuchsperiodeOptional.get();
+		final int betreuungNummer = getBetreuungNummerFromBGNummer(bgNummer);
+		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
+		final long fallnummer = getFallnummerFromBGNummer(bgNummer);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
+
+		Root<Betreuung> root = query.from(Betreuung.class);
+		final Join<Betreuung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
+		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(KindContainer_.gesuch, JoinType.LEFT);
+		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
+		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
+
+		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
+		Predicate predGueltig = cb.equal(root.get(Betreuung_.gueltig), Boolean.TRUE);
+		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
+		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
+		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(predFallNummer);
+		predicates.add(predGesuchsperiode);
+		predicates.add(predKindNummer);
+		predicates.add(predBetreuungNummer);
+		predicates.add(predGueltig);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		Betreuung resultOrNull = persistence.getCriteriaSingleResult(query);
+		return Optional.ofNullable(resultOrNull);
 	}
 
 	@Override
