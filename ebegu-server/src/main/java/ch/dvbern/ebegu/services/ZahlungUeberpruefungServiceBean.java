@@ -161,7 +161,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			return;
 		}
 		if (gesuch.getTimestampVerfuegt() == null) {
-			LOGGER.error("timestampVerfuegt ist null beim Auszahlen: {} - {}", gesuch.getId(), gesuch.getJahrAndFallnummer());
+			LOGGER.error("timestampVerfuegt ist null beim Auszahlen: {} - {}", gesuch.getId(), gesuch.getJahrFallAndGemeindenummer());
 			return;
 		}
 		// Nur Gesuche, die VOR der letzten Zahlung verfuegt wurden, sind relevant

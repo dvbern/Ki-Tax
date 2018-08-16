@@ -72,14 +72,12 @@ public final class Constants {
 	public static final long MAX_SHORT_TEMP_DOWNLOAD_AGE_MINUTES = 3L;
 	public static final long MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES = 1440L; //24 * 60
 	public static final int FALLNUMMER_LENGTH = 6;
-	public static final long MAX_LUCENE_QUERY_RUNTIME = 500L;
-
-	public static final long MAX_SHORT_TEMP_DOWNLOAD_AGE_MINUTES = 3L;
-	public static final long MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES = 1440L; //24 * 60
-	public static final int FALLNUMMER_LENGTH = 6;
 	public static final int GEMEINDENUMMER_LENGTH = 3;
 	public static final long MAX_LUCENE_QUERY_RUNTIME = 500L;
 
+	public static final int MAX_LUCENE_QUICKSEARCH_RESULTS = 25; // hier gibt es ein Problem, wenn wir fuer keines der Resultate berechtigt sind wird unser resultset leer sein auf client
+
+	public static final String DEFAULT_MANDANT_ID = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
 	public static final String AUTH_TOKEN_SUFFIX_FOR_NO_TOKEN_REFRESH_REQUESTS = "NO_REFRESH";
 	public static final String PATH_DESIGNATOR_NO_TOKEN_REFRESH = "notokenrefresh";
 

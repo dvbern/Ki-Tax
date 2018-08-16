@@ -96,9 +96,9 @@ export default class ZahlungRS {
     }
 
     public pruefeZahlungen(): void {
-        this.log.debug('Zahlungspruefung ausloesen...');
+        this.$log.debug('Zahlungspruefung ausloesen...');
         this.http.get(this.serviceURL + '/pruefen').then(() => {
-            this.log.debug('... Zahlungspruefung durchgefuehrt ');
+            this.$log.debug('... Zahlungspruefung durchgefuehrt ');
         });
     }
 

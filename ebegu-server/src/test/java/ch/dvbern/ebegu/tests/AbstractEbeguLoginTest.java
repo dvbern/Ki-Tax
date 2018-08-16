@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.tests;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.tets.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.tets.util.JBossLoginContextFactory.createLoginContext;
-import static ch.dvbern.ebegu.util.Constants.DEFAULT_MANDANT_ID;
 
 /**
  * Diese Klasse loggt vor jeder testmethode als superadmin ein und danach wieder aus.
@@ -56,7 +57,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant);
 		try {
 			loginAsSuperadmin();
@@ -86,7 +87,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	}
 
 	protected Benutzer loginAsGesuchsteller(String username) {
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer user = createOrFindBenutzer(UserRole.GESUCHSTELLER, username, null, null, mandant);
 		user = persistence.merge(user);
 		try {
@@ -105,7 +106,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 			LOG.error("could not login as sachbearbeiter schulamt for tests");
 		}
 
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer schulamt = createOrFindBenutzer(UserRole.SCHULAMT, "schulamt", null, null, mandant);
 		return persistence.merge(schulamt);
 	}
@@ -117,7 +118,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 			LOG.error("could not login as admin schulamt for tests");
 		}
 
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMINISTRATOR_SCHULAMT, "schulamtadmin", null, null, mandant);
 		return persistence.merge(schulamt);
 	}
@@ -129,7 +130,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 			LOG.error("could not login as steueramt for tests");
 		}
 
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer steueramt = createOrFindBenutzer(UserRole.STEUERAMT, "steueramt", null, null, mandant);
 		persistence.merge(steueramt);
 	}
@@ -141,7 +142,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 			LOG.error("could not login as sachbearbeiter jugendamt saja for tests");
 		}
 
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant);
 		persistence.merge(saja);
 		return saja;
@@ -154,7 +155,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 			LOG.error("could not login as jurist for tests");
 		}
 
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer jurist = createOrFindBenutzer(UserRole.JURIST, "jurist", null, null, mandant);
 		persistence.merge(jurist);
 		return jurist;
@@ -167,7 +168,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 			LOG.error("could not login as sachbearbeiter jugendamt admin for tests");
 		}
 
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN, "admin", null, null, mandant);
 		persistence.merge(admin);
 	}
@@ -185,7 +186,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	}
 
 	protected Benutzer loginAsSachbearbeiterTraegerschaft(String username, Traegerschaft traegerschaft) {
-		Mandant mandant = persistence.find(Mandant.class, DEFAULT_MANDANT_ID);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
 		Benutzer user = createOrFindBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, username, traegerschaft, null, mandant);
 		user = persistence.merge(user);
 		try {
@@ -197,8 +198,11 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		//theoretisch sollten wir wohl zuerst ausloggen bevor wir wieder einloggen aber es scheint auch so zu gehen
 	}
 
-	private Benutzer createOrFindBenutzer(UserRole role, String userName, Traegerschaft traegerschaft, Institution institution, Mandant mandant) {
+	private Benutzer createOrFindBenutzer(UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution, @Nullable Mandant mandant) {
 		Optional<Benutzer> benutzer = benutzerService.findBenutzer(userName);
-		return benutzer.orElseGet(() -> TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence));
+		return benutzer.orElseGet(() -> {
+			assert mandant != null;
+			return TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence);
+		});
 	}
 }

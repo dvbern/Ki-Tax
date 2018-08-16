@@ -338,7 +338,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		allSortedBerechtigungen.addAll(benutzer.getBerechtigungen());
 		allSortedBerechtigungen.sort(Comparator.comparing(o -> o.getGueltigkeit().getGueltigAb()));
 
-		finalBerechtigung currentBerechtigung = allSortedBerechtigungen.get(0);
+		final Berechtigung currentBerechtigung = allSortedBerechtigungen.get(0);
 
 		handleGueltigkeitCurrentBerechtigung(allSortedBerechtigungen,
 			currentBerechtigung, currentBerechtigungChanged);

@@ -240,11 +240,11 @@ public class BenutzerResource {
 		@Context HttpServletResponse response) {
 
 		String username = benutzerJax.getUsername();
-		Benutzerbenutzer = benutzerService.findBenutzer(username)
+		Benutzer benutzer = benutzerService.findBenutzer(username)
 		.orElseThrow(() -> new EbeguEntityNotFoundException("saveBenutzerBerechtigungen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
 
 			boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
-			BenutzermergedBenutzer = benutzerService.saveBenutzerBerechtigungen(converter.authLoginElementToBenutzer(benutzerJax, benutzer), currentBerechtigungChanged);
+			Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(converter.authLoginElementToBenutzer(benutzerJax, benutzer), currentBerechtigungChanged);
 
 		return converter.benutzerToAuthLoginElement(mergedBenutzer);
 	}
