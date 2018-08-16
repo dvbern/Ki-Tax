@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.util.Constants;
@@ -129,12 +131,10 @@ public class Erwerbspensum extends AbstractPensumEntity {
 	}
 
 	public String getName() {
-
 		if (bezeichnung == null || bezeichnung.isEmpty()) {
-			return ServerMessageUtil.translateEnumValue(taetigkeit) + " " + getPensum() + "%";
-		} else {
-			return bezeichnung;
+			return ServerMessageUtil.translateEnumValue(taetigkeit) + ' ' + getPensum() + '%';
 		}
+		return bezeichnung;
 	}
 
 	@Nullable
@@ -146,14 +146,23 @@ public class Erwerbspensum extends AbstractPensumEntity {
 		this.bezeichnung = bezeichnung;
 	}
 
-	public Erwerbspensum copyForMutation(Erwerbspensum mutation) {
-		super.copyForMutation(mutation);
-		mutation.setTaetigkeit(this.getTaetigkeit());
-		mutation.setZuschlagZuErwerbspensum(this.getZuschlagZuErwerbspensum());
-		mutation.setZuschlagsgrund(this.getZuschlagsgrund());
-		mutation.setZuschlagsprozent(this.getZuschlagsprozent());
-		mutation.setBezeichnung(this.getBezeichnung());
-		return mutation;
+	@Nonnull
+	public Erwerbspensum copyErwerbspensum(@Nonnull Erwerbspensum target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractPensumEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setTaetigkeit(this.getTaetigkeit());
+			target.setZuschlagZuErwerbspensum(this.getZuschlagZuErwerbspensum());
+			target.setZuschlagsgrund(this.getZuschlagsgrund());
+			target.setZuschlagsprozent(this.getZuschlagsprozent());
+			target.setBezeichnung(this.getBezeichnung());
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	@Override

@@ -53,6 +53,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -305,7 +306,8 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
-		if (extractFamiliensituation() != null && extractFamiliensituation().hasSecondGesuchsteller()) {
+		final Familiensituation familiensituation = extractFamiliensituation();
+		if (familiensituation != null && familiensituation.hasSecondGesuchsteller()) {
 			return finanzDatenDTO_zuZweit;
 		}
 		return finanzDatenDTO_alleine;
@@ -654,7 +656,8 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		//noinspection SimplifyStreamApiCallChains
 		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.collect(Collectors.toList());
-		return !allBetreuungen.isEmpty() && allBetreuungen.stream().allMatch(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt());
+		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
+			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
 	}
 
 	@Transient
@@ -693,6 +696,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 			});
 	}
 
+	@Nullable
 	@Transient
 	public LocalDate getRegelStartDatum() {
 		if (null != getRegelnGueltigAb()) {
@@ -723,88 +727,125 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	@Nonnull
-	public Gesuch copyForMutation(@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsart) {
-		super.copyForMutation(mutation);
-		mutation.setEingangsart(eingangsart);
-		mutation.setDossier(this.getDossier());
-		mutation.setGesuchsperiode(this.getGesuchsperiode());
-		mutation.setEingangsdatum(null);
-		mutation.setRegelnGueltigAb(null);
-		mutation.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
-		mutation.setTyp(AntragTyp.MUTATION);
-		mutation.setLaufnummer(this.getLaufnummer() + 1);
+	public Gesuch copyGesuch(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, @Nonnull Eingangsart targetEingangsart, @Nonnull AntragTyp targetTyp,
+			@Nonnull Dossier targetDossier, @Nonnull Gesuchsperiode targetGesuchsperiode) {
+		super.copyAbstractEntity(target, copyType);
+		target.setEingangsart(targetEingangsart);
+		target.setTyp(targetTyp);
+		target.setEingangsdatum(null);
+		target.setRegelnGueltigAb(null);
+		target.setDossier(targetDossier);
+		target.setGesuchsperiode(targetGesuchsperiode);
+		target.setStatus(targetEingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
 
-		if (this.getGesuchsteller1() != null) {
-			mutation.setGesuchsteller1(this.getGesuchsteller1().copyForMutation(new GesuchstellerContainer()));
-		}
-		if (this.getGesuchsteller2() != null) {
-			mutation.setGesuchsteller2(this.getGesuchsteller2().copyForMutation(new GesuchstellerContainer()));
-		}
-		for (KindContainer kindContainer : this.getKindContainers()) {
-			mutation.addKindContainer(kindContainer.copyForMutation(new KindContainer(), mutation, eingangsart));
-		}
-		mutation.setAntragStatusHistories(new LinkedHashSet<>());
+		target.setAntragStatusHistories(new LinkedHashSet<>());
+		target.setGesperrtWegenBeschwerde(false);
+		target.setGeprueftSTV(false);
+		target.setDatumGewarntNichtFreigegeben(null);
+		target.setDatumGewarntFehlendeQuittung(null);
+		target.setTimestampVerfuegt(null);
+		target.setGueltig(false);
+		target.setDokumenteHochgeladen(false);
 
+		copyFamiliensituation(target, copyType, this.isMutation());
+		copyGesuchsteller1(target, copyType);
+
+		copyKindContainer(target, copyType);
+
+		switch (copyType) {
+		case MUTATION:
+			target.setLaufnummer(this.getLaufnummer() + 1);
+			copyGesuchsteller2(target, copyType);
+			copyEinkommensverschlechterungInfoContainer(target, copyType);
+			copyDokumentGruende(target, copyType);
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
+			copyGesuchsteller2IfStillNeeded(target, copyType);
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			target.setLaufnummer(0); // Wir fangen für das neue Dossier wieder mit 0 an
+			copyGesuchsteller2(target, copyType);
+			copyEinkommensverschlechterungInfoContainer(target, copyType);
+			copyDokumentGruende(target, copyType);
+			break;
+		}
+		return target;
+	}
+
+	private void copyFamiliensituation(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType, boolean sourceGesuchIsMutation) {
 		if (this.getFamiliensituationContainer() != null) {
-			mutation.setFamiliensituationContainer(this.getFamiliensituationContainer().copyForMutation(new FamiliensituationContainer(), this.isMutation()));
+			target.setFamiliensituationContainer(this.getFamiliensituationContainer().copyFamiliensituationContainer(new FamiliensituationContainer(),
+				copyType, sourceGesuchIsMutation));
 		}
+	}
 
+	private void copyEinkommensverschlechterungInfoContainer(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		if (this.getEinkommensverschlechterungInfoContainer() != null) {
-			mutation.setEinkommensverschlechterungInfoContainer(this.getEinkommensverschlechterungInfoContainer().copyForMutation(new EinkommensverschlechterungInfoContainer(), mutation));
+			target.setEinkommensverschlechterungInfoContainer(this.getEinkommensverschlechterungInfoContainer()
+				.copyEinkommensverschlechterungInfoContainer (new EinkommensverschlechterungInfoContainer(), copyType, target));
 		}
+	}
 
-		if (this.getDokumentGrunds() != null) {
-			mutation.setDokumentGrunds(new HashSet<>());
-			for (DokumentGrund dokumentGrund : this.getDokumentGrunds()) {
-				mutation.addDokumentGrund(dokumentGrund.copyForMutation(new DokumentGrund()));
-			}
+	private void copyGesuchsteller1(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		if (this.getGesuchsteller1() != null) {
+			target.setGesuchsteller1(this.getGesuchsteller1().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
-		mutation.setGesperrtWegenBeschwerde(false);
-		mutation.setGeprueftSTV(false);
-		mutation.setDatumGewarntNichtFreigegeben(null);
-		mutation.setDatumGewarntFehlendeQuittung(null);
-		mutation.setTimestampVerfuegt(null);
-		mutation.setGueltig(false);
-		mutation.setDokumenteHochgeladen(false);
-		return mutation;
+	}
+
+	private void copyGesuchsteller2(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		if (this.getGesuchsteller2() != null) {
+			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
+		}
+	}
+
+	private void copyGesuchsteller2IfStillNeeded(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		// Den zweiten GS nur kopieren, wenn er laut aktuellem Zivilstand noch benoetigt wird
+		if (this.getGesuchsteller2() != null
+			&& target.getFamiliensituationContainer() != null
+			&& target.getFamiliensituationContainer().getFamiliensituationJA() != null
+			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller()) {
+
+			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
+		}
+	}
+
+	private void copyKindContainer(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		this.getKindContainers().forEach(
+			kindContainer -> target.addKindContainer(kindContainer.copyKindContainer(new KindContainer(), copyType, target, target.getGesuchsperiode()))
+		);
+	}
+
+	private void copyDokumentGruende(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		this.getDokumentGrunds().forEach(
+			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
+		);
 	}
 
 	@Nonnull
-	public Gesuch copyForErneuerung(@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
-		super.copyForErneuerung(folgegesuch);
-		folgegesuch.setEingangsart(eingangsart);
-		folgegesuch.setDossier(this.getDossier());
-		folgegesuch.setGesuchsperiode(gesuchsperiode);
-		folgegesuch.setEingangsdatum(null);
-		folgegesuch.setRegelnGueltigAb(null);
-		folgegesuch.setStatus(eingangsart == Eingangsart.PAPIER ? AntragStatus.IN_BEARBEITUNG_JA : AntragStatus.IN_BEARBEITUNG_GS);
-		folgegesuch.setTyp(AntragTyp.ERNEUERUNGSGESUCH);
-		folgegesuch.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
+	public Gesuch copyForMutation(
+			@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget) {
+		return this.copyGesuch(mutation, AntragCopyType.MUTATION, eingangsartOfTarget, AntragTyp.MUTATION, this.getDossier(), this.getGesuchsperiode());
+	}
 
-		// Zuerst die Familiensituation kopieren, damit wir beim Kopieren der GS wissen, ob GS2 kopiert werden muss
-		if (this.getFamiliensituationContainer() != null) {
-			folgegesuch.setFamiliensituationContainer(this.getFamiliensituationContainer().copyForErneuerung(new FamiliensituationContainer()));
-		}
+	@Nonnull
+	public Gesuch copyForErneuerung(
+			@Nonnull Gesuch folgegesuch, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget, @Nonnull Eingangsart eingangsartOfTarget) {
+		return this.copyGesuch(folgegesuch, AntragCopyType.ERNEUERUNG, eingangsartOfTarget, AntragTyp.ERNEUERUNGSGESUCH, this.getDossier(), gesuchsperiodeOfTarget);
+	}
 
-		if (this.getGesuchsteller1() != null) {
-			folgegesuch.setGesuchsteller1(this.getGesuchsteller1().copyForErneuerung(new GesuchstellerContainer(), gesuchsperiode));
-		}
-		// Den zweiten GS nur kopieren, wenn er laut aktuellem Zivilstand noch benoetigt wird
-		if (this.getGesuchsteller2() != null && folgegesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& folgegesuch.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller()) {
-			folgegesuch.setGesuchsteller2(this.getGesuchsteller2().copyForErneuerung(new GesuchstellerContainer(), gesuchsperiode));
-		}
-		for (KindContainer kindContainer : this.getKindContainers()) {
-			folgegesuch.addKindContainer(kindContainer.copyForErneuerung(new KindContainer(), folgegesuch));
-		}
-		folgegesuch.setGesperrtWegenBeschwerde(false);
-		folgegesuch.setGeprueftSTV(false);
-		folgegesuch.setDatumGewarntNichtFreigegeben(null);
-		folgegesuch.setDatumGewarntFehlendeQuittung(null);
-		folgegesuch.setTimestampVerfuegt(null);
-		folgegesuch.setGueltig(false);
-		folgegesuch.setDokumenteHochgeladen(false);
-		return folgegesuch;
+	@Nonnull
+	public Gesuch copyForErneuerungsgesuchNeuesDossier(
+			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget,
+			@Nonnull Dossier dossierOfTarget, @Nonnull Gesuchsperiode gesuchsperiodeOfTarget) {
+		return this.copyGesuch(target, AntragCopyType.ERNEUERUNG_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, gesuchsperiodeOfTarget);
+	}
+
+	@Nonnull
+	public Gesuch copyForMutationNeuesDossier(
+			@Nonnull Gesuch target, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull Dossier dossierOfTarget) {
+		return this.copyGesuch(target, AntragCopyType.MUTATION_NEUES_DOSSIER, eingangsartOfTarget, AntragTyp.ERSTGESUCH, dossierOfTarget, this.getGesuchsperiode());
 	}
 
 	@Nonnull
@@ -893,6 +934,4 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	public void setPreStatus(AntragStatus preStatus) {
 		this.preStatus = preStatus;
 	}
-
-
 }

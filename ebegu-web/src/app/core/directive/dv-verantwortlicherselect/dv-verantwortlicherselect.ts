@@ -15,6 +15,7 @@
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import TSGemeinde from '../../../../models/TSGemeinde';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import ITranslateService = angular.translate.ITranslateService;
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import TSUser from '../../../../models/TSUser';
@@ -93,11 +94,7 @@ export class VerantwortlicherselectController implements IController {
     }
 
     public getTitel(): string {
-        if (this.schulamt) {
-            return this.$translate.instant('VERANTWORTLICHER_SCHULAMT');
-        } else {
-            return this.$translate.instant('VERANTWORTLICHER_JUGENDAMT');
-        }
+        return this.$translate.instant(EbeguUtil.getTitleVerantwortlicher(this.schulamt));
     }
 
     public getGesuch(): TSGesuch {

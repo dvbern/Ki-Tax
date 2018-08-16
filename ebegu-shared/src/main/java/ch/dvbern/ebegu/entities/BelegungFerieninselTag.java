@@ -23,6 +23,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -72,9 +73,17 @@ public class BelegungFerieninselTag extends AbstractEntity implements Comparable
 	}
 
 	@Nonnull
-	public BelegungFerieninselTag copyForMutation(@Nonnull BelegungFerieninselTag mutation) {
-		super.copyForMutation(mutation);
-		mutation.setTag(LocalDate.from(tag));
-		return mutation;
+	public BelegungFerieninselTag copyBelegungFerieninselTag(@Nonnull BelegungFerieninselTag target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setTag(LocalDate.from(getTag()));
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }

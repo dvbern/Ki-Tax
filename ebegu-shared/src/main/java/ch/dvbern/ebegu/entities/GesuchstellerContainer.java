@@ -35,6 +35,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -242,49 +243,70 @@ public class GesuchstellerContainer extends AbstractEntity implements Searchable
 	}
 
 	@Nonnull
-	public GesuchstellerContainer copyForMutation(@Nonnull GesuchstellerContainer mutation) {
-		super.copyForMutation(mutation);
-		mutation.setVorgaengerId(this.getId());
-		mutation.setGesuchstellerGS(null);
+	public GesuchstellerContainer copyGesuchstellerContainer(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		target.setGesuchstellerGS(null);
+
 		if (this.getGesuchstellerJA() != null) {
-			mutation.setGesuchstellerJA(this.getGesuchstellerJA().copyForMutation(new Gesuchsteller()));
+			target.setGesuchstellerJA(this.getGesuchstellerJA().copyGesuchsteller(new Gesuchsteller(), copyType));
 		}
+		switch (copyType) {
+		case MUTATION:
+			copyAdressenAll(target, copyType);
+			copyFinanzen(target, copyType);
+			copyErwerbspensen(target, copyType);
+			break;
+		case ERNEUERUNG:
+			copyAdressenAktuellUndZukuenftig(target, copyType);
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			copyFinanzen(target, copyType);
+			copyErwerbspensen(target, copyType);
+			break;
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
+	}
+
+	private void copyFinanzen(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
 		if (this.getFinanzielleSituationContainer() != null) {
-			mutation.setFinanzielleSituationContainer(this.getFinanzielleSituationContainer().copyForMutation(new FinanzielleSituationContainer(), this));
+			target.setFinanzielleSituationContainer(this.getFinanzielleSituationContainer()
+				.copyFinanzielleSituationContainer(new FinanzielleSituationContainer(), copyType, this));
 		}
 		if (this.getEinkommensverschlechterungContainer() != null) {
-			mutation.setEinkommensverschlechterungContainer(this.getEinkommensverschlechterungContainer().copyForMutation(new EinkommensverschlechterungContainer(), this));
+			target.setEinkommensverschlechterungContainer(this.getEinkommensverschlechterungContainer()
+				.copyEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer(), copyType, this));
 		}
+	}
+
+	private void copyErwerbspensen(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
 		for (ErwerbspensumContainer erwerbspensumContainer : this.getErwerbspensenContainers()) {
-			mutation.addErwerbspensumContainer(erwerbspensumContainer.copyForMutation(new ErwerbspensumContainer(), this));
+			target.addErwerbspensumContainer(erwerbspensumContainer.copyErwerbspensumContainer(new ErwerbspensumContainer(), copyType, this));
 		}
+	}
+
+	private void copyAdressenAll(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
 		for (GesuchstellerAdresseContainer gesuchstellerAdresse : this.getAdressen()) {
 			if (gesuchstellerAdresse.getGesuchstellerAdresseJA() != null) {
-				mutation.addAdresse(gesuchstellerAdresse.copyForMutation(new GesuchstellerAdresseContainer(), this));
+				target.addAdresse(gesuchstellerAdresse.copyGesuchstellerAdresseContainer(new GesuchstellerAdresseContainer(), copyType, this));
 			}
 		}
-		return mutation;
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	@Nonnull
-	public GesuchstellerContainer copyForErneuerung(@Nonnull GesuchstellerContainer folgegesuch, @Nonnull Gesuchsperiode gesuchsperiodeFolgegesuch) {
-		super.copyForErneuerung(folgegesuch);
-		folgegesuch.setGesuchstellerGS(null);
-		if (this.getGesuchstellerJA() != null) {
-			folgegesuch.setGesuchstellerJA(this.getGesuchstellerJA().copyForErneuerung(new Gesuchsteller()));
-		}
+	private void copyAdressenAktuellUndZukuenftig(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
 		for (GesuchstellerAdresseContainer gesuchstellerAdresse : this.getAdressen()) {
 			if (gesuchstellerAdresse.getGesuchstellerAdresseJA() != null) {
 				// Nur aktuelle und zukuenftige Adressen kopieren. Aus Sicht HEUTE und nicht per Anfang Gesuchsperiode, da schon vorher Briefe
 				// geschickt werden muessen
 				if (!Objects.requireNonNull(gesuchstellerAdresse.extractGueltigkeit()).endsBefore(LocalDate.now())) {
-					GesuchstellerAdresseContainer adresseContainer = gesuchstellerAdresse.copyForErneuerung(new GesuchstellerAdresseContainer(), this);
-					folgegesuch.addAdresse(adresseContainer);
+					GesuchstellerAdresseContainer adresseContainer = gesuchstellerAdresse.copyGesuchstellerAdresseContainer(
+						new GesuchstellerAdresseContainer(), copyType,this);
+					target.addAdresse(adresseContainer);
 				}
 			}
 		}
-		return folgegesuch;
 	}
 
 	@Nullable

@@ -29,6 +29,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Ferienname;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -91,12 +92,20 @@ public class BelegungFerieninsel extends AbstractEntity {
 	}
 
 	@Nonnull
-	public BelegungFerieninsel copyForMutation(@Nonnull BelegungFerieninsel mutation) {
-		super.copyForMutation(mutation);
-		mutation.setFerienname(ferienname);
-		for (BelegungFerieninselTag belegungFerieninselTag : tage) {
-			mutation.getTage().add(belegungFerieninselTag.copyForMutation(new BelegungFerieninselTag()));
+	public BelegungFerieninsel copyBelegungFerieninsel(@Nonnull BelegungFerieninsel target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setFerienname(ferienname);
+			for (BelegungFerieninselTag belegungFerieninselTag : tage) {
+				target.getTage().add(belegungFerieninselTag.copyBelegungFerieninselTag(new BelegungFerieninselTag(), copyType));
+			}
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
 		}
-		return mutation;
+		return target;
 	}
 }
