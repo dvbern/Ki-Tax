@@ -32,7 +32,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Fachstelle extends AbstractEntity {
+public class Fachstelle extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -7687613920281069860L;
 

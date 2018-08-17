@@ -38,7 +38,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class AbwesenheitContainer extends AbstractEntity implements Comparable<AbwesenheitContainer> {
+public class AbwesenheitContainer extends AbstractMutableEntity implements Comparable<AbwesenheitContainer> {
 
 	private static final long serialVersionUID = -8876987863152535840L;
 

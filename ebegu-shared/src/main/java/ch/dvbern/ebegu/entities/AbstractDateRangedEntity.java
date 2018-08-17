@@ -33,7 +33,7 @@ import org.hibernate.envers.Audited;
  */
 @MappedSuperclass
 @Audited
-public class AbstractDateRangedEntity extends AbstractEntity implements Gueltigkeit {
+public class AbstractDateRangedEntity extends AbstractMutableEntity implements Gueltigkeit {
 
 	private static final long serialVersionUID = -7541083148864749528L;
 

@@ -45,7 +45,6 @@ import org.hibernate.envers.Audited;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "einstellung_key", "gesuchsperiode_id", "mandant_id", "gemeinde_id" }, name = "UK_einstellung")
 )
-// todo fragen vorgaengerId wird uebernommen!!
 public class Einstellung extends AbstractEntity {
 
 	private static final long serialVersionUID = 8704632842261673111L;

@@ -19,7 +19,6 @@ export default class TSAbstractEntity {
     private _id: string;
     private _timestampErstellt: moment.Moment;
     private _timestampMutiert: moment.Moment;
-    private _vorgaengerId: string;
 
     public set id(id: string) {
         this._id = id;
@@ -45,22 +44,7 @@ export default class TSAbstractEntity {
         return this._timestampMutiert;
     }
 
-    get vorgaengerId(): string {
-        return this._vorgaengerId;
-    }
-
-    set vorgaengerId(value: string) {
-        this._vorgaengerId = value;
-    }
-
     public isNew(): boolean {
         return !this._timestampErstellt;
-    }
-
-    public hasVorgaenger(): boolean {
-        if (this.vorgaengerId !== null && this.vorgaengerId !== undefined) {
-            return true;
-        }
-        return false;
     }
 }

@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = "name", name = "UK_application_property_name")
 )
-public class ApplicationProperty extends AbstractEntity {
+public class ApplicationProperty extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -7687645920282879260L;
 	@NotNull

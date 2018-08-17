@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSModulTagesschule from './TSModulTagesschule';
 
-export default class TSInstitutionStammdatenTagesschule extends TSAbstractEntity {
+export default class TSInstitutionStammdatenTagesschule extends TSAbstractMutableEntity {
 
     private _moduleTagesschule: Array<TSModulTagesschule>;
 

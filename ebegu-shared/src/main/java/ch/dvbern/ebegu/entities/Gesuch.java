@@ -81,7 +81,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )
-public class Gesuch extends AbstractEntity implements Searchable {
+public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -8403487439884700618L;
 

@@ -94,7 +94,6 @@ import org.hibernate.envers.Audited;
 			@ColumnResult(name = "anzahlVerfuegungenNichtEintreten", type = Integer.class) }
 	))
 })
-// todo add AbstractWithVorgaengerEntity
 public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = -979317154050183445L;
@@ -125,11 +124,6 @@ public abstract class AbstractEntity implements Serializable {
 	@Size(max = Constants.UUID_LENGTH)
 	@Column(nullable = false, length = Constants.UUID_LENGTH)
 	private String userMutiert;
-
-	@Nullable
-	@Column(nullable = true, length = Constants.UUID_LENGTH)
-	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
-	private String vorgaengerId;
 
 	/**
 	 * This variable is used to tell the AbstractEntityListener that it should skip the preUpdate method when saving
@@ -198,15 +192,6 @@ public abstract class AbstractEntity implements Serializable {
 		this.userMutiert = userMutiert;
 	}
 
-	@Nullable
-	public String getVorgaengerId() {
-		return vorgaengerId;
-	}
-
-	public void setVorgaengerId(@Nullable String vorgaengerId) {
-		this.vorgaengerId = vorgaengerId;
-	}
-
 	public boolean isSkipPreUpdate() {
 		return skipPreUpdate;
 	}
@@ -254,25 +239,6 @@ public abstract class AbstractEntity implements Serializable {
 		return new ToStringBuilder(this)
 			.append("id", getId())
 			.toString();
-	}
-
-	public boolean hasVorgaenger() {
-		return vorgaengerId != null;
-	}
-
-	@Nonnull
-	public AbstractEntity copyAbstractEntity(@Nonnull AbstractEntity target, @Nonnull AntragCopyType copyType) {
-		switch (copyType) {
-		case MUTATION:
-			target.setVorgaengerId(this.getId());
-			break;
-		case ERNEUERUNG:
-		case MUTATION_NEUES_DOSSIER:
-		case ERNEUERUNG_NEUES_DOSSIER:
-			target.setVorgaengerId(null);
-			break;
-		}
-		return target;
 	}
 
 	public abstract boolean isSame(AbstractEntity other);

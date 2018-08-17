@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSEinkommensverschlechterung from './TSEinkommensverschlechterung';
 
-export default class TSEinkommensverschlechterungContainer extends TSAbstractEntity {
+export default class TSEinkommensverschlechterungContainer extends TSAbstractMutableEntity {
 
     private _ekvGSBasisJahrPlus1: TSEinkommensverschlechterung;
     private _ekvGSBasisJahrPlus2: TSEinkommensverschlechterung;

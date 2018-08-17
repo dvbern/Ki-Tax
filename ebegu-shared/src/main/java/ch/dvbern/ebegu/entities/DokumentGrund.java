@@ -50,7 +50,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class DokumentGrund extends AbstractEntity implements Comparable<DokumentGrund> {
+public class DokumentGrund extends AbstractMutableEntity implements Comparable<DokumentGrund> {
 
 	private static final long serialVersionUID = 5417585258130227434L;
 
