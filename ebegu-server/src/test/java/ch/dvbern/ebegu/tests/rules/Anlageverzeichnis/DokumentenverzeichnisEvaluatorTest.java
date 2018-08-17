@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -102,13 +104,16 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
 
 		final Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
+		Assert.assertNotNull(erwerbspensumJA);
 		if (gesundheitlicheEinschraenkungen) {
 			erwerbspensumJA.setTaetigkeit(Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN);
 		} else {
 			erwerbspensumJA.setTaetigkeit(taetigkeit);
 		}
 		erwerbspensumJA.setZuschlagZuErwerbspensum(zuschlagZuErwerbspensum);
-		erwerbspensumJA.setZuschlagsgrund(zuschlagsgrund);
+		if (zuschlagsgrund != null) {
+			erwerbspensumJA.setZuschlagsgrund(zuschlagsgrund);
+		}
 		erwerbspensumJA.getGueltigkeit().setGueltigAb(LocalDate.of(1980, 1, 1));
 
 		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
@@ -163,11 +168,12 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	private void createFamilienSituation(Gesuch gesuch, boolean gemeinsam, boolean sozialhilfe) {
-		final FamiliensituationContainer familiensituation = TestDataUtil.createDefaultFamiliensituationContainer();
-		Assert.assertNotNull(familiensituation.extractFamiliensituation());
-		familiensituation.extractFamiliensituation().setGemeinsameSteuererklaerung(gemeinsam);
-		familiensituation.extractFamiliensituation().setSozialhilfeBezueger(sozialhilfe);
-		gesuch.setFamiliensituationContainer(familiensituation);
+		final FamiliensituationContainer famSitContainer = TestDataUtil.createDefaultFamiliensituationContainer();
+		Familiensituation famSit = famSitContainer.extractFamiliensituation();
+		Assert.assertNotNull(famSit);
+		famSit.setGemeinsameSteuererklaerung(gemeinsam);
+		famSit.setSozialhilfeBezueger(sozialhilfe);
+		gesuch.setFamiliensituationContainer(famSitContainer);
 	}
 
 	@Test
@@ -210,6 +216,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		return dokumentGrund;
 	}
 
+	//TODO Changeme, ersetzen durch extractDocumentFromList und assertDokumentGrundCorrect da neu mehrere Dokumente
 	private DokumentGrund checkDokumentGrund(Erwerbspensum erwerbspensum) {
 		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch);
 		Assert.assertEquals(1, calculate.size());
@@ -222,11 +229,32 @@ public class DokumentenverzeichnisEvaluatorTest {
 		return dokumentGrund;
 	}
 
+	private void assertDokumentGrundCorrect(@Nonnull DokumentGrund dokGrund, @Nonnull String expectedTag, @Nonnull DokumentTyp expectedDokumentTyp) {
+		Assert.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokGrund.getDokumentGrundTyp());
+		Assert.assertNull(dokGrund.getFullName());
+		Assert.assertEquals(DokumentGrundPersonType.GESUCHSTELLER, dokGrund.getPersonType());
+		Assert.assertEquals(Integer.valueOf(1), dokGrund.getPersonNumber());
+		Assert.assertEquals(expectedTag, dokGrund.getTag());
+		Assert.assertEquals(expectedDokumentTyp, dokGrund.getDokumentTyp());
+	}
+
+	@Nonnull
+	private DokumentGrund extractDocumentFromList(@Nonnull Set<DokumentGrund> dokumentGrundList, @Nonnull DokumentTyp typOfDocumentToExtract) {
+		for (DokumentGrund dokumentGrund : dokumentGrundList) {
+			if (dokumentGrund.getDokumentTyp() == typOfDocumentToExtract) {
+				return dokumentGrund;
+			}
+		}
+		Assert.fail("Dokument of Type " + typOfDocumentToExtract + " expected");
+		throw new RuntimeException();
+	}
+
 	@Test
 	public void erwpDokumentNeueintrittAfterTest() {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, false, null);
 
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
+		// Nachweis EP ist neu immer zwingend
+		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
 
 		erwerbspensum.getGueltigkeit().setGueltigAb(LocalDate.of(2017, 9, 1));
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum, LocalDate.of(2016, 1, 1)));
@@ -242,7 +270,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, false, null);
 
 		erwerbspensum.getGueltigkeit().setGueltigAb(LocalDate.of(2000, 7, 1));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum, LocalDate.of(2000, 8, 1)));
+		// Nachweis Erwerbspensum wird neu immer benötigt
+		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum, LocalDate.of(2000, 8, 1)));
 
 	}
 
@@ -255,9 +284,12 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = checkDokumentGrund(erwerbspensum);
-
-		Assert.assertEquals(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, dokumentGrund.getDokumentTyp());
+		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
+		Assert.assertEquals(2, dokumentList.size());
+		DokumentGrund nachweisErwerbspensum = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_ERWERBSPENSUM);
+		assertDokumentGrundCorrect(nachweisErwerbspensum, erwerbspensum.getName(), DokumentTyp.NACHWEIS_ERWERBSPENSUM);
+		DokumentGrund nachweisSelbstaendigkeit = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
+		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(), DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
 	}
 
 	@Test
@@ -395,7 +427,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	private Set<DokumentGrund> getDokumentGrundsForType(DokumentTyp dokumentTyp, Set<DokumentGrund> dokumentGrunds,
-		DokumentGrundPersonType personType, Integer personNumber, String year) {
+		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber, @Nullable String year) {
 		Set<DokumentGrund> grunds = new HashSet<>();
 
 		for (DokumentGrund dokumentGrund : dokumentGrunds) {
@@ -458,11 +490,13 @@ public class DokumentenverzeichnisEvaluatorTest {
 		checkDokumentGrundGS(dokumentGrundGS1);
 
 		final Set<DokumentGrund> dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
+		Assert.assertNotNull(testgesuch.getGesuchsteller2());
 		checkType(dokumentGrundGS2, DokumentTyp.STEUERVERANLAGUNG, testgesuch.getGesuchsteller2().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.FINANZIELLESITUATION);
 	}
 
 	private void checkDokumentGrundGS(Set<DokumentGrund> dokumentGrundGS1) {
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
 		checkType(dokumentGrundGS1, DokumentTyp.STEUERVERANLAGUNG, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
 	}
@@ -480,6 +514,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
 		Assert.assertEquals(2, dokumentGrundGS1.size());
 
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
 		checkType(dokumentGrundGS1, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
 		checkType(dokumentGrundGS1, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller1().extractFullName(), "2016",
@@ -488,14 +523,15 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final Set<DokumentGrund> dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
 		Assert.assertEquals(2, dokumentGrundGS2.size());
 
+		Assert.assertNotNull(testgesuch.getGesuchsteller2());
 		checkType(dokumentGrundGS2, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller2().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.FINANZIELLESITUATION);
 		checkType(dokumentGrundGS2, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller2().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.FINANZIELLESITUATION);
 	}
 
-	private void checkType(Set<DokumentGrund> dokumentGrundGS1, DokumentTyp dokumentTyp, String fullname, String year,
-		DokumentGrundPersonType personType, Integer personNumber, DokumentGrundTyp dokumentGrundTyp) {
+	private void checkType(Set<DokumentGrund> dokumentGrundGS1, DokumentTyp dokumentTyp, @Nullable String fullname, @Nullable String year,
+		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber, DokumentGrundTyp dokumentGrundTyp) {
 		final Set<DokumentGrund> dokumentGrundsForType = getDokumentGrundsForType(dokumentTyp, dokumentGrundGS1, personType, personNumber, year);
 		Assert.assertEquals("No document with dokumentGrundTyp: " + dokumentGrundTyp + "; dokumentTyp: " + dokumentTyp + "; fullname: " + fullname + "; year: " + year,
 			1, dokumentGrundsForType.size());
@@ -512,6 +548,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
 
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		final FinanzielleSituation finanzielleSituationJA = testgesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 
 		finanzielleSituationJA.setFamilienzulage(BigDecimal.valueOf(100000));
@@ -591,6 +629,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 		testgesuch.setGesuchsperiode(gesuchsperiode);
 
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
 		ekvJABasisJahrPlus1.setSteuererklaerungAusgefuellt(true);
 		ekvJABasisJahrPlus1.setSteuerveranlagungErhalten(false);
@@ -621,6 +661,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Set<DokumentGrund> dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
 		Assert.assertEquals(4, dokumentGrundGS2.size());
 
+		Assert.assertNotNull(testgesuch.getGesuchsteller2());
 		checkType(dokumentGrundGS2, DokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT, testgesuch.getGesuchsteller2().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 		checkType(dokumentGrundGS2, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller2().extractFullName(), "2016",

@@ -36,8 +36,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
  * Dokumente für Erwerbspensum:
  * <p>
  * Arbeitsvertrag / Stundennachweise / sonstiger Nachweis über Erwerbspensum:
- * Wird nur bei Mutation des Erwerbspensums Angestellt verlangt oder bei Neueintritt im Job. Neueintritt = DatumVon
- * >= Periodenstart
+ * Wird immer verlangt wenn Erwerbspensum deklariert wurde
  * <p>
  * Nachweis Selbständigkeit oder AHV-Bestätigung:
  * z.B. für Künstler, müssen Projekte belegen
@@ -99,6 +98,9 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 
 		for (ErwerbspensumContainer erwerbspensenContainer : erwerbspensenContainers) {
 			final Erwerbspensum erwerbspensumJA = erwerbspensenContainer.getErwerbspensumJA();
+			if (erwerbspensumJA == null) {
+				continue;
+			}
 			add(getDokument(
 				DokumentTyp.NACHWEIS_ERWERBSPENSUM,
 				erwerbspensumJA,
@@ -180,7 +182,7 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 	}
 
 	@Override
-	public boolean isDokumentNeeded(DokumentTyp dokumentTyp, Erwerbspensum erwerbspensum) {
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Erwerbspensum erwerbspensum) {
 		if (erwerbspensum == null) {
 			return false;
 		}
@@ -215,5 +217,4 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 			return false;
 		}
 	}
-
 }
