@@ -329,9 +329,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     z-index: @z-index-mobile-toolbar;
-    width: 90%;
-    min-width: 90%;
-    max-width: 90%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     background: @primary;
     .gesuchsperioden-container {
         width: 100%;
@@ -441,6 +441,11 @@
         height: @navbar-height;
         padding: 0 1.5rem 0 3rem;
         line-height: @navbar-height;
+        text-align: left;
+        span {
+            text-transform: uppercase;
+            font-size: 1.6rem;
+        }
         &.active, &:active, &:hover, &:focus {
             background-color: transparent;
             color: @contrast-lightest;
@@ -453,8 +458,73 @@
         }
 
     }
-    .mobile-logout {
-        text-align: left;
+
+    .dossier-toolbar-top-operations-container {
+        background-color: @contrast-darkest;
+        color: @contrast-lightest;
+        text-align: right;
+        width: 100%;
+        height: @navbar-height;
+        padding: 0 0 0 1rem;
+        line-height: @navbar-height;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .dossier-toolbar-dropdown {
+            padding: 0 1rem;
+        }
+
+        .dossier-toolbar-dropdown-menu {
+            background: @contrast-darkest;
+            width: 100%;
+            margin: 0;
+            border-radius: 0;
+            border: 0;
+            & > li > a {
+                padding: 1rem;
+                color: @contrast-lightest;
+                text-decoration: none;
+                &.active, &:active, &:hover, &:focus {
+                    background-color: transparent;
+                    color: @contrast-lightest;
+                    outline: none;
+                    text-decoration: none !important;
+                    outline: 0;
+                    -webkit-box-shadow: none;
+                    box-shadow: none;
+
+                }
+            }
+        }
+
+        .dossier-toolbar-dropdown {
+            height: 5rem;
+        }
+        .dossier-toolbar-dropdown-link {
+            color: @contrast-lightest;
+            text-decoration: none;
+        }
+
+        .dossier-toolbar-mobile-close {
+            background-color: transparent;
+            color: @contrast-lightest;
+            text-align: center;
+            width: 5rem;
+            height: @navbar-height;
+            padding: 1rem;
+            line-height: 3rem;
+
+            &.active, &:active, &:hover, &:focus {
+                background-color: transparent;
+                color: @contrast-lightest;
+                outline: none;
+                text-decoration: none !important;
+                outline: 0;
+                -webkit-box-shadow: none;
+                box-shadow: none;
+
+            }
+        }
         span {
             text-transform: uppercase;
             font-size: 1.6rem;
@@ -516,7 +586,7 @@ i.ellipsis-icon {
     text-transform: none;
 }
 
-md-menu-bar md-menu>button {
+md-menu-bar md-menu > button {
     color: @contrast-lightest;
 
 }
