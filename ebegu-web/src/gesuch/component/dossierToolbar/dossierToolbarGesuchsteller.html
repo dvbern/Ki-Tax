@@ -116,23 +116,10 @@
 <md-sidenav md-component-id="dossier-toolbar-mobile" class="md-sidenav-right dossier-toolbar-mobile" flex="100"
             layout="column" layout-align="start center" hide-gt-sm>
 
-    <!--Falltoolbar mockup-->
     <div class="dossier-toolbar-top-operations-container">
-        <div uib-dropdown on-toggle="toggled(open)" class="dossier-toolbar-dropdown">
-            <a href id="simple-dropdown" uib-dropdown-toggle class="dossier-toolbar-dropdown-link">
-                {{vmgs.dossier.gemeinde.name}} <i class="fa fa-chevron-down"></i>
-            </a>
-            <ul class="dropdown-menu dossier-toolbar-dropdown-menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
-                <li ng-repeat="dossier in tmpdossierlist">
-                    <a href>{{dossier.gemeinde.name}}</a>
-                </li>
-                <li>
-                    <a href class="dossier-toolbar-dropdown-link">
-                        Add Gemeinde
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <dv-fall-toolbar [fall-id]="vmgs.fallId" [dossier-id]="vmgs.dossierId"
+                         [current-dossier]="vmgs.dossier" [mobile-mode]="true" >
+        </dv-fall-toolbar>
         <button class="dv-btn dossier-toolbar-mobile-close" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile')"
                 aria-label="Schliessen">
             <i class="fa fa-times" aria-hidden="true"></i>

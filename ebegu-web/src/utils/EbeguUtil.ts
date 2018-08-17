@@ -23,11 +23,11 @@ import TSFall from '../models/TSFall';
 import DateUtil from './DateUtil';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import TSBetreuungsnummerParts from '../models/dto/TSBetreuungsnummerParts';
-import * as moment from 'moment';
 import TSGesuch from '../models/TSGesuch';
-import ITranslateService = angular.translate.ITranslateService;
-import Moment = moment.Moment;
 import TSBetreuung from '../models/TSBetreuung';
+import ITranslateService = angular.translate.ITranslateService;
+import * as moment from 'moment';
+import Moment = moment.Moment;
 
 /**
  * Klasse die allgemeine utils Methoden implementiert
@@ -57,7 +57,6 @@ export default class EbeguUtil {
         }
         return undefined;
     }
-
 
     public static addZerosToFallNummer(fallNummer: number): string {
         return EbeguUtil.addZerosToNumber(fallNummer, CONSTANTS.FALLNUMMER_LENGTH);
@@ -150,6 +149,21 @@ export default class EbeguUtil {
 
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
+    }
+
+    public static isTagesschulangebotEnabled(): boolean {
+        return false;
+    }
+
+    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
+        if (!EbeguUtil.isTagesschulangebotEnabled()) {
+            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
+        }
+        if (isSchulamt) {
+            return 'VERANTWORTLICHER_SCHULAMT';
+        } else {
+            return 'VERANTWORTLICHER_JUGENDAMT';
+        }
     }
 
     /**
@@ -298,11 +312,11 @@ export default class EbeguUtil {
     }
 
     public getKontaktJugendamt(): string {
-         return '<span>Jugendamt</span><br>'
-             + '<span>Effingerstrasse 21</span><br>'
-             + '<span>3008 Bern</span><br>'
-             + '<a href="tel:0313215115"><span>031 321 51 15</span></a><br>'
-             + '<a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>';
+        return '<span>Jugendamt</span><br>'
+            + '<span>Effingerstrasse 21</span><br>'
+            + '<span>3008 Bern</span><br>'
+            + '<a href="tel:0313215115"><span>031 321 51 15</span></a><br>'
+            + '<a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>';
     }
 
     public getKontaktSchulamt(): string {
@@ -313,18 +327,5 @@ export default class EbeguUtil {
             + '<a href="mailto:tagesschulen@bern.ch"><span>tagesschulen@bern.ch</span></a>';
     }
 
-    public static isTagesschulangebotEnabled(): boolean {
-        return false;
-    }
 
-    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
-        if (!EbeguUtil.isTagesschulangebotEnabled()) {
-            return 'VERANTWORTLICHER_OHNE_SCHULAMT'
-        }
-        if (isSchulamt) {
-            return 'VERANTWORTLICHER_SCHULAMT'
-        } else {
-            return 'VERANTWORTLICHER_JUGENDAMT'
-        }
-    }
 }

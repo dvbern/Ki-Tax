@@ -18,7 +18,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
-import {from, Observable} from 'rxjs/index';
+import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';

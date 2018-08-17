@@ -17,11 +17,13 @@
 </dv-fall-toolbar>
 
 <dossier-toolbar flex="nogrow" dossier-id="{{vm.dossier.id}}"
-                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                 fall-id="{{vm.getFallId()}}">
 </dossier-toolbar>
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossier.id}}"
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                               fall-id="{{vm.getFallId()}}">
 </dossier-toolbar-gesuchsteller>
 
 <div class="verlaufView overflow-auto" flex="auto">
@@ -53,7 +55,8 @@
                         ng-bind="row.timestampVon | amDateFormat : 'DD.MM.YYYY'"></td>
                     <td class="ellipsis" title="">{{vm.gesuche[row.gesuchId]}}</td>
                     <td class="ellipsis" title="{{row.status | translate}}" ng-bind="row.status | translate"></td>
-                    <td class="ellipsis" title="{{row.benutzer.getFullName()}}" ng-bind="row.benutzer.getFullName()"></td>
+                    <td class="ellipsis" title="{{row.benutzer.getFullName()}}"
+                        ng-bind="row.benutzer.getFullName()"></td>
                 </tr>
                 </tbody>
                 <tfoot>

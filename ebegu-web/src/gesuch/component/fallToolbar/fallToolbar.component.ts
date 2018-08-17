@@ -47,23 +47,25 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     @Input() fallId: string;
     @Input() dossierId: string;
     @Input() currentDossier: TSDossier;
+    @Input() mobileMode?: boolean = false;
 
     dossierList: TSDossier[] = [];
     selectedDossier?: TSDossier;
     fallNummer: string;
     availableGemeindeList: TSGemeinde[] = [];
     gemeindeText: string;
+    showdropdown: boolean = false;
 
-
-    constructor(private dossierRS: DossierRS,
-            private dialog: MatDialog,
-            private gemeindeRS: GemeindeRS,
-            private $state: StateService,
-            private gesuchRS: GesuchRS,
-            private authServiceRS: AuthServiceRS) {
+    constructor(private readonly dossierRS: DossierRS,
+                private readonly dialog: MatDialog,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly $state: StateService,
+                private readonly gesuchRS: GesuchRS,
+                private readonly authServiceRS: AuthServiceRS) {
     }
 
     ngOnInit(): void {
+        this.loadObjects();
         // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 
@@ -119,19 +121,19 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      * Opens a dossier
      * If it is undefined it doesn't do anything
      */
-    public openDossier(dossier: TSDossier): Observable<TSDossier> {
+    public openDossier$(dossier: TSDossier): Observable<TSDossier> {
         if (dossier) {
             if (this.isGesuchsteller()) {
                 this.selectedDossier = dossier;
                 this.navigateToDashboard();
             } else {
-                return this.openNewestGesuchOfDossier(dossier);
+                return this.openNewestGesuchOfDossier$(dossier);
             }
         }
         return of(this.selectedDossier);
     }
 
-    private openNewestGesuchOfDossier(dossier: TSDossier): Observable<TSDossier> {
+    private openNewestGesuchOfDossier$(dossier: TSDossier): Observable<TSDossier> {
         return fromPromise(this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
             if (newestGesuchID) {
                 this.selectedDossier = dossier;
@@ -148,7 +150,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     public createNewDossier(): void {
-        this.getGemeindeIDFromDialog().subscribe(
+        this.getGemeindeIDFromDialog$().subscribe(
             (chosenGemeindeId: string) => {
                 if (chosenGemeindeId) {
                     if (this.isGesuchsteller()) {
@@ -234,12 +236,12 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     /**
      * A dialog will always be displayed when creating a new Dossier. So that the user
      */
-    private getGemeindeIDFromDialog(): Observable<string> {
+    private getGemeindeIDFromDialog$(): Observable<string> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = false; // dialog is canceled by clicking outside
         dialogConfig.autoFocus = true;
         dialogConfig.data = {
-            gemeindeList: of(this.availableGemeindeList)
+            gemeindeList$: of(this.availableGemeindeList)
         };
 
         return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
@@ -292,5 +294,16 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     public showAddGemeindeText(): boolean {
         return !!this.gemeindeText;
+    }
+
+    public getCurrentGemeindeName(): string {
+        if (this.currentDossier) {
+            return this.currentDossier.extractGemeindeName();
+        }
+        return '';
+    }
+
+    public getDossierListWithoutSelected(): TSDossier[] {
+        return this.dossierList.filter(obj => obj !== this.selectedDossier);
     }
 }

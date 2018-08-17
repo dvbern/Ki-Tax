@@ -104,19 +104,19 @@ describe('fallToolbar', () => {
         }));
 
         it('should return true for the selected dossier', async(() => {
-            component.openDossier(dossier1).subscribe(
+            component.openDossier$(dossier1).subscribe(
                 () => expect(component.isDossierActive(dossier1)).toBe(true));
         }));
         it('should return false for a different dossier', () => {
-            component.openDossier(dossier1).subscribe(
+            component.openDossier$(dossier1).subscribe(
                 () => expect(component.isDossierActive(dossier2)).toBe(false));
         });
         it('should return false for undefined', () => {
-            component.openDossier(dossier1).subscribe(
+            component.openDossier$(dossier1).subscribe(
                 () => expect(component.isDossierActive(undefined)).toBe(false));
         });
         it('should return false for the no selected dossier', () => {
-            component.openDossier(undefined).subscribe(
+            component.openDossier$(undefined).subscribe(
                 () => expect(component.isDossierActive(dossier1)).toBe(false));
         });
     });

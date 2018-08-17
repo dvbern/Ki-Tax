@@ -37,7 +37,7 @@ export class DvNgGemeindeDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
-        this.gemeindeList$ = data.gemeindeList;
+        this.gemeindeList$ = data.gemeindeList$;
     }
 
     save() {

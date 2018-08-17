@@ -13,10 +13,10 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossier.id">
+<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossier.id" hide-xs hide-sm>
 </dv-fall-toolbar>
 
-<dossier-toolbar-gesuchsteller flex="nogrow"
+<dossier-toolbar-gesuchsteller fall-id="{{vm.getFallId()}}" flex="nogrow"
                                class="dossier-toolbar-gesuchsteller"
                                dossier-id="{{vm.dossier.id}}"
                                is-dashboard-screen="{{true}}">

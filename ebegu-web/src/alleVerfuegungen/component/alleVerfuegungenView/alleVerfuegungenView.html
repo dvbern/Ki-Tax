@@ -16,12 +16,13 @@
 <dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossier.id">
 </dv-fall-toolbar>
 
-<dossier-toolbar flex="nogrow" dossier-id="{{vm.dossier.id}}"
+<dossier-toolbar flex="nogrow" dossier-id="{{vm.dossier.id}}" fall-id="{{vm.getFallId()}}"
                  hide-action-buttons="{{true}}"
                  dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </dossier-toolbar>
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossier.id}}"
+                               fall-id="{{vm.getFallId()}}"
                                hide-action-buttons="{{true}}"
                                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
 </dossier-toolbar-gesuchsteller>

@@ -470,41 +470,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        .dossier-toolbar-dropdown {
-            padding: 0 1rem;
-        }
-
-        .dossier-toolbar-dropdown-menu {
-            background: @contrast-darkest;
-            width: 100%;
-            margin: 0;
-            border-radius: 0;
-            border: 0;
-            & > li > a {
-                padding: 1rem;
-                color: @contrast-lightest;
-                text-decoration: none;
-                &.active, &:active, &:hover, &:focus {
-                    background-color: transparent;
-                    color: @contrast-lightest;
-                    outline: none;
-                    text-decoration: none !important;
-                    outline: 0;
-                    -webkit-box-shadow: none;
-                    box-shadow: none;
-
-                }
-            }
-        }
-
-        .dossier-toolbar-dropdown {
-            height: 5rem;
-        }
-        .dossier-toolbar-dropdown-link {
-            color: @contrast-lightest;
-            text-decoration: none;
-        }
-
+        z-index: 108;
         .dossier-toolbar-mobile-close {
             background-color: transparent;
             color: @contrast-lightest;

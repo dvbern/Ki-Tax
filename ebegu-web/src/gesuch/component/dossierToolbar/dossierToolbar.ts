@@ -52,6 +52,7 @@ export class DossierToolbarComponentConfig implements IComponentOptions {
     bindings = {
         gesuchid: '@',
         dossierId: '@',
+        fallId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
@@ -67,6 +68,7 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
     bindings = {
         gesuchid: '@',
         dossierId: '@',
+        fallId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
@@ -89,8 +91,9 @@ export class DossierToolbarController implements IDVFocusableController {
     hideActionButtons: boolean;
     TSRoleUtil = TSRoleUtil;
     forceLoadingFromFall: boolean;
-    dossierId: string;
-    dossier: TSDossier;
+    public dossierId: string;
+    public fallId: string;
+    public dossier: TSDossier;
 
     gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
     gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den Namen der Antraege
