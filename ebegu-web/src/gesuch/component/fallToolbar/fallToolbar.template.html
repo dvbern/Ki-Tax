@@ -21,7 +21,7 @@
             <button *ngFor="let dossier of dossierList" class="dossier-element"
                     [ngClass]="{'dossier-active-gesuchsteller': isDossierActive(dossier) && isGesuchsteller(),
                                 'dossier-active': isDossierActive(dossier) && !isGesuchsteller()}"
-                    (click)="openDossier(dossier)"
+                    (click)="openDossier$(dossier)"
                     [disabled]="isNavigationDisabled()">
                 {{dossier.extractGemeindeName()}}
             </button>
@@ -50,11 +50,11 @@
     <div class="fall-toolbar-mobile-dropdown">
         <button class="fall-toolbar-mobile-dropdown-button"
                 (click)="showdropdown = !showdropdown" aria-haspopup="true" [attr.aria-expanded]="showdropdown">
-            {{getCurrentGemeindeName()}} <i class="fa fa-chevron-down"></i>
+            {{getCurrentGemeindeName()}} <i class="fa fa-angle-down fall-toolbar-mobile-caret"></i>
         </button>
         <ul class="fall-toolbar-mobile-dropdown-menu" *ngIf="showdropdown">
             <li *ngFor="let dossier of getDossierListWithoutSelected()">
-                <button (click)="openDossier(dossier)"
+                <button (click)="openDossier$(dossier)"
                         class="fall-toolbar-mobile-dropdown-button"
                         [disabled]="isNavigationDisabled()">{{dossier.extractGemeindeName()}}
                 </button>
