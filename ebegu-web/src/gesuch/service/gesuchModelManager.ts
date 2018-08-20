@@ -75,7 +75,6 @@ import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import DossierRS from './dossierRS.rest';
 import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
-import FallRS from './fallRS.rest';
 import FinanzielleSituationRS from './finanzielleSituationRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
 import GesuchRS from './gesuchRS.rest';
@@ -84,7 +83,7 @@ import WizardStepManager from './wizardStepManager';
 
 export default class GesuchModelManager {
 
-    static $inject = ['FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
+    static $inject = ['GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
@@ -103,8 +102,7 @@ export default class GesuchModelManager {
     ewkPersonGS1: TSEWKPerson;
     ewkPersonGS2: TSEWKPerson;
 
-    constructor(private readonly fallRS: FallRS,
-                private readonly gesuchRS: GesuchRS,
+    constructor(private readonly gesuchRS: GesuchRS,
                 private readonly gesuchstellerRS: GesuchstellerRS,
                 private readonly finanzielleSituationRS: FinanzielleSituationRS,
                 private readonly kindRS: KindRS,
@@ -277,21 +275,20 @@ export default class GesuchModelManager {
 
         switch (creationAction) {
             case TSCreationAction.CREATE_NEW_FALL:
-                return this.gesuchGenerator.createNewFall(eingangsart, gemeindeId)
+                return this.gesuchGenerator.initFall(eingangsart, gemeindeId)
                     .then(gesuch => {
                         this.setGesuch(gesuch);
                         return gesuch;
                     });
 
             case TSCreationAction.CREATE_NEW_DOSSIER:
-                return this.gesuchGenerator.createNewDossierForCurrentFall(eingangsart, gemeindeId, this.getFall())
+                return this.gesuchGenerator.initDossierForCurrentFall(eingangsart, gemeindeId, this.getFall())
                     .then(gesuch => {
                         this.setGesuch(gesuch);
                         return gesuch;
                     });
 
             case TSCreationAction.CREATE_NEW_GESUCH:
-                // todo rename createNewGesuchForCurrentDossier
                 return this.gesuchGenerator.initGesuch(eingangsart, creationAction, gesuchsperiodeId, this.getFall(), this.getDossier())
                     .then(gesuch => {
                         this.setGesuch(gesuch);
@@ -332,28 +329,46 @@ export default class GesuchModelManager {
             // Gesuch noch nicht vorhanden
             if (this.gesuch.dossier && !this.gesuch.dossier.isNew()) {
                 // Dossier schon vorhaden -> Wir koennen davon ausgehen, dass auch der Fall vorhanden ist
-                return this.gesuchGenerator.createNewGesuchForCurrentDossier(this.gesuch);
+                return this.createNewGesuchForCurrentDossier();
             } else {
                 if (this.gesuch.dossier.fall && !this.gesuch.dossier.fall.isNew()) {
                     // Fall ist schon vorhanden
-                    return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
-                        this.gesuch.dossier = angular.copy(dossierResponse);
-                        return this.gesuchGenerator.createNewGesuchForCurrentDossier(this.gesuch);
-                    });
+                    return this.createNewDossierForCurrentFall();
                 } else {
-                    return this.fallRS.createFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
-                        this.gesuch.dossier.fall = angular.copy(fallResponse);
-                        return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
-                            this.gesuch.dossier = angular.copy(dossierResponse);
-                            return this.gesuchGenerator.createNewGesuchForCurrentDossier(this.gesuch).then((gesuchResponse: TSGesuch) => {
-                                this.gesuch = gesuchResponse;
-                                return this.gesuch;
-                            });
-                        });
-                    });
+                    return this.createNewFall();
                 }
             }
         }
+    }
+
+    /**
+     * Creates and saves the fall contained in the gesuch object of the class
+     */
+    private createNewFall() {
+        return this.gesuchGenerator.createNewFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
+            this.gesuch.dossier.fall = angular.copy(fallResponse);
+            return this.createNewDossierForCurrentFall();
+        });
+    }
+
+    /**
+     * Creates and saves the dossier contained in the gesuch object of the class. The Fall must exist in the DB
+     */
+    private createNewDossierForCurrentFall() {
+        return this.gesuchGenerator.createNewDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
+            this.gesuch.dossier = angular.copy(dossierResponse);
+            return this.createNewGesuchForCurrentDossier();
+        });
+    }
+
+    /**
+     * Creates and saves the gesuch contained in the gesuch object of the class. Dossier and Fall must exist in the DB
+     */
+    private createNewGesuchForCurrentDossier() {
+        return this.gesuchGenerator.createNewGesuch(this.gesuch).then((gesuchResponse: TSGesuch) => {
+            this.gesuch = gesuchResponse;
+            return this.gesuch;
+        });
     }
 
     public reloadGesuch(): IPromise<TSGesuch> {

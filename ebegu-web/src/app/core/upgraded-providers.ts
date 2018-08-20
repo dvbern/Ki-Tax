@@ -14,6 +14,7 @@
  */
 
 import {Provider} from '@angular/core';
+import FallRS from '../../gesuch/service/fallRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
@@ -219,6 +220,17 @@ export const wizardStepManagerProvider = {
     deps: ['$injector']
 };
 
+// FallRS
+export function fallRSServiceFactory(i: any) {
+    return i.get('FallRS');
+}
+
+export const fallRSProvider = {
+    provide: FallRS,
+    useFactory: fallRSServiceFactory,
+    deps: ['$injector']
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -237,4 +249,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     dossierRSProvider,
     antragStatusHistoryRSProvider,
     wizardStepManagerProvider,
+    fallRSProvider,
 ];

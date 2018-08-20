@@ -30,10 +30,16 @@ import TSFall from '../../models/TSFall';
 import TSGesuch from '../../models/TSGesuch';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import DossierRS from './dossierRS.rest';
+import FallRS from './fallRS.rest';
 import GemeindeRS from './gemeindeRS.rest';
 import GesuchRS from './gesuchRS.rest';
 import WizardStepManager from './wizardStepManager';
 
+/**
+ * This class presents methods to init and create new Fall/Dossier/Gesuch objects.
+ * All init-methods will create a clientside copy of the required object. This copy will be returned by the method but it won't be saved in the DB
+ * The create-methods will take the given object and save it in the DB.
+ */
 @Injectable({
     providedIn: 'root'
 })
@@ -48,7 +54,8 @@ export class GesuchGenerator {
         private readonly gemeindeRS: GemeindeRS,
         private readonly dossierRS: DossierRS,
         private readonly wizardStepManager: WizardStepManager,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly fallRS: FallRS
     ) {}
 
 
@@ -57,27 +64,27 @@ export class GesuchGenerator {
      * routing gemacht werden kann, wird das ganze als promise gehandhabt
      * @return a void promise that is resolved once all subpromises are done
      */
-    public createNewFall(eingangsart: TSEingangsart,
-                         gemeindeId: string): IPromise<TSGesuch> {
+    public initFall(eingangsart: TSEingangsart,
+                    gemeindeId: string): IPromise<TSGesuch> {
 
-        return this.createNewDossier(eingangsart, gemeindeId, TSCreationAction.CREATE_NEW_FALL, undefined, undefined);
+        return this.initDossier(eingangsart, gemeindeId, TSCreationAction.CREATE_NEW_FALL, undefined, undefined);
     }
 
     /**
      * Creates a new Dossier for the current Fall. Also a new Gesuch will be created.
      */
-    public createNewDossierForCurrentFall(eingangsart: TSEingangsart,
-                                          gemeindeId: string,
-                                          currentFall: TSFall): IPromise<TSGesuch> {
+    public initDossierForCurrentFall(eingangsart: TSEingangsart,
+                                     gemeindeId: string,
+                                     currentFall: TSFall): IPromise<TSGesuch> {
 
-        return this.createNewDossier(eingangsart, gemeindeId, TSCreationAction.CREATE_NEW_DOSSIER, currentFall, null);
+        return this.initDossier(eingangsart, gemeindeId, TSCreationAction.CREATE_NEW_DOSSIER, currentFall, null);
     }
 
     /**
      * Creates a complete new Dossier. Depending on the value of creationAction the new dossier will be added to the existing Fall
      * or a complete new Fall will be created instead.
      */
-    private createNewDossier(eingangsart: TSEingangsart,
+    private initDossier(eingangsart: TSEingangsart,
                              gemeindeId: string,
                              creationAction: TSCreationAction,
                              currentFall: TSFall,
@@ -91,12 +98,6 @@ export class GesuchGenerator {
                     return gesuch;
                 });
             });
-    }
-
-    public createNewGesuchForCurrentDossier(gesuch: TSGesuch): IPromise<TSGesuch> {
-        return this.gesuchRS.createGesuch(gesuch).then((gesuchResponse: any) => {
-            return gesuchResponse;
-        });
     }
 
     /**
@@ -200,6 +201,27 @@ export class GesuchGenerator {
         this.setCurrentUserAsFallVerantwortlicher(gesuch);
 
         return gesuch;
+    }
+
+    /**
+     * Will create the given fall as a new fall in the DB and return the object as a promise
+     */
+    public createNewFall(fall: TSFall): IPromise<TSFall> {
+        return this.fallRS.createFall(fall);
+    }
+
+    /**
+     * Will create the given dossier as a new dossier in the DB and return the object as a promise
+     */
+    public createNewDossier(dossier: TSDossier): IPromise<TSDossier> {
+        return this.dossierRS.createDossier(dossier);
+    }
+
+    /**
+     * Will create the given gesuch as a new gesuch in the DB and return the object as a promise
+     */
+    public createNewGesuch(gesuch: TSGesuch): IPromise<TSGesuch> {
+        return this.gesuchRS.createGesuch(gesuch);
     }
 
     /**
