@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {async} from '@angular/core/testing';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -41,9 +42,9 @@ describe('kommentarView', () => {
         scope = $rootScope.$new();
     }));
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-    });
+    }));
 
     it('should be defined', () => {
         /*

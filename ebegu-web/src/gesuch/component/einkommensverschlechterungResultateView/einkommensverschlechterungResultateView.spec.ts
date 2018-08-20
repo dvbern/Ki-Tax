@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {async} from '@angular/core/testing';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -63,13 +64,14 @@ describe('einkommensverschlechterungResultateView', () => {
 
     }));
 
-    beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-        gesuchModelManager.initFamiliensituation();
-        gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
-        gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());
+    beforeEach(async(() => {
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+            gesuchModelManager.initFamiliensituation();
+            gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
+            gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());
+        });
 
-    });
+    }));
 
     it('should be defined', () => {
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung').and.returnValue({});

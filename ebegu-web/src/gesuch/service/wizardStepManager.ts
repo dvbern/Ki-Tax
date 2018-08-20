@@ -410,10 +410,10 @@ export default class WizardStepManager {
             }
 
             //Abwesenheit
-            if (!gesuch.isMutation()) {
-                this.hideStep(TSWizardStepName.ABWESENHEIT);
-            } else {
+            if (gesuch.isMutation()) {
                 this.unhideStep(TSWizardStepName.ABWESENHEIT);
+            } else {
+                this.hideStep(TSWizardStepName.ABWESENHEIT);
             }
 
             //Umzug

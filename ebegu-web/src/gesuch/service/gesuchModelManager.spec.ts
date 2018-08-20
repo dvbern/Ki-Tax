@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {async} from '@angular/core/testing';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
@@ -21,7 +22,6 @@ import KindRS from '../../app/core/service/kindRS.rest';
 import VerfuegungRS from '../../app/core/service/verfuegungRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
@@ -82,130 +82,78 @@ describe('gesuchModelManager', () => {
 
     describe('API Usage', () => {
         describe('removeBetreuungFromKind', () => {
-            it('should remove the current Betreuung from the list of the current Kind', () => {
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                createKindContainer();
-                createBetreuung();
-                expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
-                expect(gesuchModelManager.getKindToWorkWith().betreuungen.length).toBe(1);
-                gesuchModelManager.removeBetreuungFromKind();
-                expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
-                expect(gesuchModelManager.getKindToWorkWith().betreuungen.length).toBe(0);
-            });
+            it('should remove the current Betreuung from the list of the current Kind', async(() => {
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    createKindContainer();
+                    createBetreuung();
+                    expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
+                    expect(gesuchModelManager.getKindToWorkWith().betreuungen.length).toBe(1);
+                    gesuchModelManager.removeBetreuungFromKind();
+                    expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
+                    expect(gesuchModelManager.getKindToWorkWith().betreuungen.length).toBe(0);
+                });
+            }));
         });
         describe('saveBetreuung', () => {
-            it('updates a betreuung', () => {
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                createKindContainer();
-                const betreuung: TSBetreuung = createBetreuung();
-                gesuchModelManager.getKindToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+            it('updates a betreuung', async(() => {
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    createKindContainer();
+                    const betreuung: TSBetreuung = createBetreuung();
+                    gesuchModelManager.getKindToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
 
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                const kindToWorkWith: TSKindContainer = gesuchModelManager.getKindToWorkWith();
-                kindToWorkWith.nextNumberBetreuung = 5;
-                spyOn(kindRS, 'findKind').and.returnValue($q.when(kindToWorkWith));
-                spyOn(betreuungRS, 'saveBetreuung').and.returnValue($q.when(betreuung));
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
-                spyOn(gesuchRS, 'getGesuchBetreuungenStatus').and.returnValue($q.when(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT));
+                    TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                    const kindToWorkWith: TSKindContainer = gesuchModelManager.getKindToWorkWith();
+                    kindToWorkWith.nextNumberBetreuung = 5;
+                    spyOn(kindRS, 'findKind').and.returnValue($q.when(kindToWorkWith));
+                    spyOn(betreuungRS, 'saveBetreuung').and.returnValue($q.when(betreuung));
+                    spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
+                    spyOn(gesuchRS, 'getGesuchBetreuungenStatus').and.returnValue($q.when(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT));
 
-                gesuchModelManager.saveBetreuung(gesuchModelManager.getKindToWorkWith().betreuungen[0], TSBetreuungsstatus.WARTEN, false);
-                scope.$apply();
+                    gesuchModelManager.saveBetreuung(gesuchModelManager.getKindToWorkWith().betreuungen[0], TSBetreuungsstatus.WARTEN, false);
+                    scope.$apply();
 
-                expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(), '2afc9d9a-957e-4550-9a22-97624a000feb', undefined, false);
-                expect(kindRS.findKind).toHaveBeenCalledWith('2afc9d9a-957e-4550-9a22-97624a000feb');
-                expect(gesuchModelManager.getKindToWorkWith().nextNumberBetreuung).toEqual(5);
-                expect(gesuchModelManager.getGesuch().gesuchBetreuungenStatus).toEqual(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT);
-            });
+                    expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(), '2afc9d9a-957e-4550-9a22-97624a000feb', undefined, false);
+                    expect(kindRS.findKind).toHaveBeenCalledWith('2afc9d9a-957e-4550-9a22-97624a000feb');
+                    expect(gesuchModelManager.getKindToWorkWith().nextNumberBetreuung).toEqual(5);
+                    expect(gesuchModelManager.getGesuch().gesuchBetreuungenStatus).toEqual(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT);
+                });
+            }));
         });
         describe('saveGesuchAndFall', () => {
-            it('creates a Fall with a linked Gesuch', () => {
-                spyOn(fallRS, 'createFall').and.returnValue($q.when({}));
-                spyOn(dossierRS, 'createDossier').and.returnValue($q.when({}));
-                const gesuch: TSGesuch = new TSGesuch();
-                gesuch.id = '123123';
-                spyOn(gesuchRS, 'createGesuch').and.returnValue($q.when({data: gesuch}));
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
+            it('creates a Fall with a linked Gesuch', async(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                gesuchModelManager.saveGesuchAndFall();
-
-                scope.$apply();
-                expect(fallRS.createFall).toHaveBeenCalled();
-                expect(gesuchRS.createGesuch).toHaveBeenCalled();
-            });
-            it('only updates the Gesuch because it already exists', () => {
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    gesuchModelManager.saveGesuchAndFall().then(gesuch => {
+                        expect(gesuch).toBeDefined();
+                        expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
+                    });
+                });
+            }));
+            it('only updates the Gesuch because it already exists', async(() => {
                 spyOn(gesuchRS, 'updateGesuch').and.returnValue($q.when({}));
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                gesuchModelManager.getGesuch().timestampErstellt = DateUtil.today();
-                gesuchModelManager.saveGesuchAndFall();
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    gesuchModelManager.getGesuch().timestampErstellt = DateUtil.today();
+                    gesuchModelManager.saveGesuchAndFall();
 
-                scope.$apply();
-                expect(gesuchRS.updateGesuch).toHaveBeenCalled();
-            });
-        });
-        describe('initGesuch', () => {
-            beforeEach(() => {
-                expect(gesuchModelManager.getGesuch()).toBeUndefined();
-            });
-            it('links the fall with the undefined user', () => {
-                spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(gesuchModelManager.getFall()).toBeDefined();
-                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(undefined);
-            });
-            it('links the fall with the current user', () => {
-                const currentUser: TSUser = new TSUser('Test', 'User', 'username');
-                spyOn(authServiceRS, 'getPrincipal').and.returnValue(currentUser);
-                spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-
-                scope.$apply();
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(gesuchModelManager.getFall()).toBeDefined();
-                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(currentUser);
-            });
-            it('does not link the fall with the current user because is not the required role', () => {
-                const currentUser: TSUser = new TSUser('Test', 'User', 'username');
-                spyOn(authServiceRS, 'getPrincipal').and.returnValue(currentUser);
-                spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(false);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-
-                expect(gesuchModelManager.getGesuch()).toBeDefined();
-                expect(gesuchModelManager.getFall()).toBeDefined();
-                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBeUndefined();
-            });
-            it('does not create a new fall, so the new gesuch/dossier is linked to the existing fall', () => {
-                // create a first dossier
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                const previousFall = gesuchModelManager.getFall();
-                const previousDossier = gesuchModelManager.getDossier();
-                const previousGesuch = gesuchModelManager.getGesuch();
-                //creates a second dossier for the previous fall
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, undefined);
-
-                expect(gesuchModelManager.getDossier()).not.toBe(previousDossier);
-                expect(gesuchModelManager.getGesuch()).not.toBe(previousGesuch);
-                expect(gesuchModelManager.getFall()).toBe(previousFall);
-                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBeUndefined();
-            });
+                    scope.$apply();
+                    expect(gesuchRS.updateGesuch).toHaveBeenCalled();
+                });
+            }));
         });
         describe('setUserAsFallVerantwortlicherBG', () => {
-            it('puts the given user as the verantwortlicherBG for the fall', () => {
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-                spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                const user: TSUser = new TSUser('Emiliano', 'Camacho');
-                gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
-                scope.$apply();
-                expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
-            });
+            it('puts the given user as the verantwortlicherBG for the fall', async(() => {
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
+                    spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
+                    const user: TSUser = new TSUser('Emilianito', 'Camacho');
+                    gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
+                    scope.$apply();
+                    expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
+                });
+            }));
         });
         describe('exist at least one Betreuung among all kinder', () => {
             it('should return false for empty list', () => {
@@ -258,34 +206,36 @@ describe('gesuchModelManager', () => {
             });
         });
         describe('saveGesuchStatus', () => {
-            it('should update the status of the Gesuch im Server und Client', () => {
+            it('should update the status of the Gesuch im Server und Client', async(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue($q.when({}));
-                spyOn(antragStatusHistoryRS, 'loadLastStatusChange').and.returnValue($q.when({}));
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue($q.when({}));
+                    spyOn(antragStatusHistoryRS, 'loadLastStatusChange').and.returnValue($q.when({}));
 
-                gesuchModelManager.saveGesuchStatus(TSAntragStatus.ERSTE_MAHNUNG);
+                    gesuchModelManager.saveGesuchStatus(TSAntragStatus.ERSTE_MAHNUNG);
 
-                scope.$apply();
-                expect(gesuchModelManager.getGesuch().status).toEqual(TSAntragStatus.ERSTE_MAHNUNG);
-            });
+                    scope.$apply();
+                    expect(gesuchModelManager.getGesuch().status).toEqual(TSAntragStatus.ERSTE_MAHNUNG);
+                });
+            }));
         });
         describe('saveVerfuegung', () => {
-            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', () => {
+            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', async(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-                createKindContainer();
-                createBetreuung();
-                gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
-                const verfuegung: TSVerfuegung = new TSVerfuegung();
-                spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
+                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+                    createKindContainer();
+                    createBetreuung();
+                    gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+                    const verfuegung: TSVerfuegung = new TSVerfuegung();
+                    spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
 
-                gesuchModelManager.saveVerfuegung(false);
-                scope.$apply();
+                    gesuchModelManager.saveVerfuegung(false);
+                    scope.$apply();
 
-                expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
-                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.VERFUEGT);
-            });
+                    expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
+                    expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.VERFUEGT);
+                });
+            }));
         });
         describe('calculateNewStatus', () => {
             it('should be GEPRUEFT if there is no betreuung', () => {
@@ -334,57 +284,6 @@ describe('gesuchModelManager', () => {
                 expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.VERFUEGT)).toEqual(TSAntragStatus.VERFUEGT);
                 expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.ZWEITE_MAHNUNG)).toEqual(TSAntragStatus.ZWEITE_MAHNUNG);
                 expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN)).toEqual(TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN);
-            });
-        });
-        describe('hideSteps', () => {
-            it('should hide the steps ABWESENHEIT and UMZUG for ONLINE Erstgesuch without umzug', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                spyOn(wizardStepManager, 'hideStep').and.returnValue(undefined);
-                spyOn(wizardStepManager, 'unhideStep').and.returnValue(undefined);
-                gesuchModelManager.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, undefined);
-
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.UMZUG);
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
-                expect(wizardStepManager.unhideStep).toHaveBeenCalledWith(TSWizardStepName.FREIGABE);
-            });
-            it('should hide the steps ABWESENHEIT and UMZUG and unhide FREIGABE for PAPIER Erstgesuch without umzug', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                spyOn(wizardStepManager, 'hideStep').and.returnValue(undefined);
-                spyOn(wizardStepManager, 'unhideStep').and.returnValue(undefined);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.UMZUG);
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.FREIGABE);
-            });
-            it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for ONLINE Gesuch', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                spyOn(wizardStepManager, 'hideStep').and.returnValue(undefined);
-                spyOn(wizardStepManager, 'unhideStep').and.returnValue(undefined);
-                const gesuch: TSGesuch = new TSGesuch();
-                gesuch.typ = TSAntragTyp.MUTATION;
-                gesuchModelManager.setGesuch(gesuch);
-
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.FREIGABE);
-                expect(wizardStepManager.unhideStep).toHaveBeenCalledWith(TSWizardStepName.UMZUG);
-                expect(wizardStepManager.unhideStep).toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
-            });
-            it('should unhide the step UMZUG for Erstgesuch with umzug and hide ABWESENHEIT', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                spyOn(wizardStepManager, 'hideStep').and.returnValue(undefined);
-                spyOn(wizardStepManager, 'unhideStep').and.returnValue(undefined);
-                const gesuch: TSGesuch = new TSGesuch();
-                gesuch.typ = TSAntragTyp.ERSTGESUCH;
-                gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Julio', 'Iglesias');
-                gesuch.gesuchsteller1.addAdresse(TestDataUtil.createAdresse('wohnstrasse', '1'));
-                gesuch.gesuchsteller1.addAdresse(TestDataUtil.createAdresse('umzug', '2'));
-                gesuchModelManager.setGesuch(gesuch);
-
-                expect(wizardStepManager.hideStep).not.toHaveBeenCalledWith(TSWizardStepName.UMZUG);
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
-                expect(wizardStepManager.unhideStep).toHaveBeenCalledWith(TSWizardStepName.UMZUG);
-                expect(wizardStepManager.unhideStep).not.toHaveBeenCalledWith(TSWizardStepName.ABWESENHEIT);
-                expect(wizardStepManager.hideStep).toHaveBeenCalledWith(TSWizardStepName.FREIGABE);
             });
         });
         describe('updateBetreuungen', () => {
@@ -475,10 +374,10 @@ describe('gesuchModelManager', () => {
             });
         });
         describe('areThereOnlySchulamtAngebote', () => {
-            beforeEach(() => {
+            beforeEach(async(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-            });
+            }));
             it('should be true if only Schulamtangebote', () => {
                 createKindWithBetreuung();
                 setInstitutionToExistingBetreuung(TSBetreuungsangebotTyp.TAGESSCHULE);

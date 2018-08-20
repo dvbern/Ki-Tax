@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {async} from '@angular/core/testing';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
@@ -39,12 +40,13 @@ describe('erwerbspensumView', () => {
         scope = $rootScope.$new();
     }));
 
-    beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
-        const tsGesuchsperiode = new TSGesuchsperiode();
-        tsGesuchsperiode.id = '123';
-        gesuchModelManager.getGesuch().gesuchsperiode = tsGesuchsperiode;
-    });
+    beforeEach(async(() => {
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+            const tsGesuchsperiode = new TSGesuchsperiode();
+            tsGesuchsperiode.id = '123';
+            gesuchModelManager.getGesuch().gesuchsperiode = tsGesuchsperiode;
+        });
+    }));
 
     it('should be defined', () => {
         /*

@@ -233,8 +233,8 @@ export class GesuchGenerator {
             this.authServiceRS.principal$.subscribe(currentUser => {
                 if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole())) {
                     gesuch.dossier.verantwortlicherBG = currentUser;
-                }
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
+
+                } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
                     gesuch.dossier.verantwortlicherTS = currentUser;
                 }
             });

@@ -16,6 +16,11 @@
 import * as angular from 'angular';
 import {of} from 'rxjs';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
+import {TSCreationAction} from '../models/enums/TSCreationAction';
+import {TSEingangsart} from '../models/enums/TSEingangsart';
+import TSDossier from '../models/TSDossier';
+import TSFall from '../models/TSFall';
+import TSGesuch from '../models/TSGesuch';
 
 ngServicesMock.$inject = ['$provide'];
 
@@ -24,5 +29,18 @@ export function ngServicesMock($provide: angular.auto.IProvideService) {
         this.get$ = (event: TSAuthEvent) => of(event);
         this.changeAuthStatus = (status: TSAuthEvent, message?: string) => {
         };
+    });
+    $provide.service('GesuchGenerator', function () {
+        this.initGesuch = (eingangsart: TSEingangsart,
+                           creationAction: TSCreationAction,
+                           gesuchsperiodeId: string) => {
+            const gesuch = new TSGesuch();
+            gesuch.dossier = new TSDossier();
+            gesuch.eingangsart = eingangsart;
+            return Promise.resolve(gesuch);
+        };
+        this.createNewFall = (fall: TSFall) => Promise.resolve(fall);
+        this.createNewDossier = (dossier: TSDossier) => Promise.resolve(dossier);
+        this.createNewGesuch = (gesuch: TSGesuch) => Promise.resolve(gesuch);
     });
 }
