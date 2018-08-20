@@ -76,7 +76,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void getVerfuegungDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		Assert.assertNotNull(gesuch.getKindContainers().iterator().next().getBetreuungen());
 		@SuppressWarnings("ConstantConditions") // Wird oben geprueft
 		final String betreuungId = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next().getId();
@@ -93,7 +93,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void getDokumentAccessTokenGeneratedDokumentBEGLEITSCHREIBENTest() throws MergeDocException, MimeTypeParseException {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 
 		HttpServletRequest request = mockRequest();
 		UriInfo uri = new ResteasyUriInfo("uri", "query", "path");
@@ -107,7 +107,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void getDokumentAccessTokenGeneratedDokumentFINANZIELLE_SITUATIONTest() throws MergeDocException, MimeTypeParseException {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 
 		HttpServletRequest request = mockRequest();
 		UriInfo uri = new ResteasyUriInfo("uri", "query", "path");
@@ -122,7 +122,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void getMahnungDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch);
 
@@ -138,7 +138,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void getNichteintretenDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 
 		String betreuungID = gesuch.extractAllBetreuungen().get(0).getId();
 

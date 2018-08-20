@@ -29,8 +29,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -42,9 +40,6 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = { "einstellung_key", "gesuchsperiode_id", "mandant_id", "gemeinde_id" }, name = "UK_einstellung")
-)
 public class Einstellung extends AbstractEntity {
 
 	private static final long serialVersionUID = 8704632842261673111L;
@@ -86,8 +81,12 @@ public class Einstellung extends AbstractEntity {
 	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode,
 			@Nullable Mandant mandant, @Nullable Gemeinde gemeinde) {
 		this(key, value, gesuchsperiode);
-		this.mandant = mandant;
 		this.gemeinde = gemeinde;
+		if (this.gemeinde != null) {
+			this.mandant = gemeinde.getMandant();
+		} else {
+			this.mandant = mandant;
+		}
 	}
 
 	public EinstellungKey getKey() {

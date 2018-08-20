@@ -22,5 +22,79 @@ package ch.dvbern.ebegu.enums;
  */
 public enum EinstellungKey {
 
+	// Die Gemeinde kennt eine Kontingentierung der Gutscheine
 	KONTINGENTIERUNG_ENABLED,
+
+	// Fixbetrag der Stadt Bern. Eigentlich Jahesabhängig und vermutlich nicht mehr gebraucht. Vorerst mal Param pro Halbjahr
+	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
+	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,
+
+	// Anzahl Tage Kita Max
+	PARAM_ANZAL_TAGE_MAX_KITA,
+
+	// Stunden / Tag Max
+	PARAM_STUNDEN_PRO_TAG_MAX_KITA,
+
+	// Kosten pro Stunde Max
+	PARAM_KOSTEN_PRO_STUNDE_MAX,
+
+	// Kosten pro Stunde Max Tageseltern
+	PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN,
+
+	// Kosten pro Stunde Min
+	PARAM_KOSTEN_PRO_STUNDE_MIN,
+
+	// Minimal Massgebendes Einkommen
+	PARAM_MASSGEBENDES_EINKOMMEN_MIN,
+
+	// Maximal Massgebendes Einkommen
+	PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+
+	// Anzahl Tage Kanton
+	PARAM_ANZAHL_TAGE_KANTON,
+
+	// Stunden / Tag Tagi
+	PARAM_STUNDEN_PRO_TAG_TAGI,
+
+	// Min Pensum Tagesstätten
+	PARAM_PENSUM_TAGI_MIN,
+
+	// Min Pensum Kitas
+	PARAM_PENSUM_KITA_MIN,
+
+	// Min Pensum Tageseltern
+	PARAM_PENSUM_TAGESELTERN_MIN,
+
+	// Min Pensum Tagesschule
+	PARAM_PENSUM_TAGESSCHULE_MIN,
+
+	// Pauschalabzug bei einer Familiengrösse von drei Personen pauschal pro Person
+	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+
+	// Pauschalabzug bei einer Familiengrösse von vier Personen pauschal pro Person
+	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+
+	// Pauschalabzug bei einer Familiengrösse von fünf Personen pauschal pro Person
+	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+
+	// Pauschalabzug bei einer Familiengrösse von sechs Personen pauschal pro Person
+	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+
+	// Max Abwesenheit
+	PARAM_MAX_TAGE_ABWESENHEIT,
+
+	// Eine Einkommensverschlechterung wird nur berücksichtigt, wenn diese höher als 20% des Ausgangswertes ist.
+	PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
+
+	// Baby-Faktor
+	PARAM_BABY_FAKTOR,
+
+	// Baby-Faktor bis N – Monate
+	PARAM_BABY_ALTER_IN_MONATEN,
+
+	// Abgeltung des Kantons pro Tag
+	PARAM_ABGELTUNG_PRO_TAG_KANTON,
+
+	// Maximaler Zuschlag zum Erwerbspensum
+	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 }

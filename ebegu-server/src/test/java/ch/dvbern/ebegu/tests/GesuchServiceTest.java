@@ -188,7 +188,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
 		insertInstitutionen();
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
 		final GeneratedDokument generatedDokument = TestDataUtil.createGeneratedDokument(gesuch);
@@ -394,7 +394,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		final WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(schulamtGesuch.getId(), WizardStepName.FREIGABE);
 		Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
 
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		Benutzer schulamt = loginAsSchulamt();
 		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), schulamt.getUsername(), null);
 		Assert.assertEquals(AntragStatus.FREIGEGEBEN, eingelesenesGesuch.getStatus());

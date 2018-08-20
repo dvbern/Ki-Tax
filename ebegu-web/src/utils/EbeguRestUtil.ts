@@ -48,12 +48,12 @@ import TSDokument from '../models/TSDokument';
 import TSDokumentGrund from '../models/TSDokumentGrund';
 import TSDossier from '../models/TSDossier';
 import TSDownloadFile from '../models/TSDownloadFile';
-import TSEbeguParameter from '../models/TSEbeguParameter';
 import TSEbeguVorlage from '../models/TSEbeguVorlage';
 import TSEinkommensverschlechterung from '../models/TSEinkommensverschlechterung';
 import TSEinkommensverschlechterungContainer from '../models/TSEinkommensverschlechterungContainer';
 import TSEinkommensverschlechterungInfo from '../models/TSEinkommensverschlechterungInfo';
 import TSEinkommensverschlechterungInfoContainer from '../models/TSEinkommensverschlechterungInfoContainer';
+import TSEinstellung from '../models/TSEinstellung';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSEWKAdresse from '../models/TSEWKAdresse';
@@ -140,35 +140,38 @@ export default class EbeguRestUtil {
         return parsedAppProperty;
     }
 
-    public parseEbeguParameters(data: any): TSEbeguParameter[] {
-        const ebeguParameters: TSEbeguParameter[] = [];
+    public parseEinstellungList(data: any): TSEinstellung[] {
+        const einstellungenList: TSEinstellung[] = [];
         if (data && Array.isArray(data)) {
             for (let i = 0; i < data.length; i++) {
-                ebeguParameters[i] = this.parseEbeguParameter(new TSEbeguParameter(), data[i]);
+                einstellungenList[i] = this.parseEinstellung(new TSEinstellung(), data[i]);
             }
         } else {
-            ebeguParameters[0] = this.parseEbeguParameter(new TSEbeguParameter(), data);
+            einstellungenList[0] = this.parseEinstellung(new TSEinstellung(), data);
         }
-        return ebeguParameters;
+        return einstellungenList;
     }
 
-    public parseEbeguParameter(ebeguParameterTS: TSEbeguParameter, receivedEbeguParameter: any): TSEbeguParameter {
-        if (receivedEbeguParameter) {
-            this.parseDateRangeEntity(ebeguParameterTS, receivedEbeguParameter);
-            ebeguParameterTS.name = receivedEbeguParameter.name;
-            ebeguParameterTS.value = receivedEbeguParameter.value;
-            ebeguParameterTS.proGesuchsperiode = receivedEbeguParameter.proGesuchsperiode;
-            return ebeguParameterTS;
+    public parseEinstellung(tsEinstellung: TSEinstellung, receivedEinstellung: any): TSEinstellung {
+        if (receivedEinstellung) {
+            this.parseDateRangeEntity(tsEinstellung, receivedEinstellung);
+            tsEinstellung.key = receivedEinstellung.key;
+            tsEinstellung.value = receivedEinstellung.value;
+            tsEinstellung.description = receivedEinstellung.description;
+            // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
+            return tsEinstellung;
         }
         return undefined;
     }
 
-    public ebeguParameterToRestObject(restEbeguParameter: any, ebeguParameter: TSEbeguParameter): TSEbeguParameter {
-        if (ebeguParameter) {
-            this.abstractDateRangeEntityToRestObject(restEbeguParameter, ebeguParameter);
-            restEbeguParameter.name = ebeguParameter.name;
-            restEbeguParameter.value = ebeguParameter.value;
-            return restEbeguParameter;
+    public einstellungToRestObject(restEinstellung: any, tsEinstellung: TSEinstellung): TSEinstellung {
+        if (tsEinstellung) {
+            this.abstractDateRangeEntityToRestObject(restEinstellung, tsEinstellung);
+            restEinstellung.key = tsEinstellung.key;
+            restEinstellung.value = tsEinstellung.value;
+            restEinstellung.description = tsEinstellung.description;
+            // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
+            return restEinstellung;
         }
         return undefined;
     }

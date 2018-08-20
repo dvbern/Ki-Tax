@@ -670,6 +670,8 @@
     "BENUTZERHANDBUCH_LIST": "Benutzerhandbücher",
     "PARAMETER_JAHR": "Jahr",
     "PARAM_FIXBETRAG_STADT_PRO_TAG_KITA": "Fixbeitrag der Stadt pro Tag",
+    "PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1": "Fixbeitrag der Stadt pro Tag, 01.08. - 31.12.",
+    "PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2": "Fixbeitrag der Stadt pro Tag, 01.01. - 31.07",
     "PARAM_ANZAL_TAGE_MAX_KITA": "Anzahl Tage Kita Max",
     "PARAM_STUNDEN_PRO_TAG_MAX_KITA": "Stunden / Tag Max",
     "PARAM_KOSTEN_PRO_STUNDE_MAX": "Kosten pro Stunde Max",

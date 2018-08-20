@@ -78,13 +78,11 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Override
 	public DokumentGrund saveDokumentGrund(@Nonnull DokumentGrund dokumentGrund) {
 		Objects.requireNonNull(dokumentGrund);
-		if (dokumentGrund.getDokumente() != null) {
-			dokumentGrund.getDokumente().forEach(dokument -> {
-				if (dokument.getTimestampUpload() == null) {
-					dokument.setTimestampUpload(LocalDateTime.now());
-				}
-			});
-		}
+		dokumentGrund.getDokumente().forEach(dokument -> {
+			if (dokument.getTimestampUpload() == null) {
+				dokument.setTimestampUpload(LocalDateTime.now());
+			}
+		});
 		// Falls es der Gesuchsteller war, der das Dokument hochgeladen hat, soll das Flag auf dem Gesuch gesetzt werden,
 		// damit das Jugendamt es sieht. Allerdings nur wenn das Gesuch schon freigegeben wurde
 		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER) && !dokumentGrund.getGesuch().getStatus().isAnyOfInBearbeitungGS()) {
@@ -168,8 +166,7 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 		Objects.requireNonNull(dokumentGrund);
 
 		//Wenn DokumentGrund keine Dokumente mehr hat und nicht gebraucht wird, wird er entfernt ausser es ist SONSTIGE NACHWEISE oder PAPIERGESUCH  (da ist needed immer false)
-		if ((!DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrund.getDokumentGrundTyp()))
-			&& (!dokumentGrund.isNeeded() && (dokumentGrund.getDokumente() == null || dokumentGrund.getDokumente().isEmpty()))) {
+		if (!DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrund.getDokumentGrundTyp()) && !dokumentGrund.isNeeded() && dokumentGrund.getDokumente().isEmpty()) {
 			persistence.remove(dokumentGrund);
 			return null;
 		}

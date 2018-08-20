@@ -35,7 +35,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.EbeguParameterService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -64,7 +64,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private VerfuegungService verfuegungService;
 
 	@Inject
-	private EbeguParameterService ebeguParameterService;
+	private EinstellungService einstellungService;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -108,8 +108,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
-		Assert.assertEquals(21, ebeguParameterService.getAllEbeguParameter().size()); //es muessen min 20 existieren jetzt +1 from mandant-dataset
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		Assert.assertEquals(21, einstellungService.getEinstellungenByGesuchsperiode(gesuch.getGesuchsperiode()).size()); //es muessen min 20 existieren jetzt +1 from mandant-dataset
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);

@@ -159,10 +159,6 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		} catch (NoEinstellungFoundException nefe) {
 			Assert.assertNotNull(nefe);
 		}
-
-		// Eine zweite mit Mandant=null einfügen
-		einstellungService.saveEinstellung(new Einstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, "GmdeOstermundigen_1617", gesuchsperiode1617,
-			null, gemeindeBern));
 	}
 
 	@Test(expected = NoEinstellungFoundException.class)

@@ -17,7 +17,13 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -36,6 +42,12 @@ public interface EinstellungService {
 	Einstellung saveEinstellung(@Nonnull Einstellung einstellung);
 
 	/**
+	 * Sucht eine Einstellung nach ID
+	 */
+	@Nonnull
+	Optional<Einstellung> findEinstellung(@Nonnull String id);
+
+	/**
 	 * Sucht eine Einstellung nach folgendem Schema:
 	 * (1) Wenn Einstellung dem gewünschten Key spezifisch für die gewünschte Gemeinde vorhanden ist, wird diese zurueckgegeben
 	 * (2) Wenn nicht, wird geschaut, ob es eine spezifische Einstellung für den Mandanten der gewünschten Gemeinde gibt
@@ -45,4 +57,27 @@ public interface EinstellungService {
 	@Nonnull
 	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
+	/**
+	 * Suche analog {@link #findEinstellung(EinstellungKey, Gemeinde, Gesuchsperiode)}
+	 * Ein externes EntityManager wird uebergeben. Damit vermeiden wir Fehler  ConcurrentModificationException in hibernate
+	 */
+	@Nonnull
+	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable EntityManager em);
+
+	/**
+	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Aktuell werden jeweils die System Defaults zurueckgegeben.
+	 */
+	@Nonnull
+	Collection<Einstellung> getEinstellungenByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
+	 * Analog {@link #getEinstellungenByGesuchsperiode(Gesuchsperiode)}, jedoch Resultat als Map
+	 */
+	@Nonnull
+	Map<EinstellungKey, Einstellung> getEinstellungenByGesuchsperiodeAsMap(@Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
+	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode
+	 */
+	void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode);
 }

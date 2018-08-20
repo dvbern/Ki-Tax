@@ -79,7 +79,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
-		TestDataUtil.prepareParameters(gesuchsperiode.getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
 	/**

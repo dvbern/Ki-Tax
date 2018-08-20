@@ -84,7 +84,7 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	@NotNull
 	private DokumentTyp dokumentTyp;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "dokumentGrund")
 	private Set<Dokument> dokumente = new HashSet<>();
@@ -123,12 +123,12 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		this.dokumentTyp = dokumentTyp;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<Dokument> getDokumente() {
 		return dokumente;
 	}
 
-	public void setDokumente(@Nullable Set<Dokument> dokumente) {
+	public void setDokumente(@Nonnull Set<Dokument> dokumente) {
 		this.dokumente = dokumente;
 	}
 
@@ -239,7 +239,7 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	}
 
 	public boolean isEmpty() {
-		return getDokumente() == null || getDokumente().size() <= 0;
+		return getDokumente().size() <= 0;
 	}
 
 	@Nonnull
@@ -254,13 +254,8 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 			target.setPersonNumber(this.getPersonNumber());
 			target.setPersonType(this.getPersonType());
 			target.setDokumentTyp(this.getDokumentTyp());
-			if (this.getDokumente() != null) {
-				if (target.getDokumente() == null) {
-					target.setDokumente(new HashSet<>());
-				}
-				for (Dokument dokument : this.getDokumente()) {
-					target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
-				}
+			for (Dokument dokument : this.getDokumente()) {
+				target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
 			}
 			if (DokumentGrundTyp.isSonstigeOrPapiergesuch(this.getDokumentGrundTyp())) {
 				target.setNeeded(false);

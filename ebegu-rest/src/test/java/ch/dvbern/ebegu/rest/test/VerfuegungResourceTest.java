@@ -96,7 +96,7 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void testCalculateVerfuegung() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode().getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 
 		Response response = verfuegungResource.calculateVerfuegung(new JaxId(gesuch.getId()), null, null);
 

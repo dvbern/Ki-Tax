@@ -929,6 +929,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return null;
 	}
 
+	@Nonnull
+	public Gemeinde extractGemeinde() {
+		return getDossier().getGemeinde();
+	}
+
 	public AntragStatus getPreStatus() {
 		return preStatus;
 	}

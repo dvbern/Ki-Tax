@@ -65,12 +65,12 @@ import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxDokumente;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
-import ch.dvbern.ebegu.api.dtos.JaxEbeguParameter;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxEnversRevision;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
@@ -135,12 +135,12 @@ import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.DownloadFile;
-import ch.dvbern.ebegu.entities.EbeguParameter;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -209,6 +209,7 @@ import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.common.base.Strings;
@@ -269,6 +270,8 @@ public class JaxBConverter {
 	private BetreuungService betreuungService;
 	@Inject
 	private GemeindeService gemeindeService;
+	@Inject
+	private Persistence persistence;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 
@@ -417,23 +420,30 @@ public class JaxBConverter {
 	}
 
 	@Nonnull
-	public JaxEbeguParameter ebeguParameterToJAX(@Nonnull final EbeguParameter ebeguParameter) {
-		final JaxEbeguParameter jaxEbeguParameter = new JaxEbeguParameter();
-		convertAbstractDateRangedFieldsToJAX(ebeguParameter, jaxEbeguParameter);
-		jaxEbeguParameter.setName(ebeguParameter.getName());
-		jaxEbeguParameter.setValue(ebeguParameter.getValue());
-		jaxEbeguParameter.setProGesuchsperiode(ebeguParameter.getName().isProGesuchsperiode());
-		return jaxEbeguParameter;
+	public JaxEinstellung einstellungToJAX(@Nonnull final Einstellung einstellung) {
+		final JaxEinstellung jaxEinstellung = new JaxEinstellung();
+		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
+		jaxEinstellung.setKey(einstellung.getKey());
+		jaxEinstellung.setValue(einstellung.getValue());
+		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
+		return jaxEinstellung;
 	}
 
 	@Nonnull
-	public EbeguParameter ebeguParameterToEntity(final JaxEbeguParameter jaxEbeguParameter, @Nonnull final EbeguParameter ebeguParameter) {
-		Objects.requireNonNull(ebeguParameter);
-		Objects.requireNonNull(jaxEbeguParameter);
-		convertAbstractDateRangedFieldsToEntity(jaxEbeguParameter, ebeguParameter);
-		ebeguParameter.setName(jaxEbeguParameter.getName());
-		ebeguParameter.setValue(jaxEbeguParameter.getValue());
-		return ebeguParameter;
+	public Einstellung einstellungToEntity(final JaxEinstellung jaxEinstellung, @Nonnull final Einstellung einstellung) {
+		Objects.requireNonNull(einstellung);
+		Objects.requireNonNull(jaxEinstellung);
+		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
+		einstellung.setKey(jaxEinstellung.getKey());
+		einstellung.setValue(jaxEinstellung.getValue());
+		Einstellung einstellungFromDB = persistence.find(Einstellung.class, jaxEinstellung.getId());
+		// Einige Felder werden aktuell nicht gemappt. Wir setzen sie hier wieder auf den DB-Wert
+		if (einstellungFromDB != null) {
+			einstellung.setMandant(einstellungFromDB.getMandant());
+			einstellung.setGemeinde(einstellungFromDB.getGemeinde());
+			einstellung.setGesuchsperiode(einstellungFromDB.getGesuchsperiode());
+		}
+		return einstellung;
 	}
 
 	@Nonnull
