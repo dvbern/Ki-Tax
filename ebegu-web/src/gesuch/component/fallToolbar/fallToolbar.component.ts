@@ -21,6 +21,7 @@ import {from as fromPromise, Observable, of} from 'rxjs';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {getTSEingangsartFromRole} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
@@ -185,10 +186,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     private navigateToFallCreation(chosenGemeindeId: string): void {
         const params: INewFallStateParams = {
             gesuchsperiodeId: null,
-            createMutation: null,
-            createNewFall: 'false',
-            createNewDossier: 'true',
-            createNewGesuch: 'false',
+            creationAction: TSCreationAction.CREATE_NEW_DOSSIER,
             gesuchId: null,
             dossierId: null,
             gemeindeId: chosenGemeindeId,

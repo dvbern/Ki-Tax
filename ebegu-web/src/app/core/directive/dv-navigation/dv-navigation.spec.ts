@@ -18,6 +18,7 @@ import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
+import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import TSDossier from '../../../../models/TSDossier';
@@ -304,8 +305,6 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
                 {
-                    createNewFall: 'false',
-                    createMutation: 'false',
                     eingangsart: 'ONLINE',
                     gesuchId: '123',
                     gesuchsperiodeId: '123',

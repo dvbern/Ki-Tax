@@ -14,6 +14,7 @@
  */
 
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -41,7 +42,7 @@ describe('einkommensverschlechterungInfoView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
     });
 
     it('should be defined', () => {

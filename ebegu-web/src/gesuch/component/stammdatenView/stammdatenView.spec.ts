@@ -16,6 +16,7 @@
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
@@ -45,7 +46,7 @@ describe('stammdatenView', () => {
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         $stateParams = $injector.get('$stateParams');
         $stateParams.gesuchstellerNumber = '1';
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         ewkRS = $injector.get('EwkRS');

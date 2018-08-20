@@ -395,4 +395,33 @@ export default class WizardStepManager {
     private isStepHidden(stepName: TSWizardStepName): boolean {
         return this.hiddenSteps.indexOf(stepName) >= 0;
     }
+
+    /**
+     * Mit den Daten vom Gesuch, werden die entsprechenden Steps der Liste hiddenSteps hinzugefuegt.
+     * Oder ggf. aus der Liste entfernt (nur public fuer test)
+     */
+    public setHiddenSteps(gesuch: TSGesuch): void {
+        if (gesuch) {
+            //Freigabe
+            if (gesuch.isOnlineGesuch()) {
+                this.unhideStep(TSWizardStepName.FREIGABE);
+            } else {
+                this.hideStep(TSWizardStepName.FREIGABE);
+            }
+
+            //Abwesenheit
+            if (!gesuch.isMutation()) {
+                this.hideStep(TSWizardStepName.ABWESENHEIT);
+            } else {
+                this.unhideStep(TSWizardStepName.ABWESENHEIT);
+            }
+
+            //Umzug
+            if (!gesuch.isMutation() && !gesuch.isThereAnyUmzug()) {
+                this.hideStep(TSWizardStepName.UMZUG);
+            } else {
+                this.unhideStep(TSWizardStepName.UMZUG);
+            }
+        }
+    }
 }

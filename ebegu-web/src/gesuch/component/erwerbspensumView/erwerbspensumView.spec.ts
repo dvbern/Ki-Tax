@@ -14,6 +14,7 @@
  */
 
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -39,7 +40,7 @@ describe('erwerbspensumView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
         const tsGesuchsperiode = new TSGesuchsperiode();
         tsGesuchsperiode.id = '123';
         gesuchModelManager.getGesuch().gesuchsperiode = tsGesuchsperiode;

@@ -44,6 +44,7 @@ import FallRS from '../../gesuch/service/fallRS.rest';
 import FamiliensituationRS from '../../gesuch/service/familiensituationRS.rest';
 import FinanzielleSituationRS from '../../gesuch/service/finanzielleSituationRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
+import {GesuchGenerator} from '../../gesuch/service/gesuchGenerator';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
@@ -203,6 +204,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('GemeindeRS', GemeindeRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
+    .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())

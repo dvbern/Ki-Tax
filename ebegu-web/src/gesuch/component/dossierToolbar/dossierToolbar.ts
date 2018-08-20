@@ -22,6 +22,7 @@ import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
@@ -461,7 +462,7 @@ export class DossierToolbarController implements IDVFocusableController {
             eingangsart = TSEingangsart.PAPIER;
         }
         this.$state.go('gesuch.mutation', {
-            createMutation: true,
+            creationAction: TSCreationAction.CREATE_NEW_MUTATION,
             eingangsart: eingangsart,
             gesuchsperiodeId: this.getGesuch().gesuchsperiode.id,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
@@ -505,7 +506,7 @@ export class DossierToolbarController implements IDVFocusableController {
             eingangsart = TSEingangsart.PAPIER;
         }
         this.$state.go('gesuch.erneuerung', {
-            createErneuerung: true,
+            creationAction: TSCreationAction.CREATE_NEW_FOLGEGESUCH,
             eingangsart: eingangsart,
             gesuchsperiodeId: this.neuesteGesuchsperiode.id,
             dossierId: this.dossier.id,
@@ -580,7 +581,6 @@ export class DossierToolbarController implements IDVFocusableController {
                 this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(() => {
                     if (this.antragList.length > 1) {
                         const navObj: any = {
-                            createNewFall: false,
                             gesuchId: this.antragList[0].antragId,
                             dossierId: this.antragList[0].dossierId
                         };

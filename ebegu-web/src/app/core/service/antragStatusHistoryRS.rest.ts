@@ -57,10 +57,9 @@ export default class AntragStatusHistoryRS {
                     this._lastChange = this.ebeguRestUtil.parseAntragStatusHistory(new TSAntragStatusHistory(), response.data);
                     return this._lastChange;
                 });
-        } else {
-            this._lastChange = undefined;
         }
-        return undefined;
+        this._lastChange = undefined;
+        return Promise.resolve(this._lastChange);
     }
 
     public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier, gesuchsperiode: TSGesuchsperiode): IPromise<Array<TSAntragStatusHistory>> {
@@ -71,7 +70,7 @@ export default class AntragStatusHistoryRS {
                     return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);
                 });
         }
-        return undefined;
+        return Promise.resolve(undefined);
     }
 
     /**

@@ -15,6 +15,7 @@
 
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFinanzModel from '../../../models/TSFinanzModel';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
@@ -63,7 +64,7 @@ describe('einkommensverschlechterungResultateView', () => {
     }));
 
     beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
         gesuchModelManager.initFamiliensituation();
         gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
         gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());
