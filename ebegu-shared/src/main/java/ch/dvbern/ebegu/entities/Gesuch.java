@@ -821,9 +821,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (this.getDokumentGrunds() != null) {
 			target.setDokumentGrunds(new HashSet<>());
 			this.getDokumentGrunds().forEach(
-				dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
-			);
-		}
+			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
+		);}
 	}
 
 	@Nonnull
