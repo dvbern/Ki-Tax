@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -62,6 +63,7 @@ public class EbeguRuleTestsHelper {
 	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(Constants.DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2);
 	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
 
 	protected static List<VerfuegungZeitabschnitt> calculate(Betreuung betreuung) {
@@ -110,6 +112,7 @@ public class EbeguRuleTestsHelper {
 		result = wohnsitzCalcRule.calculate(betreuung, result);
 		result = mindestalterCalcRule.calculate(betreuung, result);
 		result = abwesenheitCalcRule.calculate(betreuung, result);
+		result = schulstufeCalcRule.calculate(betreuung, result);
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		return result;
 	}

@@ -49,7 +49,7 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	@Override
 	public List<Rule> getRulesForGesuchsperiode(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
-		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForMandant(gemeinde);
+		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde(gemeinde);
 		Map<EinstellungKey, Einstellung> ebeguParameter = loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
 		return ruleConfigurator.configureRulesForMandant(gemeinde, ebeguParameter);
 	}
