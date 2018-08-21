@@ -26,7 +26,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -55,12 +54,13 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	private static final EinstellungKey PARAM_KEY = EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
-	private Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();;
-	private final Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);;
+	private Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
+	private Gemeinde gemeinde = null;
 
 	@Before
 	public void setUp() {
 		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
+		gemeinde = TestDataUtil.getGemeindeBern(persistence);;
 	}
 
 	@Test
@@ -147,10 +147,9 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertFalse(allParameter.isEmpty());
 		Assert.assertEquals(1, allParameter.size());
 
-		Gesuchsperiode gesuchsperiode18 = TestDataUtil.createGesuchsperiode1718();
-		gesuchsperiode18.setGueltigkeit(Constants.GESUCHSPERIODE_18_19);
+		Gesuchsperiode gesuchsperiode18 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 
-		einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, gesuchsperiode18);
+		einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode18, gesuchsperiode);
 
 		Collection<Einstellung> allParameter2 = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
 		Assert.assertFalse(allParameter2.isEmpty());
@@ -173,7 +172,6 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 
 	private Einstellung createAndPersistParameter(EinstellungKey paramAnzalTageMaxKita, Gesuchsperiode gesuchsperiode) {
 		Einstellung parameter = TestDataUtil.createDefaultEinstellung(paramAnzalTageMaxKita, gesuchsperiode);
-		parameter.setGesuchsperiode(gesuchsperiode);
 		return einstellungService.saveEinstellung(parameter);
 	}
 }

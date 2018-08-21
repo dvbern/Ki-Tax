@@ -22,13 +22,16 @@ import java.time.LocalDateTime;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.TestdataCreationService;
+import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -47,6 +50,9 @@ import org.junit.runner.RunWith;
 public class GesuchServiceBeanTest extends AbstractTestdataCreationTest {
 
 	@Inject
+	private Persistence persistence;
+
+	@Inject
 	private FallService fallService;
 
 	@Inject
@@ -55,7 +61,9 @@ public class GesuchServiceBeanTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void deleteGesuchWithMutationAndCopiedAnmeldungen() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
+		config.setGesuchsperiode(gesuchsperiode);
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
 

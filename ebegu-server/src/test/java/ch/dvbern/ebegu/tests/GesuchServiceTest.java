@@ -97,6 +97,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -155,6 +156,13 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	public static final int ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE = 60;
 	public static final int ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG = 90;
 
+	private Gesuchsperiode gesuchsperiode;
+
+	@Before
+	public void setUp() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+	}
+
 	@Test
 	public void createGesuch() {
 		Assert.assertNotNull(gesuchService);
@@ -186,7 +194,8 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	public void removeGesuchTest() {
 		Assert.assertNotNull(gesuchService);
 		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
+		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService,
+			gesuchsperiode);
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
@@ -289,7 +298,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	public void testAntragErneuern() throws Exception {
 
 		// Voraussetzung: Ich habe einen Antrag, er muss nicht verfuegt sein
-		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode gpFolgegesuch = new Gesuchsperiode();
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
@@ -433,7 +442,8 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungJAIFFreigegeben() {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGEGEBEN, Eingangsart.ONLINE, persistence, gesuchService);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGEGEBEN, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGEGEBEN, gesuch.getStatus());
 		loginAsSachbearbeiterJA();
@@ -643,7 +653,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testRemoveOnlineMutation() {
 		final Benutzer userGS = loginAsGesuchsteller("gesuchst");
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -682,7 +692,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAllWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=WARTEN, 2nd Betreuung=WARTEN
@@ -692,7 +702,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testupdateBetreuungenStatusBestaetigtWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=BESTAETIGT, 2nd Betreuung=WARTEN
@@ -704,7 +714,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAlleBestaetigt() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=BESTAETIGT, 2nd Betreuung=BESTAETIGT
@@ -715,7 +725,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAbgewiesenWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=ABGEWIESEN, 2nd Betreuung=WARTEN
@@ -728,7 +738,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testChangeFinSitStatusAbgelehnt() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertTrue(gesuch.isHasFSDokument());
 		Assert.assertNull(gesuch.getFinSitStatus());
 
@@ -846,7 +856,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {
-		Gesuch gesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
 		gesuch.setStatus(status);
 		gesuch.setEingangsart(Eingangsart.PAPIER);
 		wizardStepService.createWizardStepList(gesuch);
@@ -903,7 +913,8 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createSimpleVerfuegtesGesuch() {
-		Gesuch gesuchVerfuegt = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), AntragStatus.VERFUEGT);
+		Gesuch gesuchVerfuegt = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
+			AntragStatus.VERFUEGT, gesuchsperiode);
 		gesuchVerfuegt.setGueltig(true);
 		gesuchVerfuegt.setTimestampVerfuegt(LocalDateTime.now());
 		gesuchVerfuegt = gesuchService.updateGesuch(gesuchVerfuegt, true, null);
