@@ -55,7 +55,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     //this is the model...
     public bemerkungen: string;
 
-    private readonly verfuegungen: TSVerfuegung[] = [];
     private showSchemas: boolean;
     private sameVerfuegungsdaten: boolean;
     private sameVerrechneteVerguenstigung: boolean;
@@ -85,7 +84,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         // EBEGE-741: Bemerkungen sollen automatisch zum Inhalt der Verfügung hinzugefügt werden
         if ($scope) {
             $scope.$watch(() => {
-                return this.gesuchModelManager.getGesuch().bemerkungen;
+                if (this.gesuchModelManager.getGesuch()) {
+                    return this.gesuchModelManager.getGesuch().bemerkungen;
+                }
+                return '';
             }, (newValue, oldValue) => {
                 if ((newValue !== oldValue)) {
                     this.setBemerkungen();
@@ -95,36 +97,38 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private initView() {
-        if (!this.gesuchModelManager.getVerfuegenToWorkWith()) {
-            this.gesuchModelManager.calculateVerfuegungen().then(() => {
+        if (this.gesuchModelManager.getGesuch()) {
+            if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
                 this.setBemerkungen();
-            });
-        } else {
-            this.setBemerkungen();
-        }
+            } else {
+                this.gesuchModelManager.calculateVerfuegungen().then(() => {
+                    this.setBemerkungen();
+                });
+            }
 
-        //if finanzielleSituationResultate is undefined/empty (this may happen if user presses reloads this page) then we recalculate it
-        if (!this.berechnungsManager.finanzielleSituationResultate || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
-            this.berechnungsManager.calculateFinanzielleSituation(this.gesuchModelManager.getGesuch());
-        }
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
-            && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
-            && (!this.berechnungsManager.einkommensverschlechterungResultateBjP1 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP1, {}))) {
+            //if finanzielleSituationResultate is undefined/empty (this may happen if user presses reloads this page) then we recalculate it
+            if (!this.berechnungsManager.finanzielleSituationResultate || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
+                this.berechnungsManager.calculateFinanzielleSituation(this.gesuchModelManager.getGesuch());
+            }
+            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
+                && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
+                && (!this.berechnungsManager.einkommensverschlechterungResultateBjP1 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP1, {}))) {
 
-            this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); //.then(() => {});
-        }
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
-            && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
-            && (!this.berechnungsManager.einkommensverschlechterungResultateBjP2 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP2, {}))) {
+                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); //.then(() => {});
+            }
+            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
+                && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
+                && (!this.berechnungsManager.einkommensverschlechterungResultateBjP2 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP2, {}))) {
 
-            this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); //.then(() => {});
-        }
-        this.initDevModeParameter();
+                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); //.then(() => {});
+            }
+            this.initDevModeParameter();
 
-        // folgende Methoden werden hier aufgerufen, weil die Daten sich nicht aendern werden, waehrend man auf der Seite ist.
-        // Somit verbessern wir die Performance indem wir diese Daten ganz am Anfang berechnen und in einer Variable speichern
-        this.setSameVerfuegungsdaten();
-        this.setSameVerrechneteVerfuegungdaten();
+            // folgende Methoden werden hier aufgerufen, weil die Daten sich nicht aendern werden, waehrend man auf der Seite ist.
+            // Somit verbessern wir die Performance indem wir diese Daten ganz am Anfang berechnen und in einer Variable speichern
+            this.setSameVerfuegungsdaten();
+            this.setSameVerrechneteVerfuegungdaten();
+        }
     }
 
     private initDevModeParameter() {
@@ -204,7 +208,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public getVerfuegenToWorkWith(): TSVerfuegung {
-        if (this.gesuchModelManager) {
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
             return this.gesuchModelManager.getVerfuegenToWorkWith();
         }
         return undefined;
@@ -225,7 +229,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public getGesuchsperiode() {
-        if (this.gesuchModelManager) {
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuchsperiode()) {
             return this.gesuchModelManager.getGesuchsperiode();
         }
         return undefined;
@@ -236,21 +240,24 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public getKindName(): string {
-        if (this.gesuchModelManager && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getKindToWorkWith().kindJA) {
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()
+            && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getKindToWorkWith().kindJA) {
             return this.gesuchModelManager.getKindToWorkWith().kindJA.getFullName();
         }
         return undefined;
     }
 
     public getInstitutionName(): string {
-        if (this.gesuchModelManager && this.getBetreuung() && this.getBetreuung().institutionStammdaten) {
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()
+            && this.getBetreuung() && this.getBetreuung().institutionStammdaten) {
             return this.getBetreuung().institutionStammdaten.institution.name;
         }
         return undefined;
     }
 
     public getBetreuungNumber(): string {
-        if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
+        if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getGesuch()
+            && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
             return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(), this.getFall(), this.gesuchModelManager.getDossier().gemeinde,
                 this.gesuchModelManager.getKindToWorkWith().kindNummer, this.getBetreuung().betreuungNummer);
         }
@@ -258,14 +265,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public getBetreuungsstatus(): TSBetreuungsstatus {
-        if (this.gesuchModelManager && this.gesuchModelManager.getBetreuungToWorkWith()) {
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getBetreuungToWorkWith()) {
             return this.getBetreuung().betreuungsstatus;
         }
         return undefined;
     }
 
     public getAnfangsPeriode(): string {
-        if (this.ebeguUtil) {
+        if (this.ebeguUtil && this.gesuchModelManager.getGesuchsperiode()) {
             return this.ebeguUtil.getFirstDayGesuchsperiodeAsString(this.gesuchModelManager.getGesuchsperiode());
         }
         return undefined;
@@ -350,24 +357,26 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      * Die Bemerkungen sind immer die generierten, es sei denn das Angebot ist schon verfuegt
      */
     private setBemerkungen(): void {
-        if (this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT ||
-            this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+        if (this.getBetreuung()
+            && (this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT ||
+                this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)) {
             this.bemerkungen = this.getVerfuegenToWorkWith().manuelleBemerkungen;
         } else {
             this.bemerkungen = '';
-            if (this.getVerfuegenToWorkWith().generatedBemerkungen && this.getVerfuegenToWorkWith().generatedBemerkungen.length > 0) {
+            if (this.getVerfuegenToWorkWith() && this.getVerfuegenToWorkWith().generatedBemerkungen && this.getVerfuegenToWorkWith().generatedBemerkungen.length > 0) {
                 this.bemerkungen = this.getVerfuegenToWorkWith().generatedBemerkungen + '\n';
             }
-            if (this.gesuchModelManager.getGesuch().bemerkungen) {
+            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().bemerkungen) {
                 this.bemerkungen = this.bemerkungen + this.gesuchModelManager.getGesuch().bemerkungen;
             }
         }
     }
 
     public isBemerkungenDisabled(): boolean {
-        return this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN
-            || this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-            || this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG;
+        return this.gesuchModelManager.getGesuch()
+            && (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN
+                || this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT
+                || this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG);
     }
 
     public openVerfuegungPDF(): void {
@@ -378,7 +387,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
@@ -391,7 +400,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken for export: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
@@ -404,7 +413,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });

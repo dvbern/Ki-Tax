@@ -173,7 +173,9 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         newDossier.fall = this.selectedDossier.fall;
         newDossier.gemeinde = this.availableGemeindeList.find(gemeinde => gemeinde.id === chosenGemeindeId);
         return this.dossierRS.createDossier(newDossier).then(() => {
+            this.selectedDossier = newDossier;
             this.currentDossier = newDossier;
+            return this.selectedDossier;
         });
     }
 

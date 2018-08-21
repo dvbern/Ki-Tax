@@ -142,7 +142,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public getTextForFreigebenNotAllowed(): string {
-        if (this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde) {
+        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_BESCHWERDE_TEXT';
         } else if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';

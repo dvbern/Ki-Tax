@@ -171,7 +171,10 @@ export class DossierToolbarController implements IDVFocusableController {
             //watcher fuer status change
             if (this.gesuchModelManager && this.getGesuch()) {
                 $scope.$watch(() => {
-                    return this.getGesuch().status;
+                    if (this.getGesuch()) {
+                        return this.getGesuch().status;
+                    }
+                    return undefined;
                 }, (newValue, oldValue) => {
                     if ((newValue !== oldValue) && (isAnyStatusOfVerfuegt(newValue))) {
                         this.updateAntragDTOList();

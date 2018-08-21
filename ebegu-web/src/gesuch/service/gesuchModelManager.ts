@@ -169,7 +169,7 @@ export default class GesuchModelManager {
     public setGesuch(gesuch: TSGesuch): void {
         this.gesuch = gesuch;
         this.neustesGesuch = undefined;
-        if (this.gesuch) {
+        if (this.gesuch && !this.getGesuch().isNew()) {
             this.wizardStepManager.findStepsFromGesuch(this.gesuch.id);
             this.wizardStepManager.setHiddenSteps(this.gesuch);
             // EWK Service mit bereits existierenden Daten initialisieren
@@ -751,14 +751,14 @@ export default class GesuchModelManager {
             this.getKindToWorkWith().betreuungen.push(storedBetreuung);  //neues kind anfuegen
             this.setBetreuungIndex(this.getKindToWorkWith().betreuungen.length - 1);
         }
-        this.getDossierFromServer(); // to reload the verantwortliche that may have changed
+        this.getCurrentDossierFromServer(); // to reload the verantwortliche that may have changed
         return storedBetreuung;
     }
 
     public saveKind(kindToSave: TSKindContainer): IPromise<TSKindContainer> {
         return this.kindRS.saveKind(kindToSave, this.gesuch.id)
             .then((storedKindCont: TSKindContainer) => {
-                this.getDossierFromServer();
+                this.getCurrentDossierFromServer();
                 if (!kindToSave.isNew()) {   //gespeichertes kind war nicht neu
                     const i: number = EbeguUtil.getIndexOfElementwithID(kindToSave, this.gesuch.kindContainers);
                     if (i >= 0) {
@@ -782,10 +782,9 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Sucht das Gesuch im Server und aktualisiert es mit dem bekommenen Daten
-     * @returns {IPromise<void>}
+     * Loads the current Dossier from the DB.
      */
-    private getDossierFromServer(): IPromise<TSDossier> {
+    private getCurrentDossierFromServer(): IPromise<TSDossier> {
         return this.dossierRS.findDossier(this.gesuch.dossier.id).then((dossierResponse) => {
             this.gesuch.dossier = dossierResponse;
             return this.gesuch.dossier;
@@ -795,8 +794,6 @@ export default class GesuchModelManager {
     public getKindToWorkWith(): TSKindContainer {
         if (this.gesuch && this.gesuch.kindContainers && this.gesuch.kindContainers.length > this.kindIndex) {
             return this.gesuch.kindContainers[this.kindIndex];
-        } else {
-            this.log.error('kindContainers is not set or kindIndex is out of bounds ' + this.kindIndex);
         }
         return undefined;
     }
@@ -809,8 +806,6 @@ export default class GesuchModelManager {
     public getBetreuungToWorkWith(): TSBetreuung {
         if (this.getKindToWorkWith() && this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
             return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
-        } else {
-            this.log.error('kindToWorkWith is not set or index of betreuung is out of bounds ' + this.betreuungIndex);
         }
         return undefined;
     }
@@ -1304,7 +1299,10 @@ export default class GesuchModelManager {
      * @returns {boolean}
      */
     public isKorrekturModusJugendamt(): boolean {
-        return isAtLeastFreigegeben(this.gesuch.status) && !isAnyStatusOfVerfuegt(this.gesuch.status) && (TSEingangsart.ONLINE === this.getGesuch().eingangsart);
+        return this.getGesuch()
+            && isAtLeastFreigegeben(this.gesuch.status)
+            && !isAnyStatusOfVerfuegt(this.gesuch.status)
+            && (TSEingangsart.ONLINE === this.getGesuch().eingangsart);
     }
 
     /**
@@ -1423,6 +1421,9 @@ export default class GesuchModelManager {
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
     public isFinanzielleSituationDesired(): boolean {
+        if (!this.getGesuch() || !this.getGesuchsperiode()) {
+            return false;
+        }
         return !this.getGesuchsperiode().hasTagesschulenAnmeldung()
             || !this.areThereOnlySchulamtAngebote()
             || (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht === true

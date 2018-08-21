@@ -83,6 +83,11 @@ export class GesuchRouteController {
     public getIcon(stepName: TSWizardStepName): string {
         const step = this.wizardStepManager.getStepByName(stepName);
         if (step) {
+
+            if (!this.getGesuch()) {
+                return '';
+            }
+
             const status = step.wizardStepStatus;
             if (status === TSWizardStepStatus.MUTIERT) {
                 return 'fa-circle green';
@@ -215,11 +220,11 @@ export class GesuchRouteController {
     }
 
     public getDossierId(): string {
-        return this.getGesuch().dossier ? this.getGesuch().dossier.id : '';
+        return (this.getGesuch() && this.getGesuch().dossier) ? this.getGesuch().dossier.id : '';
     }
 
     public getGesuchErstellenStepTitle(): string {
-        if (this.gesuchModelManager.isGesuch()) {
+        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.isGesuch()) {
             if (this.getDateFromGesuch()) {
                 const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH_VOM' : 'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(key, {
