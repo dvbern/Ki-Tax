@@ -17,6 +17,9 @@ package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
@@ -36,20 +39,28 @@ abstract class AbstractDokumente<T1, T2> {
 		return isDokumentNeeded(dokumentTyp, dataForDocument1);
 	}
 
-	void add(DokumentGrund dokumentGrund, Set<DokumentGrund> anlageVerzeichnis) {
+	void add(@Nullable DokumentGrund dokumentGrund, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
 		if (dokumentGrund != null) {
 			anlageVerzeichnis.add(dokumentGrund);
 		}
 	}
 
-	DokumentGrund getDokument(DokumentTyp dokumentTyp, T1 dataForDocument, String tag,
-		DokumentGrundPersonType personType, Integer personNumber, DokumentGrundTyp dokumentGrundTyp) {
+	@Nullable
+	DokumentGrund getDokument(
+		DokumentTyp dokumentTyp,
+		T1 dataForDocument,
+		String tag,
+		DokumentGrundPersonType personType,
+		Integer personNumber,
+		DokumentGrundTyp dokumentGrundTyp) {
+
 		if (isDokumentNeeded(dokumentTyp, dataForDocument)) {
 			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
 		}
 		return null;
 	}
 
+	@Nullable
 	DokumentGrund getDokument(DokumentTyp dokumentTyp, T1 dataForDocument1, T2 dataForDocument2, String tag,
 		DokumentGrundPersonType personType, Integer personNumber, DokumentGrundTyp dokumentGrundTyp) {
 		if (isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2)) {

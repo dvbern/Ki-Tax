@@ -104,6 +104,7 @@ public class CopyTest {
 		Assert.assertNotNull(erstgesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA());
 		Assert.assertNotNull(erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		Assert.assertNotNull(erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
+		Assert.assertNotNull(erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus1());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1), erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus1().getNettolohn());
 		Assert.assertNotNull(erstgesuch.getDokumentGrunds());
 		Assert.assertEquals(1, erstgesuch.getDokumentGrunds().size());
@@ -281,12 +282,12 @@ public class CopyTest {
 		Assert.assertNotNull(mutation.getDokumentGrunds());
 		Assert.assertEquals(1, mutation.getDokumentGrunds().size());
 
-		Assert.assertTrue(erneuerung.getDokumentGrunds().isEmpty());
+		Assert.assertNull(erneuerung.getDokumentGrunds());
 
 		Assert.assertNotNull(mutationNeuesDossier.getDokumentGrunds());
 		Assert.assertEquals(1, mutationNeuesDossier.getDokumentGrunds().size());
 
-		Assert.assertTrue(erneuerungNeuesDossier.getDokumentGrunds().isEmpty());
+		Assert.assertNull(erneuerungNeuesDossier.getDokumentGrunds());
 	}
 
 	@Test
