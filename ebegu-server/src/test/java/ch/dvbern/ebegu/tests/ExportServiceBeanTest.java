@@ -109,7 +109,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void exportTestVorVerfuegt() {
 
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde.getId());
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde.getId(), gesuchsperiode);
 		Assert.assertNotNull(gesuch.getKindContainers().stream().findFirst());
 		Assert.assertTrue(gesuch.getKindContainers().stream().findFirst().isPresent());
 		KindContainer container = gesuch.getKindContainers().stream().findFirst().get();
