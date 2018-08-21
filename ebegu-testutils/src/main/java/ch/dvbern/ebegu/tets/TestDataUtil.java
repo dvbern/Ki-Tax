@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungSearchDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.SortDTO;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
@@ -281,13 +282,17 @@ public final class TestDataUtil {
 		return createDefaultGesuch(AntragStatus.IN_BEARBEITUNG_JA);
 	}
 
-	public static Gesuch createDefaultGesuch(AntragStatus status) {
+	public static Gesuch createDefaultGesuch(@Nullable AntragStatus status) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(createGesuchsperiode1718());
 		gesuch.setDossier(createDefaultDossier());
 		gesuch.setEingangsdatum(LocalDate.now());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
-		gesuch.setStatus(status);
+		if (status != null) {
+			gesuch.setStatus(status);
+		} else {
+			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
+		}
 		return gesuch;
 	}
 
@@ -650,6 +655,11 @@ public final class TestDataUtil {
 		return createGesuchsperiodeXXYY(2017, 2018);
 	}
 
+	public static Gesuchsperiode createAndPersistGesuchsperiode1718(Persistence persistence) {
+		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(2017, 2018);
+		return persistence.persist(gesuchsperiodeXXYY);
+	}
+
 	public static Gesuchsperiode createGesuchsperiode1617() {
 		return createGesuchsperiodeXXYY(2016, 2017);
 	}
@@ -837,11 +847,22 @@ public final class TestDataUtil {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
-		if (status != null) {
-			return persistAllEntities(persistence, eingangsdatum, testfall, status);
-		} else {
-			return persistAllEntities(persistence, eingangsdatum, testfall);
-		}
+		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+	}
+
+	/**
+	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
+	 */
+	public static Gesuch createAndPersistWaeltiDagmarGesuch(@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+		prepareParameters(gesuchsperiode, persistence);
+		instService.getAllInstitutionen();
+		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList);
+
+		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
 	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum) {
@@ -876,32 +897,29 @@ public final class TestDataUtil {
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
-	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum) {
+	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
+		gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
 
-		return persistAllEntities(persistence, eingangsdatum, testfall);
+		return persistAllEntities(persistence, eingangsdatum, testfall, null);
+	}
+
+	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
+		AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+		instService.getAllInstitutionen();
+		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
+		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum, AntragStatus status) {
-		instService.getAllInstitutionen();
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-
-		if (status != null) {
-			return persistAllEntities(persistence, eingangsdatum, testfall, status);
-		} else {
-			return persistAllEntities(persistence, eingangsdatum, testfall);
-		}
-	}
-
-	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum) {
-		return createAndPersistBeckerNoraGesuch(instService, persistence, eingangsdatum, null);
+		return createAndPersistBeckerNoraGesuch(instService, persistence, eingangsdatum, status, TestDataUtil.createGesuchsperiode1718());
 	}
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {
@@ -912,19 +930,35 @@ public final class TestDataUtil {
 
 	}
 
-	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall, AntragStatus status) {
+	private static Gesuch persistAllEntities(@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum, @Nonnull AbstractTestfall testfall,
+			@Nullable AntragStatus status) {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
-		testfall.createGesuch(eingangsdatum, status);
+		if (status != null) {
+			testfall.createGesuch(eingangsdatum, status);
+		} else {
+			testfall.createGesuch(eingangsdatum);
+		}
 		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
-		persistence.persist(testfall.getGesuch().getGesuchsperiode());
+		if (testfall.getGesuch().getGesuchsperiode().isNew()) {
+			persistence.persist(testfall.getGesuch().getGesuchsperiode());
+		} else {
+			persistence.merge(testfall.getGesuch().getGesuchsperiode());
+		}
 		persistence.persist(testfall.getGesuch());
 		Gesuch gesuch = testfall.fillInGesuch();
 		ensureFachstelleAndInstitutionsExist(persistence, gesuch);
-		gesuch = persistence.merge(gesuch);
+		gesuch = persistEntity(persistence, gesuch);
 		return gesuch;
+	}
+
+	private static <T extends AbstractEntity> T persistEntity(Persistence persistence, @Nonnull T entity) {
+		if (entity.isNew()) {
+			return persistence.persist(entity);
+		}
+		return persistence.merge(entity);
 	}
 
 	@Nonnull
@@ -943,21 +977,6 @@ public final class TestDataUtil {
 		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeBern(persistence));
 		persistence.persist(verantwortlicher);
 		return verantwortlicher;
-	}
-
-	private static Gesuch persistAllEntities(Persistence persistence, @Nullable LocalDate eingangsdatum, AbstractTestfall testfall) {
-		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
-		testfall.createFall(verantwortlicher);
-		testfall.createGesuch(eingangsdatum);
-		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
-		persistence.persist(testfall.getGesuch().getFall());
-		persistence.persist(testfall.getGesuch().getDossier());
-		persistence.persist(testfall.getGesuch().getGesuchsperiode());
-		persistence.persist(testfall.getGesuch());
-		Gesuch gesuch = testfall.fillInGesuch();
-		ensureFachstelleAndInstitutionsExist(persistence, gesuch);
-		gesuch = persistence.merge(gesuch);
-		return gesuch;
 	}
 
 	public static void persistEntities(Gesuch gesuch, Persistence persistence) {
@@ -997,10 +1016,39 @@ public final class TestDataUtil {
 		persistence.persist(gesuch);
 	}
 
+	public static Gesuch createAndPersistGesuch(@Nonnull Persistence persistence, @Nullable Gemeinde gemeinde, @Nullable AntragStatus status,
+			@Nullable Gesuchsperiode gesuchsperiode) {
+		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
+		if (gesuchsperiode != null) {
+			gesuch.setGesuchsperiode(gesuchsperiode);
+		}
+		Benutzer benutzer = null;
+		if (gemeinde != null) {
+			benutzer = createAndPersistBenutzer(persistence, gemeinde);
+			gesuch.getDossier().setGemeinde(gemeinde);
+		} else {
+			benutzer = createAndPersistBenutzer(persistence);
+			gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		}
+		gesuch.getDossier().setVerantwortlicherBG(benutzer);
+		persistence.persist(gesuch.getFall());
+
+		persistence.persist(gesuch.getDossier());
+		if (gesuch.getGesuchsperiode().isNew()) {
+			persistence.persist(gesuch.getGesuchsperiode());
+		} else {
+			persistence.merge(gesuch.getGesuchsperiode());
+		}
+		persistence.persist(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		persistence.persist(gs);
+		return gesuch;
+	}
+
 	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
-		gesuch.getDossier().setGemeinde(gemeinde);
+			gesuch.getDossier().setGemeinde(gemeinde);
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
 		persistence.persist(gesuch.getFall());
 
@@ -1289,7 +1337,7 @@ public final class TestDataUtil {
 		return filterDTO;
 	}
 
-	public static Betreuung persistBetreuung(BetreuungService betreuungService, Persistence persistence) {
+	public static Betreuung persistBetreuung(BetreuungService betreuungService, Persistence persistence, @Nullable Gesuchsperiode gesuchsperiode) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		for (BetreuungspensumContainer container : betreuung.getBetreuungspensumContainers()) {
 			persistence.persist(container);
@@ -1307,7 +1355,11 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, null, null, gesuchsperiode);
+//		if (gesuchsperiode != null) {
+//			gesuch.setGesuchsperiode(gesuchsperiode);
+//			gesuch = persistence.merge(gesuch);
+//		}
 		betreuung.getKind().setGesuch(gesuch);
 		persistence.persist(betreuung.getKind());
 
@@ -1316,6 +1368,10 @@ public final class TestDataUtil {
 
 		return savedBetreuung;
 
+	}
+
+	public static Betreuung persistBetreuung(BetreuungService betreuungService, Persistence persistence) {
+		return persistBetreuung(betreuungService, persistence, null);
 	}
 
 	/**
@@ -1332,6 +1388,26 @@ public final class TestDataUtil {
 
 	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Persistence persistence, @Nonnull GesuchService gesuchService) {
 		return persistNewGesuchInStatus(status, Eingangsart.ONLINE, persistence, gesuchService);
+	}
+
+	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
+		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
+		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
+		gesuch.setEingangsart(Eingangsart.PAPIER);
+		gesuch.setStatus(status);
+		gesuch.setEingangsart(eingangsart);
+		gesuch.setGesuchsperiode(persistEntity(persistence, gesuchsperiode));
+		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
+		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		gesuch.setGesuchsteller1(gesuchsteller1);
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
+		gesuchService.createGesuch(gesuch);
+		return gesuch;
 	}
 
 	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,

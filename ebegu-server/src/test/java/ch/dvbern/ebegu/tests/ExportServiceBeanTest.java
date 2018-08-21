@@ -72,10 +72,11 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	private TestfaelleService testfaelleService;
 
 	private Gemeinde gemeinde;
+	private Gesuchsperiode gesuchsperiode;
 
 	@Before
 	public void init() {
-		final Gesuchsperiode gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode(true);
 		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
@@ -97,7 +98,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void exportTest() {
 
-		Gesuch yvonneGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(instService, persistence, LocalDate.now());
+		Gesuch yvonneGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
 		VerfuegungenExportDTO verfuegungenExportDTO = exportService.exportAllVerfuegungenOfAntrag(yvonneGesuch.getId());
 		Assert.assertNotNull(verfuegungenExportDTO);
 		Assert.assertNotNull(verfuegungenExportDTO.getVerfuegungen());

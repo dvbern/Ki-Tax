@@ -24,7 +24,9 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -79,6 +81,8 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		Optional<KindContainer> kind = kindService.findKind(persitedKind.getId());
 		Assert.assertTrue(kind.isPresent());
 		KindContainer savedKind = kind.get();
+		Assert.assertNotNull(persitedKind.getKindGS());
+		Assert.assertNotNull(savedKind.getKindGS());
 		Assert.assertEquals(persitedKind.getKindGS().getNachname(), savedKind.getKindGS().getNachname());
 		Assert.assertEquals(persitedKind.getKindJA().getNachname(), savedKind.getKindJA().getNachname());
 
@@ -87,26 +91,32 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		kindService.saveKind(savedKind);
 		Optional<KindContainer> updatedKind = kindService.findKind(persitedKind.getId());
 		Assert.assertTrue(updatedKind.isPresent());
-		Assert.assertEquals("Neuer Name", updatedKind.get().getKindGS().getNachname());
-		Assert.assertEquals(new Integer(1), updatedKind.get().getNextNumberBetreuung());
-		Assert.assertEquals(new Integer(1), updatedKind.get().getKindNummer());
-		Assert.assertEquals(new Integer(2), fallService.findFall(gesuch.getFall().getId()).get().getNextNumberKind());
+		KindContainer kindContainer = updatedKind.get();
+		Assert.assertNotNull(kindContainer.getKindGS());
+		Assert.assertEquals("Neuer Name", kindContainer.getKindGS().getNachname());
+		Assert.assertEquals(new Integer(1), kindContainer.getNextNumberBetreuung());
+		Assert.assertEquals(new Integer(1), kindContainer.getKindNummer());
+		Optional<Fall> fallOptional = fallService.findFall(gesuch.getFall().getId());
+		Assert.assertTrue(fallOptional.isPresent());
+		Assert.assertEquals(new Integer(2), fallOptional.get().getNextNumberKind());
 	}
 
 	@Test
 	public void addKindInMutationTest() {
-		Gesuch erstgesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), AntragStatus.VERFUEGT);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
+			AntragStatus.VERFUEGT, gesuchsperiode);
 		erstgesuch.setGueltig(true);
 		erstgesuch.setTimestampVerfuegt(LocalDateTime.now());
 		erstgesuch = gesuchService.updateGesuch(erstgesuch, true, null);
-		Assert.assertEquals(2, erstgesuch.getKindContainers().size());
+		Assert.assertEquals(1, erstgesuch.getKindContainers().size());
 
 		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
 		if (gesuchOptional.isPresent()) {
 			Gesuch mutation = gesuchOptional.get();
 
 			mutation = gesuchService.createGesuch(mutation);
-			Assert.assertEquals(2, mutation.getKindContainers().size());
+			Assert.assertEquals(1, mutation.getKindContainers().size());
 
 			WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
 			Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
@@ -115,7 +125,7 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 
 			neuesKindInMutation.setGesuch(mutation);
 			kindService.saveKind(neuesKindInMutation);
-			Assert.assertEquals(3, kindService.findAllKinderFromGesuch(mutation.getId()).size());
+			Assert.assertEquals(2, kindService.findAllKinderFromGesuch(mutation.getId()).size());
 
 			wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
 			Assert.assertEquals(WizardStepStatus.MUTIERT, wizardStepFromGesuch.getWizardStepStatus());
@@ -146,6 +156,9 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 	private KindContainer persistKind(Gesuch gesuch) {
 		KindContainer kindContainer = TestDataUtil.createDefaultKindContainer();
 		kindContainer.setGesuch(gesuch);
+		Assert.assertNotNull(kindContainer.getKindGS());
+		Assert.assertNotNull(kindContainer.getKindGS().getPensumFachstelle());
+		Assert.assertNotNull(kindContainer.getKindJA().getPensumFachstelle());
 		persistence.persist(kindContainer.getKindGS().getPensumFachstelle().getFachstelle());
 		persistence.persist(kindContainer.getKindJA().getPensumFachstelle().getFachstelle());
 		persistence.persist(kindContainer.getKindGS());
