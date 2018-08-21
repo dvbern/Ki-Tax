@@ -818,9 +818,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	private void copyDokumentGruende(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		this.getDokumentGrunds().forEach(
-			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
-		);
+		if (this.getDokumentGrunds() != null){
+			target.setDokumentGrunds(new HashSet<>());
+			this.getDokumentGrunds().forEach(
+				dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
+			);
+		}
 	}
 
 	@Nonnull
