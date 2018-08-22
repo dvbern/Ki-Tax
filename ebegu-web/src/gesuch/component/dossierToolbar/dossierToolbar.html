@@ -29,7 +29,8 @@
                         <md-button ng-click="vmx.setGesuchsperiode(gesuchsperiodeString)"
                                    aria-label="{{gesuchsperiodeString}}">
                                 <span>
-                                    <a href="#" ng-click="$event.preventDefault()" aria-hidden>{{gesuchsperiodeString}}</a>
+                                    <a href="#" ng-click="$event.preventDefault()"
+                                       aria-hidden>{{gesuchsperiodeString}}</a>
                                 </span>
                         </md-button>
                     </md-menu-item>
@@ -62,7 +63,7 @@
             <span ng-if="!vmx.showAntragTypListNavigationMenu()">
                  <button ng-click="vmx.goToOpenGesuch(vmx.getGesuch().id)"
                          aria-label="vmx.getAntragTyp()" style="text-align: center;">
-                    <span ng-bind="vmx.getAntragTyp()" class="bold-menu" ></span>
+                    <span ng-bind="vmx.getAntragTyp()" class="bold-menu"></span>
                 </button>
             </span>
 
@@ -70,7 +71,8 @@
 
             <!-- Gesuch loeschen -->
             <div dv-show-element
-                 dv-show-allowed-roles="vmx.TSRoleUtil.getAdministratorRoles()" dv-show-expression="vmx.showGesuchLoeschen()">
+                 dv-show-allowed-roles="vmx.TSRoleUtil.getAdministratorRoles()"
+                 dv-show-expression="vmx.showGesuchLoeschen()">
                 <button ng-click="vmx.gesuchLoeschen()"
                         aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" style="text-align: center;"
                         input-id="{{'gesuchLoeschenButton'}}" type="reset">
@@ -80,7 +82,8 @@
 
             <!--Verlauf-->
             <div dv-show-element
-                 dv-show-allowed-roles="vmx.TSRoleUtil.getJugendamtAndSchulamtRole()" dv-show-expression="vmx.showVerlauf()">
+                 dv-show-allowed-roles="vmx.TSRoleUtil.getJugendamtAndSchulamtRole()"
+                 dv-show-expression="vmx.showVerlauf()">
                 <button ng-click="vmx.openVerlauf()"
                         aria-label="{{'TOOLBAR_VERLAUF' | translate}}" style="text-align: center;">
                     <span data-translate="TOOLBAR_VERLAUF"></span>
@@ -99,7 +102,8 @@
 
             <!-- Mitteilungen -->
             <div dv-show-element
-                 dv-show-allowed-roles="vmx.TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles()"  dv-show-expression="!vmx.getGesuch().isNew()">
+                 dv-show-allowed-roles="vmx.TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles()"
+                 dv-show-expression="!vmx.getGesuch().isNew()">
                 <button ng-click="vmx.openMitteilungen()"
                         aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;">
                     <span data-translate="TOOLBAR_MITTEILUNGEN"></span>
@@ -140,18 +144,26 @@
 
 
                     <span ng-if="vmx.getGesuch().gesuchsteller2"
-                          ng-bind="vmx.getGesuch().gesuchsteller2.extractFullName()"></span>
+                          ng-bind="vmx.getGesuch().gesuchsteller2.extractFullName()">
+                    </span>
                     <span ng-if="vmx.getGesuch().gesuchsteller2"
-                              ng-bind="vmx.getGesuch().gesuchsteller2.extractMail()"></span>
+                          ng-bind="vmx.getGesuch().gesuchsteller2.extractMail()">
+                    </span>
                     <span class="kontaktBottom" ng-if="vmx.getGesuch().gesuchsteller2"
-                          ng-bind="vmx.getGesuch().gesuchsteller2.extractPhone()"></span>
+                          ng-bind="vmx.getGesuch().gesuchsteller2.extractPhone()">
+                    </span>
 
                 </md-menu-content>
             </md-menu>
 
-            <dv-verantwortlicherselect schulamt="true" user-list="vmx.schulAmtUserList" ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()"></dv-verantwortlicherselect>
+            <dv-verantwortlicherselect is-schulamt="true"
+                                       gemeinde-id="vmx.gemeindeId"
+                                       ng-if="vmx.ebeguUtil.isTagesschulangebotEnabled()">
+            </dv-verantwortlicherselect>
 
-            <dv-verantwortlicherselect user-list="vmx.jugendAmtUserList"></dv-verantwortlicherselect>
+            <dv-verantwortlicherselect is-schulamt="false"
+                                       gemeinde-id="vmx.gemeindeId">
+            </dv-verantwortlicherselect>
 
         </md-menu-bar>
 

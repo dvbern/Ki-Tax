@@ -25,7 +25,6 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import TSGesuch from '../../../../models/TSGesuch';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 
-
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
     require = {};
@@ -33,8 +32,8 @@ export class DvVerantwortlicherselect implements IDirective {
     controller = VerantwortlicherselectController;
     controllerAs = 'vm';
     bindToController = {
-        schulamt: '<',
-        userList: '<',
+        isSchulamt: '<',
+        gemeindeId: '<',
     };
     template = require('./dv-verantwortlicherselect.html');
 
@@ -45,16 +44,15 @@ export class DvVerantwortlicherselect implements IDirective {
     }
 }
 
-/**
- * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
- */
 export class VerantwortlicherselectController implements IController {
 
     static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
 
-    userList: Array<TSUser>;
     TSRoleUtil = TSRoleUtil;
-    schulamt: boolean;
+    isSchulamt: boolean;
+    gemeindeId: string;
+
+    userList: Array<TSUser>;
 
     constructor(private readonly userRS: UserRS,
                 private readonly authServiceRS: AuthServiceRS,
@@ -62,9 +60,14 @@ export class VerantwortlicherselectController implements IController {
                 private readonly $translate: ITranslateService) {
     }
 
+    public $onChanges(changes: any) {
+        if (changes.gemeindeId) {
+            this.updateUserList();
+        }
+    }
 
     public getTitel(): string {
-        return this.$translate.instant(EbeguUtil.getTitleVerantwortlicher(this.schulamt));
+        return this.$translate.instant(EbeguUtil.getTitleVerantwortlicher(this.isSchulamt));
     }
 
     public getGesuch(): TSGesuch {
@@ -73,10 +76,10 @@ export class VerantwortlicherselectController implements IController {
 
     public getVerantwortlicherFullName(): string {
         if (this.getGesuch() && this.getGesuch().dossier) {
-            if (this.schulamt && this.getGesuch().dossier.verantwortlicherTS) {
+            if (this.isSchulamt && this.getGesuch().dossier.verantwortlicherTS) {
                 return this.getGesuch().dossier.verantwortlicherTS.getFullName();
             }
-            if (!this.schulamt && this.getGesuch().dossier.verantwortlicherBG) {
+            if (!this.isSchulamt && this.getGesuch().dossier.verantwortlicherBG) {
                 return this.getGesuch().dossier.verantwortlicherBG.getFullName();
             }
         }
@@ -93,7 +96,7 @@ export class VerantwortlicherselectController implements IController {
     }
 
     private setVerantwortlicherGesuchModelManager(verantwortlicher: TSUser) {
-        if (this.schulamt) {
+        if (this.isSchulamt) {
             this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
             this.gesuchModelManager.setUserAsFallVerantwortlicherBG(verantwortlicher);
@@ -102,7 +105,7 @@ export class VerantwortlicherselectController implements IController {
 
     public setUserAsFallVerantwortlicherLocal(user: TSUser) {
         if (user && this.getGesuch() && this.getGesuch().dossier) {
-            if (this.schulamt) {
+            if (this.isSchulamt) {
                 this.getGesuch().dossier.verantwortlicherTS = user;
             } else {
                 this.getGesuch().dossier.verantwortlicherBG = user;
@@ -120,10 +123,47 @@ export class VerantwortlicherselectController implements IController {
     }
 
     public getFallVerantwortlicher(): TSUser {
-        if (this.schulamt) {
+        if (this.isSchulamt) {
             return this.gesuchModelManager.getFallVerantwortlicherTS();
         } else {
             return this.gesuchModelManager.getFallVerantwortlicherBG();
         }
+    }
+
+    private updateUserList(): void {
+        if (!this.gemeindeId) {
+            this.userList = [];
+
+            return;
+        }
+
+        this.isSchulamt === true
+            ? this.updateSchulamtUserList()
+            : this.updateJugendAmtUserList();
+    }
+
+    private updateSchulamtUserList(): void {
+        this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+            this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
+        });
+    }
+
+    private updateJugendAmtUserList(): void {
+        this.userRS.getBenutzerJAorAdmin().then(response => {
+            this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
+        });
+    }
+
+    private sortUsers(userList: Array<TSUser>) {
+        return userList.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
+    }
+
+    /**
+     *  Filters out users that have no berechtigung on the current gemeinde
+     */
+    private filterUsers(userList: Array<TSUser>, gemeindeId: string): Array<TSUser> {
+        return userList.filter(user => user.berechtigungen
+            .some(berechtigung => berechtigung.gemeindeList
+                .some(gemeinde => gemeindeId === gemeinde.id)));
     }
 }

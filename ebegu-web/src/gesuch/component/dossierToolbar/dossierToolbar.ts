@@ -33,10 +33,8 @@ import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSDossier from '../../../models/TSDossier';
-import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSUser from '../../../models/TSUser';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -104,8 +102,7 @@ export class DossierToolbarController implements IDVFocusableController {
     gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den
                                                                    // Namen der Antraege
     antragTypList: { [key: string]: TSAntragDTO } = {};
-    jugendAmtUserList: Array<TSUser> = [];
-    schulAmtUserList: Array<TSUser> = [];
+    gemeindeId: string;
     mutierenPossibleForCurrentAntrag: boolean = false;
     erneuernPossibleForCurrentAntrag: boolean = false;
     neuesteGesuchsperiode: TSGesuchsperiode;
@@ -122,8 +119,7 @@ export class DossierToolbarController implements IDVFocusableController {
                 private readonly dvDialog: DvDialog,
                 private readonly unsavedWarningSharedService: any,
                 private readonly mitteilungRS: MitteilungRS,
-                private readonly dossierRS: DossierRS,
-                private readonly userRS: UserRS) {
+                private readonly dossierRS: DossierRS) {
 
     }
 
@@ -170,6 +166,7 @@ export class DossierToolbarController implements IDVFocusableController {
                     if (this.gesuchid) {
                         this.updateAntragDTOList();
                     } else {
+                        this.gemeindeId = null;
                         this.antragTypList = {};
                         this.gesuchNavigationList = {};
                         this.gesuchsperiodeList = {};
@@ -209,14 +206,6 @@ export class DossierToolbarController implements IDVFocusableController {
                     }
                 }
             });
-            $scope.$watch(() => {
-                return this.dossier;
-            }, (newValue, oldValue) => {
-                if (newValue !== oldValue) {
-                    this.updateJugendAmtUserList();
-                    this.updateSchulAmtUserList();
-                }
-            });
             // Wenn eine Mutationsmitteilung uebernommen wird und deshalb eine neue Mutation erstellt wird, muss
             // die toolbar aktualisisert werden, damit diese Mutation auf der Liste erscheint
             $scope.$on(TSMitteilungEvent[TSMitteilungEvent.MUTATIONSMITTEILUNG_NEUE_MUTATION], () => {
@@ -250,6 +239,7 @@ export class DossierToolbarController implements IDVFocusableController {
             this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
                 if (response) {
                     this.dossier = response;
+                    this.gemeindeId = this.dossier.gemeinde.id;
                     if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
                         this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then((response) => {
                             this.antragList = angular.copy(response);
@@ -656,23 +646,5 @@ export class DossierToolbarController implements IDVFocusableController {
      */
     public setFocusBack(elementID: string): void {
         angular.element('#kontaktButton').first().focus();
-    }
-
-    public updateSchulAmtUserList(): void {
-        this.userRS.getBenutzerSCHorAdminSCH().then(response => {
-            this.schulAmtUserList = this.filterUsers(response, this.dossier.gemeinde);
-        });
-    }
-
-    public updateJugendAmtUserList(): void {
-        this.userRS.getBenutzerJAorAdmin().then(response => {
-            this.jugendAmtUserList = this.filterUsers(response, this.dossier.gemeinde);
-        });
-    }
-
-    private filterUsers(userList: Array<TSUser>, dossierGemeinde: TSGemeinde): Array<TSUser> {
-        return userList.filter(user => user.berechtigungen
-            .some(berechtigung => berechtigung.gemeindeList
-                .some(gemeinde => dossierGemeinde.id === gemeinde.id)));
     }
 }
