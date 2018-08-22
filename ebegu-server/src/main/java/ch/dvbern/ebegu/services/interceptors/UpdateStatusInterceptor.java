@@ -30,9 +30,9 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRole.ADMINISTRATOR_SCHULAMT;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRole.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
@@ -48,7 +48,7 @@ public class UpdateStatusInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UpdateStatusInterceptor.class.getSimpleName());
 
-	private static final UserRole[] JA_OR_SCH_OR_ADM = { SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT };
+	private static final UserRole[] JA_OR_SCH_OR_ADM = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS };
 
 	@Inject
 	private PrincipalBean principalBean;

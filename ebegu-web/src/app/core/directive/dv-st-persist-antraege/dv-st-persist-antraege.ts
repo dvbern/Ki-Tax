@@ -205,7 +205,7 @@ export default class DVSTPersistAntraege implements IDirective {
             }
             if (!savedStateToReturn.search.predicateObject.verantwortlicher) {
                 const berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
-                if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
+                if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SCHULAMT) {
                     savedStateToReturn.search.predicateObject.verantwortlicherTS =
                         this.authServiceRS.getPrincipal().getFullName();
                 } else { //JA
@@ -220,7 +220,7 @@ export default class DVSTPersistAntraege implements IDirective {
     private extractVerantwortlicherFullName() {
         if (this.authServiceRS.getPrincipal()) {
             const berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
-            if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
+            if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SCHULAMT) {
                 return {verantwortlicherTS: this.authServiceRS.getPrincipal().getFullName()};
             } else { //JA
                 return {verantwortlicherBG: this.authServiceRS.getPrincipal().getFullName()};

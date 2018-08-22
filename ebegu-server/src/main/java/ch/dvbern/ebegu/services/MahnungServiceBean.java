@@ -55,9 +55,9 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -95,7 +95,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public Mahnung createMahnung(@Nonnull Mahnung mahnung) {
 		Objects.requireNonNull(mahnung);
 		// Sicherstellen, dass keine offene Mahnung desselben Typs schon existiert
@@ -157,7 +157,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public Gesuch mahnlaufBeenden(@Nonnull Gesuch gesuch) {
 		gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		gesuch.setDokumenteHochgeladen(Boolean.FALSE);
@@ -194,7 +194,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN })
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void fristAblaufTimer() {
 		// Es muessen alle ueberprueft werden, die noch aktiv sind und deren Ablaufdatum < NOW liegt
@@ -242,7 +242,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG })
 	public void removeAllMahnungenFromGesuch(Gesuch gesuch) {
 		Collection<Mahnung> mahnungenFromGesuch = findMahnungenForGesuch(gesuch);
 		for (Mahnung mahnung : mahnungenFromGesuch) {

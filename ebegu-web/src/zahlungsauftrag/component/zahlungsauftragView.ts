@@ -95,8 +95,8 @@ export class ZahlungsauftragViewController implements IController {
                     break;
                 }
                 case TSRole.SUPER_ADMIN:
-                case TSRole.ADMIN:
-                case TSRole.SACHBEARBEITER_JA:
+                case TSRole.ADMIN_BG:
+                case TSRole.SACHBEARBEITER_BG:
                 case TSRole.JURIST:
                 case TSRole.REVISOR: {
                     this.zahlungRS.getAllZahlungsauftraege().then((response: any) => {

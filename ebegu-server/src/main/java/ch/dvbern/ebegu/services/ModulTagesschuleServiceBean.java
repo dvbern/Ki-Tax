@@ -29,7 +29,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -44,7 +44,7 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS })
 	public ModulTagesschule saveModul(@Nonnull ModulTagesschule modulTagesschule) {
 		Objects.requireNonNull(modulTagesschule);
 		return persistence.merge(modulTagesschule);
@@ -52,7 +52,7 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS })
 	public Optional<ModulTagesschule> findModul(@Nonnull String modulTagesschuleId) {
 		Objects.requireNonNull(modulTagesschuleId, "id muss gesetzt sein");
 		ModulTagesschule modul = persistence.find(ModulTagesschule.class, modulTagesschuleId);
@@ -60,7 +60,7 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS })
 	public void removeModul(@Nonnull String modulTagesschuleId) {
 		Objects.requireNonNull(modulTagesschuleId);
 		Optional<ModulTagesschule> modulOptional = findModul(modulTagesschuleId);

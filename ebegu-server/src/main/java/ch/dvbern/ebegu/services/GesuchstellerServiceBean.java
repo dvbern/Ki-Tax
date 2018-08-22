@@ -53,10 +53,10 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.Validate;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -76,7 +76,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, GESUCHSTELLER, SCHULAMT, ADMIN_TS })
 	public GesuchstellerContainer saveGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller,
 		final Gesuch gesuch, Integer gsNumber, boolean umzug) {
 		Objects.requireNonNull(gesuchsteller);
@@ -201,7 +201,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, GESUCHSTELLER, SCHULAMT, ADMIN_TS })
 	public void removeGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller) {
 		Objects.requireNonNull(gesuchsteller);
 		GesuchstellerContainer gesuchstellerToRemove = findGesuchsteller(gesuchsteller.getId())

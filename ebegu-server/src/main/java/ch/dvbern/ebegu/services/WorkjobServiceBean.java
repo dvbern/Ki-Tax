@@ -65,11 +65,11 @@ import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -122,7 +122,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS, SACHBEARBEITER_INSTITUTION,
 		SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
 	public Workjob findWorkjobByExecutionId(@Nonnull final Long executionId) {
 
@@ -136,7 +136,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS, SACHBEARBEITER_INSTITUTION,
 		SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
 	public Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlage, @Nullable LocalDate datumVon, @Nullable LocalDate datumBis, @Nullable String gesuchPeriodIdParam) {
 		checkIfJobCreationAllowed(workJob, vorlage);
@@ -216,7 +216,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS, SACHBEARBEITER_INSTITUTION,
 		SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
 	public List<Workjob> findWorkjobs(@Nonnull String startingUserName, @Nonnull Set<BatchJobStatus> statesToSearch) {
 		Objects.requireNonNull(startingUserName, "username to search must be set");
@@ -243,7 +243,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG })
 	public List<Workjob> findUnfinishedWorkjobs() {
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -269,7 +269,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS, SACHBEARBEITER_INSTITUTION,
 		SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
 	public void changeStateOfWorkjob(long executionId, @Nonnull BatchJobStatus status) {
 		persistence.getEntityManager().createNamedQuery(Workjob.Q_WORK_JOB_STATE_UPDATE)
@@ -292,7 +292,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG })
 	public void removeWorkjob(Workjob workjob) {
 		this.persistence.remove(workjob);
 

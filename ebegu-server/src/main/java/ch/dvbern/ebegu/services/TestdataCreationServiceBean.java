@@ -98,7 +98,7 @@ import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_STUNDEN_PRO_TAG_TAGI
  */
 @Stateless
 @Local(TestdataCreationService.class)
-@RolesAllowed({ UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed({ UserRoleName.ADMIN_BG, UserRoleName.SUPER_ADMIN })
 public class TestdataCreationServiceBean extends AbstractBaseService implements TestdataCreationService {
 
 	@Inject

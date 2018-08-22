@@ -64,10 +64,10 @@
 		<role-name>SUPER_ADMIN</role-name>
 	</security-role>
 	<security-role>
-		<role-name>ADMIN</role-name>
+		<role-name>ADMIN_BG</role-name>
 	</security-role>
 	<security-role>
-		<role-name>SACHBEARBEITER_JA</role-name>
+		<role-name>SACHBEARBEITER_BG</role-name>
 	</security-role>
 	<security-role>
 		<role-name>SACHBEARBEITER_INSTITUTION</role-name>
@@ -88,7 +88,7 @@
 		<role-name>STEUERAMT</role-name>
 	</security-role>
 	<security-role>
-		<role-name>ADMINISTRATOR_SCHULAMT</role-name>
+		<role-name>ADMIN_TS</role-name>
 	</security-role>
 	<security-role>
 		<role-name>SCHULAMT</role-name>

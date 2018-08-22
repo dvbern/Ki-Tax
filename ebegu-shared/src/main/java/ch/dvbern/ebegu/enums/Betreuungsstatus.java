@@ -85,7 +85,7 @@ public enum Betreuungsstatus {
 		switch (userRole) {
 		case SUPER_ADMIN:
 			return all;
-		case ADMIN:
+		case ADMIN_BG:
 			return all;
 		case GESUCHSTELLER:
 			return all;
@@ -95,7 +95,7 @@ public enum Betreuungsstatus {
 			return all;
 		case SACHBEARBEITER_INSTITUTION:
 			return all;
-		case SACHBEARBEITER_JA:
+		case SACHBEARBEITER_BG:
 			return all;
 		case SACHBEARBEITER_TRAEGERSCHAFT:
 			return all;

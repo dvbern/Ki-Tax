@@ -82,8 +82,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
@@ -219,7 +219,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	public void removeBenutzer(@Nonnull String username) {
 		Objects.requireNonNull(username);
 		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -295,7 +295,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	public Benutzer sperren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
@@ -317,7 +317,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	public Benutzer reaktivieren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
@@ -392,7 +392,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	public Pair<Long, List<Benutzer>> searchBenutzer(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto) {
 		Pair<Long, List<Benutzer>> result;
 		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT).getLeft();
@@ -406,7 +406,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	private Pair<Long, List<Benutzer>> searchBenutzer(
 		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode) {
@@ -708,7 +708,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	public Optional<Berechtigung> findBerechtigung(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		return Optional.ofNullable(persistence.find(Berechtigung.class, id));
@@ -732,7 +732,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, ADMIN_TS })
 	public Collection<BerechtigungHistory> getBerechtigungHistoriesForBenutzer(@Nonnull Benutzer benutzer) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BerechtigungHistory> query = cb.createQuery(BerechtigungHistory.class);

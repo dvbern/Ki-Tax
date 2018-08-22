@@ -59,10 +59,10 @@ import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintImpl;
 import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintMergeSource;
 import com.google.common.io.ByteStreams;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -84,7 +84,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws
 		MergeDocException {
 
@@ -119,7 +119,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnung,
 		boolean writeProtected) throws MergeDocException {
 
@@ -155,7 +155,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, GESUCHSTELLER, SCHULAMT, ADMIN_TS })
 	public byte[] generateFreigabequittung(Gesuch gesuch, boolean writeProtected) throws MergeDocException {
 
 		EbeguVorlageKey vorlageKey = EbeguVorlageKey.VORLAGE_FREIGABEQUITTUNG;
@@ -180,7 +180,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public byte[] generateBegleitschreiben(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException {
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 		authorizer.checkReadAuthorization(gesuch);
@@ -203,7 +203,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Nullable
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, ADMINISTRATOR_SCHULAMT, SCHULAMT, GESUCHSTELLER })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_TS, SCHULAMT, GESUCHSTELLER })
 	public byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, Verfuegung famGroessenVerfuegung,
 		boolean writeProtected) throws MergeDocException {
 
@@ -237,7 +237,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public byte[] generateVerfuegungForBetreuung(Betreuung betreuung,
 		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected) throws MergeDocException {
 

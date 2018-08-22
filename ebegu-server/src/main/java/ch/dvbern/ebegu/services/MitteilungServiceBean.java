@@ -43,7 +43,6 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
@@ -103,13 +102,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -119,8 +118,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(MitteilungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION,
-	SACHBEARBEITER_TRAEGERSCHAFT, ADMINISTRATOR_SCHULAMT, SCHULAMT })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION,
+	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SCHULAMT })
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class MitteilungServiceBean extends AbstractBaseService implements MitteilungService {
 
@@ -159,8 +158,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
+		ADMIN_TS })
 	public Mitteilung sendMitteilung(@Nonnull Mitteilung mitteilung) {
 		Objects.requireNonNull(mitteilung);
 
@@ -236,10 +235,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
 			break;
 		}
-		case SACHBEARBEITER_JA:
-		case ADMIN:
+		case SACHBEARBEITER_BG:
+		case ADMIN_BG:
 		case SCHULAMT:
-		case ADMINISTRATOR_SCHULAMT: {
+		case ADMIN_TS: {
 			Benutzer besitzer = mitteilung.getFall().getBesitzer();
 			mitteilung.setEmpfaenger(besitzer);
 			mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.GESUCHSTELLER);
@@ -264,8 +263,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
+		ADMIN_TS })
 	public Mitteilung saveEntwurf(@Nonnull Mitteilung mitteilung) {
 		Objects.requireNonNull(mitteilung);
 
@@ -281,22 +280,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public Mitteilung setMitteilungGelesen(@Nonnull String mitteilungsId) {
 		return setMitteilungsStatusIfBerechtigt(mitteilungsId, MitteilungStatus.GELESEN, MitteilungStatus.NEU, MitteilungStatus.ERLEDIGT);
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public Mitteilung setMitteilungErledigt(@Nonnull String mitteilungsId) {
 		return setMitteilungsStatusIfBerechtigt(mitteilungsId, MitteilungStatus.ERLEDIGT, MitteilungStatus.GELESEN);
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
+		ADMIN_TS })
 	public Optional<Mitteilung> findMitteilung(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		Mitteilung mitteilung = persistence.find(Mitteilung.class, key);
@@ -306,8 +305,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SCHULAMT })
 	public Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		Betreuungsmitteilung mitteilung = persistence.find(Betreuungsmitteilung.class, key);
@@ -317,13 +316,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	public Collection<Betreuungsmitteilung> findAllBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
 		// Diese Methode wird nur beim Loeschen einer Online-Mutation durch den Admin beim Erstellen einer Papier-Mutation verwendet.
 		// Wir koennen in diesem Fall die normale AuthCheck verwenden, da niemand vom JA fuer die vorhandene Online-Mutation des GS nach
-		// herkoemmlichem Schema berechtigt ist. Wir duerfen hier aber trotzdem loeschen. Methode ist aber nur fuer ADMIN und SUPER_ADMIN verfuegbar.
+		// herkoemmlichem Schema berechtigt ist. Wir duerfen hier aber trotzdem loeschen. Methode ist aber nur fuer ADMIN_BG und SUPER_ADMIN verfuegbar.
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -352,8 +351,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SCHULAMT })
 	public Collection<Mitteilung> findAllMitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
@@ -381,8 +380,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SCHULAMT })
 	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 		authorizer.checkReadAuthorizationDossier(dossier);
@@ -391,7 +390,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 		authorizer.checkReadAuthorization(betreuung);
@@ -425,8 +424,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
+		ADMIN_TS })
 	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 		authorizer.checkReadAuthorizationDossier(dossier);
@@ -435,7 +434,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	@Nullable
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Mitteilung getEntwurfForCurrentRolle(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 		return getEntwurfForCurrentRolle(Mitteilung_.betreuung, betreuung);
@@ -482,7 +481,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, ADMINISTRATOR_SCHULAMT, SCHULAMT, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SCHULAMT, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION,
 		SACHBEARBEITER_TRAEGERSCHAFT })
 	public void removeMitteilung(@Nonnull Mitteilung mitteilung) {
 		Objects.requireNonNull(mitteilung);
@@ -491,7 +490,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG })
 	public void removeAllMitteilungenForFall(@Nonnull Fall fall) {
 		// Alle Mitteilungen aller Dossiers dieses Falls
 		Collection<Dossier> dossiersOfFall = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
@@ -505,7 +504,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG })
 	public void removeAllBetreuungMitteilungenForGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkWriteAuthorization(gesuch);
 
@@ -528,8 +527,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
+		ADMIN_TS })
 	public Collection<Mitteilung> setAllNewMitteilungenOfDossierGelesen(@Nonnull Dossier dossier) {
 		Collection<Mitteilung> mitteilungen = getMitteilungenForCurrentRolle(dossier);
 		for (Mitteilung mitteilung : mitteilungen) {
@@ -542,8 +541,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SCHULAMT })
 	public Collection<Mitteilung> getNewMitteilungenOfDossierForCurrentRolle(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 		authorizer.checkReadAuthorizationDossier(dossier);
@@ -571,8 +570,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SCHULAMT,
+		ADMIN_TS })
 	public Long getAmountNewMitteilungenForCurrentBenutzer() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
@@ -613,7 +612,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG })
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
 		authorizer.checkWriteAuthorization(gesuch);
@@ -661,8 +660,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SCHULAMT })
 	public Optional<Betreuungsmitteilung> findNewestBetreuungsmitteilung(@Nonnull String betreuungId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -685,7 +684,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, SCHULAMT })
 	public Mitteilung mitteilungUebergebenAnJugendamt(@Nonnull String mitteilungId) {
 		Mitteilung mitteilung = findMitteilung(mitteilungId).orElseThrow(() -> new EbeguRuntimeException("mitteilungUebergebenAnJugendamt", "Mitteilung not found"));
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
@@ -712,7 +711,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG})
 	public Mitteilung mitteilungUebergebenAnSchulamt(@Nonnull String mitteilungId) {
 		Mitteilung mitteilung = findMitteilung(mitteilungId).orElseThrow(() -> new EbeguRuntimeException("mitteilungUebergebenAnSchulamt", "Mitteilung not found"));
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
@@ -1034,11 +1033,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return MitteilungTeilnehmerTyp.INSTITUTION;
 		}
 		case SUPER_ADMIN:
-		case ADMIN:
-		case SACHBEARBEITER_JA:
+		case ADMIN_BG:
+		case SACHBEARBEITER_BG:
 		case JURIST:
 		case SCHULAMT:
-		case ADMINISTRATOR_SCHULAMT:
+		case ADMIN_TS:
 		case REVISOR: {
 			return MitteilungTeilnehmerTyp.JUGENDAMT;
 		}

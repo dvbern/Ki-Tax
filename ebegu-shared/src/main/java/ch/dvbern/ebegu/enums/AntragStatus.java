@@ -216,15 +216,15 @@ public enum AntragStatus {
 	public static Set<AntragStatus> allowedforRole(UserRole userRole) {
         switch (userRole) {
 			case SUPER_ADMIN: return  all;
-			case ADMIN: return forAdminRole;
+			case ADMIN_BG: return forAdminRole;
             case GESUCHSTELLER: return none;
             case JURIST: return forJuristRole;
             case REVISOR: return forRevisorRole;
             case SACHBEARBEITER_INSTITUTION: return forSachbearbeiterInstitutionRole;
-            case SACHBEARBEITER_JA: return forSachbearbeiterJugendamtRole;
+            case SACHBEARBEITER_BG: return forSachbearbeiterJugendamtRole;
             case SACHBEARBEITER_TRAEGERSCHAFT: return forSachbearbeiterTraegerschaftRole;
             case SCHULAMT: return forSchulamtRole;
-            case ADMINISTRATOR_SCHULAMT: return forSchulamtRole;
+            case ADMIN_TS: return forSchulamtRole;
             case STEUERAMT: return forSteueramt;
             default: return none;
         }
@@ -234,13 +234,13 @@ public enum AntragStatus {
 	public static Set<AntragStatus> pendenzenForRole(UserRole userRole) {
         switch (userRole) {
 			case SUPER_ADMIN:
-			case ADMIN:
+			case ADMIN_BG:
             case JURIST:
             case REVISOR:
-            case SACHBEARBEITER_JA:
+            case SACHBEARBEITER_BG:
             	return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
             case SCHULAMT:
-            case ADMINISTRATOR_SCHULAMT:
+            case ADMIN_TS:
             	return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
             case STEUERAMT:
             case GESUCHSTELLER:
@@ -253,8 +253,8 @@ public enum AntragStatus {
 		switch (userRole) {
 			case SUPER_ADMIN:
 				return  all;
-			case ADMIN:
-			case SACHBEARBEITER_JA:
+			case ADMIN_BG:
+			case SACHBEARBEITER_BG:
 				return FOR_ADMIN_ROLE_WRITE;
 			case GESUCHSTELLER:
 				return FOR_GESUCHSTELLER_ROLE_WRITE;
@@ -264,7 +264,7 @@ public enum AntragStatus {
 			case STEUERAMT:
 				return FOR_STEUERAMT_ROLE_WRITE;
 			case SCHULAMT:
-			case ADMINISTRATOR_SCHULAMT:
+			case ADMIN_TS:
 				return FOR_ADMIN_ROLE_WRITE;
 			default:
 				return none;

@@ -51,7 +51,7 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 		Principal callerPrincipal = sessionContextService.getCallerPrincipal();
 		Assert.assertNotNull(callerPrincipal);
 		Assert.assertNotNull(callerPrincipal.getName(), "saja");
-		Assert.assertTrue(sessionContextService.isCallerInRole(UserRoleName.SACHBEARBEITER_JA));
+		Assert.assertTrue(sessionContextService.isCallerInRole(UserRoleName.SACHBEARBEITER_BG));
 		loginContext.logout();
 		Principal anonPrincipal = sessionContextService.getCallerPrincipal();
 		Assert.assertNotNull(anonPrincipal);

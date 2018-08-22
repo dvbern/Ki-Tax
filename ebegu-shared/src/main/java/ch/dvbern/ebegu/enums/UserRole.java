@@ -23,14 +23,14 @@ import javax.annotation.Nonnull;
 public enum UserRole {
 
 	SUPER_ADMIN(false),
-	ADMIN(true),
-	SACHBEARBEITER_JA(true),
+	ADMIN_BG(true),
+	SACHBEARBEITER_BG(true),
 	SACHBEARBEITER_TRAEGERSCHAFT(false),
 	SACHBEARBEITER_INSTITUTION(false),
 	JURIST(true),
 	REVISOR(true),
 	STEUERAMT(true),
-	ADMINISTRATOR_SCHULAMT(true),
+	ADMIN_TS(true),
 	SCHULAMT(true),
 	GESUCHSTELLER(false);
 
@@ -41,11 +41,11 @@ public enum UserRole {
 	}
 
 	public boolean isRoleSchulamt() {
-		return ADMINISTRATOR_SCHULAMT == this || SCHULAMT == this;
+		return ADMIN_TS == this || SCHULAMT == this;
 	}
 
 	public boolean isRoleJugendamt() {
-		return ADMIN == this || SACHBEARBEITER_JA == this;
+		return ADMIN_BG == this || SACHBEARBEITER_BG == this;
 	}
 
 	public boolean isRoleGemeinde() {
@@ -58,19 +58,19 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getAdminSuperAdminRoles() {
-		return Arrays.asList(SUPER_ADMIN, ADMIN, ADMINISTRATOR_SCHULAMT);
+		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS);
 	}
 
 	public static List<UserRole> getSchulamtRoles() {
-		return Arrays.asList(ADMINISTRATOR_SCHULAMT, SCHULAMT);
+		return Arrays.asList(ADMIN_TS, SCHULAMT);
 	}
 
 	public static List<UserRole> getJugendamtRoles() {
-		return Arrays.asList(ADMIN, SACHBEARBEITER_JA);
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
 	}
 
 	public static List<UserRole> getJugendamtSuperadminRoles() {
-		return Arrays.asList(ADMIN, SACHBEARBEITER_JA, SUPER_ADMIN);
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, SUPER_ADMIN);
 	}
 
 	public static List<UserRole> getInstitutionTraegerschaftRoles() {
@@ -83,12 +83,12 @@ public enum UserRole {
 	@Nonnull
 	public Amt getAmt() {
 		switch (this) {
-		case ADMIN:
+		case ADMIN_BG:
 		case SUPER_ADMIN:
-		case SACHBEARBEITER_JA: {
+		case SACHBEARBEITER_BG: {
 			return Amt.JUGENDAMT;
 		}
-		case ADMINISTRATOR_SCHULAMT:
+		case ADMIN_TS:
 		case SCHULAMT: {
 			return Amt.SCHULAMT;
 		}

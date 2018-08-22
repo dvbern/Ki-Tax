@@ -100,7 +100,7 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @Local(TestfaelleService.class)
-@RolesAllowed({ UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed({ UserRoleName.ADMIN_BG, UserRoleName.SUPER_ADMIN })
 public class TestfaelleServiceBean extends AbstractBaseService implements TestfaelleService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBean.class);

@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @Local(AdministrationService.class)
-@RolesAllowed(value = { UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed(value = { UserRoleName.ADMIN_BG, UserRoleName.SUPER_ADMIN })
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "ConstantConditions" })
 public class AdministrationServiceBean extends AbstractBaseService implements AdministrationService {
 

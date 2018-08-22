@@ -83,7 +83,7 @@ public interface BenutzerService {
 	Collection<Benutzer> getBenutzerJAorAdmin();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit Rolle ADMINISTRATOR_SCHULAMT oder SCHULAMT zurueck.
+	 * Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SCHULAMT zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */

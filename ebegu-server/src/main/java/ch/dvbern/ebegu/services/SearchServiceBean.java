@@ -90,9 +90,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
@@ -115,7 +115,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
 	public Pair<Long, List<Gesuch>> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, true);
 	}
@@ -189,9 +189,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		// Special role based predicates
 		switch (role) {
-		case SACHBEARBEITER_JA:
+		case SACHBEARBEITER_BG:
 		case SUPER_ADMIN:
-		case ADMIN:
+		case ADMIN_BG:
 		case REVISOR:
 		case JURIST:
 			if (searchForPendenzen) {
@@ -210,7 +210,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
 			break;
 		case SCHULAMT:
-		case ADMINISTRATOR_SCHULAMT:
+		case ADMIN_TS:
 			if (searchForPendenzen) {
 				predicates.add(createPredicateSCHOrMischGesuche(cb, root, joinDossier));
 			}

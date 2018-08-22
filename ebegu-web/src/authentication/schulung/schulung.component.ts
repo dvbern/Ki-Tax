@@ -74,7 +74,7 @@ export class SchulungViewController implements IController {
         this.amtUserList.push(new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
             this.mandant, TSRole.SCHULAMT));
         this.amtUserList.push(new TSUser('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA));
+            this.mandant, TSRole.SACHBEARBEITER_BG));
     }
 
     /**

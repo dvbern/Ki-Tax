@@ -89,12 +89,12 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
      */
     private analyseAmt(): TSAmt {
         switch (this.role) {
-            case TSRole.SACHBEARBEITER_JA:
-            case TSRole.ADMIN:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_BG:
             case TSRole.SUPER_ADMIN:
                 return TSAmt.JUGENDAMT;
             case TSRole.SCHULAMT:
-            case TSRole.ADMINISTRATOR_SCHULAMT:
+            case TSRole.ADMIN_TS:
                 return TSAmt.SCHULAMT;
             default:
                 return TSAmt.NONE;

@@ -67,7 +67,7 @@ public class CheckBerechtigungInstitutionTraegerschaftValidatorTest {
 
 	@Test
 	public void testCheckBenutzerRoleAdminNoInstitutionTraegerschaft() {
-		Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.ADMIN, "anonymous", null, null, mandant);
+		Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.ADMIN_BG, "anonymous", null, null, mandant);
 		Assert.assertTrue(validator.isValid(benutzer.getCurrentBerechtigung(), null));
 	}
 
@@ -97,7 +97,7 @@ public class CheckBerechtigungInstitutionTraegerschaftValidatorTest {
 
 	@Test
 	public void testCheckBenutzerRoleJANoInstitutionTraegerschaft() {
-		Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_JA, "anonymous", null, null, mandant);
+		Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_BG, "anonymous", null, null, mandant);
 		Assert.assertTrue(validator.isValid(benutzer.getCurrentBerechtigung(), null));
 	}
 

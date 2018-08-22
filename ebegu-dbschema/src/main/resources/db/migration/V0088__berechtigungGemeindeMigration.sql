@@ -3,5 +3,5 @@ INSERT INTO berechtigung_gemeinde (
 		id,
 		(SELECT id FROM gemeinde WHERE name = 'Bern')
 	FROM berechtigung
-	WHERE role in ('ADMIN', 'SACHBEARBEITER_JA', 'JURIST', 'REVISOR', 'STEUERAMT', 'ADMINISTRATOR_SCHULAMT', 'SCHULAMT')
+	WHERE role in ('ADMIN', 'SACHBEARBEITER_BG', 'JURIST', 'REVISOR', 'STEUERAMT', 'ADMIN_TS', 'SCHULAMT')
 );
