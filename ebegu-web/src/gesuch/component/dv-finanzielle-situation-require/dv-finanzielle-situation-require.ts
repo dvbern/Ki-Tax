@@ -34,7 +34,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
 
 export class DVFinanzielleSituationRequireController {
 
-    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
+    static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
     finanzielleSituationRequired: boolean;
     areThereOnlySchulamtangebote: boolean;

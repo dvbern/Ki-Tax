@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 /**
  * DTO fuer Einstellungen
  */
-@XmlRootElement(name = "ebeguparameter")
+@XmlRootElement(name = "einstellung")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 
@@ -38,8 +38,6 @@ public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 
 	@NotNull
 	private String value;
-
-	private String description;
 
 	// Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt!
 
@@ -59,11 +57,4 @@ public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 		this.value = value;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 }

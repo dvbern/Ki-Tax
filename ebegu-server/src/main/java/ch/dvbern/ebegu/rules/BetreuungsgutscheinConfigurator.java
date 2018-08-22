@@ -68,15 +68,15 @@ public class BetreuungsgutscheinConfigurator {
 			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
 	}
 
-	private void useBernerRules(Map<EinstellungKey, Einstellung> ebeguParameter) {
+	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
 
-		abschnitteErstellenRegeln(ebeguParameter);
-		berechnenAnspruchRegeln(ebeguParameter);
-		reduktionsRegeln(ebeguParameter);
+		abschnitteErstellenRegeln(einstellungen);
+		berechnenAnspruchRegeln(einstellungen);
+		reduktionsRegeln(einstellungen);
 
 	}
 
-	private void abschnitteErstellenRegeln(Map<EinstellungKey, Einstellung> ebeguParameter) {
+	private void abschnitteErstellenRegeln(Map<EinstellungKey, Einstellung> einstellungen) {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 
 		// - Erwerbspensum: Erstellt die grundlegenden Zeitschnitze (keine Korrekturen, nur einfügen)
@@ -84,13 +84,13 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(erwerbspensumAbschnittRule);
 
 		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 = einstellungen.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_3, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 muss gesetzt sein");
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_4 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_4 = einstellungen.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_4, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 muss gesetzt sein");
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_5 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_5 = einstellungen.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_5, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 muss gesetzt sein");
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 = einstellungen.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_6, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
 
 		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(defaultGueltigkeit,
@@ -133,7 +133,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(zivilstandsaenderungAbschnittRule);
 	}
 
-	private void berechnenAnspruchRegeln(Map<EinstellungKey, Einstellung> ebeguParameter) {
+	private void berechnenAnspruchRegeln(Map<EinstellungKey, Einstellung> einstellungen) {
 		// GRUNDREGELN_CALC: Berechnen / Ändern den Anspruch
 
 		// - Storniert
@@ -141,7 +141,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(storniertCalcRule);
 
 		// - Erwerbspensum
-		Einstellung maxZuschlagValue = ebeguParameter.get(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
+		Einstellung maxZuschlagValue = einstellungen.get(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
 		Objects.requireNonNull(maxZuschlagValue, "Parameter PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM muss gesetzt sein");
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(defaultGueltigkeit, maxZuschlagValue.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);
@@ -160,11 +160,11 @@ public class BetreuungsgutscheinConfigurator {
 
 	}
 
-	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> ebeguParameter) {
+	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungen) {
 		// REDUKTIONSREGELN: Setzen Anpsruch auf 0
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
-		Einstellung paramMassgebendesEinkommenMax = ebeguParameter.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
+		Einstellung paramMassgebendesEinkommenMax = einstellungen.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
 		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter PARAM_MASSGEBENDES_EINKOMMEN_MAX muss gesetzt sein");
 		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(defaultGueltigkeit, paramMassgebendesEinkommenMax.getValueAsBigDecimal());
 		rules.add(maxEinkommenCalcRule);

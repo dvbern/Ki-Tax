@@ -398,8 +398,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {
-		Einstellung ebeguParameter = new Einstellung(key, value, gesuchsperiode);
-		persistence.persist(ebeguParameter);
+		Einstellung einstellungen = new Einstellung(key, value, gesuchsperiode);
+		persistence.persist(einstellungen);
 	}
 
 	private InstitutionStammdaten getInstitutionStammdaten(@Nonnull AnmeldungConfig config) {

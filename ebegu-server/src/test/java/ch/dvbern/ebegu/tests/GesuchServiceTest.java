@@ -78,17 +78,23 @@ import ch.dvbern.ebegu.services.AntragStatusHistoryService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
+import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.TestdataCreationService;
 import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.services.WizardStepService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.ebegu.tets.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.util.TestfallName;
+import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
+import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
+import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
@@ -111,7 +117,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
-public class GesuchServiceTest extends AbstractEbeguLoginTest {
+public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GesuchServiceTest.class.getSimpleName());
 
@@ -132,6 +138,12 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
 	private MitteilungService mitteilungService;
+
+	@Inject
+	private TestdataCreationService testdataCreationService;
+
+	@Inject
+	private FallService fallService;
 
 	@Inject
 	private InstitutionService institutionService;
@@ -196,7 +208,7 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService,
 			gesuchsperiode);
-		insertInstitutionen();
+//		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
@@ -780,6 +792,21 @@ public class GesuchServiceTest extends AbstractEbeguLoginTest {
 		allAktuelleBetreuungenFromErstgesuch.stream().filter(Betreuung::isAngebotSchulamt)
 			.forEach(bet -> Assert.assertEquals(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG, bet.getAnmeldungMutationZustand()));
 
+	}
+
+	@Test
+	public void deleteGesuchWithMutationAndCopiedAnmeldungen() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
+		config.setGesuchsperiode(gesuchsperiode);
+		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
+		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
+
+		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(), LocalDateTime.now()), erstgesuch);
+		testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), mutation);
+
+		fallService.removeFall(erstgesuch.getFall(), GesuchDeletionCause.USER);
+		Assert.assertTrue("Gesuche wurden in der richtigen Reihenfolge geloscht", fallService.getAllFalle(false).isEmpty());
 	}
 
 

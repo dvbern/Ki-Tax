@@ -410,7 +410,7 @@ describe('gesuchModelManager', () => {
             it('should return a Promise with the Betreuung that was updated', () => {
                 const myGesuch = new TSGesuch();
                 myGesuch.id = 'gesuchID';
-                TestDataUtil.setAbstractFieldsUndefined(myGesuch);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch);
                 const betreuung: TSBetreuung = new TSBetreuung();
                 betreuung.id = 'betreuungId';
                 const betreuungen: Array<TSBetreuung> = [betreuung];

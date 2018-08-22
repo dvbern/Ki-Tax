@@ -111,7 +111,7 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 	public Map<EinstellungKey, Einstellung> getEinstellungenByGesuchsperiodeAsMap(@Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
 		Collection<Einstellung> paramsForGesuchsperiode = getEinstellungenByGesuchsperiode(gesuchsperiode);
-		paramsForGesuchsperiode.stream().map(ebeguParameter -> result.put(ebeguParameter.getKey(), ebeguParameter));
+		paramsForGesuchsperiode.stream().map(einstellung -> result.put(einstellung.getKey(), einstellung));
 		return result;
 	}
 

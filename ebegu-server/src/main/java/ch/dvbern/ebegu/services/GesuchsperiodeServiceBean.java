@@ -44,7 +44,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -142,7 +141,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Gesuchsperiode lastGesuchsperiode = getGesuchsperiodeAm(stichtagInVorperiode).orElseThrow(() -> new EbeguEntityNotFoundException("gesuchsperiode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, stichtagInVorperiode));
+			Gesuchsperiode lastGesuchsperiode = getGesuchsperiodeAm(stichtagInVorperiode)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("gesuchsperiode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, stichtagInVorperiode));
 			einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
 			// Wenn die Gesuchsperiode neu ist, muss das Datum Freischaltung Tagesschule gesetzt werden: Defaultmässig
 			// erster Tag der Gesuchsperiode. Kann nach Aktivierung der Periode auf ein beliebiges Datum gesetzt werden
@@ -276,7 +276,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		final CriteriaQuery<Gesuchsperiode> query = builder.createQuery(Gesuchsperiode.class);
 		final Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
 		query.where(root.get(Gesuchsperiode_.status).in(status));
-		query.orderBy(builder.desc(root.get(Gesuchsperiode_.gueltigkeit).get(DateRange_.gueltigAb)));
+		query.orderBy(builder.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -288,8 +288,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
 
-		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb), stichtag);
-		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis), stichtag);
+		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), stichtag);
+		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), stichtag);
 
 		query.where(predicateStart, predicateEnd);
 		Gesuchsperiode criteriaSingleResult = persistence.getCriteriaSingleResult(query);
@@ -304,8 +304,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
 
-		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb), datumBis);
-		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis), datumVon);
+		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), datumBis);
+		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), datumVon);
 
 		query.where(predicateStart, predicateEnd);
 		return persistence.getCriteriaResults(query);

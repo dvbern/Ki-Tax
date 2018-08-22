@@ -68,28 +68,28 @@ public class AbstractBGRechnerTest {
 	}
 
 	public static BetreuungsgutscheinEvaluator createEvaluator(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde bern) {
-		Map<EinstellungKey, Einstellung> ebeguParameter = new HashMap<>();
+		Map<EinstellungKey, Einstellung> einstellungen = new HashMap<>();
 
 		Einstellung paramMaxEinkommen = new Einstellung(EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, "159000", gesuchsperiode);
-		ebeguParameter.put(EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, paramMaxEinkommen);
+		einstellungen.put(EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, paramMaxEinkommen);
 
 		Einstellung pmab3 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode);
-		ebeguParameter.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, pmab3);
+		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, pmab3);
 
 		Einstellung pmab4 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, "5900", gesuchsperiode);
-		ebeguParameter.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, pmab4);
+		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, pmab4);
 
 		Einstellung pmab5 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, "6970", gesuchsperiode);
-		ebeguParameter.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, pmab5);
+		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, pmab5);
 
 		Einstellung pmab6 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode);
-		ebeguParameter.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, pmab6);
+		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, pmab6);
 
 		Einstellung paramZuschlag = new Einstellung(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
-		ebeguParameter.put(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, paramZuschlag);
+		einstellungen.put(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, paramZuschlag);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, ebeguParameter);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen);
 		return new BetreuungsgutscheinEvaluator(rules);
 	}
 

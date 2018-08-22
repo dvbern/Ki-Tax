@@ -436,13 +436,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
-		Einstellung einstellungFromDB = persistence.find(Einstellung.class, jaxEinstellung.getId());
-		// Einige Felder werden aktuell nicht gemappt. Wir setzen sie hier wieder auf den DB-Wert
-		if (einstellungFromDB != null) {
-			einstellung.setMandant(einstellungFromDB.getMandant());
-			einstellung.setGemeinde(einstellungFromDB.getGemeinde());
-			einstellung.setGesuchsperiode(einstellungFromDB.getGesuchsperiode());
-		}
+		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
 		return einstellung;
 	}
 

@@ -204,6 +204,16 @@ public enum MathUtil {
 		return validatePrecision(result);
 	}
 
+	@Nonnull
+	public BigDecimal divideNullSafe(@Nonnull BigDecimal dividend, @Nonnull BigDecimal divisor) {
+
+		if (0 == BigDecimal.ZERO.compareTo(divisor)) {
+			throw new IllegalArgumentException("Divide by zero: " + dividend + '/' + divisor);
+		}
+		BigDecimal result = dividend.divide(divisor, scale, roundingMode);
+		return validatePrecision(result);
+	}
+
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
@@ -212,11 +222,7 @@ public enum MathUtil {
 		if (dividend == null || divisor == null) {
 			return null;
 		}
-		if (0 == BigDecimal.ZERO.compareTo(divisor)) {
-			throw new IllegalArgumentException("Divide by zero: " + dividend + '/' + divisor);
-		}
-		BigDecimal result = dividend.divide(divisor, scale, roundingMode);
-		return validatePrecision(result);
+		return divideNullSafe(dividend, divisor);
 	}
 
 	/**

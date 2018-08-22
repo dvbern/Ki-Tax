@@ -157,7 +157,6 @@ export default class EbeguRestUtil {
             this.parseDateRangeEntity(tsEinstellung, receivedEinstellung);
             tsEinstellung.key = receivedEinstellung.key;
             tsEinstellung.value = receivedEinstellung.value;
-            tsEinstellung.description = receivedEinstellung.description;
             // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
             return tsEinstellung;
         }
@@ -169,7 +168,6 @@ export default class EbeguRestUtil {
             this.abstractDateRangeEntityToRestObject(restEinstellung, tsEinstellung);
             restEinstellung.key = tsEinstellung.key;
             restEinstellung.value = tsEinstellung.value;
-            restEinstellung.description = tsEinstellung.description;
             // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
             return restEinstellung;
         }
