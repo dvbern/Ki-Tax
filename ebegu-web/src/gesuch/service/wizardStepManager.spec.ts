@@ -13,16 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
+import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
+import TSAdresse from '../../models/TSAdresse';
+import TSAdresseContainer from '../../models/TSAdresseContainer';
 import TSGesuch from '../../models/TSGesuch';
+import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import TSWizardStep from '../../models/TSWizardStep';
+import {TSDateRange} from '../../models/types/TSDateRange';
+import DateUtil from '../../utils/DateUtil';
 import WizardStepManager from './wizardStepManager';
 import WizardStepRS from './WizardStepRS.rest';
 
@@ -239,6 +246,60 @@ describe('wizardStepManager', () => {
 
             wizardStepManager.unhideStep(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.isStepVisible(TSWizardStepName.FINANZIELLE_SITUATION)).toBe(false);
+        });
+    });
+
+    describe('hideSteps', () => {
+        it('should hide the steps ABWESENHEIT and UMZUG for ONLINE Erstgesuch without umzug', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.eingangsart = TSEingangsart.ONLINE;
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(true);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
+        });
+        it('should hide the steps ABWESENHEIT and UMZUG and unhide FREIGABE for PAPIER Erstgesuch without umzug', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.eingangsart = TSEingangsart.PAPIER;
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
+        });
+        it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for PAPIER Gesuch', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.eingangsart = TSEingangsart.PAPIER;
+            gesuch.typ = TSAntragTyp.MUTATION;
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(true);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(true);
+        });
+        it('should unhide the step UMZUG for Erstgesuch with umzug and hide ABWESENHEIT', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+            const umzugsAdresse = new TSAdresseContainer();
+            umzugsAdresse.adresseJA = new TSAdresse();
+            umzugsAdresse.adresseJA.adresseTyp = TSAdressetyp.WOHNADRESSE;
+            umzugsAdresse.adresseJA.gueltigkeit = new TSDateRange(DateUtil.today().add(1, 'months'), DateUtil.today().add(7, 'months'));
+            gesuch.gesuchsteller1.adressen = [umzugsAdresse, umzugsAdresse]; // for an umzugAdresse we just need more than one Wohnadressen
+            gesuch.eingangsart = TSEingangsart.ONLINE;
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            // expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(true);
+            // expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(true);
         });
     });
 

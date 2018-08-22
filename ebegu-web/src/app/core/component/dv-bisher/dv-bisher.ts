@@ -102,7 +102,8 @@ export class DvBisher {
     }
 
     private isKorrekturModusJugendamtOrFreigegeben(): boolean {
-        return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+        return this.gesuchModelManager.getGesuch()
+            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
             && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
     }
 

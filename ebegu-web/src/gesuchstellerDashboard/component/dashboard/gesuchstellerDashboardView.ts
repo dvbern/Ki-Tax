@@ -23,6 +23,7 @@ import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../../models/enums/TSGesuchBetreuungenStatus';
 import TSAntragDTO from '../../../models/TSAntragDTO';
@@ -166,7 +167,7 @@ export class GesuchstellerDashboardViewController {
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
@@ -174,7 +175,7 @@ export class GesuchstellerDashboardViewController {
                 // Im Else-Fall ist das Gesuch nicht mehr ueber den Button verfuegbar
                 // Es kann nur noch eine Mutation gemacht werden
                 this.$state.go('gesuch.mutation', {
-                    createMutation: true,
+                    creationAction: TSCreationAction.CREATE_NEW_MUTATION,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
                     gesuchId: antrag.antragId,
@@ -186,7 +187,7 @@ export class GesuchstellerDashboardViewController {
             if (this.antragList && this.antragList.length > 0) {
                 // Aber schon mindestens einer für eine frühere Periode
                 this.$state.go('gesuch.erneuerung', {
-                    createErneuerung: true,
+                    creationAction: TSCreationAction.CREATE_NEW_FOLGEGESUCH,
                     gesuchsperiodeId: periode.id,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchId: this.antragList[0].antragId,
@@ -195,8 +196,7 @@ export class GesuchstellerDashboardViewController {
             } else {
                 // Dies ist das erste Gesuch
                 this.$state.go('gesuch.fallcreation', {
-                    createNewFall: false,
-                    createNewGesuch: true,
+                    creationAction: TSCreationAction.CREATE_NEW_GESUCH,
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
                     gemeindeId: this.dossier.gemeinde.id,
@@ -260,7 +260,7 @@ export class GesuchstellerDashboardViewController {
             if (isAnyStatusOfVerfuegt(antrag.status)) {
                 this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
             } else {
-                this.$state.go('gesuch.fallcreation', {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go('gesuch.fallcreation', {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }

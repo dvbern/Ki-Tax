@@ -81,7 +81,7 @@ export class FaelleListViewController {
                 }
             } else {
                 this.openGesuch(antrag, 'gesuch.fallcreation',
-                    {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId},
+                    {gesuchId: antrag.antragId, dossierId: antrag.dossierId},
                     isCtrlKeyPressed);
             }
         }
