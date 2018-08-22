@@ -39,16 +39,15 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.be-login',
-        url: '/:gemeindeId',
+        url: '/{gemeindeId:[0-9a-fA-F\-]{36}}',
         component: OnboardingBeLoginComponent,
         data: {
             roles: [TSRole.ANONYMOUS]
         },
     },
-
     {
         name: 'onboarding.gesuchsteller',
-        url: '/registration/:gemeindeId',
+        url: '/registration/{gemeindeId:[0-9a-fA-F\-]{36}}',
         component: OnboardingGsAbschliessenComponent,
         data: {
             roles: [TSRole.GESUCHSTELLER]
