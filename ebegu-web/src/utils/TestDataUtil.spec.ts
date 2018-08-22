@@ -215,7 +215,7 @@ export default class TestDataUtil {
     }
 
     public static createGemeindeThun(): TSGemeinde {
-        let gemeinde: TSGemeinde = new TSGemeinde();
+        const gemeinde: TSGemeinde = new TSGemeinde();
         TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046ccc';
         gemeinde.name = 'Thun';
@@ -235,14 +235,14 @@ export default class TestDataUtil {
     }
 
     public static createFall(): TSFall {
-        let fall: TSFall = new TSFall();
+        const fall: TSFall = new TSFall();
         TestDataUtil.setAbstractFieldsUndefined(fall);
         fall.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046d61';
         return fall;
     }
 
     public static createDossier(id: string, fall: TSFall): TSDossier {
-        let dossier: TSDossier = new TSDossier();
+        const dossier: TSDossier = new TSDossier();
         dossier.id = id;
         dossier.fall = fall;
         return dossier;

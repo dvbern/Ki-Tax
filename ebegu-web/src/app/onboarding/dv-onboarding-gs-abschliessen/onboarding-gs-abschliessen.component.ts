@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
-import {from, Observable} from 'rxjs/index';
+import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -32,7 +32,7 @@ import TSUser from '../../../models/TSUser';
     templateUrl: './onboarding-gs-abschliessen.component.html',
     styleUrls: ['../onboarding.less', './onboarding-gs-abschliessen.component.less'],
 })
-export class OnboardingGsAbschliessenComponent {
+export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSUser>;
     public gemeinde$: Observable<TSGemeinde>;
