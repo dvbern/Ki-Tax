@@ -19,34 +19,42 @@
         <div id="navbar" class="navbar-header dv-navbar-header">
             <ul class="nav navbar-nav noMargin">
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                     <a uiSref="pendenzen.list-view" [textContent]="'MENU_PENDENZEN' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getSchulamtRoles()">
                     <a uiSref="pendenzenBetreuungen.list-view" [textContent]="'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getTraegerschaftInstitutionRoles()">
                     <a uiSref="pendenzenBetreuungen.list-view" [textContent]="'MENU_PENDENZEN_INSTITUTION' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getSteueramtRoles()">
                     <a uiSref="pendenzenSteueramt.list-view" [textContent]="'MENU_PENDENZEN_STEUERAMT' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForMenuAlleFaelle()">
                     <a uiSref="faelle.list" [textContent]="'MENU_ALL_FAELLE' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForZahlungen()">
                     <a uiSref="zahlungsauftrag.view" [textContent]="'MENU_ZAHLUNG' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
                     <a uiSref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
+                    class="dv-ng-navbar-element"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                     <dv-posteingang uiSref="posteingang.view"></dv-posteingang>
                 </li>
@@ -54,7 +62,7 @@
         </div> <!--/.nav-collapse -->
 
 
-        <div id="navbar_falleroeffnen" class="dv-ng-navbar-element" uiSrefActive="active">
+        <div id="navbar_falleroeffnen" class="dv-ng-navbar-element-fall-eroeffnen" uiSrefActive="active">
             <button (click)="createNewFall()" class="dv-btn dv-ng-navbar-button"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                 <i class="fa fa-plus-square"></i>

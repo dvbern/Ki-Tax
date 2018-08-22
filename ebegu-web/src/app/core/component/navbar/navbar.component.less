@@ -52,12 +52,7 @@
     z-index: @z-index-navbar;
     background-color: @primary;
     border-color: @primary;
-    .navbar-brand {
-        color: @contrast-lightest;
-        &:hover, &:focus {
-            color: @primary-light;
-        }
-    }
+
     .navbar-nav {
         width: 100%;
         text-align: center;
@@ -109,26 +104,6 @@
             }
         }
     }
-    .navbar-toggle {
-        border-color: @primary;
-        &:hover, &:focus {
-            //background-color: @primary;
-        }
-        .icon-bar {
-            background-color: @contrast-lightest;
-        }
-    }
-    .navbar-collapse,
-    .navbar-form {
-        text-align: center;
-        border-color: @contrast-lightest;
-    }
-    .navbar-link {
-        color: @contrast-lightest;
-        &:hover {
-            color: @primary-light;
-        }
-    }
 }
 
 @media (max-width: 767px) {
@@ -146,10 +121,6 @@
             }
         }
     }
-}
-
-.dv-ng-navbar-pull-right {
-    margin-left: auto;
 }
 
 .dv-ng-navbar-wrapper {
@@ -185,4 +156,10 @@
 .dv-ng-navbar-element {
     height: 100%;
     margin-left:auto;
+    cursor: pointer;
+
+    &-fall-eroeffnen {
+        &:extend(.dv-ng-navbar-element);
+        z-index: @z-index-navbar - 1;
+    }
 }
