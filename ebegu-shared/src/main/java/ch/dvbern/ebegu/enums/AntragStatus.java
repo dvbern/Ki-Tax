@@ -223,7 +223,7 @@ public enum AntragStatus {
             case SACHBEARBEITER_INSTITUTION: return forSachbearbeiterInstitutionRole;
             case SACHBEARBEITER_BG: return forSachbearbeiterJugendamtRole;
             case SACHBEARBEITER_TRAEGERSCHAFT: return forSachbearbeiterTraegerschaftRole;
-            case SCHULAMT: return forSchulamtRole;
+            case SACHBEARBEITER_TS: return forSchulamtRole;
             case ADMIN_TS: return forSchulamtRole;
             case STEUERAMT: return forSteueramt;
             default: return none;
@@ -239,7 +239,7 @@ public enum AntragStatus {
             case REVISOR:
             case SACHBEARBEITER_BG:
             	return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
-            case SCHULAMT:
+            case SACHBEARBEITER_TS:
             case ADMIN_TS:
             	return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
             case STEUERAMT:
@@ -263,7 +263,7 @@ public enum AntragStatus {
 				return FOR_INSTITUTION_ROLE_WRITE;
 			case STEUERAMT:
 				return FOR_STEUERAMT_ROLE_WRITE;
-			case SCHULAMT:
+			case SACHBEARBEITER_TS:
 			case ADMIN_TS:
 				return FOR_ADMIN_ROLE_WRITE;
 			default:

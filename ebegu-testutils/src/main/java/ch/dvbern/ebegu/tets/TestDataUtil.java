@@ -751,7 +751,7 @@ public final class TestDataUtil {
 
 	public static Benutzer createBenutzerSCH() {
 		final Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
-		defaultBenutzer.setRole(UserRole.SCHULAMT);
+		defaultBenutzer.setRole(UserRole.SACHBEARBEITER_TS);
 		return defaultBenutzer;
 	}
 

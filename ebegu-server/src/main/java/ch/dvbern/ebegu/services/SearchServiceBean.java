@@ -93,7 +93,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
 
@@ -115,7 +115,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS })
 	public Pair<Long, List<Gesuch>> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, true);
 	}
@@ -209,7 +209,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			predicates.add(cb.equal(joinInstitution, user.getInstitution()));
 			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
 			break;
-		case SCHULAMT:
+		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
 			if (searchForPendenzen) {
 				predicates.add(createPredicateSCHOrMischGesuche(cb, root, joinDossier));

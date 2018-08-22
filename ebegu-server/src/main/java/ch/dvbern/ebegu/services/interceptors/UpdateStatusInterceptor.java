@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRole.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 
@@ -48,7 +48,7 @@ public class UpdateStatusInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UpdateStatusInterceptor.class.getSimpleName());
 
-	private static final UserRole[] JA_OR_SCH_OR_ADM = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS };
+	private static final UserRole[] JA_OR_SCH_OR_ADM = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS };
 
 	@Inject
 	private PrincipalBean principalBean;

@@ -49,7 +49,7 @@ public class CheckVerantwortlicherValidatorTest {
 		//wir verwenden dummy service daher geben wir hier null als em mit
 		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null));
 		this.customFactory = config.buildValidatorFactory();
-		schUser = TestDataUtil.createBenutzer(UserRole.SCHULAMT, "userSCH", null, null, mandant);
+		schUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TS, "userSCH", null, null, mandant);
 		jaUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_BG, "userJA", null, null, mandant);
 		jaAdmin = TestDataUtil.createBenutzer(UserRole.ADMIN_BG, "adminJA", null, null, mandant);
 		schAdmin = TestDataUtil.createBenutzer(UserRole.ADMIN_TS, "adminSCH", null, null, mandant);

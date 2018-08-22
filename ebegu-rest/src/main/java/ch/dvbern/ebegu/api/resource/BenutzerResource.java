@@ -65,7 +65,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -95,7 +95,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
-		JURIST, REVISOR, STEUERAMT, SCHULAMT, ADMIN_TS })
+		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxAuthLoginElement> getBenutzerJAorAdmin() {
 
 		return benutzerService.getBenutzerJAorAdmin().stream()
@@ -103,7 +103,7 @@ public class BenutzerResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SCHULAMT zurueck",
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck",
 		responseContainer = "List",
 		response = JaxAuthLoginElement.class)
 	@Nonnull
@@ -112,7 +112,7 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
-		JURIST, REVISOR, STEUERAMT, SCHULAMT, ADMIN_TS })
+		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxAuthLoginElement> getBenutzerSCHorAdminSCH() {
 		return benutzerService.getBenutzerSCHorAdminSCH().stream()
 			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))

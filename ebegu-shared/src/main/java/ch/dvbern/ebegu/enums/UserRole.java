@@ -31,7 +31,7 @@ public enum UserRole {
 	REVISOR(true),
 	STEUERAMT(true),
 	ADMIN_TS(true),
-	SCHULAMT(true),
+	SACHBEARBEITER_TS(true),
 	GESUCHSTELLER(false);
 
 	private boolean isGemeindeabhaengig;
@@ -41,7 +41,7 @@ public enum UserRole {
 	}
 
 	public boolean isRoleSchulamt() {
-		return ADMIN_TS == this || SCHULAMT == this;
+		return ADMIN_TS == this || SACHBEARBEITER_TS == this;
 	}
 
 	public boolean isRoleJugendamt() {
@@ -62,7 +62,7 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getSchulamtRoles() {
-		return Arrays.asList(ADMIN_TS, SCHULAMT);
+		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS);
 	}
 
 	public static List<UserRole> getJugendamtRoles() {
@@ -89,7 +89,7 @@ public enum UserRole {
 			return Amt.JUGENDAMT;
 		}
 		case ADMIN_TS:
-		case SCHULAMT: {
+		case SACHBEARBEITER_TS: {
 			return Amt.SCHULAMT;
 		}
 		default:

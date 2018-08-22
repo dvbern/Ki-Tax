@@ -99,7 +99,7 @@ public enum Betreuungsstatus {
 			return all;
 		case SACHBEARBEITER_TRAEGERSCHAFT:
 			return all;
-		case SCHULAMT:
+		case SACHBEARBEITER_TS:
 			return all;
 		case STEUERAMT:
 			return all;

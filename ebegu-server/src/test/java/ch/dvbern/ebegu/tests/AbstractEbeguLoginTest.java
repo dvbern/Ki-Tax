@@ -107,7 +107,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.SCHULAMT, "schulamt", null, null, mandant);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.SACHBEARBEITER_TS, "schulamt", null, null, mandant);
 		return persistence.merge(schulamt);
 	}
 

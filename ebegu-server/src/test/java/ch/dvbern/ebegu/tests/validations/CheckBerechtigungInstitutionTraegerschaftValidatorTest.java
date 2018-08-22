@@ -85,7 +85,7 @@ public class CheckBerechtigungInstitutionTraegerschaftValidatorTest {
 
 	@Test
 	public void testCheckBenutzerRoleSchulamtNoInstitutionTraegerschaft() {
-		Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SCHULAMT, "anonymous", null, null, mandant);
+		Benutzer benutzer = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TS, "anonymous", null, null, mandant);
 		Assert.assertTrue(validator.isValid(benutzer.getCurrentBerechtigung(), null));
 	}
 

@@ -26,7 +26,7 @@ public interface UserRoleName {
 	String JURIST = "JURIST";
 	String REVISOR = "REVISOR";
 	String STEUERAMT = "STEUERAMT";
-	String SCHULAMT = "SCHULAMT";
+	String SACHBEARBEITER_TS = "SACHBEARBEITER_TS";
 	String ADMIN_TS = "ADMIN_TS";
 
 }

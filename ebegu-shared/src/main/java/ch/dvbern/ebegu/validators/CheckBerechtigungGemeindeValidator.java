@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.entities.Berechtigung;
  * - UserRole.ADMIN_BG
  * - UserRole.SACHBEARBEITER_BG
  * - UserRole.ADMIN_TS
- * - UserRole.SCHULAMT
+ * - UserRole.SACHBEARBEITER_TS
  * - JURIST
  * - REVISOR
  * - STEUERAMT

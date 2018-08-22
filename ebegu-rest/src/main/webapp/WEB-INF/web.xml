@@ -91,7 +91,7 @@
 		<role-name>ADMIN_TS</role-name>
 	</security-role>
 	<security-role>
-		<role-name>SCHULAMT</role-name>
+		<role-name>SACHBEARBEITER_TS</role-name>
 	</security-role>
 
 	<filter>

@@ -35,7 +35,7 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
         [TSRole.REVISOR]: 'faelle.list',
         [TSRole.STEUERAMT]: 'pendenzenSteueramt.list-view',
         [TSRole.ADMIN_TS]: 'pendenzen.list-view',
-        [TSRole.SCHULAMT]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_TS]: 'pendenzen.list-view',
         [TSRole.ANONYMOUS]: 'onboarding.start',
     };
 

@@ -198,7 +198,7 @@ export default class TSUser {
             case TSRole.ADMIN_BG:
             case TSRole.SUPER_ADMIN:
                 return TSAmt.JUGENDAMT;
-            case TSRole.SCHULAMT:
+            case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS:
                 return TSAmt.SCHULAMT;
             default:

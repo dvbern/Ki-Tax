@@ -75,7 +75,7 @@ import static ch.dvbern.ebegu.enums.UserRole.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRole.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 
@@ -86,7 +86,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 @SuppressFBWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
 public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
-	private static final UserRole[] JA_OR_ADM_OR_SCH = { ADMIN_BG, SACHBEARBEITER_BG, SCHULAMT, ADMIN_TS };
+	private static final UserRole[] JA_OR_ADM_OR_SCH = { ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS };
 	private static final UserRole[] OTHER_AMT_ROLES = { REVISOR, JURIST, STEUERAMT };
 
 	@Inject
@@ -209,7 +209,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG,
-			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SCHULAMT, STEUERAMT, JURIST, REVISOR };
+			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -259,7 +259,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG,
-			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SCHULAMT, STEUERAMT, JURIST, REVISOR };
+			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -327,9 +327,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		boolean allowedJAORGS = isWriteAuthorized(gesuch, principalBean.getPrincipal().getName());
 
-		//Wir pruefen schulamt separat (schulamt darf schulamt-only Gesuche vom Status FREIGABEQUITTUNG zum Status SCHULAMT schieben)
+		//Wir pruefen schulamt separat (schulamt darf schulamt-only Gesuche vom Status FREIGABEQUITTUNG zum Status SACHBEARBEITER_TS schieben)
 		boolean allowedSchulamt = false;
-		if (!allowedJAORGS && principalBean.isCallerInAnyOfRole(SCHULAMT, ADMIN_TS)
+		if (!allowedJAORGS && principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)
 			&& AntragStatus.FREIGABEQUITTUNG == gesuch.getStatus()) {
 			allowedSchulamt = true;
 		}
@@ -446,7 +446,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkReadAuthorization(@Nullable ErwerbspensumContainer ewpCnt) {
 		if (ewpCnt != null) {
 			//Wenn wir hier 100% korrekt sein wollen muessten wir auch noch das Gesuch laden und den status pruefen.
-			UserRole[] allowedRoles = { SACHBEARBEITER_BG, SUPER_ADMIN, ADMIN_BG, REVISOR, JURIST, ADMIN_TS, SCHULAMT };
+			UserRole[] allowedRoles = { SACHBEARBEITER_BG, SUPER_ADMIN, ADMIN_BG, REVISOR, JURIST, ADMIN_TS, SACHBEARBEITER_TS };
 			boolean allowed = isInRoleOrGSOwner(allowedRoles, () -> extractGesuch(ewpCnt), principalBean.getPrincipal().getName());
 			if (!allowed) {
 				throwViolation(ewpCnt);
@@ -493,7 +493,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	private boolean isReadAuthorizedFreigabe(Gesuch gesuch) {
 		if (AntragStatus.FREIGABEQUITTUNG == gesuch.getStatus()) {
 			validateGemeindeMatches(gesuch.getDossier());
-			if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMIN_TS)) {
+			if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 				//schulamt darf nur solche lesen die nur_schulamt sind
 				return gesuch.hasBetreuungOfSchulamt();
 			}
@@ -549,7 +549,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			Institution instToMatch = betreuung.getInstitutionStammdaten().getInstitution();
 			return institutions.stream().anyMatch(instToMatch::equals);
 		}
-		if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMIN_TS)) {
+		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
 				&& betreuung.getBetreuungsangebotTyp() != null
 				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
@@ -616,7 +616,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isAllowedSchulamt(Gesuch gesuch) {
-		if (principalBean.isCallerInAnyOfRole(SCHULAMT, ADMIN_TS)) {
+		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return gesuch.getStatus().isReadableBySchulamtSachbearbeiter()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
@@ -756,7 +756,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				break;
 			case SACHBEARBEITER_BG:
 			case ADMIN_BG:
-			case SCHULAMT:
+			case SACHBEARBEITER_TS:
 			case ADMIN_TS:
 				if (!isSenderTyp(mitteilung, MitteilungTeilnehmerTyp.JUGENDAMT)) {
 					throwViolation(mitteilung);
@@ -805,7 +805,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			}
 			case SACHBEARBEITER_BG:
 			case ADMIN_TS:
-			case SCHULAMT:
+			case SACHBEARBEITER_TS:
 			case REVISOR: {
 				if (!isSenderTypOrEmpfaengerTyp(mitteilung, MitteilungTeilnehmerTyp.JUGENDAMT)) {
 					throwViolation(mitteilung);
