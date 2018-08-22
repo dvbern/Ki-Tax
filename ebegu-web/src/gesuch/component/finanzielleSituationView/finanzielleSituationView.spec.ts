@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {async} from '@angular/core/testing';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFamiliensituation from '../../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
@@ -47,12 +49,13 @@ describe('finanzielleSituationView', () => {
         scope = $rootScope.$new();
     }));
 
-    beforeEach(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
-        gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
-        gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
-        gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
-    });
+    beforeEach(async(() => {
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
+            gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+            gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
+        });
+    }));
 
     it('should be defined', () => {
         spyOn(berechnungsManager, 'calculateFinanzielleSituation').and.returnValue({});

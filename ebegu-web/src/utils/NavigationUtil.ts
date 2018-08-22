@@ -32,7 +32,7 @@ export class NavigationUtil {
 
         } else {
             state.go('gesuch.fallcreation', {
-                createNewFall: false, gesuchId: gesuchID
+                gesuchId: gesuchID
             });
         }
     }

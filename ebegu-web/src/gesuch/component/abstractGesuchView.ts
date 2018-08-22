@@ -97,7 +97,7 @@ export default class AbstractGesuchViewController<T> {
     }
 
     public isGesuchInStatus(status: TSAntragStatus): boolean {
-        return status === this.gesuchModelManager.getGesuch().status;
+        return this.gesuchModelManager.getGesuch() && status === this.gesuchModelManager.getGesuch().status;
     }
 
     public isBetreuungInStatus(status: TSBetreuungsstatus): boolean {

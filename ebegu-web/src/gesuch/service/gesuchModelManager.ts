@@ -18,20 +18,17 @@ import * as moment from 'moment';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../app/core/errors/service/ErrorService';
-import AdresseRS from '../../app/core/service/adresseRS.rest';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
 import ErwerbspensumRS from '../../app/core/service/erwerbspensumRS.rest';
 import EwkRS from '../../app/core/service/ewkRS.rest';
 import {FachstelleRS} from '../../app/core/service/fachstelleRS.rest';
-import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
 import GesuchstellerRS from '../../app/core/service/gesuchstellerRS.rest';
 import {InstitutionStammdatenRS} from '../../app/core/service/institutionStammdatenRS.rest';
 import KindRS from '../../app/core/service/kindRS.rest';
 import VerfuegungRS from '../../app/core/service/verfuegungRS.rest';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {
-    getStartAntragStatusFromEingangsart,
     isAnyStatusOfVerfuegt,
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
@@ -43,6 +40,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSErrorLevel} from '../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../models/enums/TSErrorType';
@@ -52,7 +50,6 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import TSAdresse from '../../models/TSAdresse';
 import TSAdresseContainer from '../../models/TSAdresseContainer';
-import TSAntragStatusHistory from '../../models/TSAntragStatusHistory';
 import TSBetreuung from '../../models/TSBetreuung';
 import TSDossier from '../../models/TSDossier';
 import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
@@ -74,27 +71,23 @@ import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../models/TSKindContainer';
 import TSUser from '../../models/TSUser';
 import TSVerfuegung from '../../models/TSVerfuegung';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import DossierRS from './dossierRS.rest';
 import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
-import EinkommensverschlechterungInfoRS from './einkommensverschlechterungInfoRS.rest';
-import FallRS from './fallRS.rest';
-import FamiliensituationRS from './familiensituationRS.rest';
 import FinanzielleSituationRS from './finanzielleSituationRS.rest';
-import GemeindeRS from './gemeindeRS.rest';
+import {GesuchGenerator} from './gesuchGenerator';
 import GesuchRS from './gesuchRS.rest';
 import GlobalCacheService from './globalCacheService';
 import WizardStepManager from './wizardStepManager';
 
 export default class GesuchModelManager {
 
-    static $inject = ['FamiliensituationRS', 'FallRS', 'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
-        'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', 'GesuchsperiodeRS', 'EbeguRestUtil', '$log', 'AuthServiceRS',
-        'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'EinkommensverschlechterungInfoRS',
-        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', 'AdresseRS', '$q', 'CONSTANTS', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
-        'DossierRS', 'GemeindeRS'];
+    static $inject = ['GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
+        'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
+        'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
+        'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS', 'GlobalCacheService',
+        'DossierRS', 'GesuchGenerator'];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
     gesuchstellerNumber: number = 1;
@@ -109,9 +102,7 @@ export default class GesuchModelManager {
     ewkPersonGS1: TSEWKPerson;
     ewkPersonGS2: TSEWKPerson;
 
-    constructor(private readonly familiensituationRS: FamiliensituationRS,
-                private readonly fallRS: FallRS,
-                private readonly gesuchRS: GesuchRS,
+    constructor(private readonly gesuchRS: GesuchRS,
                 private readonly gesuchstellerRS: GesuchstellerRS,
                 private readonly finanzielleSituationRS: FinanzielleSituationRS,
                 private readonly kindRS: KindRS,
@@ -119,25 +110,20 @@ export default class GesuchModelManager {
                 private readonly erwerbspensumRS: ErwerbspensumRS,
                 private readonly instStamRS: InstitutionStammdatenRS,
                 private readonly betreuungRS: BetreuungRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly ebeguRestUtil: EbeguRestUtil,
                 private readonly log: ILogService,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
                 private readonly verfuegungRS: VerfuegungRS,
                 private readonly wizardStepManager: WizardStepManager,
-                private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
                 private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
                 private readonly ebeguUtil: EbeguUtil,
                 private readonly errorService: ErrorService,
-                private readonly adresseRS: AdresseRS,
                 private readonly $q: IQService,
-                private readonly CONSTANTS: any,
                 private readonly authLifeCycleService: AuthLifeCycleService,
                 private readonly ewkRS: EwkRS,
                 private readonly globalCacheService: GlobalCacheService,
                 private readonly dossierRS: DossierRS,
-                private readonly gemeindeRS: GemeindeRS) {
+                private readonly gesuchGenerator: GesuchGenerator) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(() => {
@@ -176,35 +162,6 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Mit den Daten vom Gesuch, werden die entsprechenden Steps der Liste hiddenSteps hinzugefuegt.
-     * Oder ggf. aus der Liste entfernt (nur public fuer test)
-     */
-    public setHiddenSteps(): void {
-        if (this.gesuch) {
-            //Freigabe
-            if (this.gesuch.isOnlineGesuch()) {
-                this.wizardStepManager.unhideStep(TSWizardStepName.FREIGABE);
-            } else {
-                this.wizardStepManager.hideStep(TSWizardStepName.FREIGABE);
-            }
-
-            //Abwesenheit
-            if (!this.gesuch.isMutation()) {
-                this.wizardStepManager.hideStep(TSWizardStepName.ABWESENHEIT);
-            } else {
-                this.wizardStepManager.unhideStep(TSWizardStepName.ABWESENHEIT);
-            }
-
-            //Umzug
-            if (!this.gesuch.isMutation() && !this.getGesuch().isThereAnyUmzug()) {
-                this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
-            } else {
-                this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
-            }
-        }
-    }
-
-    /**
      * In dieser Methode wird das Gesuch ersetzt. Das Gesuch ist jetzt private und darf nur ueber diese Methode geaendert werden.
      *
      * @param gesuch das Gesuch. Null und undefined werden erlaubt.
@@ -212,9 +169,9 @@ export default class GesuchModelManager {
     public setGesuch(gesuch: TSGesuch): void {
         this.gesuch = gesuch;
         this.neustesGesuch = undefined;
-        if (this.gesuch) {
+        if (this.gesuch && !this.getGesuch().isNew()) {
             this.wizardStepManager.findStepsFromGesuch(this.gesuch.id);
-            this.setHiddenSteps();
+            this.wizardStepManager.setHiddenSteps(this.gesuch);
             // EWK Service mit bereits existierenden Daten initialisieren
             this.ewkRS.gesuchsteller1 = this.gesuch.gesuchsteller1;
             this.ewkRS.gesuchsteller2 = this.gesuch.gesuchsteller2;
@@ -307,6 +264,59 @@ export default class GesuchModelManager {
     }
 
     /**
+     * Depending on the value of the parameter creationAction, it creates new Fall, Dossier, Gesuch, Mutation or Folgegesuch
+     */
+    public createNewAntrag(gesuchId: string,
+                           dossierId: string,
+                           eingangsart: TSEingangsart,
+                           gemeindeId: string,
+                           gesuchsperiodeId: string,
+                           creationAction: TSCreationAction): IPromise<TSGesuch> {
+
+        switch (creationAction) {
+            case TSCreationAction.CREATE_NEW_FALL:
+                return this.gesuchGenerator.initFall(eingangsart, gemeindeId)
+                    .then(gesuch => {
+                        this.setGesuch(gesuch);
+                        return gesuch;
+                    });
+
+            case TSCreationAction.CREATE_NEW_DOSSIER:
+                return this.gesuchGenerator.initDossierForCurrentFall(eingangsart, gemeindeId, this.getFall())
+                    .then(gesuch => {
+                        this.setGesuch(gesuch);
+                        return gesuch;
+                    });
+
+            case TSCreationAction.CREATE_NEW_GESUCH:
+                return this.gesuchGenerator.initGesuch(eingangsart, creationAction, gesuchsperiodeId, this.getFall(), this.getDossier())
+                    .then(gesuch => {
+                        this.setGesuch(gesuch);
+                        return gesuch;
+                    });
+
+            case TSCreationAction.CREATE_NEW_FOLGEGESUCH:
+                return this.gesuchGenerator.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId, this.getFall(), this.getDossier())
+                    .then(gesuch => {
+                        this.setGesuch(gesuch);
+                        return gesuch;
+                    });
+
+            case TSCreationAction.CREATE_NEW_MUTATION:
+                return this.gesuchGenerator.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId, this.getFall(), this.getDossier())
+                    .then(gesuch => {
+                        this.setGesuch(gesuch);
+                        return gesuch;
+                    });
+
+            default:
+                // for no action we return the current Gesuch and log an error
+                this.log.error('No action or an invalid action have been passed. This method must always been called with a valide action: ' + creationAction);
+                return Promise.resolve(this.getGesuch());
+        }
+    }
+
+    /**
      * Wenn das Gesuch schon gespeichert ist (timestampErstellt != null), wird dieses nur aktualisiert. Wenn es sich um ein neues Gesuch handelt
      * dann wird zuerst der Fall erstellt, dieser ins Gesuch kopiert und dann das Gesuch erstellt
      * @returns {IPromise<TSGesuch>}
@@ -319,29 +329,43 @@ export default class GesuchModelManager {
             // Gesuch noch nicht vorhanden
             if (this.gesuch.dossier && !this.gesuch.dossier.isNew()) {
                 // Dossier schon vorhaden -> Wir koennen davon ausgehen, dass auch der Fall vorhanden ist
-                return this.createGesuch(this.gesuch);
+                return this.createNewGesuchForCurrentDossier();
             } else {
                 if (this.gesuch.dossier.fall && !this.gesuch.dossier.fall.isNew()) {
                     // Fall ist schon vorhanden
-                    return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
-                        this.gesuch.dossier = angular.copy(dossierResponse);
-                        return this.createGesuch(this.gesuch);
-                    });
+                    return this.createNewDossierForCurrentFall();
                 } else {
-                    return this.fallRS.createFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
-                        this.gesuch.dossier.fall = angular.copy(fallResponse);
-                        return this.dossierRS.createDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
-                            this.gesuch.dossier = angular.copy(dossierResponse);
-                            return this.createGesuch(this.gesuch);
-                        });
-                    });
+                    return this.createNewFall();
                 }
             }
         }
     }
 
-    private createGesuch(gesuch: TSGesuch): IPromise<TSGesuch> {
-        return this.gesuchRS.createGesuch(gesuch).then((gesuchResponse: any) => {
+    /**
+     * Creates and saves the fall contained in the gesuch object of the class
+     */
+    private createNewFall() {
+        return this.gesuchGenerator.createNewFall(this.gesuch.dossier.fall).then((fallResponse: TSFall) => {
+            this.gesuch.dossier.fall = angular.copy(fallResponse);
+            return this.createNewDossierForCurrentFall();
+        });
+    }
+
+    /**
+     * Creates and saves the dossier contained in the gesuch object of the class. The Fall must exist in the DB
+     */
+    private createNewDossierForCurrentFall() {
+        return this.gesuchGenerator.createNewDossier(this.gesuch.dossier).then((dossierResponse: TSDossier) => {
+            this.gesuch.dossier = angular.copy(dossierResponse);
+            return this.createNewGesuchForCurrentDossier();
+        });
+    }
+
+    /**
+     * Creates and saves the gesuch contained in the gesuch object of the class. Dossier and Fall must exist in the DB
+     */
+    private createNewGesuchForCurrentDossier() {
+        return this.gesuchGenerator.createNewGesuch(this.gesuch).then((gesuchResponse: TSGesuch) => {
             this.gesuch = gesuchResponse;
             return this.gesuch;
         });
@@ -382,7 +406,6 @@ export default class GesuchModelManager {
      */
     public updateGesuchsteller(umzug: boolean): IPromise<TSGesuchstellerContainer> {
         // Da showUmzug nicht im Server gespeichert wird, muessen wir den alten Wert kopieren und nach der Aktualisierung wiedersetzen
-        const tempShowUmzug: boolean = this.getStammdatenToWorkWith().showUmzug;
         return this.gesuchstellerRS.saveGesuchsteller(this.getStammdatenToWorkWith(), this.gesuch.id, this.gesuchstellerNumber, umzug)
             .then((gesuchstellerResponse: any) => {
                 this.setStammdatenToWorkWith(gesuchstellerResponse);
@@ -552,120 +575,26 @@ export default class GesuchModelManager {
         }
     }
 
-    /**
-     * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht erstellt wurde i.e. es null/undefined ist
-     * Wenn force werden Gesuch und Fall immer erstellt.
-     */
-    public initGesuch(eingangsart: TSEingangsart, createNewFall: boolean, createNewDossier: boolean,
-                      gesuchsperiodeId: string): IPromise<TSAntragStatusHistory> {
-        this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, createNewFall, createNewDossier);
-        this.setDefaultValuesToGesuch(eingangsart);
-
-        // todo kibon-87 refactor
-        if (gesuchsperiodeId) {
-            return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
-                this.gesuch.gesuchsperiode = periode;
-                return this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
+    public initGesuch(eingangsart: TSEingangsart,
+                      creationAction: TSCreationAction,
+                      gesuchsperiodeId: string): IPromise<TSGesuch> {
+        return this.gesuchGenerator.initGesuch(eingangsart, creationAction, gesuchsperiodeId, this.getFall(), this.getDossier())
+            .then(gesuch => {
+                this.gesuch = gesuch;
+                this.resetEWKParameters();
+                return this.gesuch;
             });
-        } else {
-            return this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
-        }
-    }
-
-    /**
-     * Erstellt ein neues Gesuch mit der angegebenen Eingangsart und Gesuchsperiode. Damit dies im resolve des
-     * routing gemacht werden kann, wird das ganze als promise gehandhabt
-     * @return a void promise that is resolved once all subpromises are done
-     */
-    public createNewFall(eingangsart: TSEingangsart, gemeindeId: string): IPromise<TSGesuch> {
-        return this.createNewDossier(eingangsart, gemeindeId, true);
-    }
-
-    /**
-     * Creates a new Dossier for the current Fall. Also a new Gesuch will be created.
-     */
-    public createNewDossierForCurrentFall(eingangsart: TSEingangsart, gemeindeId: string): IPromise<TSGesuch> {
-        return this.createNewDossier(eingangsart, gemeindeId, false);
-    }
-
-    /**
-     * Creates a complete new Dossier. Depending on the value of createNewFall the new dossier will be added to the existing Fall
-     * or a complete new Fall will be created instead.
-     */
-    private createNewDossier(eingangsart: TSEingangsart, gemeindeId: string, createNewFall: boolean): IPromise<TSGesuch> {
-        this.initGesuch(eingangsart, createNewFall, true, undefined);
-
-        return this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
-            this.gesuch.dossier.gemeinde = foundGemeinde;
-            this.log.debug('initialized new gesuch ', this.gesuch);
-            return this.gesuch;
-        });
-
     }
 
     /**
      * these values must be set here because we need to show them to the user and the data haven't been saved in the server yet
      */
-    private setDefaultValuesToGesuch(eingangsart: TSEingangsart) {
-        this.gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
+    private resetEWKParameters() {
         //ewk zuruecksetzen
         if (this.ewkRS) {
             this.ewkRS.gesuchsteller1 = undefined;
             this.ewkRS.gesuchsteller2 = undefined;
         }
-    }
-
-    /**
-     * Diese Methode erstellt eine Fake-Mutation als gesuch fuer das GesuchModelManager. Die Mutation ist noch leer und hat
-     * das ID des Gesuchs aus dem sie erstellt wurde. Wenn der Benutzer auf speichern klickt, wird der Service "antragMutieren"
-     * mit dem ID des alten Gesuchs aufgerufen. Das Objekt das man zurueckbekommt, wird dann diese Fake-Mutation mit den richtigen
-     * Daten ueberschreiben
-     */
-    public initMutation(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string): void {
-        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.MUTATION);
-    }
-
-    /**
-     * Diese Methode erstellt ein Fake-Erneuerungsgesuch als gesuch fuer das GesuchModelManager. Das Gesuch ist noch leer und hat
-     * das ID des Gesuchs aus dem es erstellt wurde.
-     */
-    public initErneuerungsgesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string) {
-        this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId, TSAntragTyp.ERNEUERUNGSGESUCH);
-    }
-
-    private initCopyOfGesuch(gesuchID: string, eingangsart: TSEingangsart, gesuchsperiodeId: string, dossierId: string,
-                             antragTyp: TSAntragTyp): void {
-
-        this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
-            this.gesuch.gesuchsperiode = periode;
-        });
-
-        this.initAntrag(antragTyp, eingangsart, false, false);
-
-        this.dossierRS.findDossier(dossierId).then(foundDossier => {
-            this.gesuch.dossier = foundDossier;
-        });
-
-        this.gesuch.id = gesuchID; //setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
-
-        this.gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
-
-        this.gesuch.emptyCopy = true;
-    }
-
-    private initAntrag(antragTyp: TSAntragTyp, eingangsart: TSEingangsart, createNewFall: boolean,
-                       createNewDossier: boolean): void {
-        const currentFall: TSFall = this.getFall();
-        const currentDossier: TSDossier = this.getDossier();
-
-        this.gesuch = new TSGesuch();
-        this.gesuch.dossier = createNewDossier ? new TSDossier() : currentDossier;
-        this.gesuch.dossier.fall = createNewFall ? new TSFall() : currentFall;
-        this.gesuch.typ = antragTyp; // by default ist es ein Erstgesuch
-        this.gesuch.eingangsart = eingangsart;
-        this.setHiddenSteps();
-        this.wizardStepManager.initWizardSteps();
-        this.setCurrentUserAsFallVerantwortlicher(false);
     }
 
     public initFamiliensituation() {
@@ -822,14 +751,14 @@ export default class GesuchModelManager {
             this.getKindToWorkWith().betreuungen.push(storedBetreuung);  //neues kind anfuegen
             this.setBetreuungIndex(this.getKindToWorkWith().betreuungen.length - 1);
         }
-        this.getDossierFromServer(); // to reload the verantwortliche that may have changed
+        this.getCurrentDossierFromServer(); // to reload the verantwortliche that may have changed
         return storedBetreuung;
     }
 
     public saveKind(kindToSave: TSKindContainer): IPromise<TSKindContainer> {
         return this.kindRS.saveKind(kindToSave, this.gesuch.id)
             .then((storedKindCont: TSKindContainer) => {
-                this.getDossierFromServer();
+                this.getCurrentDossierFromServer();
                 if (!kindToSave.isNew()) {   //gespeichertes kind war nicht neu
                     const i: number = EbeguUtil.getIndexOfElementwithID(kindToSave, this.gesuch.kindContainers);
                     if (i >= 0) {
@@ -853,10 +782,9 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Sucht das Gesuch im Server und aktualisiert es mit dem bekommenen Daten
-     * @returns {IPromise<void>}
+     * Loads the current Dossier from the DB.
      */
-    private getDossierFromServer(): IPromise<TSDossier> {
+    private getCurrentDossierFromServer(): IPromise<TSDossier> {
         return this.dossierRS.findDossier(this.gesuch.dossier.id).then((dossierResponse) => {
             this.gesuch.dossier = dossierResponse;
             return this.gesuch.dossier;
@@ -864,9 +792,10 @@ export default class GesuchModelManager {
     }
 
     public getKindToWorkWith(): TSKindContainer {
-        if (this.gesuch && this.gesuch.kindContainers && this.gesuch.kindContainers.length > this.kindIndex) {
-            return this.gesuch.kindContainers[this.kindIndex];
-        } else {
+        if (this.gesuch) {
+            if (this.gesuch.kindContainers && this.gesuch.kindContainers.length > this.kindIndex) {
+                return this.gesuch.kindContainers[this.kindIndex];
+            }
             this.log.error('kindContainers is not set or kindIndex is out of bounds ' + this.kindIndex);
         }
         return undefined;
@@ -878,9 +807,10 @@ export default class GesuchModelManager {
      * @returns {TSBetreuung}
      */
     public getBetreuungToWorkWith(): TSBetreuung {
-        if (this.getKindToWorkWith() && this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
-            return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
-        } else {
+        if (this.getKindToWorkWith()) {
+            if (this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
+                return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
+            }
             this.log.error('kindToWorkWith is not set or index of betreuung is out of bounds ' + this.betreuungIndex);
         }
         return undefined;
@@ -929,10 +859,6 @@ export default class GesuchModelManager {
 
     public getKindIndex(): number {
         return this.kindIndex;
-    }
-
-    public getBetreuungIndex(): number {
-        return this.betreuungIndex;
     }
 
     public getGesuchstellerNumber(): number {
@@ -1076,43 +1002,26 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Takes current user and sets him as the verantwortlicherBG of Fall. Depending on the role it sets him as
-     * verantwortlicherBG or verantworlicherSCH
-     *
-     * @param {boolean} saveInDB when true it saves the verantwortliche in the database. If falls it only sets it in the client object
+     * Sets the current user as VerantwortlicherTS and saves it in the DB
      */
-    private setCurrentUserAsFallVerantwortlicher(saveInDB: boolean) {
-        if (this.authServiceRS && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole())) {
-            this.setUserAsFallVerantwortlicherBG(this.authServiceRS.getPrincipal(), saveInDB);
-        }
-        if (this.authServiceRS && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
-            this.setUserAsFallVerantwortlicherTS(this.authServiceRS.getPrincipal(), saveInDB);
+    public setUserAsFallVerantwortlicherTS(user: TSUser) {
+        if (this.gesuch && this.gesuch.dossier) {
+            this.dossierRS.setVerantwortlicherTS(this.gesuch.dossier.id, user ? user.username : null)
+                .then(() => {
+                    this.gesuch.dossier.verantwortlicherTS = user;
+                });
         }
     }
 
-    public setUserAsFallVerantwortlicherTS(user: TSUser, saveInDB: boolean = true) {
+    /**
+     * Sets the current user as VerantwortlicherBG and saves it in the DB
+     */
+    public setUserAsFallVerantwortlicherBG(user: TSUser) {
         if (this.gesuch && this.gesuch.dossier) {
-            if (saveInDB) {
-                this.dossierRS.setVerantwortlicherTS(this.gesuch.dossier.id, user ? user.username : null)
-                    .then(() => {
-                        this.gesuch.dossier.verantwortlicherTS = user;
-                    });
-            } else {
-                this.gesuch.dossier.verantwortlicherTS = user;
-            }
-        }
-    }
-
-    public setUserAsFallVerantwortlicherBG(user: TSUser, saveInDB: boolean = true) {
-        if (this.gesuch && this.gesuch.dossier) {
-            if (saveInDB) {
-                this.dossierRS.setVerantwortlicherBG(this.gesuch.dossier.id, user ? user.username : null)
-                    .then(() => {
-                        this.gesuch.dossier.verantwortlicherBG = user;
-                    });
-            } else {
-                this.gesuch.dossier.verantwortlicherBG = user;
-            }
+            this.dossierRS.setVerantwortlicherBG(this.gesuch.dossier.id, user ? user.username : null)
+                .then(() => {
+                    this.gesuch.dossier.verantwortlicherBG = user;
+                });
         }
     }
 
@@ -1396,7 +1305,10 @@ export default class GesuchModelManager {
      * @returns {boolean}
      */
     public isKorrekturModusJugendamt(): boolean {
-        return isAtLeastFreigegeben(this.gesuch.status) && !isAnyStatusOfVerfuegt(this.gesuch.status) && (TSEingangsart.ONLINE === this.getGesuch().eingangsart);
+        return this.getGesuch()
+            && isAtLeastFreigegeben(this.gesuch.status)
+            && !isAnyStatusOfVerfuegt(this.gesuch.status)
+            && (TSEingangsart.ONLINE === this.getGesuch().eingangsart);
     }
 
     /**
@@ -1515,6 +1427,9 @@ export default class GesuchModelManager {
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
     public isFinanzielleSituationDesired(): boolean {
+        if (!this.getGesuch() || !this.getGesuchsperiode()) {
+            return false;
+        }
         return !this.getGesuchsperiode().hasTagesschulenAnmeldung()
             || !this.areThereOnlySchulamtAngebote()
             || (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht === true
