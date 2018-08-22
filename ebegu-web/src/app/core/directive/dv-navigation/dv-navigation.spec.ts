@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import TSDossier from '../../../../models/TSDossier';
@@ -28,7 +28,6 @@ import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import {EbeguWebCore} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
-import {StateService} from '@uirouter/core';
 
 describe('dvNavigation', () => {
 

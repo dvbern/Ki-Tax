@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
@@ -26,7 +26,6 @@ import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import TSAdresse from '../../models/TSAdresse';
 import TSAdresseContainer from '../../models/TSAdresseContainer';
 import TSGesuch from '../../models/TSGesuch';
-import TSGesuchsteller from '../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import TSWizardStep from '../../models/TSWizardStep';
 import {TSDateRange} from '../../models/types/TSDateRange';

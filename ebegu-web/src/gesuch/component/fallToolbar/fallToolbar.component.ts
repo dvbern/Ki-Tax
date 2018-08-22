@@ -168,13 +168,12 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      * Creates a new Dossier based on the selectedDossier (which must always be defined at this point) but with
      * the gemeinde given as param.
      */
-    private createDossier(chosenGemeindeId: string): IPromise<any> {
+    private createDossier(chosenGemeindeId: string): IPromise<TSDossier> {
         const newDossier = new TSDossier();
         newDossier.fall = this.selectedDossier.fall;
         newDossier.gemeinde = this.availableGemeindeList.find(gemeinde => gemeinde.id === chosenGemeindeId);
         return this.dossierRS.createDossier(newDossier).then(() => {
             this.selectedDossier = newDossier;
-            this.currentDossier = newDossier;
             return this.selectedDossier;
         });
     }

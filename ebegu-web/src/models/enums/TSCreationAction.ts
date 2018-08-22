@@ -26,6 +26,7 @@ export enum TSCreationAction {
     CREATE_NEW_GESUCH = 'CREATE_NEW_GESUCH',
     CREATE_NEW_MUTATION = 'CREATE_NEW_MUTATION',
     CREATE_NEW_FOLGEGESUCH = 'CREATE_NEW_FOLGEGESUCH',
+    // Wenn leer: Bestehendes Gesuch oeffnen!
 }
 
 export function isNewDossierNeeded(creationAction: TSCreationAction): boolean {

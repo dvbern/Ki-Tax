@@ -792,8 +792,11 @@ export default class GesuchModelManager {
     }
 
     public getKindToWorkWith(): TSKindContainer {
-        if (this.gesuch && this.gesuch.kindContainers && this.gesuch.kindContainers.length > this.kindIndex) {
-            return this.gesuch.kindContainers[this.kindIndex];
+        if (this.gesuch) {
+            if (this.gesuch.kindContainers && this.gesuch.kindContainers.length > this.kindIndex) {
+                return this.gesuch.kindContainers[this.kindIndex];
+            }
+            this.log.error('kindContainers is not set or kindIndex is out of bounds ' + this.kindIndex);
         }
         return undefined;
     }
@@ -804,8 +807,11 @@ export default class GesuchModelManager {
      * @returns {TSBetreuung}
      */
     public getBetreuungToWorkWith(): TSBetreuung {
-        if (this.getKindToWorkWith() && this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
-            return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
+        if (this.getKindToWorkWith()) {
+            if (this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
+                return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
+            }
+            this.log.error('kindToWorkWith is not set or index of betreuung is out of bounds ' + this.betreuungIndex);
         }
         return undefined;
     }

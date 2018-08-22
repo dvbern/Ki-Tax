@@ -387,9 +387,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch(() => {
+            .catch((ex) => {
                 win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.');
+                this.$log.error('An error occurred downloading the document, closing download window.', ex);
             });
     }
 
@@ -400,9 +400,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken for export: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch(() => {
+            .catch((ex) => {
                 win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.');
+                this.$log.error('An error occurred downloading the document, closing download window.', ex);
             });
     }
 
