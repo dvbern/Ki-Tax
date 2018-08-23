@@ -857,7 +857,6 @@ public final class TestDataUtil {
 	 */
 	public static Gesuch createAndPersistWaeltiDagmarGesuch(@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
-		prepareParameters(gesuchsperiode, persistence);
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -901,7 +900,6 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
 		gesuchsperiode) {
-		prepareParameters(gesuchsperiode, persistence);
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
@@ -912,18 +910,13 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
-		AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
-		prepareParameters(gesuchsperiode, persistence);
+		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
-	}
-
-	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum, AntragStatus status) {
-		return createAndPersistBeckerNoraGesuch(instService, persistence, eingangsdatum, status, TestDataUtil.createGesuchsperiode1718());
 	}
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {

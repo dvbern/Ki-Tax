@@ -76,6 +76,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Before
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
 	@Test
@@ -288,8 +289,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchPendenzenJA() {
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null,
-			gesuchsperiode);
+		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
+			null, gesuchsperiode);
 		TestDataUtil.gesuchVerfuegen(gesuch, gesuchService);
 
 		loginAsSachbearbeiterJA();

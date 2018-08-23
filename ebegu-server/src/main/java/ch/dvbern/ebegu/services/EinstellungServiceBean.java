@@ -135,7 +135,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		@Nonnull final EntityManager em) {
 		// Wir suchen drei-stufig:
 		// (1) Nach Gemeinde
-		Optional<Einstellung> einstellungByGemeinde = findEinstellungByMandantGemeindeOrSystem(key, null, gemeinde, gesuchsperiode, em);
+		Optional<Einstellung> einstellungByGemeinde = findEinstellungByMandantGemeindeOrSystem(key, gemeinde.getMandant(), gemeinde, gesuchsperiode, em);
 		if (einstellungByGemeinde.isPresent()) {
 			return einstellungByGemeinde.get();
 		}

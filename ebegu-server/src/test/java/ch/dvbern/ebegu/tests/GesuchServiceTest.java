@@ -405,7 +405,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch schulamtGesuch = persistNewNurSchulamtGesuchEntity(AntragStatus.IN_BEARBEITUNG_GS);
 
-		Assert.assertEquals(2, schulamtGesuch.getKindContainers().size());
+		Assert.assertEquals(1, schulamtGesuch.getKindContainers().size());
 		Assert.assertTrue(schulamtGesuch.hasOnlyBetreuungenOfSchulamt());
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(schulamtGesuch, AntragStatus.FREIGABEQUITTUNG);
 
@@ -796,13 +796,14 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void deleteGesuchWithMutationAndCopiedAnmeldungen() {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		config.setGesuchsperiode(gesuchsperiode);
+		testdataCreationService.insertParametersForTestfaelle(config);
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
 
-		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(), LocalDateTime.now()), erstgesuch);
+		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(),
+			LocalDateTime.now()), erstgesuch);
 		testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), mutation);
 
 		fallService.removeFall(erstgesuch.getFall(), GesuchDeletionCause.USER);
