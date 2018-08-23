@@ -16,7 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -30,9 +30,6 @@ import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
-let template = require('./posteingangView.html');
-require('./posteingangView.less');
-
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
     template = require('./posteingangView.html');
@@ -41,6 +38,9 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 }
 
 export class PosteingangViewController {
+
+    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS',
+        '$log', 'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -56,9 +56,6 @@ export class PosteingangViewController {
     selectedMitteilungsstatus: TSMitteilungStatus;
     includeClosed: boolean = false;
     gemeindenList: Array<TSGemeinde> = [];
-
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS',
-        '$log', 'AuthLifeCycleService'];
 
     constructor(private readonly mitteilungRS: MitteilungRS,
                 private readonly ebeguUtil: EbeguUtil,

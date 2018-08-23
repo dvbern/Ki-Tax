@@ -16,8 +16,7 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {of} from 'rxjs/internal/observable/of';
-import {Observable} from 'rxjs/Observable';
+import {Observable, of} from 'rxjs';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -199,7 +198,7 @@ describe('gesuchGenerator', () => {
     function initValues(): void {
         gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = GP_ID;
-        user = new TSUser()
+        user = new TSUser();
         fall = new TSFall();
         dossier = new TSDossier();
         dossier.id = DOSSIER_ID;
