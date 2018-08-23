@@ -154,8 +154,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(fachstelleCalcRule);
 
 		// - Kind wohnt im gleichen Haushalt: Muss zwingend nach Fachstelle durchgefuehrt werden
-		WohnhaftImGleichenHaushaltCalcRule wohnhaftImGleichenHaushaltRule = new WohnhaftImGleichenHaushaltCalcRule(defaultGueltigkeit);
-		rules.add(wohnhaftImGleichenHaushaltRule);
+		// deaktiviert
 
 	}
 
