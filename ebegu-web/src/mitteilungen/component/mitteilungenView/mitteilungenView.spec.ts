@@ -103,9 +103,9 @@ describe('mitteilungenView', () => {
         });
         it('should create an empty TSMItteilung for JA', () => {
             const sachbearbeiter_ja: TSUser = new TSUser();
-            sachbearbeiter_ja.currentBerechtigung.role = TSRole.SACHBEARBEITER_JA;
+            sachbearbeiter_ja.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
-                return roles.indexOf(TSRole.SACHBEARBEITER_JA) >= 0;
+                return roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0;
             });
 
             createMitteilungForUser(sachbearbeiter_ja);

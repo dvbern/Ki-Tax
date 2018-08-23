@@ -141,6 +141,7 @@ public final class RestUtil {
 	}
 
 	private static boolean isVisibleForInstOrTraegerschaft(JaxBetreuung betreuung) {
+		// Admin wird nicht extra abgefragt. Wenn SACHBEARBEITER okay, ist ADMIN auch berechtigt
 		return Betreuungsstatus.allowedRoles(UserRole.SACHBEARBEITER_INSTITUTION).contains(betreuung.getBetreuungsstatus()) ||
 			Betreuungsstatus.allowedRoles(UserRole.SACHBEARBEITER_TRAEGERSCHAFT).contains(betreuung.getBetreuungsstatus());
 	}

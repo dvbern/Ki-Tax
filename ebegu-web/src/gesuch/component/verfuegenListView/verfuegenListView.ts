@@ -281,7 +281,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     // For this reason we have to navigate directly out of the gesuch once it has been saved. We navigate to the
                     // default start page for the current role.
                     // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes for the role JA and is only
-                    // available for the role SCHULAMT/ADMINISTRATOR_SCHULAMT, so JA doesn't need the PDFs to be created. When a Schulamt worker opens this
+                    // available for the role SACHBEARBEITER_TS/ADMIN_TS, so JA doesn't need the PDFs to be created. When a Schulamt worker opens this
                     // Gesuch, she can generate the PDFs by clicking on the corresponding links
                     navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
                     return this.gesuchModelManager.getGesuch();

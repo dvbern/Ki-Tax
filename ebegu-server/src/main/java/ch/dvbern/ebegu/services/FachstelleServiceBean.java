@@ -33,7 +33,8 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -51,7 +52,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 
 	@Nonnull
 	@Override
-	@RolesAllowed(value = { ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Fachstelle saveFachstelle(@Nonnull Fachstelle fachstelle) {
 		Objects.requireNonNull(fachstelle);
 		return persistence.merge(fachstelle);
@@ -59,9 +60,9 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 
 	@Nonnull
 	@Override
-	public Optional<Fachstelle> findFachstelle(@Nonnull String key) {
-		Objects.requireNonNull(key, "id muss gesetzt sein");
-		Fachstelle a = persistence.find(Fachstelle.class, key);
+	public Optional<Fachstelle> findFachstelle(@Nonnull String fachstelleId) {
+		Objects.requireNonNull(fachstelleId, "fachstelleId muss gesetzt sein");
+		Fachstelle a = persistence.find(Fachstelle.class, fachstelleId);
 		return Optional.ofNullable(a);
 	}
 
@@ -72,12 +73,11 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 	}
 
 	@Override
-	@RolesAllowed(value = { ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeFachstelle(@Nonnull String fachstelleId) {
 		Objects.requireNonNull(fachstelleId);
-		Optional<Fachstelle> fachstelleToRemove = findFachstelle(fachstelleId);
-		fachstelleToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeFachstelle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fachstelleId));
-		persistence.remove(fachstelleToRemove.get());
+		Fachstelle fachstelleToRemove = findFachstelle(fachstelleId).orElseThrow(() -> new EbeguEntityNotFoundException("removeFachstelle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fachstelleId));
+		persistence.remove(fachstelleToRemove);
 	}
 
 }

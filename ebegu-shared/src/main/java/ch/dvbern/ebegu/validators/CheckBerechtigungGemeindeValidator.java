@@ -25,10 +25,12 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 
 /**
  * Prueft, dass bei allen Gemeinde-abhaengigen Rollen mindestens eine Gemeinde gesetzt ist:
- * - UserRole.ADMIN
- * - UserRole.SACHBEARBEITER_JA
- * - UserRole.ADMINISTRATOR_SCHULAMT
- * - UserRole.SCHULAMT
+ * - UserRole.ADMIN_BG
+ * - UserRole.SACHBEARBEITER_BG
+ * - UserRole.ADMIN_TS
+ * - UserRole.SACHBEARBEITER_TS
+ * - ADMIN_GEMEINDE
+ * - SACHBEARBEITER_GEMEINDE
  * - JURIST
  * - REVISOR
  * - STEUERAMT
