@@ -284,6 +284,8 @@ export class DVMitteilungListController implements IOnInit {
             case TSRole.JURIST:
             case TSRole.REVISOR:
             case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS: {
                 return TSMitteilungTeilnehmerTyp.JUGENDAMT;

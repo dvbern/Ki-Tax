@@ -120,7 +120,7 @@ export default class TSUser {
 
     get amt(): TSAmt {
         if (!this._amt) {
-            this._amt = this.analyseAmt();
+            this._amt = this._currentBerechtigung.analyseAmt();
         }
         return this._amt;
     }
@@ -184,26 +184,6 @@ export default class TSUser {
 
     getRoleKey(): string {
         return rolePrefix() + this.currentBerechtigung.role;
-    }
-
-    /**
-     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie zu speichern
-     * waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server gesetzt und zum Client geschickt.
-     * Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
-     * ACHTUNG Diese Logik existiert auch im Server UserRole. Aenderungen muessen in beiden Orten gemacht werden.
-     */
-    private analyseAmt(): TSAmt {
-        switch (this.currentBerechtigung.role) {
-            case TSRole.SACHBEARBEITER_BG:
-            case TSRole.ADMIN_BG:
-            case TSRole.SUPER_ADMIN:
-                return TSAmt.JUGENDAMT;
-            case TSRole.SACHBEARBEITER_TS:
-            case TSRole.ADMIN_TS:
-                return TSAmt.SCHULAMT;
-            default:
-                return TSAmt.NONE;
-        }
     }
 
     public getCurrentRole() {

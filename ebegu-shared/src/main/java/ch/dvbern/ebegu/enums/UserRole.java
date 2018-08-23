@@ -26,13 +26,20 @@ public enum UserRole {
 	ADMIN_BG(true),
 	SACHBEARBEITER_BG(true),
 	SACHBEARBEITER_TRAEGERSCHAFT(false),
+	ADMIN_TRAEGERSCHAFT(false),
+	ADMIN_INSTITUTION(false),
 	SACHBEARBEITER_INSTITUTION(false),
 	JURIST(true),
 	REVISOR(true),
 	STEUERAMT(true),
 	ADMIN_TS(true),
+	ADMIN_GEMEINDE(true),
 	SACHBEARBEITER_TS(true),
+	SACHBEARBEITER_GEMEINDE(true),
+	ADMIN_MANDANT(false),
+	SACHBEARBEITER_MANDANT(false),
 	GESUCHSTELLER(false);
+
 
 	private boolean isGemeindeabhaengig;
 
@@ -41,16 +48,15 @@ public enum UserRole {
 	}
 
 	public boolean isRoleSchulamt() {
-		return ADMIN_TS == this || SACHBEARBEITER_TS == this;
+		return ADMIN_TS == this || SACHBEARBEITER_TS == this || isRoleGemeinde();
 	}
 
 	public boolean isRoleJugendamt() {
-		return ADMIN_BG == this || SACHBEARBEITER_BG == this;
+		return ADMIN_BG == this || SACHBEARBEITER_BG == this || isRoleGemeinde();
 	}
 
 	public boolean isRoleGemeinde() {
-		//TODO (KIBON-6) Rolle Gemeinde gibts noch nicht. Aber der Superadmin wird wohl sowas wie GEMEINDE haben
-		return isSuperadmin();
+		return  ADMIN_GEMEINDE == this || SACHBEARBEITER_GEMEINDE == this;
 	}
 
 	public boolean isSuperadmin() {
@@ -58,23 +64,27 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getAdminSuperAdminRoles() {
-		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS);
+		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE);
 	}
 
 	public static List<UserRole> getSchulamtRoles() {
-		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS);
+		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
 	}
 
 	public static List<UserRole> getJugendamtRoles() {
-		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
 	}
 
 	public static List<UserRole> getJugendamtSuperadminRoles() {
-		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, SUPER_ADMIN);
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SUPER_ADMIN);
 	}
 
 	public static List<UserRole> getInstitutionTraegerschaftRoles() {
-		return Arrays.asList(SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION);
+		return Arrays.asList(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION);
+	}
+
+	public static List<UserRole> getSuperadminAllGemeindeRoles() {
+		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS);
 	}
 
 	/**
@@ -91,6 +101,10 @@ public enum UserRole {
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS: {
 			return Amt.SCHULAMT;
+		}
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE: {
+			return Amt.GEMEINDE;
 		}
 		default:
 			return Amt.NONE;

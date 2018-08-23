@@ -87,7 +87,7 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
      * Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
      * ACHTUNG Diese Logik existiert auch im Server UserRole. Aenderungen muessen in beiden Orten gemacht werden.
      */
-    private analyseAmt(): TSAmt {
+    public analyseAmt(): TSAmt {
         switch (this.role) {
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_BG:
@@ -96,6 +96,9 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS:
                 return TSAmt.SCHULAMT;
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+                return TSAmt.GEMEINDE;
             default:
                 return TSAmt.NONE;
         }

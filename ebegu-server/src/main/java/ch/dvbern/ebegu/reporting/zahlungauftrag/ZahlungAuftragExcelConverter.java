@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -54,7 +55,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<Zahlung> data, @Nonnull Locale lang, UserRole userRole, Collection<Institution> allowedInst,
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<Zahlung> data, @Nonnull Locale lang, @Nullable UserRole userRole, Collection<Institution> allowedInst,
 		String beschrieb, LocalDateTime datumGeneriert, LocalDate datumFaellig) {
 		checkNotNull(data);
 
@@ -68,7 +69,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 			.filter(zahlung -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
-				return !(UserRole.SACHBEARBEITER_TRAEGERSCHAFT.equals(userRole) || UserRole.SACHBEARBEITER_INSTITUTION.equals(userRole)) ||
+				return !(UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole || UserRole.SACHBEARBEITER_INSTITUTION == userRole) ||
 					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
 			})
 			.sorted()
@@ -88,7 +89,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.bgPensum, BigDecimal.valueOf(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum())
 							.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragCHF, zahlungsposition.getBetrag());
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.isKorrektur, !ZahlungspositionStatus.NORMAL.equals(zahlungsposition.getStatus()));
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.isKorrektur, ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.isIgnoriert, zahlungsposition.isIgnoriert());
 					});
 			});

@@ -60,7 +60,7 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ UserRoleName.ADMIN_TS, UserRoleName.SUPER_ADMIN })
+	@RolesAllowed({ UserRoleName.ADMIN_TS, UserRoleName.ADMIN_GEMEINDE, UserRoleName.SUPER_ADMIN })
 	public FerieninselStammdaten saveFerieninselStammdaten(@Nonnull FerieninselStammdaten ferieninselStammdaten) {
 		Objects.requireNonNull(ferieninselStammdaten);
 		return persistence.merge(ferieninselStammdaten);

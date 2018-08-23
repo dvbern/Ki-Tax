@@ -91,8 +91,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
@@ -115,7 +117,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Pair<Long, List<Gesuch>> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
 		return countAndSearchAntraege(antragTableFilterDto, true);
 	}
@@ -189,8 +191,12 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		// Special role based predicates
 		switch (role) {
-		case SACHBEARBEITER_BG:
 		case SUPER_ADMIN:
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
+			// Diese Rollen haben keine (rollenspezifischen) Einschränkungen!
+			break;
+		case SACHBEARBEITER_BG:
 		case ADMIN_BG:
 		case REVISOR:
 		case JURIST:
@@ -369,37 +375,25 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	}
 
 	/**
-	 * Ob es ein JA- SCH- oder Mischgesuch ist, wird anhand der Verantwortliche berechnet.
-	 * beide Verantwortliche sind gesetzt  -> Mischgesuch
-	 * nur VerantwortlicherJA ist gesetzt  -> JA-Gesuche
-	 * nur VerantwortlicherSCH ist gesetzt -> SCH-Gesuche
+	 * Ob es ein BG- TS- oder Mischgesuch ist, wird anhand der Verantwortliche berechnet.
+	 * BG- oder Mischgesuche sind alle, die VerantwortlicherBG gesetzt haben, VerantwortlicherTS interessiert nicht
 	 */
 	private Predicate createPredicateJAOrMischGesuche(CriteriaBuilder cb, Join<Gesuch, Dossier> dossier) {
 		final Predicate predicateIsVerantwortlicherBG = cb.isNotNull(dossier.get(Dossier_.verantwortlicherBG));
-		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
-
-		final Predicate predicateIsJAgesuch = cb.and(predicateIsVerantwortlicherBG, predicateIsVerantwortlicherTS.not());
-		final Predicate predicateIsMischgesuch = cb.and(predicateIsVerantwortlicherBG, predicateIsVerantwortlicherTS);
-
-		return cb.or(predicateIsJAgesuch, predicateIsMischgesuch);
+		return predicateIsVerantwortlicherBG;
 	}
 
 	/**
-	 * Ob es ein JA- SCH- oder Mischgesuch ist, wird anhand der Verantwortliche berechnet.
-	 * beide Verantwortliche sind gesetzt  -> Mischgesuch
-	 * nur VerantwortlicherJA ist gesetzt  -> JA-Gesuche
-	 * nur VerantwortlicherSCH ist gesetzt -> SCH-Gesuche
+	 * Ob es ein BG- TS- oder Mischgesuch ist, wird anhand der Verantwortliche berechnet.
+	 * TS- oder Mischgesuche sind alle, die VerantwortlicherTS gesetzt haben, VerantwortlicherBG interessiert nicht.
+	 * Fuer TS sind sie nur so lange in der Pendenzenliste, wie das FinSit-Flag nicht gesetzt ist
 	 */
 	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
-		final Predicate predicateIsVerantwortlicherBG = cb.isNotNull(dossier.get(Dossier_.verantwortlicherBG));
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
 
-		final Predicate predicateIsSCHgesuch = cb.and(predicateIsVerantwortlicherBG.not(), predicateIsVerantwortlicherTS);
-		final Predicate predicateIsMischgesuch = cb.and(predicateIsVerantwortlicherBG, predicateIsVerantwortlicherTS);
-		final Predicate predicateIsMischgesuchPendenz = cb.and(predicateIsMischgesuch, predicateIsFlagFinSitNotSet);
-
-		return cb.or(predicateIsSCHgesuch, predicateIsMischgesuchPendenz);
+		final Predicate predicateIsMischgesuchPendenz = cb.and(predicateIsVerantwortlicherTS, predicateIsFlagFinSitNotSet);
+		return cb.or(predicateIsVerantwortlicherTS, predicateIsMischgesuchPendenz);
 	}
 
 

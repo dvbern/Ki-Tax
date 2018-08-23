@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -51,7 +52,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Fachstelle saveFachstelle(@Nonnull Fachstelle fachstelle) {
 		Objects.requireNonNull(fachstelle);
 		return persistence.merge(fachstelle);
@@ -72,7 +73,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeFachstelle(@Nonnull String fachstelleId) {
 		Objects.requireNonNull(fachstelleId);
 		Fachstelle fachstelleToRemove = findFachstelle(fachstelleId).orElseThrow(() -> new EbeguEntityNotFoundException("removeFachstelle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fachstelleId));

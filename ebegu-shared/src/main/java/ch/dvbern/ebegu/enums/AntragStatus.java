@@ -110,6 +110,8 @@ public enum AntragStatus {
 	private static final Set<AntragStatus> forSachbearbeiterTraegerschaftRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterJugendamtRole = FOR_ADMIN_ROLE;
 	private static final Set<AntragStatus> forSchulamtRole = FOR_ADMIN_ROLE;
+	private static final Set<AntragStatus> forAdminGemeindeRole = FOR_ADMIN_ROLE;
+	private static final Set<AntragStatus> forSachbearbeiterGemeindeRole = FOR_ADMIN_ROLE;
 	private static final Set<AntragStatus> forJuristRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forRevisorRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forSteueramt = FOR_STEUERAMT_ROLE;
@@ -226,6 +228,8 @@ public enum AntragStatus {
             case SACHBEARBEITER_TS: return forSchulamtRole;
             case ADMIN_TS: return forSchulamtRole;
             case STEUERAMT: return forSteueramt;
+			case ADMIN_GEMEINDE: return forAdminGemeindeRole;
+			case SACHBEARBEITER_GEMEINDE: return forSachbearbeiterGemeindeRole;
             default: return none;
         }
     }
@@ -238,6 +242,8 @@ public enum AntragStatus {
             case JURIST:
             case REVISOR:
             case SACHBEARBEITER_BG:
+            case ADMIN_GEMEINDE:
+			case SACHBEARBEITER_GEMEINDE:
             	return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
             case SACHBEARBEITER_TS:
             case ADMIN_TS:
@@ -255,6 +261,8 @@ public enum AntragStatus {
 				return  all;
 			case ADMIN_BG:
 			case SACHBEARBEITER_BG:
+			case ADMIN_GEMEINDE:
+			case SACHBEARBEITER_GEMEINDE:
 				return FOR_ADMIN_ROLE_WRITE;
 			case GESUCHSTELLER:
 				return FOR_GESUCHSTELLER_ROLE_WRITE;

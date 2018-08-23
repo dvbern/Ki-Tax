@@ -32,12 +32,15 @@ import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+
 /**
  * Service fuer Historization
  */
 @Stateless
 @Local(HistorizationService.class)
-@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.ADMIN_BG, UserRoleName.SACHBEARBEITER_BG })
+@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.ADMIN_BG, UserRoleName.SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 public class HistorizationServiceBean extends AbstractBaseService implements HistorizationService {
 
 	@Inject

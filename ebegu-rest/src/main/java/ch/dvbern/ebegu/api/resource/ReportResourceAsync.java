@@ -49,8 +49,10 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
@@ -63,7 +65,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Path("reporting/async")
 @Stateless
 @Api(description = "Resource für Statistiken und Reports")
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, SACHBEARBEITER_INSTITUTION,
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, SACHBEARBEITER_INSTITUTION,
 	SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
 public class ReportResourceAsync {
 
@@ -86,7 +88,7 @@ public class ReportResourceAsync {
 	@Path("/excel/gesuchStichtag")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
 	public Response getGesuchStichtagReportExcel(
 		@QueryParam("dateTimeStichtag") @Nonnull String dateTimeStichtag,
 		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
@@ -110,7 +112,7 @@ public class ReportResourceAsync {
 	@Path("/excel/gesuchZeitraum")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
 	public Response getGesuchZeitraumReportExcel(
 		@QueryParam("dateTimeFrom") @Nonnull String dateTimeFromParam,
 		@QueryParam("dateTimeTo") @Nonnull String dateTimeToParam,
@@ -174,7 +176,7 @@ public class ReportResourceAsync {
 	@Path("/excel/mitarbeiterinnen")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
 	public Response getMitarbeiterinnenReportExcel(
 		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
@@ -205,7 +207,7 @@ public class ReportResourceAsync {
 	@Path("/excel/benutzer")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Response getBenutzerReportExcel(
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
@@ -224,7 +226,7 @@ public class ReportResourceAsync {
 	@Path("/excel/zahlungperiode")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
 	public Response getZahlungPeriodReportExcel(
 		@QueryParam("gesuchsperiodeID") @Nonnull @Valid JaxId gesuchPeriodIdParam,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
@@ -247,7 +249,7 @@ public class ReportResourceAsync {
 	@Path("/excel/gesuchstellerkinderbetreuung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
 	public Response getGesuchstellerKinderBetreuungReportExcel(
 		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
 		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
@@ -313,7 +315,7 @@ public class ReportResourceAsync {
 	@Path("/excel/gesuchsteller")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS, REVISOR })
 	public Response getGesuchstellerReportExcel(
 		@QueryParam("stichtag") @Nonnull String stichtag,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) {

@@ -59,9 +59,11 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
@@ -86,7 +88,7 @@ public class BenutzerResource {
 	@Inject
 	private Authorizer authorizer;
 
-	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG oder SACHBEARBEITER_BG zurueck",
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
 		response = JaxAuthLoginElement.class)
 	@Nonnull
@@ -94,10 +96,9 @@ public class BenutzerResource {
 	@Path("/JAorAdmin")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
 		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxAuthLoginElement> getBenutzerJAorAdmin() {
-
 		return benutzerService.getBenutzerJAorAdmin().stream()
 			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
 			.collect(Collectors.toList());
@@ -111,7 +112,7 @@ public class BenutzerResource {
 	@Path("/SCHorAdmin")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
 		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS })
 	public List<JaxAuthLoginElement> getBenutzerSCHorAdminSCH() {
 		return benutzerService.getBenutzerSCHorAdminSCH().stream()
@@ -141,7 +142,7 @@ public class BenutzerResource {
 	@Path("/search")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
 	public Response searchBenutzer(
 		@Nonnull @NotNull BenutzerTableFilterDTO benutzerSearch,
 		@Context UriInfo uriInfo,
@@ -201,7 +202,7 @@ public class BenutzerResource {
 	@Path("/inactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
 	public JaxAuthLoginElement inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -217,7 +218,7 @@ public class BenutzerResource {
 	@Path("/reactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
 	public JaxAuthLoginElement reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -233,7 +234,7 @@ public class BenutzerResource {
 	@Path("/saveBenutzerBerechtigungen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
 	public JaxAuthLoginElement saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -266,7 +267,7 @@ public class BenutzerResource {
 	@Path("/berechtigunghistory/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(()

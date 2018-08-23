@@ -84,23 +84,16 @@ public enum Betreuungsstatus {
 	public static Set<Betreuungsstatus> allowedRoles(UserRole userRole) {
 		switch (userRole) {
 		case SUPER_ADMIN:
-			return all;
 		case ADMIN_BG:
-			return all;
 		case GESUCHSTELLER:
-			return all;
 		case JURIST:
-			return all;
 		case REVISOR:
-			return all;
 		case SACHBEARBEITER_INSTITUTION:
-			return all;
 		case SACHBEARBEITER_BG:
-			return all;
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			return all;
 		case SACHBEARBEITER_TS:
-			return all;
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
 		case STEUERAMT:
 			return all;
 		default:

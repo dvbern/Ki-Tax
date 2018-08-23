@@ -78,6 +78,8 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
         case TSRole.ADMIN_TS:
         case TSRole.SACHBEARBEITER_BG:
         case TSRole.ADMIN_BG:
+        case TSRole.SACHBEARBEITER_GEMEINDE:
+        case TSRole.ADMIN_GEMEINDE:
         case TSRole.REVISOR:
         case TSRole.JURIST:
             return getTSAntragStatusValues().filter(element => (element !== TSAntragStatus.IN_BEARBEITUNG_GS
@@ -101,6 +103,8 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntrag
     switch (userrole) {
         case TSRole.SACHBEARBEITER_BG:
         case TSRole.ADMIN_BG:
+        case TSRole.SACHBEARBEITER_GEMEINDE:
+        case TSRole.ADMIN_GEMEINDE:
         case TSRole.REVISOR:
         case TSRole.JURIST:
             return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT

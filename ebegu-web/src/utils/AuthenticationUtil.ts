@@ -28,7 +28,11 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
         [TSRole.SUPER_ADMIN]: 'faelle.list',
         [TSRole.ADMIN_BG]: 'pendenzen.list-view',
         [TSRole.SACHBEARBEITER_BG]: 'pendenzen.list-view',
+        [TSRole.ADMIN_GEMEINDE]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_GEMEINDE]: 'pendenzen.list-view',
+        [TSRole.ADMIN_INSTITUTION]: 'pendenzenBetreuungen.list-view',
         [TSRole.SACHBEARBEITER_INSTITUTION]: 'pendenzenBetreuungen.list-view',
+        [TSRole.ADMIN_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
         [TSRole.SACHBEARBEITER_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
         [TSRole.GESUCHSTELLER]: 'gesuchsteller.dashboard',
         [TSRole.JURIST]: 'faelle.list',
@@ -36,6 +40,8 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
         [TSRole.STEUERAMT]: 'pendenzenSteueramt.list-view',
         [TSRole.ADMIN_TS]: 'pendenzen.list-view',
         [TSRole.SACHBEARBEITER_TS]: 'pendenzen.list-view',
+        [TSRole.ADMIN_MANDANT]: 'faelle.list',
+        [TSRole.SACHBEARBEITER_MANDANT]: 'faelle.list',
         [TSRole.ANONYMOUS]: 'onboarding.start',
     };
 

@@ -105,9 +105,11 @@ public enum EbeguVorlageKey {
 		if (userRole != null) {
 			switch (userRole) {
 				case ADMIN_BG:
+				case ADMIN_GEMEINDE:
 				case SUPER_ADMIN:
 					return VORLAGE_BENUTZERHANDBUCH_ADMIN;
 				case SACHBEARBEITER_BG:
+				case SACHBEARBEITER_GEMEINDE:
 					return VORLAGE_BENUTZERHANDBUCH_JUGENDAMT;
 				case SACHBEARBEITER_TRAEGERSCHAFT:
 					return VORLAGE_BENUTZERHANDBUCH_TRAEGERSCHAFT;
