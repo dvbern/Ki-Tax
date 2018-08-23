@@ -19,13 +19,8 @@ import {IDVFocusableController} from '../../../app/core/component/IDVFocusableCo
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
-import UserRS from '../../../app/core/service/userRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {
-    isAnyStatusOfVerfuegt,
-    isAtLeastFreigegebenOrFreigabequittung,
-    isStatusVerfuegenVerfuegt
-} from '../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -88,7 +83,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     static $inject = ['EbeguUtil', 'GesuchRS', '$state',
         '$scope', 'GesuchModelManager', 'AuthServiceRS', '$mdSidenav', '$log', 'GesuchsperiodeRS',
-        'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS', 'UserRS'];
+        'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS'];
 
     antragList: Array<TSAntragDTO>;
     gesuchid: string;

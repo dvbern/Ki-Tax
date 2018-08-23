@@ -14,16 +14,14 @@
  */
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
-import TSGemeinde from '../../../../models/TSGemeinde';
-import EbeguUtil from '../../../../utils/EbeguUtil';
-import ITranslateService = angular.translate.ITranslateService;
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import TSUser from '../../../../models/TSUser';
-import TSAntragDTO from '../../../../models/TSAntragDTO';
-import UserRS from '../../service/userRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import TSGesuch from '../../../../models/TSGesuch';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import TSGesuch from '../../../../models/TSGesuch';
+import TSUser from '../../../../models/TSUser';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import UserRS from '../../service/userRS.rest';
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';

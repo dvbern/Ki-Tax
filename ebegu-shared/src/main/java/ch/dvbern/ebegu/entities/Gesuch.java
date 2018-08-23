@@ -197,7 +197,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	@Nullable
 	@Valid
-	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "gesuch", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "gesuch")
 	private Set<DokumentGrund> dokumentGrunds;
 
 	@NotNull
@@ -296,10 +296,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	public boolean addDokumentGrund(@NotNull final DokumentGrund dokumentGrund) {
-		if (dokumentGrunds == null) {
-			dokumentGrunds = new HashSet<>();
-		}
 		dokumentGrund.setGesuch(this);
+
+		if (this.dokumentGrunds == null) {
+			this.dokumentGrunds = new HashSet<>();
+		}
+
 		return this.dokumentGrunds.add(dokumentGrund);
 	}
 
