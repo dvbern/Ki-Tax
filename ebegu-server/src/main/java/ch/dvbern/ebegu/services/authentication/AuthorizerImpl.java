@@ -68,6 +68,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.JURIST;
@@ -211,7 +213,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR };
+			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST,
+			REVISOR };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -261,7 +264,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-			SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR };
+			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST,
+			REVISOR };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -541,12 +545,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 
-		if (principalBean.isCallerInRole(SACHBEARBEITER_INSTITUTION)) {
+		if (principalBean.isCallerInAnyOfRole(ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
 			Institution institution = principalBean.getBenutzer().getInstitution();
 			Objects.requireNonNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			return betreuung.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
-		if (principalBean.isCallerInRole(SACHBEARBEITER_TRAEGERSCHAFT)) {
+		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
 			Objects.requireNonNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			Collection<Institution> institutions = institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
@@ -579,12 +583,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (isGSOwner(gesuch::getFall, principalBean.getPrincipal().getName())) {
 			return true;
 		}
-		if (principalBean.isCallerInRole(SACHBEARBEITER_INSTITUTION)) {
+		if (principalBean.isCallerInAnyOfRole(ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
 			Institution institution = principalBean.getBenutzer().getInstitution();
 			Objects.requireNonNull(institution, "Institution des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			return gesuch.hasBetreuungOfInstitution(institution); //@reviewer: oder besser ueber service ?
 		}
-		if (principalBean.isCallerInRole(SACHBEARBEITER_TRAEGERSCHAFT)) {
+		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
 			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
 			Objects.requireNonNull(traegerschaft, "Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
 			Collection<Institution> institutions = institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
@@ -752,7 +756,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				}
 				break;
 			}
+			case ADMIN_INSTITUTION:
 			case SACHBEARBEITER_INSTITUTION:
+			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
 				if (!isSenderTyp(mitteilung, MitteilungTeilnehmerTyp.INSTITUTION)) {
 					throwViolation(mitteilung);
@@ -802,7 +808,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				}
 				break;
 			}
+			case ADMIN_INSTITUTION:
 			case SACHBEARBEITER_INSTITUTION:
+			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT: {
 				if (!isSenderTypOrEmpfaengerTyp(mitteilung, MitteilungTeilnehmerTyp.INSTITUTION)) {
 					throwViolation(mitteilung);

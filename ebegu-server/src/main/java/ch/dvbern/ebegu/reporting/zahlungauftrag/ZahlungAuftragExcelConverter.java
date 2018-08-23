@@ -26,15 +26,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
-import org.apache.poi.ss.usermodel.Sheet;
-
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -69,7 +69,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 			.filter(zahlung -> {
 				// Filtere nur die erlaubten Instituionsdaten
 				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
-				return !(UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole || UserRole.SACHBEARBEITER_INSTITUTION == userRole) ||
+				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
 					allowedInst.stream().anyMatch(institution -> institution.getId().equals(zahlung.getInstitutionStammdaten().getInstitution().getId()));
 			})
 			.sorted()

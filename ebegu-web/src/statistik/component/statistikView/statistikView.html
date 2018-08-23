@@ -14,7 +14,8 @@
   -->
 
 <div class="statistikView" dv-show-element
-     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_GEMEINDE', 'SUPER_ADMIN','REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS','SACHBEARBEITER_INSTITUTION', 'SACHBEARBEITER_TRAEGERSCHAFT']">
+     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_GEMEINDE', 'SUPER_ADMIN','REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS',
+     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT']">
     <div class="row marginTop50">
         <div class="col-md-10 col-md-offset-1">
             <dv-accordion allow-multiple-sections="false">
@@ -163,7 +164,9 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR','SACHBEARBEITER_INSTITUTION','SACHBEARBEITER_TRAEGERSCHAFT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR',
+                     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION',
+                     'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT']">
                     <dv-accordion-tab tabid="kinder">
                         <tab-title data-translate="KINDER_UPPER"></tab-title>
                         <tab-body>
@@ -253,7 +256,8 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR','SACHBEARBEITER_INSTITUTION','SACHBEARBEITER_TRAEGERSCHAFT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR','ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION',
+                     'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT']">
                     <dv-accordion-tab tabid="kanton">
                         <tab-title data-translate="KANTON"></tab-title>
                         <tab-body>

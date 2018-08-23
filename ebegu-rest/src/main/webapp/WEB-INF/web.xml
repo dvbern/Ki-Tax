@@ -76,7 +76,13 @@
 		<role-name>SACHBEARBEITER_GEMEINDE</role-name>
 	</security-role>
 	<security-role>
+		<role-name>ADMIN_INSTITUTION</role-name>
+	</security-role>
+	<security-role>
 		<role-name>SACHBEARBEITER_INSTITUTION</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMIN_TRAEGERSCHAFT</role-name>
 	</security-role>
 	<security-role>
 		<role-name>SACHBEARBEITER_TRAEGERSCHAFT</role-name>

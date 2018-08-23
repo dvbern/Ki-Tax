@@ -53,7 +53,9 @@ export class ZahlungViewController implements IController {
     public $onInit() {
         if (this.$stateParams.zahlungsauftragId && this.authServiceRS.getPrincipal()) {
             switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
+                case TSRole.ADMIN_INSTITUTION:
                 case TSRole.SACHBEARBEITER_INSTITUTION:
+                case TSRole.ADMIN_TRAEGERSCHAFT:
                 case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
                     this.zahlungRS.getZahlungsauftragInstitution(this.$stateParams.zahlungsauftragId).then((response) => {
                         this.zahlungen = response.zahlungen;

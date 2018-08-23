@@ -116,6 +116,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRole.*;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
@@ -453,7 +454,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Join<Betreuung, InstitutionStammdaten> institutionstammdatenJoin = null;
 
 			if (principalBean.isCallerInAnyOfRole(
+					UserRole.ADMIN_TRAEGERSCHAFT,
 					UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+					UserRole.ADMIN_INSTITUTION,
 					UserRole.SACHBEARBEITER_INSTITUTION,
 					UserRole.SACHBEARBEITER_TS,
 					UserRole.ADMIN_TS,
@@ -495,7 +498,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// d.h. sie duerfen IN_BEARBEITUNG_GS und FREIGABEQUITTUNG NICHT sehen
 			if (!(principalBean.isCallerInAnyOfRole(
 					UserRole.GESUCHSTELLER,
+					UserRole.ADMIN_TRAEGERSCHAFT,
 					UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+					UserRole.ADMIN_INSTITUTION,
 					UserRole.SACHBEARBEITER_INSTITUTION))) {
 				// Nur GS darf ein Gesuch sehen, das sich im Status BEARBEITUNG_GS oder FREIGABEQUITTUNG befindet
 				predicatesToUse.add(root.get(Gesuch_.status).in(AntragStatus.IN_BEARBEITUNG_GS, AntragStatus.FREIGABEQUITTUNG).not());
@@ -503,10 +508,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			if (institutionJoin != null) {
 				// only if the institutionJoin was set
-				if (principalBean.isCallerInRole(UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
+				if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
 					predicatesToUse.add(cb.equal(institutionJoin.get(Institution_.traegerschaft), benutzer.getTraegerschaft()));
 				}
-				if (principalBean.isCallerInRole(UserRole.SACHBEARBEITER_INSTITUTION)) {
+				if (principalBean.isCallerInAnyOfRole(ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
 					// es geht hier nicht um die institutionJoin des zugewiesenen benutzers sondern um die institutionJoin des eingeloggten benutzers
 					predicatesToUse.add(cb.equal(institutionJoin, benutzer.getInstitution()));
 				}

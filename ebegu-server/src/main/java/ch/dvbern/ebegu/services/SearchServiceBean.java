@@ -206,10 +206,12 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		case STEUERAMT:
 			break;
+		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
 			predicates.add(cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft()));
 			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
 			break;
+		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des eingeloggten benutzers
 			predicates.add(cb.equal(joinInstitution, user.getInstitution()));

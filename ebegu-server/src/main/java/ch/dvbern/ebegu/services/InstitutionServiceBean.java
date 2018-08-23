@@ -47,11 +47,15 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
@@ -194,10 +198,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
-			if (UserRole.SACHBEARBEITER_TRAEGERSCHAFT == benutzer.getRole() && benutzer.getTraegerschaft() != null) {
+			if (EnumUtil.isOneOf(benutzer.getRole(), ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
 				return getAllInstitutionenFromTraegerschaft(benutzer.getTraegerschaft().getId());
 			}
-			if (UserRole.SACHBEARBEITER_INSTITUTION == benutzer.getRole() && benutzer.getInstitution() != null) {
+			if (EnumUtil.isOneOf(benutzer.getRole(), ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION) && benutzer.getInstitution() != null) {
 				List<Institution> institutionList = new ArrayList<>();
 				if (benutzer.getInstitution() != null) {
 					institutionList.add(benutzer.getInstitution());

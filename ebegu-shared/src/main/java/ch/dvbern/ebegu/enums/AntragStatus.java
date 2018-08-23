@@ -106,6 +106,8 @@ public enum AntragStatus {
 	private static final Set<AntragStatus> all = EnumSet.allOf(AntragStatus.class);
 	private static final Set<AntragStatus> none = EnumSet.noneOf(AntragStatus.class);
 	private static final Set<AntragStatus> forAdminRole = FOR_ADMIN_ROLE;
+	private static final Set<AntragStatus> forAdminInstitutionRole = FOR_INSTITUTION_ROLE;
+	private static final Set<AntragStatus> forAdminTraegerschaftRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterInstitutionRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterTraegerschaftRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterJugendamtRole = FOR_ADMIN_ROLE;
@@ -222,8 +224,10 @@ public enum AntragStatus {
             case GESUCHSTELLER: return none;
             case JURIST: return forJuristRole;
             case REVISOR: return forRevisorRole;
+			case ADMIN_INSTITUTION: return forAdminInstitutionRole;
             case SACHBEARBEITER_INSTITUTION: return forSachbearbeiterInstitutionRole;
             case SACHBEARBEITER_BG: return forSachbearbeiterJugendamtRole;
+			case ADMIN_TRAEGERSCHAFT: return forAdminTraegerschaftRole;
             case SACHBEARBEITER_TRAEGERSCHAFT: return forSachbearbeiterTraegerschaftRole;
             case SACHBEARBEITER_TS: return forSchulamtRole;
             case ADMIN_TS: return forSchulamtRole;
@@ -266,7 +270,9 @@ public enum AntragStatus {
 				return FOR_ADMIN_ROLE_WRITE;
 			case GESUCHSTELLER:
 				return FOR_GESUCHSTELLER_ROLE_WRITE;
+			case ADMIN_INSTITUTION:
 			case SACHBEARBEITER_INSTITUTION:
+			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
 				return FOR_INSTITUTION_ROLE_WRITE;
 			case STEUERAMT:
