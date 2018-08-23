@@ -97,7 +97,6 @@ import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -503,8 +502,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Predicate predicateActive = builder.between(builder.literal(LocalDate.now()),
 			verantwortlicherBerechtigungenJoin.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			verantwortlicherBerechtigungenJoin.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate isRolleCorrect = verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE,
-			SACHBEARBEITER_GEMEINDE);
+		Predicate isRolleCorrect = verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(UserRole.ADMIN_BG, UserRole.SACHBEARBEITER_BG,
+			UserRole.ADMIN_GEMEINDE, UserRole.SACHBEARBEITER_GEMEINDE);
 
 		query.where(predicateActive, isRolleCorrect);
 
@@ -1361,7 +1360,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Predicate predicateActive = builder.between(builder.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate predicateRoleNotGS = joinBerechtigungen.get(Berechtigung_.role).in(GESUCHSTELLER).not();
+		Predicate predicateRoleNotGS = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER).not();
 		predicates.add(predicateActive);
 		predicates.add(predicateRoleNotGS);
 

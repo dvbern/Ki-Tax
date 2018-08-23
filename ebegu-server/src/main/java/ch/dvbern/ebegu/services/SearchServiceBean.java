@@ -395,9 +395,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
-
-		final Predicate predicateIsMischgesuchPendenz = cb.and(predicateIsVerantwortlicherTS, predicateIsFlagFinSitNotSet);
-		return cb.or(predicateIsVerantwortlicherTS, predicateIsMischgesuchPendenz);
+		return cb.and(predicateIsVerantwortlicherTS, predicateIsFlagFinSitNotSet);
 	}
 
 

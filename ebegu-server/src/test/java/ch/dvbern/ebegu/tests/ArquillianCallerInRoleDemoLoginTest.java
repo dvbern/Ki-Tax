@@ -67,9 +67,9 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 
 				@Override
 				public Set<String> run() {
-					if (sessionContextService.isCallerInRole("ADMIN")) {
+					if (sessionContextService.isCallerInRole("ADMIN_BG")) {
 						Set<String> res = new HashSet<>();
-						res.add("ADMIN");
+						res.add("ADMIN_BG");
 						return res;
 					}
 					return new HashSet<>();
@@ -77,7 +77,7 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 
 			});
 			assertEquals(1, foundRoles.size());
-			assertTrue(foundRoles.contains("ADMIN"));
+			assertTrue(foundRoles.contains("ADMIN_BG"));
 
 		} finally {
 			loginContext.logout();
