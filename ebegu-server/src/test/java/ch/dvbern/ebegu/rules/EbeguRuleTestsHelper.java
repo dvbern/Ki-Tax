@@ -49,7 +49,6 @@ public class EbeguRuleTestsHelper {
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final BetreuungspensumCalcRule betreuungspensumCalcRule = new BetreuungspensumCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-	private static final WohnhaftImGleichenHaushaltCalcRule wohnhaftImGleichenHaushaltRule = new WohnhaftImGleichenHaushaltCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final EinkommenCalcRule maximalesEinkommenCalcRule = new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN);
 	private static final BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(Constants.DEFAULT_GUELTIGKEIT);
@@ -100,8 +99,6 @@ public class EbeguRuleTestsHelper {
 		result = erwerbspensumCalcRule.calculate(betreuung, result);
 		result = betreuungspensumCalcRule.calculate(betreuung, result);
 		result = fachstelleCalcRule.calculate(betreuung, result);
-		// Wohnhaft
-		result = wohnhaftImGleichenHaushaltRule.calculate(betreuung, result);
 		// Restanspruch
 		// Reduktionen
 		result = maximalesEinkommenCalcRule.calculate(betreuung, result);

@@ -1460,7 +1460,6 @@ public class JaxBConverter {
 	public JaxKind kindToJAX(@Nonnull final Kind persistedKind) {
 		final JaxKind jaxKind = new JaxKind();
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
-		jaxKind.setWohnhaftImGleichenHaushalt(persistedKind.getWohnhaftImGleichenHaushalt());
 		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
@@ -1529,7 +1528,6 @@ public class JaxBConverter {
 		Objects.requireNonNull(kindJAXP);
 		Objects.requireNonNull(kind);
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
-		kind.setWohnhaftImGleichenHaushalt(kindJAXP.getWohnhaftImGleichenHaushalt());
 		kind.setKinderabzug(kindJAXP.getKinderabzug());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setMutterspracheDeutsch(kindJAXP.getMutterspracheDeutsch());

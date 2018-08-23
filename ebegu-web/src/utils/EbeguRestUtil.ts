@@ -1177,7 +1177,6 @@ export default class EbeguRestUtil {
 
     private kindToRestObject(restKind: any, kind: TSKind): any {
         this.abstractPersonEntitytoRestObject(restKind, kind);
-        restKind.wohnhaftImGleichenHaushalt = kind.wohnhaftImGleichenHaushalt;
         restKind.kinderabzug = kind.kinderabzug;
         restKind.mutterspracheDeutsch = kind.mutterspracheDeutsch;
         restKind.einschulungTyp = kind.einschulungTyp;
@@ -1240,7 +1239,6 @@ export default class EbeguRestUtil {
     private parseKind(kindTS: TSKind, kindFromServer: any): TSKind {
         if (kindFromServer) {
             this.parseAbstractPersonEntity(kindTS, kindFromServer);
-            kindTS.wohnhaftImGleichenHaushalt = kindFromServer.wohnhaftImGleichenHaushalt;
             kindTS.kinderabzug = kindFromServer.kinderabzug;
             kindTS.mutterspracheDeutsch = kindFromServer.mutterspracheDeutsch;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
@@ -1328,7 +1326,6 @@ export default class EbeguRestUtil {
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;
         restAngebot.mutterspracheDeutsch = angebotDTO.mutterspracheDeutsch;
-        restAngebot.wohnhaftImGleichenHaushalt = angebotDTO.wohnhaftImGleichenHaushalt;
         return restAngebot;
 
     }

@@ -152,10 +152,6 @@ public class BetreuungsgutscheinConfigurator {
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
 		rules.add(fachstelleCalcRule);
-
-		// - Kind wohnt im gleichen Haushalt: Muss zwingend nach Fachstelle durchgefuehrt werden
-		// deaktiviert
-
 	}
 
 	private void reduktionsRegeln(Map<EbeguParameterKey, EbeguParameter> ebeguParameter) {

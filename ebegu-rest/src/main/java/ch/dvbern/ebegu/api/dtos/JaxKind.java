@@ -31,9 +31,6 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	private static final long serialVersionUID = -1297026881674137397L;
 
-	@Nullable
-	private Integer wohnhaftImGleichenHaushalt;
-
 	@NotNull
 	private Kinderabzug kinderabzug;
 
@@ -49,15 +46,7 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nullable
 	private JaxPensumFachstelle pensumFachstelle;
 
-	@Nullable
-	public Integer getWohnhaftImGleichenHaushalt() {
-		return wohnhaftImGleichenHaushalt;
-	}
-
-	public void setWohnhaftImGleichenHaushalt(@Nullable Integer wohnhaftImGleichenHaushalt) {
-		this.wohnhaftImGleichenHaushalt = wohnhaftImGleichenHaushalt;
-	}
-
+	@NotNull
 	public Kinderabzug getKinderabzug() {
 		return kinderabzug;
 	}
