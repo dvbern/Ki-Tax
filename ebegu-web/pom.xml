@@ -79,7 +79,7 @@
 
                     <execution>
                         <id>lint</id>
-                        <phase>validate</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
