@@ -14,7 +14,9 @@
  */
 package ch.dvbern.ebegu.util;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,15 +37,7 @@ public final class EnumUtil {
 	 */
 	@SafeVarargs
 	public static <T extends Enum<T>> boolean isOneOf(@Nullable final T toTest, @Nonnull final T... otherValues) {
-		if (toTest == null) {
-			return false;
-		}
-		for (final T enumType : otherValues) {
-			if (toTest == enumType) {
-				return true;
-			}
-		}
-		return false;
+		return isOneOf(toTest, Arrays.asList(otherValues));
 	}
 
 	/**
@@ -55,7 +49,7 @@ public final class EnumUtil {
 			return false;
 		}
 		for (final T enumType : otherValues) {
-			if (toTest == enumType) {
+			if (Objects.equals(toTest, enumType)) {
 				return true;
 			}
 		}
@@ -63,7 +57,7 @@ public final class EnumUtil {
 	}
 
 	/**
-	 * Gibt true{@code true} zurück wenn der Parameter <tt>toTest</tt> einem der Werte <tt>otherValues</tt>
+	 * Gibt true{@code true} zurück wenn der Parameter <tt>toTest</tt> keinem der Werte <tt>otherValues</tt>
 	 * entspricht
 	 */
 	@SafeVarargs
