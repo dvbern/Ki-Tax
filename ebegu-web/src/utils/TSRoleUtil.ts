@@ -51,13 +51,15 @@ export class TSRoleUtil {
     public static getAllRolesForZahlungen(): Array<TSRole> {
         return [TSRole.ADMIN_BG, TSRole.SUPER_ADMIN, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION,
-            TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, TSRole.REVISOR, TSRole.JURIST];
+            TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, TSRole.REVISOR, TSRole.JURIST,
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static getAllRolesForStatistik(): Array<TSRole> {
         return [TSRole.ADMIN_BG, TSRole.SUPER_ADMIN, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-            TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS, TSRole.REVISOR];
+            TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS, TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static getAllRoles(): Array<TSRole> {
@@ -120,26 +122,27 @@ export class TSRoleUtil {
     }
 
     public static getAdministratorRevisorRole(): Array<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR];
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static getJugendamtRole(): Array<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR];
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static getGesuchstellerJugendamtSchulamtOtherAmtRoles(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR,
-            TSRole.GESUCHSTELLER, TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS];
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT, TSRole.GESUCHSTELLER, TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS];
     }
 
     public static getGesuchstellerJugendamtOtherAmtRoles(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR,
-            TSRole.GESUCHSTELLER];
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT, TSRole.GESUCHSTELLER];
     }
 
     public static getJugendamtAndSchulamtRole(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR,
-            TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS];
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT, TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS];
     }
 
     public static getAdministratorJugendamtSchulamtRoles(): Array<TSRole> {
@@ -237,12 +240,12 @@ export class TSRoleUtil {
     }
 
     public static getReadOnlyRoles(): Array<TSRole> {
-        return [TSRole.REVISOR, TSRole.JURIST, TSRole.STEUERAMT];
+        return [TSRole.REVISOR, TSRole.JURIST, TSRole.STEUERAMT, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static getAllRolesForKommentarSpalte(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE, TSRole.STEUERAMT,
-            TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS, TSRole.JURIST, TSRole.REVISOR];
+            TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS, TSRole.JURIST, TSRole.REVISOR, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static isGemeindeabhaengig(role: TSRole): boolean {

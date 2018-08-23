@@ -120,6 +120,8 @@ public enum EbeguVorlageKey {
 				case JURIST:
 					return VORLAGE_BENUTZERHANDBUCH_JURIST;
 				case REVISOR:
+				case ADMIN_MANDANT:
+				case SACHBEARBEITER_MANDANT:
 					return VORLAGE_BENUTZERHANDBUCH_REVISOR;
 				case STEUERAMT:
 					return VORLAGE_BENUTZERHANDBUCH_STV;

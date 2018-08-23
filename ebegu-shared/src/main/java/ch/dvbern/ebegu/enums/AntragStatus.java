@@ -117,6 +117,8 @@ public enum AntragStatus {
 	private static final Set<AntragStatus> forJuristRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forRevisorRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forSteueramt = FOR_STEUERAMT_ROLE;
+	private static final Set<AntragStatus> forAdminMandantRole = FOR_JURIST_REVISOR_ROLE;
+	private static final Set<AntragStatus> forSachbearbeiterMandantRole = FOR_JURIST_REVISOR_ROLE;
 
 	// range ist etwas gefaehrlich, da man sehr vorsichtig sein muss, in welcher Reihenfolge man die Werte schreibt. Ausserdem kann man
 	// kein range mit Ausnahmen machen. In diesem Fall ist es deshalb besser ein .of zu benutzen
@@ -234,6 +236,8 @@ public enum AntragStatus {
             case STEUERAMT: return forSteueramt;
 			case ADMIN_GEMEINDE: return forAdminGemeindeRole;
 			case SACHBEARBEITER_GEMEINDE: return forSachbearbeiterGemeindeRole;
+			case ADMIN_MANDANT: return forAdminMandantRole;
+			case SACHBEARBEITER_MANDANT: return forSachbearbeiterMandantRole;
             default: return none;
         }
     }
@@ -248,6 +252,8 @@ public enum AntragStatus {
             case SACHBEARBEITER_BG:
             case ADMIN_GEMEINDE:
 			case SACHBEARBEITER_GEMEINDE:
+			case ADMIN_MANDANT:
+			case SACHBEARBEITER_MANDANT:
             	return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
             case SACHBEARBEITER_TS:
             case ADMIN_TS:

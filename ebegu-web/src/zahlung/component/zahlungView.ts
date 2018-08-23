@@ -68,6 +68,8 @@ export class ZahlungViewController implements IController {
                 case TSRole.SACHBEARBEITER_GEMEINDE:
                 case TSRole.JURIST:
                 case TSRole.REVISOR:
+                case TSRole.ADMIN_MANDANT:
+                case TSRole.SACHBEARBEITER_MANDANT:
                     this.zahlungRS.getZahlungsauftrag(this.$stateParams.zahlungsauftragId).then((response) => {
                         this.zahlungen = response.zahlungen;
                     });

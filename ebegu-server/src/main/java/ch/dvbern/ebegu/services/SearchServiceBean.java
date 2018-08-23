@@ -200,6 +200,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		case ADMIN_BG:
 		case REVISOR:
 		case JURIST:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
 			if (searchForPendenzen) {
 				predicates.add(createPredicateJAOrMischGesuche(cb, joinDossier));
 			}

@@ -105,6 +105,12 @@
 	<security-role>
 		<role-name>SACHBEARBEITER_TS</role-name>
 	</security-role>
+	<security-role>
+		<role-name>ADMIN_MANDANT</role-name>
+	</security-role>
+	<security-role>
+		<role-name>SACHBEARBEITER_MANDANT</role-name>
+	</security-role>
 
 	<filter>
 		<filter-name>javamelody</filter-name>

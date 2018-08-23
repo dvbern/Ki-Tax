@@ -97,6 +97,8 @@ public enum Betreuungsstatus {
 		case ADMIN_GEMEINDE:
 		case SACHBEARBEITER_GEMEINDE:
 		case STEUERAMT:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
 			return all;
 		default:
 			return none;

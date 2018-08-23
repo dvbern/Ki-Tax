@@ -82,6 +82,8 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_MANDANT;
 
 /**
  * Authorizer Implementation
@@ -91,7 +93,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	private static final UserRole[] JA_OR_ADM_OR_SCH = { ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS };
-	private static final UserRole[] OTHER_AMT_ROLES = { REVISOR, JURIST, STEUERAMT };
+	private static final UserRole[] OTHER_AMT_ROLES = { REVISOR, JURIST, STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -209,12 +211,15 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		validateMandantMatches(fall);
 
-		validateGemeindeMatches(fall);
+		// Gemeinde muss fuer Mandan-Rollen nicht geprueft werden
+		if (!principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			validateGemeindeMatches(fall);
+		}
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST,
-			REVISOR };
+			REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -258,14 +263,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		// fixme no exception should be thrown in this method. it returns boolean
 		validateMandantMatches(dossier.getFall());
 
-		if (!isUserAllowedForGemeinde(dossier.getGemeinde())) {
-			return false;
+		// Gemeinde muss fuer Mandan-Rollen nicht geprueft werden
+		if (!principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			if (!isUserAllowedForGemeinde(dossier.getGemeinde())) {
+				return false;
+			}
 		}
 
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT, JURIST,
-			REVISOR };
+			REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT};
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -452,7 +460,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkReadAuthorization(@Nullable ErwerbspensumContainer ewpCnt) {
 		if (ewpCnt != null) {
 			//Wenn wir hier 100% korrekt sein wollen muessten wir auch noch das Gesuch laden und den status pruefen.
-			UserRole[] allowedRoles = { SACHBEARBEITER_BG, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST, ADMIN_TS, SACHBEARBEITER_TS };
+			UserRole[] allowedRoles = { SACHBEARBEITER_BG, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST,
+				ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
 			boolean allowed = isInRoleOrGSOwner(allowedRoles, () -> extractGesuch(ewpCnt), principalBean.getPrincipal().getName());
 			if (!allowed) {
 				throwViolation(ewpCnt);
@@ -644,7 +653,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return gesuch.getStatus().isReadableByJurist()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
-		if (principalBean.isCallerInRole(REVISOR)) {
+		if (principalBean.isCallerInRole(REVISOR)) { //TODO (hefr)
 			return gesuch.getStatus().isReadableByRevisor()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
@@ -821,7 +830,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			case SACHBEARBEITER_GEMEINDE:
 			case ADMIN_TS:
 			case SACHBEARBEITER_TS:
-			case REVISOR: {
+			case REVISOR:
+			case ADMIN_MANDANT:
+			case SACHBEARBEITER_MANDANT:{
 				if (!isSenderTypOrEmpfaengerTyp(mitteilung, MitteilungTeilnehmerTyp.JUGENDAMT)) {
 					throwViolation(mitteilung);
 				}

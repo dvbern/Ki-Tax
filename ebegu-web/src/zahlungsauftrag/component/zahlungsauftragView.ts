@@ -101,7 +101,9 @@ export class ZahlungsauftragViewController implements IController {
                 case TSRole.ADMIN_GEMEINDE:
                 case TSRole.SACHBEARBEITER_GEMEINDE:
                 case TSRole.JURIST:
-                case TSRole.REVISOR: {
+                case TSRole.REVISOR:
+                case TSRole.ADMIN_MANDANT:
+                case TSRole.SACHBEARBEITER_MANDANT: {
                     this.zahlungRS.getAllZahlungsauftraege().then((response: any) => {
                         this.zahlungsauftragen = angular.copy(response);
 
