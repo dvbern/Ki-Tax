@@ -17,10 +17,11 @@ import {Component} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {from as fromPromise, Observable, of} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {filter, switchMap} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
@@ -47,22 +48,22 @@ export class NavbarComponent {
             return of(this.authServiceRS.getPrincipal().extractCurrentGemeindeId());
 
         } else {
-            const dialogConfig = new MatDialogConfig();
-            dialogConfig.disableClose = false; // dialog is canceled by clicking outside
-            dialogConfig.autoFocus = true;
-            dialogConfig.data = {
-                // tslint:disable-next-line:rxjs-finnish
-                gemeindeList: this.getListOfGemeinden$()
-            };
+            return this.getListOfGemeinden$()
+                .pipe(
+                    switchMap(gemeindeList => {
+                        const dialogConfig = new MatDialogConfig();
+                        dialogConfig.data = {gemeindeList};
 
-            return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+                        return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+        }           )
+                );
         }
 
     }
 
     /**
-     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert aber alles
-     * machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
+     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert
+     * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
      */
     private getListOfGemeinden$(): Observable<TSGemeinde[]> {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
@@ -81,10 +82,7 @@ export class NavbarComponent {
                 (gemeindeId) => {
                     const params: INewFallStateParams = {
                         gesuchsperiodeId: null,
-                        createMutation: null,
-                        createNewFall: 'true',
-                        createNewDossier: 'false',
-                        createNewGesuch: 'false',
+                        creationAction: TSCreationAction.CREATE_NEW_FALL,
                         gesuchId: null,
                         dossierId: null,
                         gemeindeId: gemeindeId,

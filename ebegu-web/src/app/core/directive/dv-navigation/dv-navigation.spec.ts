@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
@@ -27,7 +28,6 @@ import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import {EbeguWebCore} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
-import {StateService} from '@uirouter/core';
 
 describe('dvNavigation', () => {
 
@@ -212,10 +212,12 @@ describe('dvNavigation', () => {
             spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
             navController.dvSubStep = 1;
+            gesuchModelManager.setGesuch(new TSGesuch());
+            gesuchModelManager.getGesuch().id = '123';
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '2',
-                gesuchId: ''
+                gesuchId: '123'
             });
         });
         it('moves to gesuch.finanzielleSituationResultate when coming from FINANZIELLE_SITUATION substep 1 with GS1 and 2GS NOT required', () => {
@@ -224,18 +226,22 @@ describe('dvNavigation', () => {
             spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
             navController.dvSubStep = 1;
+            gesuchModelManager.setGesuch(new TSGesuch());
+            gesuchModelManager.getGesuch().id = '123';
             callNextStep();
-            expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationResultate', {gesuchId: ''});
+            expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationResultate', {gesuchId: '123'});
         });
         it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 2', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             navController.dvSubStep = 2;
+            gesuchModelManager.setGesuch(new TSGesuch());
+            gesuchModelManager.getGesuch().id = '123';
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue('1');
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: ''
+                gesuchId: '123'
             });
         });
         it('moves to gesuch.einkommensverschlechterungInfo when coming from FINANZIELLE_SITUATION substep 3', () => {
@@ -304,8 +310,6 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
                 {
-                    createNewFall: 'false',
-                    createMutation: 'false',
                     eingangsart: 'ONLINE',
                     gesuchId: '123',
                     gesuchsperiodeId: '123',
@@ -409,7 +413,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.erwerbsPensen', {gesuchId: ''});
         });
-        it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 1', () => {
+       it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 1', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(2);
             navController.dvSubStep = 1;

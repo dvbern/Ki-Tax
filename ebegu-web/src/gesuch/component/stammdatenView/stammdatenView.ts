@@ -199,7 +199,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public isThereAnyUmzug(): boolean {
-        return this.gesuchModelManager.getGesuch().isThereAnyUmzug();
+        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().isThereAnyUmzug();
     }
 
     private maybeResetKorrespondadr(): void {

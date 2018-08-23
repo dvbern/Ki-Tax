@@ -72,8 +72,6 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
 
     removeTraegerschaft(traegerschaft: any): void {
         const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
-        dialogConfig.autoFocus = true;
         dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE',
         };

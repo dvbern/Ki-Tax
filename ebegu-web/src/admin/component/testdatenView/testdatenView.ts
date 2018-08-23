@@ -178,20 +178,15 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     private createAndOpenOkDialog(title: string): void {
-        const dialogConfig = this.createDefaultMatDialogConfig();
-        dialogConfig.data = {
-            title: title,
-        };
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {title};
 
         this.dialog.open(DvNgOkDialogComponent, dialogConfig).afterClosed();
     }
 
     private createAndOpenRemoveDialog$(title: string, text: string): Observable<boolean> {
-        const dialogConfig = this.createDefaultMatDialogConfig();
-        dialogConfig.data = {
-            title: title,
-            text: text,
-        };
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {title, text};
 
         return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
     }
@@ -201,24 +196,17 @@ export class TestdatenViewComponent implements OnInit {
         const uuidPartOfString = response.data ? response.data.slice(-36) : '';
         this.createAndOpenLinkDialog$(
             response.data,
-            '#/gesuch/fall/false///' + uuidPartOfString + '//', //nicht alle Parameter werden benoetigt, deswegen sind sie leer
+            '#/gesuch/fall////' + uuidPartOfString + '//', //nicht alle Parameter werden benoetigt, deswegen sind sie leer
         );
     }
 
     private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
-        const dialogConfig = this.createDefaultMatDialogConfig();
+        const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: title,
             link: link,
         };
 
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
-    }
-
-    private createDefaultMatDialogConfig() {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
-        dialogConfig.autoFocus = true;
-        return dialogConfig;
     }
 }

@@ -92,7 +92,7 @@ export default class AuthServiceRS {
 
         const authIdbase64 = this.$cookies.get('authId');
         if (!authIdbase64) {
-            this.principalSubject$.next(null);
+            this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
@@ -108,18 +108,22 @@ export default class AuthServiceRS {
             });
         } catch (e) {
             LOG.error('cookie decoding failed', e);
-            this.principalSubject$.next(null);
+            this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
     }
 
     public logoutRequest() {
         return this.$http.post(CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
-            this.principal = undefined;
-            this.principalSubject$.next(null);
+            this.clearPrincipal();
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             return res;
         });
+    }
+
+    public clearPrincipal(): void {
+        this.principal = undefined;
+        this.principalSubject$.next(null);
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {

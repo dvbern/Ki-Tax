@@ -428,7 +428,7 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		return dokumentGrunds;
 	}
 
-	public void setDokumentGrunds(@Nonnull Set<DokumentGrund> dokumentGrunds) {
+	public void setDokumentGrunds(@Nullable Set<DokumentGrund> dokumentGrunds) {
 		this.dokumentGrunds = dokumentGrunds;
 	}
 

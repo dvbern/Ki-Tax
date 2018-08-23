@@ -21,7 +21,7 @@
             <button *ngFor="let dossier of dossierList" class="dossier-element"
                     [ngClass]="{'dossier-active-gesuchsteller': isDossierActive(dossier) && isGesuchsteller(),
                                 'dossier-active': isDossierActive(dossier) && !isGesuchsteller()}"
-                    (click)="openDossier(dossier)"
+                    (click)="openDossier$(dossier)"
                     [disabled]="isNavigationDisabled()">
                 {{dossier.extractGemeindeName()}}
             </button>

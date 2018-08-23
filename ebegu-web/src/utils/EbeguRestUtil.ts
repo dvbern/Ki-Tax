@@ -694,15 +694,9 @@ export default class EbeguRestUtil {
     }
 
     public parseDossierList(data: any): TSDossier[] {
-        let dossierListTS: TSDossier[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                dossierListTS[i] = this.parseDossier(new TSDossier(), data[i]);
-            }
-        } else {
-            dossierListTS[0] = this.parseDossier(new TSDossier(), data);
-        }
-        return dossierListTS;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseDossier(new TSDossier(), item))
+            :  [this.parseDossier(new TSDossier(), data)];
     }
 
     public parseDossier(dossierTS: TSDossier, dossierFromServer: any): TSDossier {
@@ -1722,6 +1716,7 @@ export default class EbeguRestUtil {
     public userToRestObject(user: any, userTS: TSUser): any {
         if (userTS) {
             user.username = userTS.username;
+            user.externalUUID = userTS.externalUUID;
             user.password = userTS.password;
             user.nachname = userTS.nachname;
             user.vorname = userTS.vorname;
@@ -1742,6 +1737,7 @@ export default class EbeguRestUtil {
     public parseUser(userTS: TSUser, userFromServer: any): TSUser {
         if (userFromServer) {
             userTS.username = userFromServer.username;
+            userTS.externalUUID = userFromServer.externalUUID;
             userTS.password = userFromServer.password;
             userTS.nachname = userFromServer.nachname;
             userTS.vorname = userFromServer.vorname;

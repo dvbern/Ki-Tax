@@ -37,35 +37,21 @@ export class BatchjobTriggerViewComponent {
 
     public runBatchCleanDownloadFiles(): void {
         this.dailyBatchRS.runBatchCleanDownloadFiles().then((response) => {
-            let title: string = '';
-            if (response) {
-                title = 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK';
-            } else {
-                title = 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
-            }
+            const title = response ? 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK' : 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
             this.createAndOpenDialog(title);
         });
     }
 
     public runBatchMahnungFristablauf(): void {
         this.dailyBatchRS.runBatchMahnungFristablauf().then((response) => {
-            let title: string = '';
-            if (response) {
-                title = 'MAHNUNG_BATCH_EXECUTED_OK';
-            } else {
-                title = 'MAHNUNG_BATCH_EXECUTED_ERROR';
-            }
+            const title = response ? 'MAHNUNG_BATCH_EXECUTED_OK' : 'MAHNUNG_BATCH_EXECUTED_ERROR';
             this.createAndOpenDialog(title);
         });
     }
 
     private createAndOpenDialog(title: string): void {
         const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
-        dialogConfig.autoFocus = true;
-        dialogConfig.data = {
-            title: title,
-        };
+        dialogConfig.data = {title};
 
         this.dialog.open(DvNgOkDialogComponent, dialogConfig);
     }
