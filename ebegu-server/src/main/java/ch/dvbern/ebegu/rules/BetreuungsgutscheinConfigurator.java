@@ -120,8 +120,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(einreichungsfristAbschnittRule);
 
 		// Mindestalter Kind
-		MindestalterAbschnittRule mindestalterAbschnittRule = new MindestalterAbschnittRule(defaultGueltigkeit);
-		rules.add(mindestalterAbschnittRule);
+		// deaktiviert
 
 		// Abwesenheit
 		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit);
