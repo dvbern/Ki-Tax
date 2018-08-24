@@ -14,13 +14,14 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
+import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import DossierRS from '../../gesuch/service/dossierRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
+import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
-import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -53,7 +54,28 @@ const states: Ng2StateDeclaration[] = [
             roles: [TSRole.GESUCHSTELLER]
         },
     },
+    {
+        name: 'onboarding.registration-incomplete',
+        url: '/registration-abschliessen',
+        component: OnboardingComponent,
+        data: {
+            roles: [TSRole.GESUCHSTELLER]
+        },
+        onEnter: disableWhenDossierExists
+    },
 ];
+
+disableWhenDossierExists.$inject = ['$transition$'];
+
+function disableWhenDossierExists(transition: Transition) {
+    const dossierService = transition.injector().get('DossierRS');
+
+    return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()
+        // when there is a dossier, redirect to gesuchsteller.dashboard
+        .then(() => transition.router.stateService.target('gesuchsteller.dashboard'))
+        // when there is no dossier, continue entering the state
+        .catch(() => true);
+}
 
 @NgModule({
     imports: [

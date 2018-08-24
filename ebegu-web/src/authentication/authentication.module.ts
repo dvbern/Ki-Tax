@@ -25,6 +25,7 @@ import {authorisationHookRunBlock} from './state-hooks/onBefore/authorisation.ho
 import {dummyLoginHookRunBlock} from './state-hooks/onBefore/dummyLogin.hook';
 import {fedletToLoginHookRunBlock} from './state-hooks/onBefore/fedletToLogin.hook';
 import {errorAfterLoginHookRunBlock} from './state-hooks/onError/errorAfterLogin.hook';
+import {erorGSRegistrationIncompleteHookRunBlock} from './state-hooks/onError/errorGSRegistrationIncomplete.hook';
 import {errorLoggerHookRunBlock} from './state-hooks/onError/errorLogger.hook';
 import {errorRecoveryHookRunBlock} from './state-hooks/onError/errorRecovery.hook';
 import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook';
@@ -36,6 +37,7 @@ export const EbeguAuthentication: angular.IModule =
         .run(dummyLoginHookRunBlock)
         .run(fedletToLoginHookRunBlock)
         .run(errorAfterLoginHookRunBlock)
+        .run(erorGSRegistrationIncompleteHookRunBlock)
         .run(errorLoggerHookRunBlock)
         .run(errorRecoveryHookRunBlock)
         .run(clearErrorsHookRunBlock)
