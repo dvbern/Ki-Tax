@@ -14,7 +14,7 @@
  */
 
 import {Component} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dialog.component';
 
 @Component({
@@ -30,11 +30,7 @@ export class DvHelpmenuComponent {
     }
 
     public showDialog(): void {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
-        dialogConfig.autoFocus = true;
-
-        this.dialog.open(DvNgHelpDialogComponent, dialogConfig);
+        this.dialog.open(DvNgHelpDialogComponent);
     }
 
 }

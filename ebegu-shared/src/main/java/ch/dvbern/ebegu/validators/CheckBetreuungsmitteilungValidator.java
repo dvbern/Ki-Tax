@@ -46,8 +46,8 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 	@Inject
 	private EinstellungService einstellungService;
 
-	// We need to pass to EbeguParameterService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
-	// and pass it to the methods of EbeguParameterService we need to call.
+	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
+	// and pass it to the methods of EinstellungService we need to call.
 	//http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
 	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
 	private EntityManagerFactory entityManagerFactory;

@@ -436,13 +436,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
-		Einstellung einstellungFromDB = persistence.find(Einstellung.class, jaxEinstellung.getId());
-		// Einige Felder werden aktuell nicht gemappt. Wir setzen sie hier wieder auf den DB-Wert
-		if (einstellungFromDB != null) {
-			einstellung.setMandant(einstellungFromDB.getMandant());
-			einstellung.setGemeinde(einstellungFromDB.getGemeinde());
-			einstellung.setGesuchsperiode(einstellungFromDB.getGesuchsperiode());
-		}
+		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
 		return einstellung;
 	}
 
@@ -1484,7 +1478,6 @@ public class JaxBConverter {
 	public JaxKind kindToJAX(@Nonnull final Kind persistedKind) {
 		final JaxKind jaxKind = new JaxKind();
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
-		jaxKind.setWohnhaftImGleichenHaushalt(persistedKind.getWohnhaftImGleichenHaushalt());
 		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
@@ -1553,7 +1546,6 @@ public class JaxBConverter {
 		Objects.requireNonNull(kindJAXP);
 		Objects.requireNonNull(kind);
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
-		kind.setWohnhaftImGleichenHaushalt(kindJAXP.getWohnhaftImGleichenHaushalt());
 		kind.setKinderabzug(kindJAXP.getKinderabzug());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setMutterspracheDeutsch(kindJAXP.getMutterspracheDeutsch());
@@ -2581,15 +2573,14 @@ public class JaxBConverter {
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
 		jaxDokumentGrund.setDokumentTyp(dokumentGrund.getDokumentTyp());
 		jaxDokumentGrund.setNeeded(dokumentGrund.isNeeded());
-		if (dokumentGrund.getDokumente() != null) {
-			if (jaxDokumentGrund.getDokumente() == null) {
-				jaxDokumentGrund.setDokumente(new HashSet<>());
-			}
-			for (Dokument dokument : dokumentGrund.getDokumente()) {
-
-				jaxDokumentGrund.getDokumente().add(dokumentToJax(dokument));
-			}
+		if (jaxDokumentGrund.getDokumente() == null) {
+			jaxDokumentGrund.setDokumente(new HashSet<>());
 		}
+		for (Dokument dokument : dokumentGrund.getDokumente()) {
+
+			jaxDokumentGrund.getDokumente().add(dokumentToJax(dokument));
+		}
+
 		return jaxDokumentGrund;
 	}
 

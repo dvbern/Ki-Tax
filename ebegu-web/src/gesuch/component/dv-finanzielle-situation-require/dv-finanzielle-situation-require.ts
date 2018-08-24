@@ -34,7 +34,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
 
 export class DVFinanzielleSituationRequireController {
 
-    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
+    static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
     finanzielleSituationRequired: boolean;
     areThereOnlySchulamtangebote: boolean;
@@ -51,9 +51,10 @@ export class DVFinanzielleSituationRequireController {
     $onInit() {
         this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
-        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, undefined, this.gesuchModelManager.getGesuchsperiode()).then(response => {
-            this.maxMassgebendesEinkommen = response.value;
-        });
+        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, this.gesuchModelManager.getDossier().gemeinde, this.gesuchModelManager.getGesuchsperiode())
+            .then(response => {
+                this.maxMassgebendesEinkommen = response.value;
+            });
     }
 
     /**

@@ -73,9 +73,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private boolean sameVerguenstigung;
 
 	@Transient
+	@Nullable
 	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	@Transient
+	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	@Transient
@@ -92,9 +94,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Transient
 	private Boolean wohnsitzNichtInGemeindeGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
-
-	@Transient
-	private boolean kindMinestalterUnterschritten;
 
 	@Transient
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
@@ -162,6 +161,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private BigDecimal famGroesse = null;
 
 	@Column(nullable = true)
+	@Nonnull
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = ZERO;
 
 	@NotNull
@@ -208,7 +208,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
 		this.wohnsitzNichtInGemeindeGS2 = toCopy.wohnsitzNichtInGemeindeGS2;
-		this.kindMinestalterUnterschritten = toCopy.kindMinestalterUnterschritten;
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
@@ -254,19 +253,21 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return null; // Diese Methode darf eingentlich nicht verwendet werden, da ein VerfuegungZeitabschnitt keinen Vorgaenger hat
 	}
 
+	@Nullable
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
 	}
 
-	public void setErwerbspensumGS1(Integer erwerbspensumGS1) {
+	public void setErwerbspensumGS1(@Nullable Integer erwerbspensumGS1) {
 		this.erwerbspensumGS1 = erwerbspensumGS1;
 	}
 
+	@Nullable
 	public Integer getErwerbspensumGS2() {
 		return erwerbspensumGS2;
 	}
 
-	public void setErwerbspensumGS2(Integer erwerbspensumGS2) {
+	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS2) {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
 	}
 
@@ -349,16 +350,18 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	/**
 	 * @return berechneter Wert. Zieht vom massgebenenEinkommenVorAbzug den Familiengroessen Abzug ab
 	 */
+	@Nonnull
 	public BigDecimal getMassgebendesEinkommen() {
-		return MathUtil.GANZZAHL.subtract(massgebendesEinkommenVorAbzugFamgr,
-			this.abzugFamGroesse == null ? BigDecimal.ZERO : this.abzugFamGroesse);
+		BigDecimal abzugFamSize = this.abzugFamGroesse == null ? BigDecimal.ZERO : this.abzugFamGroesse;
+		return MathUtil.GANZZAHL.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
 	}
 
+	@Nonnull
 	public BigDecimal getMassgebendesEinkommenVorAbzFamgr() {
 		return massgebendesEinkommenVorAbzugFamgr;
 	}
 
-	public void setMassgebendesEinkommenVorAbzugFamgr(BigDecimal massgebendesEinkommenVorAbzugFamgr) {
+	public void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
 		this.massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommenVorAbzugFamgr;
 	}
 
@@ -425,14 +428,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setWohnsitzNichtInGemeindeGS2(Boolean wohnsitzNichtInGemeindeGS2) {
 		this.wohnsitzNichtInGemeindeGS2 = wohnsitzNichtInGemeindeGS2;
-	}
-
-	public boolean isKindMinestalterUnterschritten() {
-		return kindMinestalterUnterschritten;
-	}
-
-	public void setKindMinestalterUnterschritten(boolean kindMinestalterUnterschritten) {
-		this.kindMinestalterUnterschritten = kindMinestalterUnterschritten;
 	}
 
 	public BigDecimal getFamGroesse() {
@@ -584,7 +579,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setZuschlagErwerbspensumGS2((this.getZuschlagErwerbspensumGS2() != null ? this.getZuschlagErwerbspensumGS2() : 0)
 			+ (other.getZuschlagErwerbspensumGS2() != null ? other.getZuschlagErwerbspensumGS2() : 0));
 
-		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.add(this.getMassgebendesEinkommenVorAbzFamgr(), other.getMassgebendesEinkommenVorAbzFamgr()));
+		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.addNullSafe(this.getMassgebendesEinkommenVorAbzFamgr(), other.getMassgebendesEinkommenVorAbzFamgr()));
 
 		this.addBemerkung(other.getBemerkungen());
 		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
@@ -596,7 +591,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 		this.setLongAbwesenheit(this.isLongAbwesenheit() || other.isLongAbwesenheit());
 
-		this.setKindMinestalterUnterschritten(this.isKindMinestalterUnterschritten() || other.isKindMinestalterUnterschritten());
 		// Der Familiengroessen Abzug kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
 		if (other.getAbzugFamGroesse() != null) {
 			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
@@ -641,7 +635,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	/**
 	 * Fügt eine Bemerkung zur Liste hinzu
 	 */
-	public void addBemerkung(String bem) {
+	public void addBemerkung(@Nullable String bem) {
 		this.bemerkungen = Joiner.on("\n").skipNulls().join(
 			StringUtils.defaultIfBlank(this.bemerkungen, null),
 			StringUtils.defaultIfBlank(bem, null)
@@ -759,7 +753,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
 			longAbwesenheit == otherVerfuegungZeitabschnitt.longAbwesenheit &&
-			kindMinestalterUnterschritten == otherVerfuegungZeitabschnitt.kindMinestalterUnterschritten &&
 			Objects.equals(this.einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
 			this.ekv1Alleine == otherVerfuegungZeitabschnitt.ekv1Alleine &&
 			this.ekv1ZuZweit == otherVerfuegungZeitabschnitt.ekv1ZuZweit &&
@@ -781,7 +774,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
-	private boolean isSameErwerbspensum(Integer thisErwerbspensumGS, Integer thatErwerbspensumGS) {
+	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
 		return thisErwerbspensumGS == null && thatErwerbspensumGS == null
 			|| !(thisErwerbspensumGS == null || thatErwerbspensumGS == null)
 			&& thisErwerbspensumGS.equals(thatErwerbspensumGS);

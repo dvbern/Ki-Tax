@@ -23,13 +23,11 @@ export default class TSEinstellung extends TSAbstractDateRangedEntity {
 
     private _key: TSEinstellungKey;
     private _value: string;
-    private _description: string;
 
-    constructor(key?: TSEinstellungKey, value?: string, description?: string, gueltigkeit?: TSDateRange) {
+    constructor(key?: TSEinstellungKey, value?: string, gueltigkeit?: TSDateRange) {
         super(gueltigkeit);
         this._key = key;
         this._value = value;
-        this._description = description;
     }
 
     public get key(): TSEinstellungKey {
@@ -46,13 +44,5 @@ export default class TSEinstellung extends TSAbstractDateRangedEntity {
 
     public set value(value: string) {
         this._value = value;
-    }
-
-    public get description(): string {
-        return this._description;
-    }
-
-    public set description(value: string) {
-        this._description = value;
     }
 }

@@ -79,7 +79,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		gesuchsperiode = createGesuchsperiode(true);
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
@@ -216,7 +216,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	/**
 	 * Holt die gespeicherten Verfügungszeitabschnitte und vergleicht diese mit den berechneten
 	 */
-	private void compareWithDataInFile(List<VerfuegungZeitabschnitt> zeitabschnitte, String fullName, String betreuung, Integer betreuungNummer, String addText) {
+	private void compareWithDataInFile(List<VerfuegungZeitabschnitt> zeitabschnitte, String fullName, String betreuung, Integer betreuungNummer, @Nullable String addText) {
 		final VerfuegungszeitabschnitteData expectedVerfuegungszeitabschnitt = getExpectedVerfuegungszeitabschnitt(fullName, betreuung, betreuungNummer, addText);
 		final VerfuegungszeitabschnitteData calculatedVerfuegungszeitabschnitt = generateVzd(zeitabschnitte, fullName, betreuung, betreuungNummer);
 
@@ -251,7 +251,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Holt die gespeicherten Werte aus den Files
 	 */
 	@Nullable
-	public VerfuegungszeitabschnitteData getExpectedVerfuegungszeitabschnitt(String fullName, String betreuung, Integer betreuungNummer, String addText) {
+	public VerfuegungszeitabschnitteData getExpectedVerfuegungszeitabschnitt(String fullName, String betreuung, Integer betreuungNummer, @Nullable String addText) {
 
 		final String fileNamePath = getFileNamePath(fullName, betreuung, betreuungNummer, addText);
 		final File resultFile = new File(fileNamePath);
@@ -297,7 +297,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	/**
 	 * Generiert den Pfad für die Files zum speichern der Daten
 	 */
-	private String getFileNamePath(String fullName, String betreuung, Integer betreungsnummer, String addText) {
+	private String getFileNamePath(String fullName, String betreuung, Integer betreungsnummer, @Nullable String addText) {
 		String storePath = "./src/test/resources/VerfuegungResult/";
 
 		String filename = fullName + betreuung + betreungsnummer;
@@ -328,11 +328,12 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	/**
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
+	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
-		return gesuchsperiode;
+		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
+		gesuchsperiode1617.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1617);
+		return gesuchsperiode1617;
 	}
 }
 

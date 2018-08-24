@@ -20,12 +20,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.annotation.Nullable;
-import javax.security.auth.message.AuthException;
 import javax.security.auth.message.AuthStatus;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ch.dvbern.ebegu.api.AuthConstants;
+import ch.dvbern.ebegu.api.EbeguApplicationV1;
+import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.util.BasicAuthHelper;
 import org.omnifaces.security.jaspic.core.AuthParameters;
@@ -35,13 +40,6 @@ import org.omnifaces.security.jaspic.user.TokenAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import ch.dvbern.ebegu.api.AuthConstants;
-import ch.dvbern.ebegu.api.EbeguApplicationV1;
-import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.util.Constants;
 
 import static javax.security.auth.message.AuthStatus.SEND_FAILURE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -106,7 +104,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	@Override
-	public AuthStatus validateHttpRequest(HttpServletRequest request, HttpServletResponse response, HttpMsgContext httpMsgContext) throws AuthException {
+	public AuthStatus validateHttpRequest(HttpServletRequest request, HttpServletResponse response, HttpMsgContext httpMsgContext) {
 		prepareLogvars(httpMsgContext);
 		//maybe we should do a logout first?
 		//		try {
@@ -174,20 +172,18 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 						authToken = authToken + Constants.AUTH_TOKEN_SUFFIX_FOR_NO_TOKEN_REFRESH_REQUESTS;
 					}
 					if (tokenAuthenticator.authenticate(authToken)) {
-						LOG.debug("successfully logged in user: " + tokenAuthenticator.getUserName());
+						LOG.debug("successfully logged in user: {}", tokenAuthenticator.getUserName());
 						MDC.put(LOG_MDC_AUTHUSERID, authToken);
 						//						httpMsgContext.registerWithContainer(tokenAuthenticator.getUserName(), tokenAuthenticator.getApplicationRoles()); //weis nicht was der untschied zwischen dem und dem andern ist
 						return httpMsgContext.notifyContainerAboutLogin(tokenAuthenticator.getUserName(), tokenAuthenticator.getApplicationRoles());
-					} else {
-						// Token Verification Failed
-						LOG.debug("Token verification failed for " + tokenAuthenticator.getUserName());
-						return setResponseUnauthorised(httpMsgContext);
-
 					}
-				} else {
-					LOG.warn("No Authenticator found with CDI:  " + TokenAuthenticator.class.getSimpleName() + " all auth attempts will be refused");
 
+					// Token Verification Failed
+					LOG.debug("Token verification failed for {}", tokenAuthenticator.getUserName());
+					return setResponseUnauthorised(httpMsgContext);
 				}
+
+				LOG.warn("No Authenticator found with CDI:  {} all auth attempts will be refused", TokenAuthenticator.class.getSimpleName());
 			}
 
 		} catch (NoSuchElementException e) {
@@ -203,47 +199,47 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 		return httpMsgContext.doNothing();
 	}
 
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private AuthStatus checkAuthorizationForInternalApiAccess(HttpServletRequest request, HttpMsgContext httpMsgContext) {
 		if (!isInternalApiActive()) {
-			LOG.error("Call to connector API even though the properties for username and password were not defined"
-				+ "in ebegu. Please check that the system properties for username/password for the internal api are"
+			LOG.error("Call to connector API even though the properties for username and password were not defined "
+				+ " in ebegu. Please check that the system properties for username/password for the internal api are"
 				+ " set");
 			return setResponseUnauthorised(httpMsgContext);
-		} else {
-
-			String header = request.getHeader("Authorization");
-			final String[] strings = BasicAuthHelper.parseHeader(header);
-			if (strings != null && strings.length == 2) {
-				final String username = strings[0];
-				final String password = strings[1];
-				boolean validLogin = username.equals(this.internalApiUser) && password.equals(this.internalApiPassword);
-				return getAuthStatus(httpMsgContext, validLogin);
-			} else {
-				LOG.error("Call to connector api without BasicAuth header credentials");
-				return setResponseUnauthorised(httpMsgContext);
-			}
 		}
+
+		String header = request.getHeader("Authorization");
+		final String[] strings = BasicAuthHelper.parseHeader(header);
+		if (strings != null && strings.length == 2) {
+			final String username = strings[0];
+			final String password = strings[1];
+			boolean validLogin = username.equals(this.internalApiUser) && password.equals(this.internalApiPassword);
+			return getAuthStatus(httpMsgContext, validLogin);
+		}
+
+		LOG.error("Call to connector api without BasicAuth header credentials");
+		return setResponseUnauthorised(httpMsgContext);
 	}
 
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private AuthStatus checkAuthorizationForSchulamtApiAccess(HttpServletRequest request, HttpMsgContext httpMsgContext) {
 		if (!isSchulamtApiActive()) {
-			LOG.error("Call to connector API even though the properties for username and password were not defined"
-				+ "in ebegu. Please check that the system properties for username/password for the schulamt api are set");
+			LOG.error("Call to connector API even though the properties for username and password were not defined "
+				+ " in ebegu. Please check that the system properties for username/password for the schulamt api are set");
 			return setResponseUnauthorised(httpMsgContext);
-		} else {
-
-			String header = request.getHeader("Authorization");
-			final String[] strings = BasicAuthHelper.parseHeader(header);
-			if (strings != null && strings.length == 2) {
-				final String username = strings[0];
-				final String password = strings[1];
-				boolean validLogin = username.equals(this.schulamtApiUser) && password.equals(this.schulamtApiPassword);
-				return getAuthStatus(httpMsgContext, validLogin);
-			} else {
-				LOG.error("Call to connector api without BasicAuth header credentials");
-				return setResponseUnauthorised(httpMsgContext);
-			}
 		}
+
+		String header = request.getHeader("Authorization");
+		final String[] strings = BasicAuthHelper.parseHeader(header);
+		if (strings != null && strings.length == 2) {
+			final String username = strings[0];
+			final String password = strings[1];
+			boolean validLogin = username.equals(this.schulamtApiUser) && password.equals(this.schulamtApiPassword);
+			return getAuthStatus(httpMsgContext, validLogin);
+		}
+
+		LOG.error("Call to connector api without BasicAuth header credentials");
+		return setResponseUnauthorised(httpMsgContext);
 	}
 
 	private AuthStatus getAuthStatus(HttpMsgContext httpMsgContext, boolean validLogin) {
@@ -252,10 +248,10 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			List<String> roles = new ArrayList<>();
 			roles.add(UserRoleName.SUPER_ADMIN);
 			return httpMsgContext.notifyContainerAboutLogin("LoginConnector", roles);
-		} else {
-			LOG.error("Call to connector api with invalid BasicAuth header credentials");
-			return setResponseUnauthorised(httpMsgContext);
 		}
+
+		LOG.error("Call to connector api with invalid BasicAuth header credentials");
+		return setResponseUnauthorised(httpMsgContext);
 	}
 
 	private void prepareLogvars(HttpMsgContext msgContext) {
@@ -265,7 +261,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 		if (LOG.isDebugEnabled()) {
 			AuthParameters authParameters = msgContext.getAuthParameters();
 			if (authParameters != null && Boolean.FALSE.equals(authParameters.getNoPassword())) {
-				LOG.debug("Username " + authParameters.getUsername());
+				LOG.debug("Username {}", authParameters.getUsername());
 				LOG.debug("Password was passed in request");
 			}
 		}
@@ -281,7 +277,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			&& RestUtil.isFileDownloadRequest(request);
 		if (!request.getRequestURI().contains("/migration/")) { //migration ist ausgenommen
 			if (!isValidFileDownload && !AuthDataUtil.isValidXsrfParam(xsrfTokenHeader, xsrfTokenCookie)) {
-				LOG.debug("Could not match XSRF Token from Header and Cookie. Header:" + xsrfTokenHeader + " cookie " + xsrfTokenCookie);
+				LOG.debug("Could not match XSRF Token from Header and Cookie. Header:{} cookie {}", xsrfTokenHeader, xsrfTokenCookie);
 				return false;
 			}
 		}

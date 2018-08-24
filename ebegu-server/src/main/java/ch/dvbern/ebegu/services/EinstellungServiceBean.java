@@ -34,6 +34,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -45,6 +46,8 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -92,19 +95,19 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	private void assertUniqueEinstellung(@Nonnull Einstellung einstellung) {
 		EntityManager em = persistence.getEntityManager();
 		if (einstellung.getGemeinde() != null) {
-			Optional<Einstellung> einstellungByGemeinde = findEinstellungByGemeinde(einstellung.getKey(), einstellung.getGemeinde(), einstellung.getGesuchsperiode(), em);
+			Optional<Einstellung> einstellungByGemeinde = findEinstellungByMandantGemeindeOrSystem(einstellung.getKey(), null, einstellung.getGemeinde(), einstellung.getGesuchsperiode(), em);
 			if (einstellungByGemeinde.isPresent()) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Einstellung " + einstellung.getKey() + " is already present for Gemeinde");
 			}
 		} else if (einstellung.getMandant() != null) {
-			Optional<Einstellung> einstellungByMandant = findEinstellungByMandant(einstellung.getKey(), einstellung.getMandant(), einstellung.getGesuchsperiode(), em);
+			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(einstellung.getKey(), einstellung.getMandant(), null, einstellung.getGesuchsperiode(), em);
 			if (einstellungByMandant.isPresent()) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Einstellung " + einstellung.getKey() + " is already present for Mandant");
 			}
 		} else {
-			Optional<Einstellung> einstellungBySystem = findEinstellungBySystem(einstellung.getKey(), einstellung.getGesuchsperiode(), em);
+			Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(einstellung.getKey(), null, null, einstellung.getGesuchsperiode(), em);
 			if (einstellungBySystem.isPresent()) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Einstellung " + einstellung.getKey() + " is already present for System");
 			}
 		}
 	}
@@ -128,75 +131,36 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Override
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
-	public Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable final EntityManager
-		em) {
+	public Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull final EntityManager em) {
 		// Wir suchen drei-stufig:
 		// (1) Nach Gemeinde
-		Optional<Einstellung> einstellungByGemeinde = findEinstellungByGemeinde(key, gemeinde, gesuchsperiode, em);
+		Optional<Einstellung> einstellungByGemeinde = findEinstellungByMandantGemeindeOrSystem(key, gemeinde.getMandant(), gemeinde, gesuchsperiode, em);
 		if (einstellungByGemeinde.isPresent()) {
 			return einstellungByGemeinde.get();
 		}
 		// (2) Nach Mandant
-		Optional<Einstellung> einstellungByMandant = findEinstellungByMandant(key, gemeinde.getMandant(), gesuchsperiode, em);
+		Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(key, gemeinde.getMandant(), null, gesuchsperiode, em);
 		if (einstellungByMandant.isPresent()) {
 			return einstellungByMandant.get();
 		}
 		// (3) Nach Default des Systems
-		Optional<Einstellung> einstellungBySystem = findEinstellungBySystem(key, gesuchsperiode, em);
+		Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(key, null, null, gesuchsperiode, em);
 		if (einstellungBySystem.isPresent()) {
 			return einstellungBySystem.get();
 		}
 		throw new NoEinstellungFoundException(key, gemeinde, gesuchsperiode);
 	}
 
-	private Optional<Einstellung> findEinstellungBySystem(@Nonnull EinstellungKey key, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable final EntityManager em) {
-		final CriteriaBuilder cb = em != null ? em.getCriteriaBuilder() : persistence.getCriteriaBuilder();
-		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
+	private Optional<Einstellung> findEinstellungByMandantGemeindeOrSystem(
+		@Nonnull EinstellungKey key,
+		@Nullable Mandant mandant,
+		@Nullable Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull final EntityManager em
+	) {
 
-		Root<Einstellung> root = query.from(Einstellung.class);
-		// MUSS Kriterien
-		final Predicate predicateKey = cb.equal(root.get(Einstellung_.key), key);
-		final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
-		// Gemeinde darf nicht gesetzt sein
-		final Predicate predicateGemeindeNull = cb.isNull(root.get(Einstellung_.gemeinde));
-		// Mandant darf nicht gesetzt sein
-		final Predicate predicateMandantNull = cb.isNull(root.get(Einstellung_.mandant));
-
-		query.where(predicateKey, predicateGesuchsperiode, predicateGemeindeNull, predicateMandantNull);
-		query.select(root);
-		List<Einstellung> criteriaResults = persistence.getCriteriaResults(query, 1);
-		if (criteriaResults.isEmpty()) {
-			return Optional.empty();
-		}
-		return Optional.of(criteriaResults.get(0));
-	}
-
-	private Optional<Einstellung> findEinstellungByMandant(@Nonnull EinstellungKey key, @Nonnull Mandant mandant, @Nonnull Gesuchsperiode gesuchsperiode,
-			@Nullable final EntityManager em) {
-		final CriteriaBuilder cb = em != null ? em.getCriteriaBuilder() : persistence.getCriteriaBuilder();
-		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
-
-		Root<Einstellung> root = query.from(Einstellung.class);
-		// MUSS Kriterien
-		final Predicate predicateKey = cb.equal(root.get(Einstellung_.key), key);
-		final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
-		// Gemeinde darf nicht gesetzt sein
-		final Predicate predicateGemeindeNull = cb.isNull(root.get(Einstellung_.gemeinde));
-		// Mandant
-		final Predicate predicateMandant = cb.equal(root.get(Einstellung_.mandant), mandant);
-
-		query.where(predicateKey, predicateGesuchsperiode, predicateGemeindeNull, predicateMandant);
-		query.select(root);
-		List<Einstellung> criteriaResults = persistence.getCriteriaResults(query, 1);
-		if (criteriaResults.isEmpty()) {
-			return Optional.empty();
-		}
-		return Optional.of(criteriaResults.get(0));
-	}
-
-	private Optional<Einstellung> findEinstellungByGemeinde(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode,
-		@Nullable final EntityManager em) {
-		final CriteriaBuilder cb = em != null ? em.getCriteriaBuilder() : persistence.getCriteriaBuilder();
+		final CriteriaBuilder cb = em.getCriteriaBuilder();
 		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
 
 		Root<Einstellung> root = query.from(Einstellung.class);
@@ -204,15 +168,23 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		final Predicate predicateKey = cb.equal(root.get(Einstellung_.key), key);
 		final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
 		// Gemeinde
-		final Predicate predicateGemeinde = cb.equal(root.get(Einstellung_.gemeinde), gemeinde);
+		final Predicate predicateGemeinde = (gemeinde == null) ?
+			cb.isNull(root.get(Einstellung_.gemeinde)) : cb.equal(root.get(Einstellung_.gemeinde), gemeinde);
 		// Mandant
-		final Predicate predicateMandant = cb.equal(root.get(Einstellung_.mandant), gemeinde.getMandant());
+		final Predicate predicateMandant = (mandant == null) ?
+			cb.isNull(root.get(Einstellung_.mandant)) : cb.equal(root.get(Einstellung_.mandant), mandant);
 
 		query.where(predicateKey, predicateGesuchsperiode, predicateGemeinde, predicateMandant);
 		query.select(root);
-		List<Einstellung> criteriaResults = persistence.getCriteriaResults(query, 1);
+
+		final TypedQuery<Einstellung> query1 = em.createQuery(query);
+		List<Einstellung> criteriaResults = query1.getResultList();
+
 		if (criteriaResults.isEmpty()) {
 			return Optional.empty();
+		}
+		if (criteriaResults.size() > 1) {
+			throw new EbeguRuntimeException("findEinstellungByMandantGemeindeOrSystem", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
 		return Optional.of(criteriaResults.get(0));
 	}
@@ -264,6 +236,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			.forEach(lastGPEinstellung -> {
 				Einstellung einstellungOfNewGP = lastGPEinstellung.copyGesuchsperiode(gesuchsperiodeToCreate);
 				saveEinstellung(einstellungOfNewGP);
-		});
+			});
 	}
 }

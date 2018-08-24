@@ -150,6 +150,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
@@ -841,14 +842,10 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum, AntragStatus status) {
-		instService.getAllInstitutionen();
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence,
+		@Nullable LocalDate eingangsdatum, AntragStatus status) {
 
-		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, status, TestDataUtil.createGesuchsperiode1718());
 	}
 
 	/**
@@ -856,7 +853,6 @@ public final class TestDataUtil {
 	 */
 	public static Gesuch createAndPersistWaeltiDagmarGesuch(@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
-		prepareParameters(gesuchsperiode, persistence);
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -900,7 +896,6 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
 		gesuchsperiode) {
-		prepareParameters(gesuchsperiode, persistence);
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
@@ -911,18 +906,13 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
-		AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
-		prepareParameters(gesuchsperiode, persistence);
+		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
-	}
-
-	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum, AntragStatus status) {
-		return createAndPersistBeckerNoraGesuch(instService, persistence, eingangsdatum, status, TestDataUtil.createGesuchsperiode1718());
 	}
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {
@@ -1129,13 +1119,14 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "20", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "20", gesuchsperiode, persistence);
 
 	}
 
 	public static void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode, Persistence persistence) {
-		Einstellung ebeguParameter = new Einstellung(key, value, gesuchsperiode);
-		persistence.persist(ebeguParameter);
+		Einstellung einstellung = new Einstellung(key, value, gesuchsperiode);
+		persistence.persist(einstellung);
 	}
 
 	public static void saveParameter(ApplicationPropertyKey key, String value, Persistence persistence) {

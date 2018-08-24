@@ -56,7 +56,7 @@ public class BetreuungsgutscheinConfigurator {
 		return rules;
 	}
 
-	public Set<EinstellungKey> getRequiredParametersForGemeinde(@Nullable Gemeinde gemeinde) {
+	public Set<EinstellungKey> getRequiredParametersForGemeinde(@Nonnull Gemeinde gemeinde) {
 		return requiredBernerParameters();
 	}
 
@@ -71,11 +71,11 @@ public class BetreuungsgutscheinConfigurator {
 			BG_BIS_UND_MIT_SCHULSTUFE);
 	}
 
-	private void useBernerRules(Map<EinstellungKey, Einstellung> ebeguParameter) {
+	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
 
-		abschnitteErstellenRegeln(ebeguParameter);
-		berechnenAnspruchRegeln(ebeguParameter);
-		reduktionsRegeln(ebeguParameter);
+		abschnitteErstellenRegeln(einstellungen);
+		berechnenAnspruchRegeln(einstellungen);
+		reduktionsRegeln(einstellungen);
 
 	}
 
@@ -123,10 +123,6 @@ public class BetreuungsgutscheinConfigurator {
 		EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(defaultGueltigkeit);
 		rules.add(einreichungsfristAbschnittRule);
 
-		// Mindestalter Kind
-		MindestalterAbschnittRule mindestalterAbschnittRule = new MindestalterAbschnittRule(defaultGueltigkeit);
-		rules.add(mindestalterAbschnittRule);
-
 		// Abwesenheit
 		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit);
 		rules.add(abwesenheitAbschnittRule);
@@ -156,10 +152,6 @@ public class BetreuungsgutscheinConfigurator {
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
 		rules.add(fachstelleCalcRule);
-
-		// - Kind wohnt im gleichen Haushalt: Muss zwingend nach Fachstelle durchgefuehrt werden
-		WohnhaftImGleichenHaushaltCalcRule wohnhaftImGleichenHaushaltRule = new WohnhaftImGleichenHaushaltCalcRule(defaultGueltigkeit);
-		rules.add(wohnhaftImGleichenHaushaltRule);
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
@@ -175,10 +167,6 @@ public class BetreuungsgutscheinConfigurator {
 		BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(defaultGueltigkeit);
 		rules.add(betreuungsangebotTypCalcRule);
 
-		// Mindestalter Kind
-		MindestalterCalcRule mindestalterRule = new MindestalterCalcRule(defaultGueltigkeit);
-		rules.add(mindestalterRule);
-
 		// Wohnsitz (Zuzug und Wegzug)
 		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit);
 		rules.add(wohnsitzCalcRule);
@@ -186,10 +174,6 @@ public class BetreuungsgutscheinConfigurator {
 		// Einreichungsfrist
 		EinreichungsfristCalcRule einreichungsfristRule = new EinreichungsfristCalcRule(defaultGueltigkeit);
 		rules.add(einreichungsfristRule);
-
-		// Mindestalter Kind
-		MindestalterCalcRule mindestalterCalcRule = new MindestalterCalcRule(defaultGueltigkeit);
-		rules.add(mindestalterCalcRule);
 
 		// Abwesenheit
 		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit);

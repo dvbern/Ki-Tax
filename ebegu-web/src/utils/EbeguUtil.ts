@@ -49,11 +49,8 @@ export default class EbeguUtil {
         if (!EbeguUtil.isTagesschulangebotEnabled()) {
             return 'VERANTWORTLICHER_OHNE_SCHULAMT';
         }
-        if (isSchulamt) {
-            return 'VERANTWORTLICHER_SCHULAMT';
-        } else {
-            return 'VERANTWORTLICHER_JUGENDAMT';
-        }
+
+        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
     }
 
     /**

@@ -130,7 +130,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	public Gesuch createErstgesuch(@Nonnull ErstgesuchConfig config) {
 		Gesuchsperiode gesuchsperiode = getGesuchsperiode(null, config);
 		Gemeinde gemeinde = getGemeinde(null, config);
-		insertParametersForTestfaelle(gesuchsperiode);
 		AbstractTestfall testfall = createTestfall(config, gesuchsperiode, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		if (config.isVerfuegt()) {
@@ -141,7 +140,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	@Override
 	public Gesuch createMutation(@Nonnull MutationConfig config, @Nonnull Gesuch vorgaengerAntrag) {
-		insertParametersForTestfaelle(vorgaengerAntrag.getGesuchsperiode());
 		Gesuch mutation = gesuchService.antragMutieren(vorgaengerAntrag.getId(), config.getEingangsdatum())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ""));
 		if (config.getErwerbspensum() != null) {
@@ -372,7 +370,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		}
 	}
 
-	private void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
+	@Override
+	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
 		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, "7", gesuchsperiode);
@@ -398,8 +397,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {
-		Einstellung ebeguParameter = new Einstellung(key, value, gesuchsperiode);
-		persistence.persist(ebeguParameter);
+		Einstellung einstellungen = new Einstellung(key, value, gesuchsperiode);
+		persistence.persist(einstellungen);
 	}
 
 	private InstitutionStammdaten getInstitutionStammdaten(@Nonnull AnmeldungConfig config) {

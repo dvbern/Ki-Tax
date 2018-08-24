@@ -91,6 +91,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 	@Before
 	public void setUp() {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		gesuch.setVorgaengerId(gesuch.getId()); // by default and to simplify itself
 		gesuch = persistence.merge(gesuch);
@@ -545,8 +546,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void updateWizardStepEkvMutiert() {
-		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of
-			(1980, Month.MARCH, 25));
+		Gesuch erstgesuch = gesuch;
 
 		updateStatusMutiert(einkVerStep, WizardStepStatus.OK);
 
@@ -556,11 +556,11 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		oldData.setEkvFuerBasisJahrPlus1(true); // actual difference
 		oldData.setGemeinsameSteuererklaerung_BjP1(true);
 		oldData.setEkvFuerBasisJahrPlus2(false);
-		oldDataCont.setGesuch(erstgesuch);
+		oldDataCont.setGesuch(gesuch);
 		oldDataCont.setEinkommensverschlechterungInfoJA(oldData);
 
-		erstgesuch.setEinkommensverschlechterungInfoContainer(oldDataCont);
-		erstgesuch = persistence.merge(erstgesuch);
+		gesuch.setEinkommensverschlechterungInfoContainer(oldDataCont);
+		persistence.merge(oldData);
 
 		EinkommensverschlechterungInfoContainer newDataCont = new EinkommensverschlechterungInfoContainer();
 		EinkommensverschlechterungInfo newData = new EinkommensverschlechterungInfo();

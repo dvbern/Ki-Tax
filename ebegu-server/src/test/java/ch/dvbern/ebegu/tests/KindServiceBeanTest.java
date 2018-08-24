@@ -104,6 +104,7 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void addKindInMutationTest() {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		Gesuch erstgesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
 			AntragStatus.VERFUEGT, gesuchsperiode);
 		erstgesuch.setGueltig(true);
@@ -140,7 +141,7 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		final KindContainer persitedKind2 = persistKind(gesuch);
 
 		final Gesuch otherGesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		final KindContainer persitedKindOtherGesuch = persistKind(otherGesuch);
+		persistKind(otherGesuch);
 
 		final List<KindContainer> allKinderFromGesuch = kindService.findAllKinderFromGesuch(gesuch.getId());
 

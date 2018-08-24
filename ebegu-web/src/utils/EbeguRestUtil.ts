@@ -157,7 +157,6 @@ export default class EbeguRestUtil {
             this.parseDateRangeEntity(tsEinstellung, receivedEinstellung);
             tsEinstellung.key = receivedEinstellung.key;
             tsEinstellung.value = receivedEinstellung.value;
-            tsEinstellung.description = receivedEinstellung.description;
             // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
             return tsEinstellung;
         }
@@ -169,7 +168,6 @@ export default class EbeguRestUtil {
             this.abstractDateRangeEntityToRestObject(restEinstellung, tsEinstellung);
             restEinstellung.key = tsEinstellung.key;
             restEinstellung.value = tsEinstellung.value;
-            restEinstellung.description = tsEinstellung.description;
             // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
             return restEinstellung;
         }
@@ -706,15 +704,9 @@ export default class EbeguRestUtil {
     }
 
     public parseDossierList(data: any): TSDossier[] {
-        let dossierListTS: TSDossier[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                dossierListTS[i] = this.parseDossier(new TSDossier(), data[i]);
-            }
-        } else {
-            dossierListTS[0] = this.parseDossier(new TSDossier(), data);
-        }
-        return dossierListTS;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseDossier(new TSDossier(), item))
+            :  [this.parseDossier(new TSDossier(), data)];
     }
 
     public parseDossier(dossierTS: TSDossier, dossierFromServer: any): TSDossier {
@@ -1195,7 +1187,6 @@ export default class EbeguRestUtil {
 
     private kindToRestObject(restKind: any, kind: TSKind): any {
         this.abstractPersonEntitytoRestObject(restKind, kind);
-        restKind.wohnhaftImGleichenHaushalt = kind.wohnhaftImGleichenHaushalt;
         restKind.kinderabzug = kind.kinderabzug;
         restKind.mutterspracheDeutsch = kind.mutterspracheDeutsch;
         restKind.einschulungTyp = kind.einschulungTyp;
@@ -1258,7 +1249,6 @@ export default class EbeguRestUtil {
     private parseKind(kindTS: TSKind, kindFromServer: any): TSKind {
         if (kindFromServer) {
             this.parseAbstractPersonEntity(kindTS, kindFromServer);
-            kindTS.wohnhaftImGleichenHaushalt = kindFromServer.wohnhaftImGleichenHaushalt;
             kindTS.kinderabzug = kindFromServer.kinderabzug;
             kindTS.mutterspracheDeutsch = kindFromServer.mutterspracheDeutsch;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
@@ -1346,7 +1336,6 @@ export default class EbeguRestUtil {
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;
         restAngebot.mutterspracheDeutsch = angebotDTO.mutterspracheDeutsch;
-        restAngebot.wohnhaftImGleichenHaushalt = angebotDTO.wohnhaftImGleichenHaushalt;
         return restAngebot;
 
     }

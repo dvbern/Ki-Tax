@@ -44,7 +44,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
- * Diese müssen aus den EbeguParametern gelesen werden.
+ * Diese müssen aus den Einstellungen gelesen werden.
  */
 public final class BGRechnerParameterDTO {
 

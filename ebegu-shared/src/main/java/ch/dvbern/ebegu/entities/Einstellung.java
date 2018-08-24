@@ -82,7 +82,7 @@ public class Einstellung extends AbstractEntity {
 			@Nullable Mandant mandant, @Nullable Gemeinde gemeinde) {
 		this(key, value, gesuchsperiode);
 		this.gemeinde = gemeinde;
-		if (this.gemeinde != null) {
+		if (gemeinde != null) {
 			this.mandant = gemeinde.getMandant();
 		} else {
 			this.mandant = mandant;

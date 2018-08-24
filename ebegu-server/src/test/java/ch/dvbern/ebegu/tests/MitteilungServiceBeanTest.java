@@ -104,6 +104,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Before
 	public void init() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		mandant = getDummySuperadmin().getMandant();
 		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
