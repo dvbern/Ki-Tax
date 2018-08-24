@@ -119,9 +119,6 @@ public class BetreuungsgutscheinConfigurator {
 		EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(defaultGueltigkeit);
 		rules.add(einreichungsfristAbschnittRule);
 
-		// Mindestalter Kind
-		// deaktiviert
-
 		// Abwesenheit
 		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit);
 		rules.add(abwesenheitAbschnittRule);
@@ -171,10 +168,6 @@ public class BetreuungsgutscheinConfigurator {
 		BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(defaultGueltigkeit);
 		rules.add(betreuungsangebotTypCalcRule);
 
-		// Mindestalter Kind
-		MindestalterCalcRule mindestalterRule = new MindestalterCalcRule(defaultGueltigkeit);
-		rules.add(mindestalterRule);
-
 		// Wohnsitz (Zuzug und Wegzug)
 		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit);
 		rules.add(wohnsitzCalcRule);
@@ -182,10 +175,6 @@ public class BetreuungsgutscheinConfigurator {
 		// Einreichungsfrist
 		EinreichungsfristCalcRule einreichungsfristRule = new EinreichungsfristCalcRule(defaultGueltigkeit);
 		rules.add(einreichungsfristRule);
-
-		// Mindestalter Kind
-		MindestalterCalcRule mindestalterCalcRule = new MindestalterCalcRule(defaultGueltigkeit);
-		rules.add(mindestalterCalcRule);
 
 		// Abwesenheit
 		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit);
