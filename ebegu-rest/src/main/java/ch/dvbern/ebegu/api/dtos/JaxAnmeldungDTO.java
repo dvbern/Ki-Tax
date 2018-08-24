@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.io.Serializable;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -28,7 +30,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
  */
 @XmlRootElement(name = "anmeldung")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxAnmeldungDTO {
+public class JaxAnmeldungDTO  implements Serializable {
 
 	private static final long serialVersionUID = -1227022381675937697L;
 
@@ -37,9 +39,6 @@ public class JaxAnmeldungDTO {
 
 	@NotNull
 	private String kindContainerId;
-
-	@Nullable
-	private Integer wohnhaftImGleichenHaushalt;
 
 	@NotNull
 	private Boolean additionalKindQuestions;
@@ -64,15 +63,6 @@ public class JaxAnmeldungDTO {
 
 	public void setKindContainerId(String kindContainerId) {
 		this.kindContainerId = kindContainerId;
-	}
-
-	@Nullable
-	public Integer getWohnhaftImGleichenHaushalt() {
-		return wohnhaftImGleichenHaushalt;
-	}
-
-	public void setWohnhaftImGleichenHaushalt(@Nullable Integer wohnhaftImGleichenHaushalt) {
-		this.wohnhaftImGleichenHaushalt = wohnhaftImGleichenHaushalt;
 	}
 
 	public Boolean getAdditionalKindQuestions() {
