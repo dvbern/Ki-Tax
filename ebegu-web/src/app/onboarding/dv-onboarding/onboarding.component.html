@@ -54,7 +54,7 @@
     </div>
 </form>
 
-<p class="onboarding-login">
+<p class="onboarding-login" *ngIf="showLogin">
     {{'ONBOARDING_ACCOUNT_VORHANDEN' | translate}}<br>
     <a href="" uiSref="authentication.login">{{'ONBOARDING_ANMELDEN' | translate}}</a>
     <ng-container *ngIf="isDummyMode$ | async">

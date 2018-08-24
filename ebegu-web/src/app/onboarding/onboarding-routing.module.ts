@@ -61,7 +61,11 @@ const states: Ng2StateDeclaration[] = [
         data: {
             roles: [TSRole.GESUCHSTELLER]
         },
-        onEnter: disableWhenDossierExists
+        onEnter: disableWhenDossierExists,
+        resolve: {
+            nextState: () => 'onboarding.gesuchsteller',
+            showLogin: () => false,
+        }
     },
 ];
 
@@ -71,7 +75,7 @@ function disableWhenDossierExists(transition: Transition) {
     const dossierService = transition.injector().get('DossierRS');
 
     return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()
-        // when there is a dossier, redirect to gesuchsteller.dashboard
+    // when there is a dossier, redirect to gesuchsteller.dashboard
         .then(() => transition.router.stateService.target('gesuchsteller.dashboard'))
         // when there is no dossier, continue entering the state
         .catch(() => true);
