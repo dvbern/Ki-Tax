@@ -23,25 +23,32 @@
     }
 
     &-label {
-        width: 28rem;
+        width: 26.3rem;
         margin-bottom: 1.7rem;
     }
 
     &-input-container {
         display: flex;
         flex-flow: row wrap;
+        align-items: flex-end;
         justify-content: space-between;
     }
 
     &-search {
-        margin-bottom: 1.7rem;
+        margin-bottom: 0;
 
         &-input {
-            border: 0.5rem solid @primary;
+            height: 4rem;
+            background: @primary;
+            width: 26.3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .dv-select-style {
+        .dv-select-style-onboarding {
             border: 1px solid @anthracite;
+            background: @contrast-lightest;
 
             select {
                 width: calc(25.2rem - 1px);
@@ -50,7 +57,8 @@
                 font-weight: normal;
             }
 
-            &:after {
+            &::after {
+                content: " \f002";
                 top: 0.5rem;
                 color: @black;
             }
@@ -62,12 +70,51 @@
         width: 26.3rem;
         text-transform: uppercase;
         // wenn der button fokusiert ist braucht er 2px für den Outline
-        margin: 0 2px;
     }
+}
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2), only screen
+and (min-device-width: 375px)
+and (max-device-width: 667px)
+and (-webkit-min-device-pixel-ratio: 2), only screen
+and (min-device-width: 414px)
+and (max-device-width: 736px)
+and (-webkit-min-device-pixel-ratio: 3), only screen
+and (max-device-width: 640px), only screen
+and (max-device-width: 667px), only screen
+and (max-width: 480px) {
+
+    .onboarding-gemeinde-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+    }
+
+    .onboarding-gemeinde-input-container {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media @mq-sm {
+
+    .onboarding-gemeinde-container {
+        justify-content: space-between;
+    }
+
+    .onboarding-gemeinde-input-container {
+        width: 100%;
+    }
+
 }
 
 .input-error {
     height: 4rem;
+    width: 26.3rem;
 }
 
 .onboarding-login {
