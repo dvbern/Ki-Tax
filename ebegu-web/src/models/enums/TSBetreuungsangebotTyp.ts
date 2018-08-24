@@ -47,12 +47,12 @@ export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array
         return [
             TSBetreuungsangebotTyp.KITA,
             TSBetreuungsangebotTyp.TAGESFAMILIEN,
+            TSBetreuungsangebotTyp.TAGESSCHULE
         ];
     } else {
         return [
             TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE
+            TSBetreuungsangebotTyp.TAGESFAMILIEN
         ];
     }
 }
