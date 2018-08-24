@@ -34,8 +34,9 @@ conf.$inject = ['$stateProvider'];
 function conf($stateProvider: StateProvider): void {
     $stateProvider.state(
         {
-            abstract: true,
+            parent: 'app',
             name: 'dossier',
+            abstract: true,
             url: '/dossier/:dossierId',
             resolve: {
                 dossier: dossier
