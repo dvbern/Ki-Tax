@@ -41,7 +41,7 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @CheckFerieninselStammdatenDatesOverlapping
-public class FerieninselStammdaten extends AbstractEntity {
+public class FerieninselStammdaten extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6703477164293147908L;
 

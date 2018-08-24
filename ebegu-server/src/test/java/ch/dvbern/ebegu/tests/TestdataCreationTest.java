@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Assert;
@@ -53,6 +54,9 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Inject
 	private TestdataCreationService testdataCreationService;
+
+	@Inject
+	private Persistence persistence;
 
 
 	@Test
@@ -87,7 +91,8 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void createErstgesuchForAnotherPeriode() {
-		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, gesuchsperiode1718, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Assert.assertNotNull(erstgesuch);
@@ -99,7 +104,8 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	public void createEmptyMutation() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
-		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(), LocalDateTime.now()), erstgesuch);
+		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(),
+			LocalDateTime.now()), erstgesuch);
 
 		Assert.assertNotNull(mutation);
 		Assert.assertTrue(mutation.isGueltig());
@@ -113,8 +119,8 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	public void createMutation() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
-		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createMutationVerfuegt(LocalDate.now(), LocalDateTime.now(), 50, false),
-			erstgesuch);
+		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createMutationVerfuegt(LocalDate.now(), LocalDateTime.now(),
+			50, false), erstgesuch);
 
 		Assert.assertNotNull(mutation);
 		Assert.assertTrue(mutation.isGueltig());

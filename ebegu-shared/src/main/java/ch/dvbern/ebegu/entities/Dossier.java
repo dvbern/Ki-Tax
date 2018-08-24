@@ -52,7 +52,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 )
 @CheckVerantwortlicherBG(groups = ChangeVerantwortlicherBGValidationGroup.class)
 @CheckVerantwortlicherTS(groups = ChangeVerantwortlicherTSValidationGroup.class)
-public class Dossier extends AbstractEntity implements Searchable {
+public class Dossier extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -2511152887055775241L;
 

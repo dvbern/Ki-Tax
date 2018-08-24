@@ -51,7 +51,7 @@ describe('betreuungRS', () => {
         kindId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000a12';
         mockBetreuung = new TSBetreuung(undefined, TSBetreuungsstatus.AUSSTEHEND, []);
-        TestDataUtil.setAbstractFieldsUndefined(mockBetreuung);
+        TestDataUtil.setAbstractMutableFieldsUndefined(mockBetreuung);
         mockBetreuungRest = ebeguRestUtil.betreuungToRestObject({}, mockBetreuung);
 
         $httpBackend.whenGET(betreuungRS.serviceURL + '/' + encodeURIComponent(mockBetreuung.id)).respond(mockBetreuungRest);

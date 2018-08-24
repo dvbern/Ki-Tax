@@ -42,7 +42,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 		@Index(name = "sequence_ix1", columnList = "mandant_id"),
 	}
 )
-public class Sequence extends AbstractEntity implements HasMandant {
+public class Sequence extends AbstractMutableEntity implements HasMandant {
 
 	private static final long serialVersionUID = -8310781486097591752L;
 

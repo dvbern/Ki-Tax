@@ -16,7 +16,7 @@
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSAbwesenheitContainer from './TSAbwesenheitContainer';
 import TSBelegungFerieninsel from './TSBelegungFerieninsel';
 import TSBelegungTagesschule from './TSBelegungTagesschule';
@@ -26,7 +26,7 @@ import TSInstitutionStammdaten from './TSInstitutionStammdaten';
 import TSVerfuegung from './TSVerfuegung';
 import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
 
-export default class TSBetreuung extends TSAbstractEntity {
+export default class TSBetreuung extends TSAbstractMutableEntity {
 
     private _institutionStammdaten: TSInstitutionStammdaten;
     private _betreuungsstatus: TSBetreuungsstatus;
