@@ -842,14 +842,10 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum, AntragStatus status) {
-		instService.getAllInstitutionen();
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence,
+		@Nullable LocalDate eingangsdatum, AntragStatus status) {
 
-		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, status, TestDataUtil.createGesuchsperiode1718());
 	}
 
 	/**

@@ -2575,15 +2575,14 @@ public class JaxBConverter {
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
 		jaxDokumentGrund.setDokumentTyp(dokumentGrund.getDokumentTyp());
 		jaxDokumentGrund.setNeeded(dokumentGrund.isNeeded());
-		if (dokumentGrund.getDokumente() != null) {
-			if (jaxDokumentGrund.getDokumente() == null) {
-				jaxDokumentGrund.setDokumente(new HashSet<>());
-			}
-			for (Dokument dokument : dokumentGrund.getDokumente()) {
-
-				jaxDokumentGrund.getDokumente().add(dokumentToJax(dokument));
-			}
+		if (jaxDokumentGrund.getDokumente() == null) {
+			jaxDokumentGrund.setDokumente(new HashSet<>());
 		}
+		for (Dokument dokument : dokumentGrund.getDokumente()) {
+
+			jaxDokumentGrund.getDokumente().add(dokumentToJax(dokument));
+		}
+
 		return jaxDokumentGrund;
 	}
 

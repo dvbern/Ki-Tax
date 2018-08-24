@@ -37,7 +37,5 @@ public interface TestdataCreationService {
 
 	Gesuch addAnmeldung(@Nonnull AnmeldungConfig config, @Nonnull Gesuch gesuchToAdd);
 
-	void insertParametersForTestfaelle(@Nonnull ErstgesuchConfig config);
-
 	void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode);
 }

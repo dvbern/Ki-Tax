@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.resource.VerfuegungResource;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
@@ -35,6 +36,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,9 +55,18 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
+	private Gesuchsperiode gesuchsperiode;
+
+	@Before
+	public void setUp() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+	}
+
 	@Test
 	public void saveVerfuegungTest() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		persistence.merge(betreuung);
@@ -66,6 +77,7 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, verfuegungJax);
 
+		assert persistedVerfuegung != null;
 		Assert.assertEquals(verfuegungJax.getGeneratedBemerkungen(), persistedVerfuegung.getGeneratedBemerkungen());
 		Assert.assertEquals(verfuegungJax.getManuelleBemerkungen(), persistedVerfuegung.getManuelleBemerkungen());
 
@@ -73,7 +85,8 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void nichtEintretenTest() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		Betreuung storedBetr = persistence.merge(betreuung);
@@ -95,9 +108,10 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void testCalculateVerfuegung() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
+		//noinspection ConstantConditions
 		Response response = verfuegungResource.calculateVerfuegung(new JaxId(gesuch.getId()), null, null);
 
 		Assert.assertNotNull(response);

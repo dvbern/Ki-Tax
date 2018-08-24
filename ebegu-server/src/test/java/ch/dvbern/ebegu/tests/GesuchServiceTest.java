@@ -173,6 +173,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Before
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
 	@Test
@@ -208,8 +209,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService,
 			gesuchsperiode);
-//		insertInstitutionen();
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
 		final GeneratedDokument generatedDokument = TestDataUtil.createGeneratedDokument(gesuch);
@@ -415,7 +415,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(schulamtGesuch.getId(), WizardStepName.FREIGABE);
 		Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
 
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		Benutzer schulamt = loginAsSchulamt();
 		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), schulamt.getUsername(), null);
 		Assert.assertEquals(AntragStatus.FREIGEGEBEN, eingelesenesGesuch.getStatus());
@@ -798,7 +797,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void deleteGesuchWithMutationAndCopiedAnmeldungen() {
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		config.setGesuchsperiode(gesuchsperiode);
-		testdataCreationService.insertParametersForTestfaelle(config);
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
 

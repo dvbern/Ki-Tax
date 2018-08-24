@@ -371,11 +371,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	public void insertParametersForTestfaelle(@Nonnull ErstgesuchConfig config) {
-		insertParametersForTestfaelle(getGesuchsperiode(null, config));
-	}
-
-	@Override
 	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
 		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode);

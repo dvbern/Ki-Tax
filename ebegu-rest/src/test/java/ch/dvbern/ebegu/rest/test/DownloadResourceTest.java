@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.api.resource.DownloadResource;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
@@ -47,6 +48,7 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -73,10 +75,19 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private JaxBConverter converter;
 
+	private Gesuchsperiode gesuchsperiode;
+
+	@Before
+	public void setUp() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+	}
+
 	@Test
 	public void getVerfuegungDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+
 		Assert.assertNotNull(gesuch.getKindContainers().iterator().next().getBetreuungen());
 		@SuppressWarnings("ConstantConditions") // Wird oben geprueft
 		final String betreuungId = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next().getId();
@@ -92,8 +103,9 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void getDokumentAccessTokenGeneratedDokumentBEGLEITSCHREIBENTest() throws MergeDocException, MimeTypeParseException {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+
 
 		HttpServletRequest request = mockRequest();
 		UriInfo uri = new ResteasyUriInfo("uri", "query", "path");
@@ -106,8 +118,8 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void getDokumentAccessTokenGeneratedDokumentFINANZIELLE_SITUATIONTest() throws MergeDocException, MimeTypeParseException {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		HttpServletRequest request = mockRequest();
 		UriInfo uri = new ResteasyUriInfo("uri", "query", "path");
@@ -121,8 +133,8 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	@Test
 	public void getMahnungDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch);
 
@@ -137,8 +149,8 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void getNichteintretenDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		String betreuungID = gesuch.extractAllBetreuungen().get(0).getId();
 

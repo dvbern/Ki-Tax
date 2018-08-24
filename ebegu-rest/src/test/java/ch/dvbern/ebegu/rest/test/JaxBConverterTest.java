@@ -126,7 +126,6 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
-		testdataCreationService.insertParametersForTestfaelle(config);
 
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
@@ -191,8 +190,6 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
 
-		testdataCreationService.insertParametersForTestfaelle(config);
-
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		Betreuung betreuung = gesuch.extractAllBetreuungen().get(0);
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
@@ -214,8 +211,6 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
-
-		testdataCreationService.insertParametersForTestfaelle(config);
 
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();

@@ -128,6 +128,8 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuungMitteilung.setBetreuung(betreuung);
 		persistence.persist(betreuungMitteilung);
 
+		TestDataUtil.prepareParameters(betreuung.extractGesuchsperiode(), persistence);
+
 		final JaxMitteilungen mitteilungen = mitteilungResource.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(mitteilungen);

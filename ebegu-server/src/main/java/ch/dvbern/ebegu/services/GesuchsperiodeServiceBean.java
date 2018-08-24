@@ -141,9 +141,12 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Gesuchsperiode lastGesuchsperiode = getGesuchsperiodeAm(stichtagInVorperiode)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("gesuchsperiode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, stichtagInVorperiode));
-			einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+			Optional<Gesuchsperiode> lastGesuchsperiode = getGesuchsperiodeAm(stichtagInVorperiode);
+			if (lastGesuchsperiode.isPresent()) {
+				// we only copy the einstellung when there is a lastGesuchsperiode. In some cases, among others in some tests we won't have
+				// a lastGesuchsperiode so we cannot copy the Einstellungen. In production if there is no lastGesuchsperiode there is also nothing to copy
+				einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode.get());
+			}
 			// Wenn die Gesuchsperiode neu ist, muss das Datum Freischaltung Tagesschule gesetzt werden: Defaultmässig
 			// erster Tag der Gesuchsperiode. Kann nach Aktivierung der Periode auf ein beliebiges Datum gesetzt werden
 			gesuchsperiode.setDatumFreischaltungTagesschule(gesuchsperiode.getGueltigkeit().getGueltigAb());
