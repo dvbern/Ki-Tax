@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {async} from '@angular/core/testing';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
@@ -39,13 +41,13 @@ describe('stammdatenView', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
+    beforeEach(async(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
         spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         $stateParams = $injector.get('$stateParams');
         $stateParams.gesuchstellerNumber = '1';
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, true, true, undefined);
+        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
         ewkRS = $injector.get('EwkRS');
@@ -54,7 +56,7 @@ describe('stammdatenView', () => {
         stammdatenViewController = new StammdatenViewController($stateParams, undefined, gesuchModelManager,
             undefined, undefined, wizardStepManager, $injector.get('CONSTANTS'), $q, $scope, $injector.get('$translate'),
             undefined, $rootScope, ewkRS, $timeout);
-    }));
+    })));
 
     describe('disableWohnadresseFor2GS', () => {
         it('should return false for 1GS und Erstgesuch', () => {

@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 @import (reference) '../variables.less';
 @import (reference) '../mixins.less';
 
@@ -42,7 +41,7 @@ input[type="text"], input[type="number"], input[type="email"], textarea, textare
     &[disabled], &:disabled {
         background: @contrast;
         color: @contrast-darkest;
-        -webkit-text-fill-color:@contrast-darkest;
+        -webkit-text-fill-color: @contrast-darkest;
         .ebeguDisabledPlaceholder();
     }
     .ebeguPlaceholder();
@@ -60,7 +59,6 @@ input[type="text"], input[type="number"], input[type="email"], textarea, textare
 
     color: @contrast-darkest;
     -moz-appearance: textfield; // spinner in firefox sieht doof aus -> disable
-
 
     &:focus {
         outline: 2px solid @contrast-darkest;

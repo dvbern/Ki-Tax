@@ -14,12 +14,15 @@
  */
 
 import {Provider} from '@angular/core';
+import FallRS from '../../gesuch/service/fallRS.rest';
+import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import ErrorService from './errors/service/ErrorService';
+import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
@@ -195,6 +198,39 @@ export const dossierRSProvider = {
     deps: ['$injector']
 };
 
+// AntragStatusHistoryRS
+export function antragStatusHistoryRSServiceFactory(i: any) {
+    return i.get('AntragStatusHistoryRS');
+}
+
+export const antragStatusHistoryRSProvider = {
+    provide: AntragStatusHistoryRS,
+    useFactory: antragStatusHistoryRSServiceFactory,
+    deps: ['$injector']
+};
+
+// WizardStepManager
+export function wizardStepManagerServiceFactory(i: any) {
+    return i.get('WizardStepManager');
+}
+
+export const wizardStepManagerProvider = {
+    provide: WizardStepManager,
+    useFactory: wizardStepManagerServiceFactory,
+    deps: ['$injector']
+};
+
+// FallRS
+export function fallRSServiceFactory(i: any) {
+    return i.get('FallRS');
+}
+
+export const fallRSProvider = {
+    provide: FallRS,
+    useFactory: fallRSServiceFactory,
+    deps: ['$injector']
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -211,4 +247,7 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     mitteilungRSProvider,
     downloadRSProvider,
     dossierRSProvider,
+    antragStatusHistoryRSProvider,
+    wizardStepManagerProvider,
+    fallRSProvider,
 ];

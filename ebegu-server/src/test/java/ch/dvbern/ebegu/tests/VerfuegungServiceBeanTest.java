@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -47,6 +48,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -81,6 +83,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private GesuchService gesuchService;
 
+	private Gesuchsperiode gesuchsperiode;
+
+	@Before
+	public void setUp() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+	}
+
 	@Test
 	public void saveVerfuegung() {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
@@ -106,10 +115,10 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void calculateVerfuegung() {
 
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
-		Assert.assertEquals(21, einstellungService.getEinstellungenByGesuchsperiode(gesuch.getGesuchsperiode()).size()); //es muessen min 20 existieren jetzt +1 from mandant-dataset
+		//es muessen min 21 existieren jetzt +1 from mandant-dataset
+		Assert.assertEquals(23, einstellungService.getEinstellungenByGesuchsperiode(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);
@@ -121,7 +130,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void findVorgaengerVerfuegung() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(2016, Month.MARCH, 25), AntragStatus.VERFUEGT);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(2016, Month.MARCH, 25), AntragStatus
+			.VERFUEGT, gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Set<KindContainer> kindContainers = gesuch.getKindContainers();
 		KindContainer kind = kindContainers.iterator().next();
@@ -187,14 +197,14 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	//Helpers
 
 	private Betreuung insertBetreuung() {
-		Betreuung betreuung = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25))
+		Betreuung betreuung = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode)
 			.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		return persistence.merge(betreuung);
 	}
 
 	private Verfuegung insertVerfuegung() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		return createAndPersistVerfuegteVerfuegung(betreuung);
 	}

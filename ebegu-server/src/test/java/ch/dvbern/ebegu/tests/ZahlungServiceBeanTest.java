@@ -457,7 +457,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeinde);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeinde, gesuchsperiode);
 	}
 
 	@Nullable

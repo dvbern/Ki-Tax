@@ -21,6 +21,7 @@ import {filter} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
@@ -81,10 +82,7 @@ export class NavbarComponent {
                 (gemeindeId) => {
                     const params: INewFallStateParams = {
                         gesuchsperiodeId: null,
-                        createMutation: null,
-                        createNewFall: 'true',
-                        createNewDossier: 'false',
-                        createNewGesuch: 'false',
+                        creationAction: TSCreationAction.CREATE_NEW_FALL,
                         gesuchId: null,
                         dossierId: null,
                         gemeindeId: gemeindeId,

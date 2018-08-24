@@ -150,6 +150,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
@@ -899,6 +900,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
 		gesuchsperiode) {
+		prepareParameters(gesuchsperiode, persistence);
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
@@ -910,6 +912,7 @@ public final class TestDataUtil {
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
 		AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+		prepareParameters(gesuchsperiode, persistence);
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
@@ -1126,6 +1129,7 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "20", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "20", gesuchsperiode, persistence);
 
 	}
 
