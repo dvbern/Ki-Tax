@@ -49,7 +49,7 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'gesuchsteller.dashboard',
-        template: '<gesuchsteller-dashboard-view class="layout-column flex-100">',
+        template: '<gesuchsteller-dashboard-view class="layout-column flex-100" dossier="$resolve.dossier">',
         url: '/gesuchstellerDashboard',
         params: {
             gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
