@@ -48,7 +48,6 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Ferienname;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -97,7 +96,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	private Persistence persistence;
 
 	@Test
-	public void createBetreuung() throws EbeguException {
+	public void createBetreuung() {
 		KindContainer returnedKind = persistKindAndDependingObjects();
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
@@ -117,8 +116,10 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@SuppressWarnings("ConstantConditions")
 	@Test
-	public void updateBetreuungTest() throws EbeguException {
+	public void updateBetreuungTest() {
 		Betreuung initialBetr = this.storeInitialBetreung();
+		TestDataUtil.prepareParameters(initialBetr.extractGesuchsperiode(), persistence);
+
 		//im moment haben wir kein find fuer einen einzelnen Container
 		Set<JaxBetreuung> betreuungenBeforeUpdate = kindResource.findKind(converter.toJaxId(initialBetr.getKind())).getBetreuungen();
 		Assert.assertEquals(1, betreuungenBeforeUpdate.size());
@@ -138,8 +139,10 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	 * Testet, dass das entfernen eines Betreuungspensums auf dem Client dieses aus der Liste auf dem Server loescht.
 	 */
 	@Test
-	public void updateShouldRemoveBetreuungspensumContainerTest() throws EbeguException {
+	public void updateShouldRemoveBetreuungspensumContainerTest() {
 		Betreuung initialBetr = this.storeInitialBetreung();
+		TestDataUtil.prepareParameters(initialBetr.extractGesuchsperiode(), persistence);
+
 		//im moment haben wir kein find fuer einen einzelnen Container
 		JaxKindContainer jaxKindContainer = kindResource.findKind(converter.toJaxId(initialBetr.getKind()));
 		Assert.assertNotNull(jaxKindContainer);
@@ -200,7 +203,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		return returnedKind;
 	}
 
-	private Betreuung storeInitialBetreung() throws EbeguException {
+	private Betreuung storeInitialBetreung() {
 		KindContainer returnedKind = persistKindAndDependingObjects();
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
@@ -210,7 +213,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		return betreuung;
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	@SuppressWarnings({ "SameParameterValue", "NonBooleanMethodNameMayNotStartWithQuestion" })
 	private void checkNextNumberBetreuung(JaxId kindId, Integer number) {
 		final JaxKindContainer updatedKind = kindResource.findKind(kindId);
 		Assert.assertNotNull(updatedKind);

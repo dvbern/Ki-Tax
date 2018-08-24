@@ -49,7 +49,7 @@ describe('gesuchsperiodeRS', () => {
     beforeEach(() => {
         date = DateUtil.today();
         mockGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(date, date));
-        TestDataUtil.setAbstractFieldsUndefined(mockGesuchsperiode);
+        TestDataUtil.setAbstractMutableFieldsUndefined(mockGesuchsperiode);
         mockGesuchsperiodeRest = ebeguRestUtil.gesuchsperiodeToRestObject({}, mockGesuchsperiode);
     });
 

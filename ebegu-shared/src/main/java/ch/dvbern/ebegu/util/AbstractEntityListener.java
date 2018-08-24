@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -81,7 +82,8 @@ public class AbstractEntityListener {
 		entity.setTimestampMutiert(now);
 		entity.setUserErstellt(getPrincipalName());
 		entity.setUserMutiert(getPrincipalName());
-		if (entity instanceof KindContainer && !entity.hasVorgaenger() && ((KindContainer) entity).getKindNummer() <= -1) {
+		if (entity instanceof KindContainer && !((KindContainer) entity).hasVorgaenger()
+			&& ((KindContainer) entity).getKindNummer() <= -1) {
 			// Neue Kind-Nummer: nur setzen, wenn es nicht ein "kopiertes" Kind (Mutation oder Erneuerungsgesuch) ist
 			// in diesen Faellen ist dann bereits eine Nummer gesetzt und wir setzen hier keine neue
 			// !entity.hasVorgaenger() ist ueberfluessig, trotzdem wird als Doppelcheck nicht entfernt.
@@ -92,7 +94,7 @@ public class AbstractEntityListener {
 				kind.setKindNummer(fall.getNextNumberKind());
 				fall.setNextNumberKind(fall.getNextNumberKind() + 1);
 			}
-		} else if (entity instanceof Betreuung && !entity.hasVorgaenger()) {
+		} else if (entity instanceof Betreuung && !((Betreuung) entity).hasVorgaenger()) {
 			// Neue Betreuungs-Nummer: nur setzen, wenn es nicht eine "kopierte" Betreuung ist
 			Betreuung betreuung = (Betreuung) entity;
 			Optional<KindContainer> optKind = getKindService().findKind(betreuung.getKind().getId());
@@ -104,7 +106,7 @@ public class AbstractEntityListener {
 		} else if (entity instanceof Fall) {
 			Fall fall = (Fall) entity;
 			Mandant mandant = getPrincipalBean().getMandant();
-			Long nextFallNr = getSequenceService().createNumberTransactional(SequenceType.FALL_NUMMER, mandant);
+			Long nextFallNr = getSequenceService().createNumberTransactional(SequenceType.FALL_NUMMER, Objects.requireNonNull(mandant));
 			fall.setFallNummer(nextFallNr);
 			fall.setMandant(mandant);
 			if (getPrincipalBean().isCallerInRole(UserRole.GESUCHSTELLER)) {

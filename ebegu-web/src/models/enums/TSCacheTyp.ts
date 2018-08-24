@@ -15,7 +15,7 @@
 
 export enum TSCacheTyp {
     EBEGU_DOCUMENT = <any> 'ebeguDocument',
-    EBEGU_PARAMETER = <any> 'ebeguParameter',
+    EBEGU_EINSTELLUNGEN = <any> 'einstellung',
     EBEGU_INSTITUTIONSSTAMMDATEN = <any> 'ebeguInstitutionsStammdaten',
     EBEGU_GEMEINDEN = <any> 'ebeguGemeinden'
 }
@@ -23,7 +23,7 @@ export enum TSCacheTyp {
 export function getTSCacheTypValues(): Array<TSCacheTyp> {
     return [
         TSCacheTyp.EBEGU_DOCUMENT,
-        TSCacheTyp.EBEGU_PARAMETER,
+        TSCacheTyp.EBEGU_EINSTELLUNGEN,
         TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN,
         TSCacheTyp.EBEGU_GEMEINDEN
     ];

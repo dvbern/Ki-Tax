@@ -14,10 +14,10 @@
  */
 
 import * as moment from 'moment';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSModulTagesschule from './TSModulTagesschule';
 
-export default class TSBelegungTagesschule extends TSAbstractEntity {
+export default class TSBelegungTagesschule extends TSAbstractMutableEntity {
 
     private _moduleTagesschule: TSModulTagesschule[] = [];
     private _eintrittsdatum: moment.Moment;

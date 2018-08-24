@@ -41,7 +41,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @MappedSuperclass
 @Audited
-public abstract class AbstractPersonEntity extends AbstractEntity {
+public abstract class AbstractPersonEntity extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -9037857320548372570L;
 

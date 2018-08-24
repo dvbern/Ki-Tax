@@ -47,7 +47,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Audited
 @Entity
 @CheckMitteilungCompleteness
-public class Mitteilung extends AbstractEntity {
+public class Mitteilung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 489324250198016526L;
 

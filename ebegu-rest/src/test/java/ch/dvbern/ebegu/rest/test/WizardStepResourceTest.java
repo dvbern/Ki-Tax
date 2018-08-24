@@ -25,9 +25,9 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.resource.WizardStepResource;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.tets.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -49,18 +49,23 @@ public class WizardStepResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Inject
 	private WizardStepResource wizardStepResource;
-	private Gesuch gesuch;
 	@Inject
 	private InstitutionService institutionService;
 	@Inject
 	private Persistence persistence;
 
+	private Gesuch gesuch = null;
+
 	@Test
-	public void testCreateWizardStepList() throws EbeguException {
-		gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+	public void testCreateWizardStepList() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+		gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		final List<JaxWizardStep> wizardStepList = wizardStepResource.createWizardStepList(new JaxId(gesuch.getId()));
 
+		assert wizardStepList != null;
 		Assert.assertEquals(13, wizardStepList.size());
 		assertWizardStep(wizardStepList.get(0), WizardStepName.GESUCH_ERSTELLEN, WizardStepStatus.OK);
 		assertWizardStep(wizardStepList.get(1), WizardStepName.FAMILIENSITUATION, WizardStepStatus.UNBESUCHT);

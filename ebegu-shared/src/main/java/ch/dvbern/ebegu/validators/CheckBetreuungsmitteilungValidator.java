@@ -16,10 +16,9 @@
 package ch.dvbern.ebegu.validators;
 
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -29,10 +28,12 @@ import javax.validation.ConstraintValidatorContext;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.services.EbeguParameterService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 
 /**
@@ -41,10 +42,12 @@ import ch.dvbern.ebegu.util.BetreuungUtil;
  */
 public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<CheckBetreuungsmitteilung, Betreuungsmitteilung> {
 
-	private EbeguParameterService ebeguParameterService;
+	@SuppressWarnings("CdiInjectionPointsInspection")
+	@Inject
+	private EinstellungService einstellungService;
 
-	// We need to pass to EbeguParameterService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
-	// and pass it to the methods of EbeguParameterService we need to call.
+	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
+	// and pass it to the methods of EinstellungService we need to call.
 	//http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
 	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
 	private EntityManagerFactory entityManagerFactory;
@@ -57,21 +60,11 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 		// nop
 	}
 
-	private EbeguParameterService getEbeguParameterService() {
-		if (ebeguParameterService == null) {
-			//FIXME: das ist nur ein Ugly Workaround, weil CDI-Injection in Wildfly 10 nicht funktioniert.
-			//noinspection NonThreadSafeLazyInitialization
-			ebeguParameterService = CDI.current().select(EbeguParameterService.class).get();
-		}
-		return ebeguParameterService;
-	}
-
 	private EntityManager createEntityManager() {
 		if (entityManagerFactory != null) {
 			return entityManagerFactory.createEntityManager(); // creates a new EntityManager
-		} else {
-			throw new EbeguRuntimeException("createEntitymanager", "could not create entitymanger for betreuung validation ", "Validierung konnte nicht durchgefuehrt werden");
 		}
+		throw new EbeguRuntimeException("createEntitymanager", "could not create entitymanger for betreuung validation ", "Validierung konnte nicht durchgefuehrt werden");
 	}
 
 	private void closeEntityManager(EntityManager em) {
@@ -85,20 +78,17 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 	public boolean isValid(Betreuungsmitteilung mitteilung, ConstraintValidatorContext context) {
 
 		final EntityManager em = createEntityManager();
-		getEbeguParameterService();
 		final Betreuung betreuung = em.find(Betreuung.class, mitteilung.getBetreuung().getId());
 		if (betreuung == null) {
 			throw new EbeguEntityNotFoundException("CheckBetreuungsmitteilungValidator.isValid", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"Die Betreuung mit ID " + mitteilung.getBetreuung().getId() + " konnte nicht gefunden werden");
 		}
-		LocalDate gesuchsperiodeStart = betreuung.getKind().getGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb();
+		Gesuchsperiode gesuchsperiode = betreuung.getKind().getGesuch().getGesuchsperiode();
+		Gemeinde gemeinde = mitteilung.getDossier().getGemeinde();
 		int index = 0;
 		for (BetreuungsmitteilungPensum betPen : mitteilung.getBetreuungspensen()) {
-			LocalDate betreuungAb = betPen.getGueltigkeit().getGueltigAb();
-			//Wir laden  die Parameter von Start-Gesuchsperiode falls Betreuung schon laenger als Gesuchsperiode besteht
-			LocalDate stichtagParameter = betreuungAb.isAfter(gesuchsperiodeStart) ? betreuungAb : gesuchsperiodeStart;
 			int betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
-				stichtagParameter, mitteilung.getBetreuung().getBetreuungsangebotTyp(), ebeguParameterService, em);
+				gesuchsperiode, gemeinde, mitteilung.getBetreuung().getBetreuungsangebotTyp(), einstellungService, em);
 
 			if (!validateBetreuungspensum(betPen, betreuungsangebotTypMinValue, index, context)) {
 				closeEntityManager(em);

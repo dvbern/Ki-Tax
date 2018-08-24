@@ -279,11 +279,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Nonnull
 	@Override
 	@SuppressWarnings("PMD.NcssMethodCount")
-	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId) {
+	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId,
+			@Nonnull Gesuchsperiode gesuchsperiode) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
-		Gesuchsperiode gesuchsperiode = getNeuesteGesuchsperiode();
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
 
 		if (WAELTI_DAGMAR.equals(fallid)) {

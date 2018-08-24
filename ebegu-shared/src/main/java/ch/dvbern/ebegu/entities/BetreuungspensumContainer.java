@@ -40,7 +40,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class BetreuungspensumContainer extends AbstractEntity implements Comparable<BetreuungspensumContainer> {
+public class BetreuungspensumContainer extends AbstractMutableEntity implements Comparable<BetreuungspensumContainer> {
 
 	private static final long serialVersionUID = -6784987861150035840L;
 

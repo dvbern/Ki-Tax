@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSUser from './TSUser';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import * as moment from 'moment';
 
-export default class TSAntragStatusHistory extends TSAbstractEntity {
+export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
 
     private _gesuchId: string;
     private _benutzer: TSUser;

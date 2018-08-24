@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
 @CheckFamiliensituationContainerComplete(groups = AntragCompleteValidationGroup.class)
 @Audited
 @Entity
-public class FamiliensituationContainer extends AbstractEntity {
+public class FamiliensituationContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6696130722316500745L;
 

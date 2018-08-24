@@ -43,7 +43,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 	@Index(columnList = "benutzer_id", name = "IX_authorisierter_benutzer"),
 	@Index(columnList = "authToken,benutzer_id", name = "IX_authorisierter_benutzer_token")
 })
-public class AuthorisierterBenutzer extends AbstractEntity {
+public class AuthorisierterBenutzer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6372688971724279665L;
 

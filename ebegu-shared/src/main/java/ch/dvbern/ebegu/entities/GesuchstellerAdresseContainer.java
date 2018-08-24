@@ -37,7 +37,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class GesuchstellerAdresseContainer extends AbstractEntity {
+public class GesuchstellerAdresseContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -3084333639027795652L;
 

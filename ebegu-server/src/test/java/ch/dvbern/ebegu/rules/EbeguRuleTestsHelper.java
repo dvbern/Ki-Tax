@@ -49,7 +49,6 @@ public class EbeguRuleTestsHelper {
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final BetreuungspensumCalcRule betreuungspensumCalcRule = new BetreuungspensumCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-	private static final WohnhaftImGleichenHaushaltCalcRule wohnhaftImGleichenHaushaltRule = new WohnhaftImGleichenHaushaltCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final EinkommenCalcRule maximalesEinkommenCalcRule = new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN);
 	private static final BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(Constants.DEFAULT_GUELTIGKEIT);
@@ -57,8 +56,6 @@ public class EbeguRuleTestsHelper {
 	private static final EinreichungsfristCalcRule einreichungsfristCalcRule = new EinreichungsfristCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-	private static final MindestalterAbschnittRule mindestalterAbschnittRule = new MindestalterAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
-	private static final MindestalterCalcRule mindestalterCalcRule = new MindestalterCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
@@ -94,21 +91,17 @@ public class EbeguRuleTestsHelper {
 		result = einkommenAbschnittRule.calculate(betreuung, result);
 		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
 		result = wohnsitzAbschnittRule.calculate(betreuung, result);
-		result = mindestalterAbschnittRule.calculate(betreuung, result);
 		result = abwesenheitAbschnittRule.calculate(betreuung, result);
 		// Anspruch
 		result = erwerbspensumCalcRule.calculate(betreuung, result);
 		result = betreuungspensumCalcRule.calculate(betreuung, result);
 		result = fachstelleCalcRule.calculate(betreuung, result);
-		// Wohnhaft
-		result = wohnhaftImGleichenHaushaltRule.calculate(betreuung, result);
 		// Restanspruch
 		// Reduktionen
 		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
 		result = betreuungsangebotTypCalcRule.calculate(betreuung, result);
 		result = einreichungsfristCalcRule.calculate(betreuung, result);
 		result = wohnsitzCalcRule.calculate(betreuung, result);
-		result = mindestalterCalcRule.calculate(betreuung, result);
 		result = abwesenheitCalcRule.calculate(betreuung, result);
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		return result;

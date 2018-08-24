@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSGeschlecht} from './enums/TSGeschlecht';
 import * as moment from 'moment';
 
-export default class TSAbstractPersonEntity extends TSAbstractEntity {
+export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
 
     private _vorname: string;
     private _nachname: string;

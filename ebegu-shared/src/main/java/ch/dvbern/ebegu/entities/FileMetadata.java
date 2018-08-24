@@ -42,7 +42,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class FileMetadata extends AbstractEntity {
+public abstract class FileMetadata extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -4502262818759522627L;
 

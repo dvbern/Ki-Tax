@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSVerfuegungZeitabschnitt from './TSVerfuegungZeitabschnitt';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 
-export default class TSVerfuegung extends TSAbstractEntity {
+export default class TSVerfuegung extends TSAbstractMutableEntity {
 
     private _generatedBemerkungen: string;
     private _manuelleBemerkungen: string;

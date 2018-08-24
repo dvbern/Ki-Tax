@@ -71,7 +71,7 @@ public class BatchJaxBConverter {
 		final String params = job.getParams();
 		final Long executionId = job.getExecutionId();
 		JaxWorkJob jaxWorkJob = new JaxWorkJob();
-		convertAbstractFieldsToJAX(job, jaxWorkJob);
+		convertAbstractVorgaengerFieldsToJAX(job, jaxWorkJob);
 
 		jaxWorkJob.setWorkJobType(workJobType);
 		jaxWorkJob.setStartinguser(startinguser);
@@ -84,7 +84,7 @@ public class BatchJaxBConverter {
 	}
 
 	@Nonnull
-	private <T extends JaxAbstractDTO> T convertAbstractFieldsToJAX(@Nonnull final AbstractEntity abstEntity, @Nonnull final T jaxDTOToConvertTo) {
+	private <T extends JaxAbstractDTO> T convertAbstractVorgaengerFieldsToJAX(@Nonnull final AbstractEntity abstEntity, @Nonnull final T jaxDTOToConvertTo) {
 		jaxDTOToConvertTo.setTimestampErstellt(abstEntity.getTimestampErstellt());
 		jaxDTOToConvertTo.setTimestampMutiert(abstEntity.getTimestampMutiert());
 		jaxDTOToConvertTo.setId(checkNotNull(abstEntity.getId()));

@@ -45,7 +45,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = "gesuchsteller_container_id", name = "UK_finanzielle_situation_container_gesuchsteller")
 )
-public class FinanzielleSituationContainer extends AbstractEntity {
+public class FinanzielleSituationContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6504985266190035840L;
 
