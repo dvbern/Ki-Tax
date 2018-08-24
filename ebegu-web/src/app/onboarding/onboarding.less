@@ -80,4 +80,28 @@ and (max-width: 480px) {
     .onboarding-gs-angaben, .onboarding-gs-gemeinde {
         width: 100%;
     }
+    .onboarding-gemeinde-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+    }
+
+    .onboarding-gemeinde-input-container,
+    .be-login-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media @mq-sm {
+
+    .onboarding-gemeinde-container {
+        justify-content: space-between;
+    }
+
+    .onboarding-gemeinde-input-container,
+    .be-login-actions {
+        width: 100%;
+    }
 }
