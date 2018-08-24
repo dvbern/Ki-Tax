@@ -73,7 +73,7 @@ describe('dossierToolbar', () => {
 
         dossierToolbarController = new DossierToolbarController(ebeguUtil,
             gesuchRS, $state, $scope, gesuchModelManager,
-            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, mitteilungRS, undefined, dossierRS);
+            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, undefined, mitteilungRS, dossierRS);
     }));
 
 });

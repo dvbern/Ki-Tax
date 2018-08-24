@@ -20,10 +20,12 @@ import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
+import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material';
 
 @NgModule({
     imports: [
-        // only those modules required by the providers/components of the core module (other global modules go to shared module)
+        // only those modules required by the providers/components of the core module
+        // (other global modules go to shared module)
         TranslateModule,
         UIRouterUpgradeModule,
     ],
@@ -53,7 +55,8 @@ export class CoreModule {
             ngModule: CoreModule,
             providers: [
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
-                {provide: LOCALE_ID, useValue: DEFAULT_LOCALE}
+                {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
+                {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
             ]
         };
     }

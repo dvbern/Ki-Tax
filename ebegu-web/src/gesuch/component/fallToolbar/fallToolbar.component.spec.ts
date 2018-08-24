@@ -103,21 +103,42 @@ describe('fallToolbar', () => {
             component.fallId = fall.id;
         }));
 
-        it('should return true for the selected dossier', async(() => {
-            component.openDossier(dossier1).subscribe(
-                () => expect(component.isDossierActive(dossier1)).toBe(true));
-        }));
-        it('should return false for a different dossier', () => {
-            component.openDossier(dossier1).subscribe(
-                () => expect(component.isDossierActive(dossier2)).toBe(false));
+        it('should return true for the selected dossier', done => {
+            component.openDossier$(dossier1).subscribe(
+                () => {
+                    expect(component.isDossierActive(dossier1)).toBe(true);
+                    done();
+                },
+                done.fail
+            );
         });
-        it('should return false for undefined', () => {
-            component.openDossier(dossier1).subscribe(
-                () => expect(component.isDossierActive(undefined)).toBe(false));
+
+        it('should return false for a different dossier', done => {
+            component.openDossier$(dossier1).subscribe(
+                () => {
+                    expect(component.isDossierActive(dossier2)).toBe(false);
+                    done();
+                },
+                done.fail
+            );
         });
-        it('should return false for the no selected dossier', () => {
-            component.openDossier(undefined).subscribe(
-                () => expect(component.isDossierActive(dossier1)).toBe(false));
+        it('should return false for undefined', done => {
+            component.openDossier$(dossier1).subscribe(
+                () => {
+                    expect(component.isDossierActive(undefined)).toBe(false);
+                    done();
+                },
+                done.fail
+            );
+        });
+        it('should return false for the no selected dossier', done => {
+            component.openDossier$(undefined).subscribe(
+                () => {
+                    expect(component.isDossierActive(dossier1)).toBe(false);
+                    done();
+                },
+                done.fail
+            );
         });
     });
 

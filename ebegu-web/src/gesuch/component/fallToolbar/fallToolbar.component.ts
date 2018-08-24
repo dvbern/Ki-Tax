@@ -18,6 +18,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {from as fromPromise, Observable, of} from 'rxjs';
+import {filter} from 'rxjs/operators';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -55,13 +56,12 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     availableGemeindeList: TSGemeinde[] = [];
     gemeindeText: string;
 
-
-    constructor(private dossierRS: DossierRS,
-            private dialog: MatDialog,
-            private gemeindeRS: GemeindeRS,
-            private $state: StateService,
-            private gesuchRS: GesuchRS,
-            private authServiceRS: AuthServiceRS) {
+    constructor(private readonly dossierRS: DossierRS,
+                private readonly dialog: MatDialog,
+                private readonly gemeindeRS: GemeindeRS,
+                private readonly $state: StateService,
+                private readonly gesuchRS: GesuchRS,
+                private readonly authServiceRS: AuthServiceRS) {
     }
 
     ngOnInit(): void {
@@ -120,19 +120,19 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      * Opens a dossier
      * If it is undefined it doesn't do anything
      */
-    public openDossier(dossier: TSDossier): Observable<TSDossier> {
+    public openDossier$(dossier: TSDossier): Observable<TSDossier> {
         if (dossier) {
             if (this.isGesuchsteller()) {
                 this.selectedDossier = dossier;
                 this.navigateToDashboard();
             } else {
-                return this.openNewestGesuchOfDossier(dossier);
+                return this.openNewestGesuchOfDossier$(dossier);
             }
         }
         return of(this.selectedDossier);
     }
 
-    private openNewestGesuchOfDossier(dossier: TSDossier): Observable<TSDossier> {
+    private openNewestGesuchOfDossier$(dossier: TSDossier): Observable<TSDossier> {
         return fromPromise(this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
             if (newestGesuchID) {
                 this.selectedDossier = dossier;
@@ -149,9 +149,10 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     public createNewDossier(): void {
-        this.getGemeindeIDFromDialog().subscribe(
-            (chosenGemeindeId: string) => {
-                if (chosenGemeindeId) {
+        this.getGemeindeIDFromDialog$()
+            .pipe(filter(chosenGemeindeId => !!chosenGemeindeId))
+            .subscribe(
+                chosenGemeindeId => {
                     if (this.isGesuchsteller()) {
                         this.createDossier(chosenGemeindeId).then(() => {
                             this.navigateToDashboard();
@@ -160,8 +161,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
                         this.navigateToFallCreation(chosenGemeindeId);
                     }
                 }
-            }
-        );
+            );
     }
 
     /**
@@ -233,12 +233,10 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     /**
      * A dialog will always be displayed when creating a new Dossier. So that the user
      */
-    private getGemeindeIDFromDialog(): Observable<string> {
+    private getGemeindeIDFromDialog$(): Observable<string> {
         const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false; // dialog is canceled by clicking outside
-        dialogConfig.autoFocus = true;
         dialogConfig.data = {
-            gemeindeList: of(this.availableGemeindeList)
+            gemeindeList: this.availableGemeindeList
         };
 
         return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
@@ -256,8 +254,8 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     /**
-     * It removes all existing NewDossierToCreate from the list. When a currentDossier comes we need to remove all existing ones
-     * that haven't been saved yet because only one new dossier can be created at a time
+     * It removes all existing NewDossierToCreate from the list. When a currentDossier comes we need to remove all
+     * existing ones that haven't been saved yet because only one new dossier can be created at a time
      */
     private removeAllExistingNewDossierToCreate() {
         this.dossierList = this.dossierList
@@ -269,8 +267,8 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     /**
-     * Navigation will always be disabled when any dossier is new. This solves a lot of problems that arrive when the user leaves
-     * the "opened" but not yet existing dossier.
+     * Navigation will always be disabled when any dossier is new. This solves a lot of problems that arrive when the
+     * user leaves the "opened" but not yet existing dossier.
      */
     public isNavigationDisabled(): boolean {
         return this.dossierList.some(dossier => dossier.isNew());
@@ -281,7 +279,8 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     /**
-     * Only for a Gesuchsteller it introduces Text in the variable gemeindeText when it is not defined or sets it to undefined when it already has a text
+     * Only for a Gesuchsteller it introduces Text in the variable gemeindeText when it is not defined or sets it to
+     * undefined when it already has a text
      */
     public toggleGemeindeText(): void {
         if (this.isGesuchsteller()) {

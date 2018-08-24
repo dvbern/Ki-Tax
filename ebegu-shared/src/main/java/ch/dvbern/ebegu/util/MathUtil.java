@@ -128,15 +128,23 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal augment) {
+		BigDecimal result = value
+			.add(augment)
+			.setScale(scale, roundingMode);
+		return validatePrecision(result);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal add(@Nullable BigDecimal value, @Nullable BigDecimal augment) {
 		if (value == null || augment == null) {
 			return null;
 		}
-		BigDecimal result = value
-			.add(augment)
-			.setScale(scale, roundingMode);
-		return validatePrecision(result);
+		return addNullSafe(value, augment);
 	}
 
 	/**
@@ -146,7 +154,7 @@ public enum MathUtil {
 	 */
 	@Nullable
 	public BigDecimal add(@Nullable BigDecimal value, @Nullable BigDecimal... augment) {
-		if (augment.length == 0) {
+		if (augment == null || augment.length == 0) {
 			return null;
 		}
 
@@ -164,15 +172,23 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal subtractNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal subtrahend) {
+		BigDecimal result = value
+			.subtract(subtrahend)
+			.setScale(scale, roundingMode);
+		return validatePrecision(result);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal subtract(@Nullable BigDecimal value, @Nullable BigDecimal subtrahend) {
 		if (value == null || subtrahend == null) {
 			return null;
 		}
-		BigDecimal result = value
-			.subtract(subtrahend)
-			.setScale(scale, roundingMode);
-		return validatePrecision(result);
+		return subtractNullSafe(value, subtrahend);
 	}
 
 	/**

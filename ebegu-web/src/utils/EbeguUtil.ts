@@ -167,6 +167,18 @@ export default class EbeguUtil {
         return !data;
     }
 
+    public static isTagesschulangebotEnabled(): boolean {
+        return false;
+    }
+
+    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
+        if (!EbeguUtil.isTagesschulangebotEnabled()) {
+            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
+        }
+
+        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      * @param gesuchsperiode
