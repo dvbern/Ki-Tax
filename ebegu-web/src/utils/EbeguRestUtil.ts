@@ -1865,7 +1865,6 @@ export default class EbeguRestUtil {
         if (dokumentGrundFromServer) {
             this.parseAbstractEntity(dokumentGrund, dokumentGrundFromServer);
             dokumentGrund.dokumentGrundTyp = dokumentGrundFromServer.dokumentGrundTyp;
-            dokumentGrund.fullName = dokumentGrundFromServer.fullName;
             dokumentGrund.tag = dokumentGrundFromServer.tag;
             dokumentGrund.personNumber = dokumentGrundFromServer.personNumber;
             dokumentGrund.personType = dokumentGrundFromServer.personType;
@@ -1906,7 +1905,6 @@ export default class EbeguRestUtil {
         if (dokumentGrundTS) {
             this.abstractEntityToRestObject(restDokumentGrund, dokumentGrundTS);
             restDokumentGrund.tag = dokumentGrundTS.tag;
-            restDokumentGrund.fullName = dokumentGrundTS.fullName;
             restDokumentGrund.personNumber = dokumentGrundTS.personNumber;
             restDokumentGrund.personType = dokumentGrundTS.personType;
             restDokumentGrund.dokumentGrundTyp = dokumentGrundTS.dokumentGrundTyp;

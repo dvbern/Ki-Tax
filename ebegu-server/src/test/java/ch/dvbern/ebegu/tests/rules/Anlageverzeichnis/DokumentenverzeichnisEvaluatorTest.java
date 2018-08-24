@@ -210,7 +210,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Assert.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.KINDER, dokumentGrund.getDokumentGrundTyp());
-		Assert.assertNull(dokumentGrund.getFullName());
 		Assert.assertEquals(DokumentGrundPersonType.KIND, dokumentGrund.getPersonType());
 		Assert.assertEquals(Integer.valueOf(-1), dokumentGrund.getPersonNumber()); //-1 is the default value
 		return dokumentGrund;
@@ -221,7 +220,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Assert.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokumentGrund.getDokumentGrundTyp());
-		Assert.assertNull(dokumentGrund.getFullName());
 		Assert.assertEquals(DokumentGrundPersonType.GESUCHSTELLER, dokumentGrund.getPersonType());
 		Assert.assertEquals(Integer.valueOf(1), dokumentGrund.getPersonNumber());
 		Assert.assertEquals(erwerbspensum.getName(), dokumentGrund.getTag());
@@ -230,7 +228,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	private void assertDokumentGrundCorrect(@Nonnull DokumentGrund dokGrund, @Nonnull String expectedTag, @Nonnull DokumentTyp expectedDokumentTyp) {
 		Assert.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokGrund.getDokumentGrundTyp());
-		Assert.assertNull(dokGrund.getFullName());
 		Assert.assertEquals(DokumentGrundPersonType.GESUCHSTELLER, dokGrund.getPersonType());
 		Assert.assertEquals(Integer.valueOf(1), dokGrund.getPersonNumber());
 		Assert.assertEquals(expectedTag, dokGrund.getTag());
@@ -528,7 +525,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 		final DokumentGrund dokumentGrund = dokumentGrunds.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.FINANZIELLESITUATION, dokumentGrund.getDokumentGrundTyp());
-		Assert.assertNull(dokumentGrund.getFullName());
 		Assert.assertEquals(DokumentTyp.STEUERVERANLAGUNG, dokumentGrund.getDokumentTyp());
 	}
 
@@ -593,7 +589,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Assert.assertEquals("No document with dokumentGrundTyp: " + dokumentGrundTyp + "; dokumentTyp: " + dokumentTyp + "; fullname: " + fullname + "; year: " + year,
 			1, dokumentGrundsForType.size());
 		final DokumentGrund dokumentGrund = dokumentGrundsForType.iterator().next();
-		Assert.assertNull(dokumentGrund.getFullName());
 		Assert.assertEquals(personType, dokumentGrund.getPersonType());
 		Assert.assertEquals(personNumber, dokumentGrund.getPersonNumber());
 		Assert.assertEquals(dokumentTyp, dokumentGrund.getDokumentTyp());

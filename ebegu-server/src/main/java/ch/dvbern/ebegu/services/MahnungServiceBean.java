@@ -176,10 +176,9 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	@PermitAll
 	public String getInitialeBemerkungen(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
-		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>();
-		dokumentGrundsMerged.addAll(DokumenteUtil
+		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
 			.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(gesuch),
-				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch), gesuch));
+				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)));
 		Collections.sort(dokumentGrundsMerged);
 
 		StringBuilder bemerkungenBuilder = new StringBuilder();

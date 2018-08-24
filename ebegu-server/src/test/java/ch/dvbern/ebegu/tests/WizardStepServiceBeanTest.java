@@ -605,7 +605,6 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		dokGrund.setDokumentTyp(dokTyp);
 		dokGrund.setNeeded(true);
 		dokGrund.setGesuch(gesuch);
-		dokGrund.setFullName(gesuch.getGesuchsteller1().extractFullName());
 		dokGrund.setTag(tag);
 		persistence.persist(dokGrund);
 		Dokument dok1 = new Dokument();

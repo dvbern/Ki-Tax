@@ -260,14 +260,15 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Nonnull
 	private EbeguVorlageKey getVorlageFromBetreuungsangebottyp(final Betreuung betreuung) {
+		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (Betreuungsstatus.NICHT_EINGETRETEN == betreuung.getBetreuungsstatus()) {
-			if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+			if (betreuungsangebotTyp != null && betreuungsangebotTyp.isAngebotJugendamtKleinkind()) {
 				return EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
 			} else {
 				return EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
 			}
 		}
-		switch (betreuung.getBetreuungsangebotTyp()) {
+		switch (betreuungsangebotTyp) {
 		case TAGESFAMILIEN:
 			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_TAGESFAMILIEN;
 		case TAGI:
@@ -285,7 +286,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	private List<DokumentGrund> calculateListOfDokumentGrunds(Gesuch gesuch) {
 		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
 			.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(gesuch),
-				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch), gesuch));
+				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)));
 		Collections.sort(dokumentGrundsMerged);
 		return dokumentGrundsMerged;
 	}

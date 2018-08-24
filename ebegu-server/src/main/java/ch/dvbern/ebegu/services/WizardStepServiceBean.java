@@ -283,7 +283,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 				final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil
 					.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch()),
-						dokumentGrundService.findAllDokumentGrundByGesuch(wizardStep.getGesuch()), wizardStep.getGesuch());
+						dokumentGrundService.findAllDokumentGrundByGesuch(wizardStep.getGesuch()));
 
 				boolean allNeededDokumenteUploaded = true;
 				for (DokumentGrund dokumentGrund : dokumentGrundsMerged) {
@@ -445,6 +445,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 
 		final List<AbstractEntity> newObjects = getStepRelatedObjects(wizardStep.getWizardStepName(), wizardStep.getGesuch());
+		Objects.requireNonNull(wizardStep.getGesuch().getVorgaengerId());
 		Optional<Gesuch> vorgaengerGesuch = this.gesuchService.findGesuch(wizardStep.getGesuch().getVorgaengerId(), false);
 		if (!vorgaengerGesuch.isPresent()) {
 			throw new EbeguEntityNotFoundException("getWizardStepStatusOkOrMutiert", ErrorCodeEnum

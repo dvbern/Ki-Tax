@@ -63,7 +63,6 @@ public class DokumentServiceTest extends AbstractEbeguLoginTest {
 		dokumentGrundService.saveDokumentGrund(dokumentGrund);
 		Optional<DokumentGrund> dokumentGrundOpt = dokumentGrundService.findDokumentGrund(dokumentGrund.getId());
 		Assert.assertTrue(dokumentGrundOpt.isPresent());
-		Assert.assertEquals(dokumentGrund.getFullName(), dokumentGrundOpt.get().getFullName());
 
 		final Optional<Dokument> dokument = dokumentService.findDokument(dokumentGrund.getDokumente().iterator().next().getId());
 		Assert.assertTrue(dokument.isPresent());
