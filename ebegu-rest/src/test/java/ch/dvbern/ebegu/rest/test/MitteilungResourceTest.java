@@ -30,8 +30,6 @@ import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilungen;
 import ch.dvbern.ebegu.api.resource.MitteilungResource;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -111,7 +109,7 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Transactional(TransactionMode.DEFAULT)
 	@Test
-	public void getMitteilungenOfDossierForCurrentRolleBetreuungMitteilungen() throws JAXBException, JsonProcessingException {
+	public void getMitteilungenOfDossierForCurrentRolle() throws JAXBException, JsonProcessingException {
 		final Benutzer empfaengerJA = loginAsSachbearbeiterJA();
 		final Dossier dossier = createAndPersistDossier();
 		final Benutzer sender = createAndPersistSender();
@@ -121,19 +119,10 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		persistence.persist(mitteilung);
 
-		final Betreuungsmitteilung betreuungMitteilung = TestDataUtil.createBetreuungmitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT, sender,
-			MitteilungTeilnehmerTyp.INSTITUTION);
-		betreuungMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		final Betreuung betreuung = TestDataUtil.persistBetreuung(betreuungService, persistence);
-		betreuungMitteilung.setBetreuung(betreuung);
-		persistence.persist(betreuungMitteilung);
-
-		TestDataUtil.prepareParameters(betreuung.extractGesuchsperiode(), persistence);
-
 		final JaxMitteilungen mitteilungen = mitteilungResource.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(mitteilungen);
-		Assert.assertEquals(2, mitteilungen.getMitteilungen().size());
+		Assert.assertEquals(1, mitteilungen.getMitteilungen().size());
 		final Iterator<JaxMitteilung> iterator = mitteilungen.getMitteilungen().iterator();
 
 		// Test Marshalling values
@@ -149,15 +138,6 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 		final ObjectMapper o = new ObjectMapper();
 		final String s = o.writeValueAsString(first);
 		Assert.assertFalse(s.contains("betreuungspensen"));
-
-		final StringWriter stringSecond = new StringWriter();
-		final JaxMitteilung second = iterator.next();
-		Assert.assertSame(JaxBetreuungsmitteilung.class, second.getClass());
-		Assert.assertEquals(betreuungMitteilung.getId(), second.getId());
-		marshaller.marshal(second, stringSecond);
-		Assert.assertTrue(stringSecond.toString().contains("betreuungspensen"));
-		final String s2 = o.writeValueAsString(second);
-		Assert.assertTrue(s2.contains("betreuungspensen"));
 	}
 
 	// HELP METHODS

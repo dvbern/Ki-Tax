@@ -49,11 +49,8 @@ export default class EbeguUtil {
         if (!EbeguUtil.isTagesschulangebotEnabled()) {
             return 'VERANTWORTLICHER_OHNE_SCHULAMT';
         }
-        if (isSchulamt) {
-            return 'VERANTWORTLICHER_SCHULAMT';
-        } else {
-            return 'VERANTWORTLICHER_JUGENDAMT';
-        }
+
+        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
     }
 
     /**
@@ -165,18 +162,6 @@ export default class EbeguUtil {
 
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
-    }
-
-    public static isTagesschulangebotEnabled(): boolean {
-        return false;
-    }
-
-    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
-        if (!EbeguUtil.isTagesschulangebotEnabled()) {
-            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
-        }
-
-        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
     }
 
     /**
