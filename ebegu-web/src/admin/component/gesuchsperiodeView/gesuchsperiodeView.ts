@@ -87,7 +87,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     private readEinstellungenByGesuchsperiode(): void {
-        this.einstellungenRS.getEinstellungenByGesuchsperiode(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
+        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
             this.einstellungenGesuchsperiode = response;
         });
     }

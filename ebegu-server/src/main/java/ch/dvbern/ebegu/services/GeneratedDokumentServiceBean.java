@@ -126,9 +126,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	private VerfuegungService verfuegungService;
 
 	@Inject
-	private MandantService mandantService;
-
-	@Inject
 	private GesuchService gesuchService;
 
 	@Inject

@@ -91,7 +91,7 @@ public final class BGRechnerParameterDTO {
 
 	}
 
-	private int asInteger(Map<EinstellungKey, Einstellung> paramMap, EinstellungKey paramKey, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
+	private int asInteger(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
 			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', "

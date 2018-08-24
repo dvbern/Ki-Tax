@@ -39,7 +39,7 @@ describe('finanzielleSituationRequire', () => {
         einstellungRS = $injector.get('EinstellungRS');
         $q = $injector.get('$q');
         $componentController = $injector.get('$componentController');
-        spyOn(einstellungRS, 'getEinstellungenByGesuchsperiode').and.returnValue($q.when(150000));
+        spyOn(einstellungRS, 'getAllEinstellungenBySystem').and.returnValue($q.when(150000));
         controller = new DVFinanzielleSituationRequireController(einstellungRS, gesuchModelManager);
     }));
 

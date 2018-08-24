@@ -133,7 +133,7 @@ public class EinstellungResource {
 	@Path("/gesuchsperiode/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxEinstellung> getEinstellungenByGesuchsperiode(
+	public List<JaxEinstellung> getAllEinstellungenBySystem(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
 		Objects.requireNonNull(id.getId());

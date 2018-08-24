@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -197,7 +198,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
 
 		Root<Einstellung> root = query.from(Einstellung.class);
-		// MUSS Kriterien
+		// Gesuchsperiode
 		final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
 		// Gemeinde darf nicht gesetzt sein
 		final Predicate predicateGemeindeNull = cb.isNull(root.get(Einstellung_.gemeinde));
@@ -219,10 +220,10 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
-		for (EinstellungKey einstellungKey : EinstellungKey.values()) {
+		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
 			Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
 			result.put(einstellungKey, einstellung);
-		}
+		});
 		return result;
 	}
 

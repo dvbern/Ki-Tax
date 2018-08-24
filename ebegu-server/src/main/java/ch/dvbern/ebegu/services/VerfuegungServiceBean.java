@@ -83,9 +83,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private WizardStepService wizardStepService;
 
 	@Inject
-	private MandantService mandantService;
-
-	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
 	@Inject
