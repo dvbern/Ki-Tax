@@ -21,12 +21,12 @@
 
 <div class="be-login-actions">
     <!-- Note: we navigate to the desired target state. The authentication hooks will automatically redirect to the login page -->
-    <button class="dv-btn" uiSref="onboarding.gesuchsteller" [uiParams]="{gemeindeId: gemeindeId}">
+    <button class="dv-btn" uiSref="onboarding.gesuchsteller.registration" [uiParams]="{gemeindeId: gemeindeId}">
         {{'ONBOARDING_BE_LOGIN_ANMELDEN' | translate}}
         <i class=" fa fa-external-link"></i>
     </button>
 
-    <button class="dv-btn" uiSref="onboarding.gesuchsteller" [uiParams]="{gemeindeId: gemeindeId}">
+    <button class="dv-btn" uiSref="onboarding.gesuchsteller.registration" [uiParams]="{gemeindeId: gemeindeId}">
         {{'ONBOARDING_BE_LOGIN_REGISTRIEREN' | translate}}
         <i class=" fa fa-external-link"></i>
     </button>

@@ -24,7 +24,7 @@ erorGSRegistrationIncompleteHookRunBlock.$inject = ['$transitions'];
 export function erorGSRegistrationIncompleteHookRunBlock($transitions: TransitionService) {
     const criteria: HookMatchCriteria = {
         to: 'gesuchsteller.dashboard',
-        from: state => state.name !== 'onboarding.registration-incomplete'
+        from: state => state.name !== 'onboarding.gesuchsteller.registration-incomplete'
     };
 
     $transitions.onError(criteria,
@@ -37,6 +37,6 @@ function onGSRegistrationIncompleteError(transition: Transition): HookResult {
         // Not very nice, but could find a good solution: since the original transition errorer, all error hooks
         // (matching the criteria) are executed. We might thus recover multiple times (and start multiple transitions).
         transition.error().message = DISABLE_RECOVERY_ERROR_MESSAGE;
-        transition.router.stateService.go('onboarding.registration-incomplete');
+        transition.router.stateService.go('onboarding.gesuchsteller.registration-incomplete');
     }
 }

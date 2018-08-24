@@ -18,6 +18,7 @@ import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import DossierRS from '../../gesuch/service/dossierRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
+import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
@@ -48,22 +49,24 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.gesuchsteller',
-        url: '/registration/{gemeindeId:[0-9a-fA-F\-]{36}}',
-        component: OnboardingGsAbschliessenComponent,
-        data: {
-            roles: [TSRole.GESUCHSTELLER]
-        },
-    },
-    {
-        name: 'onboarding.registration-incomplete',
-        url: '/registration-abschliessen',
-        component: OnboardingComponent,
+        abstract: true,
+        component: UiViewComponent,
         data: {
             roles: [TSRole.GESUCHSTELLER]
         },
         onEnter: disableWhenDossierExists,
+    },
+    {
+        name: 'onboarding.gesuchsteller.registration',
+        url: '/registration/{gemeindeId:[0-9a-fA-F\-]{36}}',
+        component: OnboardingGsAbschliessenComponent,
+    },
+    {
+        name: 'onboarding.gesuchsteller.registration-incomplete',
+        url: '/registration-abschliessen',
+        component: OnboardingComponent,
         resolve: {
-            nextState: () => 'onboarding.gesuchsteller',
+            nextState: () => 'onboarding.gesuchsteller.registration',
             showLogin: () => false,
         }
     },
