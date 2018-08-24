@@ -103,7 +103,10 @@ describe('DVQuicksearchList', () => {
                 quicksearchListViewController.editAntrag(mockAntrag, undefined); //antrag wird eidtiert
                 $scope.$apply();
 
-                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNewFall: false, gesuchId: '66345345', dossierId: mockAntrag.dossierId});
+                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {
+                    gesuchId: '66345345',
+                    dossierId: mockAntrag.dossierId
+                });
 
             });
         });

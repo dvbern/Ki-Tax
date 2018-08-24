@@ -53,7 +53,10 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/gesuchstellerDashboard',
         params: {
             gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
-        }
+        },
+        resolve: {
+            gesuch: resetGesuchModelManager // always when navigating to the Dashboard the gesuchModelManager must be reset
+        },
     },
     {
         name: 'gesuchsteller.createAngebot',
@@ -61,7 +64,7 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/createAngebotView/:type/:gesuchId',
         resolve: {
             gesuch: getGesuchModelManager
-        }
+        },
     }
 ];
 
@@ -89,5 +92,14 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $s
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
 
     return $q.resolve(undefined);
+}
+
+resetGesuchModelManager.$inject = ['GesuchModelManager'];
+
+export function resetGesuchModelManager(gesuchModelManager: GesuchModelManager): IPromise<TSGesuch> {
+    if (gesuchModelManager.getGesuch()) {
+        gesuchModelManager.setGesuch(undefined);
+    }
+    return Promise.resolve(gesuchModelManager.getGesuch());
 }
 

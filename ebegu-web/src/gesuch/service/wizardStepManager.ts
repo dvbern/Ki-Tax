@@ -268,13 +268,15 @@ export default class WizardStepManager {
      * gibt true zurueck wenn step mit next/prev button erreichbar sein soll
      */
     private isStepAvailableViaBtn(stepName: TSWizardStepName, gesuch: TSGesuch): boolean {
-        const step: TSWizardStep = this.getStepByName(stepName);
+        if (gesuch) {
+            const step: TSWizardStep = this.getStepByName(stepName);
 
-        if (step !== undefined) {
-            return (this.isStepClickableForCurrentRole(step, gesuch)
-                || ((gesuch.typ === TSAntragTyp.ERSTGESUCH || gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH) && step.wizardStepStatus === TSWizardStepStatus.UNBESUCHT
-                    && !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllButAdministratorJugendamtRole()) && stepName === TSWizardStepName.VERFUEGEN))
-                || (gesuch.typ === TSAntragTyp.MUTATION && step.wizardStepName === TSWizardStepName.FAMILIENSITUATION));
+            if (step !== undefined) {
+                return (this.isStepClickableForCurrentRole(step, gesuch)
+                    || ((gesuch.typ === TSAntragTyp.ERSTGESUCH || gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH) && step.wizardStepStatus === TSWizardStepStatus.UNBESUCHT
+                        && !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllButAdministratorJugendamtRole()) && stepName === TSWizardStepName.VERFUEGEN))
+                    || (gesuch.typ === TSAntragTyp.MUTATION && step.wizardStepName === TSWizardStepName.FAMILIENSITUATION));
+            }
         }
         return false;  // wenn der step undefined ist geben wir mal verfuegbar zurueck
     }
@@ -285,21 +287,24 @@ export default class WizardStepManager {
      * zurueckgegeben
      */
     public isStepClickableForCurrentRole(step: TSWizardStep, gesuch: TSGesuch) {
-        if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
-            //verfuegen fuer admin und jugendamt  immer sichtbar
-            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                    return isAtLeastFreigegeben(gesuch.status);
-                } else {
-                    // ... alle anderen ab VERFUEGT
-                    if (!isAnyStatusOfVerfuegt(gesuch.status)) {
-                        return false;
+        if (gesuch) {
+            if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
+                //verfuegen fuer admin und jugendamt  immer sichtbar
+                if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+                    if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+                        return isAtLeastFreigegeben(gesuch.status);
+                    } else {
+                        // ... alle anderen ab VERFUEGT
+                        if (!isAnyStatusOfVerfuegt(gesuch.status)) {
+                            return false;
+                        }
                     }
                 }
+                return this.areAllStepsOK(gesuch);
             }
-            return this.areAllStepsOK(gesuch);
+            return step.verfuegbar === true;  //wenn keine Sonderbedingung gehen wir davon aus dass der step nicht disabled ist
         }
-        return step.verfuegbar === true;  //wenn keine Sonderbedingung gehen wir davon aus dass der step nicht disabled ist
+        return false;
     }
 
     /**
@@ -394,5 +399,34 @@ export default class WizardStepManager {
 
     private isStepHidden(stepName: TSWizardStepName): boolean {
         return this.hiddenSteps.indexOf(stepName) >= 0;
+    }
+
+    /**
+     * Mit den Daten vom Gesuch, werden die entsprechenden Steps der Liste hiddenSteps hinzugefuegt.
+     * Oder ggf. aus der Liste entfernt (nur public fuer test)
+     */
+    public setHiddenSteps(gesuch: TSGesuch): void {
+        if (gesuch) {
+            //Freigabe
+            if (gesuch.isOnlineGesuch()) {
+                this.unhideStep(TSWizardStepName.FREIGABE);
+            } else {
+                this.hideStep(TSWizardStepName.FREIGABE);
+            }
+
+            //Abwesenheit
+            if (gesuch.isMutation()) {
+                this.unhideStep(TSWizardStepName.ABWESENHEIT);
+            } else {
+                this.hideStep(TSWizardStepName.ABWESENHEIT);
+            }
+
+            //Umzug
+            if (!gesuch.isMutation() && !gesuch.isThereAnyUmzug()) {
+                this.hideStep(TSWizardStepName.UMZUG);
+            } else {
+                this.unhideStep(TSWizardStepName.UMZUG);
+            }
+        }
     }
 }

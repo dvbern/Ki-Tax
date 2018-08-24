@@ -55,7 +55,7 @@ describe('NavigationUtil', () => {
                 stateServiceSpy,
                 gesuchId);
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.fallcreation', {createNewFall: false, gesuchId: gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.fallcreation', {gesuchId: gesuchId});
         });
     });
 });
