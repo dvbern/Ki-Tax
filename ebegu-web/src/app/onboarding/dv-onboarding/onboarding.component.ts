@@ -28,7 +28,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
     selector: 'dv-onboarding',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding.component.html',
-    styleUrls: ['../onboarding.less', './onboarding.component.less'],
+    styleUrls: ['./onboarding.component.less', '../onboarding.less'],
 })
 export class OnboardingComponent {
     public gemeinden$: Observable<TSGemeinde[]>;

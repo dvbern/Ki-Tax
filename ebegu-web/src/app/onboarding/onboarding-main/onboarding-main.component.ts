@@ -20,7 +20,7 @@ import {Component} from '@angular/core';
 @Component({
     selector: 'dv-onboarding-main',
     templateUrl: './onboarding-main.component.html',
-    styleUrls: ['../onboarding.less', './onboarding-main.component.less']
+    styleUrls: ['./onboarding-main.component.less', '../onboarding.less']
 })
 export class OnboardingMainComponent {
 }
