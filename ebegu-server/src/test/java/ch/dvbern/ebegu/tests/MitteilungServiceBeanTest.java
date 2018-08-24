@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -98,9 +99,12 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Benutzer empfaengerSCH;
 	private Benutzer empfaengerINST;
 	private Benutzer sender;
+	private Gesuchsperiode gesuchsperiode;
 
 	@Before
 	public void init() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		mandant = getDummySuperadmin().getMandant();
 		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
@@ -313,7 +317,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testApplyBetreuungsmitteilungErstgesuch() {
 		// Momentan ist es nicht erlaubt, eine Betreuungsmitteilung aus einem Erstgesuch zu machen
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
 
 		final Betreuungsmitteilung mitteilung = new Betreuungsmitteilung();
 		final Betreuung betreuung_1_1 = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
@@ -333,7 +337,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		prepareDependentObjects("gesuchst");
 
 		// Wir erstellen ein Erstgesuch und mutieren es
-		final Gesuch gesuch1 = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), AntragStatus.VERFUEGT);
+		final Gesuch gesuch1 = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), AntragStatus.VERFUEGT,
+			gesuchsperiode);
 		gesuch1.setGueltig(true);
 		gesuch1.setTimestampVerfuegt(LocalDateTime.now());
 		gesuchService.updateGesuch(gesuch1, true, null);
@@ -369,7 +374,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testFindNewestBetreuungsmitteilung_NoMitteilungExists() {
 		prepareDependentObjects("gesuchst");
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
 		final Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		final Optional<Betreuungsmitteilung> optMitteilung = mitteilungService.findNewestBetreuungsmitteilung(betreuung.getId());
@@ -380,7 +385,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testFindNewestBetreuungsmitteilung() {
 		prepareDependentObjects("gesuchst");
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
 		final Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		loginAsSachbearbeiterInst("sainst", betreuung.getInstitutionStammdaten().getInstitution());

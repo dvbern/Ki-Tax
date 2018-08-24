@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class EinkommensverschlechterungInfoContainer extends AbstractEntity {
+public class EinkommensverschlechterungInfoContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 7458803905310712257L;
 

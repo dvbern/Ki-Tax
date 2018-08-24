@@ -1,27 +1,33 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.enums;
 
 /**
- * Keys für die zeitabhängigen E-BEGU-Parameter
+ * Keys für die Einstellungen
  */
-public enum EbeguParameterKey {
+public enum EinstellungKey {
 
-	// Fixbeitrag der Stadt pro Tag, nur für Kitas relevant (Achtung: Kann auf den 1.1. aendern! Im Gegensatz zu den anderen Parametern)
-	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA(Boolean.FALSE),
+	// Die Gemeinde kennt eine Kontingentierung der Gutscheine
+	KONTINGENTIERUNG_ENABLED,
+
+	// Fixbetrag der Stadt Bern. Eigentlich Jahesabhängig und vermutlich nicht mehr gebraucht. Vorerst mal Param pro Halbjahr
+	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
+	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,
 
 	// Anzahl Tage Kita Max
 	PARAM_ANZAL_TAGE_MAX_KITA,
@@ -91,22 +97,4 @@ public enum EbeguParameterKey {
 
 	// Maximaler Zuschlag zum Erwerbspensum
 	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
-
-	private boolean proGesuchsperiode;
-
-	EbeguParameterKey() {
-		this.proGesuchsperiode = true;
-	}
-
-	EbeguParameterKey(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
-	}
-
-	public boolean isProGesuchsperiode() {
-		return proGesuchsperiode;
-	}
-
-	public void setProGesuchsperiode(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
-	}
 }

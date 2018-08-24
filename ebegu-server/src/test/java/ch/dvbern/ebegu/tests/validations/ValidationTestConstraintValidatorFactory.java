@@ -20,8 +20,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validation;
 
-import ch.dvbern.ebegu.services.EbeguParameterService;
-import ch.dvbern.ebegu.tests.services.EbeguDummyParameterServiceBean;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
 
 /**
@@ -41,8 +41,8 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 	public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {
 		if (key == CheckBetreuungspensumValidator.class) {
 			//Mock Service for Parameters
-			EbeguParameterService dummyParamService = new EbeguDummyParameterServiceBean();
-			return (T) new CheckBetreuungspensumValidator(dummyParamService, entityManagerFactory);
+			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
+			return (T) new CheckBetreuungspensumValidator(dummyEinstellungenService, entityManagerFactory);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();
 		return delegate.getInstance(key);

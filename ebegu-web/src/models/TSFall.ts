@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSUser from './TSUser';
 
-export default class TSFall extends TSAbstractEntity {
+export default class TSFall extends TSAbstractMutableEntity {
 
     private _fallNummer: number;
     private _nextNumberKind: number;

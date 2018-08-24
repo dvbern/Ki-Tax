@@ -22,7 +22,7 @@
 
 	<alternatives>
 		<!--Fuer Tests koennten wir wenn gewuenscht die alternativen services benutzten, aktuell nicht der Fall-->
-		<!--<class>ch.dvbern.ebegu.tests.services.EbeguDummyParameterServiceBean</class>-->
+		<!--<class>ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean</class>-->
 		<class>ch.dvbern.ebegu.config.EbeguConfigurationDummyImpl</class>
 	</alternatives>
 </beans>

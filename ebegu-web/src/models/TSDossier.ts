@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSFall from './TSFall';
 import TSGemeinde from './TSGemeinde';
 import TSUser from './TSUser';
 
-export default class TSDossier extends TSAbstractEntity {
+export default class TSDossier extends TSAbstractMutableEntity {
 
     private _fall: TSFall;
     private _gemeinde: TSGemeinde;

@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSErwerbspensum from './TSErwerbspensum';
 
-export default class TSErwerbspensumContainer extends TSAbstractEntity {
+export default class TSErwerbspensumContainer extends TSAbstractMutableEntity {
 
     private _erwerbspensumGS: TSErwerbspensum;
     private _erwerbspensumJA: TSErwerbspensum;

@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSTraegerschaft} from './TSTraegerschaft';
 import {TSMandant} from './TSMandant';
 
-export default class TSInstitution extends TSAbstractEntity {
+export default class TSInstitution extends TSAbstractMutableEntity {
     private _name: string;
     private _traegerschaft: TSTraegerschaft;
     private _mandant: TSMandant;

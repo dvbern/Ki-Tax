@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -60,7 +61,10 @@ public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void updateVerantwortlicherUserForDossier() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
 		Benutzer sachbearbeiter = TestDataUtil.createAndPersistJABenutzer(persistence);
 
