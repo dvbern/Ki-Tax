@@ -14,10 +14,10 @@
  */
 
 import {TSFerienname} from './enums/TSFerienname';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSBelegungFerieninselTag from './TSBelegungFerieninselTag';
 
-export default class TSBelegungFerieninsel extends TSAbstractEntity {
+export default class TSBelegungFerieninsel extends TSAbstractMutableEntity {
 
     private _ferienname: TSFerienname;
     private _tage: Array<TSBelegungFerieninselTag> = [];

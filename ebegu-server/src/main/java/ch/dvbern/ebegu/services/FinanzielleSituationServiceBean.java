@@ -28,10 +28,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.EbeguParameter;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.EbeguParameterKey;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -81,7 +81,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	private Authorizer authorizer;
 
 	@Inject
-	private EbeguParameterService ebeguParameterService;
+	private EinstellungService einstellungService;
 
 	@Inject
 	private GesuchService gesuchService;
@@ -155,13 +155,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	 * Sollte der Parameter nicht definiert sein, wird 1.00 zurueckgegeben, d.h. keine Grenze fuer EKV
 	 */
 	private BigDecimal calculateGrenzwertEKV(@Nonnull Gesuch gesuch) {
-		final Optional<EbeguParameter> optGrenzwert = ebeguParameterService.getEbeguParameterByKeyAndDate(EbeguParameterKey
-				.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
-			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
-		if (optGrenzwert.isPresent()) {
-			//noinspection ConstantConditions
-			return MathUtil.ZWEI_NACHKOMMASTELLE.divide(BigDecimal.valueOf(100).subtract(optGrenzwert.get().getValueAsBigDecimal()), BigDecimal.valueOf(100));
-		}
-		return BigDecimal.ONE; // By default wird 1 als Grenz gesetzt und alle EKV werden akzeptiert
+		Einstellung einstellung = einstellungService.findEinstellung(
+			EinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		return MathUtil.ZWEI_NACHKOMMASTELLE
+			.divideNullSafe(BigDecimal.valueOf(100).subtract(einstellung.getValueAsBigDecimal()), BigDecimal.valueOf(100));
 	}
 }

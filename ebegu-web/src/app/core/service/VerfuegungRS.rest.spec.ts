@@ -44,11 +44,11 @@ describe('VerfuegungRS', () => {
 
     beforeEach(() => {
         const kindGS: TSKind = new TSKind('Pedro', 'Bern');
-        TestDataUtil.setAbstractFieldsUndefined(kindGS);
+        TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
         const kindJA: TSKind = new TSKind('Pedro', 'Bern');
-        TestDataUtil.setAbstractFieldsUndefined(kindJA);
+        TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
-        TestDataUtil.setAbstractFieldsUndefined(mockKind);
+        TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
         mockKind.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockKindContainerListRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
     });

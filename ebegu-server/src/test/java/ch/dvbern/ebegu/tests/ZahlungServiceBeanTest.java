@@ -108,7 +108,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void init() {
 		gesuchsperiode = createGesuchsperiode(true);
 		insertInstitutionen();
-		TestDataUtil.prepareParameters(gesuchsperiode.getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gemeinde = TestDataUtil.getGemeindeBern(persistence).getId();
 	}
 
@@ -457,7 +457,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeinde);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeinde, gesuchsperiode);
 	}
 
 	@Nullable

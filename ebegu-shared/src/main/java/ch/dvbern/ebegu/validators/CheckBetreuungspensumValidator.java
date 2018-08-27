@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.validators;
 
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import javax.annotation.Nonnull;
@@ -31,7 +30,9 @@ import javax.validation.ConstraintValidatorContext;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.services.EbeguParameterService;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 
 /**
@@ -42,10 +43,10 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
-	private EbeguParameterService ebeguParameterService;
+	private EinstellungService einstellungService;
 
-	// We need to pass to EbeguParameterService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
-	// and pass it to the methods of EbeguParameterService we need to call.
+	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
+	// and pass it to the methods of EinstellungService we need to call.
 	//http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
 	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
 	private EntityManagerFactory entityManagerFactory;
@@ -58,8 +59,8 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 	 *
 	 * @param service service zum testen
 	 */
-	public CheckBetreuungspensumValidator(EbeguParameterService service, EntityManagerFactory entityManagerFactory) {
-		this.ebeguParameterService = service;
+	public CheckBetreuungspensumValidator(EinstellungService service, EntityManagerFactory entityManagerFactory) {
+		this.einstellungService = service;
 		this.entityManagerFactory = entityManagerFactory;
 	}
 
@@ -79,12 +80,10 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		final EntityManager em = createEntityManager();
 		int index = 0;
 		for (BetreuungspensumContainer betPenContainer : betreuung.getBetreuungspensumContainers()) {
-			LocalDate betreuungAb = betPenContainer.getBetreuungspensumJA().getGueltigkeit().getGueltigAb();
-			LocalDate gesuchsperiodeStart = betPenContainer.extractGesuchsperiode().getGueltigkeit().getGueltigAb();
-			//Wir laden  die Parameter von Start-Gesuchsperiode falls Betreuung schon laenger als Gesuchsperiode besteht
-			LocalDate stichtagParameter = betreuungAb.isAfter(gesuchsperiodeStart) ? betreuungAb : gesuchsperiodeStart;
+			Gesuchsperiode gesuchsperiode = betPenContainer.extractGesuchsperiode();
+			Gemeinde gemeinde = betreuung.extractGesuch().getDossier().getGemeinde();
 			int betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
-				stichtagParameter, betreuung.getBetreuungsangebotTyp(), ebeguParameterService, em);
+				gesuchsperiode, gemeinde, betreuung.getBetreuungsangebotTyp(), einstellungService, em);
 
 			if (!validateBetreuungspensum(betPenContainer.getBetreuungspensumGS(), betreuungsangebotTypMinValue, index, "GS", context)
 				|| !validateBetreuungspensum(betPenContainer.getBetreuungspensumJA(), betreuungsangebotTypMinValue, index, "JA", context)) {

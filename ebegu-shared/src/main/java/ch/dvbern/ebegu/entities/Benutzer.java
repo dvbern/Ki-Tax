@@ -67,7 +67,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Benutzer extends AbstractEntity {
+public class Benutzer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6372688971894279665L;
 

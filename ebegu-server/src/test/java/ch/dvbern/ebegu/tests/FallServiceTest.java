@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
@@ -174,12 +175,14 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testGetEmailAddressForFallFromGS() {
 		loginAsGesuchsteller("gesuchst");
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null);
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null, null, gesuchsperiode1718);
 
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		Assert.assertNotNull(gesuch.getGesuchsteller1().getGesuchstellerJA().getMail());
 		Assert.assertNotNull(gesuch.getFall().getBesitzer());
-		Assert.assertFalse(gesuch.getFall().getBesitzer().getEmail().equals(gesuch.getGesuchsteller1().getGesuchstellerJA().getMail()));
+		Assert.assertNotEquals(gesuch.getFall().getBesitzer().getEmail(), gesuch.getGesuchsteller1().getGesuchstellerJA().getMail());
 
 		Optional<String> emailAddressForFall = fallService.getCurrentEmailAddress(gesuch.getFall().getId());
 		Assert.assertTrue(emailAddressForFall.isPresent());

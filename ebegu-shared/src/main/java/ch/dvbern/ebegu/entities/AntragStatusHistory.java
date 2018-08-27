@@ -36,7 +36,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class AntragStatusHistory extends AbstractEntity implements Comparable<AntragStatusHistory> {
+public class AntragStatusHistory extends AbstractMutableEntity implements Comparable<AntragStatusHistory> {
 
 	private static final long serialVersionUID = -9032257320864372570L;
 

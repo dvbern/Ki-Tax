@@ -187,7 +187,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public Gesuch createGesuch(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
 		final Gesuch persistedGesuch = persistence.persist(gesuch);
-		// Die WizsrdSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein Gesuch ohne WizardSteps gibt
+		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein Gesuch ohne WizardSteps gibt
 		wizardStepService.createWizardStepList(persistedGesuch);
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		return persistedGesuch;
