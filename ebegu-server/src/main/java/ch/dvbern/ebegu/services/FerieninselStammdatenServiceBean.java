@@ -39,12 +39,11 @@ import ch.dvbern.ebegu.entities.FerieninselStammdaten_;
 import ch.dvbern.ebegu.entities.FerieninselZeitraum;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
