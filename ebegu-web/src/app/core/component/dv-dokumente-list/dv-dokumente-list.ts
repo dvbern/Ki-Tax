@@ -234,14 +234,11 @@ export class DVDokumenteListController {
 
     /**
      * According to the personType the right FullName will be calculated.
-     * - For FREETEXT the value in field fullName prevails.
      * - For GESUCHSTELLER the fullname will be taken out of the GESUCHSTELLER. The value of personNumber indicates from which Gesuchsteller.
      * - For KIND the fullname will be taken out of the KIND. The value of personNumber indicates from which Kind using its field kindNumber.
      */
     public extractFullName(dokumentGrund: TSDokumentGrund): string {
-        if (dokumentGrund.personType === TSDokumentGrundPersonType.FREETEXT) {
-            return dokumentGrund.fullName;
-        } else if (dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER) {
+        if (dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER) {
             if (this.gesuchModelManager.getGesuch()) {
                 if (dokumentGrund.personNumber === 2 && this.gesuchModelManager.getGesuch().gesuchsteller2) {
                     return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();

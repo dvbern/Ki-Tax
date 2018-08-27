@@ -44,9 +44,6 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 	private DokumentTyp dokumentTyp;
 
 	@Nullable
-	private String fullName;
-
-	@Nullable
 	private String tag;
 
 	@Nullable
@@ -66,15 +63,6 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 
 	public void setDokumentGrundTyp(DokumentGrundTyp dokumentGrundTyp) {
 		this.dokumentGrundTyp = dokumentGrundTyp;
-	}
-
-	@Nullable
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(@Nullable String fullName) {
-		this.fullName = fullName;
 	}
 
 	@Nullable
