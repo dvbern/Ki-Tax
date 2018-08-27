@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -68,9 +69,6 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 
 /**
  * Service fuer Gesuch
@@ -581,7 +579,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				if (WizardStepName.BETREUUNG == wizardStep.getWizardStepName()) {
 					checkStepStatusForBetreuung(wizardStep, false);
 
-				} else if (!principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION)
+				} else if (!principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
 					&& WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
 					// SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION duerfen beim Aendern einer Betreuung
 					// den Status von ERWERBPENSUM nicht aendern

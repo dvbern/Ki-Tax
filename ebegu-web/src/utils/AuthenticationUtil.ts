@@ -26,16 +26,22 @@ export function navigateToStartPageForRole(currentRole: TSRole, $state: StateSer
 export function getRoleBasedTargetState(currentRole: TSRole, $state: StateService): TargetState {
     const stateByRole: { [key in TSRole]: string } = {
         [TSRole.SUPER_ADMIN]: 'faelle.list',
-        [TSRole.ADMIN]: 'pendenzen.list-view',
-        [TSRole.SACHBEARBEITER_JA]: 'pendenzen.list-view',
+        [TSRole.ADMIN_BG]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_BG]: 'pendenzen.list-view',
+        [TSRole.ADMIN_GEMEINDE]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_GEMEINDE]: 'pendenzen.list-view',
+        [TSRole.ADMIN_INSTITUTION]: 'pendenzenBetreuungen.list-view',
         [TSRole.SACHBEARBEITER_INSTITUTION]: 'pendenzenBetreuungen.list-view',
+        [TSRole.ADMIN_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
         [TSRole.SACHBEARBEITER_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
         [TSRole.GESUCHSTELLER]: 'gesuchsteller.dashboard',
         [TSRole.JURIST]: 'faelle.list',
         [TSRole.REVISOR]: 'faelle.list',
         [TSRole.STEUERAMT]: 'pendenzenSteueramt.list-view',
-        [TSRole.ADMINISTRATOR_SCHULAMT]: 'pendenzen.list-view',
-        [TSRole.SCHULAMT]: 'pendenzen.list-view',
+        [TSRole.ADMIN_TS]: 'pendenzen.list-view',
+        [TSRole.SACHBEARBEITER_TS]: 'pendenzen.list-view',
+        [TSRole.ADMIN_MANDANT]: 'faelle.list',
+        [TSRole.SACHBEARBEITER_MANDANT]: 'faelle.list',
         [TSRole.ANONYMOUS]: 'onboarding.start',
     };
 

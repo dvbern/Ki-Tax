@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.SearchIndexService;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -254,6 +255,6 @@ public class SearchIndexResource {
 
 	private boolean isCurrentUserInstitutionOrTraegerschaft() {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
-		return UserRole.SACHBEARBEITER_INSTITUTION == userRole || UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole;
+		return EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles());
 	}
 }

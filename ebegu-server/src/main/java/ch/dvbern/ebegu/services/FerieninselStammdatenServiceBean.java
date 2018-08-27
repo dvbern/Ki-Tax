@@ -39,10 +39,13 @@ import ch.dvbern.ebegu.entities.FerieninselStammdaten_;
 import ch.dvbern.ebegu.entities.FerieninselZeitraum;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.enums.Ferienname;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service zum Verwalten von Ferieninsel-Stammdaten
@@ -60,7 +63,7 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ UserRoleName.ADMINISTRATOR_SCHULAMT, UserRoleName.SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, ADMIN_GEMEINDE })
 	public FerieninselStammdaten saveFerieninselStammdaten(@Nonnull FerieninselStammdaten ferieninselStammdaten) {
 		Objects.requireNonNull(ferieninselStammdaten);
 		return persistence.merge(ferieninselStammdaten);
@@ -139,7 +142,7 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@RolesAllowed(UserRoleName.SUPER_ADMIN)
+	@RolesAllowed(SUPER_ADMIN)
 	public void removeFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
 		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
 		persistence.remove(FerieninselStammdaten.class, ferieninselStammdatenId);

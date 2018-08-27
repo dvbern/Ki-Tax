@@ -50,13 +50,17 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 
 /**
  * REST Resource fuer Kinder
@@ -128,7 +132,7 @@ public class KindResource {
 
 		// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder gefilter
 		// damit nur die relevanten Kinder geschickt werden
-		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_TRAEGERSCHAFT , UserRole.SACHBEARBEITER_INSTITUTION )) {
+		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT , SACHBEARBEITER_INSTITUTION )) {
 			Collection<Institution> instForCurrBenutzer = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 			RestUtil.purgeSingleKindAndBetreuungenOfInstitutionen(jaxKindContainer, instForCurrBenutzer);
 		}

@@ -19,5 +19,6 @@ public enum Amt {
 
 	JUGENDAMT,
 	SCHULAMT,
+	GEMEINDE,
 	NONE
 }

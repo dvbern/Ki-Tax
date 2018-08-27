@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.StringUtils;
@@ -54,6 +53,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+
 /**
  * Service fuer diverse Admin-Aufgaben.
  * Im Moment nur fuer internen Gebrauch, d.h. die Methoden werden nirgends im Code aufgerufen, koennen aber bei Bedarf
@@ -61,7 +64,7 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @Local(AdministrationService.class)
-@RolesAllowed(value = { UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "ConstantConditions" })
 public class AdministrationServiceBean extends AbstractBaseService implements AdministrationService {
 
