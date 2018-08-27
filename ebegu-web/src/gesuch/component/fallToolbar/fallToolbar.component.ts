@@ -67,7 +67,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.loadObjects();
+        this.loadObjects(); // todo fragen it gets called twice!! ngChanges. siehe Kommentar unten
         // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 

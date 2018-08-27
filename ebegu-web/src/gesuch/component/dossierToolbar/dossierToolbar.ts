@@ -94,7 +94,7 @@ export class DossierToolbarController implements IDVFocusableController {
     TSRoleUtil = TSRoleUtil;
     forceLoadingFromFall: boolean;
     public dossierId: string;
-    public fallId: string;
+    public fallId: string; // todo ramon -> dossierToolbar sollte den Fall nicht direkt kennen
     public dossier: TSDossier;
 
     gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
