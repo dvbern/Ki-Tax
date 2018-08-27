@@ -368,4 +368,8 @@ public enum AntragStatus {
 		return forRevisorRole.contains(this);
 	}
 
+	public boolean isReadableByMandantUser() {
+		return forAdminMandantRole.contains(this);
+	}
+
 }
