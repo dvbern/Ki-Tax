@@ -143,10 +143,9 @@ public class ZahlungResource {
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
-		if (!optional.isPresent()) {
-			return null;
-		}
-		return converter.zahlungsauftragToJAX(optional.get(), true);
+		return optional
+			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, true))
+			.orElse(null);
 	}
 
 	@ApiOperation(value = "Gibt den Zahlungsauftrag mit der uebebergebenen Id zurueck, jedoch nur mit den Eintraegen " +
@@ -165,12 +164,10 @@ public class ZahlungResource {
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
-		if (!optional.isPresent()) {
-			return null;
-		}
-		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-
-		return converter.zahlungsauftragToJAX(optional.get(), principalBean.discoverMostPrivilegedRole(), allowedInst);
+		return optional
+			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(),
+				institutionService.getAllowedInstitutionenForCurrentBenutzer(false)))
+			.orElse(null);
 	}
 
 	@ApiOperation(value = "Setzt den Status des Zahlungsautrags auf ausgeloest. Danach kann er nicht mehr veraendert " +
