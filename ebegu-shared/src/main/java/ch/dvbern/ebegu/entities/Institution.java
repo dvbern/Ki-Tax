@@ -37,7 +37,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class Institution extends AbstractEntity implements HasMandant {
+public class Institution extends AbstractMutableEntity implements HasMandant {
 
 	private static final long serialVersionUID = -8706487439884760618L;
 

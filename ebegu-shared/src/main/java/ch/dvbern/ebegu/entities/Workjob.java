@@ -39,7 +39,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Entity
 @NamedQuery(name = Workjob.Q_WORK_JOB_STATE_UPDATE, query = "update Workjob wj set wj.status = :status where executionId = :exId")
-public class Workjob extends AbstractEntity {
+public class Workjob extends AbstractMutableEntity {
 
 	public static final String Q_WORK_JOB_STATE_UPDATE = "WORK_JOB_STATE_UPDATE";
 

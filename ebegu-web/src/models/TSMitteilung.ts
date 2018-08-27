@@ -17,12 +17,12 @@ import * as moment from 'moment';
 import {TSAmt} from './enums/TSAmt';
 import {TSMitteilungStatus} from './enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSBetreuung from './TSBetreuung';
 import TSDossier from './TSDossier';
 import TSUser from './TSUser';
 
-export default class TSMitteilung extends TSAbstractEntity {
+export default class TSMitteilung extends TSAbstractMutableEntity {
 
     private _dossier: TSDossier;
     private _betreuung: TSBetreuung;

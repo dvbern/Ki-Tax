@@ -15,9 +15,9 @@
 
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSFerienname} from './enums/TSFerienname';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSInstitutionStammdatenFerieninsel extends TSAbstractEntity {
+export default class TSInstitutionStammdatenFerieninsel extends TSAbstractMutableEntity {
 
     private _ausweichstandortSommerferien: string;
     private _ausweichstandortHerbstferien: string;

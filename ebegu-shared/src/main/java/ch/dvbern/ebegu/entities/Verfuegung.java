@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
-public class Verfuegung extends AbstractEntity {
+public class Verfuegung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6682874795746487562L;
 

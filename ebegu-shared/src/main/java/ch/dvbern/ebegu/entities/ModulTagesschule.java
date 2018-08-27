@@ -40,7 +40,7 @@ import org.hibernate.envers.Audited;
 @CheckTimeRange
 @Audited
 @Entity
-public class ModulTagesschule extends AbstractEntity implements Comparable<ModulTagesschule> {
+public class ModulTagesschule extends AbstractMutableEntity implements Comparable<ModulTagesschule> {
 
 	private static final long serialVersionUID = -8403411439182708718L;
 

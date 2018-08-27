@@ -44,7 +44,7 @@ describe('WizardStepRS', () => {
 
     beforeEach(() => {
         mockWizardStep = TestDataUtil.createWizardStep(gesuchId);
-        TestDataUtil.setAbstractFieldsUndefined(mockWizardStep);
+        TestDataUtil.setAbstractMutableFieldsUndefined(mockWizardStep);
         mockWizardStepRest = ebeguRestUtil.wizardStepToRestObject({}, mockWizardStep);
         mockWizardStepListRest = [mockWizardStepRest];
     });

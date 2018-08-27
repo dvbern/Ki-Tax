@@ -21,7 +21,6 @@ export default class TSAnmeldungDTO {
     private _kindContainerId: string;
     private _betreuung: TSBetreuung;
     private _additionalKindQuestions: boolean;
-    private _wohnhaftImGleichenHaushalt: number;
     private _mutterspracheDeutsch: boolean;
     private _einschulungTyp: TSEinschulungTyp;
 
@@ -47,14 +46,6 @@ export default class TSAnmeldungDTO {
 
     public set additionalKindQuestions(value: boolean) {
         this._additionalKindQuestions = value;
-    }
-
-    public get wohnhaftImGleichenHaushalt(): number {
-        return this._wohnhaftImGleichenHaushalt;
-    }
-
-    public set wohnhaftImGleichenHaushalt(value: number) {
-        this._wohnhaftImGleichenHaushalt = value;
     }
 
     public get mutterspracheDeutsch(): boolean {

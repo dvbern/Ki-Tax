@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
@@ -32,7 +32,7 @@ import TSUser from '../../../models/TSUser';
     templateUrl: './onboarding-gs-abschliessen.component.html',
     styleUrls: ['../onboarding.less', './onboarding-gs-abschliessen.component.less'],
 })
-export class OnboardingGsAbschliessenComponent {
+export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSUser>;
     public gemeinde$: Observable<TSGemeinde>;
@@ -60,7 +60,7 @@ export class OnboardingGsAbschliessenComponent {
         }
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
             this.stateService.go('gesuchsteller.dashboard', {
-                gesuchstellerDashboardStateParams: {dossierId: dossier.id}
+                dossierId: dossier.id
             });
         });
     }

@@ -17,7 +17,7 @@ import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import KindRS from '../app/core/service/kindRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
 import TSGesuch from '../models/TSGesuch';
 import TSKindDublette from '../models/TSKindDublette';
@@ -54,11 +54,10 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
 
 export class EbeguNewFallState implements Ng1StateDeclaration {
     name = 'gesuch.fallcreation';
-    url = '/fall/:createNewFall/:createNewDossier/:createNewGesuch/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
+    url = '/fall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
     params = {
+        creationAction: '',
         eingangsart: '',
-        createNewDossier: 'false',
-        createNewGesuch: 'false',
         gesuchsperiodeId: '',
         gesuchId: '',
         dossierId: '',
@@ -85,7 +84,7 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 
 export class EbeguMutationState implements Ng1StateDeclaration {
     name = 'gesuch.mutation';
-    url = '/mutation/:createMutation/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
+    url = '/mutation/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -97,7 +96,7 @@ export class EbeguMutationState implements Ng1StateDeclaration {
     };
 
     resolve = {
-        gesuch: createEmptyMutation
+        gesuch: reloadGesuchModelManager
     };
 
     data = {
@@ -107,7 +106,7 @@ export class EbeguMutationState implements Ng1StateDeclaration {
 
 export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     name = 'gesuch.erneuerung';
-    url = '/erneuerung/:createErneuerung/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
+    url = '/erneuerung/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
     views: { [name: string]: Ng1StateDeclaration } = {
         'gesuchViewPort': {
@@ -119,7 +118,7 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     };
 
     resolve = {
-        gesuch: createEmptyErneuerungsgesuch
+        gesuch: reloadGesuchModelManager
     };
 
     data = {
@@ -693,10 +692,7 @@ export class IBetreuungStateParams {
 }
 
 export class INewFallStateParams {
-    createNewFall: string;
-    createNewDossier: string;
-    createNewGesuch: string;
-    createMutation: string;
+    creationAction: TSCreationAction;
     eingangsart: TSEingangsart;
     gesuchsperiodeId: string;
     gesuchId: string;
@@ -768,26 +764,17 @@ reloadGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 
 
 export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                                          wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
-                                         $log: ILogService): IPromise<any> {
+                                         $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
 
-        const eingangsart = $stateParams.eingangsart;
-        const gemeindeId = $stateParams.gemeindeId;
-        const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-
-        if ($stateParams.createNewFall === 'true') {
-            //initialize gesuch
-            return gesuchModelManager.createNewFall(eingangsart, gemeindeId);
-        }
-
-        const createNewDossierParam = $stateParams.createNewDossier;
-        if (createNewDossierParam === 'true') {
-            return gesuchModelManager.createNewDossierForCurrentFall(eingangsart, gemeindeId);
-        }
-
-        const createNewGesuchParam = $stateParams.createNewGesuch;
-        if (createNewGesuchParam === 'true') {
-            return gesuchModelManager.initGesuch(eingangsart, false, false, gesuchsperiodeId);
+        if ($stateParams.creationAction) {
+            return gesuchModelManager.createNewAntrag(
+                $stateParams.gesuchId,
+                $stateParams.dossierId,
+                $stateParams.eingangsart,
+                $stateParams.gemeindeId,
+                $stateParams.gesuchsperiodeId,
+                $stateParams.creationAction);
         }
 
         const gesuchIdParam = $stateParams.gesuchId;
@@ -815,35 +802,4 @@ export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQServi
     const deferred = $q.defer<TSKindDublette[]>();
     deferred.resolve(undefined);
     return deferred.promise;
-}
-
-createEmptyMutation.$inject = ['GesuchModelManager', '$stateParams', '$q'];
-
-export function createEmptyMutation(gesuchModelManager: GesuchModelManager, $stateParams: INewFallStateParams, $q: any): IPromise<TSGesuch> {
-    return createEmptyGesuchFromGesuch($stateParams, gesuchModelManager, $q, TSAntragTyp.MUTATION);
-}
-
-createEmptyErneuerungsgesuch.$inject = ['GesuchModelManager', '$stateParams', '$q'];
-
-export function createEmptyErneuerungsgesuch(gesuchModelManager: GesuchModelManager, $stateParams: INewFallStateParams, $q: any): IPromise<TSGesuch> {
-    return createEmptyGesuchFromGesuch($stateParams, gesuchModelManager, $q, TSAntragTyp.ERNEUERUNGSGESUCH);
-}
-
-function createEmptyGesuchFromGesuch($stateParams: INewFallStateParams, gesuchModelManager: GesuchModelManager,
-                                     $q: any, antragtyp: TSAntragTyp): IPromise<TSGesuch> {
-    if ($stateParams) {
-        const gesuchId = $stateParams.gesuchId;
-        const eingangsart = $stateParams.eingangsart;
-        const gesuchsperiodeId = $stateParams.gesuchsperiodeId;
-        const dossierId = $stateParams.dossierId;
-
-        if (gesuchId && eingangsart) {
-            if (antragtyp === TSAntragTyp.ERNEUERUNGSGESUCH) {
-                gesuchModelManager.initErneuerungsgesuch(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
-            } else if (antragtyp === TSAntragTyp.MUTATION) {
-                gesuchModelManager.initMutation(gesuchId, eingangsart, gesuchsperiodeId, dossierId);
-            }
-        }
-    }
-    return $q.defer(gesuchModelManager.getGesuch());
 }

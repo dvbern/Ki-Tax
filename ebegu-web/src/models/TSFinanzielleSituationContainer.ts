@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSFinanzielleSituation from './TSFinanzielleSituation';
 
-export default class TSFinanzielleSituationContainer extends TSAbstractEntity {
+export default class TSFinanzielleSituationContainer extends TSAbstractMutableEntity {
 
     private _jahr: number;
     private _finanzielleSituationGS: TSFinanzielleSituation;

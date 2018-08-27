@@ -30,9 +30,6 @@ import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
-const template = require('./posteingangView.html');
-require('./posteingangView.less');
-
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
     template = require('./posteingangView.html');

@@ -17,10 +17,8 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import AbstractAdminViewController from '../../abstractAdminView';
-import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -32,17 +30,14 @@ export class ParameterViewComponentConfig implements IComponentOptions {
 }
 
 export class ParameterViewController extends AbstractAdminViewController {
-    static $inject = ['EbeguParameterRS', 'GesuchsperiodeRS', '$translate',
+    static $inject = ['GesuchsperiodeRS', '$translate',
         '$log', '$state', '$timeout', 'AuthServiceRS'];
 
     form: IFormController;
     gesuchsperiodenList: Array<TSGesuchsperiode> = [];
     jahr: number;
-    ebeguJahresabhParameter: TSEbeguParameter[] = []; // enthält alle Jahresabhängigen Params für alle Jahre
-    ebeguParameterListJahr: TSEbeguParameter[]; // enthält alle Params für nur 1 Jahr
 
-    constructor(public readonly ebeguParameterRS: EbeguParameterRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+    constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                 private readonly $translate: ITranslateService,
                 private readonly $log: ILogService,
                 private readonly $state: StateService,
@@ -51,7 +46,6 @@ export class ParameterViewController extends AbstractAdminViewController {
         super(authServiceRS);
         $timeout(() => {
             this.readGesuchsperioden();
-            this.updateJahresabhParamList();
         });
     }
 
@@ -61,23 +55,12 @@ export class ParameterViewController extends AbstractAdminViewController {
         });
     }
 
-    private readEbeguParameterByJahr(): void {
-        this.ebeguParameterRS.getEbeguParameterByJahr(this.jahr).then((response: TSEbeguParameter[]) => {
-            this.ebeguParameterListJahr = response;
-        });
-    }
-
     gesuchsperiodeClicked(gesuchsperiode: any) {
         if (gesuchsperiode.isSelected) {
             this.$state.go('admin.gesuchsperiode', {
                 gesuchsperiodeId: gesuchsperiode.id
             });
         }
-    }
-
-    jahresabhParamSelected(parameter: TSEbeguParameter) {
-        this.jahr = parameter.gueltigkeit.gueltigAb.get('year');
-        this.jahrChanged();
     }
 
     createGesuchsperiode(): void {
@@ -96,40 +79,5 @@ export class ParameterViewController extends AbstractAdminViewController {
         } else {
             return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NONE');
         }
-    }
-
-    cancelJahresabhaengig(): void {
-        this.jahr = undefined;
-    }
-
-    jahrChanged(): void {
-        this.readEbeguParameterByJahr();
-    }
-
-    public saveParameterByJahr(): void {
-        if (this.ebeguParameterListJahr.length === 1) {
-            const param = this.ebeguParameterListJahr[0];
-            this.ebeguParameterRS.saveEbeguParameter(param).then((response) => {
-                this.updateJahresabhParamList();
-            });
-        } else {
-            this.$log.error('Aktuell kann diese oberflaeche nur einene einzelnen Jahresabg. Param speichern.');
-        }
-    }
-
-    private updateJahresabhParamList() {
-        this.ebeguParameterRS.getJahresabhParameter().then((response: Array<TSEbeguParameter>) => {
-            this.ebeguJahresabhParameter = response;
-        });
-    }
-
-    public jahresParamsEditable(): boolean {
-        // Wenn die Periode, die in dem Jahr *endet* noch ENTWURF ist
-        for (const gp of this.gesuchsperiodenList) {
-            if (gp.gueltigkeit.gueltigBis.year() === this.jahr) {
-                return this.periodenParamsEditableForPeriode(gp);
-            }
-        }
-        return true;
     }
 }

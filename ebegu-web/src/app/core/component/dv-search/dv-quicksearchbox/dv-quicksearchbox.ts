@@ -146,10 +146,10 @@ export class DvQuicksearchboxController {
     private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab?: boolean): void {
         if (antrag) {
             if (inNewTab) {
-                const url = this.$state.href(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                const url = this.$state.href(urlToGoTo, {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
                 window.open(url, '_blank');
             } else {
-                this.$state.go(urlToGoTo, {createNewFall: false, gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go(urlToGoTo, {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             }
         }
     }
