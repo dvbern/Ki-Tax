@@ -23,10 +23,12 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
@@ -47,6 +49,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
  * Diese müssen aus den Einstellungen gelesen werden.
  */
 public final class BGRechnerParameterDTO {
+
+	private EinschulungTyp bgBisUndMitSchulstufe;
 
 	private BigDecimal beitragKantonProTag;        // PARAM_ABGELTUNG_PRO_TAG_KANTON
 
@@ -70,7 +74,7 @@ public final class BGRechnerParameterDTO {
 	private int babyAlterInMonaten;                    // PARAM_BABY_ALTER_IN_MONATEN
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
-
+		this.setBgBisUndMitSchulstufe(asEinschulungstyp(paramMap, BG_BIS_UND_MIT_SCHULSTUFE, gesuchsperiode, gemeinde));
 		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, gemeinde));
 		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, gemeinde));
 		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, gemeinde));
@@ -109,6 +113,26 @@ public final class BGRechnerParameterDTO {
 			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
 		}
 		return param.getValueAsBigDecimal();
+	}
+
+	private EinschulungTyp asEinschulungstyp(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode
+		gesuchsperiode,
+		@Nonnull Gemeinde gemeinde) {
+		Einstellung param = paramMap.get(paramKey);
+		if (param == null) {
+			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
+				+ '\'' + gesuchsperiode + '\'';
+			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
+		}
+		return EinschulungTyp.valueOf(param.getValue());
+	}
+
+	public EinschulungTyp getBgBisUndMitSchulstufe() {
+		return bgBisUndMitSchulstufe;
+	}
+
+	public void setBgBisUndMitSchulstufe(EinschulungTyp bgBisUndMitSchulstufe) {
+		this.bgBisUndMitSchulstufe = bgBisUndMitSchulstufe;
 	}
 
 	public BigDecimal getBeitragKantonProTag() {

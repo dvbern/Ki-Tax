@@ -207,7 +207,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 		query.where(predicateGesuchsperiode, predicateGemeindeNull, predicateMandantNull);
 		query.select(root);
-		List<Einstellung> einstellungen = persistence.getCriteriaResults(query, 1);
+		List<Einstellung> einstellungen = persistence.getCriteriaResults(query);
 		List<Einstellung> sorted = einstellungen.stream()
 			.sorted(Comparator.comparing(Einstellung::getKey))
 			.collect(Collectors.toCollection(ArrayList::new));
