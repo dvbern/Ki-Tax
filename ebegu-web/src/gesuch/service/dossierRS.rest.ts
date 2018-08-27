@@ -50,14 +50,6 @@ export default class DossierRS implements IEntityRS {
             });
     }
 
-    public getDossierForFallAndGemeinde(gemeindeId: string, fallId: string): IPromise<TSDossier> {
-        return this.$http.get(this.serviceURL + '/gemeinde/' + encodeURIComponent(gemeindeId) + '/fall/' + encodeURIComponent(fallId))
-            .then((response: any) => {
-                this.$log.debug('PARSING dossier REST object ', response.data);
-                return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
-            });
-    }
-
     public findDossiersByFall(fallId: string): IPromise<TSDossier[]> {
         return this.$http.get(this.serviceURL + '/fall/' + encodeURIComponent(fallId))
             .then((response: any) => {

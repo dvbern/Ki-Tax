@@ -22,7 +22,6 @@ import {EbeguWebFaelle} from '../faelle/faelle.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
 import {EbeguWebGesuchstellerDashboard} from '../gesuchstellerDashboard/gesuchstellerDashboard.module';
 import {EbeguWebMitteilungen} from '../mitteilungen/mitteilungen.module';
-import {getTSRoleValues, TSRole} from '../models/enums/TSRole';
 import {EbeguWebPendenzen} from '../pendenzen/pendenzen.module';
 import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen/pendenzenBetreuungen.module';
 import {EbeguWebPendenzenSteueramt} from '../pendenzenSteueramt/pendenzenSteueramt.module';
@@ -35,14 +34,28 @@ import {EbeguWebZahlung} from '../zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
 import {AppAngularjsComponent} from './app.angularjs.component';
 import {EbeguWebCore} from './core/core.angularjs.module';
+import {EbeguWebDossier} from './dossier/dossier.angularjs.module';
 
 export const appModuleAngularJS = angular.module('ebeguWeb', [
         upgradeModule.name,
         EbeguWebCore.name,
-        EbeguWebAdmin.name, EbeguWebGesuch.name, EbeguWebPendenzen.name,
-        EbeguWebPendenzenBetreuungen.name, EbeguWebPendenzenSteueramt.name, EbeguWebFaelle.name, EbeguWebGesuchstellerDashboard.name,
-        EbeguWebMitteilungen.name, EbeguWebPosteingang.name, EbeguWebSearch.name, EbeguWebStatistik.name, EbeguWebZahlung.name,
-        EbeguWebZahlungsauftrag.name, EbeguWebAlleVerfuegungen.name, EbeguWebVerlauf.name, EbeguWebQuicksearch.name
+        EbeguWebAdmin.name,
+        EbeguWebGesuch.name,
+        EbeguWebPendenzen.name,
+        EbeguWebDossier.name,
+        EbeguWebPendenzenBetreuungen.name,
+        EbeguWebPendenzenSteueramt.name,
+        EbeguWebFaelle.name,
+        EbeguWebGesuchstellerDashboard.name,
+        EbeguWebMitteilungen.name,
+        EbeguWebPosteingang.name,
+        EbeguWebSearch.name,
+        EbeguWebStatistik.name,
+        EbeguWebZahlung.name,
+        EbeguWebZahlungsauftrag.name,
+        EbeguWebAlleVerfuegungen.name,
+        EbeguWebVerlauf.name,
+        EbeguWebQuicksearch.name,
     ])
         .component('appRoot', AppAngularjsComponent)
         .config(conf)
