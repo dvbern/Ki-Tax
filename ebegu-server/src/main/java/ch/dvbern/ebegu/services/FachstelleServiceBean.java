@@ -52,7 +52,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Fachstelle saveFachstelle(@Nonnull Fachstelle fachstelle) {
 		Objects.requireNonNull(fachstelle);
 		return persistence.merge(fachstelle);
@@ -73,7 +73,7 @@ public class FachstelleServiceBean extends AbstractBaseService implements Fachst
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeFachstelle(@Nonnull String fachstelleId) {
 		Objects.requireNonNull(fachstelleId);
 		Fachstelle fachstelleToRemove = findFachstelle(fachstelleId).orElseThrow(() -> new EbeguEntityNotFoundException("removeFachstelle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fachstelleId));
