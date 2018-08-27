@@ -72,14 +72,15 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	private TestfaelleService testfaelleService;
 
 	private Gemeinde gemeinde;
+	private Gesuchsperiode gesuchsperiode;
 
 	@Before
 	public void init() {
-		final Gesuchsperiode gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode(true);
 		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
-		TestDataUtil.prepareParameters(gesuchsperiode.getGueltigkeit(), persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
 	/**
@@ -87,17 +88,17 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	 */
 	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
-		return gesuchsperiode;
+		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
+		gesuchsperiode1617.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiode1617 = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1617);
+		return gesuchsperiode1617;
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Test
 	public void exportTest() {
 
-		Gesuch yvonneGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(instService, persistence, LocalDate.now());
+		Gesuch yvonneGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
 		VerfuegungenExportDTO verfuegungenExportDTO = exportService.exportAllVerfuegungenOfAntrag(yvonneGesuch.getId());
 		Assert.assertNotNull(verfuegungenExportDTO);
 		Assert.assertNotNull(verfuegungenExportDTO.getVerfuegungen());
@@ -108,7 +109,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void exportTestVorVerfuegt() {
 
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde.getId());
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde.getId(), gesuchsperiode);
 		Assert.assertNotNull(gesuch.getKindContainers().stream().findFirst());
 		Assert.assertTrue(gesuch.getKindContainers().stream().findFirst().isPresent());
 		KindContainer container = gesuch.getKindContainers().stream().findFirst().get();

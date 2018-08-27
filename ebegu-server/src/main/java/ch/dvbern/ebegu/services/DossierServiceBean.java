@@ -30,11 +30,16 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
@@ -48,7 +53,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
@@ -117,19 +121,23 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public Optional<Dossier> findDossierByGemeindeAndFall(@Nonnull String gemeindeId, @Nonnull String fallId) {
-		//TODO (KIBON-6) Aktuell wissen wir beim Aufruf dieser Methode die GemeindeId noch nicht. Wir geben immer das erste / einzige Dossier zurueck
-		Collection<Dossier> dossiersByFall = findDossiersByFall(fallId);
-		if (!dossiersByFall.isEmpty()) {
-			return dossiersByFall.stream().findFirst();
-		}
-		return Optional.empty();
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Dossier> query = cb.createQuery(Dossier.class);
+
+		Root<Dossier> root = query.from(Dossier.class);
+
+		Predicate predicateFall = cb.equal(root.get(Dossier_.fall).get(AbstractEntity_.id), fallId);
+		Predicate predicateGemeinde = cb.equal(root.get(Dossier_.gemeinde).get(AbstractEntity_.id), gemeindeId);
+
+		query.where(predicateFall, predicateGemeinde);
+		final Dossier criteriaSingleResult = persistence.getCriteriaSingleResult(query);
+		return Optional.ofNullable(criteriaSingleResult);
 	}
 
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
-	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE") // TODO Imanol brauchts dann auch nicht mehr...
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
 		authorizer.checkWriteAuthorizationDossier(dossier);
@@ -168,20 +176,22 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (!fallOptional.isPresent()) {
 			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		}
-		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId! <- dies muss behoben werden wenn der GS schon eine gemeinde hat
-		Gemeinde gemeinde = null;
+
 		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
-		gemeinde = gemeindeOptional.orElseGet(() -> gemeindeService.getFirst());
+		Gemeinde gemeinde = gemeindeOptional.orElseThrow(() -> new EbeguEntityNotFoundException("getOrCreateDossierAndFallForCurrentUserAsBesitzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		//noinspection ConstantConditions
+
 		Objects.requireNonNull(fallOptional.get());
 		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}
-		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen <- dies muss behoben werden wenn der GS schon eine gemeinde hat
+
 		Dossier dossier = new Dossier();
 		dossier.setFall(fallOptional.get());
 		dossier.setGemeinde(gemeinde);
+
 		return saveDossier(dossier);
 	}
 

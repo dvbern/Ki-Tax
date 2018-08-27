@@ -50,7 +50,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class DokumentGrund extends AbstractEntity implements Comparable<DokumentGrund> {
+public class DokumentGrund extends AbstractMutableEntity implements Comparable<DokumentGrund> {
 
 	private static final long serialVersionUID = 5417585258130227434L;
 
@@ -79,7 +79,7 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	@NotNull
 	private DokumentTyp dokumentTyp;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "dokumentGrund")
 	private Set<Dokument> dokumente = new HashSet<>();
@@ -118,12 +118,12 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		this.dokumentTyp = dokumentTyp;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<Dokument> getDokumente() {
 		return dokumente;
 	}
 
-	public void setDokumente(@Nullable Set<Dokument> dokumente) {
+	public void setDokumente(@Nonnull Set<Dokument> dokumente) {
 		this.dokumente = dokumente;
 	}
 
@@ -219,7 +219,7 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	}
 
 	public boolean isEmpty() {
-		return getDokumente() == null || getDokumente().size() <= 0;
+		return getDokumente().size() <= 0;
 	}
 
 	@Nonnull
@@ -233,13 +233,8 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 			target.setPersonNumber(this.getPersonNumber());
 			target.setPersonType(this.getPersonType());
 			target.setDokumentTyp(this.getDokumentTyp());
-			if (this.getDokumente() != null) {
-				if (target.getDokumente() == null) {
-					target.setDokumente(new HashSet<>());
-				}
-				for (Dokument dokument : this.getDokumente()) {
-					target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
-				}
+			for (Dokument dokument : this.getDokumente()) {
+				target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
 			}
 			if (DokumentGrundTyp.isSonstigeOrPapiergesuch(this.getDokumentGrundTyp())) {
 				target.setNeeded(false);

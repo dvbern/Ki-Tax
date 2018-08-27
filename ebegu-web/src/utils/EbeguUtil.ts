@@ -41,6 +41,18 @@ export default class EbeguUtil {
                 private readonly $log: ILogService) {
     }
 
+    public static isTagesschulangebotEnabled(): boolean {
+        return false;
+    }
+
+    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
+        if (!EbeguUtil.isTagesschulangebotEnabled()) {
+            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
+        }
+
+        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
+    }
+
     /**
      * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als string zurueck
      * @param number
@@ -150,18 +162,6 @@ export default class EbeguUtil {
 
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
-    }
-
-    public static isTagesschulangebotEnabled(): boolean {
-        return false;
-    }
-
-    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
-        if (!EbeguUtil.isTagesschulangebotEnabled()) {
-            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
-        }
-
-        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
     }
 
     /**

@@ -37,6 +37,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
@@ -444,14 +445,14 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepStatus.OK;
 		}
 
-		final List<AbstractEntity> newObjects = getStepRelatedObjects(wizardStep.getWizardStepName(), wizardStep.getGesuch());
+		final List<AbstractMutableEntity> newObjects = getStepRelatedObjects(wizardStep.getWizardStepName(), wizardStep.getGesuch());
 		Objects.requireNonNull(wizardStep.getGesuch().getVorgaengerId());
 		Optional<Gesuch> vorgaengerGesuch = this.gesuchService.findGesuch(wizardStep.getGesuch().getVorgaengerId(), false);
 		if (!vorgaengerGesuch.isPresent()) {
 			throw new EbeguEntityNotFoundException("getWizardStepStatusOkOrMutiert", ErrorCodeEnum
 				.ERROR_VORGAENGER_MISSING, "Vorgaenger Gesuch fuer Mutation nicht gefunden");
 		}
-		final List<AbstractEntity> vorgaengerObjects = getStepRelatedObjects(wizardStep.getWizardStepName(), vorgaengerGesuch.get());
+		final List<AbstractMutableEntity> vorgaengerObjects = getStepRelatedObjects(wizardStep.getWizardStepName(), vorgaengerGesuch.get());
 		boolean isMutiert = isObjectMutiert(newObjects, vorgaengerObjects);
 		if (AntragTyp.MUTATION == wizardStep.getGesuch().getTyp() && isMutiert) {
 			return WizardStepStatus.MUTIERT;
@@ -464,8 +465,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * the object Gesuchsteller1 and Gesuchsteller2. These objects can then be used to check for changes.
 	 */
 	@SuppressWarnings("OverlyComplexMethod")
-	private List<AbstractEntity> getStepRelatedObjects(@NotNull WizardStepName wizardStepName, @NotNull Gesuch gesuch) {
-		List<AbstractEntity> relatedObjects = new ArrayList<>();
+	private List<AbstractMutableEntity> getStepRelatedObjects(@NotNull WizardStepName wizardStepName, @NotNull Gesuch gesuch) {
+		List<AbstractMutableEntity> relatedObjects = new ArrayList<>();
 		if (WizardStepName.FAMILIENSITUATION == wizardStepName
 			&& gesuch.getFamiliensituationContainer() != null) {
 			relatedObjects.add(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
@@ -522,7 +523,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Adds all Adressen of the given Gesuchsteller that are set as umzug
 	 */
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void addRelatedObjectsForUmzug(@Nullable GesuchstellerContainer gesuchsteller, List<AbstractEntity> relatedObjects) {
+	private void addRelatedObjectsForUmzug(@Nullable GesuchstellerContainer gesuchsteller, List<AbstractMutableEntity> relatedObjects) {
 		if (gesuchsteller != null) {
 			for (GesuchstellerAdresseContainer adresse : gesuchsteller.getAdressen()) {
 				if (!adresse.extractIsKorrespondenzAdresse() && !adresse.extractIsRechnungsAdresse() && !adresse.getGesuchstellerAdresseJA().getGueltigkeit()
@@ -537,7 +538,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Adds the Gesuchsteller itself and her korrespondez- and rechnungsAdresse.
 	 */
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void addRelatedObjectsForGesuchsteller(List<AbstractEntity> relatedObjects, @Nullable GesuchstellerContainer gesuchsteller) {
+	private void addRelatedObjectsForGesuchsteller(List<AbstractMutableEntity> relatedObjects, @Nullable GesuchstellerContainer gesuchsteller) {
 		if (gesuchsteller != null) {
 			relatedObjects.add(gesuchsteller.getGesuchstellerJA());
 			for (GesuchstellerAdresseContainer adresse : gesuchsteller.getAdressen()) {
@@ -555,11 +556,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * of the list newEntities is the same as it was in the list oldEntities. Any change will make the method return
 	 * true
 	 */
-	private boolean isObjectMutiert(@NotNull List<AbstractEntity> newEntities, @NotNull List<AbstractEntity> oldEntities) {
+	private boolean isObjectMutiert(@NotNull List<AbstractMutableEntity> newEntities, @NotNull List<AbstractMutableEntity> oldEntities) {
 		if (oldEntities.size() != newEntities.size()) {
 			return true;
 		}
-		for (AbstractEntity newEntity : newEntities) {
+		for (AbstractMutableEntity newEntity : newEntities) {
 			if (newEntity != null && newEntity.getVorgaengerId() == null) {
 				return true; // if there is no vorgaenger it must have changed
 			}

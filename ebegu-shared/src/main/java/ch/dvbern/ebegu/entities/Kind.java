@@ -30,8 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -52,12 +50,6 @@ import org.hibernate.envers.Audited;
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
-
-	@Max(100)
-	@Min(0)
-	@Nullable
-	@Column(nullable = true)
-	private Integer wohnhaftImGleichenHaushalt;
 
 	@NotNull
 	@Column(nullable = false)
@@ -84,15 +76,6 @@ public class Kind extends AbstractPersonEntity {
 	private PensumFachstelle pensumFachstelle;
 
 	public Kind() {
-	}
-
-	@Nullable
-	public Integer getWohnhaftImGleichenHaushalt() {
-		return wohnhaftImGleichenHaushalt;
-	}
-
-	public void setWohnhaftImGleichenHaushalt(@Nullable Integer wohnhaftImGleichenHaushalt) {
-		this.wohnhaftImGleichenHaushalt = wohnhaftImGleichenHaushalt;
 	}
 
 	public Kinderabzug getKinderabzug() {
@@ -139,9 +122,11 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Nonnull
-	public Kind copyKind(@Nonnull Kind target, @Nonnull AntragCopyType copyType, @Nonnull Gesuchsperiode gesuchsperiode) {
+	public Kind copyKind(
+		@Nonnull Kind target,
+		@Nonnull AntragCopyType copyType,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		super.copyAbstractPersonEntity(target, copyType);
-		target.setWohnhaftImGleichenHaushalt(this.getWohnhaftImGleichenHaushalt());
 		target.setKinderabzug(this.getKinderabzug());
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		target.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
@@ -165,14 +150,21 @@ public class Kind extends AbstractPersonEntity {
 
 	private void copyFachstelle(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
 		if (this.getPensumFachstelle() != null) {
-			target.setPensumFachstelle(this.getPensumFachstelle().copyPensumFachstelle(new PensumFachstelle(), copyType));
+			target.setPensumFachstelle(this.getPensumFachstelle()
+				.copyPensumFachstelle(new PensumFachstelle(), copyType));
 		}
 	}
 
-	private void copyFachstelleIfStillValid(@Nonnull Kind target, @Nonnull AntragCopyType copyType, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private void copyFachstelleIfStillValid(
+		@Nonnull Kind target,
+		@Nonnull AntragCopyType copyType,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		// Fachstelle nur kopieren, wenn sie noch gueltig ist
-		if (this.getPensumFachstelle() != null && !this.getPensumFachstelle().getGueltigkeit().endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
-			target.setPensumFachstelle(this.getPensumFachstelle().copyPensumFachstelle(new PensumFachstelle(), copyType));
+		if (this.getPensumFachstelle() != null && !this.getPensumFachstelle()
+			.getGueltigkeit()
+			.endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+			target.setPensumFachstelle(this.getPensumFachstelle()
+				.copyPensumFachstelle(new PensumFachstelle(), copyType));
 		}
 	}
 
@@ -192,8 +184,7 @@ public class Kind extends AbstractPersonEntity {
 			return false;
 		}
 		final Kind otherKind = (Kind) other;
-		return Objects.equals(getWohnhaftImGleichenHaushalt(), otherKind.getWohnhaftImGleichenHaushalt()) &&
-			getKinderabzug() == otherKind.getKinderabzug() &&
+		return getKinderabzug() == otherKind.getKinderabzug() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getMutterspracheDeutsch(), otherKind.getMutterspracheDeutsch()) &&
 			Objects.equals(getEinschulungTyp(), otherKind.getEinschulungTyp()) &&

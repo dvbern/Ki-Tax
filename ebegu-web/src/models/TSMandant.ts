@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export class TSMandant extends TSAbstractEntity {
+export class TSMandant extends TSAbstractMutableEntity {
 
     private _name: string;
     private _nextNumberGemeinde: number;

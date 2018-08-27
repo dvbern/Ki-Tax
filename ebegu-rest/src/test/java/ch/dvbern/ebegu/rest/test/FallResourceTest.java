@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -57,7 +58,11 @@ public class FallResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void findGesuchForInstitution() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25));
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence,
+			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+
 		changeStatusToWarten(gesuch.getKindContainers().iterator().next());
 		final JaxFall foundFall = fallResource.findFall(converter.toJaxId(gesuch.getFall()));
 

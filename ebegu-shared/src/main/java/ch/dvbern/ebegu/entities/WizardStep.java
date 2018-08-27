@@ -44,7 +44,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "wizardStepName", "gesuch_id" }, name = "UK_wizardstep_gesuch_stepname")
 )
-public class WizardStep extends AbstractEntity {
+public class WizardStep extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -9032284720578372570L;
 

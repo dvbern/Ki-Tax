@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSGemeinde extends TSAbstractEntity {
+export default class TSGemeinde extends TSAbstractMutableEntity {
 
     private _name: string;
     private _gemeindeNummer: number;

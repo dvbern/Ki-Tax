@@ -1,20 +1,24 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSEbeguParameterKey {
-    PARAM_FIXBETRAG_STADT_PRO_TAG_KITA = <any>'PARAM_FIXBETRAG_STADT_PRO_TAG_KITA',
+export enum TSEinstellungKey {
+    KONTINGENTIERUNG_ENABLED = <any>'KONTINGENTIERUNG_ENABLED',
+    PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1 = <any>'PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1',
+    PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2 = <any>'PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2',
     PARAM_ANZAL_TAGE_MAX_KITA = <any>'PARAM_ANZAL_TAGE_MAX_KITA',
     PARAM_STUNDEN_PRO_TAG_MAX_KITA = <any>'PARAM_STUNDEN_PRO_TAG_MAX_KITA',
     PARAM_KOSTEN_PRO_STUNDE_MAX = <any>'PARAM_KOSTEN_PRO_STUNDE_MAX',
@@ -36,27 +40,29 @@ export enum TSEbeguParameterKey {
     PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM = <any>'PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM',
 }
 
-export function getTSEbeguParameterKeyValues(): Array<TSEbeguParameterKey> {
+export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
     return [
-        TSEbeguParameterKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA,
-        TSEbeguParameterKey.PARAM_ANZAL_TAGE_MAX_KITA,
-        TSEbeguParameterKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA,
-        TSEbeguParameterKey.PARAM_KOSTEN_PRO_STUNDE_MAX,
-        TSEbeguParameterKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN,
-        TSEbeguParameterKey.PARAM_KOSTEN_PRO_STUNDE_MIN,
-        TSEbeguParameterKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN,
-        TSEbeguParameterKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX,
-        TSEbeguParameterKey.PARAM_ANZAHL_TAGE_KANTON,
-        TSEbeguParameterKey.PARAM_STUNDEN_PRO_TAG_TAGI,
-        TSEbeguParameterKey.PARAM_PENSUM_TAGI_MIN,
-        TSEbeguParameterKey.PARAM_PENSUM_KITA_MIN,
-        TSEbeguParameterKey.PARAM_PENSUM_TAGESELTERN_MIN,
-        TSEbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
-        TSEbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
-        TSEbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
-        TSEbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
-        TSEbeguParameterKey.PARAM_MAX_TAGE_ABWESENHEIT,
-        TSEbeguParameterKey.PARAM_ABGELTUNG_PRO_TAG_KANTON,
-        TSEbeguParameterKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
+        TSEinstellungKey.KONTINGENTIERUNG_ENABLED,
+        TSEinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
+        TSEinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,
+        TSEinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA,
+        TSEinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA,
+        TSEinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX,
+        TSEinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN,
+        TSEinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MIN,
+        TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN,
+        TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+        TSEinstellungKey.PARAM_ANZAHL_TAGE_KANTON,
+        TSEinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI,
+        TSEinstellungKey.PARAM_PENSUM_TAGI_MIN,
+        TSEinstellungKey.PARAM_PENSUM_KITA_MIN,
+        TSEinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN,
+        TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+        TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+        TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+        TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+        TSEinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT,
+        TSEinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON,
+        TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
     ];
 }

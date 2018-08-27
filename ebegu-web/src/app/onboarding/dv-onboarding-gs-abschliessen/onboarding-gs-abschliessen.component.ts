@@ -60,7 +60,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         }
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
             this.stateService.go('gesuchsteller.dashboard', {
-                gesuchstellerDashboardStateParams: {dossierId: dossier.id}
+                dossierId: dossier.id
             });
         });
     }

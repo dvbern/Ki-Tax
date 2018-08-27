@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSAbstractFinanzielleSituation extends TSAbstractEntity {
+export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     private _steuerveranlagungErhalten: boolean;
     private _steuererklaerungAusgefuellt: boolean;

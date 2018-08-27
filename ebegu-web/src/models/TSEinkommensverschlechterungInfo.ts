@@ -14,9 +14,9 @@
  */
 
 import * as moment from 'moment';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSEinkommensverschlechterungInfo extends TSAbstractEntity {
+export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableEntity {
 
     private _einkommensverschlechterung: boolean = false;
 

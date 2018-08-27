@@ -190,16 +190,17 @@
                                 </div>
                             </div>
                             <!-- Parameter-Liste (repeater) -->
-                            <div ng-repeat="paramgp in vm.ebeguParameterListGesuchsperiode" class="row">
+                            <div ng-repeat="paramgp in vm.einstellungenGesuchsperiode" class="row">
                                 <div class="col-md-12 form-group">
                                     <div class="row">
-                                        <div class="col-md-9">
-                                            <label data-translate="{{paramgp.name}}" class="md-no-float"
-                                                   for="propertyName_{{paramgp.name}}"></label>
+                                        <div class="col-md-6">
+                                            <label data-translate="{{paramgp.key}}" class="md-no-float"
+                                                   for="propertyValue_{{paramgp.key}}"
+                                            title="{{paramgp.description}}"></label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input id="propertyName_{{paramgp.name}}" type="text"
-                                                   name="propertyName_{{paramgp.name}}"
+                                            <input id="propertyValue_{{paramgp.key}}" type="text"
+                                                   name="propertyValue_{{paramgp.key}}"
                                                    ng-model="paramgp.value"
                                                    dv-max-length class="input-element" required
                                                    ng-disabled="!vm.periodenParamsEditable()">
@@ -219,7 +220,7 @@
                                     <dv-loading-button type="button"
                                                        button-click="vm.saveParameterByGesuchsperiode()"
                                                        button-class="color-success">
-                                            <span ng-bind="(vm.ebeguParameterListGesuchsperiode && vm.ebeguParameterListGesuchsperiode[0].isNew())
+                                            <span ng-bind="(vm.einstellungenGesuchsperiode && vm.einstellungenGesuchsperiode[0].isNew())
                                                              ? ('SAVE' | translate) : ('UPDATE' | translate)"></span>
                                     </dv-loading-button>
                                 </div>

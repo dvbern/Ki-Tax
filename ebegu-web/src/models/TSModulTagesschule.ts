@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import * as moment from 'moment';
 
-export default class TSModulTagesschule extends TSAbstractEntity {
+export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
     private _wochentag: TSDayOfWeek;
     private _modulTagesschuleName: TSModulTagesschuleName;

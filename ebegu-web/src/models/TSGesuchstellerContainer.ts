@@ -16,11 +16,11 @@
 import TSFinanzielleSituationContainer from './TSFinanzielleSituationContainer';
 import TSErwerbspensumContainer from './TSErwerbspensumContainer';
 import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSGesuchsteller from './TSGesuchsteller';
 import TSAdresseContainer from './TSAdresseContainer';
 
-export default class TSGesuchstellerContainer extends TSAbstractEntity {
+export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
 
     private _gesuchstellerGS: TSGesuchsteller;
     private _gesuchstellerJA: TSGesuchsteller;

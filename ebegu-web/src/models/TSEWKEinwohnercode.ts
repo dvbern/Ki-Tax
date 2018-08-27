@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
 
 /**
  * DTO für einen Einwohnercode aus dem EWK
  */
-export default class TSEWKEinwohnercode extends TSAbstractEntity {
+export default class TSEWKEinwohnercode extends TSAbstractMutableEntity {
 
     private _code: string;
     private _codeTxt: string;
