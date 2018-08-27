@@ -179,9 +179,6 @@ public class DossierResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxDossier findNewestDossierByCurrentBenutzerAsBesitzer() {
-
-		//todo refactor
-
 		Optional<Fall> optFall = fallService.findFallByCurrentBenutzerAsBesitzer();
 		String fallId = optFall.orElseThrow(() -> new EbeguEntityNotFoundException("findNewestDossierByCurrentBenutzerAsBesitzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND))

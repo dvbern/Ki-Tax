@@ -35,7 +35,6 @@ export class IAngebotStateParams {
 
 export class IGesuchstellerDashboardStateParams {
     infoMessage: string;
-    dossierId: string;
 }
 
 const ng1States: Ng1StateDeclaration[] = [

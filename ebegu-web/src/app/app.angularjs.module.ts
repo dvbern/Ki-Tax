@@ -39,12 +39,23 @@ import {EbeguWebDossier} from './dossier/dossier.angularjs.module';
 export const appModuleAngularJS = angular.module('ebeguWeb', [
         upgradeModule.name,
         EbeguWebCore.name,
-        EbeguWebAdmin.name, EbeguWebGesuch.name, EbeguWebPendenzen.name, EbeguWebDossier.name,
-        EbeguWebPendenzenBetreuungen.name, EbeguWebPendenzenSteueramt.name, EbeguWebFaelle.name,
+        EbeguWebAdmin.name,
+        EbeguWebGesuch.name,
+        EbeguWebPendenzen.name,
+        EbeguWebDossier.name,
+        EbeguWebPendenzenBetreuungen.name,
+        EbeguWebPendenzenSteueramt.name,
+        EbeguWebFaelle.name,
         EbeguWebGesuchstellerDashboard.name,
-        EbeguWebMitteilungen.name, EbeguWebPosteingang.name, EbeguWebSearch.name, EbeguWebStatistik.name,
+        EbeguWebMitteilungen.name,
+        EbeguWebPosteingang.name,
+        EbeguWebSearch.name,
+        EbeguWebStatistik.name,
         EbeguWebZahlung.name,
-        EbeguWebZahlungsauftrag.name, EbeguWebAlleVerfuegungen.name, EbeguWebVerlauf.name, EbeguWebQuicksearch.name
+        EbeguWebZahlungsauftrag.name,
+        EbeguWebAlleVerfuegungen.name,
+        EbeguWebVerlauf.name,
+        EbeguWebQuicksearch.name,
     ])
         .component('appRoot', AppAngularjsComponent)
         .config(conf)

@@ -168,20 +168,22 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		if (!fallOptional.isPresent()) {
 			fallOptional = fallService.createFallForCurrentGesuchstellerAsBesitzer();
 		}
-		//TODO (KIBON-6) Vom Client erhalten wir (noch) "unknown" als GemeindeId! <- dies muss behoben werden wenn der GS schon eine gemeinde hat
-		Gemeinde gemeinde = null;
+
 		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
-		gemeinde = gemeindeOptional.orElseGet(() -> gemeindeService.getFirst());
+		Gemeinde gemeinde = gemeindeOptional.orElseThrow(() -> new EbeguEntityNotFoundException("getOrCreateDossierAndFallForCurrentUserAsBesitzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		//noinspection ConstantConditions
+
 		Objects.requireNonNull(fallOptional.get());
 		Optional<Dossier> dossierOptional = findDossierByGemeindeAndFall(gemeinde.getId(), fallOptional.get().getId());
 		if (dossierOptional.isPresent()) {
 			return dossierOptional.get();
 		}
-		//TODO (KIBON-6) Gemeinde nach ID suchen und setzen <- dies muss behoben werden wenn der GS schon eine gemeinde hat
+
 		Dossier dossier = new Dossier();
 		dossier.setFall(fallOptional.get());
 		dossier.setGemeinde(gemeinde);
+
 		return saveDossier(dossier);
 	}
 
