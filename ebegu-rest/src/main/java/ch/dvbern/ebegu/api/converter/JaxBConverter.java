@@ -2569,7 +2569,6 @@ public class JaxBConverter {
 	public JaxDokumentGrund dokumentGrundToJax(DokumentGrund dokumentGrund) {
 		JaxDokumentGrund jaxDokumentGrund = convertAbstractVorgaengerFieldsToJAX(dokumentGrund, new JaxDokumentGrund());
 		jaxDokumentGrund.setDokumentGrundTyp(dokumentGrund.getDokumentGrundTyp());
-		jaxDokumentGrund.setFullName(dokumentGrund.getFullName());
 		jaxDokumentGrund.setTag(dokumentGrund.getTag());
 		jaxDokumentGrund.setPersonType(dokumentGrund.getPersonType());
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
@@ -2606,7 +2605,6 @@ public class JaxBConverter {
 		convertAbstractVorgaengerFieldsToEntity(dokumentGrundJAXP, dokumentGrund);
 
 		dokumentGrund.setDokumentGrundTyp(dokumentGrundJAXP.getDokumentGrundTyp());
-		dokumentGrund.setFullName(dokumentGrundJAXP.getFullName());
 		dokumentGrund.setTag(dokumentGrundJAXP.getTag());
 		dokumentGrund.setPersonType(dokumentGrundJAXP.getPersonType());
 		dokumentGrund.setPersonNumber(dokumentGrundJAXP.getPersonNumber());
