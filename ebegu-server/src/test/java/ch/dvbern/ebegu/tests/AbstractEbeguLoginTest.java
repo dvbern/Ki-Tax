@@ -107,7 +107,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.SCHULAMT, "schulamt", null, null, mandant);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.SACHBEARBEITER_TS, "schulamt", null, null, mandant);
 		return persistence.merge(schulamt);
 	}
 
@@ -119,7 +119,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMINISTRATOR_SCHULAMT, "schulamtadmin", null, null, mandant);
+		Benutzer schulamt = createOrFindBenutzer(UserRole.ADMIN_TS, "schulamtadmin", null, null, mandant);
 		return persistence.merge(schulamt);
 	}
 
@@ -143,7 +143,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant);
+		Benutzer saja = createOrFindBenutzer(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant);
 		persistence.merge(saja);
 		return saja;
 	}
@@ -169,7 +169,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN, "admin", null, null, mandant);
+		Benutzer admin = createOrFindBenutzer(UserRole.ADMIN_BG, "admin", null, null, mandant);
 		persistence.merge(admin);
 	}
 

@@ -182,7 +182,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     private navigateToDashboard(): void {
         this.$state.go('gesuchsteller.dashboard', {
-            gesuchstellerDashboardStateParams: {dossierId: this.selectedDossier.id}
+            dossierId: this.selectedDossier.id
         });
     }
 

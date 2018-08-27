@@ -93,13 +93,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             let result: number = 0;
 
             if (n1 && n2) {
-                if (n1.fullName && n2.fullName) {
-                    result = n1.fullName.localeCompare(n2.fullName);
-                }
-                if (result === 0) {
-                    if (n1.tag && n2.tag) {
-                        result = n1.tag.localeCompare(n2.tag);
-                    }
+                if (n1.tag && n2.tag) {
+                    result = n1.tag.localeCompare(n2.tag);
                 }
                 if (result === 0) {
                     if (n1.dokumentTyp && n2.dokumentTyp) {

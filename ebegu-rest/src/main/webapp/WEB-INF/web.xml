@@ -64,13 +64,25 @@
 		<role-name>SUPER_ADMIN</role-name>
 	</security-role>
 	<security-role>
-		<role-name>ADMIN</role-name>
+		<role-name>ADMIN_BG</role-name>
 	</security-role>
 	<security-role>
-		<role-name>SACHBEARBEITER_JA</role-name>
+		<role-name>SACHBEARBEITER_BG</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMIN_GEMEINDE</role-name>
+	</security-role>
+	<security-role>
+		<role-name>SACHBEARBEITER_GEMEINDE</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMIN_INSTITUTION</role-name>
 	</security-role>
 	<security-role>
 		<role-name>SACHBEARBEITER_INSTITUTION</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMIN_TRAEGERSCHAFT</role-name>
 	</security-role>
 	<security-role>
 		<role-name>SACHBEARBEITER_TRAEGERSCHAFT</role-name>
@@ -88,10 +100,16 @@
 		<role-name>STEUERAMT</role-name>
 	</security-role>
 	<security-role>
-		<role-name>ADMINISTRATOR_SCHULAMT</role-name>
+		<role-name>ADMIN_TS</role-name>
 	</security-role>
 	<security-role>
-		<role-name>SCHULAMT</role-name>
+		<role-name>SACHBEARBEITER_TS</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMIN_MANDANT</role-name>
+	</security-role>
+	<security-role>
+		<role-name>SACHBEARBEITER_MANDANT</role-name>
 	</security-role>
 
 	<filter>

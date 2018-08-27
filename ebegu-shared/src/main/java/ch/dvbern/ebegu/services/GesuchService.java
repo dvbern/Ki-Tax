@@ -315,7 +315,7 @@ public interface GesuchService {
 
 	/**
 	 * Sucht die neueste Online Mutation, die zu dem gegebenen Antrag gehoert und loescht sie.
-	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN oder SUPER_ADMIN
+	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN_BG oder SUPER_ADMIN
 	 * aufgerufen werden, wegen loescherechten wird es dann immer mir RunAs/SUPER_ADMIN) ausgefuehrt.
 	 *  @param dossier Der Antraege, zu denen die Mutation gehoert, die geloescht werden muss
 	 * @param gesuchsperiode Gesuchsperiode, in der die Gesuche geloescht werden sollen
@@ -324,7 +324,7 @@ public interface GesuchService {
 
 	/**
 	 * Sucht die neueste Online Mutation, die zu dem gegebenen Antrag gehoert
-	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN oder SUPER_ADMIN
+	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN_BG oder SUPER_ADMIN
 	 * aufgerufen werden, wegen loescherechten wird es dann immer mir RunAs/SUPER_ADMIN) ausgefuehrt.
 	 *  @param dossier Der Antraege, zu denen die Mutation gehoert
 	 * @param gesuchsperiode Gesuchsperiode

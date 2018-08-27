@@ -52,7 +52,8 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.util.MathUtil.DEFAULT;
 import static ch.dvbern.ebegu.util.MathUtil.isSame;
@@ -63,7 +64,7 @@ import static ch.dvbern.ebegu.util.MathUtil.isSame;
  * Einige Gesuche haben bekanntermassen falsche Auszahlungen gehabt. Diese werden entsprechend behandelt.
  */
 @Stateful
-@RolesAllowed({ SUPER_ADMIN, ADMIN })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "SpringAutowiredFieldsWarningInspection", "InstanceMethodNamingConvention" })
 public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 

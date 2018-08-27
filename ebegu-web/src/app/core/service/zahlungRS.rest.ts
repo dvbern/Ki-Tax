@@ -137,14 +137,20 @@ export default class ZahlungRS {
 
     public getZahlungsauftragForRole$(role: TSRole, zahlungsauftragId: string): Observable<TSZahlungsauftrag | null> {
         switch (role) {
+            case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
                 return from(this.getZahlungsauftragInstitution(zahlungsauftragId));
             case TSRole.SUPER_ADMIN:
-            case TSRole.ADMIN:
-            case TSRole.SACHBEARBEITER_JA:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
             case TSRole.JURIST:
             case TSRole.REVISOR:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
                 return from(this.getZahlungsauftrag(zahlungsauftragId));
             default:
                 return of(null);
@@ -153,15 +159,21 @@ export default class ZahlungRS {
 
     public getZahlungsauftraegeForRole$(role: TSRole): Observable<TSZahlungsauftrag[]> {
         switch (role) {
+            case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
                 return from(this.getAllZahlungsauftraegeInstitution())
                     .pipe(map(a => angular.copy(a)));
             case TSRole.SUPER_ADMIN:
-            case TSRole.ADMIN:
-            case TSRole.SACHBEARBEITER_JA:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
             case TSRole.JURIST:
             case TSRole.REVISOR:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
                 return from(this.getAllZahlungsauftraege())
                     .pipe(map(a => angular.copy(a)));
             default:

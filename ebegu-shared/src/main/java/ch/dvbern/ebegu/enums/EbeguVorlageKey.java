@@ -104,24 +104,30 @@ public enum EbeguVorlageKey {
 	public static EbeguVorlageKey getBenutzerHandbuchKeyForRole(UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
-				case ADMIN:
+				case ADMIN_BG:
+				case ADMIN_GEMEINDE:
 				case SUPER_ADMIN:
 					return VORLAGE_BENUTZERHANDBUCH_ADMIN;
-				case SACHBEARBEITER_JA:
+				case SACHBEARBEITER_BG:
+				case SACHBEARBEITER_GEMEINDE:
 					return VORLAGE_BENUTZERHANDBUCH_JUGENDAMT;
+				case ADMIN_TRAEGERSCHAFT:
 				case SACHBEARBEITER_TRAEGERSCHAFT:
 					return VORLAGE_BENUTZERHANDBUCH_TRAEGERSCHAFT;
+				case ADMIN_INSTITUTION:
 				case SACHBEARBEITER_INSTITUTION:
 					return VORLAGE_BENUTZERHANDBUCH_INSTITUTION;
 				case JURIST:
 					return VORLAGE_BENUTZERHANDBUCH_JURIST;
 				case REVISOR:
+				case ADMIN_MANDANT:
+				case SACHBEARBEITER_MANDANT:
 					return VORLAGE_BENUTZERHANDBUCH_REVISOR;
 				case STEUERAMT:
 					return VORLAGE_BENUTZERHANDBUCH_STV;
-				case SCHULAMT:
+				case SACHBEARBEITER_TS:
 					return VORLAGE_BENUTZERHANDBUCH_SCHULAMT;
-				case ADMINISTRATOR_SCHULAMT:
+				case ADMIN_TS:
 					return VORLAGE_BENUTZERHANDBUCH_ADMINISTRATOR_SCHULAMT;
 				default:
 					return null;

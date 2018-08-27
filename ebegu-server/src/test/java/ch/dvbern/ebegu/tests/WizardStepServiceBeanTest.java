@@ -617,7 +617,6 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		dokGrund.setGesuch(gesuch);
 		GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		Assert.assertNotNull(gesuchsteller1);
-		dokGrund.setFullName(gesuchsteller1.extractFullName());
 		dokGrund.setTag(tag);
 		persistence.persist(dokGrund);
 		Dokument dok1 = new Dokument();

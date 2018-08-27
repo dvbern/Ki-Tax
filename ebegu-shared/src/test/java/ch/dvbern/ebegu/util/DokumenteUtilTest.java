@@ -19,13 +19,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -42,7 +37,6 @@ public class DokumenteUtilTest {
 	@Test
 	public void testAllPersistedInNeeded() {
 		Set<DokumentGrund> dokumentGrundsNeeded = new HashSet<>();
-		final Gesuch gesuch = new Gesuch();
 
 		Collection<DokumentGrund> persistedDokumentGrunds = new HashSet<>();
 
@@ -52,19 +46,19 @@ public class DokumenteUtilTest {
 
 		createGrundPersisted(persistedDokumentGrunds, DokumentGrundTyp.FAMILIENSITUATION, DokumentTyp.JAHRESLOHNAUSWEISE, 3);
 
-		final Set<DokumentGrund> mergeNeededAndPersisted = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrunds, gesuch);
+		final Set<DokumentGrund> mergeNeededAndPersisted = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrunds);
 
 		Set<DokumentGrund> mergedFamsit = getByGrundTyp(mergeNeededAndPersisted, DokumentGrundTyp.FAMILIENSITUATION);
 
 		Assert.assertNotNull(mergedFamsit);
-		Assert.assertEquals(mergedFamsit.size(), 2);
+		Assert.assertEquals(2, mergedFamsit.size());
 
 		Assert.assertEquals(3, getByDokumentType(mergedFamsit, DokumentTyp.JAHRESLOHNAUSWEISE).size());
 		Assert.assertEquals(1, getByDokumentType(mergedFamsit, DokumentTyp.STEUERERKLAERUNG).size());
 
 		Set<DokumentGrund> mergedERWERBSPENSUM = getByGrundTyp(mergeNeededAndPersisted, DokumentGrundTyp.ERWERBSPENSUM);
 		Assert.assertNotNull(mergedERWERBSPENSUM);
-		Assert.assertEquals(mergedERWERBSPENSUM.size(), 1);
+		Assert.assertEquals(1, mergedERWERBSPENSUM.size());
 		Assert.assertEquals(1, getByDokumentType(mergedERWERBSPENSUM, DokumentTyp.NACHWEIS_AUSBILDUNG).size());
 	}
 
@@ -87,36 +81,12 @@ public class DokumenteUtilTest {
 	}
 
 	@Test
-	public void testCompareDokumentGrundOldVersionDifferentNames() {
-		DokumentGrund persistedDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
-			DokumentGrundPersonType.FREETEXT, null, DokumentTyp.BESTAETIGUNG_ARZT);
-		persistedDok.setFullName("Fulgencio Gonzalez");
-		DokumentGrund neededDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
-			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
-		Gesuch gesuch = mockGesuch();
-		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok, gesuch);
-		Assert.assertNotEquals(0, result);
-	}
-
-	@Test
-	public void testCompareDokumentGrundOldVersionSameDoks() {
-		DokumentGrund persistedDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
-			DokumentGrundPersonType.FREETEXT, null, DokumentTyp.BESTAETIGUNG_ARZT);
-		persistedDok.setFullName("Avioncito Rambert");
-		DokumentGrund neededDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
-			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
-		Gesuch gesuch = mockGesuch();
-		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok, gesuch);
-		Assert.assertEquals(0, result);
-	}
-
-	@Test
 	public void testCompareDokumentGrundNewVersionSameDoks() {
 		DokumentGrund persistedDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
 		DokumentGrund neededDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
-		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok, null);
+		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok);
 		Assert.assertEquals(0, result);
 	}
 
@@ -126,7 +96,7 @@ public class DokumenteUtilTest {
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
 		DokumentGrund neededDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentTyp.BESTAETIGUNG_ARZT);
-		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok, null);
+		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok);
 		Assert.assertNotEquals(0, result);
 	}
 
@@ -136,7 +106,7 @@ public class DokumenteUtilTest {
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
 		DokumentGrund neededDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
 			DokumentGrundPersonType.KIND, 1, DokumentTyp.BESTAETIGUNG_ARZT);
-		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok, null);
+		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok);
 		Assert.assertNotEquals(0, result);
 	}
 
@@ -146,27 +116,15 @@ public class DokumenteUtilTest {
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
 		DokumentGrund neededDok = new DokumentGrund(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, "tag",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
-		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok, null);
+		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok);
 		Assert.assertNotEquals(0, result);
-	}
-
-	@Nonnull
-	private Gesuch mockGesuch() {
-		Gesuch gesuch = new Gesuch();
-		GesuchstellerContainer gsContainer = new GesuchstellerContainer();
-		Gesuchsteller gesuchsteller = new Gesuchsteller();
-		gesuchsteller.setVorname("Avioncito");
-		gesuchsteller.setNachname("Rambert");
-		gsContainer.setGesuchstellerJA(gesuchsteller);
-		gesuch.setGesuchsteller1(gsContainer);
-		return gesuch;
 	}
 
 	private Set<Dokument> getByDokumentType(Set<DokumentGrund> dokumentGrunds, DokumentTyp dokumentTyp) {
 		Set<Dokument> dokumente = new HashSet<>();
 
 		for (DokumentGrund dokumentGrund : dokumentGrunds) {
-			if (dokumentGrund.getDokumentTyp().equals(dokumentTyp)) {
+			if (dokumentGrund.getDokumentTyp() == dokumentTyp && dokumentGrund.getDokumente() != null) {
 				dokumente.addAll(dokumentGrund.getDokumente());
 			}
 		}
@@ -178,7 +136,7 @@ public class DokumenteUtilTest {
 
 		Set<DokumentGrund> dokumentGrundsNeededMerged = new HashSet<>();
 		for (DokumentGrund dokumentGrund : dokumentGrundsNeeded) {
-			if (dokumentGrund.getDokumentGrundTyp().equals(dokumentGrundTyp)) {
+			if (dokumentGrund.getDokumentGrundTyp() == dokumentGrundTyp) {
 				dokumentGrundsNeededMerged.add(dokumentGrund);
 			}
 		}
@@ -192,6 +150,7 @@ public class DokumenteUtilTest {
 		dokumentGrund.setDokumentTyp(dokumentTyp);
 
 		Dokument dokument = new Dokument();
+		Assert.assertNotNull(dokumentGrund.getDokumente());
 		dokumentGrund.getDokumente().add(dokument);
 
 		dokumentGrundsNeeded.add(dokumentGrund);
@@ -206,13 +165,13 @@ public class DokumenteUtilTest {
 		for (int i = 1; i < number; i++) {
 			Dokument dokument = new Dokument();
 			dokument.setFilename(i + " ");
+			Assert.assertNotNull(dokumentGrund.getDokumente());
 			dokumentGrund.getDokumente().add(dokument);
 		}
 		Dokument dokument = new Dokument();
+		Assert.assertNotNull(dokumentGrund.getDokumente());
 		dokumentGrund.getDokumente().add(dokument);
 
 		dokumentGrunds.add(dokumentGrund);
-
 	}
-
 }
