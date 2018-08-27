@@ -35,12 +35,11 @@ export class IAngebotStateParams {
 
 export class IGesuchstellerDashboardStateParams {
     infoMessage: string;
-    dossierId: string;
 }
 
 const ng1States: Ng1StateDeclaration[] = [
     {
-        parent: 'app',
+        parent: 'dossier',
         abstract: true,
         name: 'gesuchsteller',
         data: {
@@ -49,7 +48,7 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'gesuchsteller.dashboard',
-        template: '<gesuchsteller-dashboard-view class="layout-column flex-100">',
+        template: '<gesuchsteller-dashboard-view class="layout-column flex-100" dossier="$resolve.dossier">',
         url: '/gesuchstellerDashboard',
         params: {
             gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
@@ -75,15 +74,15 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $s
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
-            if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
-                || gesuchModelManager.getGesuch().emptyCopy) {
-                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId ueberreinstimmt wird das gesuch neu geladen
+            const gesuch = gesuchModelManager.getGesuch();
+            if (!gesuch || gesuch && gesuch.id !== gesuchIdParam || gesuch.emptyCopy) {
+                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId uebereinstimmt wird das gesuch neu geladen
                 // Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im Gesuchmodelmanager um eine leere Mutation handelt
                 // oder um ein leeres Erneuerungsgesuch
 
                 return gesuchModelManager.openGesuch(gesuchIdParam);
             } else {
-                return $q.resolve(gesuchModelManager.getGesuch());
+                return $q.resolve(gesuch);
             }
 
         }
