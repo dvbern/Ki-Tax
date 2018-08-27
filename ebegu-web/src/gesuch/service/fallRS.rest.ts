@@ -60,26 +60,7 @@ export default class FallRS {
             });
     }
 
-    public findFallByCurrentBenutzerAsBesitzer(): IPromise<any> {
-        return this.$http.get(this.serviceURL + '/currentbenutzer/')
-            .then((response: any) => {
-                this.$log.debug('PARSING fall REST object ', response.data);
-                return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
-            });
-    }
-
     public getServiceName(): string {
         return 'FallRS';
-    }
-
-    public createFallForCurrentBenutzerAsBesitzer(): IPromise<TSFall> {
-        return this.$http.put(this.serviceURL + '/createforcurrentbenutzer/', null, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING fall REST object ', response.data);
-            return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
-        });
     }
 }
