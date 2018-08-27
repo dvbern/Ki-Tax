@@ -61,7 +61,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -82,7 +83,7 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public EbeguVorlage saveEbeguVorlage(@Nonnull EbeguVorlage ebeguVorlage) {
 		Objects.requireNonNull(ebeguVorlage);
 		return persistence.merge(ebeguVorlage);
@@ -186,7 +187,7 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeVorlage(@Nonnull String id) {
 		Objects.requireNonNull(id);
 		Optional<EbeguVorlage> ebeguVorlage = findById(id);
@@ -232,7 +233,7 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void copyEbeguVorlageListToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCopyTo) {
 		// Die Vorlagen des letzten Jahres suchen (datumAb -1 Tag)
 		Collection<EbeguVorlage> ebeguVorlageByDate = getALLEbeguVorlageByDate(

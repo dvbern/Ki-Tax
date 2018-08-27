@@ -724,7 +724,7 @@ public final class TestDataUtil {
 		user.setEmail("julio.iglesias@example.com");
 		user.setMandant(createDefaultMandant());
 		Berechtigung berechtigung = new Berechtigung();
-		berechtigung.setRole(UserRole.ADMIN);
+		berechtigung.setRole(UserRole.ADMIN_BG);
 		berechtigung.setBenutzer(user);
 		user.getBerechtigungen().add(berechtigung);
 		return user;
@@ -732,7 +732,7 @@ public final class TestDataUtil {
 
 	public static Benutzer createBenutzerSCH() {
 		final Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
-		defaultBenutzer.setRole(UserRole.SCHULAMT);
+		defaultBenutzer.setRole(UserRole.SACHBEARBEITER_TS);
 		return defaultBenutzer;
 	}
 
@@ -1163,7 +1163,7 @@ public final class TestDataUtil {
 	public static Benutzer createAndPersistJABenutzer(Persistence persistence) {
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, UUID.randomUUID().toString(),
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
 			null, null, mandant, persistence);
 		persistence.persist(benutzer);
 		return benutzer;

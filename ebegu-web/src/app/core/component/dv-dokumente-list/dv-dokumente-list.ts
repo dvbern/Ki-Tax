@@ -165,14 +165,15 @@ export class DVDokumenteListController {
         let documentUploadedByAmt: boolean = true; // by default true in case there is no uploadUser
         if (dokument.userUploaded) {
             const roleDocumentUpload: TSRole = dokument.userUploaded.getCurrentRole();
-            documentUploadedByAmt = (roleDocumentUpload === TSRole.SACHBEARBEITER_JA || roleDocumentUpload === TSRole.ADMIN
-                || roleDocumentUpload === TSRole.SCHULAMT || roleDocumentUpload === TSRole.ADMINISTRATOR_SCHULAMT || roleDocumentUpload === TSRole.SUPER_ADMIN);
+            documentUploadedByAmt = (roleDocumentUpload === TSRole.SACHBEARBEITER_BG || roleDocumentUpload === TSRole.ADMIN_BG
+                || roleDocumentUpload === TSRole.SACHBEARBEITER_GEMEINDE || roleDocumentUpload === TSRole.ADMIN_GEMEINDE
+                || roleDocumentUpload === TSRole.SACHBEARBEITER_TS || roleDocumentUpload === TSRole.ADMIN_TS || roleDocumentUpload === TSRole.SUPER_ADMIN);
         }
         if (roleLoggedIn === TSRole.GESUCHSTELLER) {
             return !readonly;
-        } else if (roleLoggedIn === TSRole.SACHBEARBEITER_JA || roleLoggedIn === TSRole.SCHULAMT) {
+        } else if (roleLoggedIn === TSRole.SACHBEARBEITER_BG || roleLoggedIn === TSRole.SACHBEARBEITER_GEMEINDE || roleLoggedIn === TSRole.SACHBEARBEITER_TS) {
             return !readonly && documentUploadedByAmt;
-        } else if (roleLoggedIn === TSRole.ADMIN || roleLoggedIn === TSRole.SUPER_ADMIN || roleLoggedIn === TSRole.ADMINISTRATOR_SCHULAMT) {
+        } else if (roleLoggedIn === TSRole.ADMIN_BG || roleLoggedIn === TSRole.ADMIN_GEMEINDE || roleLoggedIn === TSRole.SUPER_ADMIN || roleLoggedIn === TSRole.ADMIN_TS) {
             return documentUploadedByAmt;
         }
         return false;

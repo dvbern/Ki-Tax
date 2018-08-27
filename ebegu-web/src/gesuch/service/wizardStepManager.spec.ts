@@ -74,9 +74,9 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[5]).toBe(TSWizardStepName.VERFUEGEN);
         });
         it('constructs the steps for JA', () => {
-            spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_JA);
+            spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.getAllowedSteps().length).toBe(13);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
@@ -128,7 +128,7 @@ describe('wizardStepManager', () => {
         it('next step is available because status != UNBESUCHT', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
 
             wizardStepManager.setCurrentStep(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.isNextStepBesucht(gesuchAntrag)).toBe(true);
@@ -182,11 +182,11 @@ describe('wizardStepManager', () => {
         });
     });
     describe('getNextStep', () => {
-        it('returns ERWERBSPENSUM coming from BETREUUNG for SACHBEARBEITER_JA', () => {
+        it('returns ERWERBSPENSUM coming from BETREUUNG for SACHBEARBEITER_BG', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.setCurrentStep(TSWizardStepName.BETREUUNG);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.getNextStep(gesuchAntrag)).toBe(TSWizardStepName.ERWERBSPENSUM);
         });
         it('returns VERFUEGEN coming from BETREUUNG for SACHBEARBEITER_INSTITUTION IF VERFUEGT', () => {
@@ -207,11 +207,11 @@ describe('wizardStepManager', () => {
         });
     });
     describe('getPreviousStep', () => {
-        it('returns BETREUUNG coming from ERWERBSPENSUM for SACHBEARBEITER_JA', () => {
+        it('returns BETREUUNG coming from ERWERBSPENSUM for SACHBEARBEITER_BG', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.setCurrentStep(TSWizardStepName.ERWERBSPENSUM);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.getPreviousStep(gesuchAntrag)).toBe(TSWizardStepName.BETREUUNG);
         });
         it('returns BETREUUNG coming from VERFUEGEN for SACHBEARBEITER_INSTITUTION', () => {
@@ -226,7 +226,7 @@ describe('wizardStepManager', () => {
         it('returns true for all steps allowed for role and false if the step is hidden', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.isStepVisible(TSWizardStepName.GESUCH_ERSTELLEN)).toBe(true);
 
             wizardStepManager.hideStep(TSWizardStepName.GESUCH_ERSTELLEN);

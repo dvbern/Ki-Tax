@@ -53,11 +53,13 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.Validate;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
-import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -76,7 +78,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public GesuchstellerContainer saveGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller,
 		final Gesuch gesuch, Integer gsNumber, boolean umzug) {
 		Objects.requireNonNull(gesuchsteller);
@@ -113,7 +115,8 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			EinkommensverschlechterungContainer evContainer = new EinkommensverschlechterungContainer();
 			evContainer.setGesuchsteller(gesuchsteller);
 			gesuchsteller.setEinkommensverschlechterungContainer(evContainer);
-			if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null) {
+			GesuchstellerContainer gs1Container = gesuch.getGesuchsteller1();
+			if (gs1Container != null && gs1Container.getEinkommensverschlechterungContainer() != null) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
 					ekvJABasisJahrPlus1.setSteuerveranlagungErhalten(false); // by default
@@ -201,7 +204,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, SACHBEARBEITER_JA, GESUCHSTELLER, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller) {
 		Objects.requireNonNull(gesuchsteller);
 		GesuchstellerContainer gesuchstellerToRemove = findGesuchsteller(gesuchsteller.getId())
