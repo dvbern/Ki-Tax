@@ -103,7 +103,7 @@ public class BenutzerResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxAuthLoginElement> getBenutzerJAorAdmin() {
-		return benutzerService.getBenutzerJAorAdmin().stream()
+		return benutzerService.getBenutzerBGorAdmin().stream()
 			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
 			.collect(Collectors.toList());
 	}

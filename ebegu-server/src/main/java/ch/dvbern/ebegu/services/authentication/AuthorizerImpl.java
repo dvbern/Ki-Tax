@@ -263,7 +263,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		// fixme no exception should be thrown in this method. it returns boolean
 		validateMandantMatches(dossier.getFall());
 
-		// Gemeinde muss fuer Mandan-Rollen nicht geprueft werden
+		// Gemeinde muss fuer Mandant-Rollen nicht geprueft werden
 		if (!principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT) && !isUserAllowedForGemeinde(dossier.getGemeinde())) {
 			return false;
 		}
@@ -509,12 +509,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 				//schulamt darf nur solche lesen die nur_schulamt sind
 				return gesuch.hasBetreuungOfSchulamt();
-			} else if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_BG, ADMIN_BG)) {
+			}
+			if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_BG, ADMIN_BG)) {
 				// BG-Benutzer duerfen keine lesen die exklusiv schulamt sind
 				return !gesuch.hasOnlyBetreuungenOfSchulamt();
-			} else if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE)) {
-				return true;
 			}
+			return principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE);
 		}
 		return false;
 	}
@@ -651,9 +651,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return gesuch.getStatus().isReadableByJurist()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
-		if (principalBean.isCallerInRole(REVISOR)) { //TODO (hefr)
+		if (principalBean.isCallerInRole(REVISOR)) {
 			return gesuch.getStatus().isReadableByRevisor()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			return gesuch.getStatus().isReadableByMandantUser();
 		}
 		return false;
 	}

@@ -161,7 +161,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<Benutzer> getBenutzerJAorAdmin() {
+	public Collection<Benutzer> getBenutzerBGorAdmin() {
 		return getBenutzersOfRoles(getJugendamtRoles());
 	}
 

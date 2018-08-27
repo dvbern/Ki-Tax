@@ -75,12 +75,12 @@ public interface BenutzerService {
 	Collection<Benutzer> getAllBenutzer();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_JA oder Admin zurueck.
+	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	@Nonnull
-	Collection<Benutzer> getBenutzerJAorAdmin();
+	Collection<Benutzer> getBenutzerBGorAdmin();
 
 	/**
 	 * Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck.

@@ -102,15 +102,15 @@ describe('mitteilungenView', () => {
             assertMitteilungContent();
         });
         it('should create an empty TSMItteilung for JA', () => {
-            const sachbearbeiter_ja: TSUser = new TSUser();
-            sachbearbeiter_ja.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
+            const sachbearbeiter_bg: TSUser = new TSUser();
+            sachbearbeiter_bg.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0;
             });
 
-            createMitteilungForUser(sachbearbeiter_ja);
+            createMitteilungForUser(sachbearbeiter_bg);
 
-            compareCommonAttributes(sachbearbeiter_ja);
+            compareCommonAttributes(sachbearbeiter_bg);
             assertMitteilungContent();
         });
         it('should create an empty TSMItteilung for Institution', () => {

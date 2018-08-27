@@ -826,7 +826,6 @@ public final class TestDataUtil {
 		DokumentGrund dokumentGrund = new DokumentGrund();
 		dokumentGrund.setDokumentGrundTyp(DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 		dokumentGrund.setTag("tag");
-		dokumentGrund.setFullName("Hugo");
 		dokumentGrund.setDokumentTyp(DokumentTyp.JAHRESLOHNAUSWEISE);
 		dokumentGrund.setDokumente(new HashSet<>());
 		final Dokument dokument = new Dokument();
@@ -835,6 +834,7 @@ public final class TestDataUtil {
 		dokument.setFilepfad("testpfad/");
 		dokument.setFilesize("123456");
 		dokument.setTimestampUpload(LocalDateTime.now());
+		Objects.requireNonNull(dokumentGrund.getDokumente());
 		dokumentGrund.getDokumente().add(dokument);
 		return dokumentGrund;
 	}

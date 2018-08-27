@@ -64,7 +64,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	private WizardStepService wizardStepService;
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public FamiliensituationContainer saveFamiliensituation(Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
 		Familiensituation loadedFamiliensituation) {
@@ -146,7 +146,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeFamiliensituation(@Nonnull FamiliensituationContainer familiensituation) {
 		Objects.requireNonNull(familiensituation);
 		FamiliensituationContainer familiensituationToRemove = findFamiliensituation(familiensituation.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, familiensituation));
