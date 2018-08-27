@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum onErrorPriorities {
-    ERROR_LOGGER = 1,
-    ERROR_RECOVERY = 2,
-    ERROR_GS_REGISTRATION_INCOMPLETE = 3,
-    ERROR_AFTER_LOGIN = 10,
-}
+import {Component} from '@angular/core';
 
+@Component({
+    selector: 'dv-ui-view',
+    template: '<ui-view></ui-view>',
+})
+export class UiViewComponent {
+}
