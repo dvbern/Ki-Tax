@@ -538,7 +538,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Predicate predicateActive = builder.between(builder.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate isCorrectRole = joinBerechtigungen.get(Berechtigung_.role).in(getJugendamtSuperadminRoles());
+		Predicate isCorrectRole = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtSuperadminRoles());
 
 		query.where(predicateStatus, predicateDatumVon, predicateDatumBis, predicateActive, isCorrectRole);
 

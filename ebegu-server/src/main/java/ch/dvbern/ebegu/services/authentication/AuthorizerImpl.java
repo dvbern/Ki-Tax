@@ -651,9 +651,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return gesuch.getStatus().isReadableByJurist()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
 		}
-		if (principalBean.isCallerInRole(REVISOR)) { //TODO (hefr)
+		if (principalBean.isCallerInRole(REVISOR)) {
 			return gesuch.getStatus().isReadableByRevisor()
 				&& isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde());
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			return gesuch.getStatus().isReadableByMandantUser();
 		}
 		return false;
 	}

@@ -117,7 +117,7 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag) {
-        this.$state.go('zahlung', {
+        this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id
         });
     }
