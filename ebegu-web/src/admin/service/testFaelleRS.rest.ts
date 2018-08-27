@@ -19,7 +19,6 @@ import DateUtil from '../../utils/DateUtil';
 import * as moment from 'moment';
 import IPromise = angular.IPromise;
 
-
 export class TestFaelleRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
@@ -36,17 +35,15 @@ export class TestFaelleRS {
         return 'TestFaelleRS';
     }
 
-    public createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): IHttpPromise<string> {
+    public createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean,
+                            username: string): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/testfallgs/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + gemeindeId
             + '/' + bestaetigt + '/' + verfuegen + '/' + encodeURIComponent(username));
     }
 
-
     public removeFaelleOfGS(username: string): IHttpPromise<String> {
         return this.http.delete(this.serviceURL + '/testfallgs/' + encodeURIComponent(username));
     }
-
-
 
     public createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): IHttpPromise<string> {
         return this.http.get(this.serviceURL + '/testfall/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + gemeindeId
