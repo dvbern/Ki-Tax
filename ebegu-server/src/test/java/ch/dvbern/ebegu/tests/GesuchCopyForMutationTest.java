@@ -34,6 +34,7 @@ import org.junit.Test;
  * Test copy for mutation
  */
 public class GesuchCopyForMutationTest {
+
 	@Test
 	public void copyForMutation() {
 

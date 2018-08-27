@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSKind from './TSKind';
 import TSBetreuung from './TSBetreuung';
 import {TSFachstelle} from './TSFachstelle';
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
-export default class TSKindContainer extends TSAbstractEntity {
+export default class TSKindContainer extends TSAbstractMutableEntity {
 
     private _kindGS: TSKind;
     private _kindJA: TSKind;

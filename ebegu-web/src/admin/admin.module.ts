@@ -31,15 +31,15 @@ import {ParameterViewComponentConfig} from './component/parameterView/parameterV
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
-import {EbeguParameterRS} from './service/ebeguParameterRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
+import {EinstellungRS} from './service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from './service/ferieninselStammdatenRS.rest';
 import {ReindexRS} from './service/reindexRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
 
 export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name, 'smart-table'])
     .service('InstitutionRS', InstitutionRS)
-    .service('EbeguParameterRS', EbeguParameterRS)
+    .service('EinstellungRS', EinstellungRS)
     .service('EbeguVorlageRS', EbeguVorlageRS)
     .service('ReindexRS', ReindexRS)
     .service('TestFaelleRS', TestFaelleRS)

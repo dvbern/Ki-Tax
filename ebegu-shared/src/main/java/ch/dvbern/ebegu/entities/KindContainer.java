@@ -57,7 +57,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
-public class KindContainer extends AbstractEntity implements Comparable<KindContainer>, Searchable {
+public class KindContainer extends AbstractMutableEntity implements Comparable<KindContainer>, Searchable {
 
 	private static final long serialVersionUID = -6784985260190035840L;
 

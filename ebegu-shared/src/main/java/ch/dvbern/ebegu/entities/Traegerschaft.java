@@ -33,7 +33,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class Traegerschaft extends AbstractEntity {
+public class Traegerschaft extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -8403454439884704618L;
 

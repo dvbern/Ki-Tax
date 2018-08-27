@@ -13,14 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFerienname} from './enums/TSFerienname';
 import * as moment from 'moment';
 import TSGesuchsperiode from './TSGesuchsperiode';
 import TSFerieninselZeitraum from './TSFerieninselZeitraum';
 import TSBelegungFerieninselTag from './TSBelegungFerieninselTag';
 
-export default class TSFerieninselStammdaten extends TSAbstractEntity {
+export default class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     private _ferienname: TSFerienname;
     private _zeitraum: TSFerieninselZeitraum;              // Der erste Zeitraum

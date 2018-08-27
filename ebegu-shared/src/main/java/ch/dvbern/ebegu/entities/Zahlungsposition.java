@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Zahlungsposition extends AbstractEntity implements Comparable<Zahlungsposition> {
+public class Zahlungsposition extends AbstractMutableEntity implements Comparable<Zahlungsposition> {
 
 	private static final long serialVersionUID = -8403487439884700618L;
 

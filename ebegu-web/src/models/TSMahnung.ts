@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSGesuch from './TSGesuch';
 import {TSMahnungTyp} from './enums/TSMahnungTyp';
 import * as moment from 'moment';
 
-export default class TSMahnung extends TSAbstractEntity {
+export default class TSMahnung extends TSAbstractMutableEntity {
 
     private _gesuch: TSGesuch;
     private _mahnungTyp: TSMahnungTyp;

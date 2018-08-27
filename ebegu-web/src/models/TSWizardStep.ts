@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSWizardStepName} from './enums/TSWizardStepName';
 import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
 
-export default class TSWizardStep extends TSAbstractEntity {
+export default class TSWizardStep extends TSAbstractMutableEntity {
 
     private _gesuchId: string;
     private _wizardStepName: TSWizardStepName;

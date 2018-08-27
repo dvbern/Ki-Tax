@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {EbeguWebGesuch} from '../../gesuch.module';
 import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situation-require';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
 import EbeguWebAdmin from '../../../admin/admin.module';
 
 describe('finanzielleSituationRequire', () => {
@@ -31,16 +31,16 @@ describe('finanzielleSituationRequire', () => {
     let $componentController: angular.IComponentControllerService;
     let controller: DVFinanzielleSituationRequireController;
     let gesuchModelManager: GesuchModelManager;
-    let ebeguParameterRS: EbeguParameterRS;
+    let einstellungRS: EinstellungRS;
     let $q: angular.IQService;
 
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
-        ebeguParameterRS = $injector.get('EbeguParameterRS');
+        einstellungRS = $injector.get('EinstellungRS');
         $q = $injector.get('$q');
         $componentController = $injector.get('$componentController');
-        spyOn(ebeguParameterRS, 'getEbeguParameterByKeyAndDate').and.returnValue($q.when(150000));
-        controller = new DVFinanzielleSituationRequireController(ebeguParameterRS, gesuchModelManager);
+        spyOn(einstellungRS, 'getEinstellungenByGesuchsperiode').and.returnValue($q.when(150000));
+        controller = new DVFinanzielleSituationRequireController(einstellungRS, gesuchModelManager);
     }));
 
     it('should be defined', () => {

@@ -56,7 +56,7 @@ describe('antragStatusHistoryRS', () => {
             const gesuch: TSGesuch = new TSGesuch();
             gesuch.id = '123456';
             const antragStatusHistory: TSAntragStatusHistory = new TSAntragStatusHistory(gesuch.id, undefined, DateUtil.today(), undefined, TSAntragStatus.VERFUEGEN);
-            TestDataUtil.setAbstractFieldsUndefined(antragStatusHistory);
+            TestDataUtil.setAbstractMutableFieldsUndefined(antragStatusHistory);
             const restAntStatusHistory: any = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
             $httpBackend.expectGET(antragStatusHistoryRS.serviceURL + '/' + encodeURIComponent(gesuch.id)).respond(restAntStatusHistory);
 

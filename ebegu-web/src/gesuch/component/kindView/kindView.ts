@@ -140,7 +140,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public familienErgaenzendeBetreuungClicked() {
         if (!this.getModel().familienErgaenzendeBetreuung) {
             this.showFachstelle = false;
-            this.getModel().wohnhaftImGleichenHaushalt = undefined;
             this.resetFachstelleFields();
         }
     }

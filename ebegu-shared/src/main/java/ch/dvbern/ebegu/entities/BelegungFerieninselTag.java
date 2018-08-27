@@ -32,7 +32,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class BelegungFerieninselTag extends AbstractEntity implements Comparable<BelegungFerieninselTag> {
+public class BelegungFerieninselTag extends AbstractMutableEntity implements Comparable<BelegungFerieninselTag> {
 
 	private static final long serialVersionUID = 6815485579662587990L;
 

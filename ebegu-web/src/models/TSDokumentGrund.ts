@@ -15,11 +15,11 @@
 
 import TSDokument from './TSDokument';
 import {TSDokumentGrundTyp} from './enums/TSDokumentGrundTyp';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSDokumentTyp} from './enums/TSDokumentTyp';
 import {TSDokumentGrundPersonType} from './enums/TSDokumentGrundPersonType';
 
-export default class TSDokumentGrund extends TSAbstractEntity {
+export default class TSDokumentGrund extends TSAbstractMutableEntity {
 
     private _dokumentGrundTyp: TSDokumentGrundTyp;
 

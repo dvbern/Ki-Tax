@@ -14,8 +14,8 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
-import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
 
@@ -34,7 +34,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
 
 export class DVFinanzielleSituationRequireController {
 
-    static $inject: ReadonlyArray<string> = ['EbeguParameterRS', 'GesuchModelManager'];
+    static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
     finanzielleSituationRequired: boolean;
     areThereOnlySchulamtangebote: boolean;
@@ -43,17 +43,18 @@ export class DVFinanzielleSituationRequireController {
 
     maxMassgebendesEinkommen: string;
 
-    constructor(private readonly ebeguParameterRS: EbeguParameterRS, private readonly gesuchModelManager: GesuchModelManager) {
+    constructor(
+        private readonly einstellungRS: EinstellungRS,
+        private readonly gesuchModelManager: GesuchModelManager) {
     }
 
     $onInit() {
         this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
-        this.ebeguParameterRS.getEbeguParameterByKeyAndDate(
-                this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb,
-                TSEbeguParameterKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX).then(response => {
-            this.maxMassgebendesEinkommen = response.value;
-        });
+        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, this.gesuchModelManager.getDossier().gemeinde, this.gesuchModelManager.getGesuchsperiode())
+            .then(response => {
+                this.maxMassgebendesEinkommen = response.value;
+            });
     }
 
     /**

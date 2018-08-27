@@ -25,7 +25,9 @@ import java.util.Optional;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -89,7 +91,9 @@ public class PDFServiceBeanTest {
 	public void setupTestData() {
 
 		Locale.setDefault(new Locale("de", "CH"));
-		evaluator = AbstractBGRechnerTest.createEvaluator();
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
+		Gemeinde bern = TestDataUtil.createGemeindeBern();
+		evaluator = AbstractBGRechnerTest.createEvaluator(gesuchsperiode1718, bern);
 
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -99,39 +103,39 @@ public class PDFServiceBeanTest {
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
 
 		//setup gesuch with one Gesuchsteller
-		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall01_WaeltiDagmar testfall_1GS = new Testfall01_WaeltiDagmar(gesuchsperiode1718, institutionStammdatenList);
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_1GS = testfall_1GS.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch_1GS);
-		gesuch_1GS.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch_1GS.setGesuchsperiode(gesuchsperiode1718);
 
 		gesuch_1GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.STEUERERKLAERUNG));
 		gesuch_1GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_AUSBILDUNG));
 		gesuch_1GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_FAMILIENZULAGEN));
 
 		//setup gesuch with two Gesuchstellers
-		Testfall02_FeutzYvonne testfall_2GS = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall_2GS = new Testfall02_FeutzYvonne(gesuchsperiode1718, institutionStammdatenList);
 		testfall_2GS.createFall();
 		testfall_2GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_2GS = testfall_2GS.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch_2GS);
-		gesuch_2GS.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch_2GS.setGesuchsperiode(gesuchsperiode1718);
 
 		gesuch_2GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.STEUERERKLAERUNG));
 		gesuch_2GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_AUSBILDUNG));
 		gesuch_2GS.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_FAMILIENZULAGEN));
 
 		//setup Schulamt only gesuch
-		Testfall11_SchulamtOnly testfall_SchulamtOnly = new Testfall11_SchulamtOnly(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall11_SchulamtOnly testfall_SchulamtOnly = new Testfall11_SchulamtOnly(gesuchsperiode1718, institutionStammdatenList);
 		testfall_SchulamtOnly.createFall();
 		testfall_SchulamtOnly.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 
 		gesuch_Schulamt = testfall_SchulamtOnly.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch_Schulamt);
-		gesuch_Schulamt.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch_Schulamt.setGesuchsperiode(gesuchsperiode1718);
 
 		gesuch_Schulamt.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.STEUERERKLAERUNG));
 		gesuch_Schulamt.addDokumentGrund(new DokumentGrund(DokumentGrundTyp.SONSTIGE_NACHWEISE, DokumentTyp.NACHWEIS_AUSBILDUNG));

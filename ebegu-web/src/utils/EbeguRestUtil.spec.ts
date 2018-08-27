@@ -120,7 +120,7 @@ describe('EbeguRestUtil', () => {
             it('should transfrom Adresse Rest Objects', () => {
                 const adresse = new TSAdresse();
                 adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
-                TestDataUtil.setAbstractFieldsUndefined(adresse);
+                TestDataUtil.setAbstractMutableFieldsUndefined(adresse);
                 adresse.gemeinde = 'Testingen';
                 adresse.land = 'CH';
                 adresse.ort = 'Testort';
@@ -145,7 +145,7 @@ describe('EbeguRestUtil', () => {
         describe('parseGesuchsteller()', () => {
             it('should transfrom TSGesuchsteller to REST Obj and back', () => {
                 const myGesuchsteller: TSGesuchstellerContainer = createGesuchsteller();
-                TestDataUtil.setAbstractFieldsUndefined(myGesuchsteller);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchsteller);
                 myGesuchsteller.gesuchstellerGS = undefined;
                 myGesuchsteller.gesuchstellerJA.telefon = ''; // Ein leerer String im Telefon muss auch behandelt werden
                 const restGesuchsteller = ebeguRestUtil.gesuchstellerContainerToRestObject({}, myGesuchsteller);
@@ -169,7 +169,7 @@ describe('EbeguRestUtil', () => {
         describe('parseFachstelle()', () => {
             it('should transform TSFachstelle to REST object and back', () => {
                 const myFachstelle = new TSFachstelle('Fachstelle_name', 'Beschreibung', true);
-                TestDataUtil.setAbstractFieldsUndefined(myFachstelle);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myFachstelle);
 
                 const restFachstelle = ebeguRestUtil.fachstelleToRestObject({}, myFachstelle);
                 expect(restFachstelle).toBeDefined();
@@ -185,29 +185,29 @@ describe('EbeguRestUtil', () => {
         describe('parseGesuch()', () => {
             it('should transform TSGesuch to REST object and back', () => {
                 const myGesuch = new TSGesuch();
-                TestDataUtil.setAbstractFieldsUndefined(myGesuch);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch);
                 myGesuch.einkommensverschlechterungInfoContainer = undefined;
                 const fall: TSFall = new TSFall();
-                TestDataUtil.setAbstractFieldsUndefined(fall);
+                TestDataUtil.setAbstractMutableFieldsUndefined(fall);
                 const dossier = new TSDossier();
-                TestDataUtil.setAbstractFieldsUndefined(dossier);
+                TestDataUtil.setAbstractMutableFieldsUndefined(dossier);
                 myGesuch.dossier = dossier;
                 myGesuch.dossier.fall = fall;
                 myGesuch.dossier.fall.besitzer = undefined;
                 const gesuchsteller: TSGesuchstellerContainer = createGesuchsteller();
                 gesuchsteller.gesuchstellerGS = undefined;
-                TestDataUtil.setAbstractFieldsUndefined(gesuchsteller);
+                TestDataUtil.setAbstractMutableFieldsUndefined(gesuchsteller);
                 myGesuch.gesuchsteller1 = gesuchsteller;
                 myGesuch.gesuchsteller2 = gesuchsteller;
                 const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode();
-                TestDataUtil.setAbstractFieldsUndefined(gesuchsperiode);
+                TestDataUtil.setAbstractMutableFieldsUndefined(gesuchsperiode);
                 gesuchsperiode.gueltigkeit = new TSDateRange(undefined, undefined);
                 myGesuch.gesuchsperiode = gesuchsperiode;
                 const familiensituation: TSFamiliensituation = new TSFamiliensituation();
-                TestDataUtil.setAbstractFieldsUndefined(familiensituation);
+                TestDataUtil.setAbstractMutableFieldsUndefined(familiensituation);
                 myGesuch.familiensituationContainer = new TSFamiliensituationContainer;
                 myGesuch.familiensituationContainer.familiensituationJA = familiensituation;
-                TestDataUtil.setAbstractFieldsUndefined(myGesuch.familiensituationContainer);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch.familiensituationContainer);
                 myGesuch.kindContainers = [undefined];
                 myGesuch.einkommensverschlechterungInfoContainer = undefined;
                 myGesuch.bemerkungen = undefined;
@@ -235,7 +235,7 @@ describe('EbeguRestUtil', () => {
         describe('parseMandant()', () => {
             it('should transform TSMandant to REST object and back', () => {
                 const myMandant = new TSMandant('myMandant');
-                TestDataUtil.setAbstractFieldsUndefined(myMandant);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myMandant);
 
                 const restMandant = ebeguRestUtil.mandantToRestObject({}, myMandant);
                 expect(restMandant).toBeDefined();
@@ -249,7 +249,7 @@ describe('EbeguRestUtil', () => {
         describe('parseTraegerschaft()', () => {
             it('should transform TSTraegerschaft to REST object and back', () => {
                 const myTraegerschaft = new TSTraegerschaft('myTraegerschaft');
-                TestDataUtil.setAbstractFieldsUndefined(myTraegerschaft);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myTraegerschaft);
 
                 const restTraegerschaft = ebeguRestUtil.traegerschaftToRestObject({}, myTraegerschaft);
                 expect(restTraegerschaft).toBeDefined();
@@ -279,14 +279,14 @@ describe('EbeguRestUtil', () => {
             it('should transform TSBetreuung to REST object and back', () => {
                 const instStam: TSInstitutionStammdaten = new TSInstitutionStammdaten('iban', 250, 12, TSBetreuungsangebotTyp.KITA,
                     createInstitution(), undefined, new TSDateRange(DateUtil.today(), DateUtil.today()));
-                TestDataUtil.setAbstractFieldsUndefined(instStam);
+                TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
                 const tsBetreuungspensumGS: TSBetreuungspensum = new TSBetreuungspensum(false, 25, new TSDateRange(DateUtil.today(), DateUtil.today()));
-                TestDataUtil.setAbstractFieldsUndefined(tsBetreuungspensumGS);
+                TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
                 const tsBetreuungspensumJA: TSBetreuungspensum = new TSBetreuungspensum(false, 50, new TSDateRange(DateUtil.today(), DateUtil.today()));
-                TestDataUtil.setAbstractFieldsUndefined(tsBetreuungspensumJA);
+                TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
                 const tsBetreuungspensumContainer: TSBetreuungspensumContainer = new TSBetreuungspensumContainer(tsBetreuungspensumGS, tsBetreuungspensumJA);
-                TestDataUtil.setAbstractFieldsUndefined(tsBetreuungspensumContainer);
+                TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumContainer);
                 const betContainers: Array<TSBetreuungspensumContainer> = [tsBetreuungspensumContainer];
 
                 const today: moment.Moment = DateUtil.today();
@@ -296,7 +296,7 @@ describe('EbeguRestUtil', () => {
                 const abwesenheitContainers: Array<TSAbwesenheitContainer> = [tsAbwesenheitContainer];
 
                 const betreuung: TSBetreuung = new TSBetreuung(instStam, TSBetreuungsstatus.AUSSTEHEND, betContainers, abwesenheitContainers, 2);
-                TestDataUtil.setAbstractFieldsUndefined(betreuung);
+                TestDataUtil.setAbstractMutableFieldsUndefined(betreuung);
 
                 const restBetreuung = ebeguRestUtil.betreuungToRestObject({}, betreuung);
 
@@ -322,7 +322,7 @@ describe('EbeguRestUtil', () => {
         describe('parseBetreuungspensum', () => {
             it('should transform TSBetreuungspensum to REST object and back', () => {
                 const betreuungspensum: TSBetreuungspensum = new TSBetreuungspensum(false, 25, new TSDateRange(DateUtil.today(), DateUtil.today()));
-                TestDataUtil.setAbstractFieldsUndefined(betreuungspensum);
+                TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 
                 const restBetreuungspensum: TSBetreuungspensum = ebeguRestUtil.betreuungspensumToRestObject({}, betreuungspensum);
                 expect(restBetreuungspensum).toBeDefined();
@@ -340,12 +340,12 @@ describe('EbeguRestUtil', () => {
                 const myInstitution = createInstitution();
                 const tsInstStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
                 const tsModul = new TSModulTagesschule();
-                TestDataUtil.setAbstractFieldsUndefined(tsModul);
+                TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
-                TestDataUtil.setAbstractFieldsUndefined(tsInstStammdatenTagesschule);
+                TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
                 const myInstitutionStammdaten = new TSInstitutionStammdaten('iban', 250, 12, TSBetreuungsangebotTyp.KITA, myInstitution, undefined,
                     new TSDateRange(DateUtil.today(), DateUtil.today()), '', undefined, tsInstStammdatenTagesschule);
-                TestDataUtil.setAbstractFieldsUndefined(myInstitutionStammdaten);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myInstitutionStammdaten);
 
                 const restInstitutionStammdaten = ebeguRestUtil.institutionStammdatenToRestObject({}, myInstitutionStammdaten);
                 expect(restInstitutionStammdaten).toBeDefined();
@@ -391,7 +391,7 @@ describe('EbeguRestUtil', () => {
         describe('parseGesuchsperiode()', () => {
             it('should transfrom TSGesuchsperiode to REST Obj and back', () => {
                 const myGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(undefined, undefined));
-                TestDataUtil.setAbstractFieldsUndefined(myGesuchsperiode);
+                TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchsperiode);
 
                 const restGesuchsperiode = ebeguRestUtil.gesuchsperiodeToRestObject({}, myGesuchsperiode);
                 expect(restGesuchsperiode).toBeDefined();
@@ -406,7 +406,7 @@ describe('EbeguRestUtil', () => {
         describe('parseAntragDTO()', () => {
             it('should transform TSAntragDTO to REST Obj and back', () => {
                 const tsGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(undefined, undefined));
-                TestDataUtil.setAbstractFieldsUndefined(tsGesuchsperiode);
+                TestDataUtil.setAbstractMutableFieldsUndefined(tsGesuchsperiode);
                 const myPendenz = new TSAntragDTO('id1', 123, 'name', TSAntragTyp.ERSTGESUCH, DateUtil.today(),
                     undefined, DateUtil.now(), [TSBetreuungsangebotTyp.KITA], ['Inst1, Inst2'], 'Juan Arbolado');
 
@@ -476,20 +476,20 @@ describe('EbeguRestUtil', () => {
 
     function createInstitution(): TSInstitution {
         const traegerschaft = new TSTraegerschaft('myTraegerschaft');
-        TestDataUtil.setAbstractFieldsUndefined(traegerschaft);
+        TestDataUtil.setAbstractMutableFieldsUndefined(traegerschaft);
         const mandant = new TSMandant('myMandant');
-        TestDataUtil.setAbstractFieldsUndefined(mandant);
+        TestDataUtil.setAbstractMutableFieldsUndefined(mandant);
         const myInstitution = new TSInstitution('myInstitution', traegerschaft, mandant);
-        TestDataUtil.setAbstractFieldsUndefined(myInstitution);
+        TestDataUtil.setAbstractMutableFieldsUndefined(myInstitution);
         return myInstitution;
     }
 
     function createGesuchsteller(): TSGesuchstellerContainer {
         const myGesuchstellerCont: TSGesuchstellerContainer = new TSGesuchstellerContainer();
-        TestDataUtil.setAbstractFieldsUndefined(myGesuchstellerCont);
+        TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchstellerCont);
         myGesuchstellerCont.id = 'containerID';
         const myGesuchsteller = new TSGesuchsteller();
-        TestDataUtil.setAbstractFieldsUndefined(myGesuchsteller);
+        TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchsteller);
         myGesuchsteller.vorname = 'Til';
         myGesuchsteller.nachname = 'TestGesuchsteller';
         myGesuchsteller.id = 'mytestid';

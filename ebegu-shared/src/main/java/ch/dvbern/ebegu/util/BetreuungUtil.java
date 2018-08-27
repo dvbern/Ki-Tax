@@ -15,17 +15,16 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
-import ch.dvbern.ebegu.entities.EbeguParameter;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EbeguParameterKey;
-import ch.dvbern.ebegu.services.EbeguParameterService;
-import org.slf4j.LoggerFactory;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.services.EinstellungService;
 
 /**
  * Allgemeine Utils fuer Betreuung
@@ -39,29 +38,30 @@ public final class BetreuungUtil {
 	 * Returns the corresponding minimum value for the given betreuungsangebotTyp.
 	 *
 	 * @param betreuungsangebotTyp betreuungsangebotTyp
-	 * @param stichtag defines which parameter to load. We only look for params that are valid on this day
+	 * @param gesuchsperiode defines which parameter to load. We only look for params that are valid on this day
 	 * @return The minimum value for the betreuungsangebotTyp. Default value is -1: This means if the given betreuungsangebotTyp doesn't match any
 	 * recorded type, the min value will be 0 and any positive value will be then accepted
 	 */
-	public static int getMinValueFromBetreuungsangebotTyp(LocalDate stichtag, @Nullable BetreuungsangebotTyp betreuungsangebotTyp,
-		EbeguParameterService ebeguParameterService, @Nullable final EntityManager em) {
-		EbeguParameterKey key = null;
+	public static int getMinValueFromBetreuungsangebotTyp(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde,
+		@Nullable BetreuungsangebotTyp betreuungsangebotTyp,
+		@Nonnull EinstellungService einstellungService,
+		@Nullable final EntityManager em) {
+
+		EinstellungKey key = null;
 		if (betreuungsangebotTyp == BetreuungsangebotTyp.KITA) {
-			key = EbeguParameterKey.PARAM_PENSUM_KITA_MIN;
+			key = EinstellungKey.PARAM_PENSUM_KITA_MIN;
 		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGI) {
-			key = EbeguParameterKey.PARAM_PENSUM_TAGI_MIN;
+			key = EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
-			key = EbeguParameterKey.PARAM_PENSUM_TAGESSCHULE_MIN;
+			key = EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
-			key = EbeguParameterKey.PARAM_PENSUM_TAGESELTERN_MIN;
+			key = EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 		}
 		if (key != null) {
-			Optional<EbeguParameter> parameter = ebeguParameterService.getEbeguParameterByKeyAndDate(key, stichtag, em);
-			if (parameter.isPresent()) {
-				return parameter.get().getValueAsInteger();
-			} else {
-				LoggerFactory.getLogger(BetreuungUtil.class).warn("No Value available for Validation of key {}", key);
-			}
+			Einstellung parameter = einstellungService.findEinstellung(key, gemeinde, gesuchsperiode, em);
+			return parameter.getValueAsInteger();
 		}
 		return 0;
 	}
