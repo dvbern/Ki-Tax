@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {IRootScopeService} from 'angular';
 import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
@@ -46,43 +47,48 @@ describe('dossier', () => {
     }));
 
     describe('getGemeindenForPrincipal', () => {
-        it('should give the gemeinden linked to the given user', () => {
+        it('should give the gemeinden linked to the given user', done => {
             const user = createUser(TSRole.SACHBEARBEITER_JA, true);
 
-            let gemeindeList: TSGemeinde[];
-            gemeindeRS.getGemeindenForPrincipal(user).then(promiseValue => {
-                gemeindeList = promiseValue;
-            });
-            $rootScope.$apply();
-            expect(gemeindeList).toBeDefined();
-            expect(gemeindeList.length).toBe(1);
-            expect(gemeindeList[0]).toEqual(user.extractCurrentGemeinden()[0]);
+            gemeindeRS.toGemeindenForPrincipal$(user).subscribe(
+                gemeinden => {
+                    expect(gemeinden).toBeDefined();
+                    expect(gemeinden.length).toBe(1);
+                    expect(gemeinden[0]).toEqual(user.extractCurrentGemeinden()[0]);
+                    done();
+                },
+                err => done.fail(err)
+            );
         });
-        it('should give all gemeinden for a role without gemeinde', () => {
+
+        it('should give all gemeinden for a role without gemeinde', done => {
             $httpBackend.expectGET(gemeindeRS.serviceURL + '/all').respond(allGemeinde);
             const user = createUser(TSRole.SACHBEARBEITER_INSTITUTION, false);
 
-            let gemeindeList: TSGemeinde[];
-            gemeindeRS.getGemeindenForPrincipal(user).then(promiseValue => {
-                gemeindeList = promiseValue;
-            });
+            gemeindeRS.toGemeindenForPrincipal$(user).subscribe(
+                gemeinden => {
+                    expect(gemeinden).toBeDefined();
+                    expect(gemeinden.length).toBe(2);
+                    expect(gemeinden[0]).toEqual(allGemeinde[0]);
+                    expect(gemeinden[1]).toEqual(allGemeinde[1]);
+                    done();
+                },
+                err => done.fail(err)
+            );
+
             $httpBackend.flush();
-            expect(gemeindeList).toBeDefined();
-            expect(gemeindeList.length).toBe(2);
-            expect(gemeindeList[0]).toEqual(allGemeinde[0]);
-            expect(gemeindeList[1]).toEqual(allGemeinde[1]);
         });
-        it('should return empty list for undefined role', () => {
-            let gemeindeList: TSGemeinde[] = undefined; // to test that it changes to undefined
-            gemeindeRS.getGemeindenForPrincipal(undefined).then(promiseValue => {
-                gemeindeList = promiseValue;
-            });
-            $rootScope.$apply();
-            expect(gemeindeList).toBeDefined();
-            expect(gemeindeList.length).toBe(0);
+        it('should return empty list for undefined role', done => {
+            gemeindeRS.toGemeindenForPrincipal$(undefined).subscribe(
+                gemeinden => {
+                    expect(gemeinden).toBeDefined();
+                    expect(gemeinden.length).toBe(0);
+                    done();
+                },
+                err => done.fail(err)
+            );
         });
     });
-
 
     function createUser(role: TSRole, createGemeinde: boolean) {
         const user: TSUser = new TSUser('Pedrito', 'Fuentes');

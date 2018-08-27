@@ -14,7 +14,10 @@
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSUser from '../../models/TSUser';
@@ -24,12 +27,21 @@ import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q'];
+    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q', 'AuthServiceRS'];
     serviceURL: string;
 
-    constructor(public $http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService,
-                private readonly globalCacheService: GlobalCacheService, private readonly $q: IQService) {
+    private principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
+
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService,
+                private readonly globalCacheService: GlobalCacheService,
+                private readonly $q: IQService,
+                private readonly authServiceRS: AuthServiceRS) {
         this.serviceURL = REST_API + 'gemeinde';
+
+        this.initGemeindenForPrincipal();
     }
 
     public getAllGemeinden(): IPromise<TSGemeinde[]> {
@@ -41,17 +53,8 @@ export default class GemeindeRS implements IEntityRS {
             });
     }
 
-    public getGemeindenForPrincipal(user: TSUser): IPromise<Array<TSGemeinde>> {
-        if (!user) {
-            return this.$q.when([]); // empty list for unknown user
-        }
-        if (TSRoleUtil.isGemeindeabhaengig(user.getCurrentRole())) {
-            return this.$q.when(angular.copy(user.extractCurrentGemeinden()));
-        } else {
-            return this.getAllGemeinden().then(response => {
-                return response;
-            });
-        }
+    public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
+        return this.principalGemeindenSubject$.asObservable();
     }
 
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
@@ -60,5 +63,28 @@ export default class GemeindeRS implements IEntityRS {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
             });
+    }
+
+    private initGemeindenForPrincipal(): void {
+        this.authServiceRS.principal$
+            .pipe(switchMap(user => this.toGemeindenForPrincipal$(user)))
+            .subscribe(
+                gemeinden => {
+                    this.principalGemeindenSubject$.next(gemeinden);
+                },
+                err => this.$log.error(err)
+            );
+    }
+
+    public toGemeindenForPrincipal$(user: TSUser | null): Observable<TSGemeinde[]> {
+        if (!user) {
+            return of([]); // empty list for unknown user
+        }
+
+        if (TSRoleUtil.isGemeindeabhaengig(user.getCurrentRole())) {
+            return of(angular.copy(user.extractCurrentGemeinden()));
+        }
+
+        return from(this.getAllGemeinden());
     }
 }

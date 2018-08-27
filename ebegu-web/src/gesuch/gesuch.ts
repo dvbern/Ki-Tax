@@ -13,10 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
+import {IController, IRootScopeService} from 'angular';
+import {Subject} from 'rxjs';
+import {map, takeUntil} from 'rxjs/operators';
 import ErrorService from '../app/core/errors/service/ErrorService';
+import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
 import EwkRS from '../app/core/service/ewkRS.rest';
+import GesuchstellerRS from '../app/core/service/gesuchstellerRS.rest';
+import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, TSAntragStatus} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
@@ -26,8 +31,6 @@ import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
 import TSDossier from '../models/TSDossier';
 import TSEWKPerson from '../models/TSEWKPerson';
-import GesuchstellerRS from '../app/core/service/gesuchstellerRS.rest';
-import {ILogService, IRootScopeService} from 'angular';
 import TSEWKResultat from '../models/TSEWKResultat';
 import TSFall from '../models/TSFall';
 import TSGesuch from '../models/TSGesuch';
@@ -39,26 +42,58 @@ import {TSRoleUtil} from '../utils/TSRoleUtil';
 import BerechnungsManager from './service/berechnungsManager';
 import GesuchModelManager from './service/gesuchModelManager';
 import WizardStepManager from './service/wizardStepManager';
+import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
-export class GesuchRouteController {
+const LOG = LogFactory.createLog('GesuchRouteController');
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil', 'ErrorService',
-        'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS', '$log', '$rootScope'];
+export class GesuchRouteController implements IController {
+
+    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil',
+        'ErrorService',
+        'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS',
+        '$rootScope'];
 
     TSRole = TSRole;
     TSRoleUtil = TSRoleUtil;
     openEwkSidenav: boolean;
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly wizardStepManager: WizardStepManager, private readonly ebeguUtil: EbeguUtil,
+    public userFullName = '';
+
+    private readonly unsubscribe$ = new Subject<void>();
+
+    constructor(private readonly gesuchModelManager: GesuchModelManager,
+                berechnungsManager: BerechnungsManager,
+                private readonly wizardStepManager: WizardStepManager,
+                private readonly ebeguUtil: EbeguUtil,
                 private readonly errorService: ErrorService,
-                private readonly antragStatusHistoryRS: AntragStatusHistoryRS, private readonly $translate: ITranslateService,
-                private readonly authServiceRS: AuthServiceRS, private readonly $mdSidenav: ng.material.ISidenavService, private readonly CONSTANTS: any,
-                private readonly gesuchstellerRS: GesuchstellerRS, private readonly ewkRS: EwkRS,
-                private readonly $log: ILogService, private readonly $rootScope: IRootScopeService) {
+                private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+                private readonly $translate: ITranslateService,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly $mdSidenav: ISidenavService,
+                private readonly CONSTANTS: any,
+                private readonly gesuchstellerRS: GesuchstellerRS,
+                private readonly ewkRS: EwkRS,
+                private readonly $rootScope: IRootScopeService) {
         //super(gesuchModelManager, berechnungsManager, wizardStepManager);
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
+
+        authServiceRS.principal$
+            .pipe(
+                map(principal => this.antragStatusHistoryRS.getUserFullname(principal)),
+                takeUntil(this.unsubscribe$)
+            )
+            .subscribe(
+                userFullName => {
+                    this.userFullName = userFullName;
+                },
+                err => LOG.error(err)
+            );
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     showFinanzielleSituationStart(): boolean {
@@ -145,8 +180,8 @@ export class GesuchRouteController {
     }
 
     /**
-     * Uebersetzt den Status des Gesuchs und gibt ihn zurueck. Sollte das Gesuch noch keinen Status haben IN_BEARBEITUNG_JA
-     * wird zurueckgegeben
+     * Uebersetzt den Status des Gesuchs und gibt ihn zurueck. Sollte das Gesuch noch keinen Status haben
+     * IN_BEARBEITUNG_JA wird zurueckgegeben
      * @returns {string}
      */
     public getGesuchStatusTranslation(): string {
@@ -189,10 +224,6 @@ export class GesuchRouteController {
         return this.ebeguUtil.translateString(TSAntragStatus[toTranslate]);
     }
 
-    public getUserFullname(): string {
-        return this.antragStatusHistoryRS.getUserFullname();
-    }
-
     public getGesuchId(): string {
         if (this.getGesuch()) {
             return this.getGesuch().id;
@@ -226,12 +257,16 @@ export class GesuchRouteController {
     public getGesuchErstellenStepTitle(): string {
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.isGesuch()) {
             if (this.getDateFromGesuch()) {
-                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH_VOM' : 'MENU_ERSTGESUCH_VOM';
+                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ?
+                    'MENU_ERNEUERUNGSGESUCH_VOM' :
+                    'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(key, {
                     date: this.getDateFromGesuch()
                 });
             } else {
-                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'MENU_ERNEUERUNGSGESUCH' : 'MENU_ERSTGESUCH';
+                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ?
+                    'MENU_ERNEUERUNGSGESUCH' :
+                    'MENU_ERSTGESUCH';
                 return this.$translate.instant(key);
             }
         } else {
@@ -343,17 +378,15 @@ export class GesuchRouteController {
                     break;
             }
         }).catch((exception) => {
-            const bussinesExceptionMitFehlercode = (this.errorService.getErrors().filter(
-                    function filterForBusinessException(e) {
-                        return (e.errorCodeEnum === 'ERROR_PERSONENSUCHE_BUSINESS' && e.argumentList[0]);
-                    }).length) > 0;
+            const bussinesExceptionMitFehlercode = this.errorService.getErrors()
+                .some(e => e.errorCodeEnum === 'ERROR_PERSONENSUCHE_BUSINESS' && e.argumentList[0]);
 
             if (bussinesExceptionMitFehlercode) {
                 // es war eine Businessexception und der Sercvice hat mit einem ErrorCode geantwortet
                 // Abfrage hat stattgefunden
                 this.setDateEWKAbfrage(n);
             }
-            this.$log.error('there was an error searching the person in EWK ', exception);
+            LOG.error('there was an error searching the person in EWK ', exception);
         });
     }
 

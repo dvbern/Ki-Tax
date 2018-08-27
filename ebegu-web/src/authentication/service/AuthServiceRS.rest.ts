@@ -41,10 +41,11 @@ export default class AuthServiceRS {
     private principal?: TSUser;
 
     // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
-    // Thus the session restoration from the cookie is completed before the authenticationHook checks for authentication.
+    // Thus the session restoration from the cookie is completed before the authenticationHook checks for
+    // authentication.
     private readonly principalSubject$ = new ReplaySubject<TSUser | null>(1);
 
-    public principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
+    private _principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
 
     constructor(private readonly $http: IHttpService,
                 private readonly $q: IQService,
@@ -54,6 +55,14 @@ export default class AuthServiceRS {
                 private readonly httpBuffer: HttpBuffer,
                 private readonly authLifeCycleService: AuthLifeCycleService,
                 private readonly userRS: UserRS) {
+    }
+
+    get principal$(): Observable<TSUser | null> {
+        return this._principal$;
+    }
+
+    set principal$(value: Observable<TSUser | null>) {
+        this._principal$ = value;
     }
 
     /**
@@ -75,7 +84,8 @@ export default class AuthServiceRS {
             return undefined;
         }
 
-        return this.$http.post(CONSTANTS.REST_API + 'auth/login', this.ebeguRestUtil.userToRestObject({}, userCredentials))
+        return this.$http.post(CONSTANTS.REST_API + 'auth/login',
+            this.ebeguRestUtil.userToRestObject({}, userCredentials))
             .then(() => {
                 // try to reload buffered requests
                 this.httpBuffer.retryAll((config: IRequestConfig) => config);
@@ -100,9 +110,9 @@ export default class AuthServiceRS {
             const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
             return this.userRS.findBenutzer(authData.authId).then(user => {
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
                 this.principalSubject$.next(user);
                 this.principal = user;
+                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
 
                 return user;
             });

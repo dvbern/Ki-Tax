@@ -19,6 +19,7 @@ import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../models/TSDossier';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSUser from '../../../models/TSUser';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class AntragStatusHistoryRS {
@@ -26,7 +27,6 @@ export default class AntragStatusHistoryRS {
     get lastChange(): TSAntragStatusHistory {
         return this._lastChange;
     }
-
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
 
@@ -42,10 +42,6 @@ export default class AntragStatusHistoryRS {
         this.serviceURL = REST_API + 'antragStatusHistory';
     }
 
-    public getServiceName(): string {
-        return 'AntragStatusHistoryRS';
-    }
-
     /**
      * laedt und merkt sich den letzten Statusuebergang, kann mit #lastChange() ausgelesen werden
      */
@@ -54,7 +50,9 @@ export default class AntragStatusHistoryRS {
             return this.http.get(this.serviceURL + '/' + encodeURIComponent(gesuch.id))
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
-                    this._lastChange = this.ebeguRestUtil.parseAntragStatusHistory(new TSAntragStatusHistory(), response.data);
+                    const history = new TSAntragStatusHistory();
+                    this._lastChange = this.ebeguRestUtil.parseAntragStatusHistory(history, response.data);
+
                     return this._lastChange;
                 });
         }
@@ -62,9 +60,14 @@ export default class AntragStatusHistoryRS {
         return Promise.resolve(this._lastChange);
     }
 
-    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier, gesuchsperiode: TSGesuchsperiode): IPromise<Array<TSAntragStatusHistory>> {
+    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier,
+                                                      gesuchsperiode: TSGesuchsperiode)
+        : IPromise<Array<TSAntragStatusHistory>> {
+
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
-            return this.http.get(this.serviceURL + '/verlauf/' + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
+            const baseUrl = this.serviceURL + '/verlauf/';
+
+            return this.http.get(baseUrl + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);
@@ -74,19 +77,15 @@ export default class AntragStatusHistoryRS {
     }
 
     /**
-     * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch nicht
-     * gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
-     * @returns {string}
+     * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch
+     * nicht gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
      */
-    public getUserFullname(): string {
+    public getUserFullname(principal?: TSUser): string {
         if (this.lastChange && this.lastChange.benutzer) {
             return this.lastChange.benutzer.getFullName();
-        } else {
-            if (this.authServiceRS && this.authServiceRS.getPrincipal()) {
-                return this.authServiceRS.getPrincipal().getFullName();
-            }
         }
-        return '';
+
+        return principal ? principal.getFullName() : '';
     }
 
 }

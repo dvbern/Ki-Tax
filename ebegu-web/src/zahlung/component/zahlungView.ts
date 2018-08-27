@@ -15,16 +15,19 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
+import {map, switchMap} from 'rxjs/operators';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import {ReportRS} from '../../app/core/service/reportRS.rest';
 import ZahlungRS from '../../app/core/service/zahlungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../models/enums/TSRole';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
 import TSDownloadFile from '../../models/TSDownloadFile';
 import TSZahlung from '../../models/TSZahlung';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {IZahlungsauftragStateParams} from '../zahlung.route';
+
+const LOG = LogFactory.createLog('ZahlungViewController');
 
 export class ZahlungViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -35,9 +38,10 @@ export class ZahlungViewComponentConfig implements IComponentOptions {
 
 export class ZahlungViewController implements IController {
 
-    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS', 'AuthServiceRS'];
+    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
+        'AuthServiceRS'];
 
-    private zahlungen: Array<TSZahlung>;
+    private zahlungen: TSZahlung[] = [];
 
     itemsByPage: number = 20;
 
@@ -51,27 +55,22 @@ export class ZahlungViewController implements IController {
     }
 
     public $onInit() {
-        if (this.$stateParams.zahlungsauftragId && this.authServiceRS.getPrincipal()) {
-            switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
-                case TSRole.SACHBEARBEITER_INSTITUTION:
-                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-                    this.zahlungRS.getZahlungsauftragInstitution(this.$stateParams.zahlungsauftragId).then((response) => {
-                        this.zahlungen = response.zahlungen;
-                    });
-                    break;
-                case TSRole.SUPER_ADMIN:
-                case TSRole.ADMIN:
-                case TSRole.SACHBEARBEITER_JA:
-                case TSRole.JURIST:
-                case TSRole.REVISOR:
-                    this.zahlungRS.getZahlungsauftrag(this.$stateParams.zahlungsauftragId).then((response) => {
-                        this.zahlungen = response.zahlungen;
-                    });
-                    break;
-                default:
-                    break;
-            }
+        if (!this.$stateParams.zahlungsauftragId) {
+            return;
         }
+
+        this.authServiceRS.principal$
+            .pipe(
+                map(principal => principal.getCurrentRole()),
+                switchMap(role => this.zahlungRS.getZahlungsauftragForRole$(role, this.$stateParams.zahlungsauftragId)),
+                map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : [])
+            )
+            .subscribe(
+                zahlungen => {
+                    this.zahlungen = zahlungen;
+                },
+                err => LOG.error(err)
+            );
     }
 
     private gotToUebersicht(): void {

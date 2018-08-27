@@ -14,11 +14,17 @@
  */
 
 import * as angular from 'angular';
-import {IComponentOptions, IController, IFilterService, ILogService, IPromise, IWindowService} from 'angular';
+import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus
+} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
@@ -29,8 +35,11 @@ import TSInstitution from '../../../../models/TSInstitution';
 import TSUser from '../../../../models/TSUser';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../logging/LogFactory';
 import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+
+const LOG = LogFactory.createLog('DVAntragListController');
 
 export class DVAntragListConfig implements IComponentOptions {
     transclude = false;
@@ -55,7 +64,8 @@ export class DVAntragListConfig implements IComponentOptions {
 
 export class DVAntragListController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', '$log', 'InstitutionRS', 'GesuchsperiodeRS', 'CONSTANTS',
+    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
+        'CONSTANTS',
         'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
     totalResultCount: number;
@@ -94,9 +104,10 @@ export class DVAntragListController implements IController {
     onAdd: () => void;
     TSRoleUtil = TSRoleUtil;
 
+    private readonly unsubscribe$ = new Subject<void>();
+
     constructor(private readonly ebeguUtil: EbeguUtil,
                 private readonly $filter: IFilterService,
-                private readonly $log: ILogService,
                 private readonly institutionRS: InstitutionRS,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                 private readonly CONSTANTS: any,
@@ -123,6 +134,11 @@ export class DVAntragListController implements IController {
         }
     }
 
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenForCurrentBenutzer().then(response => {
             this.institutionenList = angular.copy(response);
@@ -139,10 +155,13 @@ export class DVAntragListController implements IController {
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => {
-                this.gemeindenList = gemeinden;
-            });
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(gemeinden => {
+                    this.gemeindenList = gemeinden;
+                },
+                err => LOG.error(err)
+            );
     }
 
     removeClicked(antragToRemove: TSAbstractAntragEntity) {
@@ -173,7 +192,7 @@ export class DVAntragListController implements IController {
                 }
             });
         } else {
-            this.$log.info('no callback function spcified for filtering');
+            LOG.info('no callback function spcified for filtering');
         }
     };
 
@@ -183,7 +202,6 @@ export class DVAntragListController implements IController {
 
     /**
      * Alle TSAntragStatus fuer das Filterdropdown
-     * @returns {Array<TSAntragStatus>}
      */
     public getAntragStatus(): Array<TSAntragStatus> {
         if (this.pendenz) {
@@ -203,7 +221,6 @@ export class DVAntragListController implements IController {
     /**
      * Fallnummer muss 6-stellig dargestellt werden. Deshalb muessen so viele 0s am Anfang hinzugefuegt werden
      * bis die Fallnummer ein 6-stelliges String ist
-     * @param fallnummer
      */
     public addZerosToFallnummer(fallnummer: number): string {
         return EbeguUtil.addZerosToFallNummer(fallnummer);

@@ -15,10 +15,12 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
@@ -31,6 +33,8 @@ import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 
+const LOG = LogFactory.createLog('PendenzenBetreuungenListViewController');
+
 export class PendenzenBetreuungenListViewComponentConfig implements IComponentOptions {
     transclude = false;
     template = require('./pendenzenBetreuungenListView.html');
@@ -41,7 +45,7 @@ export class PendenzenBetreuungenListViewComponentConfig implements IComponentOp
 export class PendenzenBetreuungenListViewController implements IController {
 
     static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS', 'AuthServiceRS'];
+        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
 
     private pendenzenList: Array<TSPendenzBetreuung>;
     selectedBetreuungsangebotTyp: string;
@@ -55,6 +59,8 @@ export class PendenzenBetreuungenListViewController implements IController {
     itemsByPage: number = 20;
     numberOfPages: number = 1;
 
+    private readonly unsubscribe$ = new Subject<void>();
+
     constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
                 private readonly ebeguUtil: EbeguUtil,
                 private readonly institutionRS: InstitutionRS,
@@ -64,7 +70,6 @@ export class PendenzenBetreuungenListViewController implements IController {
                 private readonly berechnungsManager: BerechnungsManager,
                 private readonly $state: StateService,
                 private readonly gemeindeRS: GemeindeRS,
-                private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -74,6 +79,11 @@ export class PendenzenBetreuungenListViewController implements IController {
         this.updateBetreuungsangebotTypList();
         this.updateActiveGesuchsperiodenList();
         this.updateGemeindenList();
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public getTotalResultCount(): number {
@@ -115,10 +125,13 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => {
-                this.gemeindenList = gemeinden;
-            });
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(gemeinden => {
+                    this.gemeindenList = gemeinden;
+                },
+                err => LOG.error(err)
+            );
     }
 
     public getPendenzenList(): Array<TSPendenzBetreuung> {

@@ -17,7 +17,7 @@ import {Component} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {from as fromPromise, Observable, of} from 'rxjs';
-import {filter, switchMap} from 'rxjs/operators';
+import {filter, map, switchMap} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -44,21 +44,24 @@ export class NavbarComponent {
     }
 
     public getGemeindeIDFromUser$(): Observable<string> {
-        if (this.authServiceRS.getPrincipal().hasJustOneGemeinde()) {
-            return of(this.authServiceRS.getPrincipal().extractCurrentGemeindeId());
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (principal && principal.hasJustOneGemeinde()) {
+                        return of(principal.extractCurrentGemeinden());
+                    }
 
-        } else {
-            return this.getListOfGemeinden$()
-                .pipe(
-                    switchMap(gemeindeList => {
-                        const dialogConfig = new MatDialogConfig();
-                        dialogConfig.data = {gemeindeList};
+                    return this.getListOfGemeinden$()
+                        .pipe(
+                            switchMap(gemeindeList => {
+                                const dialogConfig = new MatDialogConfig();
+                                dialogConfig.data = {gemeindeList};
 
-                        return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
-        }           )
-                );
-        }
-
+                                return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+                            })
+                        );
+                })
+            );
     }
 
     /**
@@ -69,7 +72,8 @@ export class NavbarComponent {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
             return fromPromise(this.gemeindeRS.getAllGemeinden());
         } else {
-            return of(this.authServiceRS.getPrincipal().extractCurrentGemeinden());
+            return this.authServiceRS.principal$
+                .pipe(map(p => p.extractCurrentGemeinden()));
         }
     }
 
