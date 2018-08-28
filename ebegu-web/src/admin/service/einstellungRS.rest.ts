@@ -55,14 +55,14 @@ export class EinstellungRS {
             });
     }
 
-    public getEinstellungenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
+    public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         return this.http.get(this.serviceURL + '/gesuchsperiode/' + gesuchsperiodeId)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });
     }
 
-    public getEinstellungenByGesuchsperiodeCached(gesuchsperiodeId: string, cache: ICacheObject): IPromise<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string, cache: ICacheObject): IPromise<TSEinstellung[]> {
         return this.http.get(this.serviceURL + '/gesuchsperiode/' + gesuchsperiodeId, {cache: cache})
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);

@@ -55,7 +55,7 @@ import org.junit.runner.RunWith;
 import static ch.dvbern.ebegu.rechner.AbstractBGRechnerTest.checkTestfall01WaeltiDagmar;
 
 /**
- * Tests fuer die Klasse FinanzielleSituationService
+ * Tests fuer die Klasse VerfuegungService
  */
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
@@ -87,7 +87,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		gesuchsperiode = createGesuchsperiode(true);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
@@ -118,8 +118,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		//es muessen min 21 existieren jetzt +1 from mandant-dataset
-		Assert.assertEquals(24, einstellungService.getEinstellungenByGesuchsperiode(gesuch.getGesuchsperiode()).size());
+		Assert.assertEquals(27, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);

@@ -73,7 +73,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
             console.log('kein gesuchsteller gefunden');
         }
-        einstellungRS.getEinstellungenByGesuchsperiodeCached(
+        einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
             const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);

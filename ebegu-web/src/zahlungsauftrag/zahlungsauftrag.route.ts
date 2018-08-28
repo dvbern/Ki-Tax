@@ -29,7 +29,7 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'zahlungsauftrag',
         data: {
-            roles: TSRoleUtil.getAllRolesForStatistik(),
+            roles: TSRoleUtil.getAllRolesForZahlungen(),
         },
     },
     {

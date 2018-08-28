@@ -68,7 +68,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(einstellungService);
 		Einstellung insertedEinstellung = createAndPersistParameter(PARAM_KEY, gesuchsperiode);
 
-		Collection<Einstellung> allEinstellung = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		Collection<Einstellung> allEinstellung = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertEquals(1, allEinstellung.size());
 		Einstellung nextEinstellung = allEinstellung.iterator().next();
 		Assert.assertEquals(insertedEinstellung.getKey(), nextEinstellung.getKey());
@@ -105,7 +105,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void saveEinstellung() {
 		// Noch keine Params
-		Collection<Einstellung> allParameter = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		Collection<Einstellung> allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Einstellung currentParameter = null;
 		Assert.assertTrue(allParameter.isEmpty());
 		try {
@@ -118,7 +118,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 		Einstellung param1 = TestDataUtil.createDefaultEinstellung(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
 		einstellungService.saveEinstellung(param1);
 
-		allParameter = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		currentParameter = einstellungService.findEinstellung(EinstellungServiceTest.PARAM_KEY, gemeinde, gesuchsperiode);
 
 		Assert.assertFalse(allParameter.isEmpty());
@@ -129,12 +129,12 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getEinstellungByGesuchsperiode() {
-		Collection<Einstellung> allParameter = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		Collection<Einstellung> allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertTrue(allParameter.isEmpty());
 
 		createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
 
-		allParameter = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertFalse(allParameter.isEmpty());
 		Assert.assertEquals(1, allParameter.size());
 	}
@@ -143,7 +143,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	public void copyEinstellungListToNewGesuchsperiode() {
 
 		createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
-		Collection<Einstellung> allParameter = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		Collection<Einstellung> allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertFalse(allParameter.isEmpty());
 		Assert.assertEquals(1, allParameter.size());
 
@@ -151,11 +151,11 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 
 		einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode18, gesuchsperiode);
 
-		Collection<Einstellung> allParameter2 = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode);
+		Collection<Einstellung> allParameter2 = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertFalse(allParameter2.isEmpty());
 		Assert.assertEquals(1, allParameter2.size());
 
-		Collection<Einstellung> allParameter18 = einstellungService.getEinstellungenByGesuchsperiode(gesuchsperiode18);
+		Collection<Einstellung> allParameter18 = einstellungService.getAllEinstellungenBySystem(gesuchsperiode18);
 		Assert.assertFalse(allParameter18.isEmpty());
 		Assert.assertEquals(1, allParameter18.size());
 		Assert.assertEquals(gesuchsperiode18, allParameter18.iterator().next().getGesuchsperiode());
