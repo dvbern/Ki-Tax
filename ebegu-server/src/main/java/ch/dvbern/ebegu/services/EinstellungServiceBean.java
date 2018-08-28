@@ -53,15 +53,21 @@ import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -70,7 +76,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(EinstellungService.class)
-@RolesAllowed({ ADMIN, SUPER_ADMIN })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 public class EinstellungServiceBean extends AbstractBaseService implements EinstellungService {
 
 	@Inject
@@ -115,7 +121,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Optional<Einstellung> findEinstellung(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Einstellung a = persistence.find(Einstellung.class, id);
@@ -124,14 +132,18 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		return findEinstellung(key, gemeinde, gesuchsperiode, persistence.getEntityManager());
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull final EntityManager em) {
 		// Wir suchen drei-stufig:
@@ -192,7 +204,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
@@ -216,7 +230,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
@@ -228,8 +244,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, GESUCHSTELLER, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT, STEUERAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode) {
 		Collection<Einstellung> einstellungenOfLastGP = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, lastGesuchsperiode,
 			Einstellung_.gesuchsperiode);

@@ -232,7 +232,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	private void prepareDependentObjects() {
 		mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja",
+		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja",
 			null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
 

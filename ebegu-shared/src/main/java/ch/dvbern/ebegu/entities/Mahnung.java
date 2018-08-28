@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -82,12 +83,12 @@ public class Mahnung extends AbstractMutableEntity {
 		this.gesuch = gesuch;
 	}
 
-	@Nullable
+	@Nonnull
 	public MahnungTyp getMahnungTyp() {
 		return mahnungTyp;
 	}
 
-	public void setMahnungTyp(@Nullable MahnungTyp mahnungTyp) {
+	public void setMahnungTyp(@Nonnull MahnungTyp mahnungTyp) {
 		this.mahnungTyp = mahnungTyp;
 	}
 

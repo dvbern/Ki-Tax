@@ -81,7 +81,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -91,7 +92,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 	"NonBooleanMethodNameMayNotStartWithQuestion", "SpringAutowiredFieldsWarningInspection" })
 @Stateless
 @Local(SchulungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 public class SchulungServiceBean extends AbstractBaseService implements SchulungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchulungServiceBean.class);

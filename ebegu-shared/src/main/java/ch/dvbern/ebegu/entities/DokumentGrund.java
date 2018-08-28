@@ -66,11 +66,6 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	@Nullable
-	private String fullName;
-
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	@Nullable
 	private String tag;
 
 	@Enumerated(EnumType.STRING)
@@ -148,17 +143,6 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		this.dokumentGrundTyp = dokumentGrundTyp;
 	}
 
-	@Deprecated
-	@Nullable
-	public String getFullName() {
-		return fullName;
-	}
-
-	@Deprecated
-	public void setFullName(@Nullable String fullname) {
-		this.fullName = fullname;
-	}
-
 	@Nullable
 	public String getTag() {
 		return tag;
@@ -206,7 +190,6 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	public String toString() {
 		return "DokumentGrund{" +
 			"dokumentGrundTyp=" + dokumentGrundTyp +
-			", fullName='" + fullName + '\'' +
 			", year='" + tag + '\'' +
 			", dokumente=" + dokumente +
 			'}';
@@ -219,13 +202,10 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	 * cannot be done with this methode.
 	 */
 	@Override
-	public int compareTo(DokumentGrund o) {
+	public int compareTo(@Nonnull DokumentGrund o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getDokumentGrundTyp(), o.getDokumentGrundTyp());
 		builder.append(this.getDokumentTyp(), o.getDokumentTyp());
-		if (this.getFullName() != null && o.getFullName() != null) {
-			builder.append(this.getFullName(), o.getFullName());
-		}
 		if (this.getTag() != null && o.getTag() != null) {
 			builder.append(this.getTag(), o.getTag());
 		}
@@ -249,7 +229,6 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			target.setDokumentGrundTyp(this.getDokumentGrundTyp());
-			target.setFullName(this.getFullName()); // todo deprecated
 			target.setTag(this.getTag());
 			target.setPersonNumber(this.getPersonNumber());
 			target.setPersonType(this.getPersonType());

@@ -95,12 +95,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
+
 /**
  * Service fuer erstellen und mutieren von Testfällen
  */
 @Stateless
 @Local(TestfaelleService.class)
-@RolesAllowed({ UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed(SUPER_ADMIN)
 public class TestfaelleServiceBean extends AbstractBaseService implements TestfaelleService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBean.class);

@@ -207,6 +207,7 @@ import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -221,6 +222,7 @@ import org.hibernate.envers.RevisionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRole.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Dependent
@@ -2567,7 +2569,6 @@ public class JaxBConverter {
 	public JaxDokumentGrund dokumentGrundToJax(DokumentGrund dokumentGrund) {
 		JaxDokumentGrund jaxDokumentGrund = convertAbstractVorgaengerFieldsToJAX(dokumentGrund, new JaxDokumentGrund());
 		jaxDokumentGrund.setDokumentGrundTyp(dokumentGrund.getDokumentGrundTyp());
-		jaxDokumentGrund.setFullName(dokumentGrund.getFullName());
 		jaxDokumentGrund.setTag(dokumentGrund.getTag());
 		jaxDokumentGrund.setPersonType(dokumentGrund.getPersonType());
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
@@ -2604,7 +2605,6 @@ public class JaxBConverter {
 		convertAbstractVorgaengerFieldsToEntity(dokumentGrundJAXP, dokumentGrund);
 
 		dokumentGrund.setDokumentGrundTyp(dokumentGrundJAXP.getDokumentGrundTyp());
-		dokumentGrund.setFullName(dokumentGrundJAXP.getFullName());
 		dokumentGrund.setTag(dokumentGrundJAXP.getTag());
 		dokumentGrund.setPersonType(dokumentGrundJAXP.getPersonType());
 		dokumentGrund.setPersonNumber(dokumentGrundJAXP.getPersonNumber());
@@ -2772,7 +2772,9 @@ public class JaxBConverter {
 		if (userRole != null) {
 			switch (userRole) {
 			case GESUCHSTELLER:
+			case ADMIN_INSTITUTION:
 			case SACHBEARBEITER_INSTITUTION:
+			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
 				switch (gesuch.getStatus()) {
 				case PRUEFUNG_STV:
@@ -2802,20 +2804,20 @@ public class JaxBConverter {
 
 		JaxAntragDTO antrag = gesuchToAntragDTOBasic(gesuch);
 
-		if (userRole != UserRole.STEUERAMT) {
+		if (userRole != STEUERAMT) {
 			for (final KindContainer kind : gesuch.getKindContainers()) {
 				jaxKindContainers.add(kindContainerToJAX(kind));
 			}
 			antrag.setKinder(createKinderList(jaxKindContainers));
 		}
 
-		if (UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole || UserRole.SACHBEARBEITER_INSTITUTION == userRole) {
+		if (EnumUtil.isOneOf(userRole, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
 			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
 		}
 
 		disguiseStatus(gesuch, antrag, userRole);
 
-		if (userRole != UserRole.STEUERAMT) {
+		if (userRole != STEUERAMT) {
 			antrag.setAngebote(createAngeboteList(jaxKindContainers));
 			antrag.setInstitutionen(createInstitutionenList(jaxKindContainers));
 		}
@@ -3095,7 +3097,7 @@ public class JaxBConverter {
 		final JaxZahlungsauftrag jaxZahlungsauftrag = getJaxZahlungsauftrag(persistedZahlungsauftrag, true);
 
 		// nur die Zahlungen welche inst sehen darf
-		if (UserRole.SACHBEARBEITER_TRAEGERSCHAFT == userRole || UserRole.SACHBEARBEITER_INSTITUTION == userRole) {
+		if (EnumUtil.isOneOf(userRole, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
 			RestUtil.purgeZahlungenOfInstitutionen(jaxZahlungsauftrag, allowedInst);
 			// es muss nochmal das Auftragstotal berechnet werden. Diesmal nur mit den erlaubten Zahlungen
 			// Dies nur fuer Institutionen

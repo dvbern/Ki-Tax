@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
@@ -97,13 +96,16 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer erstellen und mutieren von Testfällen
  */
 @Stateless
 @Local(TestdataCreationService.class)
-@RolesAllowed({ UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 public class TestdataCreationServiceBean extends AbstractBaseService implements TestdataCreationService {
 
 	@Inject

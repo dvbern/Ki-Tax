@@ -129,26 +129,6 @@ public class DossierResource {
 		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
 	}
 
-	@ApiOperation(value = "Returns the Dossier of the given Fall for the given Gemeinde.", response = JaxDossier.class)
-	@Nullable
-	@GET
-	@Path("/gemeinde/{gemeindeId}/fall/{fallId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxDossier getDossierForFallAndGemeinde(
-		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJaxId,
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJaxId) {
-
-		Objects.requireNonNull(gemeindeJaxId.getId());
-		Objects.requireNonNull(fallJaxId.getId());
-
-		String gemeindeId = converter.toEntityId(gemeindeJaxId);
-		String fallId = converter.toEntityId(fallJaxId);
-		Optional<Dossier> dossierOptional = dossierService.findDossierByGemeindeAndFall(gemeindeId, fallId);
-
-		return dossierOptional.map(dossier -> converter.dossierToJAX(dossier)).orElse(null);
-	}
-
 	@ApiOperation(value = "Returns all Dossiers of the given Fall that are visible for the current user",
 		responseContainer = "List", response = JaxDossier.class)
 	@Nullable
@@ -179,9 +159,6 @@ public class DossierResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxDossier findNewestDossierByCurrentBenutzerAsBesitzer() {
-
-		//todo refactor
-
 		Optional<Fall> optFall = fallService.findFallByCurrentBenutzerAsBesitzer();
 		String fallId = optFall.orElseThrow(() -> new EbeguEntityNotFoundException("findNewestDossierByCurrentBenutzerAsBesitzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND))

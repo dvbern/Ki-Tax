@@ -29,7 +29,7 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'verlauf',
         data: {
-            roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles(),
+            roles: TSRoleUtil.getJugendamtAndSchulamtRole(),
         },
     },
     {

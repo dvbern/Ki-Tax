@@ -77,7 +77,7 @@ const ng1States: Ng1StateDeclaration[] = [
             applicationProperties: applicationPropertiesResolver
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {
@@ -135,7 +135,7 @@ const ng1States: Ng1StateDeclaration[] = [
         template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
         url: '/parameter',
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {
@@ -147,7 +147,7 @@ const ng1States: Ng1StateDeclaration[] = [
             gesuchsperiodeId: '',
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {
