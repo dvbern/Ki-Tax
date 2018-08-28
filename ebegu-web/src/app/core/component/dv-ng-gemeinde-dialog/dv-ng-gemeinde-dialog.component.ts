@@ -15,7 +15,6 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Observable} from 'rxjs';
 import TSGemeinde from '../../../../models/TSGemeinde';
 
 /**
