@@ -243,4 +243,10 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 				saveEinstellung(einstellungOfNewGP);
 		});
 	}
+
+	@Override
+	public void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		getEinstellungenByGesuchsperiode(gesuchsperiode)
+			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
+	}
 }

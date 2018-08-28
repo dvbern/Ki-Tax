@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -62,7 +61,7 @@ public interface EinstellungService {
 	 * Ein externes EntityManager wird uebergeben. Damit vermeiden wir Fehler  ConcurrentModificationException in hibernate
 	 */
 	@Nonnull
-	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable EntityManager em);
+	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull EntityManager em);
 
 	/**
 	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Aktuell werden jeweils die System Defaults zurueckgegeben.
@@ -80,4 +79,9 @@ public interface EinstellungService {
 	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode
 	 */
 	void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	/**
+	 * Löscht alle Einstellungen der uebergebenen Gesuchsperiode
+	 */
+	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 }
