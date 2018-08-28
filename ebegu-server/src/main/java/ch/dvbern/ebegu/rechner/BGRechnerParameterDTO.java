@@ -18,13 +18,17 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
@@ -45,6 +49,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
  * Diese müssen aus den Einstellungen gelesen werden.
  */
 public final class BGRechnerParameterDTO {
+
+	private EinschulungTyp bgBisUndMitSchulstufe;
 
 	private BigDecimal beitragKantonProTag;        // PARAM_ABGELTUNG_PRO_TAG_KANTON
 
@@ -67,45 +73,66 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal babyFaktor;                    // PARAM_BABY_FAKTOR
 	private int babyAlterInMonaten;                    // PARAM_BABY_ALTER_IN_MONATEN
 
-	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Mandant mandant) {
-
-		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, mandant));
-		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, mandant));
-		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, mandant));
-		this.setKostenProStundeMaximalKitaTagi(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX, gesuchsperiode, mandant));
-		this.setKostenProStundeMinimal(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MIN, gesuchsperiode, mandant));
-		this.setMassgebendesEinkommenMaximal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MAX, gesuchsperiode, mandant));
-		this.setMassgebendesEinkommenMinimal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MIN, gesuchsperiode, mandant));
-		this.setAnzahlTageTagi(asBigDecimal(paramMap, PARAM_ANZAHL_TAGE_KANTON, gesuchsperiode, mandant));
-		this.setAnzahlStundenProTagTagi(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_TAGI, gesuchsperiode, mandant));
-		this.setKostenProStundeMaximalTageseltern(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, gesuchsperiode, mandant));
-		this.setBabyAlterInMonaten(asInteger(paramMap, PARAM_BABY_ALTER_IN_MONATEN, gesuchsperiode, mandant));
-		this.setBabyFaktor(asBigDecimal(paramMap, PARAM_BABY_FAKTOR, gesuchsperiode, mandant));
-		this.setBeitragStadtProTagJahr1(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, gesuchsperiode, mandant));
-		this.setBeitragStadtProTagJahr2(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, gesuchsperiode, mandant));
+	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
+		this.setBgBisUndMitSchulstufe(asEinschulungstyp(paramMap, BG_BIS_UND_MIT_SCHULSTUFE, gesuchsperiode, gemeinde));
+		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, gemeinde));
+		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, gemeinde));
+		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, gemeinde));
+		this.setKostenProStundeMaximalKitaTagi(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX, gesuchsperiode, gemeinde));
+		this.setKostenProStundeMinimal(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MIN, gesuchsperiode, gemeinde));
+		this.setMassgebendesEinkommenMaximal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MAX, gesuchsperiode, gemeinde));
+		this.setMassgebendesEinkommenMinimal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MIN, gesuchsperiode, gemeinde));
+		this.setAnzahlTageTagi(asBigDecimal(paramMap, PARAM_ANZAHL_TAGE_KANTON, gesuchsperiode, gemeinde));
+		this.setAnzahlStundenProTagTagi(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_TAGI, gesuchsperiode, gemeinde));
+		this.setKostenProStundeMaximalTageseltern(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, gesuchsperiode, gemeinde));
+		this.setBabyAlterInMonaten(asInteger(paramMap, PARAM_BABY_ALTER_IN_MONATEN, gesuchsperiode, gemeinde));
+		this.setBabyFaktor(asBigDecimal(paramMap, PARAM_BABY_FAKTOR, gesuchsperiode, gemeinde));
+		this.setBeitragStadtProTagJahr1(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, gesuchsperiode, gemeinde));
+		this.setBeitragStadtProTagJahr2(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterDTO() {
 
 	}
 
-	private int asInteger(Map<EinstellungKey, Einstellung> paramMap, EinstellungKey paramKey, Gesuchsperiode gesuchsperiode, Mandant mandant) {
+	private int asInteger(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Mandant '" + mandant + "', Gesuchsperiode '" + gesuchsperiode + "'";
+			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', "
+				+ "Gesuchsperiode '" + gesuchsperiode + "'";
 			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
 		}
 		return param.getValueAsInteger();
 	}
 
-	private BigDecimal asBigDecimal(Map<EinstellungKey, Einstellung> paramMap, EinstellungKey paramKey, Gesuchsperiode gesuchsperiode, Mandant mandant) {
+	private BigDecimal asBigDecimal(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Mandant '" + mandant + "', Gesuchsperiode "
+			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
 				+ '\'' + gesuchsperiode + '\'';
 			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
 		}
 		return param.getValueAsBigDecimal();
+	}
+
+	private EinschulungTyp asEinschulungstyp(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode
+		gesuchsperiode,
+		@Nonnull Gemeinde gemeinde) {
+		Einstellung param = paramMap.get(paramKey);
+		if (param == null) {
+			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
+				+ '\'' + gesuchsperiode + '\'';
+			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
+		}
+		return EinschulungTyp.valueOf(param.getValue());
+	}
+
+	public EinschulungTyp getBgBisUndMitSchulstufe() {
+		return bgBisUndMitSchulstufe;
+	}
+
+	public void setBgBisUndMitSchulstufe(EinschulungTyp bgBisUndMitSchulstufe) {
+		this.bgBisUndMitSchulstufe = bgBisUndMitSchulstufe;
 	}
 
 	public BigDecimal getBeitragKantonProTag() {

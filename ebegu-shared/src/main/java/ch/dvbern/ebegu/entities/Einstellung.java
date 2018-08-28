@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.util.Constants;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
 /**
@@ -179,5 +180,16 @@ public class Einstellung extends AbstractEntity {
 			Objects.equals(getGesuchsperiode(), otherEinstellung.getGesuchsperiode()) &&
 			Objects.equals(getMandant(), otherEinstellung.getMandant()) &&
 			Objects.equals(getGemeinde(), otherEinstellung.getGemeinde());
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+			.append("key", key)
+			.append("value", value)
+			.append("mandant", mandant != null ? mandant.getName() : "null")
+			.append("gemeinde", gemeinde != null ? gemeinde.getName() : "null")
+			.append("gesuchsperiode", gesuchsperiode.getGesuchsperiodeString())
+			.toString();
 	}
 }
