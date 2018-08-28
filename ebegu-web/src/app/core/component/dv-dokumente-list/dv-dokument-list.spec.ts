@@ -42,12 +42,6 @@ describe('dvDokumenteList', () => {
     }));
 
     describe('extractFullName', () => {
-        it('should return the fiedl fullName for FREETEXT', () => {
-            const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
-            dokumentGrund.personType = TSDokumentGrundPersonType.FREETEXT;
-            dokumentGrund.fullName = 'Leonardo Dantes';
-            expect(controller.extractFullName(dokumentGrund)).toBe(dokumentGrund.fullName);
-        });
         it('should return the fullName of GS1 for GESUCHSTELLER and personNumber=1', () => {
             const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
             dokumentGrund.personType = TSDokumentGrundPersonType.GESUCHSTELLER;

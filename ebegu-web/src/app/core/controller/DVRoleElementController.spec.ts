@@ -54,17 +54,17 @@ describe('DVElementController', () => {
             expect(cvElementController.checkValidity()).toBe(false);
         });
         it('should return false for a different role as the user and no expression', () => {
-            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN];
+            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_BG];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });
         it('should return false for a different role as the user and true expression', () => {
-            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN];
+            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_BG];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });
         it('should return false for a different role as the user and false expression', () => {
-            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN];
+            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_BG];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });

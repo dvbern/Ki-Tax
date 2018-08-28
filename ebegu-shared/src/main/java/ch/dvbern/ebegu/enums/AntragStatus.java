@@ -106,13 +106,19 @@ public enum AntragStatus {
 	private static final Set<AntragStatus> all = EnumSet.allOf(AntragStatus.class);
 	private static final Set<AntragStatus> none = EnumSet.noneOf(AntragStatus.class);
 	private static final Set<AntragStatus> forAdminRole = FOR_ADMIN_ROLE;
+	private static final Set<AntragStatus> forAdminInstitutionRole = FOR_INSTITUTION_ROLE;
+	private static final Set<AntragStatus> forAdminTraegerschaftRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterInstitutionRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterTraegerschaftRole = FOR_INSTITUTION_ROLE;
 	private static final Set<AntragStatus> forSachbearbeiterJugendamtRole = FOR_ADMIN_ROLE;
 	private static final Set<AntragStatus> forSchulamtRole = FOR_ADMIN_ROLE;
+	private static final Set<AntragStatus> forAdminGemeindeRole = FOR_ADMIN_ROLE;
+	private static final Set<AntragStatus> forSachbearbeiterGemeindeRole = FOR_ADMIN_ROLE;
 	private static final Set<AntragStatus> forJuristRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forRevisorRole = FOR_JURIST_REVISOR_ROLE;
 	private static final Set<AntragStatus> forSteueramt = FOR_STEUERAMT_ROLE;
+	private static final Set<AntragStatus> forAdminMandantRole = FOR_JURIST_REVISOR_ROLE;
+	private static final Set<AntragStatus> forSachbearbeiterMandantRole = FOR_JURIST_REVISOR_ROLE;
 
 	// range ist etwas gefaehrlich, da man sehr vorsichtig sein muss, in welcher Reihenfolge man die Werte schreibt. Ausserdem kann man
 	// kein range mit Ausnahmen machen. In diesem Fall ist es deshalb besser ein .of zu benutzen
@@ -216,16 +222,22 @@ public enum AntragStatus {
 	public static Set<AntragStatus> allowedforRole(UserRole userRole) {
         switch (userRole) {
 			case SUPER_ADMIN: return  all;
-			case ADMIN: return forAdminRole;
+			case ADMIN_BG: return forAdminRole;
             case GESUCHSTELLER: return none;
             case JURIST: return forJuristRole;
             case REVISOR: return forRevisorRole;
+			case ADMIN_INSTITUTION: return forAdminInstitutionRole;
             case SACHBEARBEITER_INSTITUTION: return forSachbearbeiterInstitutionRole;
-            case SACHBEARBEITER_JA: return forSachbearbeiterJugendamtRole;
+            case SACHBEARBEITER_BG: return forSachbearbeiterJugendamtRole;
+			case ADMIN_TRAEGERSCHAFT: return forAdminTraegerschaftRole;
             case SACHBEARBEITER_TRAEGERSCHAFT: return forSachbearbeiterTraegerschaftRole;
-            case SCHULAMT: return forSchulamtRole;
-            case ADMINISTRATOR_SCHULAMT: return forSchulamtRole;
+            case SACHBEARBEITER_TS: return forSchulamtRole;
+            case ADMIN_TS: return forSchulamtRole;
             case STEUERAMT: return forSteueramt;
+			case ADMIN_GEMEINDE: return forAdminGemeindeRole;
+			case SACHBEARBEITER_GEMEINDE: return forSachbearbeiterGemeindeRole;
+			case ADMIN_MANDANT: return forAdminMandantRole;
+			case SACHBEARBEITER_MANDANT: return forSachbearbeiterMandantRole;
             default: return none;
         }
     }
@@ -234,13 +246,17 @@ public enum AntragStatus {
 	public static Set<AntragStatus> pendenzenForRole(UserRole userRole) {
         switch (userRole) {
 			case SUPER_ADMIN:
-			case ADMIN:
+			case ADMIN_BG:
             case JURIST:
             case REVISOR:
-            case SACHBEARBEITER_JA:
+            case SACHBEARBEITER_BG:
+            case ADMIN_GEMEINDE:
+			case SACHBEARBEITER_GEMEINDE:
+			case ADMIN_MANDANT:
+			case SACHBEARBEITER_MANDANT:
             	return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
-            case SCHULAMT:
-            case ADMINISTRATOR_SCHULAMT:
+            case SACHBEARBEITER_TS:
+            case ADMIN_TS:
             	return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
             case STEUERAMT:
             case GESUCHSTELLER:
@@ -253,18 +269,22 @@ public enum AntragStatus {
 		switch (userRole) {
 			case SUPER_ADMIN:
 				return  all;
-			case ADMIN:
-			case SACHBEARBEITER_JA:
+			case ADMIN_BG:
+			case SACHBEARBEITER_BG:
+			case ADMIN_GEMEINDE:
+			case SACHBEARBEITER_GEMEINDE:
 				return FOR_ADMIN_ROLE_WRITE;
 			case GESUCHSTELLER:
 				return FOR_GESUCHSTELLER_ROLE_WRITE;
+			case ADMIN_INSTITUTION:
 			case SACHBEARBEITER_INSTITUTION:
+			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
 				return FOR_INSTITUTION_ROLE_WRITE;
 			case STEUERAMT:
 				return FOR_STEUERAMT_ROLE_WRITE;
-			case SCHULAMT:
-			case ADMINISTRATOR_SCHULAMT:
+			case SACHBEARBEITER_TS:
+			case ADMIN_TS:
 				return FOR_ADMIN_ROLE_WRITE;
 			default:
 				return none;
@@ -346,6 +366,10 @@ public enum AntragStatus {
 
 	public boolean isReadableByRevisor() {
 		return forRevisorRole.contains(this);
+	}
+
+	public boolean isReadableByMandantUser() {
+		return forAdminMandantRole.contains(this);
 	}
 
 }

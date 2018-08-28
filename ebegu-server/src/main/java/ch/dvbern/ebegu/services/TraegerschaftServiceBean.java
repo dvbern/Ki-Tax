@@ -39,8 +39,9 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -62,7 +63,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public Traegerschaft saveTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
 		Objects.requireNonNull(traegerschaft);
 		return persistence.merge(traegerschaft);
@@ -92,7 +93,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeTraegerschaft(@Nonnull String traegerschaftId) {
 		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftToRemove = findTraegerschaft(traegerschaftId);
@@ -110,7 +111,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void setInactive(@Nonnull String traegerschaftId) {
 		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);
@@ -120,7 +121,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public EnumSet<BetreuungsangebotTyp> getAllAngeboteFromTraegerschaft(@Nonnull String traegerschaftId) {
 		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);

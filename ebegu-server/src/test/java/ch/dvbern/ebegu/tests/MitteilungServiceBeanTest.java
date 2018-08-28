@@ -106,9 +106,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		mandant = getDummySuperadmin().getMandant();
-		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja", null, null, mandant, persistence);
+		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
-		empfaengerSCH = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SCHULAMT, "scju", null, null, mandant, persistence);
+		empfaengerSCH = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TS, "scju", null, null, mandant, persistence);
 		persistence.persist(empfaengerSCH);
 
 		dossier = TestDataUtil.createDefaultDossier();

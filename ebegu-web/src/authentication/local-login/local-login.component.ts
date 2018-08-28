@@ -36,8 +36,14 @@ export class LocalLoginComponent {
 
     // Allgemeine User
     public superadmin: TSUser;
+
+    public administratorKantonBern: TSUser;
+    public sachbearbeiterKantonBern: TSUser;
+
+    public administratorInstitutionKitaBruennen: TSUser;
     public sachbearbeiterInstitutionKitaBruennen: TSUser;
     public sachbearbeiterTraegerschaftStadtBern: TSUser;
+    public administratorTraegerschaftLeoLea: TSUser;
     public sachbearbeiterTraegerschaftLeoLea: TSUser;
     public sachbearbeiterTraegerschaftSGF: TSUser;
 
@@ -51,16 +57,22 @@ export class LocalLoginComponent {
     public sachbearbeiterBGBern: TSUser;
     public administratorTSBern: TSUser;
     public sachbearbeiterTSBern: TSUser;
+    public administratorGemeindeBern: TSUser;
+    public sachbearbeiterGemeindeBern: TSUser;
 
     public administratorBGOstermundigen: TSUser;
     public sachbearbeiterBGOstermundigen: TSUser;
     public administratorTSOstermundigen: TSUser;
     public sachbearbeiterTSOstermundigen: TSUser;
+    public administratorGemeindeOstermundigen: TSUser;
+    public sachbearbeiterGemeindeOstermundigen: TSUser;
 
     public administratorBGBernOstermundigen: TSUser;
     public sachbearbeiterBGBernOstermundigen: TSUser;
     public administratorTSBernOstermundigen: TSUser;
     public sachbearbeiterTSBernOstermundigen: TSUser;
+    public administratorGemeindeBernOstermundigen: TSUser;
+    public sachbearbeiterGemeindeBernOstermundigen: TSUser;
 
     public steueramtBern: TSUser;
     public revisorBern: TSUser;
@@ -194,12 +206,24 @@ export class LocalLoginComponent {
         this.superadmin = new TSUser('E-BEGU', 'Superuser', 'ebegu', 'password10', 'superuser@example.com',
             this.mandant, TSRole.SUPER_ADMIN);
 
+        this.administratorKantonBern = new TSUser('Bernhard', 'Röthlisberger', 'robe', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.ADMIN_MANDANT);
+        this.sachbearbeiterKantonBern = new TSUser('Benno', 'Röthlisberger', 'brbe', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_MANDANT);
+
+        this.administratorInstitutionKitaBruennen = new TSUser('Silvia', 'Bergmann', 'besi', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.ADMIN_INSTITUTION, undefined, this.institution);
         this.sachbearbeiterInstitutionKitaBruennen = new TSUser('Sophie', 'Bergmann', 'beso', 'password3', 'sophie.bergmann@example.com',
             this.mandant, TSRole.SACHBEARBEITER_INSTITUTION, undefined, this.institution);
+
         this.sachbearbeiterTraegerschaftStadtBern = new TSUser('Agnes', 'Krause', 'krad', 'password4', 'agnes.krause@example.com',
             this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftStadtBern);
+
+        this.administratorTraegerschaftLeoLea = new TSUser('Leo', 'Lehmann', 'lelo', 'password1', 'anyone@gexample.com',
+            this.mandant, TSRole.ADMIN_TRAEGERSCHAFT, this.traegerschaftLeoLea);
         this.sachbearbeiterTraegerschaftLeoLea = new TSUser('Lea', 'Lehmann', 'lele', 'password7', 'lea.lehmann@gexample.com',
             this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftLeoLea);
+
         this.sachbearbeiterTraegerschaftSGF = new TSUser('Simon', 'Gfeller', 'gfsi', 'password8', 'simon.gfeller@example.com',
             this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftSGF);
 
@@ -215,13 +239,19 @@ export class LocalLoginComponent {
 
     private createUsersOfBern() {
         this.administratorBGBern = new TSUser('Kurt', 'Blaser', 'blku', 'password5', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeBern]);
+            this.mandant, TSRole.ADMIN_BG, undefined, undefined, [this.gemeindeBern]);
         this.sachbearbeiterBGBern = new TSUser('Jörg', 'Becker', 'jobe', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, [this.gemeindeBern]);
+            this.mandant, TSRole.SACHBEARBEITER_BG, undefined, undefined, [this.gemeindeBern]);
+
         this.administratorTSBern = new TSUser('Adrian', 'Schuler', 'scad', 'password9', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeBern]);
+            this.mandant, TSRole.ADMIN_TS, undefined, undefined, [this.gemeindeBern]);
         this.sachbearbeiterTSBern = new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern]);
+            this.mandant, TSRole.SACHBEARBEITER_TS, undefined, undefined, [this.gemeindeBern]);
+
+        this.administratorGemeindeBern = new TSUser('Gerlinde', 'Hofstetter', 'hoge', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.ADMIN_GEMEINDE, undefined, undefined, [this.gemeindeBern]);
+        this.sachbearbeiterGemeindeBern = new TSUser('Stefan', 'Wirth', 'wist', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_GEMEINDE, undefined, undefined, [this.gemeindeBern]);
 
         this.steueramtBern = new TSUser('Rodolfo', 'Geldmacher', 'gero', 'password11', 'rodolfo.geldmacher@example.com',
             this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern]);
@@ -233,13 +263,19 @@ export class LocalLoginComponent {
 
     private createUsersOfOstermundigen() {
         this.administratorBGOstermundigen = new TSUser('Kurt', 'Schmid', 'scku', 'password1', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeOstermundigen]);
+            this.mandant, TSRole.ADMIN_BG, undefined, undefined, [this.gemeindeOstermundigen]);
         this.sachbearbeiterBGOstermundigen = new TSUser('Jörg', 'Keller', 'kejo', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, [this.gemeindeOstermundigen]);
+            this.mandant, TSRole.SACHBEARBEITER_BG, undefined, undefined, [this.gemeindeOstermundigen]);
+
         this.administratorTSOstermundigen = new TSUser('Adrian', 'Huber', 'huad', 'password1', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeOstermundigen]);
+            this.mandant, TSRole.ADMIN_TS, undefined, undefined, [this.gemeindeOstermundigen]);
         this.sachbearbeiterTSOstermundigen = new TSUser('Julien', 'Odermatt', 'odju', 'password1', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeOstermundigen]);
+            this.mandant, TSRole.SACHBEARBEITER_TS, undefined, undefined, [this.gemeindeOstermundigen]);
+
+        this.administratorGemeindeOstermundigen = new TSUser('Gerlinde', 'Bader', 'bage', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.ADMIN_GEMEINDE, undefined, undefined, [this.gemeindeOstermundigen]);
+        this.sachbearbeiterGemeindeOstermundigen = new TSUser('Stefan', 'Weibel', 'west', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_GEMEINDE, undefined, undefined, [this.gemeindeOstermundigen]);
 
         this.steueramtOstermundigen = new TSUser('Rodolfo', 'Iten', 'itro', 'password1', 'rodolfo.geldmacher@example.com',
             this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeOstermundigen]);
@@ -252,13 +288,19 @@ export class LocalLoginComponent {
 
     private createUsersOfBothBernAndOstermundigen() {
         this.administratorBGBernOstermundigen = new TSUser('Kurt', 'Kälin', 'kaku', 'password1', 'kurt.blaser@example.com',
-            this.mandant, TSRole.ADMIN, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+            this.mandant, TSRole.ADMIN_BG, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
         this.sachbearbeiterBGBernOstermundigen = new TSUser('Jörg', 'Aebischer', 'aejo', 'password1', 'joerg.becker@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+            this.mandant, TSRole.SACHBEARBEITER_BG, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+
         this.administratorTSBernOstermundigen = new TSUser('Adrian', 'Bernasconi', 'bead', 'password1', 'adrian.schuler@example.com',
-            this.mandant, TSRole.ADMINISTRATOR_SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+            this.mandant, TSRole.ADMIN_TS, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
         this.sachbearbeiterTSBernOstermundigen = new TSUser('Julien', 'Bucheli', 'buju', 'password1', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+            this.mandant, TSRole.SACHBEARBEITER_TS, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+
+        this.administratorGemeindeBernOstermundigen = new TSUser('Gerlinde', 'Mayer', 'mage', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.ADMIN_GEMEINDE, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
+        this.sachbearbeiterGemeindeBernOstermundigen = new TSUser('Stefan', 'Marti', 'mast', 'password1', 'anyone@example.com',
+            this.mandant, TSRole.SACHBEARBEITER_GEMEINDE, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);
 
         this.steueramtBernOstermundigen = new TSUser('Rodolfo', 'Hermann', 'hero', 'password1', 'rodolfo.geldmacher@example.com',
             this.mandant, TSRole.STEUERAMT, undefined, undefined, [this.gemeindeBern, this.gemeindeOstermundigen]);

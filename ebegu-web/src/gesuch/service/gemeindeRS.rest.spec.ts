@@ -47,7 +47,7 @@ describe('dossier', () => {
 
     describe('getGemeindenForPrincipal', () => {
         it('should give the gemeinden linked to the given user', () => {
-            const user = createUser(TSRole.SACHBEARBEITER_JA, true);
+            const user = createUser(TSRole.SACHBEARBEITER_BG, true);
 
             let gemeindeList: TSGemeinde[];
             gemeindeRS.getGemeindenForPrincipal(user).then(promiseValue => {

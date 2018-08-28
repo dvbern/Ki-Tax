@@ -46,9 +46,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -73,7 +76,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public ApplicationProperty saveOrUpdateApplicationProperty(@Nonnull final ApplicationPropertyKey key, @Nonnull final String value) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(value);
@@ -124,19 +127,18 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, REVISOR, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, REVISOR, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<ApplicationProperty> getAllApplicationProperties() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(ApplicationProperty.class));
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key) {
 		Objects.requireNonNull(key);
-		Optional<ApplicationProperty> propertyToRemove = readApplicationProperty(key);
-		propertyToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeApplicationProperty", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
-		propertyToRemove.ifPresent(applicationProperty -> persistence.remove(applicationProperty));
-
+		ApplicationProperty toRemove = readApplicationProperty(key).orElseThrow(() -> new EbeguEntityNotFoundException("removeApplicationProperty",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
+		persistence.remove(toRemove);
 	}
 
 	@Override

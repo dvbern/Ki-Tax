@@ -41,10 +41,10 @@ public class CheckBerechtigungGemeindeValidatorTest {
 
 	@Test
 	public void checkGemeindeAbhaengigeRollenMitGemeindeValid() {
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_JA, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.ADMINISTRATOR_SCHULAMT, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SCHULAMT, true).getCurrentBerechtigung(), null));
+		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_BG, true).getCurrentBerechtigung(), null));
+		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, true).getCurrentBerechtigung(), null));
+		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_TS, true).getCurrentBerechtigung(), null));
+		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TS, true).getCurrentBerechtigung(), null));
 		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.JURIST, true).getCurrentBerechtigung(), null));
 		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.REVISOR, true).getCurrentBerechtigung(), null));
 		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.STEUERAMT, true).getCurrentBerechtigung(), null));
@@ -52,10 +52,10 @@ public class CheckBerechtigungGemeindeValidatorTest {
 
 	@Test
 	public void checkGemeindeAbhaengigeRollenOhneGemeindeInvalid() {
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_JA, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.ADMINISTRATOR_SCHULAMT, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SCHULAMT, false).getCurrentBerechtigung(), null));
+		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_BG, false).getCurrentBerechtigung(), null));
+		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, false).getCurrentBerechtigung(), null));
+		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_TS, false).getCurrentBerechtigung(), null));
+		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TS, false).getCurrentBerechtigung(), null));
 		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.JURIST, false).getCurrentBerechtigung(), null));
 		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.REVISOR, false).getCurrentBerechtigung(), null));
 		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.STEUERAMT, false).getCurrentBerechtigung(), null));

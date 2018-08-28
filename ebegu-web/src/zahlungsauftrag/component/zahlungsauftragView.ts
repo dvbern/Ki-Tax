@@ -85,8 +85,9 @@ export class ZahlungsauftragViewController implements IController {
     private updateZahlungsauftrag() {
         if (this.authServiceRS.getPrincipal()) {
             switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
-
+                case TSRole.ADMIN_INSTITUTION:
                 case TSRole.SACHBEARBEITER_INSTITUTION:
+                case TSRole.ADMIN_TRAEGERSCHAFT:
                 case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
                     this.zahlungRS.getAllZahlungsauftraegeInstitution().then((response: any) => {
                         this.zahlungsauftragen = angular.copy(response);
@@ -95,10 +96,14 @@ export class ZahlungsauftragViewController implements IController {
                     break;
                 }
                 case TSRole.SUPER_ADMIN:
-                case TSRole.ADMIN:
-                case TSRole.SACHBEARBEITER_JA:
+                case TSRole.ADMIN_BG:
+                case TSRole.SACHBEARBEITER_BG:
+                case TSRole.ADMIN_GEMEINDE:
+                case TSRole.SACHBEARBEITER_GEMEINDE:
                 case TSRole.JURIST:
-                case TSRole.REVISOR: {
+                case TSRole.REVISOR:
+                case TSRole.ADMIN_MANDANT:
+                case TSRole.SACHBEARBEITER_MANDANT: {
                     this.zahlungRS.getAllZahlungsauftraege().then((response: any) => {
                         this.zahlungsauftragen = angular.copy(response);
 
@@ -112,7 +117,7 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag) {
-        this.$state.go('zahlung', {
+        this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id
         });
     }

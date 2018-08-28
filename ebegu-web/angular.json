@@ -120,7 +120,8 @@
     "schematics": {
         "@schematics/angular:component": {
             "prefix": "dv",
-            "styleext": "less"
+            "styleext": "less",
+            "changeDetection": "OnPush"
         },
         "@schematics/angular:directive": {
             "prefix": "dv"
