@@ -259,7 +259,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	public void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
-		getEinstellungenByGesuchsperiode(gesuchsperiode)
+		Collection<Einstellung> einstellungenOfGP = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, gesuchsperiode,
+			Einstellung_.gesuchsperiode);
+		einstellungenOfGP
 			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
 	}
 }
