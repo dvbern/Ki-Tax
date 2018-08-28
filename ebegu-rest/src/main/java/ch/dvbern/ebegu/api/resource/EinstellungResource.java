@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -132,16 +133,17 @@ public class EinstellungResource {
 	@Path("/gesuchsperiode/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxEinstellung> getEinstellungenByGesuchsperiode(
+	public List<JaxEinstellung> getAllEinstellungenBySystem(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
 		Objects.requireNonNull(id.getId());
 		String gesuchsperiodeId = converter.toEntityId(id);
-		Gesuchsperiode gp = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() ->
-			new EbeguEntityNotFoundException("getEinstellungenByGesuchsperiode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId));
-
-		return einstellungService.getEinstellungenByGesuchsperiode(gp).stream()
-			.map(einstellung -> converter.einstellungToJAX(einstellung))
-			.collect(Collectors.toList());
+		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
+		if (gesuchsperiode.isPresent()) {
+			return einstellungService.getAllEinstellungenBySystem(gesuchsperiode.get()).stream()
+				.map(einstellung -> converter.einstellungToJAX(einstellung))
+				.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 }
