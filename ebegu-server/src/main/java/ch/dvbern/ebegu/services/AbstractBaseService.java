@@ -25,8 +25,8 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -60,9 +60,9 @@ public abstract class AbstractBaseService {
 
 	@PermitAll
 	@Nonnull
-	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Mandant mandant, @Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getEinstellungenByGesuchsperiodeAsMap(gesuchsperiode);
-		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, mandant);
+	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 		return parameterDTO;
 	}
 }
