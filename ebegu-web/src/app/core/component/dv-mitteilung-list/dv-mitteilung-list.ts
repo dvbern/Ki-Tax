@@ -272,15 +272,13 @@ export class DVMitteilungListController implements IOnInit {
 
     private getMitteilungTeilnehmerTypForUserRole(role: TSRole): TSMitteilungTeilnehmerTyp {
         switch (role) {
-            case TSRole.GESUCHSTELLER: {
+            case TSRole.GESUCHSTELLER:
                 return TSMitteilungTeilnehmerTyp.GESUCHSTELLER;
-            }
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
             case TSRole.ADMIN_TRAEGERSCHAFT:
-            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
                 return TSMitteilungTeilnehmerTyp.INSTITUTION;
-            }
             case TSRole.SUPER_ADMIN:
             case TSRole.ADMIN_BG:
             case TSRole.JURIST:
@@ -291,9 +289,8 @@ export class DVMitteilungListController implements IOnInit {
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS:
             case TSRole.ADMIN_MANDANT:
-            case TSRole.SACHBEARBEITER_MANDANT: {
+            case TSRole.SACHBEARBEITER_MANDANT:
                 return TSMitteilungTeilnehmerTyp.JUGENDAMT;
-            }
             default:
                 return null;
         }
