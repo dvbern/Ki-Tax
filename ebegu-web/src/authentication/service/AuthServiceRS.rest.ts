@@ -57,6 +57,8 @@ export default class AuthServiceRS {
                 private readonly userRS: UserRS) {
     }
 
+    // Use the observable, when the state must be updated automatically, when the principal changes.
+    // e.g. printing the name of the current user
     get principal$(): Observable<TSUser | null> {
         return this._principal$;
     }
@@ -65,9 +67,6 @@ export default class AuthServiceRS {
         this._principal$ = value;
     }
 
-    /**
-     * @deprecated use getPrincipal$ instead
-     */
     public getPrincipal(): TSUser | undefined {
         return this.principal;
     }
@@ -154,7 +153,7 @@ export default class AuthServiceRS {
      */
     public isRole(role: TSRole) {
         if (role && this.principal) {
-            return this.principal.getCurrentRole() === role;
+            return this.principal.hasRole(role);
         }
         return false;
     }
@@ -164,9 +163,7 @@ export default class AuthServiceRS {
      */
     public isOneOfRoles(roles: Array<TSRole>): boolean {
         if (roles !== undefined && roles !== null && this.principal) {
-            const principalRole = this.principal.getCurrentRole();
-
-            return roles.some(role => role === principalRole);
+            return this.principal.hasOneOfRoles(roles);
         }
         return false;
     }

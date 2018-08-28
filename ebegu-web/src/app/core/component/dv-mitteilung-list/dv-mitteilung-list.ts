@@ -110,11 +110,9 @@ export class DVMitteilungListController implements IOnInit {
                     this.loadEntwurf();
                     // Wenn JA oder Institution -> Neue Mitteilungen als gelesen markieren
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
-                        this.setAllMitteilungenGelesen().then((response) => {
+                        this.setAllMitteilungenGelesen().then(() => {
                             this.loadAllMitteilungen();
-                            if (this.posteingangService) {
-                                this.posteingangService.posteingangChanged();
-                            }
+                            this.posteingangService.posteingangChanged();
                         });
                     } else {
                         // Fuer Revisor und Jurist: Nur laden
