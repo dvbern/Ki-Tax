@@ -39,9 +39,10 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class SchulstufeCalcRule extends AbstractCalcRule {
 
-	private EinschulungTyp einschulungsTypAnspruchsgrenze;
+	@Nonnull
+	private final EinschulungTyp einschulungsTypAnspruchsgrenze;
 
-	public SchulstufeCalcRule(DateRange validityPeriod, @Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze) {
+	public SchulstufeCalcRule(@Nonnull DateRange validityPeriod, @Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze) {
 		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, validityPeriod);
 		this.einschulungsTypAnspruchsgrenze = einschulungsTypAnspruchsgrenze;
 	}
