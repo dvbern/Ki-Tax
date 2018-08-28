@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -206,13 +207,25 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Collection<Einstellung> getEinstellungenByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
-		Collection<Einstellung> einstellungen = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, gesuchsperiode, Einstellung_
-			.gesuchsperiode);
-		List<Einstellung> filtered = einstellungen.stream()
+	public Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
+
+		Root<Einstellung> root = query.from(Einstellung.class);
+		// Gesuchsperiode
+		final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
+		// Gemeinde darf nicht gesetzt sein
+		final Predicate predicateGemeindeNull = cb.isNull(root.get(Einstellung_.gemeinde));
+		// Mandant
+		final Predicate predicateMandantNull = cb.isNull(root.get(Einstellung_.mandant));
+
+		query.where(predicateGesuchsperiode, predicateGemeindeNull, predicateMandantNull);
+		query.select(root);
+		List<Einstellung> einstellungen = persistence.getCriteriaResults(query);
+		List<Einstellung> sorted = einstellungen.stream()
 			.sorted(Comparator.comparing(Einstellung::getKey))
 			.collect(Collectors.toCollection(ArrayList::new));
-		return filtered;
+		return sorted;
 	}
 
 	@Nonnull
@@ -220,13 +233,13 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Map<EinstellungKey, Einstellung> getEinstellungenByGesuchsperiodeAsMap(@Nonnull Gesuchsperiode gesuchsperiode) {
-		//TODO (hefr) Diese beiden Methoden muessen pro System, pro Mandant und pro Gemeinde vorhanden sein
+	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
-		Collection<Einstellung> paramsForPeriode = getEinstellungenByGesuchsperiode(gesuchsperiode);
-		paramsForPeriode.forEach(einstellung ->
-			result.put(einstellung.getKey(), einstellung)
-		);
+		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
+		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
+			Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
+			result.put(einstellungKey, einstellung);
+		});
 		return result;
 	}
 
@@ -235,13 +248,13 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode) {
-		Collection<Einstellung> einstellungenOfLastGP = getEinstellungenByGesuchsperiode(lastGesuchsperiode);
-		//TODO (team) Falls Jahresabhaengige noch benoetigt werden -> Halbjahr2 migrieren auf Halbjahr1 und 2
+		Collection<Einstellung> einstellungenOfLastGP = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, lastGesuchsperiode,
+			Einstellung_.gesuchsperiode);
 		einstellungenOfLastGP
 			.forEach(lastGPEinstellung -> {
 				Einstellung einstellungOfNewGP = lastGPEinstellung.copyGesuchsperiode(gesuchsperiodeToCreate);
 				saveEinstellung(einstellungOfNewGP);
-		});
+			});
 	}
 
 	@Override

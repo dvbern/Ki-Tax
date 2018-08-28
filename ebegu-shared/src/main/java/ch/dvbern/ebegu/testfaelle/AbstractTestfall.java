@@ -289,7 +289,7 @@ public abstract class AbstractTestfall {
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
 			kind.setMutterspracheDeutsch(Boolean.TRUE);
-			kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
+			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		}
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
