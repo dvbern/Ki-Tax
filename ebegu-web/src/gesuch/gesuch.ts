@@ -14,8 +14,6 @@
  */
 
 import {IController, IRootScopeService} from 'angular';
-import {Subject} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
 import ErrorService from '../app/core/errors/service/ErrorService';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
@@ -60,8 +58,6 @@ export class GesuchRouteController implements IController {
 
     public userFullName = '';
 
-    private readonly unsubscribe$ = new Subject<void>();
-
     constructor(private readonly gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager,
                 private readonly wizardStepManager: WizardStepManager,
@@ -78,22 +74,7 @@ export class GesuchRouteController implements IController {
         //super(gesuchModelManager, berechnungsManager, wizardStepManager);
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
 
-        authServiceRS.principal$
-            .pipe(
-                map(principal => this.antragStatusHistoryRS.getUserFullname(principal)),
-                takeUntil(this.unsubscribe$)
-            )
-            .subscribe(
-                userFullName => {
-                    this.userFullName = userFullName;
-                },
-                err => LOG.error(err)
-            );
-    }
-
-    public $onDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
+        this.userFullName = this.antragStatusHistoryRS.getUserFullname();
     }
 
     showFinanzielleSituationStart(): boolean {

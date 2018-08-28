@@ -19,7 +19,6 @@ import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../models/TSDossier';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSUser from '../../../models/TSUser';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class AntragStatusHistoryRS {
@@ -80,10 +79,12 @@ export default class AntragStatusHistoryRS {
      * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch
      * nicht gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
      */
-    public getUserFullname(principal?: TSUser): string {
+    public getUserFullname(): string {
         if (this.lastChange && this.lastChange.benutzer) {
             return this.lastChange.benutzer.getFullName();
         }
+
+        const principal = this.authServiceRS.getPrincipal();
 
         return principal ? principal.getFullName() : '';
     }
