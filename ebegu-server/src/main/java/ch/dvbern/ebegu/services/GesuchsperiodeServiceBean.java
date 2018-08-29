@@ -203,6 +203,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			for (FerieninselStammdaten ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
 			}
+			// Einstellungen dieser Gesuchsperiode loeschen
+			einstellungService.deleteEinstellungenOfGesuchsperiode(gesuchsperiode);
 			// Gesuchsperiode
 			LOGGER.info("Deleting Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
 			persistence.remove(gesuchsperiode);
