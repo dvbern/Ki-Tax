@@ -30,7 +30,7 @@ export default class GemeindeRS implements IEntityRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q', 'AuthServiceRS'];
     serviceURL: string;
 
-    private principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
 
     constructor(public $http: IHttpService,
                 REST_API: string,

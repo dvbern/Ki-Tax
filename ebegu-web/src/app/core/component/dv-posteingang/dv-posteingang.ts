@@ -60,7 +60,7 @@ export class DvPosteingangComponent implements OnDestroy {
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
                         return timer(0, 300000)
                             .pipe(takeUntil(this.unsubscribe$))
-                            .pipe(switchMap(() => this.getMitteilungenCount$()))
+                            .pipe(switchMap(() => this.getMitteilungenCount$()));
                     }
 
                     if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {

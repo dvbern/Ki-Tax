@@ -65,8 +65,7 @@ export class DVAntragListConfig implements IComponentOptions {
 export class DVAntragListController implements IController {
 
     static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        'CONSTANTS',
-        'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
+        'CONSTANTS', 'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
     totalResultCount: number;
     displayedCollection: Array<TSAntragDTO> = []; //Liste die im Gui angezeigt wird

@@ -63,8 +63,8 @@ export default class AuthServiceRS {
         return this._principal$;
     }
 
-    set principal$(value: Observable<TSUser | null>) {
-        this._principal$ = value;
+    set principal$(value$: Observable<TSUser | null>) {
+        this._principal$ = value$;
     }
 
     public getPrincipal(): TSUser | undefined {
