@@ -38,10 +38,19 @@ export default class TSUser {
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
 
-
-    constructor(vorname?: string, nachname?: string, username?: string, password?: string, email?: string,
-                mandant?: TSMandant, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution, gemeinde?: TSGemeinde[],
-                amt?: TSAmt, gesperrt?: boolean, externalUUID?: string) {
+    constructor(vorname?: string,
+                nachname?: string,
+                username?: string,
+                password?: string,
+                email?: string,
+                mandant?: TSMandant,
+                role?: TSRole,
+                traegerschaft?: TSTraegerschaft,
+                institution?: TSInstitution,
+                gemeinde?: TSGemeinde[],
+                amt?: TSAmt,
+                gesperrt?: boolean,
+                externalUUID?: string) {
         this._vorname = vorname;
         this._nachname = nachname;
         this._username = username;
@@ -192,5 +201,15 @@ export default class TSUser {
 
     public hasJustOneGemeinde() {
         return this.extractCurrentGemeinden().length === 1;
+    }
+
+    public hasRole(role: TSRole): boolean {
+        return this.getCurrentRole() === role;
+    }
+
+    public hasOneOfRoles(roles: TSRole[]): boolean {
+        const principalRole = this.getCurrentRole();
+
+        return roles.some(role => role === principalRole);
     }
 }

@@ -16,7 +16,7 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -35,7 +35,6 @@ import GemeindeRS from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
 import GesuchRS from './gesuchRS.rest';
 import WizardStepManager from './wizardStepManager';
-import Spy = jasmine.Spy;
 
 describe('gesuchGenerator', () => {
 
@@ -59,13 +58,14 @@ describe('gesuchGenerator', () => {
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
             'isOneOfRoles': true,
         });
-        authServiceSpy.principal$ = <Observable<TSUser> & Spy>of(user);
+        authServiceSpy.principal$ = of(user) as any;
 
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
             'findDossier': Promise.resolve(dossier)
         });
 
-        const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name, ['loadLastStatusChange']);
+        const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
+            ['loadLastStatusChange']);
         antragStatusHistoryServiceSpy.loadLastStatusChange.and.callFake((gesuch: TSGesuch) => Promise.resolve(gesuch));
 
         const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, {
@@ -82,8 +82,7 @@ describe('gesuchGenerator', () => {
         const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['createGesuch']);
 
         TestBed.configureTestingModule({
-            imports: [
-            ],
+            imports: [],
             providers: [
                 {provide: GesuchRS, useValue: gesuchServiceSpy},
                 {provide: AntragStatusHistoryRS, useValue: antragStatusHistoryServiceSpy},

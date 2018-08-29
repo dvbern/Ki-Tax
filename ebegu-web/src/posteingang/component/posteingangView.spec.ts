@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {of} from 'rxjs';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
@@ -82,8 +83,8 @@ describe('posteingangView', () => {
         describe('searchMitteilungen', () => {
             it('should return the list of Mitteilungen', () => {
                 mockRestCalls();
-                spyOn(gemeindeRS, 'getGemeindenForPrincipal').and.returnValue($q.when([]));
-                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, authServiceRS, gemeindeRS, $log, authLifeCycleService);
+                spyOn(gemeindeRS, 'getGemeindenForPrincipal$').and.returnValue(of([]));
+                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, authServiceRS, gemeindeRS);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(result => {

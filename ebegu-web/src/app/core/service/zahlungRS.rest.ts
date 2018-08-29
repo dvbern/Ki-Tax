@@ -13,19 +13,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {IHttpService, ILogService, IHttpPromise, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import * as moment from 'moment';
+import {from, Observable, of} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSZahlung from '../../../models/TSZahlung';
 import TSZahlungsauftrag from '../../../models/TSZahlungsauftrag';
 import DateUtil from '../../../utils/DateUtil';
-import TSZahlung from '../../../models/TSZahlung';
-import * as moment from 'moment';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class ZahlungRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'zahlungen';
     }
 
@@ -55,14 +61,16 @@ export default class ZahlungRS {
     }
 
     public getZahlungsauftragInstitution(zahlungsauftragId: string): IPromise<TSZahlungsauftrag> {
-        return this.http.get(this.serviceURL + '/zahlungsauftraginstitution' + '/' + encodeURIComponent(zahlungsauftragId)).then((response: any) => {
+        return this.http.get(this.serviceURL + '/zahlungsauftraginstitution' + '/' + encodeURIComponent(
+            zahlungsauftragId)).then((response: any) => {
             this.$log.debug('PARSING user REST array object', response.data);
             return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response.data);
         });
     }
 
     public zahlungsauftragAusloesen(zahlungsauftragId: string): IPromise<TSZahlungsauftrag> {
-        return this.http.put(this.serviceURL + '/ausloesen' + '/' + encodeURIComponent(zahlungsauftragId), null).then((response: any) => {
+        return this.http.put(this.serviceURL + '/ausloesen' + '/' + encodeURIComponent(zahlungsauftragId),
+            null).then((response: any) => {
             this.$log.debug('PARSING user REST array object', response.data);
             return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response.data);
         });
@@ -73,13 +81,16 @@ export default class ZahlungRS {
     }
 
     public zahlungBestaetigen(zahlungId: string): IPromise<TSZahlung> {
-        return this.http.put(this.serviceURL + '/bestaetigen' + '/' + encodeURIComponent(zahlungId), null).then((response: any) => {
+        return this.http.put(this.serviceURL + '/bestaetigen' + '/' + encodeURIComponent(zahlungId),
+            null).then((response: any) => {
             this.$log.debug('PARSING user REST array object', response.data);
             return this.ebeguRestUtil.parseZahlung(new TSZahlung(), response.data);
         });
     }
 
-    public createZahlungsauftrag(beschrieb: string, faelligkeitsdatum: moment.Moment, datumGeneriert: moment.Moment): IPromise<TSZahlungsauftrag> {
+    public createZahlungsauftrag(beschrieb: string,
+                                 faelligkeitsdatum: moment.Moment,
+                                 datumGeneriert: moment.Moment): IPromise<TSZahlungsauftrag> {
         return this.http.get(this.serviceURL + '/create',
             {
                 params: {
@@ -88,10 +99,10 @@ export default class ZahlungRS {
                     datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert)
                 }
             }).then((httpresponse: any) => {
-                this.$log.debug('PARSING Zahlungsauftrag REST object ', httpresponse.data);
-                // Direkt die Zahlungspruefung durchfuehren
-                this.pruefeZahlungen();
-                return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse.data);
+            this.$log.debug('PARSING Zahlungsauftrag REST object ', httpresponse.data);
+            // Direkt die Zahlungspruefung durchfuehren
+            this.pruefeZahlungen();
+            return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse.data);
         });
     }
 
@@ -102,7 +113,9 @@ export default class ZahlungRS {
         });
     }
 
-    public updateZahlungsauftrag(beschrieb: string, faelligkeitsdatum: moment.Moment, id: string): IPromise<TSZahlungsauftrag> {
+    public updateZahlungsauftrag(beschrieb: string,
+                                 faelligkeitsdatum: moment.Moment,
+                                 id: string): IPromise<TSZahlungsauftrag> {
         return this.http.get(this.serviceURL + '/update',
             {
                 params: {
@@ -120,5 +133,51 @@ export default class ZahlungRS {
         return this.http.get(this.serviceURL + '/kontrollieren').then((response: any) => {
             this.$log.debug('PARSING user REST array object', response.data);
         });
+    }
+
+    public getZahlungsauftragForRole$(role: TSRole, zahlungsauftragId: string): Observable<TSZahlungsauftrag | null> {
+        switch (role) {
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                return from(this.getZahlungsauftragInstitution(zahlungsauftragId));
+            case TSRole.SUPER_ADMIN:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+            case TSRole.JURIST:
+            case TSRole.REVISOR:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+                return from(this.getZahlungsauftrag(zahlungsauftragId));
+            default:
+                return of(null);
+        }
+    }
+
+    public getZahlungsauftraegeForRole$(role: TSRole): Observable<TSZahlungsauftrag[]> {
+        switch (role) {
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                return from(this.getAllZahlungsauftraegeInstitution())
+                    .pipe(map(a => angular.copy(a)));
+            case TSRole.SUPER_ADMIN:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+            case TSRole.JURIST:
+            case TSRole.REVISOR:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+                return from(this.getAllZahlungsauftraege())
+                    .pipe(map(a => angular.copy(a)));
+            default:
+                return of([]);
+        }
     }
 }

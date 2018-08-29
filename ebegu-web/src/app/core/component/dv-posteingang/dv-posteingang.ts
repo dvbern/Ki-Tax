@@ -13,12 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
+import {from, merge, Observable, of, Subject, timer} from 'rxjs';
+import {switchMap, takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -28,82 +27,64 @@ import MitteilungRS from '../../service/mitteilungRS.rest';
 @Component({
     selector: 'dv-posteingang',
     templateUrl: './dv-posteingang.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DvPosteingangComponent implements OnInit, OnDestroy {
+export class DvPosteingangComponent implements OnDestroy {
 
-    private readonly log: Log = LogFactory.createLog(DvPosteingangComponent.name);
+    private readonly log: Log = LogFactory.createLog('DvPosteingangComponent');
 
     private readonly unsubscribe$ = new Subject<void>();
-    amountMitteilungen: number = 0;
-    reloadAmountMitteilungenInterval: number;
+    public mitteilungenCount$: Observable<number>;
 
     constructor(private readonly mitteilungRS: MitteilungRS,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly authLifeCycleService: AuthLifeCycleService,
                 private readonly posteingangService: PosteingangService) {
 
+        const posteingangeChanged$ = this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
+            .pipe(switchMap(() => this.getMitteilungenCount$()));
+
+        this.mitteilungenCount$ = merge(posteingangeChanged$, this.getCountForPrincipal$())
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
-    ngOnInit() {
-        this.getAmountNewMitteilungen();
+    private getCountForPrincipal$(): Observable<number> {
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (!principal) {
+                        return of(0);
+                    }
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(
-                () => {
-                    clearInterval(this.reloadAmountMitteilungenInterval);
-                },
-                error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
-            );
+                    // not for GS
+                    if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+                        return timer(0, 300000)
+                            .pipe(takeUntil(this.unsubscribe$))
+                            .pipe(switchMap(() => this.getMitteilungenCount$()));
+                    }
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(
-                () => {
-                    this.handleLogIn();
-                },
-                error => this.log.info(`the received TSAuthEvent ${event} threw an error ${error}`),
-            );
+                    if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
+                        return this.getMitteilungenCount$();
+                    }
 
-        this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(
-                () => {
-                    this.getAmountNewMitteilungen();
-                },
-                error => this.log.info(`the received TSPostEingangEvent ${event} threw an error ${error}`),
+                    return of(0);
+                })
             );
     }
 
-    ngOnDestroy() {
+    private getMitteilungenCount$(): Observable<number> {
+        return from(this.mitteilungRS.getAmountMitteilungenForCurrentBenutzer()
+            .then(response => !response || isNaN(response) ? 0 : response)
+            .catch(() => {
+                //Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
+                // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
+                this.log.debug('received error message while reading posteingang. Ignoring ...');
+                return 0;
+            }));
+    }
+
+    public ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
-
-    private handleLogIn() {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
-            this.getAmountNewMitteilungen(); // call it a first time
-
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) { // not for GS
-                // call every 5 minutes (5*60*1000)
-                this.reloadAmountMitteilungenInterval = window.setInterval(() => this.getAmountNewMitteilungen(), 300000);
-            }
-        }
-    }
-
-    private getAmountNewMitteilungen(): void {
-        this.mitteilungRS.getAmountMitteilungenForCurrentBenutzer().then((response: number) => {
-            if (!response || isNaN(response)) { //wenn keine gueltige antwort
-                this.amountMitteilungen = 0;
-            } else {
-                this.amountMitteilungen = response;
-            }
-        }).catch(() => {
-            //Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
-            // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
-            this.log.debug('received error message while reading posteingang. Ignoring ...');
-            this.amountMitteilungen = 0;
-        });
-    }
-
 }
