@@ -119,4 +119,9 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 	public void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode) {
 		// nop
 	}
+
+	@Override
+	public void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		// nop
+	}
 }

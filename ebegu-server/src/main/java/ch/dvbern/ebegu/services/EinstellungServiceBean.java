@@ -256,4 +256,12 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 				saveEinstellung(einstellungOfNewGP);
 			});
 	}
+
+	@Override
+	public void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		Collection<Einstellung> einstellungenOfGP = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, gesuchsperiode,
+			Einstellung_.gesuchsperiode);
+		einstellungenOfGP
+			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
+	}
 }
