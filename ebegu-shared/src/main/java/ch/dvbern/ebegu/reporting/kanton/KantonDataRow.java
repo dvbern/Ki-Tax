@@ -18,6 +18,8 @@ package ch.dvbern.ebegu.reporting.kanton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -37,7 +39,7 @@ public class KantonDataRow {
 	private BigDecimal verguenstigung;
 	private String institution;
 	private String betreuungsTyp;
-	private BigDecimal oeffnungstage;
+	@Nullable private BigDecimal oeffnungstage;
 
 	public String getBgNummer() {
 		return bgNummer;
@@ -137,11 +139,12 @@ public class KantonDataRow {
 		this.betreuungsTyp = betreuungsTyp;
 	}
 
+	@Nullable
 	public BigDecimal getOeffnungstage() {
 		return oeffnungstage;
 	}
 
-	public void setOeffnungstage(BigDecimal oeffnungstage) {
+	public void setOeffnungstage(@Nullable BigDecimal oeffnungstage) {
 		this.oeffnungstage = oeffnungstage;
 	}
 }

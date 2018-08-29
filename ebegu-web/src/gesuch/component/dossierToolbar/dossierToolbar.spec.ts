@@ -64,7 +64,7 @@ describe('dossierToolbar', () => {
         $rootScope = $injector.get('$rootScope');
         $mdSidenav = $injector.get('$mdSidenav');
         $scope = $rootScope.$new();
-        user = new TSUser('Emiliano', 'Camacho');
+        user = new TSUser('Emiliana', 'Camacho');
         $stateParams.gesuchId = '123456789';
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
         dossierRS = $injector.get('DossierRS');
@@ -73,7 +73,7 @@ describe('dossierToolbar', () => {
 
         dossierToolbarController = new DossierToolbarController(ebeguUtil,
             gesuchRS, $state, $scope, gesuchModelManager,
-            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, mitteilungRS, undefined, dossierRS);
+            authServiceRS, $mdSidenav, undefined, gesuchsperiodeRS, dvDialog, undefined, mitteilungRS, dossierRS);
     }));
 
 });

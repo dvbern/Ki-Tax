@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.api.util.version;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -40,8 +38,7 @@ public class VersionHeaderFilter implements ContainerResponseFilter {
 	private VersionInfoBean versionInfoBean;
 
 	@Override
-	public void filter(@Nonnull ContainerRequestContext requestContext, @Nonnull ContainerResponseContext responseContext)
-		throws IOException {
+	public void filter(@Nonnull ContainerRequestContext requestContext, @Nonnull ContainerResponseContext responseContext) {
 		versionInfoBean.getVersionInfo().ifPresent(versionInfo -> {
 			responseContext.getHeaders().add(X_EBEGU_VERSION, versionInfo.getVersion());
 			if (versionInfo.getBuildTimestamp() != null) {

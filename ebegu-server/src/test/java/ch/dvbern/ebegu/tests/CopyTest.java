@@ -104,6 +104,7 @@ public class CopyTest {
 		Assert.assertNotNull(erstgesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA());
 		Assert.assertNotNull(erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		Assert.assertNotNull(erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1());
+		Assert.assertNotNull(erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus1());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1), erstgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus1().getNettolohn());
 		Assert.assertNotNull(erstgesuch.getDokumentGrunds());
 		Assert.assertEquals(1, erstgesuch.getDokumentGrunds().size());
@@ -235,7 +236,7 @@ public class CopyTest {
 		Kind kindMutation = mutation.getKindContainers().iterator().next().getKindJA();
 		Assert.assertNotNull(kindMutation);
 		Assert.assertEquals("Simon Wälti", kindMutation.getFullName());
-		Assert.assertEquals(EinschulungTyp.KLASSE1, kindMutation.getEinschulungTyp());
+		Assert.assertEquals(EinschulungTyp.VORSCHULALTER, kindMutation.getEinschulungTyp());
 
 		Assert.assertNotNull(erneuerung.getKindContainers());
 		Assert.assertEquals(1, erneuerung.getKindContainers().size());
@@ -249,7 +250,7 @@ public class CopyTest {
 		Kind kindMutationNeuesDossier = mutationNeuesDossier.getKindContainers().iterator().next().getKindJA();
 		Assert.assertNotNull(kindMutationNeuesDossier);
 		Assert.assertEquals("Simon Wälti", kindMutationNeuesDossier.getFullName());
-		Assert.assertEquals(EinschulungTyp.KLASSE1, kindMutationNeuesDossier.getEinschulungTyp());
+		Assert.assertEquals(EinschulungTyp.VORSCHULALTER, kindMutationNeuesDossier.getEinschulungTyp());
 
 		Assert.assertNotNull(erneuerungNeuesDossier.getKindContainers());
 		Assert.assertEquals(1, erneuerungNeuesDossier.getKindContainers().size());

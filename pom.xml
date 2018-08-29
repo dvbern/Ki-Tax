@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2018.5.0</version>
+    <version>2018.6.0</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -641,12 +641,6 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-embedded</artifactId>
-                <version>5.0.0.Final</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-controller-client</artifactId>
                 <version>5.0.0.Final</version>
             </dependency>
@@ -768,32 +762,6 @@
             <properties>
                 <skip-code-validation>true</skip-code-validation>
             </properties>
-        </profile>
-
-        <profile>
-            <id>wildfly13-embedded</id>
-            <properties>
-                <!--embedded wird ans gleiche ort enpackt wie managed-->
-                <jbossHome>${project.build.directory}/wildfly-${version.wildfly.container}</jbossHome>
-                <unpack.groupId>org.wildfly</unpack.groupId>
-                <unpack.artifactId>wildfly-dist</unpack.artifactId>
-                <unpack.version>${version.wildfly.container}</unpack.version>
-                <unpack.directory>${project.build.directory}</unpack.directory>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly.arquillian</groupId>
-                    <artifactId>wildfly-arquillian-container-embedded</artifactId>
-                    <version>${version.wildfly-arquillian-containers}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.wildfly.core</groupId>
-                    <artifactId>wildfly-embedded</artifactId>
-                    <version>5.0.0.Final</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
         </profile>
 
         <profile>

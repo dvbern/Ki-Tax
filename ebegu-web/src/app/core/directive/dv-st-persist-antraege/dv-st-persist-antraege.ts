@@ -204,13 +204,15 @@ export default class DVSTPersistAntraege implements IDirective {
                 savedStateToReturn.search.predicateObject = this.extractVerantwortlicherFullName();
             }
             if (!savedStateToReturn.search.predicateObject.verantwortlicher) {
-                const berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
-                if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
+                const principal = this.authServiceRS.getPrincipal();
+
+                const berechtigung: TSBerechtigung = principal.currentBerechtigung;
+                if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
                     savedStateToReturn.search.predicateObject.verantwortlicherTS =
-                        this.authServiceRS.getPrincipal().getFullName();
+                        principal.getFullName();
                 } else { //JA
                     savedStateToReturn.search.predicateObject.verantwortlicherBG =
-                        this.authServiceRS.getPrincipal().getFullName();
+                        principal.getFullName();
                 }
             }
         }
@@ -218,14 +220,17 @@ export default class DVSTPersistAntraege implements IDirective {
     }
 
     private extractVerantwortlicherFullName() {
-        if (this.authServiceRS.getPrincipal()) {
-            const berechtigung: TSBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
-            if (berechtigung.role === TSRole.ADMINISTRATOR_SCHULAMT || berechtigung.role === TSRole.SCHULAMT) {
-                return {verantwortlicherTS: this.authServiceRS.getPrincipal().getFullName()};
+        const principal = this.authServiceRS.getPrincipal();
+
+        if (principal) {
+            const berechtigung: TSBerechtigung = principal.currentBerechtigung;
+            if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
+                return {verantwortlicherTS: principal.getFullName()};
             } else { //JA
-                return {verantwortlicherBG: this.authServiceRS.getPrincipal().getFullName()};
+                return {verantwortlicherBG: principal.getFullName()};
             }
         }
+
         return '';
     }
 }

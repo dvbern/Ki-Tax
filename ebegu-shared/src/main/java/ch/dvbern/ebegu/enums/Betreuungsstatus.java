@@ -46,7 +46,7 @@ public enum Betreuungsstatus {
 	public static final Set<Betreuungsstatus> hasVerfuegung = EnumSet.of(VERFUEGT, NICHT_EINGETRETEN);
 	public static final Set<Betreuungsstatus> forPendenzInstitution = EnumSet.of(WARTEN, SCHULAMT_ANMELDUNG_AUSGELOEST);
 	public static final Set<Betreuungsstatus> forPendenzSchulamt = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST, SCHULAMT_FALSCHE_INSTITUTION);
-	public static final Set<Betreuungsstatus> betreuungsstatusAusgeloest = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
+	public static final Set<Betreuungsstatus> anmeldungsstatusAusgeloest = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
 		SCHULAMT_ANMELDUNG_UEBERNOMMEN, SCHULAMT_ANMELDUNG_ABGELEHNT, SCHULAMT_FALSCHE_INSTITUTION);
 
 	public boolean isGeschlossenJA() {
@@ -84,24 +84,21 @@ public enum Betreuungsstatus {
 	public static Set<Betreuungsstatus> allowedRoles(UserRole userRole) {
 		switch (userRole) {
 		case SUPER_ADMIN:
-			return all;
-		case ADMIN:
-			return all;
+		case ADMIN_BG:
 		case GESUCHSTELLER:
-			return all;
 		case JURIST:
-			return all;
 		case REVISOR:
-			return all;
+		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
-			return all;
-		case SACHBEARBEITER_JA:
-			return all;
+		case SACHBEARBEITER_BG:
+		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			return all;
-		case SCHULAMT:
-			return all;
+		case SACHBEARBEITER_TS:
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
 		case STEUERAMT:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
 			return all;
 		default:
 			return none;

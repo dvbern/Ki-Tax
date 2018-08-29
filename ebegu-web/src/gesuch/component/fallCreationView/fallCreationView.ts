@@ -131,7 +131,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getTitle(): string {
-        if (this.gesuchModelManager.isGesuch()) {
+        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.isGesuch()) {
             if (this.gesuchModelManager.isGesuchSaved() && this.gesuchModelManager.getGesuchsperiode()) {
                 const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'KITAX_ERNEUERUNGSGESUCH_PERIODE' : 'KITAX_ERSTGESUCH_PERIODE';
                 return this.$translate.instant(key, {
@@ -147,11 +147,13 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getNextButtonText(): string {
-        if (this.gesuchModelManager.getGesuch().isNew()) {
-            return this.$translate.instant('ERSTELLEN');
-        }
-        if (this.gesuchModelManager.isGesuchReadonly() || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            return this.$translate.instant('WEITER_ONLY_UPPER');
+        if (this.gesuchModelManager.getGesuch()) {
+            if (this.gesuchModelManager.getGesuch().isNew()) {
+                return this.$translate.instant('ERSTELLEN');
+            }
+            if (this.gesuchModelManager.isGesuchReadonly() || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
+                return this.$translate.instant('WEITER_ONLY_UPPER');
+            }
         }
         return this.$translate.instant('WEITER_UPPER');
     }
@@ -163,6 +165,8 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public canChangeGesuchsperiode(): boolean {
-        return this.gesuchModelManager.isGesuch() && this.isGesuchsperiodeActive() && this.gesuchModelManager.getGesuch().isNew();
+        return this.gesuchModelManager.getGesuch()
+            && this.gesuchModelManager.isGesuch()
+            && this.isGesuchsperiodeActive() && this.gesuchModelManager.getGesuch().isNew();
     }
 }

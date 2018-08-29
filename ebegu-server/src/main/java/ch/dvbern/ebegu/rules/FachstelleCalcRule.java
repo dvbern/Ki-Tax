@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Regel für die Betreuungspensen. Sie beachtet:
  * - Anspruch aus Betreuungspensum darf nicht höher sein als Erwerbspensum
  * - Nur relevant für Kita, Tageseltern-Kleinkinder, die anderen bekommen so viel wie sie wollen
- * - Falls Kind eine Fachstelle hat, gilt das Pensum der Fachstelle
+ * - Falls Kind eine Fachstelle hat, gilt das Pensum der Fachstelle, sofern dieses höher ist als der Anspruch aus sonstigen Regeln
  * Verweis 16.9.3
  */
 public class FachstelleCalcRule extends AbstractCalcRule {
@@ -39,11 +39,12 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		if (betreuung.getBetreuungsangebotTyp() != null && betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int pensumFachstelle = verfuegungZeitabschnitt.getFachstellenpensum();
+			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			int roundedPensumFachstelle = MathUtil.roundIntToTens(pensumFachstelle);
-			if (roundedPensumFachstelle > 0) {
-				// Anspruch ist immer genau das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
+			if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
+				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedPensumFachstelle);
 				verfuegungZeitabschnitt.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG);
 			}

@@ -14,6 +14,7 @@
  */
 
 import {IHttpInterceptor, IHttpResponse, IPromise, IQService} from 'angular';
+import {isIgnorableHttpError} from '../../app/core/errors/service/HttpErrorInterceptor';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
@@ -34,7 +35,7 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
                     return this.$q.reject(response);
                 }
                 //if this request was a background polling request we do not want to relogin or show errors
-                if (response.config && response.config.url.indexOf('notokenrefresh') > 0) {
+                if (isIgnorableHttpError(response)) {
                     console.debug('rejecting failed notokenrefresh response');
                     return this.$q.reject(response);
                 }

@@ -75,6 +75,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -82,8 +83,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRole.*;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
@@ -115,14 +118,21 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
+	public Benutzer saveBenutzerBerechtigungen(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged) {
+		Objects.requireNonNull(benutzer);
+		prepareBenutzerForSave(benutzer, currentBerechtigungChanged);
+		return persistence.merge(benutzer);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
 	public Benutzer saveBenutzer(@Nonnull Benutzer benutzer) {
 		Objects.requireNonNull(benutzer);
 		if (benutzer.isNew()) {
 			return persistence.persist(benutzer);
-		} else {
-			prepareBenutzerForSave(benutzer);
-			return persistence.merge(benutzer);
 		}
+		return persistence.merge(benutzer);
 	}
 
 	@Nonnull
@@ -136,6 +146,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
+	public Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID) {
+		Objects.requireNonNull(externalUUID, "externalUUID muss gesetzt sein");
+		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, externalUUID, Benutzer_.externalUUID);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
 	public Collection<Benutzer> getAllBenutzer() {
 		return new ArrayList<>(criteriaQueryHelper.getAll(Benutzer.class));
 	}
@@ -143,15 +161,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<Benutzer> getBenutzerJAorAdmin() {
-		return getBenutzersOfRoles(UserRole.getJugendamtRoles());
+	public Collection<Benutzer> getBenutzerBGorAdmin() {
+		return getBenutzersOfRoles(getJugendamtRoles());
 	}
 
 	@Nonnull
 	@Override
 	@PermitAll
 	public Collection<Benutzer> getBenutzerSCHorAdminSCH() {
-		return getBenutzersOfRoles(UserRole.getSchulamtRoles());
+		return getBenutzersOfRoles(getSchulamtRoles());
 	}
 
 	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles) {
@@ -185,7 +203,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	public Collection<Benutzer> getGesuchsteller() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
@@ -197,14 +215,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER);
+		Predicate predicateRole = joinBerechtigungen.get(Berechtigung_.role).in(GESUCHSTELLER);
 		query.where(predicateActive, predicateRole);
 		query.orderBy(cb.asc(root.get(Benutzer_.vorname)), cb.asc(root.get(Benutzer_.nachname)));
 		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public void removeBenutzer(@Nonnull String username) {
 		Objects.requireNonNull(username);
 		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -245,32 +263,42 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public Benutzer updateOrStoreUserFromIAM(@Nonnull Benutzer benutzer) {
-		Optional<Benutzer> foundUserOptional = this.findBenutzer(benutzer.getUsername());
+		Objects.requireNonNull(benutzer.getExternalUUID());
+		Optional<Benutzer> foundUserOptional = this.findBenutzerByExternalUUID(benutzer.getExternalUUID());
+
 		if (foundUserOptional.isPresent()) {
 			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
 			Benutzer foundUser = foundUserOptional.get();
+			// Wir ueberpruefen, ob der Username sich geaendert hat
+			if (!foundUser.getUsername().equals(benutzer.getUsername())) {
+				LOG.warn("External User has new Username: ExternalUUID {}, old username {}, new username {}. Updating!",
+					benutzer.getExternalUUID(), foundUser.getUsername(), benutzer.getUsername());
+				foundUser.setUsername(benutzer.getUsername());
+			}
 			// den username ueberschreiben wir nicht!
 			foundUser.setNachname(benutzer.getNachname());
 			foundUser.setVorname(benutzer.getVorname());
 			foundUser.setEmail(benutzer.getEmail());
+
 			return saveBenutzer(foundUser);
-		} else {
-			// Wir kennen den Benutzer noch nicht: Wir uebernehmen alles, setzen aber grundsätzlich die Rolle auf
-			// GESUCHSTELLER
-			Berechtigung berechtigung = new Berechtigung();
-			berechtigung.setRole(UserRole.GESUCHSTELLER);
-			berechtigung.setInstitution(null);
-			berechtigung.setTraegerschaft(null);
-			berechtigung.setBenutzer(benutzer);
-			benutzer.getBerechtigungen().clear();
-			benutzer.getBerechtigungen().add(berechtigung);
-			return saveBenutzer(benutzer);
 		}
+
+		// Wir kennen den Benutzer noch nicht: Wir uebernehmen alles, setzen aber grundsätzlich die Rolle auf
+		// GESUCHSTELLER
+		Berechtigung berechtigung = new Berechtigung();
+		berechtigung.setRole(GESUCHSTELLER);
+		berechtigung.setInstitution(null);
+		berechtigung.setTraegerschaft(null);
+		berechtigung.setBenutzer(benutzer);
+		benutzer.getBerechtigungen().clear();
+		benutzer.getBerechtigungen().add(berechtigung);
+
+		return saveBenutzer(benutzer);
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public Benutzer sperren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
@@ -285,18 +313,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private void logSperreBenutzer(@Nonnull Benutzer benutzer, int deletedAuthBenutzer) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Setze Benutzer auf GESPERRT: ").append(benutzer.getUsername());
-		sb.append(" / ");
-		sb.append("Eingeloggt: ").append(principalBean.getBenutzer().getUsername());
-		sb.append(" / ");
-		sb.append("Lösche ").append(deletedAuthBenutzer).append(" Eintraege aus der AuthorisierteBenutzer Tabelle");
-		LOG.info(sb.toString());
+		LOG.info("Setze Benutzer auf GESPERRT: {} / Eingeloggt: {} / Lösche {} Eintraege aus der AuthorisierteBenutzer Tabelle",
+			benutzer.getUsername(),
+			principalBean.getBenutzer().getUsername(), deletedAuthBenutzer);
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public Benutzer reaktivieren(@Nonnull String username) {
 		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
@@ -309,44 +333,57 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private void logReaktivierenBenutzer(Benutzer benutzerFromDB) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Reaktiviere Benutzer: ").append(benutzerFromDB.getUsername());
-		sb.append(" / ");
-		sb.append("Eingeloggt: ").append(principalBean.getBenutzer().getUsername());
-		LOG.info(sb.toString());
+		LOG.info("Reaktiviere Benutzer: {} / Eingeloggt: {}", benutzerFromDB.getUsername(), principalBean.getBenutzer().getUsername());
 	}
 
-	private void prepareBenutzerForSave(@Nonnull Benutzer benutzer) {
-		List<Berechtigung> sorted = new LinkedList<>();
-		sorted.addAll(benutzer.getBerechtigungen());
-		sorted.sort(Comparator.comparing(o -> o.getGueltigkeit().getGueltigAb()));
+	private void prepareBenutzerForSave(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged) {
+		List<Berechtigung> allSortedBerechtigungen = new LinkedList<>();
+		allSortedBerechtigungen.addAll(benutzer.getBerechtigungen());
+		allSortedBerechtigungen.sort(Comparator.comparing(o -> o.getGueltigkeit().getGueltigAb()));
 
-		Berechtigung currentBerechtigung = sorted.get(0);
-		Berechtigung futureBerechtigung = null;
-		if (sorted.size() > 1) {
-			futureBerechtigung = sorted.get(1);
-		}
-		if (futureBerechtigung != null) {
-			// Die aktuelle Berechtigung per Startdatum der zukünftigen beenden
-			currentBerechtigung.getGueltigkeit()
-				.setGueltigBis(futureBerechtigung.getGueltigkeit().getGueltigAb().minusDays(1));
-		} else {
-			// Wenn keine zukünftige Berechtigung: Sicherstellen, dass Gueltigkeit unendlich
-			currentBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
-		}
-		for (Berechtigung berechtigung : sorted) {
+		final Berechtigung currentBerechtigung = allSortedBerechtigungen.get(0);
+
+		handleGueltigkeitCurrentBerechtigung(allSortedBerechtigungen,
+			currentBerechtigung, currentBerechtigungChanged);
+
+		for (Berechtigung berechtigung : allSortedBerechtigungen) {
 			prepareBerechtigungForSave(berechtigung);
 		}
-		authService.logoutAndDeleteAuthorisierteBenutzerForUser(benutzer.getUsername());
+
+		// Ausloggen nur, wenn die aktuelle Berechtigung geändert hat
+		if (currentBerechtigungChanged) {
+			LOG.info("Aktuelle Berechtigung des Benutzers {} hat geändert, Benutzer wird ausgeloggt", benutzer.getUsername());
+			authService.logoutAndDeleteAuthorisierteBenutzerForUser(benutzer.getUsername());
+		}
+	}
+
+	/**
+	 * If there are future Berechtigungen it sets the gueltigBis of the currentBerechtigung to one day before the gueltigAb of the futureBerechtigung.
+	 * For no futureBerechtigungen it sets the gueltigBis of the currentBerechtigung to END_OF_TIME
+	 * If the currentBerechtigung changed it sets the gueltigAb of the currentBerechtigung to now()
+	 */
+	private void handleGueltigkeitCurrentBerechtigung(
+		@Nonnull List<Berechtigung> allSortedBerechtigungen,
+		@Nonnull Berechtigung currentBerechtigung,
+		boolean currentBerechtigungChanged) {
+
+		currentBerechtigung.getGueltigkeit().setGueltigBis(
+			allSortedBerechtigungen.size() > 1 ?
+			allSortedBerechtigungen.get(1).getGueltigkeit().getGueltigAb().minusDays(1) : Constants.END_OF_TIME
+		);
+
+		if (currentBerechtigungChanged) {
+			currentBerechtigung.getGueltigkeit().setGueltigAb(LocalDate.now());
+		}
 	}
 
 	private void prepareBerechtigungForSave(@Nonnull Berechtigung berechtigung) {
 		// Es darf nur eine Institution gesetzt sein, wenn die Rolle INSTITUTION ist
-		if (berechtigung.getRole() != UserRole.SACHBEARBEITER_INSTITUTION) {
+		if (EnumUtil.isNoneOf(berechtigung.getRole(), ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
 			berechtigung.setInstitution(null);
 		}
 		// Es darf nur eine Trägerschaft gesetzt sein, wenn die Rolle TRAEGERSCHAFT ist
-		if (berechtigung.getRole() != UserRole.SACHBEARBEITER_TRAEGERSCHAFT) {
+		if (EnumUtil.isNoneOf(berechtigung.getRole(), ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
 			berechtigung.setTraegerschaft(null);
 		}
 	}
@@ -358,7 +395,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public Pair<Long, List<Benutzer>> searchBenutzer(@Nonnull BenutzerTableFilterDTO benutzerTableFilterDto) {
 		Pair<Long, List<Benutzer>> result;
 		Long countResult = searchBenutzer(benutzerTableFilterDto, SearchMode.COUNT).getLeft();
@@ -372,7 +409,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	private Pair<Long, List<Benutzer>> searchBenutzer(
 		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode) {
@@ -434,7 +471,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (predicateObjectDto.getRole() != null) {
 				predicates.add(cb.equal(
 					currentBerechtigung.get(Berechtigung_.role),
-					UserRole.valueOf(predicateObjectDto.getRole())));
+					valueOf(predicateObjectDto.getRole())));
 			}
 			// roleGueltigBis;
 			if (predicateObjectDto.getRoleGueltigBis() != null) {
@@ -621,7 +658,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// Die abgelaufene Rolle löschen
 			for (Berechtigung abgelaufeneBerechtigung : abgelaufeneBerechtigungen) {
 				LOG.info("Benutzerrolle ist abgelaufen: {}, war: {}, abgelaufen: {}", benutzer.getUsername(),
-					benutzer.getRole(), abgelaufeneBerechtigung.getGueltigkeit().getGueltigBis());
+					abgelaufeneBerechtigung.getRole(), abgelaufeneBerechtigung.getGueltigkeit().getGueltigBis());
 				benutzer.getBerechtigungen().remove(abgelaufeneBerechtigung);
 				persistence.merge(benutzer);
 				removeBerechtigung(abgelaufeneBerechtigung);
@@ -635,7 +672,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Berechtigung futureGesuchstellerBerechtigung = new Berechtigung();
 		futureGesuchstellerBerechtigung.getGueltigkeit().setGueltigAb(startDatum);
 		futureGesuchstellerBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
-		futureGesuchstellerBerechtigung.setRole(UserRole.GESUCHSTELLER);
+		futureGesuchstellerBerechtigung.setRole(GESUCHSTELLER);
 		futureGesuchstellerBerechtigung.setBenutzer(benutzer);
 		return futureGesuchstellerBerechtigung;
 	}
@@ -674,7 +711,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public Optional<Berechtigung> findBerechtigung(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		return Optional.ofNullable(persistence.find(Berechtigung.class, id));
@@ -698,7 +735,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN, SUPER_ADMIN, ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public Collection<BerechtigungHistory> getBerechtigungHistoriesForBenutzer(@Nonnull Benutzer benutzer) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BerechtigungHistory> query = cb.createQuery(BerechtigungHistory.class);

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpResponse} from 'angular';
 import ErrorService from './ErrorService';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
@@ -21,6 +22,10 @@ import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
+
+export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
+    return response.config && response.config.url.includes('notokenrefresh');
+}
 
 export default class HttpErrorInterceptor implements IHttpInterceptor {
 
@@ -38,7 +43,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
             return this.$q.reject(response);
         }
         //here we handle all errorcodes except 401 and 403, 401 is handeld in HttpAuthInterceptor
-        if (response.status !== 401) {
+        if (response.status !== 401 && !isIgnorableHttpError(response)) {
             //here we could analyze the http status of the response. But instead we check if the  response has the format
             // of a known response such as errortypes such as violationReport or ExceptionReport and transform it
             //as such. If the response matches know expected format we create an unexpected error.

@@ -34,7 +34,17 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface BenutzerService {
 
 	/**
-	 * Aktualisiert den Benutzer in der DB or erstellt ihn wenn er noch nicht existiert
+	 * Aktualisiert den Benutzer in der DB or erstellt ihn wenn er noch nicht existiert.
+	 * Falls die Berechtigungen geändert haben, werden diese aktualisiert und der Benutzer ausgeloggt.
+	 *
+	 * @param benutzer die Benutzer als DTO
+	 * @return Die aktualisierte Benutzer
+	 */
+	@Nonnull
+	Benutzer saveBenutzerBerechtigungen(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged);
+
+	/**
+	 * Aktualisiert den Benutzer in der DB or erstellt ihn wenn er noch nicht existiert.
 	 *
 	 * @param benutzer die Benutzer als DTO
 	 * @return Die aktualisierte Benutzer
@@ -50,6 +60,13 @@ public interface BenutzerService {
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
 
 	/**
+	 * Sucht einen Benutzer nach externalUUID: Diese Methode wird nur von den Connectoren gebraucht.
+	 * Innerhalb ebegu verwenden wir weiterhin die ID.
+	 */
+	@Nonnull
+	Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID);
+
+	/**
 	 * Gibt alle existierenden Benutzer zurueck.
 	 *
 	 * @return Liste aller Benutzern aus der DB
@@ -58,15 +75,15 @@ public interface BenutzerService {
 	Collection<Benutzer> getAllBenutzer();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_JA oder Admin zurueck.
+	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	@Nonnull
-	Collection<Benutzer> getBenutzerJAorAdmin();
+	Collection<Benutzer> getBenutzerBGorAdmin();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit Rolle ADMINISTRATOR_SCHULAMT oder SCHULAMT zurueck.
+	 * Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */

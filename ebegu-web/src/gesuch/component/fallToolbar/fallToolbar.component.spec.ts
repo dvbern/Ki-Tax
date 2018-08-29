@@ -16,6 +16,7 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
+import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -44,7 +45,7 @@ describe('fallToolbar', () => {
     let gemeinde1: TSGemeinde;
     let gemeinde2: TSGemeinde;
     let gemeinde3: TSGemeinde;
-    let user: TSUser;
+    const user: TSUser = new TSUser();
 
 
     beforeEach(async(() => {
@@ -60,6 +61,8 @@ describe('fallToolbar', () => {
             'isRole': false,
             'isOneOfRoles': false,
         });
+        authServiceSpy.principal$ = of(user) as any;
+
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
             'findDossiersByFall': Promise.resolve([dossier1, dossier2])
         });
@@ -103,21 +106,42 @@ describe('fallToolbar', () => {
             component.fallId = fall.id;
         }));
 
-        it('should return true for the selected dossier', async(() => {
-            component.openDossier(dossier1).subscribe(
-                () => expect(component.isDossierActive(dossier1)).toBe(true));
-        }));
-        it('should return false for a different dossier', () => {
-            component.openDossier(dossier1).subscribe(
-                () => expect(component.isDossierActive(dossier2)).toBe(false));
+        it('should return true for the selected dossier', done => {
+            component.openDossier$(dossier1).subscribe(
+                () => {
+                    expect(component.isDossierActive(dossier1)).toBe(true);
+                    done();
+                },
+                done.fail
+            );
         });
-        it('should return false for undefined', () => {
-            component.openDossier(dossier1).subscribe(
-                () => expect(component.isDossierActive(undefined)).toBe(false));
+
+        it('should return false for a different dossier', done => {
+            component.openDossier$(dossier1).subscribe(
+                () => {
+                    expect(component.isDossierActive(dossier2)).toBe(false);
+                    done();
+                },
+                done.fail
+            );
         });
-        it('should return false for the no selected dossier', () => {
-            component.openDossier(undefined).subscribe(
-                () => expect(component.isDossierActive(dossier1)).toBe(false));
+        it('should return false for undefined', done => {
+            component.openDossier$(dossier1).subscribe(
+                () => {
+                    expect(component.isDossierActive(undefined)).toBe(false);
+                    done();
+                },
+                done.fail
+            );
+        });
+        it('should return false for the no selected dossier', done => {
+            component.openDossier$(undefined).subscribe(
+                () => {
+                    expect(component.isDossierActive(dossier1)).toBe(false);
+                    done();
+                },
+                done.fail
+            );
         });
     });
 
@@ -216,8 +240,6 @@ describe('fallToolbar', () => {
         dossier1.gemeinde = gemeinde1;
         dossier2 = TestDataUtil.createDossier(DOSSIER_ID_2, fall);
         dossier2.gemeinde = gemeinde2;
-
-        user = new TSUser();
     }
 
     function initTestBed() {

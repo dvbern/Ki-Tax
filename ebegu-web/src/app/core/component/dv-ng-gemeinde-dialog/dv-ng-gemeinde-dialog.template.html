@@ -22,7 +22,7 @@
                 class="form-control"
                 [required]="true">
 
-            <option *ngFor="let gemeinde of gemeindeList$ | async" [ngValue]="gemeinde">{{gemeinde.name}}</option>
+            <option *ngFor="let gemeinde of gemeindeList" [ngValue]="gemeinde">{{gemeinde.name}}</option>
         </select>
     </div>
 

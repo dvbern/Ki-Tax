@@ -81,7 +81,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),
 	indexes = @Index(name = "IX_gesuch_timestamp_erstellt", columnList = "timestampErstellt")
 )
-public class Gesuch extends AbstractEntity implements Searchable {
+public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -8403487439884700618L;
 
@@ -195,10 +195,10 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenPruefungSTV;
 
-	@Nonnull
+	@Nullable
 	@Valid
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "gesuch")
-	private Set<DokumentGrund> dokumentGrunds = new HashSet<>();
+	private Set<DokumentGrund> dokumentGrunds;
 
 	@NotNull
 	@Min(0)
@@ -297,6 +297,11 @@ public class Gesuch extends AbstractEntity implements Searchable {
 
 	public boolean addDokumentGrund(@NotNull final DokumentGrund dokumentGrund) {
 		dokumentGrund.setGesuch(this);
+
+		if (this.dokumentGrunds == null) {
+			this.dokumentGrunds = new HashSet<>();
+		}
+
 		return this.dokumentGrunds.add(dokumentGrund);
 	}
 
@@ -420,12 +425,12 @@ public class Gesuch extends AbstractEntity implements Searchable {
 		this.gesuchBetreuungenStatus = gesuchBetreuungenStatus;
 	}
 
-	@Nonnull
+	@Nullable
 	public Set<DokumentGrund> getDokumentGrunds() {
 		return dokumentGrunds;
 	}
 
-	public void setDokumentGrunds(@Nonnull Set<DokumentGrund> dokumentGrunds) {
+	public void setDokumentGrunds(@Nullable Set<DokumentGrund> dokumentGrunds) {
 		this.dokumentGrunds = dokumentGrunds;
 	}
 
@@ -813,9 +818,11 @@ public class Gesuch extends AbstractEntity implements Searchable {
 	}
 
 	private void copyDokumentGruende(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		this.getDokumentGrunds().forEach(
+		if (this.getDokumentGrunds() != null) {
+			target.setDokumentGrunds(new HashSet<>());
+			this.getDokumentGrunds().forEach(
 			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
-		);
+		);}
 	}
 
 	@Nonnull
@@ -920,6 +927,11 @@ public class Gesuch extends AbstractEntity implements Searchable {
 			}
 		}
 		return null;
+	}
+
+	@Nonnull
+	public Gemeinde extractGemeinde() {
+		return getDossier().getGemeinde();
 	}
 
 	public AntragStatus getPreStatus() {

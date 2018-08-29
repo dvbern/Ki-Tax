@@ -34,6 +34,7 @@ import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {MaterialModule} from './material.module';
 import {UIRouterModule} from '@uirouter/angular';
+import {UiViewComponent} from './ui-view/ui-view.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
@@ -67,6 +68,7 @@ export function createTranslateLoader(http: HttpClient) {
         NavbarComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
+        UiViewComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -95,6 +97,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgShowElementDirective,
+        UiViewComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

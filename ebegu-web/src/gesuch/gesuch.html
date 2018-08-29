@@ -65,7 +65,7 @@
                    title="{{'DOKUMENTE_HOCHGELADEN'|translate}}" aria-label="{{'DOKUMENTE_HOCHGELADEN'|translate}}"></i>
                 <br>
                 <span class="zuletzt" data-translate="ZULETZT_BEARBEITER"
-                      data-translate-value-username="{{vm.getUserFullname()}}"></span>
+                      data-translate-value-username="{{vm.userFullName}}"></span>
                 <br>
                 <span class="zuletzt" ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
                       data-translate="GUELTIGES_GESUCH"></span>
@@ -81,7 +81,7 @@
                     ng-class="{'active-element': vm.isElementActive('GESUCH_ERSTELLEN')}">
                     <!--this button is added twice because it should do nothing if the gesuch is not saved yet-->
                     <button ng-if="!vm.getGesuch().isNew()" type="button" class="col-xs-10  btn-link"
-                            ui-sref="gesuch.fallcreation({createNewFall: false, gesuchId: vm.getGesuchId(), dossierId: vm.getDossierId()})"
+                            ui-sref="gesuch.fallcreation({gesuchId: vm.getGesuchId(), dossierId: vm.getDossierId()})"
                             ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
                             aria-hidden="{{vm.isWizardStepDisabled('GESUCH_ERSTELLEN')}}"
                             ng-click="vm.closeSidenav('sidenav')">

@@ -33,6 +33,9 @@
 /*Add them for ng2Material*/
 @import 'ebegu-theme.css';
 
+/*this must be import before all angularjs styles*/
+@import 'style/atoms/input.less';
+
 @import 'style/angularjs.less';
 @import 'style/mediaqueries.less';
 
@@ -71,11 +74,6 @@ html {
 
 dv-bisher, .dv-bisher {
     //display: none;
-}
-
-/* Required for Angular UI Bootstrap */
-.nav, .pagination, .carousel, .panel-title a {
-    cursor: pointer;
 }
 
 body {

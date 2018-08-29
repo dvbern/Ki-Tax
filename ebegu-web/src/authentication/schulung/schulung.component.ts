@@ -72,9 +72,9 @@ export class SchulungViewController implements IController {
 
     private setAmtUsers() {
         this.amtUserList.push(new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SCHULAMT));
+            this.mandant, TSRole.SACHBEARBEITER_TS));
         this.amtUserList.push(new TSUser('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_JA));
+            this.mandant, TSRole.SACHBEARBEITER_BG));
     }
 
     /**

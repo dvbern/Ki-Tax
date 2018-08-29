@@ -27,7 +27,6 @@ export default class AntragStatusHistoryRS {
         return this._lastChange;
     }
 
-
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
 
     serviceURL: string;
@@ -42,10 +41,6 @@ export default class AntragStatusHistoryRS {
         this.serviceURL = REST_API + 'antragStatusHistory';
     }
 
-    public getServiceName(): string {
-        return 'AntragStatusHistoryRS';
-    }
-
     /**
      * laedt und merkt sich den letzten Statusuebergang, kann mit #lastChange() ausgelesen werden
      */
@@ -54,40 +49,44 @@ export default class AntragStatusHistoryRS {
             return this.http.get(this.serviceURL + '/' + encodeURIComponent(gesuch.id))
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
-                    this._lastChange = this.ebeguRestUtil.parseAntragStatusHistory(new TSAntragStatusHistory(), response.data);
+                    const history = new TSAntragStatusHistory();
+                    this._lastChange = this.ebeguRestUtil.parseAntragStatusHistory(history, response.data);
+
                     return this._lastChange;
                 });
-        } else {
-            this._lastChange = undefined;
         }
-        return undefined;
+        this._lastChange = undefined;
+        return Promise.resolve(this._lastChange);
     }
 
-    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier, gesuchsperiode: TSGesuchsperiode): IPromise<Array<TSAntragStatusHistory>> {
+    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier,
+                                                      gesuchsperiode: TSGesuchsperiode)
+        : IPromise<Array<TSAntragStatusHistory>> {
+
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
-            return this.http.get(this.serviceURL + '/verlauf/' + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
+            const baseUrl = this.serviceURL + '/verlauf/';
+
+            return this.http.get(baseUrl + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);
                 });
         }
-        return undefined;
+        return Promise.resolve(undefined);
     }
 
     /**
-     * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch nicht
-     * gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
-     * @returns {string}
+     * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch
+     * nicht gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
      */
     public getUserFullname(): string {
         if (this.lastChange && this.lastChange.benutzer) {
             return this.lastChange.benutzer.getFullName();
-        } else {
-            if (this.authServiceRS && this.authServiceRS.getPrincipal()) {
-                return this.authServiceRS.getPrincipal().getFullName();
-            }
         }
-        return '';
+
+        const principal = this.authServiceRS.getPrincipal();
+
+        return principal ? principal.getFullName() : '';
     }
 
 }

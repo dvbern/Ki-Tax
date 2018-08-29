@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSBatchJobInformation from './TSBatchJobInformation';
 
 /**
  * DTO fuer einen WorkJob
  */
-export default class TSWorkJob extends TSAbstractEntity {
+export default class TSWorkJob extends TSAbstractMutableEntity {
 
     private _workJobType: string;
     private _startinguser: string;

@@ -41,10 +41,11 @@ export default class AuthServiceRS {
     private principal?: TSUser;
 
     // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
-    // Thus the session restoration from the cookie is completed before the authenticationHook checks for authentication.
+    // Thus the session restoration from the cookie is completed before the authenticationHook checks for
+    // authentication.
     private readonly principalSubject$ = new ReplaySubject<TSUser | null>(1);
 
-    public principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
+    private _principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
 
     constructor(private readonly $http: IHttpService,
                 private readonly $q: IQService,
@@ -56,9 +57,16 @@ export default class AuthServiceRS {
                 private readonly userRS: UserRS) {
     }
 
-    /**
-     * @deprecated use getPrincipal$ instead
-     */
+    // Use the observable, when the state must be updated automatically, when the principal changes.
+    // e.g. printing the name of the current user
+    get principal$(): Observable<TSUser | null> {
+        return this._principal$;
+    }
+
+    set principal$(value$: Observable<TSUser | null>) {
+        this._principal$ = value$;
+    }
+
     public getPrincipal(): TSUser | undefined {
         return this.principal;
     }
@@ -75,7 +83,8 @@ export default class AuthServiceRS {
             return undefined;
         }
 
-        return this.$http.post(CONSTANTS.REST_API + 'auth/login', this.ebeguRestUtil.userToRestObject({}, userCredentials))
+        return this.$http.post(CONSTANTS.REST_API + 'auth/login',
+            this.ebeguRestUtil.userToRestObject({}, userCredentials))
             .then(() => {
                 // try to reload buffered requests
                 this.httpBuffer.retryAll((config: IRequestConfig) => config);
@@ -92,7 +101,7 @@ export default class AuthServiceRS {
 
         const authIdbase64 = this.$cookies.get('authId');
         if (!authIdbase64) {
-            this.principalSubject$.next(null);
+            this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
@@ -100,26 +109,30 @@ export default class AuthServiceRS {
             const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
             return this.userRS.findBenutzer(authData.authId).then(user => {
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
                 this.principalSubject$.next(user);
                 this.principal = user;
+                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
 
                 return user;
             });
         } catch (e) {
             LOG.error('cookie decoding failed', e);
-            this.principalSubject$.next(null);
+            this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
     }
 
     public logoutRequest() {
         return this.$http.post(CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
-            this.principal = undefined;
-            this.principalSubject$.next(null);
+            this.clearPrincipal();
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             return res;
         });
+    }
+
+    public clearPrincipal(): void {
+        this.principal = undefined;
+        this.principalSubject$.next(null);
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
@@ -140,7 +153,7 @@ export default class AuthServiceRS {
      */
     public isRole(role: TSRole) {
         if (role && this.principal) {
-            return this.principal.getCurrentRole() === role;
+            return this.principal.hasRole(role);
         }
         return false;
     }
@@ -150,9 +163,7 @@ export default class AuthServiceRS {
      */
     public isOneOfRoles(roles: Array<TSRole>): boolean {
         if (roles !== undefined && roles !== null && this.principal) {
-            const principalRole = this.principal.getCurrentRole();
-
-            return roles.some(role => role === principalRole);
+            return this.principal.hasOneOfRoles(roles);
         }
         return false;
     }

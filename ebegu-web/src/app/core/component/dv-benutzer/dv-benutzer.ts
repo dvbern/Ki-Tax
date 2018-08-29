@@ -130,12 +130,12 @@ export class DVBenutzerController implements IOnInit {
     public getRollen(): Array<TSRole> {
         if (EbeguUtil.isTagesschulangebotEnabled()) {
             return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? getTSRoleValues()
-                : getTSRoleValuesWithoutSuperAdmin();
+                ? TSRoleUtil.getAllRolesButAnonymous()
+                : TSRoleUtil.getAllRolesButSuperAdminAndAnonymous();
         } else {
             return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButSchulamt()
-                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
+                ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
+                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
         }
     }
 
@@ -156,7 +156,7 @@ export class DVBenutzerController implements IOnInit {
         return role.userErstellt;
     }
 
-    saveBenutzer(): void {
+    saveBenutzerBerechtigungen(): void {
         if (this.form.$valid) {
             if (this.isMoreThanGesuchstellerRole()) {
                 this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
@@ -209,9 +209,9 @@ export class DVBenutzerController implements IOnInit {
         // Die (separat behandelte) aktuelle Berechtigung wieder zur Liste hinzufügen
         this.selectedUser.berechtigungen = this._futureBerechtigungen;
         this.selectedUser.berechtigungen.unshift(this._currentBerechtigung);
-        this.userRS.saveBenutzer(this.selectedUser).then((changedUser: TSUser) => {
+        this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
             this.navigateBackToUsersList();
-        }).catch(reason => {
+        }).catch(() => {
             this.initSelectedUser();
         });
     }
@@ -263,11 +263,11 @@ export class DVBenutzerController implements IOnInit {
     }
 
     public isInstitutionBerechtigung(berechtigung: TSBerechtigung): boolean {
-        return berechtigung && berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION;
+        return berechtigung && (berechtigung.role === TSRole.ADMIN_INSTITUTION || berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION);
     }
 
     public isTraegerschaftBerechtigung(berechtigung: TSBerechtigung): boolean {
-        return berechtigung && berechtigung.role === TSRole.SACHBEARBEITER_TRAEGERSCHAFT;
+        return berechtigung && (berechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT || berechtigung.role === TSRole.SACHBEARBEITER_TRAEGERSCHAFT);
     }
 
     public isBerechtigungEnabled(berechtigung: TSBerechtigung): boolean {

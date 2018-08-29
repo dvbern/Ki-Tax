@@ -67,6 +67,7 @@ export function appRun(angularMomentConfig: any,
     // $trace.enable(Category.TRANSITION);
 
     function onNotAuthenticated() {
+        authServiceRS.clearPrincipal();
         const currentPath: string = angular.copy($location.absUrl());
 
         const loginConnectorPaths = [

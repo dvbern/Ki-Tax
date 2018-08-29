@@ -20,6 +20,11 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import {onErrorPriorities} from './onErrorPriorities';
 
+/**
+ * This error recovery hook will ignore any errors with the following message.
+ */
+export const DISABLE_RECOVERY_ERROR_MESSAGE = 'ignore me. Already handled';
+
 errorRecoveryHookRunBlock.$inject = ['$transitions'];
 
 export function errorRecoveryHookRunBlock($transitions: TransitionService) {
@@ -27,6 +32,10 @@ export function errorRecoveryHookRunBlock($transitions: TransitionService) {
 }
 
 function onError(transition: Transition): HookResult {
+    if (transition.error().message === DISABLE_RECOVERY_ERROR_MESSAGE) {
+        return;
+    }
+
     const errorType = transition.error().type;
 
     if (errorType === RejectType.ABORTED || errorType === RejectType.ERROR) {

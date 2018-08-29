@@ -15,12 +15,9 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -31,7 +28,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.EbeguParameter;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -41,8 +38,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.enums.EbeguParameterKey;
-import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
@@ -65,7 +62,6 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_06;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
@@ -73,32 +69,43 @@ import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import ch.dvbern.ebegu.util.testdata.TestdataSetupConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ANZAHL_TAGE_KANTON;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_ANZAL_TAGE_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_BABY_ALTER_IN_MONATEN;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_BABY_FAKTOR;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_KOSTEN_PRO_STUNDE_MAX;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_KOSTEN_PRO_STUNDE_MIN;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_STUNDEN_PRO_TAG_TAGI;
+import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KONTINGENTIERUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_BABY_ALTER_IN_MONATEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_BABY_FAKTOR;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer erstellen und mutieren von Testfällen
  */
 @Stateless
 @Local(TestdataCreationService.class)
-@RolesAllowed({ UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 public class TestdataCreationServiceBean extends AbstractBaseService implements TestdataCreationService {
 
 	@Inject
@@ -111,8 +118,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	private GesuchService gesuchService;
 	@Inject
 	private TestfaelleService testfaelleService;
-	@Inject
-	private EbeguParameterService parameterService;
 	@Inject
 	private BetreuungService betreuungService;
 	@Inject
@@ -133,7 +138,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	public Gesuch createErstgesuch(@Nonnull ErstgesuchConfig config) {
 		Gesuchsperiode gesuchsperiode = getGesuchsperiode(null, config);
 		Gemeinde gemeinde = getGemeinde(null, config);
-		insertParametersForTestfaelle(gesuchsperiode);
 		AbstractTestfall testfall = createTestfall(config, gesuchsperiode, gemeinde);
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
 		if (config.isVerfuegt()) {
@@ -144,7 +148,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	@Override
 	public Gesuch createMutation(@Nonnull MutationConfig config, @Nonnull Gesuch vorgaengerAntrag) {
-		insertParametersForTestfaelle(vorgaengerAntrag.getGesuchsperiode());
 		Gesuch mutation = gesuchService.antragMutieren(vorgaengerAntrag.getId(), config.getEingangsdatum())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ""));
 		if (config.getErwerbspensum() != null) {
@@ -375,37 +378,40 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		}
 	}
 
-	private void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
-		LocalDate year1Start = LocalDate.of(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear(), Month.JANUARY, 1);
-		LocalDate year1End = LocalDate.of(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear(), Month.DECEMBER, 31);
-		saveParameter(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA, "7", new DateRange(year1Start, year1End));
-		saveParameter(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA, "7", new DateRange(year1Start.plusYears(1), year1End.plusYears(1)));
-		saveParameter(PARAM_ANZAL_TAGE_MAX_KITA, "244", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_STUNDEN_PRO_TAG_MAX_KITA, "11.5", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_KOSTEN_PRO_STUNDE_MAX, "11.91", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_KOSTEN_PRO_STUNDE_MIN, "0.75", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_MASSGEBENDES_EINKOMMEN_MAX, "158690", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_MASSGEBENDES_EINKOMMEN_MIN, "42540", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_ANZAHL_TAGE_KANTON, "240", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_STUNDEN_PRO_TAG_TAGI, "7", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, "9.16", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_BABY_ALTER_IN_MONATEN, "12", gesuchsperiode.getGueltigkeit());  //waere eigentlich int
-		saveParameter(PARAM_BABY_FAKTOR, "1.5", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, "5900", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, "6970", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode.getGueltigkeit());
-		saveParameter(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode.getGueltigkeit());
+	@Override
+	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
+		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode);
+		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode);
+		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, "7", gesuchsperiode);
+		saveEinstellung(PARAM_ANZAL_TAGE_MAX_KITA, "244", gesuchsperiode);
+		saveEinstellung(PARAM_STUNDEN_PRO_TAG_MAX_KITA, "11.5", gesuchsperiode);
+		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX, "11.91", gesuchsperiode);
+		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MIN, "0.75", gesuchsperiode);
+		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MAX, "158690", gesuchsperiode);
+		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MIN, "42540", gesuchsperiode);
+		saveEinstellung(PARAM_ANZAHL_TAGE_KANTON, "240", gesuchsperiode);
+		saveEinstellung(PARAM_STUNDEN_PRO_TAG_TAGI, "7", gesuchsperiode);
+		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, "9.16", gesuchsperiode);
+		saveEinstellung(PARAM_BABY_ALTER_IN_MONATEN, "12", gesuchsperiode);  //waere eigentlich int
+		saveEinstellung(PARAM_BABY_FAKTOR, "1.5", gesuchsperiode);
+		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode);
+		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, "5900", gesuchsperiode);
+		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, "6970", gesuchsperiode);
+		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode);
+		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode);
+		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
+		saveEinstellung(PARAM_PENSUM_KITA_MIN, "20", gesuchsperiode);
+		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "20", gesuchsperiode);
+		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode);
+		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "20", gesuchsperiode);
+		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode);
+		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
+		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode);
 	}
 
-	private void saveParameter(@Nonnull EbeguParameterKey key, @Nonnull String value, @Nonnull DateRange gueltigkeit) {
-		EbeguParameter ebeguParameter = new EbeguParameter(key, value, gueltigkeit);
-		Optional<EbeguParameter> ebeguParameterByKeyAndDate = parameterService.getEbeguParameterByKeyAndDate(key, gueltigkeit.getGueltigAb().plusDays(1));
-		if (!ebeguParameterByKeyAndDate.isPresent()) {
-			persistence.persist(ebeguParameter);
-		}
+	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {
+		Einstellung einstellungen = new Einstellung(key, value, gesuchsperiode);
+		persistence.persist(einstellungen);
 	}
 
 	private InstitutionStammdaten getInstitutionStammdaten(@Nonnull AnmeldungConfig config) {

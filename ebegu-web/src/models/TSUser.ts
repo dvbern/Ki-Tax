@@ -28,6 +28,7 @@ export default class TSUser {
     private _nachname: string;
     private _vorname: string;
     private _username: string;
+    private _externalUUID: string;
     private _password: string;
     private _email: string;
     private _mandant: TSMandant;
@@ -37,13 +38,23 @@ export default class TSUser {
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
 
-
-    constructor(vorname?: string, nachname?: string, username?: string, password?: string, email?: string,
-                mandant?: TSMandant, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution, gemeinde?: TSGemeinde[],
-                amt?: TSAmt, gesperrt?: boolean) {
+    constructor(vorname?: string,
+                nachname?: string,
+                username?: string,
+                password?: string,
+                email?: string,
+                mandant?: TSMandant,
+                role?: TSRole,
+                traegerschaft?: TSTraegerschaft,
+                institution?: TSInstitution,
+                gemeinde?: TSGemeinde[],
+                amt?: TSAmt,
+                gesperrt?: boolean,
+                externalUUID?: string) {
         this._vorname = vorname;
         this._nachname = nachname;
         this._username = username;
+        this._externalUUID = externalUUID;
         this._password = password;
         this._email = email;
         this._mandant = mandant;
@@ -84,6 +95,14 @@ export default class TSUser {
         this._username = value;
     }
 
+    public get externalUUID(): string {
+        return this._externalUUID;
+    }
+
+    public set externalUUID(value: string) {
+        this._externalUUID = value;
+    }
+
     get password(): string {
         return this._password;
     }
@@ -110,7 +129,7 @@ export default class TSUser {
 
     get amt(): TSAmt {
         if (!this._amt) {
-            this._amt = this.analyseAmt();
+            this._amt = this._currentBerechtigung.analyseAmt();
         }
         return this._amt;
     }
@@ -176,31 +195,21 @@ export default class TSUser {
         return rolePrefix() + this.currentBerechtigung.role;
     }
 
-    /**
-     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie zu speichern
-     * waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server gesetzt und zum Client geschickt.
-     * Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
-     * ACHTUNG Diese Logik existiert auch im Server UserRole. Aenderungen muessen in beiden Orten gemacht werden.
-     */
-    private analyseAmt(): TSAmt {
-        switch (this.currentBerechtigung.role) {
-            case TSRole.SACHBEARBEITER_JA:
-            case TSRole.ADMIN:
-            case TSRole.SUPER_ADMIN:
-                return TSAmt.JUGENDAMT;
-            case TSRole.SCHULAMT:
-            case TSRole.ADMINISTRATOR_SCHULAMT:
-                return TSAmt.SCHULAMT;
-            default:
-                return TSAmt.NONE;
-        }
-    }
-
     public getCurrentRole() {
         return this.currentBerechtigung.role;
     }
 
     public hasJustOneGemeinde() {
         return this.extractCurrentGemeinden().length === 1;
+    }
+
+    public hasRole(role: TSRole): boolean {
+        return this.getCurrentRole() === role;
+    }
+
+    public hasOneOfRoles(roles: TSRole[]): boolean {
+        const principalRole = this.getCurrentRole();
+
+        return roles.some(role => role === principalRole);
     }
 }

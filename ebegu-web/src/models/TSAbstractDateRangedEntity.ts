@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export class TSAbstractDateRangedEntity extends TSAbstractEntity {
+export class TSAbstractDateRangedEntity extends TSAbstractMutableEntity {
 
     private _gueltigkeit: TSDateRange;
 

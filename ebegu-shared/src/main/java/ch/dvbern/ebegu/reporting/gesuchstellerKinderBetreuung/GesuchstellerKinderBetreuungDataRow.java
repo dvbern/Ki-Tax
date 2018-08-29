@@ -18,6 +18,8 @@ package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -25,25 +27,25 @@ import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 
 public class GesuchstellerKinderBetreuungDataRow {
 
-	private String bgNummer;
-	private String institution;
-	private BetreuungsangebotTyp betreuungsTyp;
-	private String periode;
-	private String gesuchStatus;
+	@Nullable private String bgNummer;
+	@Nullable private String institution;
+	@Nullable private BetreuungsangebotTyp betreuungsTyp;
+	@Nullable private String periode;
+	@Nullable private String gesuchStatus;
 
-	private LocalDate eingangsdatum;
-	private LocalDate verfuegungsdatum;
-	private Integer fallId;
+	@Nullable private LocalDate eingangsdatum;
+	@Nullable private LocalDate verfuegungsdatum;
+	@Nullable private Integer fallId;
 
-	private String gs1Name;
-	private String gs1Vorname;
-	private String gs1Strasse;
-	private String gs1Hausnummer;
-	private String gs1Zusatzzeile;
-	private String gs1Plz;
-	private String gs1Ort;
-	private String gs1EwkId;
-	private Boolean gs1Diplomatenstatus;
+	@Nullable private String gs1Name;
+	@Nullable private String gs1Vorname;
+	@Nullable private String gs1Strasse;
+	@Nullable private String gs1Hausnummer;
+	@Nullable private String gs1Zusatzzeile;
+	@Nullable private String gs1Plz;
+	@Nullable private String gs1Ort;
+	@Nullable private String gs1EwkId;
+	@Nullable private Boolean gs1Diplomatenstatus;
 	private Integer gs1EwpAngestellt;
 	private Integer gs1EwpAusbildung;
 	private Integer gs1EwpSelbstaendig;
@@ -51,15 +53,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs1EwpZuschlag;
 	private Integer gs1EwpGesundhtl;
 
-	private String gs2Name;
-	private String gs2Vorname;
-	private String gs2Strasse;
-	private String gs2Hausnummer;
-	private String gs2Zusatzzeile;
-	private String gs2Plz;
-	private String gs2Ort;
-	private String gs2EwkId;
-	private Boolean gs2Diplomatenstatus;
+	@Nullable private String gs2Name;
+	@Nullable private String gs2Vorname;
+	@Nullable private String gs2Strasse;
+	@Nullable private String gs2Hausnummer;
+	@Nullable private String gs2Zusatzzeile;
+	@Nullable private String gs2Plz;
+	@Nullable private String gs2Ort;
+	@Nullable private String gs2EwkId;
+	@Nullable private Boolean gs2Diplomatenstatus;
 	private Integer gs2EwpAngestellt;
 	private Integer gs2EwpAusbildung;
 	private Integer gs2EwpSelbstaendig;
@@ -67,173 +69,190 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs2EwpZuschlag;
 	private Integer gs2EwpGesundhtl;
 
-	private EnumFamilienstatus familiensituation;
-	private EnumGesuchstellerKardinalitaet kardinalitaet;
-	private BigDecimal familiengroesse;
+	@Nullable private EnumFamilienstatus familiensituation;
+	@Nullable private EnumGesuchstellerKardinalitaet kardinalitaet;
+	@Nullable private BigDecimal familiengroesse;
 
-	private BigDecimal massgEinkVorFamilienabzug;
-	private BigDecimal familienabzug;
-	private BigDecimal massgEink;
-	private Integer einkommensjahr;
-	private Boolean ekvVorhanden;
-	private Boolean stvGeprueft;
-	private Boolean veranlagt;
+	@Nullable private BigDecimal massgEinkVorFamilienabzug;
+	@Nullable private BigDecimal familienabzug;
+	@Nullable private BigDecimal massgEink;
+	@Nullable private Integer einkommensjahr;
+	@Nullable private Boolean ekvVorhanden;
+	@Nullable private Boolean stvGeprueft;
+	@Nullable private Boolean veranlagt;
 
-	private String kindName;
-	private String kindVorname;
-	private LocalDate kindGeburtsdatum;
-	private String kindFachstelle;
-	private Boolean kindErwBeduerfnisse;
-	private Boolean kindDeutsch;
-	private EinschulungTyp kindEinschulungTyp;
+	@Nullable private String kindName;
+	@Nullable private String kindVorname;
+	@Nullable private LocalDate kindGeburtsdatum;
+	@Nullable private String kindFachstelle;
+	@Nullable private Boolean kindErwBeduerfnisse;
+	@Nullable private Boolean kindDeutsch;
+	@Nullable private EinschulungTyp kindEinschulungTyp;
 
 	private LocalDate zeitabschnittVon;
 	private LocalDate zeitabschnittBis;
-	private String betreuungsStatus;
-	private BigDecimal betreuungsPensum;
-	private BigDecimal anspruchsPensum;
-	private BigDecimal bgPensum;
-	private BigDecimal bgStunden;
-	private BigDecimal vollkosten;
-	private BigDecimal elternbeitrag;
-	private BigDecimal verguenstigt;
+	@Nullable private String betreuungsStatus;
+	@Nullable private BigDecimal betreuungsPensum;
+	@Nullable private BigDecimal anspruchsPensum;
+	@Nullable private BigDecimal bgPensum;
+	@Nullable private BigDecimal bgStunden;
+	@Nullable private BigDecimal vollkosten;
+	@Nullable private BigDecimal elternbeitrag;
+	@Nullable private BigDecimal verguenstigt;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
 
+	@Nullable
 	public String getBgNummer() {
 		return bgNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
+	public void setBgNummer(@Nullable String bgNummer) {
 		this.bgNummer = bgNummer;
 	}
 
+	@Nullable
 	public String getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(String institution) {
+	public void setInstitution(@Nullable String institution) {
 		this.institution = institution;
 	}
 
+	@Nullable
 	public BetreuungsangebotTyp getBetreuungsTyp() {
 		return betreuungsTyp;
 	}
 
-	public void setBetreuungsTyp(BetreuungsangebotTyp betreuungsTyp) {
+	public void setBetreuungsTyp(@Nullable BetreuungsangebotTyp betreuungsTyp) {
 		this.betreuungsTyp = betreuungsTyp;
 	}
 
+	@Nullable
 	public String getPeriode() {
 		return periode;
 	}
 
-	public void setPeriode(String periode) {
+	public void setPeriode(@Nullable String periode) {
 		this.periode = periode;
 	}
 
+	@Nullable
 	public String getGesuchStatus() {
 		return gesuchStatus;
 	}
 
-	public void setGesuchStatus(String gesuchStatus) {
+	public void setGesuchStatus(@Nullable String gesuchStatus) {
 		this.gesuchStatus = gesuchStatus;
 	}
 
+	@Nullable
 	public LocalDate getEingangsdatum() {
 		return eingangsdatum;
 	}
 
-	public void setEingangsdatum(LocalDate eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 
+	@Nullable
 	public LocalDate getVerfuegungsdatum() {
 		return verfuegungsdatum;
 	}
 
-	public void setVerfuegungsdatum(LocalDate verfuegungsdatum) {
+	public void setVerfuegungsdatum(@Nullable LocalDate verfuegungsdatum) {
 		this.verfuegungsdatum = verfuegungsdatum;
 	}
 
+	@Nullable
 	public Integer getFallId() {
 		return fallId;
 	}
 
-	public void setFallId(Integer fallId) {
+	public void setFallId(@Nullable Integer fallId) {
 		this.fallId = fallId;
 	}
 
+	@Nullable
 	public String getGs1Name() {
 		return gs1Name;
 	}
 
-	public void setGs1Name(String gs1Name) {
+	public void setGs1Name(@Nullable String gs1Name) {
 		this.gs1Name = gs1Name;
 	}
 
+	@Nullable
 	public String getGs1Vorname() {
 		return gs1Vorname;
 	}
 
-	public void setGs1Vorname(String gs1Vorname) {
+	public void setGs1Vorname(@Nullable String gs1Vorname) {
 		this.gs1Vorname = gs1Vorname;
 	}
 
+	@Nullable
 	public String getGs1Strasse() {
 		return gs1Strasse;
 	}
 
-	public void setGs1Strasse(String gs1Strasse) {
+	public void setGs1Strasse(@Nullable String gs1Strasse) {
 		this.gs1Strasse = gs1Strasse;
 	}
 
+	@Nullable
 	public String getGs1Hausnummer() {
 		return gs1Hausnummer;
 	}
 
-	public void setGs1Hausnummer(String gs1Hausnummer) {
+	public void setGs1Hausnummer(@Nullable String gs1Hausnummer) {
 		this.gs1Hausnummer = gs1Hausnummer;
 	}
 
+	@Nullable
 	public String getGs1Zusatzzeile() {
 		return gs1Zusatzzeile;
 	}
 
-	public void setGs1Zusatzzeile(String gs1Zusatzzeile) {
+	public void setGs1Zusatzzeile(@Nullable String gs1Zusatzzeile) {
 		this.gs1Zusatzzeile = gs1Zusatzzeile;
 	}
 
+	@Nullable
 	public String getGs1Plz() {
 		return gs1Plz;
 	}
 
-	public void setGs1Plz(String gs1Plz) {
+	public void setGs1Plz(@Nullable String gs1Plz) {
 		this.gs1Plz = gs1Plz;
 	}
 
+	@Nullable
 	public String getGs1Ort() {
 		return gs1Ort;
 	}
 
-	public void setGs1Ort(String gs1Ort) {
+	public void setGs1Ort(@Nullable String gs1Ort) {
 		this.gs1Ort = gs1Ort;
 	}
 
+	@Nullable
 	public String getGs1EwkId() {
 		return gs1EwkId;
 	}
 
-	public void setGs1EwkId(String gs1EwkId) {
+	public void setGs1EwkId(@Nullable String gs1EwkId) {
 		this.gs1EwkId = gs1EwkId;
 	}
 
+	@Nullable
 	public Boolean getGs1Diplomatenstatus() {
 		return gs1Diplomatenstatus;
 	}
 
-	public void setGs1Diplomatenstatus(Boolean gs1Diplomatenstatus) {
+	public void setGs1Diplomatenstatus(@Nullable Boolean gs1Diplomatenstatus) {
 		this.gs1Diplomatenstatus = gs1Diplomatenstatus;
 	}
 
@@ -241,7 +260,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs1EwpAngestellt;
 	}
 
-	public void setGs1EwpAngestellt(Integer gs1EwpAngestellt) {
+	public void setGs1EwpAngestellt(@Nullable Integer gs1EwpAngestellt) {
 		this.gs1EwpAngestellt = gs1EwpAngestellt;
 	}
 
@@ -249,7 +268,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs1EwpAusbildung;
 	}
 
-	public void setGs1EwpAusbildung(Integer gs1EwpAusbildung) {
+	public void setGs1EwpAusbildung(@Nullable Integer gs1EwpAusbildung) {
 		this.gs1EwpAusbildung = gs1EwpAusbildung;
 	}
 
@@ -257,7 +276,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs1EwpSelbstaendig;
 	}
 
-	public void setGs1EwpSelbstaendig(Integer gs1EwpSelbstaendig) {
+	public void setGs1EwpSelbstaendig(@Nullable Integer gs1EwpSelbstaendig) {
 		this.gs1EwpSelbstaendig = gs1EwpSelbstaendig;
 	}
 
@@ -265,7 +284,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs1EwpRav;
 	}
 
-	public void setGs1EwpRav(Integer gs1EwpRav) {
+	public void setGs1EwpRav(@Nullable Integer gs1EwpRav) {
 		this.gs1EwpRav = gs1EwpRav;
 	}
 
@@ -273,7 +292,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs1EwpZuschlag;
 	}
 
-	public void setGs1EwpZuschlag(Integer gs1EwpZuschlag) {
+	public void setGs1EwpZuschlag(@Nullable Integer gs1EwpZuschlag) {
 		this.gs1EwpZuschlag = gs1EwpZuschlag;
 	}
 
@@ -281,79 +300,88 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs1EwpGesundhtl;
 	}
 
-	public void setGs1EwpGesundhtl(Integer gs1EwpGesundhtl) {
+	public void setGs1EwpGesundhtl(@Nullable Integer gs1EwpGesundhtl) {
 		this.gs1EwpGesundhtl = gs1EwpGesundhtl;
 	}
 
+	@Nullable
 	public String getGs2Name() {
 		return gs2Name;
 	}
 
-	public void setGs2Name(String gs2Name) {
+	public void setGs2Name(@Nullable String gs2Name) {
 		this.gs2Name = gs2Name;
 	}
 
+	@Nullable
 	public String getGs2Vorname() {
 		return gs2Vorname;
 	}
 
-	public void setGs2Vorname(String gs2Vorname) {
+	public void setGs2Vorname(@Nullable String gs2Vorname) {
 		this.gs2Vorname = gs2Vorname;
 	}
 
+	@Nullable
 	public String getGs2Strasse() {
 		return gs2Strasse;
 	}
 
-	public void setGs2Strasse(String gs2Strasse) {
+	public void setGs2Strasse(@Nullable String gs2Strasse) {
 		this.gs2Strasse = gs2Strasse;
 	}
 
+	@Nullable
 	public String getGs2Hausnummer() {
 		return gs2Hausnummer;
 	}
 
-	public void setGs2Hausnummer(String gs2Hausnummer) {
+	public void setGs2Hausnummer(@Nullable String gs2Hausnummer) {
 		this.gs2Hausnummer = gs2Hausnummer;
 	}
 
+	@Nullable
 	public String getGs2Zusatzzeile() {
 		return gs2Zusatzzeile;
 	}
 
-	public void setGs2Zusatzzeile(String gs2Zusatzzeile) {
+	public void setGs2Zusatzzeile(@Nullable String gs2Zusatzzeile) {
 		this.gs2Zusatzzeile = gs2Zusatzzeile;
 	}
 
+	@Nullable
 	public String getGs2Plz() {
 		return gs2Plz;
 	}
 
-	public void setGs2Plz(String gs2Plz) {
+	public void setGs2Plz(@Nullable String gs2Plz) {
 		this.gs2Plz = gs2Plz;
 	}
 
+	@Nullable
 	public String getGs2Ort() {
 		return gs2Ort;
 	}
 
-	public void setGs2Ort(String gs2Ort) {
+	public void setGs2Ort(@Nullable String gs2Ort) {
 		this.gs2Ort = gs2Ort;
 	}
 
+	@Nullable
 	public String getGs2EwkId() {
 		return gs2EwkId;
 	}
 
-	public void setGs2EwkId(String gs2EwkId) {
+	public void setGs2EwkId(@Nullable String gs2EwkId) {
 		this.gs2EwkId = gs2EwkId;
 	}
 
+	@Nullable
 	public Boolean getGs2Diplomatenstatus() {
 		return gs2Diplomatenstatus;
 	}
 
-	public void setGs2Diplomatenstatus(Boolean gs2Diplomatenstatus) {
+	public void setGs2Diplomatenstatus(@Nullable Boolean gs2Diplomatenstatus) {
 		this.gs2Diplomatenstatus = gs2Diplomatenstatus;
 	}
 
@@ -361,7 +389,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs2EwpAngestellt;
 	}
 
-	public void setGs2EwpAngestellt(Integer gs2EwpAngestellt) {
+	public void setGs2EwpAngestellt(@Nullable Integer gs2EwpAngestellt) {
 		this.gs2EwpAngestellt = gs2EwpAngestellt;
 	}
 
@@ -369,7 +397,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs2EwpAusbildung;
 	}
 
-	public void setGs2EwpAusbildung(Integer gs2EwpAusbildung) {
+	public void setGs2EwpAusbildung(@Nullable Integer gs2EwpAusbildung) {
 		this.gs2EwpAusbildung = gs2EwpAusbildung;
 	}
 
@@ -377,7 +405,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs2EwpSelbstaendig;
 	}
 
-	public void setGs2EwpSelbstaendig(Integer gs2EwpSelbstaendig) {
+	public void setGs2EwpSelbstaendig(@Nullable Integer gs2EwpSelbstaendig) {
 		this.gs2EwpSelbstaendig = gs2EwpSelbstaendig;
 	}
 
@@ -385,7 +413,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs2EwpRav;
 	}
 
-	public void setGs2EwpRav(Integer gs2EwpRav) {
+	public void setGs2EwpRav(@Nullable Integer gs2EwpRav) {
 		this.gs2EwpRav = gs2EwpRav;
 	}
 
@@ -393,7 +421,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs2EwpZuschlag;
 	}
 
-	public void setGs2EwpZuschlag(Integer gs2EwpZuschlag) {
+	public void setGs2EwpZuschlag(@Nullable Integer gs2EwpZuschlag) {
 		this.gs2EwpZuschlag = gs2EwpZuschlag;
 	}
 
@@ -401,141 +429,158 @@ public class GesuchstellerKinderBetreuungDataRow {
 		return gs2EwpGesundhtl;
 	}
 
-	public void setGs2EwpGesundhtl(Integer gs2EwpGesundhtl) {
+	public void setGs2EwpGesundhtl(@Nullable Integer gs2EwpGesundhtl) {
 		this.gs2EwpGesundhtl = gs2EwpGesundhtl;
 	}
 
+	@Nullable
 	public EnumFamilienstatus getFamiliensituation() {
 		return familiensituation;
 	}
 
-	public void setFamiliensituation(EnumFamilienstatus familiensituation) {
+	public void setFamiliensituation(@Nullable EnumFamilienstatus familiensituation) {
 		this.familiensituation = familiensituation;
 	}
 
+	@Nullable
 	public EnumGesuchstellerKardinalitaet getKardinalitaet() {
 		return kardinalitaet;
 	}
 
-	public void setKardinalitaet(EnumGesuchstellerKardinalitaet kardinalitaet) {
+	public void setKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet kardinalitaet) {
 		this.kardinalitaet = kardinalitaet;
 	}
 
+	@Nullable
 	public BigDecimal getFamiliengroesse() {
 		return familiengroesse;
 	}
 
-	public void setFamiliengroesse(BigDecimal familiengroesse) {
+	public void setFamiliengroesse(@Nullable BigDecimal familiengroesse) {
 		this.familiengroesse = familiengroesse;
 	}
 
+	@Nullable
 	public BigDecimal getMassgEinkVorFamilienabzug() {
 		return massgEinkVorFamilienabzug;
 	}
 
-	public void setMassgEinkVorFamilienabzug(BigDecimal massgEinkVorFamilienabzug) {
+	public void setMassgEinkVorFamilienabzug(@Nullable BigDecimal massgEinkVorFamilienabzug) {
 		this.massgEinkVorFamilienabzug = massgEinkVorFamilienabzug;
 	}
 
+	@Nullable
 	public BigDecimal getFamilienabzug() {
 		return familienabzug;
 	}
 
-	public void setFamilienabzug(BigDecimal familienabzug) {
+	public void setFamilienabzug(@Nullable BigDecimal familienabzug) {
 		this.familienabzug = familienabzug;
 	}
 
+	@Nullable
 	public BigDecimal getMassgEink() {
 		return massgEink;
 	}
 
-	public void setMassgEink(BigDecimal massgEink) {
+	public void setMassgEink(@Nullable BigDecimal massgEink) {
 		this.massgEink = massgEink;
 	}
 
+	@Nullable
 	public Integer getEinkommensjahr() {
 		return einkommensjahr;
 	}
 
-	public void setEinkommensjahr(Integer einkommensjahr) {
+	public void setEinkommensjahr(@Nullable Integer einkommensjahr) {
 		this.einkommensjahr = einkommensjahr;
 	}
 
+	@Nullable
 	public Boolean getEkvVorhanden() {
 		return ekvVorhanden;
 	}
 
-	public void setEkvVorhanden(Boolean ekvVorhanden) {
+	public void setEkvVorhanden(@Nullable Boolean ekvVorhanden) {
 		this.ekvVorhanden = ekvVorhanden;
 	}
 
+	@Nullable
 	public Boolean getStvGeprueft() {
 		return stvGeprueft;
 	}
 
-	public void setStvGeprueft(Boolean stvGeprueft) {
+	public void setStvGeprueft(@Nullable Boolean stvGeprueft) {
 		this.stvGeprueft = stvGeprueft;
 	}
 
+	@Nullable
 	public Boolean getVeranlagt() {
 		return veranlagt;
 	}
 
-	public void setVeranlagt(Boolean veranlagt) {
+	public void setVeranlagt(@Nullable Boolean veranlagt) {
 		this.veranlagt = veranlagt;
 	}
 
+	@Nullable
 	public String getKindName() {
 		return kindName;
 	}
 
-	public void setKindName(String kindName) {
+	public void setKindName(@Nullable String kindName) {
 		this.kindName = kindName;
 	}
 
+	@Nullable
 	public String getKindVorname() {
 		return kindVorname;
 	}
 
-	public void setKindVorname(String kindVorname) {
+	public void setKindVorname(@Nullable String kindVorname) {
 		this.kindVorname = kindVorname;
 	}
 
+	@Nullable
 	public LocalDate getKindGeburtsdatum() {
 		return kindGeburtsdatum;
 	}
 
-	public void setKindGeburtsdatum(LocalDate kindGeburtsdatum) {
+	public void setKindGeburtsdatum(@Nullable LocalDate kindGeburtsdatum) {
 		this.kindGeburtsdatum = kindGeburtsdatum;
 	}
 
+	@Nullable
 	public String getKindFachstelle() {
 		return kindFachstelle;
 	}
 
-	public void setKindFachstelle(String kindFachstelle) {
+	public void setKindFachstelle(@Nullable String kindFachstelle) {
 		this.kindFachstelle = kindFachstelle;
 	}
 
+	@Nullable
 	public Boolean getKindErwBeduerfnisse() {
 		return kindErwBeduerfnisse;
 	}
 
-	public void setKindErwBeduerfnisse(Boolean kindErwBeduerfnisse) {
+	public void setKindErwBeduerfnisse(@Nullable Boolean kindErwBeduerfnisse) {
 		this.kindErwBeduerfnisse = kindErwBeduerfnisse;
 	}
 
+	@Nullable
 	public Boolean getKindDeutsch() {
 		return kindDeutsch;
 	}
 
-	public void setKindDeutsch(Boolean kindDeutsch) {
+	public void setKindDeutsch(@Nullable Boolean kindDeutsch) {
 		this.kindDeutsch = kindDeutsch;
 	}
 
+	@Nullable
 	public EinschulungTyp getKindEinschulungTyp() { return kindEinschulungTyp; }
 
-	public void setKindEinschulungTyp(EinschulungTyp kindEinschulungTyp) { this.kindEinschulungTyp = kindEinschulungTyp; }
+	public void setKindEinschulungTyp(@Nullable EinschulungTyp kindEinschulungTyp) { this.kindEinschulungTyp = kindEinschulungTyp; }
 
 	public LocalDate getZeitabschnittVon() {
 		return zeitabschnittVon;
@@ -553,67 +598,75 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.zeitabschnittBis = zeitabschnittBis;
 	}
 
+	@Nullable
 	public String getBetreuungsStatus() {
 		return betreuungsStatus;
 	}
 
-	public void setBetreuungsStatus(String betreuungsStatus) {
+	public void setBetreuungsStatus(@Nullable String betreuungsStatus) {
 		this.betreuungsStatus = betreuungsStatus;
 	}
 
+	@Nullable
 	public BigDecimal getBetreuungsPensum() {
 		return betreuungsPensum;
 	}
 
-	public void setBetreuungsPensum(BigDecimal betreuungsPensum) {
+	public void setBetreuungsPensum(@Nullable BigDecimal betreuungsPensum) {
 		this.betreuungsPensum = betreuungsPensum;
 	}
 
+	@Nullable
 	public BigDecimal getAnspruchsPensum() {
 		return anspruchsPensum;
 	}
 
-	public void setAnspruchsPensum(BigDecimal anspruchsPensum) {
+	public void setAnspruchsPensum(@Nullable BigDecimal anspruchsPensum) {
 		this.anspruchsPensum = anspruchsPensum;
 	}
 
+	@Nullable
 	public BigDecimal getBgPensum() {
 		return bgPensum;
 	}
 
-	public void setBgPensum(BigDecimal bgPensum) {
+	public void setBgPensum(@Nullable BigDecimal bgPensum) {
 		this.bgPensum = bgPensum;
 	}
 
+	@Nullable
 	public BigDecimal getBgStunden() {
 		return bgStunden;
 	}
 
-	public void setBgStunden(BigDecimal bgStunden) {
+	public void setBgStunden(@Nullable BigDecimal bgStunden) {
 		this.bgStunden = bgStunden;
 	}
 
+	@Nullable
 	public BigDecimal getVollkosten() {
 		return vollkosten;
 	}
 
-	public void setVollkosten(BigDecimal vollkosten) {
+	public void setVollkosten(@Nullable BigDecimal vollkosten) {
 		this.vollkosten = vollkosten;
 	}
 
+	@Nullable
 	public BigDecimal getElternbeitrag() {
 		return elternbeitrag;
 	}
 
-	public void setElternbeitrag(BigDecimal elternbeitrag) {
+	public void setElternbeitrag(@Nullable BigDecimal elternbeitrag) {
 		this.elternbeitrag = elternbeitrag;
 	}
 
+	@Nullable
 	public BigDecimal getVerguenstigt() {
 		return verguenstigt;
 	}
 
-	public void setVerguenstigt(BigDecimal verguenstigt) {
+	public void setVerguenstigt(@Nullable BigDecimal verguenstigt) {
 		this.verguenstigt = verguenstigt;
 	}
 }

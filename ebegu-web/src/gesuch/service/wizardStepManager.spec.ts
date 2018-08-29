@@ -13,16 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
+import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
+import TSAdresse from '../../models/TSAdresse';
+import TSAdresseContainer from '../../models/TSAdresseContainer';
 import TSGesuch from '../../models/TSGesuch';
+import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import TSWizardStep from '../../models/TSWizardStep';
+import {TSDateRange} from '../../models/types/TSDateRange';
+import DateUtil from '../../utils/DateUtil';
 import WizardStepManager from './wizardStepManager';
 import WizardStepRS from './WizardStepRS.rest';
 
@@ -67,9 +74,9 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[5]).toBe(TSWizardStepName.VERFUEGEN);
         });
         it('constructs the steps for JA', () => {
-            spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_JA);
+            spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.getAllowedSteps().length).toBe(13);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
@@ -121,7 +128,7 @@ describe('wizardStepManager', () => {
         it('next step is available because status != UNBESUCHT', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
 
             wizardStepManager.setCurrentStep(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.isNextStepBesucht(gesuchAntrag)).toBe(true);
@@ -175,11 +182,11 @@ describe('wizardStepManager', () => {
         });
     });
     describe('getNextStep', () => {
-        it('returns ERWERBSPENSUM coming from BETREUUNG for SACHBEARBEITER_JA', () => {
+        it('returns ERWERBSPENSUM coming from BETREUUNG for SACHBEARBEITER_BG', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.setCurrentStep(TSWizardStepName.BETREUUNG);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.getNextStep(gesuchAntrag)).toBe(TSWizardStepName.ERWERBSPENSUM);
         });
         it('returns VERFUEGEN coming from BETREUUNG for SACHBEARBEITER_INSTITUTION IF VERFUEGT', () => {
@@ -200,11 +207,11 @@ describe('wizardStepManager', () => {
         });
     });
     describe('getPreviousStep', () => {
-        it('returns BETREUUNG coming from ERWERBSPENSUM for SACHBEARBEITER_JA', () => {
+        it('returns BETREUUNG coming from ERWERBSPENSUM for SACHBEARBEITER_BG', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.setCurrentStep(TSWizardStepName.ERWERBSPENSUM);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.getPreviousStep(gesuchAntrag)).toBe(TSWizardStepName.BETREUUNG);
         });
         it('returns BETREUUNG coming from VERFUEGEN for SACHBEARBEITER_INSTITUTION', () => {
@@ -219,7 +226,7 @@ describe('wizardStepManager', () => {
         it('returns true for all steps allowed for role and false if the step is hidden', () => {
             createAllSteps(TSWizardStepStatus.OK);
             wizardStepManager.getAllowedSteps().splice(0);
-            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_JA);
+            wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
             expect(wizardStepManager.isStepVisible(TSWizardStepName.GESUCH_ERSTELLEN)).toBe(true);
 
             wizardStepManager.hideStep(TSWizardStepName.GESUCH_ERSTELLEN);
@@ -239,6 +246,60 @@ describe('wizardStepManager', () => {
 
             wizardStepManager.unhideStep(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.isStepVisible(TSWizardStepName.FINANZIELLE_SITUATION)).toBe(false);
+        });
+    });
+
+    describe('hideSteps', () => {
+        it('should hide the steps ABWESENHEIT and UMZUG for ONLINE Erstgesuch without umzug', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.eingangsart = TSEingangsart.ONLINE;
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(true);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
+        });
+        it('should hide the steps ABWESENHEIT and UMZUG and unhide FREIGABE for PAPIER Erstgesuch without umzug', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.eingangsart = TSEingangsart.PAPIER;
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
+        });
+        it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for PAPIER Gesuch', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.eingangsart = TSEingangsart.PAPIER;
+            gesuch.typ = TSAntragTyp.MUTATION;
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(true);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(true);
+        });
+        it('should unhide the step UMZUG for Erstgesuch with umzug and hide ABWESENHEIT', () => {
+            createAllSteps(TSWizardStepStatus.OK);
+            const gesuch = new TSGesuch();
+            gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+            const umzugsAdresse = new TSAdresseContainer();
+            umzugsAdresse.adresseJA = new TSAdresse();
+            umzugsAdresse.adresseJA.adresseTyp = TSAdressetyp.WOHNADRESSE;
+            umzugsAdresse.adresseJA.gueltigkeit = new TSDateRange(DateUtil.today().add(1, 'months'), DateUtil.today().add(7, 'months'));
+            gesuch.gesuchsteller1.adressen = [umzugsAdresse, umzugsAdresse]; // for an umzugAdresse we just need more than one Wohnadressen
+            gesuch.eingangsart = TSEingangsart.ONLINE;
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+
+            wizardStepManager.setHiddenSteps(gesuch);
+
+            // expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(true);
+            // expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(true);
         });
     });
 

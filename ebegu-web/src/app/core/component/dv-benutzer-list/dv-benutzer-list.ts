@@ -120,12 +120,12 @@ export class DVBenutzerListController implements IOnInit {
     public getRollen(): Array<TSRole> {
         if (EbeguUtil.isTagesschulangebotEnabled()) {
             return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? getTSRoleValues()
-                : getTSRoleValuesWithoutSuperAdmin();
+                ? TSRoleUtil.getAllRolesButAnonymous()
+                : TSRoleUtil.getAllRolesButSuperAdminAndAnonymous();
         } else {
             return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButSchulamt()
-                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdmin();
+                ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
+                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
         }
     }
 

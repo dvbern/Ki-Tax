@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2018.5.0</version>
+        <version>2018.6.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -194,22 +194,6 @@
     </dependencies>
 
     <profiles>
-        <profile>
-            <id>wildfly13-embedded</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                    </plugin>
-                    <!--entpacke jboss-->
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                    </plugin>
-                </plugins>
-
-            </build>
-        </profile>
 
         <profile>
             <id>test-wildfly-managed</id>

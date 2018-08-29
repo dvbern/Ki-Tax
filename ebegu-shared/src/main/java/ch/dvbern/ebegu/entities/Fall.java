@@ -59,7 +59,7 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
-public class Fall extends AbstractEntity implements HasMandant {
+public class Fall extends AbstractMutableEntity implements HasMandant {
 
 	private static final long serialVersionUID = -9154456879261811678L;
 

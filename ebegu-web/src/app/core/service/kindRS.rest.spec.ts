@@ -49,11 +49,11 @@ describe('KindRS', () => {
     beforeEach(() => {
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         const kindGS: TSKind = new TSKind('Pedro', 'Bern');
-        TestDataUtil.setAbstractFieldsUndefined(kindGS);
+        TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
         const kindJA: TSKind = new TSKind('Johan', 'Basel');
-        TestDataUtil.setAbstractFieldsUndefined(kindJA);
+        TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
-        TestDataUtil.setAbstractFieldsUndefined(mockKind);
+        TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
         mockKind.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
     });
@@ -104,7 +104,7 @@ describe('KindRS', () => {
         describe('updateKind', () => {
             it('should update a Kind', () => {
                 const kindJA2: TSKind = new TSKind('Johan', 'Basel');
-                TestDataUtil.setAbstractFieldsUndefined(kindJA2);
+                TestDataUtil.setAbstractMutableFieldsUndefined(kindJA2);
                 mockKind.kindJA = kindJA2;
                 mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
                 let updatedKindContainer: TSKindContainer;

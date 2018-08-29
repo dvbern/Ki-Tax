@@ -87,11 +87,12 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-public class Betreuung extends AbstractEntity implements Comparable<Betreuung>, Searchable {
+public class Betreuung extends AbstractMutableEntity implements Comparable<Betreuung>, Searchable {
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
 	@Transient
+	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
 
 	@NotNull
@@ -458,11 +459,12 @@ public class Betreuung extends AbstractEntity implements Comparable<Betreuung>, 
 		}
 	}
 
+	@Nullable
 	public Verfuegung getVorgaengerVerfuegung() {
 		return vorgaengerVerfuegung;
 	}
 
-	public void setVorgaengerVerfuegung(Verfuegung vorgaengerVerfuegung) {
+	public void setVorgaengerVerfuegung(@Nullable Verfuegung vorgaengerVerfuegung) {
 		this.vorgaengerVerfuegung = vorgaengerVerfuegung;
 	}
 

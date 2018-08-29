@@ -41,6 +41,18 @@ export default class EbeguUtil {
                 private readonly $log: ILogService) {
     }
 
+    public static isTagesschulangebotEnabled(): boolean {
+        return false;
+    }
+
+    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
+        if (!EbeguUtil.isTagesschulangebotEnabled()) {
+            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
+        }
+
+        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
+    }
+
     /**
      * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als string zurueck
      * @param number
@@ -311,20 +323,5 @@ export default class EbeguUtil {
             + '<span>3008 Bern</span><br>'
             + '<a href="tel:0313216469"><span>031 321 64 69</span></a><br>'
             + '<a href="mailto:tagesschulen@bern.ch"><span>tagesschulen@bern.ch</span></a>';
-    }
-
-    public static isTagesschulangebotEnabled(): boolean {
-        return false;
-    }
-
-    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
-        if (!EbeguUtil.isTagesschulangebotEnabled()) {
-            return 'VERANTWORTLICHER_OHNE_SCHULAMT'
-        }
-        if (isSchulamt) {
-            return 'VERANTWORTLICHER_SCHULAMT'
-        } else {
-            return 'VERANTWORTLICHER_JUGENDAMT'
-        }
     }
 }

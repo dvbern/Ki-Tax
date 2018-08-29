@@ -77,17 +77,17 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Berechtigung firstBerechtigung = berechtigungen.iterator().next();
 		Assert.assertEquals(AB_ERSTE_BERECHTIGUNG, firstBerechtigung.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(Constants.END_OF_TIME, firstBerechtigung.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(UserRole.ADMIN, firstBerechtigung.getRole());
+		Assert.assertEquals(UserRole.ADMIN_BG, firstBerechtigung.getRole());
 
 		// Eine zweite Berechtigung erfassen
 		LocalDate AB_ZWEITE_BERECHTIGUNG = LocalDate.now().plusMonths(1);
 		Berechtigung secondBerechtigung = new Berechtigung();
 		secondBerechtigung.setBenutzer(benutzer);
-		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_JA);
+		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_BG);
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
 		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
-		benutzer = benutzerService.saveBenutzer(benutzer);
+		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 
 		berechtigungen = benutzer.getBerechtigungen();
 		Assert.assertNotNull(berechtigungen);
@@ -123,12 +123,12 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		LocalDate AB_ZWEITE_BERECHTIGUNG = LocalDate.now().minusDays(1);
 		Berechtigung secondBerechtigung = new Berechtigung();
 		secondBerechtigung.setBenutzer(benutzer);
-		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_JA);
+		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_BG);
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
 		secondBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
-		benutzer = benutzerService.saveBenutzer(benutzer);
+		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
 		Assert.assertEquals(2, berechtigungen.size());
 

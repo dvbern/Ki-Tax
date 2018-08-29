@@ -41,9 +41,9 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -52,7 +52,8 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.util.MathUtil.DEFAULT;
 import static ch.dvbern.ebegu.util.MathUtil.isSame;
@@ -63,7 +64,7 @@ import static ch.dvbern.ebegu.util.MathUtil.isSame;
  * Einige Gesuche haben bekanntermassen falsche Auszahlungen gehabt. Diese werden entsprechend behandelt.
  */
 @Stateful
-@RolesAllowed({ SUPER_ADMIN, ADMIN })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "SpringAutowiredFieldsWarningInspection", "InstanceMethodNamingConvention" })
 public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
@@ -72,9 +73,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
-	private VerfuegungService verfuegungService;
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
@@ -90,6 +88,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private BetreuungService betreuungService;
 
 
 	private Map<String, List<Zahlungsposition>> zahlungenIstMap = null;
@@ -157,6 +158,13 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void pruefeZahlungenSollFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull LocalDateTime datumLetzteZahlung) {
+		if (gesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
+			return;
+		}
+		if (gesuch.getTimestampVerfuegt() == null) {
+			LOGGER.error("timestampVerfuegt ist null beim Auszahlen: {} - {}", gesuch.getId(), gesuch.getJahrFallAndGemeindenummer());
+			return;
+		}
 		// Nur Gesuche, die VOR der letzten Zahlung verfuegt wurden, sind relevant
 		if (gesuch.getTimestampVerfuegt().isBefore(datumLetzteZahlung)) {
 			LocalDate dateAusbezahltBis = datumLetzteZahlung.toLocalDate().with(TemporalAdjusters.lastDayOfMonth());
@@ -170,9 +178,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA ist
 		if (betreuung.isAngebotKita()) {
 			if (!betreuung.isGueltig()) {
-				Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
-				if (vorgaengerVerfuegung.isPresent()) {
-					betreuung = vorgaengerVerfuegung.get().getBetreuung();
+				// Es gibt eine spätere Verfügung, deren Gesuch aber noch nicht (komplett) verfügt ist
+				Optional<Betreuung> gueltigeBetreuungOptional = betreuungService.findGueltigeBetreuungByBGNummer(betreuung.getBGNummer());
+				if (gueltigeBetreuungOptional.isPresent()) {
+					betreuung = gueltigeBetreuungOptional.get();
 				}
 			}
 			// Jetzt kann es immer noch sein, dass es zwar die gueltige Verfuegung, aber mit NICHT_EINTRETEN ist

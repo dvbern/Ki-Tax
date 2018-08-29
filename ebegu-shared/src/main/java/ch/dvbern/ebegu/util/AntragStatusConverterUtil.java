@@ -157,7 +157,9 @@ public final class AntragStatusConverterUtil {
 		Collection<AntragStatus> tmp = new ArrayList<>();
 		switch (userrole) {
 		case GESUCHSTELLER:
+		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
+		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT: {
 			tmp.add(convertStatusToEntity(statusDTO));
 			if (statusDTO == AntragStatusDTO.VERFUEGT) {

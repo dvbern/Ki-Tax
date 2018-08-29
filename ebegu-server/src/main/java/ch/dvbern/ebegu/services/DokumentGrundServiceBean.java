@@ -46,7 +46,8 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -78,13 +79,11 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	@Override
 	public DokumentGrund saveDokumentGrund(@Nonnull DokumentGrund dokumentGrund) {
 		Objects.requireNonNull(dokumentGrund);
-		if (dokumentGrund.getDokumente() != null) {
-			dokumentGrund.getDokumente().forEach(dokument -> {
-				if (dokument.getTimestampUpload() == null) {
-					dokument.setTimestampUpload(LocalDateTime.now());
-				}
-			});
-		}
+		dokumentGrund.getDokumente().forEach(dokument -> {
+			if (dokument.getTimestampUpload() == null) {
+				dokument.setTimestampUpload(LocalDateTime.now());
+			}
+		});
 		// Falls es der Gesuchsteller war, der das Dokument hochgeladen hat, soll das Flag auf dem Gesuch gesetzt werden,
 		// damit das Jugendamt es sieht. Allerdings nur wenn das Gesuch schon freigegeben wurde
 		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER) && !dokumentGrund.getGesuch().getStatus().isAnyOfInBearbeitungGS()) {
@@ -168,8 +167,7 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 		Objects.requireNonNull(dokumentGrund);
 
 		//Wenn DokumentGrund keine Dokumente mehr hat und nicht gebraucht wird, wird er entfernt ausser es ist SONSTIGE NACHWEISE oder PAPIERGESUCH  (da ist needed immer false)
-		if ((!DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrund.getDokumentGrundTyp()))
-			&& (!dokumentGrund.isNeeded() && (dokumentGrund.getDokumente() == null || dokumentGrund.getDokumente().isEmpty()))) {
+		if (!DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrund.getDokumentGrundTyp()) && !dokumentGrund.isNeeded() && dokumentGrund.getDokumente().isEmpty()) {
 			persistence.remove(dokumentGrund);
 			return null;
 		}
@@ -184,7 +182,7 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE})
 	public void removeAllDokumentGrundeFromGesuch(@Nonnull Gesuch gesuch) {
 		LOGGER.info("Deleting Dokument-Gruende of Gesuch: {} / {}", gesuch.getDossier(), gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		Collection<DokumentGrund> dokumentsFromGesuch = findAllDokumentGrundByGesuch(gesuch);

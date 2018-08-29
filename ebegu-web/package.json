@@ -1,6 +1,6 @@
 {
-  "name": "ebeguWeb",
-  "version": "2018.4.0-SNAPSHOT",
+  "name": "kibon",
+  "version": "2018.6.0-SNAPSHOT",
   "author": {
     "name": "DV Bern AG",
     "url": "http://www.dvbern.ch/"
@@ -11,15 +11,21 @@
     "rimraf": "rimraf",
     "typedoc": "typedoc",
     "clean": "npm run rimraf -- doc coverage dist .cache_loader",
-    "build": "check-engine && npm run clean && npm run set-version && npm run build:prod",
-    "build:ci": "progress=false npm run build",
-    "build:prod": "ng build --configuration=production --progress=${progress:-true} ",
-    "server": "npm run set-version && ng serve",
-    "lint": "check-engine && concurrently 'npm run lint:ng' 'npm run lint:tsc'",
+    "prebuild": "check-engine && npm run clean && npm run set-version",
+    "build": "npm run build:prod",
+    "prebuild:ci": "npm run prebuild",
+    "build:ci": "npm run build:prod -- --progress=false",
+    "build:prod": "ng build --configuration=production",
+    "preserver": "check-engine && npm run set-version",
+    "server": "ng serve",
+    "prelint": "check-engine",
+    "lint": "concurrently 'npm:lint:ng' 'npm:lint:tsc'",
     "lint:ng": "ng lint",
     "lint:tsc": "tsc --pretty --noEmit --project ./src/tsconfig.app.json && tsc --pretty --noEmit --project ./src/tsconfig.spec.json",
-    "test": "check-engine && ng test",
-    "test:ci": "check-engine && ng test --progress=false --watch=false --code-coverage",
+    "pretest": "check-engine",
+    "test": "ng test",
+    "pretest:ci": "npm run pretest",
+    "test:ci": "ng test --progress=false --watch=false --code-coverage",
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
@@ -114,8 +120,8 @@
     "xml2js": "~0.4.17"
   },
   "engines": {
-    "node": ">=8.0.0 <9.0.0",
-    "npm": ">=6.2.0"
+    "node": ">=8.0.0 <=10.5.0",
+    "npm": "=6.2.0"
   },
   "dependencies": {
     "@angular/animations": "~6.1.0",

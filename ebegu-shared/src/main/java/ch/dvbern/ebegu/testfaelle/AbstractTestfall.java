@@ -286,11 +286,10 @@ public abstract class AbstractTestfall {
 		kind.setVorname(vorname);
 		kind.setGeburtsdatum(geburtsdatum);
 		kind.setKinderabzug(kinderabzug);
-		kind.setWohnhaftImGleichenHaushalt(100);
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
 			kind.setMutterspracheDeutsch(Boolean.TRUE);
-			kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
+			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		}
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);

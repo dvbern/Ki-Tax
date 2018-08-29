@@ -14,9 +14,9 @@
  */
 
 import * as moment from 'moment';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSBelegungFerieninselTag extends TSAbstractEntity {
+export default class TSBelegungFerieninselTag extends TSAbstractMutableEntity {
 
     private _tag: moment.Moment;
 

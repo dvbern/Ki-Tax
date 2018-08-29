@@ -14,6 +14,7 @@
  */
 
 import {TSRole} from '../models/enums/TSRole';
+import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSDossier from '../models/TSDossier';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
@@ -33,8 +34,6 @@ import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import TSVerfuegung from '../models/TSVerfuegung';
 import * as moment from 'moment';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
-import TSAntragDTO from '../models/TSAntragDTO';
-import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSAdresse from '../models/TSAdresse';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
@@ -48,6 +47,10 @@ export default class TestDataUtil {
         abstractEntity.id = undefined;
         abstractEntity.timestampErstellt = undefined;
         abstractEntity.timestampMutiert = undefined;
+    }
+
+    public static setAbstractMutableFieldsUndefined(abstractEntity: TSAbstractMutableEntity) {
+        this.setAbstractFieldsUndefined(abstractEntity);
         abstractEntity.vorgaengerId = undefined;
     }
 
@@ -56,7 +59,7 @@ export default class TestDataUtil {
         const dummyErwerbspensumContainer: TSErwerbspensumContainer = new TSErwerbspensumContainer();
         dummyErwerbspensumContainer.erwerbspensumGS = this.createErwerbspensum();
         dummyErwerbspensumContainer.erwerbspensumJA = this.createErwerbspensum();
-        this.setAbstractFieldsUndefined(dummyErwerbspensumContainer);
+        this.setAbstractMutableFieldsUndefined(dummyErwerbspensumContainer);
         return dummyErwerbspensumContainer;
     }
 
@@ -69,7 +72,7 @@ export default class TestDataUtil {
         dummyErwerbspensum.zuschlagsprozent = 20;
         dummyErwerbspensum.zuschlagsgrund = TSZuschlagsgrund.FIXE_ARBEITSZEITEN;
         dummyErwerbspensum.bezeichnung = undefined;
-        this.setAbstractFieldsUndefined(dummyErwerbspensum);
+        this.setAbstractMutableFieldsUndefined(dummyErwerbspensum);
         return dummyErwerbspensum;
     }
 
@@ -97,7 +100,7 @@ export default class TestDataUtil {
 
     public static createWizardStep(gesuchId: string): TSWizardStep {
         const wizardStep: TSWizardStep = new TSWizardStep();
-        TestDataUtil.setAbstractFieldsUndefined(wizardStep);
+        TestDataUtil.setAbstractMutableFieldsUndefined(wizardStep);
         wizardStep.gesuchId = gesuchId;
         wizardStep.bemerkungen = 'bemerkung';
         wizardStep.wizardStepStatus = TSWizardStepStatus.IN_BEARBEITUNG;
@@ -107,7 +110,7 @@ export default class TestDataUtil {
 
     public static createVerfuegung(): TSVerfuegung {
         const verfuegung: TSVerfuegung = new TSVerfuegung();
-        TestDataUtil.setAbstractFieldsUndefined(verfuegung);
+        TestDataUtil.setAbstractMutableFieldsUndefined(verfuegung);
         verfuegung.id = '123321';
         verfuegung.zeitabschnitte = [];
         return verfuegung;
@@ -116,17 +119,6 @@ export default class TestDataUtil {
     public static createGesuchsperiode20162017(): TSGesuchsperiode {
         const gueltigkeit: TSDateRange = new TSDateRange(moment('01.07.2016', 'DD.MM.YYYY'), moment('31.08.2017', 'DD.MM.YYYY'));
         return new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, gueltigkeit);
-    }
-
-    public static createTSAntragDTO(antragTyp: TSAntragTyp, eingangsdatum: Moment): TSAntragDTO {
-        const antrag: TSAntragDTO = new TSAntragDTO();
-        antrag.verfuegt = true;
-        antrag.antragTyp = antragTyp;
-        antrag.eingangsdatum = eingangsdatum;
-        const gesuchsperiode: TSGesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
-        antrag.gesuchsperiodeGueltigAb = gesuchsperiode.gueltigkeit.gueltigAb;
-        antrag.gesuchsperiodeGueltigBis = gesuchsperiode.gueltigkeit.gueltigBis;
-        return antrag;
     }
 
     public static createGesuchsteller(vorname: string, nachname: string): TSGesuchstellerContainer {
@@ -196,7 +188,7 @@ export default class TestDataUtil {
 
     public static createGemeindeOstermundigen(): TSGemeinde {
         const gemeinde: TSGemeinde = new TSGemeinde();
-        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
+        TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         gemeinde.name = 'Ostermundigen';
         gemeinde.gemeindeNummer = 2;
@@ -206,7 +198,7 @@ export default class TestDataUtil {
 
     public static createGemeindeBern(): TSGemeinde {
         const gemeinde: TSGemeinde = new TSGemeinde();
-        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
+        TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
         gemeinde.gemeindeNummer = 1;
@@ -215,8 +207,8 @@ export default class TestDataUtil {
     }
 
     public static createGemeindeThun(): TSGemeinde {
-        let gemeinde: TSGemeinde = new TSGemeinde();
-        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
+        const gemeinde: TSGemeinde = new TSGemeinde();
+        TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046ccc';
         gemeinde.name = 'Thun';
         gemeinde.gemeindeNummer = 3;
@@ -235,14 +227,14 @@ export default class TestDataUtil {
     }
 
     public static createFall(): TSFall {
-        let fall: TSFall = new TSFall();
-        TestDataUtil.setAbstractFieldsUndefined(fall);
+        const fall: TSFall = new TSFall();
+        TestDataUtil.setAbstractMutableFieldsUndefined(fall);
         fall.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046d61';
         return fall;
     }
 
     public static createDossier(id: string, fall: TSFall): TSDossier {
-        let dossier: TSDossier = new TSDossier();
+        const dossier: TSDossier = new TSDossier();
         dossier.id = id;
         dossier.fall = fall;
         return dossier;
