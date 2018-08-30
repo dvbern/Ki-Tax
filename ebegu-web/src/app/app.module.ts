@@ -23,6 +23,7 @@ import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {NgPosteingangModule} from '../posteingang/ng-posteingang.module';
 import {AppRoutingModule} from './app-routing.module';
 import {appModuleAngularJS} from './app.angularjs.module';
+import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {SharedModule} from './shared/shared.module';
@@ -43,6 +44,7 @@ import {SharedModule} from './shared/shared.module';
         NgGesuchModule,
         NgPosteingangModule,
         OnboardingModule,
+        BenutzerModule,
     ],
 })
 
