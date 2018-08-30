@@ -102,7 +102,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.*;
  */
 @Stateless
 @Local(TestfaelleService.class)
-@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+@RolesAllowed(SUPER_ADMIN)
 public class TestfaelleServiceBean extends AbstractBaseService implements TestfaelleService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBean.class);

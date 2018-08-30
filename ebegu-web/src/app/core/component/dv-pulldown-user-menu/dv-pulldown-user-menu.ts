@@ -17,10 +17,8 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
-import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import TSUser from '../../../../models/TSUser';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
@@ -34,28 +32,24 @@ export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
 
 export class DvPulldownUserMenuController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'AuthLifeCycleService'];
+    static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
-    TSRoleUtil = TSRoleUtil;
-    principal: TSUser;
+    public readonly TSRoleUtil = TSRoleUtil;
+    public principal?: TSUser = undefined;
 
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
 
     constructor(private readonly $state: StateService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
-
-        this.TSRoleUtil = TSRoleUtil;
+                private readonly authServiceRS: AuthServiceRS) {
     }
 
     $onInit(): void {
-        this.principal = this.authServiceRS.getPrincipal();
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+        this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => {
-                this.principal = this.authServiceRS.getPrincipal();
+            .subscribe(principal => {
+                this.principal = principal;
             });
     }
 

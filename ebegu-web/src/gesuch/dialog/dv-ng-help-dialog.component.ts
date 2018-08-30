@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {Component} from '@angular/core';
+import {MatDialogRef} from '@angular/material';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import TSDownloadFile from '../../models/TSDownloadFile';
 
@@ -29,8 +29,7 @@ export class DvNgHelpDialogComponent {
 
     constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
-        private readonly downloadRS: DownloadRS,
-        @Inject(MAT_DIALOG_DATA) data: any) {
+        private readonly downloadRS: DownloadRS) {
     }
 
     close() {

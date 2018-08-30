@@ -42,6 +42,9 @@ export const testdatenState: Ng2StateDeclaration = {
     name: 'admin.testdaten',
     url: '/testdaten',
     component: TestdatenViewComponent,
+    data: {
+        roles: TSRoleUtil.getSuperAdminRoles(),
+    }
 };
 
 export const batchjobTriggerState: Ng2StateDeclaration = {

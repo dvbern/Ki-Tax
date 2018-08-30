@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -62,22 +61,30 @@ public interface EinstellungService {
 	 * Ein externes EntityManager wird uebergeben. Damit vermeiden wir Fehler  ConcurrentModificationException in hibernate
 	 */
 	@Nonnull
-	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable EntityManager em);
+	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull EntityManager em);
 
 	/**
-	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Aktuell werden jeweils die System Defaults zurueckgegeben.
+	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Es werden die System Defaults zurueckgegeben
 	 */
 	@Nonnull
-	Collection<Einstellung> getEinstellungenByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
+	Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Analog {@link #getEinstellungenByGesuchsperiode(Gesuchsperiode)}, jedoch Resultat als Map
+	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode *fuer eine bestimmte Gemeinde* zurueck. D.h. in der zurueckgegebenen Map ist jeder
+	 * EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer die Gemeinde. z.B. Key A als Gemeindeeinstellung, Key B als
+	 * System Default, Key C als Mandanteinstellung
 	 */
 	@Nonnull
-	Map<EinstellungKey, Einstellung> getEinstellungenByGesuchsperiodeAsMap(@Nonnull Gesuchsperiode gesuchsperiode);
+	Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode
+	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode. Es werden sowohl Gemeinde-, Mandant-, wie auch System-Einstellungen
+	 * kopiert.
 	 */
 	void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	/**
+	 * Löscht alle Einstellungen der uebergebenen Gesuchsperiode
+	 */
+	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 }

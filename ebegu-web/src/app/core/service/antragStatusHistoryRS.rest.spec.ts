@@ -43,9 +43,6 @@ describe('antragStatusHistoryRS', () => {
         it('check URI', () => {
             expect(antragStatusHistoryRS.serviceURL).toContain('antragStatusHistory');
         });
-        it('check Service name', () => {
-            expect(antragStatusHistoryRS.getServiceName()).toBe('AntragStatusHistoryRS');
-        });
         it('should include a loadLastStatusChange() function', () => {
             expect(antragStatusHistoryRS.loadLastStatusChange).toBeDefined();
         });

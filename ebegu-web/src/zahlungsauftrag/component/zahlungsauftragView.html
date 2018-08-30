@@ -20,7 +20,7 @@
     <div class="col-md-12">
 
         <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
-            <div class="row" dv-show-element dv-show-allowed-roles="['ADMIN', 'SUPER_ADMIN']">
+            <div class="row" dv-show-element dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="row zahlungen-form" layout="row">
                         <div ng-class="{'col-md-4': !vm.testMode,'col-md-3': vm.testMode}">
@@ -62,7 +62,7 @@
                         <div ng-class="{'col-md-4': !vm.testMode,'col-md-3': vm.testMode}" flex layout="row"
                              layout-align="center center">
                             <dv-loading-button button-click="vm.createZahlungsauftrag()"
-                                    aria-label="{{ZAHLUNG_ERSTELLEN | translate}}">
+                                    aria-label="{{'ZAHLUNG_ERSTELLEN' | translate}}">
                                 <span data-translate="ZAHLUNG_ERSTELLEN"></span>
                             </dv-loading-button>
                         </div>
@@ -76,13 +76,13 @@
                 <h3 data-translate="ZAHLUNGSAUFTRAEGE"></h3>
             </div>
             <div class="col-md-1 text-right">
-                <h3 ng-bind="vm.getZahlungsauftragen() ? vm.getZahlungsauftragen().length : 0"></h3>
+                <h3 ng-bind="vm.zahlungsAuftraege.length"></h3>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 table-responsive">
 
-                <table st-table="displayedCollection" st-safe-src="vm.getZahlungsauftragen()"
+                <table st-table="displayedCollection" st-safe-src="vm.zahlungsAuftraege"
                        st-delay="20" class="table ebegu-table fixedtable table-striped">
                     <thead>
                     <tr>

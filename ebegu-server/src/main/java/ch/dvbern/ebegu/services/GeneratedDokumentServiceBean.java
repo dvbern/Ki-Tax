@@ -132,9 +132,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	private VerfuegungService verfuegungService;
 
 	@Inject
-	private MandantService mandantService;
-
-	@Inject
 	private GesuchService gesuchService;
 
 	@Inject
@@ -495,11 +492,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	private BetreuungsgutscheinEvaluator initEvaluator(@Nonnull Gesuch gesuch) {
-		Mandant mandant = mandantService.getFirst();   //gesuch get mandant?
 		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
-		loadCalculatorParameters(mandant, gesuch.getGesuchsperiode());
+		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;
 	}
 
