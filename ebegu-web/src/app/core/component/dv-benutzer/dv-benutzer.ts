@@ -19,7 +19,7 @@ import * as moment from 'moment';
 import {IBenutzerStateParams} from '../../../../admin/admin.route';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
-import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
+import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSBerechtigung from '../../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../../models/TSBerechtigungHistory';
 import TSInstitution from '../../../../models/TSInstitution';

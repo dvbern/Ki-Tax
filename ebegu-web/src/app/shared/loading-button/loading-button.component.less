@@ -15,19 +15,3 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../shared/shared.module';
-import {BenutzerComponent} from './benutzer/benutzer.component';
-
-@NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-    ],
-    declarations: [BenutzerComponent],
-    entryComponents: [BenutzerComponent],
-    exports: [BenutzerComponent],
-})
-export class BenutzerModule {
-}

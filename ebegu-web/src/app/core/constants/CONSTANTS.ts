@@ -29,3 +29,5 @@ export const CONSTANTS = {
 };
 
 export const DEFAULT_LOCALE = 'de-CH';
+
+export const DEFAULT_BUTTON_DELAY = 4000;

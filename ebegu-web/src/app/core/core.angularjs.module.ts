@@ -55,12 +55,12 @@ import WizardStepRS from '../../gesuch/service/WizardStepRS.rest';
 import {PosteingangService} from '../../posteingang/service/posteingang.service';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
+import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
 import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
-import {DVBenutzerConfig} from './component/dv-benutzer/dv-benutzer';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
@@ -255,9 +255,9 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvAccordionTab', new DvAccordionTabComponentConfig())
     .component('dvVersion', new DVVersionComponentConfig())
     .component('dvBenutzerList', new DVBenutzerListConfig())
-    .component('dvBenutzer', new DVBenutzerConfig())
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
+    .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)

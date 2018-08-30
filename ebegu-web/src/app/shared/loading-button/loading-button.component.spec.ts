@@ -15,19 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../shared/shared.module';
-import {BenutzerComponent} from './benutzer/benutzer.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-@NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-    ],
-    declarations: [BenutzerComponent],
-    entryComponents: [BenutzerComponent],
-    exports: [BenutzerComponent],
-})
-export class BenutzerModule {
-}
+import { LoadingButtonComponent } from './loading-button.component';
+
+describe('LoadingButtonComponent', () => {
+  let component: LoadingButtonComponent;
+  let fixture: ComponentFixture<LoadingButtonComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ LoadingButtonComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LoadingButtonComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
