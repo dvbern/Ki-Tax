@@ -21,7 +21,6 @@ import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {StateService} from '@uirouter/core';
 
-
 export class BenutzerListViewComponentConfig implements IComponentOptions {
     transclude = false;
     bindings = {
@@ -38,7 +37,10 @@ export class BenutzerListViewController extends AbstractAdminViewController {
 
     totalResultCount: string = '0';
 
-    constructor(private readonly $state: StateService, private readonly $log: ILogService, authServiceRS: AuthServiceRS, private readonly userRS: UserRS) {
+    constructor(private readonly $state: StateService,
+                private readonly $log: ILogService,
+                authServiceRS: AuthServiceRS,
+                private readonly userRS: UserRS) {
         super(authServiceRS);
     }
 
@@ -52,8 +54,8 @@ export class BenutzerListViewController extends AbstractAdminViewController {
     }
 
     /**
-     * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch mit beschraenkten Daten
-     * Fuer anderen Benutzer wird das Gesuch mit allen Daten geoeffnet
+     * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch
+     * mit beschraenkten Daten Fuer anderen Benutzer wird das Gesuch mit allen Daten geoeffnet
      * @param user
      * @param event optinally this function can check if ctrl was clicked when opeing
      */

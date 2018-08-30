@@ -14,21 +14,22 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, ILogService, IPromise} from 'angular';
-import {takeUntil} from 'rxjs/operators';
+import {IComponentOptions, IController, IPromise} from 'angular';
 import {Subject} from 'rxjs';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import {takeUntil} from 'rxjs/operators';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../models/enums/TSAmt';
-import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSMitteilung from '../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../models/TSMitteilungSearchresultDTO';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+
+const LOG = LogFactory.createLog('PosteingangViewController');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -37,18 +38,18 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class PosteingangViewController {
+export class PosteingangViewController implements IController {
 
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS',
-        '$log', 'AuthLifeCycleService'];
+    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
 
-
-    displayedCollection: Array<TSMitteilung> = []; //Liste die im Gui angezeigt wird
+    // Liste die im Gui angezeigt wird
+    displayedCollection: Array<TSMitteilung> = [];
     pagination: any = {};
     totalResultCount: string = '0';
-    myTableFilterState: any; // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
+    // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
+    myTableFilterState: any;
 
     itemsByPage: number = 20;
     numberOfPages: number = 1;
@@ -62,17 +63,14 @@ export class PosteingangViewController {
                 private readonly CONSTANTS: any,
                 private readonly $state: StateService,
                 private readonly authServiceRS: AuthServiceRS,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly $log: ILogService,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
+                private readonly gemeindeRS: GemeindeRS) {
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.initViewModel());
+        this.updateGemeindenList();
     }
 
-    initViewModel() {
-        this.updateGemeindenList();
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
@@ -87,15 +85,18 @@ export class PosteingangViewController {
     }
 
     isCurrentUserSchulamt(): boolean {
-        const isUserSchulamt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
-        return isUserSchulamt;
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => {
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                gemeinden => {
                 this.gemeindenList = gemeinden;
-            });
+            },
+                err => LOG.error(err)
+            );
     }
 
     getAemter(): Array<TSAmt> {
