@@ -22,6 +22,7 @@ import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogCont
 import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSBerechtigung from '../../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../../models/TSBerechtigungHistory';
+// import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUser from '../../../../models/TSUser';
@@ -34,6 +35,7 @@ import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.r
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import UserRS from '../../service/userRS.rest';
+// import {gemeindeRSProvider} from '../../upgraded-providers';
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
@@ -64,6 +66,8 @@ export class DVBenutzerController implements IOnInit {
     private _futureBerechtigungen: TSBerechtigung[];
     berechtigungHistoryList: TSBerechtigungHistory[];
 
+    // gemeinde: TSGemeinde = new TSGemeinde();
+
     private _isDefaultVerantwortlicher: boolean = false;
 
     constructor(private readonly $log: ILogService,
@@ -76,6 +80,8 @@ export class DVBenutzerController implements IOnInit {
                 private readonly $state: StateService,
                 private readonly dvDialog: DvDialog,
                 private readonly applicationPropertyRS: ApplicationPropertyRS) {
+
+        // this.gemeinde.name = 'MeineGemeinde';
     }
 
     $onInit() {
@@ -289,4 +295,14 @@ export class DVBenutzerController implements IOnInit {
     public set isDefaultVerantwortlicher(value: boolean) {
         this._isDefaultVerantwortlicher = value;
     }
+
+
+    // public getPossibleGemeinden(): Array<TSGemeinde> {
+    //     return this.authServiceRS.getPrincipal().currentBerechtigung.gemeindeList;
+    // }
+    //
+    // public getCurrentGemeinden(berechtigung: TSBerechtigung): Array<TSGemeinde> {
+    //     return berechtigung.gemeindeList;
+    // }
+
 }
