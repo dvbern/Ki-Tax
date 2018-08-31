@@ -18,7 +18,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService} from '@uirouter/core';
+import {StateService, Transition} from '@uirouter/core';
 import {IFormController} from 'angular';
 import * as moment from 'moment';
 import {IBenutzerStateParams} from '../../../admin/admin.route';
@@ -60,9 +60,12 @@ export class BenutzerComponent implements OnInit {
     private _futureBerechtigungen: TSBerechtigung[];
     berechtigungHistoryList: TSBerechtigungHistory[];
 
+    columnsToDisplay: ['geaendertUser', 'geaendertTS', 'rolle', 'gueltigAb',
+        'gueltigBis', 'institutionTraegerschaft', 'gesperrt', 'geloescht'];
+
     private _isDefaultVerantwortlicher: boolean = false;
 
-    constructor(private readonly $stateParams: IBenutzerStateParams,
+    constructor(private readonly $transition$: Transition,
                 private readonly $state: StateService,
                 public readonly translate: TranslateService,
                 private readonly authServiceRS: AuthServiceRS,
@@ -86,7 +89,7 @@ export class BenutzerComponent implements OnInit {
     ngOnInit() {
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
-        const username: string = this.$stateParams.benutzerId;
+        const username: string = this.$transition$.params().benutzerId;
         console.log(username);
         if (username) {
             this.userRS.findBenutzer(username).then((result) => {

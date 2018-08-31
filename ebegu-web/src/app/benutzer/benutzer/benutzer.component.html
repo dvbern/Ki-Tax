@@ -280,43 +280,34 @@
                             <div class="col-sm-12 dv-input-container-small">
                                 <div class="form-group">
                                     <!--suppress XmlInvalidId -->
-                                    <label class="md-no-float dv-benutzer-label"
-                                           translate
-                                           [for]="'roleGueltigAb_' + index">
-                                        ROLLE_GUELTIG_AB
-                                    </label>
-                                    <dv-datepicker input-id="roleGueltigAb"
-                                                   input-name="roleGueltigAb_{{$index}}"
-                                                   name="roleGueltigAb_{{$index}}"
-                                                   [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb"
-                                                   [required]="true"
-                                                   class="input-element"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                                   dv-min-date="vm.tomorrow">
-                                    </dv-datepicker>
-                                    <dv-ng-error-messages [inputid]="roleGueltigAb_{{$index}}"
-                                                          [errorObject]="vm.form['roleGueltigAb_' + $index].$error"
+                                    <input class="input-testfall input-testfall--datepicker" type="text"
+                                           [matDatepicker]="index"
+                                           [placeholder]="'ROLLE_GUELTIG_AB' | translate"
+                                           id="index"
+                                           [value]="futureBerechtigung.gueltigkeit.gueltigAb">
+                                    <mat-datepicker-toggle class="testfall-datepicker" matSuffix
+                                                           [for]="index">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #index></mat-datepicker>
+                                    <dv-ng-error-messages [inputid]="index"
+                                                          [errorObject]="form[index].$error"
                                                           class="error">
                                     </dv-ng-error-messages>
                                 </div>
                             </div>
                             <div class="col-sm-12 dv-input-container-small">
                                 <div class="form-group">
-                                    <!--suppress XmlInvalidId -->
-                                    <label class="md-no-float dv-benutzer-label"
-                                           translate
-                                           for="roleGueltigBis_{{$index}}">
-                                        ROLLE_GUELTIG_BIS
-                                    </label>
-                                    <dv-datepicker input-id="roleGueltigBis" input-name="roleGueltigBis_{{$index}}"
-                                                   name="roleGueltigBis_{{$index}}"
-                                                   ng-model="futureBerechtigung.gueltigkeit.gueltigBis"
-                                                   class="input-element"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                                   dv-min-date="vm.tomorrow">
-                                    </dv-datepicker>
-                                    <dv-ng-error-messages [inputid]="roleGueltigBis_{{$index}}"
-                                                          [errorObject]="form['roleGueltigBis_' + $index].$error"
+                                    <input class="input-testfall input-testfall--datepicker" type="text"
+                                           [matDatepicker]="'gueltigBis' + index"
+                                           [placeholder]="'ROLLE_GUELTIG_BIS' | translate"
+                                           id="'gueltigBis' + index"
+                                           [value]="futureBerechtigung.gueltigkeit.gueltigBis">
+                                    <mat-datepicker-toggle class="testfall-datepicker" matSuffix
+                                                           [for]="index">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker [id]="'gueltigBis'+ index"></mat-datepicker>
+                                    <dv-ng-error-messages [inputid]="'gueltigBis' + index"
+                                                          [errorObject]="form['gueltigBis' + index].$error"
                                                           class="error">
                                     </dv-ng-error-messages>
                                 </div>
@@ -326,20 +317,21 @@
                         <div class="row">
                             <!-- Institution -->
                             <div class="col-sm-12 dv-input-container-medium"
-                                 ng-if="isInstitutionBerechtigung(futureBerechtigung)">
+                                 *ngIf="isInstitutionBerechtigung(futureBerechtigung)">
                                 <div class="form-group">
                                     <label class="md-no-float required dv-benutzer-label" data-translate="INSTITUTION"
-                                           for="institution_{{$index}}"></label>
+                                           [for]="'institution_' + index"></label>
                                     <div class="dv-select-style">
-                                        <select aria-describedby="institution-error" name="institution_{{$index}}"
-                                                id="institution_{{$index}}"
+                                        <select [attr.aria-describedby]="institution-error"
+                                                [name]="'institution_' + i"
+                                                [id]="'institution_'+ i"
                                                 class="form-control"
-                                                ng-required="vm.isInstitutionBerechtigung(futureBerechtigung)"
-                                                ng-model="futureBerechtigung.institution.id"
-                                                ng-options="institution.id as institution.name for institution in vm.institutionenList | orderBy: 'institution.name'">
+                                                [required]="isInstitutionBerechtigung(futureBerechtigung)"
+                                                [(ngModel)]="futureBerechtigung.institution.id"
+                                                *ngFor="let institution of institutionenList; let i=index; trackBy: trackByInstitution">
                                         </select>
-                                        <dv-ng-error-messages [inputid]="institution_{{$index}}"
-                                                              [errorObject]="form['institution_' + $index].$error"
+                                        <dv-ng-error-messages [inputid]="'institution_' + index"
+                                                              [errorObject]="form['institution_' + index].$error"
                                                               class="error">
                                         </dv-ng-error-messages>
                                     </div>
@@ -349,18 +341,21 @@
                             <div class="col-sm-12 dv-input-container-medium"
                                  *ngIf="isTraegerschaftBerechtigung(futureBerechtigung)">
                                 <div class="form-group">
-                                    <label class="md-no-float required dv-benutzer-label" data-translate="TRAEGERSCHAFT"
-                                           for="traegerschaft_{{$index}}"></label>
+                                    <label class="md-no-float required dv-benutzer-label"
+                                           translate="'TRAEGERSCHAFT'"
+                                           [for]="'traegerschaft_index' + index">
+                                    </label>
                                     <div class="dv-select-style">
-                                        <select aria-describedby="traegerschaft-error" name="traegerschaft_{{$index}}"
-                                                id="traegerschaft_{{$index}}"
+                                        <select [attr.aria-describedby]="traegerschaft-error"
+                                                [name]="'traegerschaft_' + i"
+                                                [id]="'traegerschaft_' + i"
                                                 class="form-control"
                                                 [required]="isTraegerschaftBerechtigung(futureBerechtigung)"
                                                 [(ngModel)]="futureBerechtigung.traegerschaft.id"
-                                                ng-options="traegerschaft.id as traegerschaft.name for traegerschaft in vm.traegerschaftenList | orderBy: 'traegerschaft.name'">
+                                                *ngFor="let traegerschaft of traegerschaftenList; let i=index; trackBy: trackByTraegerschaft">
                                         </select>
-                                        <dv-ng-error-messages [inputid]="traegerschaft_{{$index}}"
-                                                              [errorObject]="form['traegerschaft_' + $index].$error"
+                                        <dv-ng-error-messages [inputid]="'traegerschaft_'+ index"
+                                                              [errorObject]="form['traegerschaft_' + index].$error"
                                                               class="error">
                                         </dv-ng-error-messages>
                                     </div>
@@ -408,10 +403,10 @@
 
             <!-- Info, wenn Defaultbenutzer -->
             <div class="row">
-                <div class="col-md-12" ng-if="vm.isDefaultVerantwortlicher">
+                <div class="col-md-12" *ngIf="isDefaultVerantwortlicher">
                     <div class="well well-status-bestaetigt">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                        <span data-translate="BENUTZER_DEFAULTVERANTWORTLICHER_INFO"></span>
+                        <span translate>BENUTZER_DEFAULTVERANTWORTLICHER_INFO</span>
                     </div>
                 </div>
             </div>
@@ -419,32 +414,37 @@
             <!-- Buttons -->
             <div class="button-row dv-input-container-medium marginTop50">
 
-                <dv-loading-button type="submit" button-class="" ng-if="!isDefaultVerantwortlicher"
+                <dv-loading-button type="submit" button-class=""
+                                   *ngIf="!isDefaultVerantwortlicher"
                                    class="button-row-item">
                     <span data-translate="BENUTZER_SAVE"></span>
                 </dv-loading-button>
 
-                <div ng-show="!selectedUser.gesperrt" ng-if="!isDefaultVerantwortlicher" class="button-row-item">
-                    <dv-loading-button type="button"
-                                       button-click="vm.inactivateBenutzer()"
-                                       button-class="cancel-button">
-                        <span data-translate="BENUTZER_SPERREN"></span>
+                <div [hidden]="!selectedUser.gesperrt"
+                     *ngIf="!isDefaultVerantwortlicher"
+                     class="button-row-item">
+                    <dv-loading-button [type]="button"
+                                       (click)="inactivateBenutzer()"
+                                       [buttonClass]="cancel-button">
+                        <span translate>BENUTZER_SPERREN</span>
                     </dv-loading-button>
                 </div>
 
-                <div ng-show="vm.selectedUser.gesperrt" ng-if="!vm.isDefaultVerantwortlicher" class="button-row-item">
-                    <dv-loading-button type="button"
-                                       button-click="vm.reactivateBenutzer()"
-                                       button-class="cancel-button">
-                        <span data-translate="BENUTZER_REAKTIVIEREN"></span>
+                <div [hidden]="selectedUser.gesperrt"
+                     *ngIf="!isDefaultVerantwortlicher"
+                     class="button-row-item">
+                    <dv-loading-button [type]="button"
+                                       (buttonClick)="reactivateBenutzer()"
+                                       [buttonClass]="cancel-button">
+                        <span translate>BENUTZER_REAKTIVIEREN</span>
                     </dv-loading-button>
                 </div>
 
                 <div class="button-row-item">
-                    <dv-loading-button type="button"
-                                       button-click="vm.cancel()"
-                                       button-class="cancel-button">
-                        <span data-translate="CANCEL"></span>
+                    <dv-loading-button [type]="button"
+                                       (buttonClick)="cancel()"
+                                       [buttonClass]="cancel-button">
+                        <span translate>CANCEL</span>
                     </dv-loading-button>
                 </div>
 
@@ -454,38 +454,48 @@
         <fieldset>
             <div class="row marginTop50">
                 <div class="col-md-12">
-                    <h1 data-translate="BERECHTIGUNGHISTORY"></h1>
+                    <h1 translate>BERECHTIGUNGHISTORY</h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12 table-responsive">
-                    <table st-table="displayedCollection" st-safe-src="vm.berechtigungHistoryList"
-                           class="table" st-delay="20">
-                        <thead>
-                        <tr>
-                            <th data-translate="BERECHTIGUNG_GEAENDERT_USER"></th>
-                            <th data-translate="BERECHTIGUNG_GEAENDERT_TS"></th>
-                            <th data-translate="ROLLE"></th>
-                            <th data-translate="BERECHTIGUNG_GUELTIG_AB"></th>
-                            <th data-translate="BERECHTIGUNG_GUELTIG_BIS"></th>
-                            <th data-translate="INSTITUTIONTRAEGERSCHAFT"></th>
-                            <th data-translate="GESPERRT"></th>
-                            <th data-translate="GELOESCHT"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="row in displayedCollection" st-select-row="row">
-                            <td ng-bind="vm.getGeaendertDurch(row)"></td>
-                            <td ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY HH:mm'"></td>
-                            <td ng-bind="vm.getTranslatedRole(row.role)"></td>
-                            <td ng-bind="row.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
-                            <td ng-bind="row.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                            <td ng-bind="row.getInstitutionOrTraegerschaft()"></td>
-                            <td ng-bind="row.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN' | translate"></td>
-                            <td ng-bind="row.geloescht ? 'LABEL_JA' : 'LABEL_NEIN' | translate"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <mat-table #table class="table" [dataSource]="berechtigungHistoryList">
+                        <ng-container matColumnDef="geaendertUser">
+                            <th mat-header-cell *matHeaderCellDef translate>BERECHTIGUNG_GEAENDERT_USER</th>
+                            <td mat-cell *matCellDef="let entry">{{getGeaendertDurch(entry)}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="geaendertTS">
+                            <th mat-header-cell *matHeaderCellDef translate>BERECHTIGUNG_GEAENDERT_TS</th>
+                            <td mat-cell *matCellDef="let entry">{{entry.timestampErstellt}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="rolle">
+                            <th mat-header-cell *matHeaderCellDef translate>ROLLE</th>
+                            <td mat-cell *matCellDef="let entry">{{getTranslatedRole(entry.role)}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="gueltigAb">
+                            <th mat-header-cell *matHeaderCellDef translate>BERECHTIGUNG_GUELTIG_AB</th>
+                            <td mat-cell *matCellDef="let entry">{{entry.gueltigkeit.gueltigAb}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="gueltigBis">
+                            <th mat-header-cell *matHeaderCellDef translate>BERECHTIGUNG_GUELTIG_BIS</th>
+                            <td mat-cell *matCellDef="let entry">{{entry.gueltigkeit.gueltigBis}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="institutionTraegerschaft">
+                            <th mat-header-cell *matHeaderCellDef translate>INSTITUTIONTRAEGERSCHAFT</th>
+                            <td mat-cell *matCellDef="let entry">{{entry.getInstitutionOrTraegerschaft()}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="gesperrt">
+                            <th mat-header-cell *matHeaderCellDef translate>GESPERRT</th>
+                            <td mat-cell *matCellDef="let entry">{{entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="geloescht">
+                            <th mat-header-cell *matHeaderCellDef translate>GELOESCHT</th>
+                            <td mat-cell *matCellDef="let entry">{{entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+                    </mat-table>
                 </div>
             </div>
         </fieldset>
