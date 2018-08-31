@@ -395,7 +395,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkReadAuthorization(@Nonnull Benutzer benutzer) {
-		if (!principalBean.isCallerInAnyOfRole(UserRole.getAdminSuperAdminRoles())
+		if (!principalBean.isCallerInAnyOfRole(UserRole.getAllAdminSuperAdminRevisorRoles())
 				&& !principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getUsername())) {
 			throwViolation(benutzer);
 		}
