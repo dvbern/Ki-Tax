@@ -86,11 +86,6 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/benutzerlist',
     },
     {
-        name: 'admin.benutzer',
-        template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
-        url: '/benutzerlist/benutzer/:benutzerId',
-    },
-    {
         name: 'admin.institutionen',
         template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
         + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
