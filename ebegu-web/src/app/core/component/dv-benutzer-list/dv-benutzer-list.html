@@ -44,6 +44,7 @@
                     <th st-sort="role" class="sortable row-role" data-translate="ROLLE"></th>
                     <th st-sort="roleGueltigAb" class="sortable row-roleGueltigAb" data-translate="ROLLE_GUELTIG_AB"></th>
                     <th st-sort="roleGueltigBis" class="sortable row-roleGueltigBis" data-translate="ROLLE_GUELTIG_BIS"></th>
+                    <th st-sort="gemeinde" class="sortable row-gemeinde" data-translate="GEMEINDEN"></th>
                     <th st-sort="institution" class="sortable row-institution" data-translate="INSTITUTION"></th>
                     <th st-sort="traegerschaft" class="sortable row-traegerschaft" data-translate="TRAEGERSCHAFT"></th>
                     <th st-sort="gesperrt" class="sortable row-gesperrt" data-translate="GESPERRT"></th>
@@ -64,6 +65,16 @@
                     </th>
                     <th><input st-search="roleGueltigAb" class="form-control" type="text"/></th>
                     <th><input st-search="roleGueltigBis" class="form-control" type="text"/></th>
+                    <th>
+                        <div class="dv-select-style">
+                            <select st-input-event="change" name="institution" id="gemeinde"
+                                    st-search="gemeinde" class="form-control"
+                                    ng-options="gemeinde.name for gemeinde in vm.gemeindeList | orderBy: 'name' track by gemeinde.name"
+                                    ng-model="vm.selectedGemeinde">
+                                <option value="">{{"ALLE" | translate}}</option>
+                            </select>
+                        </div>
+                    </th>
                     <th>
                         <div class="dv-select-style">
                             <select st-input-event="change" name="institution" id="institution"
@@ -111,6 +122,8 @@
                         ng-bind="row.currentBerechtigung.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                     <td class="ellipsis" title="{{row.currentBerechtigung.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'}}"
                         ng-bind="row.currentBerechtigung.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                    <td class="ellipsis" title="{{row.currentBerechtigung.gemeindeList | gemeindenToString}}"
+                        ng-bind="row.currentBerechtigung.gemeindeList | gemeindenToString"></td>
                     <td class="ellipsis" title="{{row.currentBerechtigung.institution.name}}" ng-bind="row.currentBerechtigung.institution.name"></td>
                     <td class="ellipsis" title="{{row.currentBerechtigung.traegerschaft.name}}" ng-bind="row.currentBerechtigung.traegerschaft.name"></td>
                     <td class="ellipsis" title="{{(row.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}"

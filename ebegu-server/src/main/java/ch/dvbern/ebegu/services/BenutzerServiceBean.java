@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -83,7 +84,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRole.*;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.getJugendamtRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getSchulamtRoles;
+import static ch.dvbern.ebegu.enums.UserRole.valueOf;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
@@ -425,6 +433,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			currentBerechtigung.join(Berechtigung_.institution, JoinType.LEFT);
 		Join<Berechtigung, Traegerschaft> traegerschaft =
 			currentBerechtigung.join(Berechtigung_.traegerschaft, JoinType.LEFT);
+		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin =
+			currentBerechtigung.join(Berechtigung_.gemeindeList, JoinType.LEFT);
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -439,6 +449,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// Und sie duerfen keine Superadmins sehen
 			predicates.add(cb.notEqual(currentBerechtigung.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
 		}
+
+		getGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 
 		//prepare predicates
 		BenutzerPredicateObjectDTO predicateObjectDto = benutzerTableFilterDTO.getSearch().getPredicateObject();
@@ -485,6 +497,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 					return new ImmutablePair<>(0L, Collections.emptyList());
 				}
 			}
+			// gemeinde
+			if (predicateObjectDto.getGemeinde() != null) {
+				predicates.add(cb.equal(gemeindeSetJoin.get(Gemeinde_.name), predicateObjectDto.getGemeinde()));
+			}
 			// institution;
 			if (predicateObjectDto.getInstitution() != null) {
 				predicates.add(cb.equal(institution.get(Institution_.name), predicateObjectDto.getInstitution()));
@@ -515,7 +531,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				root,
 				currentBerechtigung,
 				institution,
-				traegerschaft);
+				traegerschaft,
+				gemeindeSetJoin);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
@@ -557,7 +574,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Root<Benutzer> root,
 		Join<Benutzer, Berechtigung> currentBerechtigung,
 		Join<Berechtigung, Institution> institution,
-		Join<Berechtigung, Traegerschaft> traegerschaft) {
+		Join<Berechtigung, Traegerschaft> traegerschaft,
+		@Nonnull SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin) {
 		Expression<?> expression;
 		if (benutzerTableFilterDto.getSort() != null && benutzerTableFilterDto.getSort().getPredicate() != null) {
 			switch (benutzerTableFilterDto.getSort().getPredicate()) {
@@ -578,6 +596,17 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				break;
 			case "roleGueltigBis":
 				expression = currentBerechtigung.get(Berechtigung_.gueltigkeit).get(DateRange_.gueltigBis);
+				break;
+			case "gemeinde":
+				// Die Gemeinden sind eine Liste innerhalb der Liste (also des Tabelleneintrages).
+				// Berechtigungen ohne Gemeinde sollen egal wie sortiert ist am Schluss kommen!
+				if (benutzerTableFilterDto.getSort().getReverse()) {
+					expression = cb.selectCase().when(gemeindeSetJoin.isNull(), "ZZZZ")
+						.otherwise(gemeindeSetJoin.get(Gemeinde_.name));
+				} else {
+					expression = cb.selectCase().when(gemeindeSetJoin.isNull(), "0000")
+						.otherwise(gemeindeSetJoin.get(Gemeinde_.name));
+				}
 				break;
 			case "institution":
 				expression = institution.get(Institution_.name);
