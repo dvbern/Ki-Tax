@@ -90,6 +90,10 @@ public enum UserRole {
 		return Arrays.asList(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION);
 	}
 
+	public static List<UserRole> getInstitutionTraegerschaftAdminRoles() {
+		return Arrays.asList(ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION);
+	}
+
 	public static List<UserRole> getSuperadminAllGemeindeRoles() {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS);
 	}
