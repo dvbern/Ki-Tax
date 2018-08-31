@@ -31,7 +31,7 @@
   -->
 
 <div class="dv-benutzer adminModul">
-    <form role="form" #benutzerForm (onSubmit)="saveBenutzerBerechtigungen()" novalidate>
+    <form role="form" #form (onSubmit)="saveBenutzerBerechtigungen()" novalidate>
 
         <fieldset>
             <div class="row">
@@ -68,7 +68,7 @@
                            matInput
                            type="text"
                            name="username"
-                           ng-model="vm.selectedUser.username"
+                           [(ngModel)]="selectedUser.username"
                            class="form-control"
                            required
                            [disabled]="true">
@@ -368,8 +368,8 @@
                     <div class="row" *ngIf="!futureBerechtigung.enabled  && !isDefaultVerantwortlicher">
                         <div class="col-sm-12">
                             <dv-loading-button type="button"
-                                               button-click="vm.enableBerechtigung(futureBerechtigung)"
-                                               button-class="dv-btn-operation">
+                                               (buttonClick)="enableBerechtigung(futureBerechtigung)"
+                                               [buttonClass]="dv-btn-operation">
                                 <i class="fa fa-lg fa-pencil-square-o"></i>
                                 <span translate>BERECHTIGUNG_KUENFTIG_EDITIEREN</span>
                             </dv-loading-button>
@@ -379,7 +379,7 @@
                     <div class="row" *ngIf="!isDefaultVerantwortlicher">
                         <div class="col-sm-12">
                             <dv-loading-button [type]="button"
-                                               (buttonClick)="vm.removeBerechtigung(futureBerechtigung)"
+                                               (buttonClick)="removeBerechtigung(futureBerechtigung)"
                                                [buttonClass]="dv-btn-operation">
                                 <i class="fa fa-lg fa-trash-o"></i>
                                 <span translate>BERECHTIGUNG_ENTFERNEN</span>
@@ -390,11 +390,11 @@
             </div>
 
             <!-- Add Zukünftige Berechtigung -->
-            <div class="row" *ngIf="vm.canAddBerechtigung() && !vm.isDefaultVerantwortlicher">
+            <div class="row" *ngIf="canAddBerechtigung() && !isDefaultVerantwortlicher">
                 <div class="col-sm-12">
                     <dv-loading-button type="button"
-                                       button-click="vm.addBerechtigung()"
-                                       button-class="dv-btn-operation">
+                                       (buttonClick)="addBerechtigung()"
+                                       [buttonClass]="dv-btn-operation">
                         <i class="fa fa-lg fa-plus-circle"></i>
                         <span translate>BERECHTIGUNG_HINZUFUEGEN</span>
                     </dv-loading-button>
