@@ -63,8 +63,9 @@ public enum UserRole {
 		return SUPER_ADMIN == this;
 	}
 
-	public static List<UserRole> getAdminSuperAdminRoles() {
-		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE);
+	public static List<UserRole> getAllAdminSuperAdminRevisorRoles() {
+		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_MANDANT, ADMIN_INSTITUTION,
+			ADMIN_TRAEGERSCHAFT, REVISOR);
 	}
 
 	/**
