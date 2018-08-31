@@ -214,7 +214,7 @@ public class ReportResourceAsync {
 	@Path("/excel/benutzer")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, REVISOR, ADMIN_TS })
 	public Response getBenutzerReportExcel(
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) {
 
