@@ -2550,6 +2550,7 @@ public class JaxBConverter {
 		if (history.getTraegerschaft() != null) {
 			jaxHistory.setTraegerschaft(traegerschaftToJAX(history.getTraegerschaft()));
 		}
+		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setGesperrt(history.getGesperrt());
 		jaxHistory.setGeloescht(history.getGeloescht());
 		return jaxHistory;

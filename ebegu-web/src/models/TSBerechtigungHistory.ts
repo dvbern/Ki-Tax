@@ -25,6 +25,7 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
     private _role: TSRole;
     private _traegerschaft: TSTraegerschaft;
     private _institution: TSInstitution;
+    private _gemeinden: string;
     private _gesperrt: boolean;
     private _geloescht: boolean;
 
@@ -66,6 +67,14 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
 
     public set institution(value: TSInstitution) {
         this._institution = value;
+    }
+
+    public get gemeinden(): string {
+        return this._gemeinden;
+    }
+
+    public set gemeinden(value: string) {
+        this._gemeinden = value;
     }
 
     public get gesperrt(): boolean {

@@ -25,8 +25,10 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -58,6 +60,11 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_history_traegerschaft_id"))
 	private Traegerschaft traegerschaft;
 
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
+	private String gemeinden;
+
 	@NotNull
 	@Column(nullable = false)
 	private Boolean gesperrt = false;
@@ -75,6 +82,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		this.setGueltigkeit(berechtigung.getGueltigkeit());
 		this.institution = berechtigung.getInstitution();
 		this.traegerschaft = berechtigung.getTraegerschaft();
+		this.gemeinden = berechtigung.getBenutzer().extractGemeindenForUserAsString();
 		this.gesperrt = berechtigung.getBenutzer().getGesperrt();
 		this.geloescht = deleted;
 	}
@@ -111,6 +119,15 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 
 	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
 		this.traegerschaft = traegerschaft;
+	}
+
+	@Nullable
+	public String getGemeinden() {
+		return gemeinden;
+	}
+
+	public void setGemeinden(@Nullable String gemeinden) {
+		this.gemeinden = gemeinden;
 	}
 
 	public Boolean getGesperrt() {
@@ -150,6 +167,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		cb.append(this.getGueltigkeit().getGueltigBis(), other.getGueltigkeit().getGueltigBis());
 		cb.append(this.getInstitution(), other.getInstitution());
 		cb.append(this.getTraegerschaft(), other.getTraegerschaft());
+		cb.append(this.getGemeinden(), other.getGemeinden());
 		cb.append(this.getGesperrt(), other.getGesperrt());
 		cb.append(this.getGeloescht(), other.getGeloescht());
 		return cb.toComparison() == 0;
@@ -163,6 +181,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 			.append("gueltigkeit", getGueltigkeit())
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
+			.append("gemeinden", gemeinden)
 			.append("gesperrt", gesperrt)
 			.append("geloescht", geloescht)
 			.toString();
