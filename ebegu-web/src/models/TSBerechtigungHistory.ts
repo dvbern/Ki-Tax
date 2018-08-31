@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import EbeguUtil from '../utils/EbeguUtil';
 import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSInstitution from './TSInstitution';
@@ -93,13 +94,15 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
         this._geloescht = value;
     }
 
-    public getInstitutionOrTraegerschaft(): string {
+    public getDescription(): string {
         if (this.institution) {
             return this.institution.name;
         } else if (this.traegerschaft) {
             return this.traegerschaft.name;
+        } else if (!EbeguUtil.isEmptyStringNullOrUndefined(this.gemeinden)) {
+            return this.gemeinden;
         } else {
-            return '';
+            return null;
         }
     }
 }

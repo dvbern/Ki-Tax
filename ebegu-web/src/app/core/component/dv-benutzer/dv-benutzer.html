@@ -115,35 +115,6 @@
                     </div>
                 </div>
 
-
-                <!--<div class="row">-->
-                    <!--&lt;!&ndash; Gemeinde input &ndash;&gt;-->
-                    <!--<div class="col-sm-12 dv-input-container-medium">-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label class="md-no-float required dv-benutzer-label" data-translate="GEMEINDE"-->
-                                   <!--for="institution"></label>-->
-                            <!--<input type="checkbox" value="{{vm.gemeinde}}"><span>{{vm.gemeinde.name}}</span></input>-->
-                            <!--<dv-error-messages input-id="rolle" for="vm.form.rolle.$error"></dv-error-messages>-->
-                        <!--</div>-->
-
-
-
-                    <!--</div>-->
-
-                <!--</div>-->
-
-                <!--<div class="row" ng-disabled="true">-->
-                    <!--&lt;!&ndash; Gemeinde readonly &ndash;&gt;-->
-                    <!--<div class="col-sm-12 dv-input-container-medium">-->
-                        <!--<label class="md-no-float required dv-benutzer-label" data-translate="GEMEINDE"-->
-                               <!--for="institution"></label>-->
-                        <!--<span>{{vm.gemeinde.name}}</span>-->
-                    <!--</div>-->
-
-                <!--</div>-->
-
-
                 <div class="row">
                     <!-- Institution -->
                     <div class="col-sm-12 dv-input-container-medium"
@@ -391,7 +362,6 @@
                             <th data-translate="ROLLE"></th>
                             <th data-translate="BERECHTIGUNG_GUELTIG_AB"></th>
                             <th data-translate="BERECHTIGUNG_GUELTIG_BIS"></th>
-                            <th data-translate="INSTITUTIONTRAEGERSCHAFT"></th>
                             <th data-translate="GESPERRT"></th>
                             <th data-translate="GELOESCHT"></th>
                         </tr>
@@ -400,10 +370,9 @@
                         <tr ng-repeat="row in displayedCollection" st-select-row="row">
                             <td ng-bind="vm.getGeaendertDurch(row)"></td>
                             <td ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY HH:mm'"></td>
-                            <td ng-bind="vm.getTranslatedRole(row.role)"></td>
+                            <td ng-bind="vm.getBerechtigungHistoryDescription(row)"></td>
                             <td ng-bind="row.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                             <td ng-bind="row.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                            <td ng-bind="row.getInstitutionOrTraegerschaft()"></td>
                             <td ng-bind="row.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN' | translate"></td>
                             <td ng-bind="row.geloescht ? 'LABEL_JA' : 'LABEL_NEIN' | translate"></td>
                         </tr>
