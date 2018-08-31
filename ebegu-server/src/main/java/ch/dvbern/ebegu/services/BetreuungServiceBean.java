@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -82,6 +83,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -611,7 +613,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleSchulamt()) {
 			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Arrays.asList(Betreuungsstatus.forPendenzSchulamt)));
-		} else { // for Institution or Traegerschaft. bz default
+		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Arrays.asList(Betreuungsstatus.forPendenzInstitution)));
 		}
 
@@ -634,6 +636,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			Predicate predicateTagesschule = cb.equal(root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
 			Predicate predicateFerieninsel = cb.equal(root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
 			predicates.add(cb.or(predicateTagesschule, predicateFerieninsel));
+		}
+
+		if (role.isRoleGemeindeabhaengig()) {
+			final Join<Dossier, Gemeinde> gemeindeJoin = root.join(Betreuung_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
+				.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
+			FilterFunctions.getGemeindeFilterForCurrentUser(benutzerOptional.get(),
+				gemeindeJoin, predicates);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
