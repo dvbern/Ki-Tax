@@ -84,6 +84,17 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'admin.benutzerlist',
         template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
         url: '/benutzerlist',
+        data: {
+            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+        },
+    },
+    {
+        name: 'admin.benutzer',
+        template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
+        url: '/benutzerlist/benutzer/:benutzerId',
+        data: {
+            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.institutionen',
@@ -94,7 +105,7 @@ const ng1States: Ng1StateDeclaration[] = [
             institutionen: institutionenResolver,
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getMandantRoles(),
         },
     },
     {
@@ -111,7 +122,7 @@ const ng1States: Ng1StateDeclaration[] = [
             mandant: mandantResolver
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getMandantRoles(),
         }
     },
     {
@@ -122,7 +133,7 @@ const ng1States: Ng1StateDeclaration[] = [
             institutionStammdatenId: '',
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getMandantRoles(),
         },
     },
     {

@@ -63,16 +63,23 @@ public enum UserRole {
 		return SUPER_ADMIN == this;
 	}
 
-	public static List<UserRole> getAdminSuperAdminRoles() {
-		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE);
+	public static List<UserRole> getAllAdminSuperAdminRevisorRoles() {
+		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_MANDANT, ADMIN_INSTITUTION,
+			ADMIN_TRAEGERSCHAFT, REVISOR);
 	}
 
+	/**
+	 * Returns only the roles of TS
+	 */
 	public static List<UserRole> getSchulamtRoles() {
-		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
+		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS);
 	}
 
+	/**
+	 * Returns only the roles of BG
+	 */
 	public static List<UserRole> getJugendamtRoles() {
-		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
 	}
 
 	public static List<UserRole> getJugendamtSuperadminRoles() {
@@ -81,6 +88,10 @@ public enum UserRole {
 
 	public static List<UserRole> getInstitutionTraegerschaftRoles() {
 		return Arrays.asList(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION);
+	}
+
+	public static List<UserRole> getInstitutionTraegerschaftAdminRoles() {
+		return Arrays.asList(ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION);
 	}
 
 	public static List<UserRole> getSuperadminAllGemeindeRoles() {

@@ -35,7 +35,7 @@ export const traegerschaftState: Ng2StateDeclaration = {
         }
     ],
     data: {
-        roles: TSRoleUtil.getAdministratorRevisorRole(),
+        roles: TSRoleUtil.getMandantRoles(),
     }
 };
 
