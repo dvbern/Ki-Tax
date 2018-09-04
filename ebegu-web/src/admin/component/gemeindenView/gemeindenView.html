@@ -1,16 +1,20 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ AGPL File-Header
+  ~
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="gemeindenView adminModul" flex="auto">
@@ -24,33 +28,33 @@
                 <div class="row">
                     <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
                     <div class="col-md-12 table-responsive gemeinden-table">
+                            <mat-table #table [dataSource]="dataSource" matSort>
+                                <!-- Column Name -->
+                                <ng-container matColumnDef="name">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                        {{'GEMEINDEN' | translate}}
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let gemeinde"
+                                              (click)="setSelectedGemeinde(gemeinde)">
+                                        {{gemeinde.name}}
+                                    </mat-cell>
+                                </ng-container>
 
-                        <mat-table #table [dataSource]="dataSource" matSort>
-                            <!-- Column Name -->
-                            <ng-container matColumnDef="name">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                    {{'GEMEINDEN' | translate}}
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let gemeinde"
-                                          (click)="setSelectedGemeinde(gemeinde)">
-                                    {{gemeinde.name}}
-                                </mat-cell>
-                            </ng-container>
+                                <!-- Column Status -->
+                                <ng-container matColumnDef="status">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                        {{'STATUS' | translate}}
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let gemeinde"
+                                              (click)="setSelectedGemeinde(gemeinde)">
+                                        {{gemeinde.status | translate}}
+                                    </mat-cell>
+                                </ng-container>
 
-                            <!-- Column Status -->
-                            <ng-container matColumnDef="status">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                    {{'STATUS' | translate}}
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let gemeinde"
-                                          (click)="setSelectedGemeinde(gemeinde)">
-                                    {{gemeinde.status | translate}}
-                                </mat-cell>
-                            </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            </mat-table>
 
-                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                        </mat-table>
                         <div class="mat-row" *ngIf="showNoContentMessage()"
                              [textContent]="'GEMEINDEN_NOCH_KEINE' | translate">
                         </div>
