@@ -47,18 +47,19 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -198,10 +199,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
-			if (EnumUtil.isOneOf(benutzer.getRole(), ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
+			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_TRAEGERSCHAFT, UserRole.SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
 				return getAllInstitutionenFromTraegerschaft(benutzer.getTraegerschaft().getId());
 			}
-			if (EnumUtil.isOneOf(benutzer.getRole(), ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION) && benutzer.getInstitution() != null) {
+			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION) && benutzer.getInstitution() != null) {
 				List<Institution> institutionList = new ArrayList<>();
 				if (benutzer.getInstitution() != null) {
 					institutionList.add(benutzer.getInstitution());
@@ -217,7 +218,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public EnumSet<BetreuungsangebotTyp> getAllAngeboteFromInstitution(@Nonnull String institutionId) {
 		List<InstitutionStammdaten> allInstStammdaten = getAllInstStammdaten(institutionId);
 		return allInstStammdaten.stream().map(InstitutionStammdaten::getBetreuungsangebotTyp)
