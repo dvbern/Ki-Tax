@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -194,9 +194,9 @@ export class BenutzerComponent implements OnInit {
     }
 
     saveBenutzerBerechtigungen(): void {
-        this.prepareForSave(this.currentBerechtigung);
-        this.prepareForSave(this.futureBerechtigung);
         if (this.form.valid) {
+            this.prepareForSave(this.currentBerechtigung);
+            this.prepareForSave(this.futureBerechtigung);
             if (this.isMoreThanGesuchstellerRole()) {
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
@@ -309,6 +309,8 @@ export class BenutzerComponent implements OnInit {
         berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
         berechtigung.enabled = true;
         this._futureBerechtigung = berechtigung;
+        this.initInstitution(this._futureBerechtigung);
+        this.initTraegerschaft(this._futureBerechtigung);
     }
 
     enableBerechtigung(berechtigung: TSBerechtigung): void {

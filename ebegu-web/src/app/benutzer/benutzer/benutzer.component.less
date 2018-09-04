@@ -41,15 +41,68 @@ mat-datepicker-toggle.benutzer-datepicker {
     }
 }
 
-form {
+form.submitted {
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid, input.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
-        //&.submitted {
-            .ErrorInput()
-        //}
+        .ErrorInput()
     }
 }
 
-.well {
-    margin-top: 4rem;
+.dv-benutzer {
+    background: #F0F0F0;
+    flex-grow: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 3rem;
+    display: block;
+    position: relative;
+    box-sizing: content-box;
+
+    .row {
+        .well {
+            margin-top: 4rem;
+            margin-left: -2.5rem;
+            margin-right: -2.5rem;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+            padding: 2rem 2.5rem 2rem 5rem;
+        }
+    }
+
+    hr.header {
+        margin-bottom: 2rem;
+    }
+}
+
+:host {
+    display: flex;
+    align-items: flex-start;
+}
+
+.button-row {
+    flex-direction: row;
+    -ms-flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    margin-left: -16px;
+    padding-left: 16px;
+    margin-right: -16px;
+    padding-right: 16px;
+    margin-top: 2rem;
+    .button-row-item {
+        margin-left: auto;
+        margin-right: auto;
+
+        position: static;
+        width: auto;
+    }
+}
+
+.dv-btn-operation {
+    line-height: 5rem;
+    &[disabled], &[disabled]:hover {
+        color: @contrast-dark;
+    }
 }

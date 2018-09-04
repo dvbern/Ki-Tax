@@ -16,7 +16,7 @@
   -->
 
 <div class="dv-benutzer adminModul">
-    <form role="form" #form="ngForm" (onSubmit)="saveBenutzerBerechtigungen()" novalidate *ngIf="selectedUser">
+    <form role="form" #form="ngForm" (ngSubmit)="saveBenutzerBerechtigungen()" novalidate *ngIf="selectedUser" [ngClass]="{'submitted': form.submitted}">
 
         <fieldset>
             <div class="row">
@@ -315,9 +315,10 @@
 				<!-- Remove Zukünftige Berechtigung -->
 				<div class="row" *ngIf="!isDefaultVerantwortlicher">
 					<div class="col-sm-12">
-						<button type="button" class="dv-btn"
-								(click)="removeBerechtigung(futureBerechtigung)"
-								[textContent]="'BERECHTIGUNG_ENTFERNEN' | translate">
+						<button type="button" class="dv-btn dv-btn-operation"
+								(click)="removeBerechtigung(futureBerechtigung)">
+                            <i class="fa fa-lg fa-trash-o"></i>
+                            <span translate>BERECHTIGUNG_ENTFERNEN</span>
 						</button>
 					</div>
 				</div>
@@ -326,9 +327,10 @@
             <!-- Add Zukünftige Berechtigung -->
             <div class="row" *ngIf="canAddBerechtigung() && !isDefaultVerantwortlicher">
                 <div class="col-sm-12">
-                    <button type="button" class="dv-btn"
-                            (click)="addBerechtigung()"
-                            [textContent]="'BERECHTIGUNG_HINZUFUEGEN' | translate">
+                    <button type="button" class="dv-btn dv-btn-operation"
+                            (click)="addBerechtigung()">
+                        <i class="fa fa-lg fa-plus-circle"></i>
+                        <span translate>BERECHTIGUNG_HINZUFUEGEN</span>
                     </button>
                 </div>
             </div>
@@ -346,15 +348,14 @@
             <!-- Buttons -->
             <div class="button-row dv-input-container-medium marginTop50">
 
-                <button type="button" class="dv-btn"
+                <button type="submit" class="dv-btn"
                         *ngIf="!isDefaultVerantwortlicher"
-                        (click)="saveBenutzerBerechtigungen()"
                         [textContent]="'BENUTZER_SAVE' | translate">
                 </button>
 
                 <div *ngIf="!selectedUser.gesperrt && !isDefaultVerantwortlicher"
                      class="button-row-item">
-                    <button type="button" class="cancel-button"
+                    <button type="button" class="dv-btn cancel-button"
                             (click)="inactivateBenutzer()"
                             [textContent]="'BENUTZER_SPERREN' | translate">
                     </button>
@@ -362,14 +363,14 @@
 
                 <div *ngIf="selectedUser.gesperrt && !isDefaultVerantwortlicher"
                      class="button-row-item">
-                    <button type="button" class="cancel-button"
+                    <button type="button" class="dv-btn cancel-button"
                             (click)="reactivateBenutzer()"
                             [textContent]="'BENUTZER_REAKTIVIEREN' | translate">
                     </button>
                 </div>
 
                 <div class="button-row-item">
-                    <button type="button" class="cancel-button"
+                    <button type="button" class="dv-btn cancel-button"
                             (click)="cancel()"
                             [textContent]="'CANCEL' | translate">
                     </button>
@@ -400,13 +401,13 @@
                         </tr>
                         <tr *ngFor="let entry of berechtigungHistoryList">
                             <td>{{getGeaendertDurch(entry)}}</td>
-                            <td>{{entry.timestampErstellt}}</td>
+                            <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
                             <td>{{getTranslatedRole(entry.role)}}</td>
-                            <td>{{entry.gueltigkeit.gueltigAb}}</td>
-                            <td>{{entry.gueltigkeit.gueltigBis}}</td>
+                            <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
+                            <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
                             <td>{{entry.getInstitutionOrTraegerschaft()}}</td>
-                            <td>{{entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</td>
-                            <td>{{entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</td>
+                            <td>{{(entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                            <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                         </tr>
                     </table>
                 </div>

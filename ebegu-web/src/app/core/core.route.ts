@@ -16,6 +16,7 @@
 import {StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
+import * as moment from 'moment';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
@@ -99,6 +100,8 @@ export function appRun(angularMomentConfig: any,
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
         gesuchModelManager.updateFachstellenList();
     }
+
+    moment.locale('de_CH');
 
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
