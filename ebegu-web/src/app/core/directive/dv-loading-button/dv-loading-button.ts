@@ -13,28 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IDirective, IDirectiveFactory} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
+import IFormController = angular.IFormController;
 import IHttpService = angular.IHttpService;
 import ITimeoutService = angular.ITimeoutService;
-import IFormController = angular.IFormController;
-import IAttributes = angular.IAttributes;
-import ILogService = angular.ILogService;
 
 interface IDVLoadingButtonController {
     isDisabled: boolean;
     buttonDisabled: boolean;
 }
 
-export class DVLoadingButton implements IDirective {
+export class DVLoadingButton implements IComponentOptions {
     transclude = true;
-    restrict = 'E';
-    require: any = {dvLoadingButtonCtrl: 'dvLoadingButton', formCtrl: '^?form'};
-    scope = {};
+    require = {dvLoadingButtonCtrl: 'dvLoadingButton', formCtrl: '^?form'};
     template = require('./dv-loading-button.html');
     controller = DVLoadingButtonController;
     controllerAs = 'vm';
-    bindToController = {
+    bindings = {
         type: '@',
         delay: '@',
         buttonClass: '@',
@@ -44,12 +40,6 @@ export class DVLoadingButton implements IDirective {
         buttonClick: '&',
         inputId: '@'
     };
-
-    static factory(): IDirectiveFactory {
-        const directive = () => new DVLoadingButton();
-        directive.$inject = [];
-        return directive;
-    }
 }
 
 /**
@@ -69,7 +59,7 @@ export class DVLoadingButton implements IDirective {
  *
  */
 export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
-    static $inject: string[] = ['$http', '$scope', '$timeout', '$attrs', '$log'];
+    static $inject: string[] = ['$http', '$scope', '$timeout'];
 
     buttonClicked: ($event: any) => void;
     isDisabled: boolean;
@@ -82,19 +72,12 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
 
     constructor(private readonly $http: IHttpService,
                 private readonly $scope: any,
-                private readonly $timeout: ITimeoutService,
-                private readonly $attrs: IAttributes,
-                private readonly $log: ILogService) {
+                private readonly $timeout: ITimeoutService
+    ) {
     }
 
     //wird von angular aufgerufen
     $onInit() {
-        if ('ngClick' in this.$attrs) {
-            this.$log.error('must not use ng-click on dv-loading-button', this);
-        }
-        if ('ngDisabled' in this.$attrs) {
-            this.$log.error('must not use ng-disabled on dv-loading-button', this);
-        }
         if (!this.type) {
             this.type = 'button'; //wenn kein expliziter type angegeben wurde nehmen wir default button
         }
@@ -110,25 +93,24 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
 
             //timeout wird gebraucht damit der request nach dem disablen ueberhaupt uebermittelt wird
             this.$timeout(() => {
-                if (!this.forceWaitService) {
-                    if (this.formCtrl) {  //wenn form-controller existiert
-                        //button wird nur disabled wenn form valid
-                        if (this.formCtrl.$valid) {
-                            this.disableForDelay();
-                        }
-                    } else { //wenn kein form einfach mal disablen fuer delay ms
-
-                        this.disableForDelay();
-                    }
-                } else {
+                if (this.forceWaitService) {
                     //wir warten auf naechsten service return, egal wie lange es dauert
                     this.isDisabled = true;
+                    return;
+                }
+                if (this.formCtrl) {  //wenn form-controller existiert
+                    //button wird nur disabled wenn form valid
+                    if (this.formCtrl.$valid) {
+                        this.disableForDelay();
+                    }
+                } else { //wenn kein form einfach mal disablen fuer delay ms
+                    this.disableForDelay();
                 }
             }, 0);
 
         };
 
-        this.$scope.$on(TSHTTPEvent.REQUEST_FINISHED, (event: any) => {
+        this.$scope.$on(TSHTTPEvent.REQUEST_FINISHED, () => {
             this.isDisabled = false;
         });
 
