@@ -58,6 +58,9 @@ export const benutzerState: Ng2StateDeclaration = {
     name: 'admin.benutzer',
     component: BenutzerComponent,
     url: '/benutzerlist/benutzer/:benutzerId',
+    data: {
+        roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+    },
 };
 
 @NgModule({
