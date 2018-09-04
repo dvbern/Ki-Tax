@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSGemeindeStatus} from '../models/enums/TSGemeindeStatus';
 import {TSRole} from '../models/enums/TSRole';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
 import TSBerechtigung from '../models/TSBerechtigung';
@@ -192,7 +193,7 @@ export default class TestDataUtil {
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         gemeinde.name = 'Ostermundigen';
         gemeinde.gemeindeNummer = 2;
-        gemeinde.enabled = true;
+        gemeinde.status = TSGemeindeStatus.AKTIV;
         return gemeinde;
     }
 
@@ -202,7 +203,7 @@ export default class TestDataUtil {
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
         gemeinde.gemeindeNummer = 1;
-        gemeinde.enabled = true;
+        gemeinde.status = TSGemeindeStatus.AKTIV;
         return gemeinde;
     }
 
@@ -212,7 +213,7 @@ export default class TestDataUtil {
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046ccc';
         gemeinde.name = 'Thun';
         gemeinde.gemeindeNummer = 3;
-        gemeinde.enabled = true;
+        gemeinde.status = TSGemeindeStatus.AKTIV;
         return gemeinde;
     }
 

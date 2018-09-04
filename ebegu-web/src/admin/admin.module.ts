@@ -30,6 +30,7 @@ import {InstitutionViewComponentConfig} from './component/institutionView/instit
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
+import {GemeindenViewComponent} from './component/gemeindenView/gemeindenView';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
 import {EinstellungRS} from './service/einstellungRS.rest';
@@ -54,6 +55,7 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())
     .directive('dvTraegerschaftView', downgradeComponent({component: TraegerschaftViewComponent}))
+    .directive('dvGemeindenView', downgradeComponent({component: GemeindenViewComponent}))
     .directive('dvTestdatenView', downgradeComponent({component: TestdatenViewComponent}))
     .directive('dvBatchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
     .run(adminRun);
