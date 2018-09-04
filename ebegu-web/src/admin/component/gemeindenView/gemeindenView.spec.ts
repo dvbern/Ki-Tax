@@ -1,25 +1,32 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
 import {SharedModule} from '../../../app/shared/shared.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 
 import {GemeindenViewComponent} from './gemeindenView';
 
@@ -29,10 +36,9 @@ describe('gemeindenView', () => {
     let fixture: ComponentFixture<GemeindenViewComponent>;
 
     beforeEach(async(() => {
-        const traegerschaftServiceSpy = jasmine.createSpyObj('TraegerschaftRS', ['createTraegerschaft']);
-        const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['getErrors']);
-        const dvDialogServiceSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
-        const authServiceSpy = jasmine.createSpyObj('AuthServiceRS', ['isOneOfRoles']);
+        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -40,14 +46,15 @@ describe('gemeindenView', () => {
                 NoopAnimationsModule,
             ],
             providers: [
-                {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: DvDialog, useValue: dvDialogServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [GemeindenViewComponent]
         })
             .compileComponents();
+        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
+            [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
     }));
 
     beforeEach(() => {
