@@ -32,7 +32,7 @@ export function errorRecoveryHookRunBlock($transitions: TransitionService) {
 }
 
 function onError(transition: Transition): HookResult {
-    if (transition.error().message === DISABLE_RECOVERY_ERROR_MESSAGE) {
+    if (!transition.isActive() || transition.error().message === DISABLE_RECOVERY_ERROR_MESSAGE) {
         return;
     }
 
