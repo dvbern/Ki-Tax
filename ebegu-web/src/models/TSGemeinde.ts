@@ -14,7 +14,6 @@
  */
 
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
-import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSGemeinde extends TSAbstractMutableEntity {
@@ -46,5 +45,4 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
     set status(value: TSGemeindeStatus) {
         this._status = value;
     }
-
 }

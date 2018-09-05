@@ -40,7 +40,6 @@ import TSAdresse from '../models/TSAdresse';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSAdresseContainer from '../models/TSAdresseContainer';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
-import Moment = moment.Moment;
 
 export default class TestDataUtil {
 

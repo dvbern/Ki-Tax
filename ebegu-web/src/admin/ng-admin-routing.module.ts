@@ -14,21 +14,14 @@
  */
 
 import {NgModule} from '@angular/core';
-import {MatTableDataSource} from '@angular/material';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {IPromise} from 'angular';
-import {takeUntil} from 'rxjs/operators';
-import {LogFactory} from '../app/core/logging/LogFactory';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
-import GemeindeRS from '../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../models/TSGemeinde';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {GemeindenViewComponent} from './component/gemeindenView/gemeindenView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {GemeindenViewComponent} from './component/gemeindenView/gemeindenView';
-
 
 export const traegerschaftState: Ng2StateDeclaration = {
     name: 'admin.traegerschaft',
@@ -51,7 +44,7 @@ export const gemeindenState: Ng2StateDeclaration = {
     url: '/gemeinden',
     component: GemeindenViewComponent,
     data: {
-        roles: TSRoleUtil.getAdministratorRevisorRole(),
+        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
     }
 };
 
