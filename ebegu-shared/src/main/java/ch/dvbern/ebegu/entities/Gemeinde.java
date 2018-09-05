@@ -100,20 +100,6 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 		this.name = name;
 	}
 
-	@Transient
-	public boolean isEnabled() {
-		return GemeindeStatus.AKTIV.equals(getStatus());
-	}
-
-	@Transient
-	public void setEnabled(boolean enabled) {
-		if (enabled) {
-			setStatus(GemeindeStatus.AKTIV);
-		} else {
-			setStatus(GemeindeStatus.GESPERRT);
-		}
-	}
-
 	public GemeindeStatus getStatus() {
 		return status;
 	}

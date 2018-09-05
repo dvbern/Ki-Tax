@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
@@ -154,7 +155,7 @@ public abstract class AbstractTestfall {
 
 	private Gemeinde createGemeinde() {
 		Gemeinde testGemeinde = new Gemeinde();
-		testGemeinde.setEnabled(true);
+		testGemeinde.setStatus(GemeindeStatus.AKTIV);
 		testGemeinde.setName("Testgemeinde");
 		return testGemeinde;
 	}
