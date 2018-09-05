@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {LOCALE_ID} from '@angular/core';
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import 'angular-animate';
@@ -165,6 +166,7 @@ export const EbeguWebCore: angular.IModule = angular
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
     .constant('CONSTANTS', CONSTANTS)
+    .factory('LOCALE_ID', downgradeInjectable(LOCALE_ID))
     .service('ApplicationPropertyRS', ApplicationPropertyRS)
     .service('EbeguRestUtil', EbeguRestUtil)
     .service('EbeguUtil', EbeguUtil)
