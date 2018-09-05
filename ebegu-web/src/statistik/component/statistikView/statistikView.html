@@ -20,7 +20,7 @@
         <div class="col-md-10 col-md-offset-1">
             <dv-accordion allow-multiple-sections="false">
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SACHBEARBEITER_GEMEINDE','ADMIN_GEMEINDE','SUPER_ADMIN','REVISOR',
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_GEMEINDE', 'SUPER_ADMIN', 'REVISOR',
                      'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuch_stichtag">
                         <tab-title data-translate="GESUCHE_NACH_STICHTAG"></tab-title>
@@ -69,8 +69,8 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SACHBEARBEITER_GEMEINDE', 'ADMIN_BG','SUPER_ADMIN','REVISOR',
-                     'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_BG', 'SUPER_ADMIN',
+                     'REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuch_zeitraum">
                         <tab-title data-translate="GESUCHE_NACH_ZEITRAUM"></tab-title>
                         <tab-body>
@@ -130,7 +130,8 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
+                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="zahlungen_periode">
                         <tab-title data-translate="ZAHLUNGEN_NACH_PERIODE"></tab-title>
                         <tab-body>
@@ -166,9 +167,9 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
-                     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION',
-                     'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+                     'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT', 'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT',
+                     'SACHBEARBEITER_TRAEGERSCHAFT']">
                     <dv-accordion-tab tabid="kinder">
                         <tab-title data-translate="KINDER_UPPER"></tab-title>
                         <tab-body>
@@ -227,7 +228,8 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+                     'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuchsteller">
                         <tab-title data-translate="GESUCHSTELLER_UPPER"></tab-title>
                         <tab-body>
@@ -258,8 +260,9 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR','ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION',
-                     'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+                     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMIN_MANDANT',
+                     'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="kanton">
                         <tab-title data-translate="KANTON"></tab-title>
                         <tab-body>
@@ -301,7 +304,7 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="mitarbeiterinnen">
                         <tab-title data-translate="MITARBEITERINNEN"></tab-title>
                         <tab-body>
@@ -346,7 +349,8 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['ADMIN','SUPER_ADMIN']">
+                     dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_TS', 'ADMIN_GEMEINDE', 'SUPER_ADMIN', 'REVISOR', 'ADMIN_TRAEGERSCHAFT',
+                     'ADMIN_INSTITUTION', 'ADMIN_MANDANT']">
                     <dv-accordion-tab tabid="benutzer">
                         <tab-title data-translate="BENUTZER_STATISTIK"></tab-title>
                         <tab-body>
@@ -365,7 +369,8 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
+                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="betreuung">
                         <tab-title data-translate="GESUCHSTELLER_KINDER_BETREUUNG"></tab-title>
                         <tab-body>
