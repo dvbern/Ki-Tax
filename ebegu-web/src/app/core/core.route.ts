@@ -34,14 +34,30 @@ import ListResourceRS from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 import ILocationService = angular.ILocationService;
-import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 
 const LOG = LogFactory.createLog('appRun');
 
-appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
-    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
+appRun.$inject = [
+    'angularMomentConfig',
+    'RouterHelper',
+    'ListResourceRS',
+    'MandantRS',
+    '$injector',
+    'AuthLifeCycleService',
+    'hotkeys',
+    '$timeout',
+    'AuthServiceRS',
+    '$state',
+    '$location',
+    '$window',
+    'GesuchModelManager',
+    'GesuchsperiodeRS',
+    'InstitutionStammdatenRS',
+    'GlobalCacheService',
+    '$transitions',
+    'GemeindeRS',
+];
 
 export function appRun(angularMomentConfig: any,
                        routerHelper: RouterHelper,
@@ -55,7 +71,6 @@ export function appRun(angularMomentConfig: any,
                        $state: StateService,
                        $location: ILocationService,
                        $window: IWindowService,
-                       $log: ILogService,
                        gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS,
                        institutionsStammdatenRS: InstitutionStammdatenRS,
@@ -63,8 +78,6 @@ export function appRun(angularMomentConfig: any,
                        $transitions: TransitionService,
                        gemeindeRS: GemeindeRS,
 ) {
-    // navigationLogger.toggle();
-    // $trace.enable(Category.TRANSITION);
 
     function onNotAuthenticated() {
         authServiceRS.clearPrincipal();

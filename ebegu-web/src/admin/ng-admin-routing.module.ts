@@ -19,6 +19,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 
@@ -53,9 +54,22 @@ export const batchjobTriggerState: Ng2StateDeclaration = {
     component: BatchjobTriggerViewComponent,
 };
 
+export const debuggingState: Ng2StateDeclaration = {
+    name: 'admin.debugging',
+    url: '/debug',
+    component: DebuggingComponent,
+};
+
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [traegerschaftState, testdatenState, batchjobTriggerState]}),
+        UIRouterUpgradeModule.forChild({
+            states: [
+                traegerschaftState,
+                testdatenState,
+                batchjobTriggerState,
+                debuggingState
+            ]
+        }),
     ],
     exports: [
         UIRouterUpgradeModule

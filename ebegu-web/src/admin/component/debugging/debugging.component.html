@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="viewTitle marginTop10">
+            <h2 translate>DEBUGGING_UI_ROUTER</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <form #traceForm="ngForm">
+                    <label for="routerTraceCategories">
+                        {{'DEBUGGING_TRACE_TRANSITIONS' | translate}}
+                    </label>
+                    <select [(ngModel)]="routerTraceCategories"
+                            multiple
+                            size="5"
+                            name="routerTraceCategories"
+                            class="form-control"
+                            id="routerTraceCategories">
+                        <option *ngFor="let key of TRACE_CATEGORY_KEYS"
+                                [ngValue]="TRACE_CATEGORY[key]">
+                            {{key}}
+                            <ng-container *ngIf="routerTraceCategories.includes(TRACE_CATEGORY[key])">{{"&#xf00c;"}}
+                            </ng-container>
+                        </option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

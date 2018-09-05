@@ -16,6 +16,7 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
@@ -29,11 +30,13 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         TraegerschaftViewComponent,
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
+        DebuggingComponent,
     ],
     entryComponents: [
         TraegerschaftViewComponent,
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
+        DebuggingComponent,
     ],
     providers: [],
 })
