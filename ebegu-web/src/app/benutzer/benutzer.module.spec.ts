@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BenutzerModule } from './benutzer.module';
+import {BenutzerModule} from './benutzer.module';
 
 describe('BenutzerModule', () => {
-  let benutzerModule: BenutzerModule;
+    let benutzerModule: BenutzerModule;
 
-  beforeEach(() => {
-    benutzerModule = new BenutzerModule();
-  });
+    beforeEach(() => {
+        benutzerModule = new BenutzerModule();
+    });
 
-  it('should create an instance', () => {
-    expect(benutzerModule).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        expect(benutzerModule).toBeTruthy();
+    });
 });

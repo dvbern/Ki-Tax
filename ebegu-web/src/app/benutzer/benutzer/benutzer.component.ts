@@ -21,6 +21,8 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
+import {of} from 'rxjs';
+import {filter, mergeMap} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {rolePrefix, TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
@@ -33,11 +35,13 @@ import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {Log, LogFactory} from '../../core/logging/LogFactory';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import UserRS from '../../core/service/userRS.rest';
+
+const LOG = LogFactory.createLog('BenutzerComponent');
 
 @Component({
     selector: 'dv-benutzer',
@@ -47,20 +51,21 @@ import UserRS from '../../core/service/userRS.rest';
 })
 export class BenutzerComponent implements OnInit {
 
-    private readonly log: Log = LogFactory.createLog('BenutzerComponent');
+    @ViewChild(NgForm) form: NgForm;
 
+    TSRoleUtil = TSRoleUtil;
+
+    tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
+
+    public selectedUser: TSUser;
     public institutionenList: Array<TSInstitution> = [];
     public traegerschaftenList: Array<TSTraegerschaft> = [];
 
-    @ViewChild(NgForm) form: NgForm;
-    TSRoleUtil = TSRoleUtil;
-    tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
-    selectedUser: TSUser;
+    public currentBerechtigung: TSBerechtigung;
+    public futureBerechtigung: TSBerechtigung;
+    public isDefaultVerantwortlicher: boolean = false;
 
-    private _currentBerechtigung: TSBerechtigung;
-    private _futureBerechtigung: TSBerechtigung;
     private _berechtigungHistoryList: TSBerechtigungHistory[];
-    private _isDefaultVerantwortlicher: boolean = false;
 
     constructor(private readonly $transition$: Transition,
                 private readonly changeDetectorRef: ChangeDetectorRef,
@@ -74,6 +79,23 @@ export class BenutzerComponent implements OnInit {
                 private readonly dialog: MatDialog) {
     }
 
+    public get berechtigungHistoryList(): TSBerechtigungHistory[] {
+        return this._berechtigungHistoryList;
+    }
+
+    private static initInstitution(berechtigung: TSBerechtigung): void {
+        if (berechtigung && !berechtigung.institution) {
+            berechtigung.institution = new TSInstitution();
+        }
+    }
+
+    private static initTraegerschaft(berechtigung: TSBerechtigung): void {
+        if (berechtigung && !berechtigung.traegerschaft) {
+            berechtigung.traegerschaft = new TSTraegerschaft();
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
     /**
      * Anonymous doesn't give any useful information to the user. For this reason we show system instead of anonymous
      */
@@ -84,7 +106,7 @@ export class BenutzerComponent implements OnInit {
         return role.userErstellt;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
         const username: string = this.$transition$.params().benutzerId;
@@ -97,7 +119,7 @@ export class BenutzerComponent implements OnInit {
                 if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
                     this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
                         if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
-                            this._isDefaultVerantwortlicher = true;
+                            this.isDefaultVerantwortlicher = true;
                         }
                         this.changeDetectorRef.markForCheck();
                     });
@@ -105,7 +127,7 @@ export class BenutzerComponent implements OnInit {
                 if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
                     this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
                         if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
-                            this._isDefaultVerantwortlicher = true;
+                            this.isDefaultVerantwortlicher = true;
                         }
                         this.changeDetectorRef.markForCheck();
                     });
@@ -115,63 +137,26 @@ export class BenutzerComponent implements OnInit {
         }
     }
 
+    // noinspection JSMethodCanBeStatic
     public isTraegerschaftBerechtigung(berechtigung: TSBerechtigung): boolean {
         return berechtigung &&
             (berechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
                 || berechtigung.role === TSRole.SACHBEARBEITER_TRAEGERSCHAFT);
     }
 
+    // noinspection JSMethodCanBeStatic
     public isInstitutionBerechtigung(berechtigung: TSBerechtigung): boolean {
-        console.log('berechtigung', berechtigung);
         return berechtigung &&
             (berechtigung.role === TSRole.ADMIN_INSTITUTION || berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION);
     }
 
+    // noinspection JSMethodCanBeStatic
     public trackByRole(_i: number, role: string): string {
         return role;
     }
 
     public getRolesWithTranslations(): Array<{ role: TSRole; translated: string }> {
         return this.getRollen().map(role => ({role, translated: this.translate.instant(`TSRole_${role}`)}));
-    }
-
-    private updateInstitutionenList(): void {
-        this.institutionRS.getAllInstitutionen().then(response => {
-            this.institutionenList = response.sort((a, b) => a.name.localeCompare(b.name));
-            this.changeDetectorRef.markForCheck();
-        });
-    }
-
-    private updateTraegerschaftenList(): void {
-        this.traegerschaftenRS.getAllTraegerschaften().then(response => {
-            this.traegerschaftenList = response.sort((a, b) => a.name.localeCompare(b.name));
-            this.changeDetectorRef.markForCheck();
-        });
-    }
-
-    private initSelectedUser(): void {
-        this._currentBerechtigung = this.selectedUser.berechtigungen[0];
-        this._futureBerechtigung = this.selectedUser.berechtigungen[1];
-        this.initInstitution(this._currentBerechtigung);
-        this.initInstitution(this._futureBerechtigung);
-        this.initTraegerschaft(this._currentBerechtigung);
-        this.initTraegerschaft(this._futureBerechtigung);
-        this.userRS.getBerechtigungHistoriesForBenutzer(this.selectedUser.username).then((result) => {
-            this._berechtigungHistoryList = result;
-            this.changeDetectorRef.markForCheck();
-        });
-    }
-
-    private initInstitution(berechtigung: TSBerechtigung): void {
-        if (berechtigung && !berechtigung.institution) {
-            berechtigung.institution = new TSInstitution();
-        }
-    }
-
-    private initTraegerschaft(berechtigung: TSBerechtigung): void {
-        if (berechtigung && !berechtigung.traegerschaft) {
-            berechtigung.traegerschaft = new TSTraegerschaft();
-        }
     }
 
     public getRollen(): Array<TSRole> {
@@ -193,44 +178,121 @@ export class BenutzerComponent implements OnInit {
         return this.translate.instant(rolePrefix() + role);
     }
 
-    saveBenutzerBerechtigungen(): void {
-        if (this.form.valid) {
-            this.prepareForSave(this.currentBerechtigung);
-            this.prepareForSave(this.futureBerechtigung);
-            if (this.isMoreThanGesuchstellerRole()) {
-                const dialogConfig = new MatDialogConfig();
-                dialogConfig.data = {
-                    title: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TITLE',
-                    text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT',
-                };
-
-                this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
-                    .afterClosed()
-                    .subscribe(userAccepted => {
-                        if (userAccepted) {
-                            if (this.isAdminRole()) {
-                                const adminDialogConfig = new MatDialogConfig();
-                                adminDialogConfig.data = {
-                                    title: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE',
-                                    text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT',
-                                };
-
-                                this.dialog.open(DvNgRemoveDialogComponent, adminDialogConfig)
-                                    .afterClosed()
-                                    .subscribe(userAccepted => {
-                                        if (userAccepted) {
-                                            this.doSaveBenutzer();
-                                        }
-                                    });
-                            } else {
-                                this.doSaveBenutzer();
-                            }
-                        }
-                    });
-            } else {
-                this.doSaveBenutzer();
-            }
+    public saveBenutzerBerechtigungen(): void {
+        if (!this.form.valid) {
+            return;
         }
+
+        if (!this.isMoreThanGesuchstellerRole()) {
+            this.doSaveBenutzer();
+            return;
+        }
+
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TITLE',
+            text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT',
+        };
+
+        const isAdminRole = this.isAdminRole();
+
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .pipe(
+                filter(userAccepted => !!userAccepted),
+                mergeMap(() => {
+                    if (!isAdminRole) {
+                        return of(undefined);
+                    }
+
+                    const adminDialogConfig = new MatDialogConfig();
+                    adminDialogConfig.data = {
+                        title: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE',
+                        text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT',
+                    };
+
+                    return this.dialog.open(DvNgRemoveDialogComponent, adminDialogConfig)
+                        .afterClosed()
+                        .pipe(filter(userAccepted => !!userAccepted));
+                })
+            )
+            .subscribe(
+                () => this.doSaveBenutzer(),
+                err => LOG.error(err)
+            );
+    }
+
+    public inactivateBenutzer(): void {
+        if (this.form.valid) {
+            this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
+                this.selectedUser = changedUser;
+                this.changeDetectorRef.markForCheck();
+            });
+        }
+    }
+
+    public reactivateBenutzer(): void {
+        if (this.form.valid) {
+            this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
+                this.selectedUser = changedUser;
+                this.changeDetectorRef.markForCheck();
+            });
+        }
+    }
+
+    public canAddBerechtigung(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.futureBerechtigung);
+    }
+
+    public addBerechtigung() {
+        const berechtigung: TSBerechtigung = new TSBerechtigung();
+        berechtigung.role = TSRole.GESUCHSTELLER;
+        berechtigung.gueltigkeit = new TSDateRange();
+        berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
+        berechtigung.enabled = true;
+        this.futureBerechtigung = berechtigung;
+        BenutzerComponent.initInstitution(this.futureBerechtigung);
+        BenutzerComponent.initTraegerschaft(this.futureBerechtigung);
+    }
+
+    // noinspection JSMethodCanBeStatic
+    public enableBerechtigung(berechtigung: TSBerechtigung): void {
+        berechtigung.enabled = true;
+    }
+
+    public removeBerechtigung(): void {
+        this.futureBerechtigung = undefined;
+    }
+
+    public cancel(): void {
+        this.navigateBackToUsersList();
+    }
+
+    private updateInstitutionenList(): void {
+        this.institutionRS.getAllInstitutionen().then(response => {
+            this.institutionenList = response.sort((a, b) => a.name.localeCompare(b.name));
+            this.changeDetectorRef.markForCheck();
+        });
+    }
+
+    private updateTraegerschaftenList(): void {
+        this.traegerschaftenRS.getAllTraegerschaften().then(response => {
+            this.traegerschaftenList = response.sort((a, b) => a.name.localeCompare(b.name));
+            this.changeDetectorRef.markForCheck();
+        });
+    }
+
+    private initSelectedUser(): void {
+        this.currentBerechtigung = this.selectedUser.berechtigungen[0];
+        this.futureBerechtigung = this.selectedUser.berechtigungen[1];
+        BenutzerComponent.initInstitution(this.currentBerechtigung);
+        BenutzerComponent.initInstitution(this.futureBerechtigung);
+        BenutzerComponent.initTraegerschaft(this.currentBerechtigung);
+        BenutzerComponent.initTraegerschaft(this.futureBerechtigung);
+        this.userRS.getBerechtigungHistoriesForBenutzer(this.selectedUser.username).then(result => {
+            this._berechtigungHistoryList = result;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     private prepareForSave(berechtigung: TSBerechtigung): void {
@@ -247,11 +309,11 @@ export class BenutzerComponent implements OnInit {
         }
     }
 
-    private isAdminRole() {
+    private isAdminRole(): boolean {
         return this.isAtLeastOneRoleInList(TSRoleUtil.getAdministratorRoles());
     }
 
-    private isMoreThanGesuchstellerRole() {
+    private isMoreThanGesuchstellerRole(): boolean {
         return this.isAtLeastOneRoleInList(TSRoleUtil.getAllRolesButGesuchsteller());
     }
 
@@ -260,96 +322,28 @@ export class BenutzerComponent implements OnInit {
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
             return true;
         }
-        if (this.futureBerechtigung && rolesToCheck.indexOf(this.futureBerechtigung.role) > -1) {
-            return true;
-        }
-        return false;
+
+        return this.futureBerechtigung && rolesToCheck.indexOf(this.futureBerechtigung.role) > -1;
     }
 
     private doSaveBenutzer(): void {
+        this.prepareForSave(this.currentBerechtigung);
+        this.prepareForSave(this.futureBerechtigung);
+
         this.selectedUser.berechtigungen = [];
-        this.selectedUser.berechtigungen.push(this._currentBerechtigung);
-        if (this._futureBerechtigung) {
-            this.selectedUser.berechtigungen.push(this._futureBerechtigung);
+        this.selectedUser.berechtigungen.push(this.currentBerechtigung);
+        if (this.futureBerechtigung) {
+            this.selectedUser.berechtigungen.push(this.futureBerechtigung);
         }
         this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
             this.navigateBackToUsersList();
         }).catch((err) => {
-            this.log.error('Could not save Benutzer', err);
+            LOG.error('Could not save Benutzer', err);
             this.initSelectedUser();
         });
     }
 
-    inactivateBenutzer(): void {
-        if (this.form.valid) {
-            this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
-                this.selectedUser = changedUser;
-                this.changeDetectorRef.markForCheck();
-            });
-        }
-    }
-
-    reactivateBenutzer(): void {
-        if (this.form.valid) {
-            this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
-                this.selectedUser = changedUser;
-                this.changeDetectorRef.markForCheck();
-            });
-        }
-    }
-
-    canAddBerechtigung(): boolean {
-        return EbeguUtil.isNullOrUndefined(this.futureBerechtigung);
-    }
-
-    addBerechtigung() {
-        const berechtigung: TSBerechtigung = new TSBerechtigung();
-        berechtigung.role = TSRole.GESUCHSTELLER;
-        berechtigung.gueltigkeit = new TSDateRange();
-        berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
-        berechtigung.enabled = true;
-        this._futureBerechtigung = berechtigung;
-        this.initInstitution(this._futureBerechtigung);
-        this.initTraegerschaft(this._futureBerechtigung);
-    }
-
-    enableBerechtigung(berechtigung: TSBerechtigung): void {
-        berechtigung.enabled = true;
-    }
-
-    removeBerechtigung(berechtigung: TSBerechtigung): void {
-        this._futureBerechtigung = undefined;
-    }
-
-    cancel(): void {
-        this.navigateBackToUsersList();
-    }
-
     private navigateBackToUsersList() {
         this.$state.go('admin.benutzerlist');
-    }
-
-    public isBerechtigungEnabled(berechtigung: TSBerechtigung): boolean {
-        return berechtigung && berechtigung.enabled;
-    }
-
-    public get currentBerechtigung(): TSBerechtigung {
-        return this._currentBerechtigung;
-    }
-
-    public get futureBerechtigung(): TSBerechtigung {
-        return this._futureBerechtigung;
-    }
-
-    public get isDefaultVerantwortlicher(): boolean {
-        return this._isDefaultVerantwortlicher;
-    }
-
-    public set isDefaultVerantwortlicher(value: boolean) {
-        this._isDefaultVerantwortlicher = value;
-    }
-
-    public get berechtigungHistoryList(): TSBerechtigungHistory[] {
-        return this._berechtigungHistoryList;
     }
 }
