@@ -14,11 +14,11 @@
  */
 
 import {NgModule} from '@angular/core';
+import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
 import {SharedModule} from '../app/shared/shared.module';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {GemeindenViewComponent} from './component/gemeindenView/gemeindenView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 
 @NgModule({
@@ -28,13 +28,13 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
     ],
     declarations: [
         TraegerschaftViewComponent,
-        GemeindenViewComponent,
+        GemeindeListComponent,
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
     ],
     entryComponents: [
         TraegerschaftViewComponent,
-        GemeindenViewComponent,
+        GemeindeListComponent,
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
     ],

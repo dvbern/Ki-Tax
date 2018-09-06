@@ -17,9 +17,9 @@ import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
+import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
-import {GemeindenViewComponent} from './component/gemeindenView/gemeindenView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 
@@ -42,7 +42,7 @@ export const traegerschaftState: Ng2StateDeclaration = {
 export const gemeindenState: Ng2StateDeclaration = {
     name: 'admin.gemeinden',
     url: '/gemeinden',
-    component: GemeindenViewComponent,
+    component: GemeindeListComponent,
     data: {
         roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
     }

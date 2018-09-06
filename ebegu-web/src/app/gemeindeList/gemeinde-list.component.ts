@@ -29,23 +29,23 @@ import {MatDialog, MatSort, MatSortable, MatTableDataSource} from '@angular/mate
 import * as angular from 'angular';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
-import AbstractAdminViewController from '../../abstractAdminView';
+import ErrorService from '../core/errors/service/ErrorService';
+import {LogFactory} from '../core/logging/LogFactory';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
+import TSGemeinde from '../../models/TSGemeinde';
+import AbstractAdminViewController from '../../admin/abstractAdminView';
 
-const LOG = LogFactory.createLog('GemeindenViewComponent');
+const LOG = LogFactory.createLog('GemeindeListComponent');
 
 @Component({
     selector: 'dv-gemeinden-view',
-    templateUrl: './gemeindenView.html',
-    styleUrls: ['./gemeindenView.less'],
+    templateUrl: './gemeinde-list.component.html',
+    styleUrls: ['./gemeinde-list.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class GemeindenViewComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
+export class GemeindeListComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
 
     displayedColumns: string[] = ['name', 'status'];
     gemeinde: TSGemeinde = undefined;
