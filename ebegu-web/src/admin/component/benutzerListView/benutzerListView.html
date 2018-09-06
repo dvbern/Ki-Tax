@@ -14,18 +14,17 @@
   -->
 
 <div class="benutzerListView adminModul">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-12">
-                <dv-benutzer-list
-                    table-title="BENUTZER"
-                    table-id="alleBenutzer"
-                    on-filter-change="vm.passFilterToServer(tableState)"
-                    on-edit="vm.editBenutzer(user, event)"
-                    total-result-count="vm.totalResultCount"
-                    pendenz="false">
-                </dv-benutzer-list>
-            </div>
-        </div>
-    </div>
+    <dv-benutzer-list
+        table-title="BENUTZER"
+        table-id="alleBenutzer"
+        on-filter-change="vm.passFilterToServer(tableState)"
+        on-edit="vm.editBenutzer(user, event)"
+        total-result-count="vm.totalResultCount"
+        pendenz="false">
+    </dv-benutzer-list>
+
+    <dv-loading-button>
+        <span class="fa fa-plus"></span>
+        <span translate>BENUTZER_ADD</span>
+    </dv-loading-button>
 </div>
