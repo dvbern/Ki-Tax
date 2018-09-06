@@ -33,7 +33,7 @@ export function erorGSRegistrationIncompleteHookRunBlock($transitions: Transitio
 }
 
 function onGSRegistrationIncompleteError(transition: Transition): HookResult {
-    if (transition.error().type === RejectType.ERROR) {
+    if (transition.isActive() && transition.error().type === RejectType.ERROR) {
         // Not very nice, but could find a good solution: since the original transition errored, all error hooks
         // (matching the criteria) are executed. We might thus recover multiple times (and start multiple transitions).
         transition.error().message = DISABLE_RECOVERY_ERROR_MESSAGE;
