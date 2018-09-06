@@ -105,6 +105,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -336,7 +337,7 @@ public final class TestDataUtil {
 			gemeinde = new Gemeinde();
 			gemeinde.setId(GEMEINDE_BERN_ID);
 			gemeinde.setName("Testgemeinde");
-			gemeinde.setEnabled(true);
+			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
 			return persistence.persist(gemeinde);
 		}
@@ -369,7 +370,7 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_BERN_ID);
 		gemeinde.setName("Bern");
-		gemeinde.setEnabled(true);
+		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
@@ -380,7 +381,7 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
 		gemeinde.setName("Ostermundigen");
-		gemeinde.setEnabled(true);
+		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
