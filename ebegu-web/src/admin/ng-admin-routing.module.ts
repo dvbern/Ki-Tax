@@ -18,6 +18,7 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
+import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
@@ -36,6 +37,15 @@ export const traegerschaftState: Ng2StateDeclaration = {
     ],
     data: {
         roles: TSRoleUtil.getMandantRoles(),
+    }
+};
+
+export const gemeindenState: Ng2StateDeclaration = {
+    name: 'admin.gemeinden',
+    url: '/gemeinden',
+    component: GemeindeListComponent,
+    data: {
+        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
     }
 };
 
@@ -65,7 +75,7 @@ export const benutzerState: Ng2StateDeclaration = {
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [traegerschaftState, testdatenState, batchjobTriggerState, benutzerState]}),
+        UIRouterUpgradeModule.forChild({states: [traegerschaftState, gemeindenState, testdatenState, batchjobTriggerState, benutzerState]}),
     ],
     exports: [
         UIRouterUpgradeModule
