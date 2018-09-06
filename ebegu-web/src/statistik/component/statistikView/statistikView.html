@@ -490,12 +490,12 @@
 
             <dv-loading-button button-class="" button-click="vm.showAllJobs()" type="button">
                 <span class="fa fa-refresh"></span>
-                <span  data-translate="SHOW_JOBS"></span>
+                <span data-translate="SHOW_JOBS"></span>
             </dv-loading-button>
             </dv-loading-button>
             <div ng-if="vm.allJobs">
                 <p>Batch Jobs from Wildfly Batch Module</p>
-            <pre>{{vm.allJobs |json}}</pre>
+                <pre>{{vm.allJobs |json}}</pre>
             </div>
         </div>
     </div>
