@@ -1,0 +1,450 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="dv-benutzer adminModul">
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'submitted': form.submitted}"
+          *ngIf="selectedUser"
+          (ngSubmit)="saveBenutzerBerechtigungen()"
+          novalidate>
+
+        <fieldset>
+            <div class="row">
+                <div class="marginTop50 col-md-12">
+                    <h1>
+                        {{'BENUTZER_DETAIL' | translate: {name: selectedUser.nachname, vorname: selectedUser.vorname} }}
+                    </h1>
+                    <hr class="header"/>
+                </div>
+            </div>
+
+            <!-- Daten aus Portal -->
+            <fieldset>
+                <!-- Mandant -->
+                <div class="row" dv-display-element dv-display-allowed-roles="['SUPER_ADMIN']">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="mandant_ID">MANDANT</label>
+                            <input id="mandant_ID"
+                                   type="text"
+                                   name="mandant"
+                                   disabled
+                                   [value]="selectedUser.mandant.name"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <!-- Username -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="username_ID">USERNAME</label>
+                            <input id="username_ID"
+                                   type="text"
+                                   name="username"
+                                   disabled
+                                   [value]="selectedUser.username"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <!-- Name / Vorname -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="nachname_ID">NACHNAME</label>
+                            <input id="nachname_ID"
+                                   type="text"
+                                   name="nachname"
+                                   disabled
+                                   [value]="selectedUser.nachname"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="vorname_ID">VORNAME</label>
+                            <input id="vorname_ID"
+                                   type="text"
+                                   name="vorname"
+                                   disabled
+                                   [value]="selectedUser.vorname"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <!-- E-Mail -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="email_ID">EMAIL</label>
+                            <input id="email_ID"
+                                   type="text"
+                                   name="email"
+                                   disabled
+                                   [value]="selectedUser.email"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Warnung, wenn gesperrt -->
+            <div class="row">
+                <div class="col-md-12" *ngIf="selectedUser.gesperrt">
+                    <div class="well well-status-warten">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span translate>BENUTZER_GESPERRT_INFO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="marginTop50 col-md-12">
+                    <h1 [textContent]="'ROLLE_AKTIV' | translate"></h1>
+                    <hr class="header"/>
+                </div>
+            </div>
+
+            <!-- Aktive Rolle -->
+            <fieldset>
+                <div class="row">
+                    <!-- Rolle -->
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float dv-benutzer-label"
+                                   translate for="rolle">ROLLE</label>
+                            <div class="dv-select-style">
+                                <select aria-describedby="rolle-error" name="rolle" id="rolle"
+                                        class="form-control"
+                                        required
+                                        [disabled]="!currentBerechtigung.enabled"
+                                        [(ngModel)]="currentBerechtigung.role">
+                                    <option *ngFor="let r of (getRolesWithTranslations()) trackByRole"
+                                            [ngValue]="r.role">
+                                        {{r.translated}}
+                                    </option>
+                                </select>
+                                <dv-ng-error-messages [inputid]="'rolle'"
+                                                      [errorObject]="form.controls.rolle?.errors"
+                                                      class="error">
+                                </dv-ng-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Institution -->
+                    <div class="col-sm-12 dv-input-container-medium"
+                         *ngIf="isInstitutionBerechtigung(currentBerechtigung)">
+                        <div class="form-group">
+                            <label class="md-no-float required dv-benutzer-label"
+                                   translate for="institution">INSTITUTION</label>
+                            <div class="dv-select-style">
+                                <select aria-describedby="institution-error" name="institution" id="institution"
+                                        class="form-control"
+                                        [disabled]="!currentBerechtigung.enabled"
+                                        [required]="isInstitutionBerechtigung(currentBerechtigung)"
+                                        [(ngModel)]="currentBerechtigung.institution.id">
+                                    <option *ngFor="let institution of institutionenList" [value]="institution.id">
+                                        {{institution.name}}
+                                    </option>
+                                </select>
+                                <dv-ng-error-messages [inputid]="'institution'"
+                                                      [errorObject]="form.controls.institution?.errors"
+                                                      [show]="form.submitted">
+                                </dv-ng-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Traegerschaft -->
+                    <div class="col-sm-12 dv-input-container-medium"
+                         *ngIf="isTraegerschaftBerechtigung(currentBerechtigung)">
+                        <div class="form-group">
+                            <label class="md-no-float dv-benutzer-label"
+                                   translate for="traegerschaft">TRAEGERSCHAFT</label>
+                            <div class="dv-select-style">
+                                <select aria-describedby="traegerschaft-error" name="traegerschaft"
+                                        id="traegerschaft"
+                                        class="form-control"
+                                        [disabled]="!currentBerechtigung.enabled"
+                                        [required]="isTraegerschaftBerechtigung(currentBerechtigung)"
+                                        [(ngModel)]="currentBerechtigung.traegerschaft.id">
+                                    <option *ngFor="let traegerschaft of traegerschaftenList"
+                                            [value]="traegerschaft.id">
+                                        {{traegerschaft.name}}
+                                    </option>
+                                </select>
+                                <dv-ng-error-messages [inputid]="'traegerschaft'"
+                                                      [errorObject]="form.controls.traegerschaft?.errors"
+                                                      [show]="form.submitted">
+                                </dv-ng-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="row" *ngIf="!currentBerechtigung.enabled && !isDefaultVerantwortlicher">
+                <div class="col-sm-12">
+                    <button type="button" class="dv-btn dv-btn-operation"
+                            (click)="enableBerechtigung(currentBerechtigung)">
+                        <i class="fa fa-lg fa-pencil-square-o"></i>
+                        <span [textContent]="'BERECHTIGUNG_AKTUELL_EDITIEREN' | translate"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="marginTop50 col-md-12">
+                    <h1 [textContent]="'ROLLE_KUENFTIG' | translate"></h1>
+                    <hr class="header"/>
+                </div>
+            </div>
+
+            <!-- Zukünftige Berechtigung -->
+            <div *ngIf="futureBerechtigung">
+                <fieldset>
+                    <div class="row">
+                        <!-- Rolle -->
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <label class="md-no-float dv-benutzer-label"
+                                       translate for="future_role">ROLLE</label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="future_role-error" name="future_role"
+                                            id="future_role"
+                                            class="form-control"
+                                            [disabled]="!futureBerechtigung.enabled"
+                                            required
+                                            [(ngModel)]="futureBerechtigung.role">
+                                        <option *ngFor="let r of (getRolesWithTranslations()) trackByRole"
+                                                [ngValue]="r.role">
+                                            {{r.translated}}
+                                        </option>
+                                    </select>
+                                    <dv-ng-error-messages [inputid]="'future_role'"
+                                                          [errorObject]="form.controls.future_role?.errors"
+                                                          [show]="form.submitted">
+                                    </dv-ng-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <div class="form-group">
+                                <label class="md-no-float dv-benutzer-label" translate for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
+                                <input class="input-benutzer input-benutzer--datepicker" type="text"
+                                       name="futureGueltigAb" id="futureGueltigAb"
+                                       [matDatepicker]="futureGueltigAb"
+                                       [disabled]="!futureBerechtigung.enabled"
+                                       required
+                                       [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
+                                <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
+                                                       [for]="futureGueltigAb">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #futureGueltigAb></mat-datepicker>
+                                <dv-ng-error-messages [inputid]="'futureGueltigAb'"
+                                                      [errorObject]="form.controls.futureGueltigAb?.errors"
+                                                      [show]="form.submitted">
+                                </dv-ng-error-messages>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <div class="form-group">
+                                <label class="md-no-float dv-benutzer-label" translate for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
+                                <input class="input-benutzer input-benutzer--datepicker" type="text"
+                                       name="futureGueltigBis" id="futureGueltigBis"
+                                       [matDatepicker]="futureGueltigBis"
+                                       [disabled]="!futureBerechtigung.enabled"
+                                       [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
+                                <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
+                                                       [for]="futureGueltigBis">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #futureGueltigBis></mat-datepicker>
+                                <dv-ng-error-messages [inputid]="'futureGueltigBis'"
+                                                      [errorObject]="form.controls.futureGueltigBis?.errors"
+                                                      [show]="form.submitted">
+                                </dv-ng-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Institution -->
+                        <div class="col-sm-12 dv-input-container-medium"
+                             *ngIf="isInstitutionBerechtigung(futureBerechtigung)">
+                            <div class="form-group">
+                                <label class="md-no-float required dv-benutzer-label"
+                                       translate for="futureInstitution">INSTITUTION</label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="futureInstitution-error" name="futureInstitution"
+                                            id="futureInstitution"
+                                            class="form-control"
+                                            [disabled]="!futureBerechtigung.enabled"
+                                            [required]="isInstitutionBerechtigung(futureBerechtigung)"
+                                            [(ngModel)]="futureBerechtigung.institution.id">
+                                        <option *ngFor="let inst of institutionenList" [value]="inst.id">
+                                            {{inst.name}}
+                                        </option>
+                                    </select>
+                                    <dv-ng-error-messages [inputid]="'futureInstitution'"
+                                                          [errorObject]="form.controls.futureInstitution?.errors"
+                                                          [show]="form.submitted">
+                                    </dv-ng-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Traegerschaft -->
+                        <div class="col-sm-12 dv-input-container-medium"
+                             *ngIf="isTraegerschaftBerechtigung(futureBerechtigung)">
+                            <div class="form-group">
+                                <label class="md-no-float dv-benutzer-label"
+                                       translate for="futureTraegerschaft">TRAEGERSCHAFT</label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="futureTraegerschaft-error" name="futureTraegerschaft"
+                                            id="futureTraegerschaft"
+                                            class="form-control"
+                                            [disabled]="!futureBerechtigung.enabled"
+                                            [required]="isTraegerschaftBerechtigung(futureBerechtigung)"
+                                            [(ngModel)]="futureBerechtigung.traegerschaft.id">
+                                        <option *ngFor="let traeg of traegerschaftenList" [value]="traeg.id">
+                                            {{traeg.name}}
+                                        </option>
+                                    </select>
+                                    <dv-ng-error-messages [inputid]="'futureTraegerschaft'"
+                                                          [errorObject]="form.controls.futureTraegerschaft?.errors"
+                                                          [show]="form.submitted">
+                                    </dv-ng-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Edit Zukünftige Berechtigung -->
+                <div class="row" *ngIf="!futureBerechtigung.enabled && !isDefaultVerantwortlicher">
+                    <div class="col-sm-12">
+                        <button type="button" class="dv-btn"
+                                (click)="enableBerechtigung(futureBerechtigung)"
+                                [textContent]="'BERECHTIGUNG_KUENFTIG_EDITIEREN' | translate">
+                        </button>
+                    </div>
+                </div>
+                <!-- Remove Zukünftige Berechtigung -->
+                <div class="row" *ngIf="!isDefaultVerantwortlicher">
+                    <div class="col-sm-12">
+                        <button type="button" class="dv-btn dv-btn-operation"
+                                (click)="removeBerechtigung()">
+                            <i class="fa fa-lg fa-trash-o"></i>
+                            <span translate>BERECHTIGUNG_ENTFERNEN</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Zukünftige Berechtigung -->
+            <div class="row" *ngIf="canAddBerechtigung() && !isDefaultVerantwortlicher">
+                <div class="col-sm-12">
+                    <button type="button" class="dv-btn dv-btn-operation"
+                            (click)="addBerechtigung()">
+                        <i class="fa fa-lg fa-plus-circle"></i>
+                        <span translate>BERECHTIGUNG_HINZUFUEGEN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info, wenn Defaultbenutzer -->
+            <div class="row">
+                <div class="col-md-12" *ngIf="isDefaultVerantwortlicher">
+                    <div class="well well-status-bestaetigt">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span translate>BENUTZER_DEFAULTVERANTWORTLICHER_INFO</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-row dv-input-container-medium marginTop50">
+
+                <button type="submit" class="dv-btn button-row-item"
+                        *ngIf="!isDefaultVerantwortlicher"
+                        [textContent]="'BENUTZER_SAVE' | translate">
+                </button>
+
+                <div *ngIf="!selectedUser.gesperrt && !isDefaultVerantwortlicher"
+                     class="button-row-item">
+                    <button type="button" class="dv-btn cancel-button"
+                            (click)="inactivateBenutzer()"
+                            [textContent]="'BENUTZER_SPERREN' | translate">
+                    </button>
+                </div>
+
+                <div *ngIf="selectedUser.gesperrt && !isDefaultVerantwortlicher"
+                     class="button-row-item">
+                    <button type="button" class="dv-btn cancel-button"
+                            (click)="reactivateBenutzer()"
+                            [textContent]="'BENUTZER_REAKTIVIEREN' | translate">
+                    </button>
+                </div>
+
+                <div class="button-row-item">
+                    <button type="button" class="dv-btn cancel-button"
+                            (click)="cancel()"
+                            [textContent]="'CANCEL' | translate">
+                    </button>
+                </div>
+
+            </div>
+        </fieldset>
+
+        <!-- History Tabelle -->
+        <fieldset>
+            <div class="row marginTop50">
+                <div class="col-md-12">
+                    <h1 translate>BERECHTIGUNGHISTORY</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th translate>BERECHTIGUNG_GEAENDERT_USER</th>
+                            <th translate>BERECHTIGUNG_GEAENDERT_TS</th>
+                            <th translate>ROLLE</th>
+                            <th translate>BERECHTIGUNG_GUELTIG_AB</th>
+                            <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
+                            <th translate>INSTITUTIONTRAEGERSCHAFT</th>
+                            <th translate>GESPERRT</th>
+                            <th translate>GELOESCHT</th>
+                        </tr>
+                        <tr *ngFor="let entry of berechtigungHistoryList">
+                            <td>{{getGeaendertDurch(entry)}}</td>
+                            <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
+                            <td>{{getTranslatedRole(entry.role)}}</td>
+                            <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
+                            <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
+                            <td>{{entry.getInstitutionOrTraegerschaft()}}</td>
+                            <td>{{(entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                            <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+
+    </form>
+</div>

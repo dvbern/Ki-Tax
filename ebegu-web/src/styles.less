@@ -242,13 +242,6 @@ dv-pulldown-user-menu {
     color: gray;
 }
 
-@background-error-color: #ffe6e6;
-
-.ErrorInput {
-    border-color: @state-danger-text;
-    background-color: @background-error-color;
-}
-
 .form-horizontal {
     dv-error-messages {
         padding-left: 0.1rem;
@@ -260,18 +253,18 @@ form {
     &.ng-submitted {
         input, textarea {
             &.ng-invalid {
-                .ErrorInput
+                .ErrorInput()
             }
         }
         md-radio-group.ng-invalid {
-            .ErrorInput
+            .ErrorInput()
         }
 
     }
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
         &.ng-touched {
-            .ErrorInput
+            .ErrorInput()
         }
     }
 
