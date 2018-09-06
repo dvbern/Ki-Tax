@@ -116,7 +116,7 @@ export function appRun(angularMomentConfig: any,
 
     // Attempt to restore a user session upon startup
     authServiceRS.initWithCookie().then(() => {
-        $log.debug('logged in from cookie');
+        LOG.debug('logged in from cookie');
     });
 
     if (!environment.test) {

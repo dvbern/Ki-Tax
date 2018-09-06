@@ -18,6 +18,7 @@ import * as angular from 'angular';
 import 'angular-smart-table';
 import {EbeguWebCore} from '../app/core/core.angularjs.module';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
+import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
@@ -54,6 +55,7 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())
     .directive('dvTraegerschaftView', downgradeComponent({component: TraegerschaftViewComponent}))
+    .directive('dvGemeindenView', downgradeComponent({component: GemeindeListComponent}))
     .directive('dvTestdatenView', downgradeComponent({component: TestdatenViewComponent}))
     .directive('dvBatchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
     .run(adminRun);
