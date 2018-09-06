@@ -21,15 +21,16 @@
             <h2 translate>DEBUGGING_UI_ROUTER</h2>
         </div>
 
-        <div class="row">
-            <div class="col-md-3">
-                <form #traceForm="ngForm">
+        <form #traceForm="ngForm">
+
+            <div class="row">
+                <div class="col-md-3">
                     <label for="routerTraceCategories">
                         {{'DEBUGGING_TRACE_TRANSITIONS' | translate}}
                     </label>
                     <select [(ngModel)]="routerTraceCategories"
                             multiple
-                            size="5"
+                            [size]="TRACE_CATEGORY_KEYS.length"
                             name="routerTraceCategories"
                             class="form-control"
                             id="routerTraceCategories">
@@ -40,9 +41,15 @@
                             </ng-container>
                         </option>
                     </select>
-                </form>
+                </div>
+
+                <div class="col-md-3 dv-input-container-question">
+                    <button (click)="onActivateVisualizer()" class="dv-btn" translate [disabled]="hasVisualizer">
+                        DEBUGGING_UI_ROUTER_VISUALIZER
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
 
     </div>
 </div>

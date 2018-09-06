@@ -18,8 +18,9 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Category, UIRouter} from '@uirouter/core';
+import {visualizer} from '@uirouter/visualizer';
 import {Subject} from 'rxjs';
-import {filter, map, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('DebuggingComponent');
@@ -38,6 +39,7 @@ export class DebuggingComponent implements OnInit, OnDestroy {
     public TRACE_CATEGORY_KEYS = Object.keys(Category).filter(k => typeof Category[k as any] === 'number');
 
     public routerTraceCategories: Category[];
+    public hasVisualizer: boolean;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -45,23 +47,37 @@ export class DebuggingComponent implements OnInit, OnDestroy {
         this.routerTraceCategories = this.TRACE_CATEGORY_KEYS
             .map(k => Category[k as any] as any)
             .filter(c => router.trace.enabled(c));
+
+        this.hasVisualizer = !!router.getPlugin('visualizer');
     }
 
     public ngOnInit(): void {
+        this.initTracer();
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    public onActivateVisualizer(): void {
+        if (!this.router.getPlugin('visualizer')) {
+            this.hasVisualizer = true;
+            this.router.plugin(visualizer);
+        }
+    }
+
+    private initTracer() {
         this.traceForm.valueChanges
             .pipe(
                 filter(values => !!values && values.hasOwnProperty('routerTraceCategories')),
                 map(values => values.routerTraceCategories),
+                distinctUntilChanged(),
                 takeUntil(this.unsubscribe$),
             )
             .subscribe(
                 (categories: Category[]) => categories.forEach(c => this.router.trace.enable(c)),
                 err => LOG.error(err),
             );
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 }
