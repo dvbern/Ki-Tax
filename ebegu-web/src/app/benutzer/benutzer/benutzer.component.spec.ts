@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {Transition, UIRouterModule} from '@uirouter/angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import UserRS from '../../core/service/userRS.rest';
+import {SharedModule} from '../../shared/shared.module';
 
 import {BenutzerComponent} from './benutzer.component';
 
@@ -24,10 +32,46 @@ describe('BenutzerComponent', () => {
     let fixture: ComponentFixture<BenutzerComponent>;
 
     beforeEach(async(() => {
+        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+        const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
+        const userSpy = jasmine.createSpyObj<UserRS>(UserRS.name,
+            ['getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
+                'inactivateBenutzer', 'reactivateBenutzer']);
+
+        const applicationPropertySpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getByName']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+        const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+
         TestBed.configureTestingModule({
-            declarations: [BenutzerComponent]
+            imports: [SharedModule, UIRouterModule.forRoot()],
+            declarations: [BenutzerComponent],
+            providers: [
+                {
+                    provide: InstitutionRS,
+                    useValue: insitutionSpy
+                },
+                {
+                    provide: TraegerschaftRS,
+                    useValue: traegerschaftSpy
+                },
+                {
+                    provide: UserRS,
+                    useValue: userSpy
+                },
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertySpy
+                },
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: APP_BASE_HREF, useValue: '/'},
+                {provide: Transition, useValue: transitionSpy},
+            ]
         })
             .compileComponents();
+
+        insitutionSpy.getAllInstitutionen.and.returnValue(Promise.resolve([]));
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        transitionSpy.params.and.returnValue({benutzerId: undefined});
     }));
 
     beforeEach(() => {
