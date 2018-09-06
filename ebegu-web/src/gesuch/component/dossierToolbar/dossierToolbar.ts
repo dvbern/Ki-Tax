@@ -53,7 +53,6 @@ export class DossierToolbarComponentConfig implements IComponentOptions {
     bindings = {
         gesuchid: '@',
         dossierId: '@',
-        fallId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
         forceLoadingFromFall: '@'

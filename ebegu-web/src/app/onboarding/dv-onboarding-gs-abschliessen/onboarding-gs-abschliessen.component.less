@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 @import (reference) '../../../style/variables.less';
 
 .onboarding-text() {
@@ -25,8 +24,12 @@
 }
 
 .onboarding-gs-angaben, .onboarding-gs-gemeinde {
-    float: left;
-    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    width: 52.6rem;
+    padding:2rem;
     &-title {
         padding: 20px;
         background-color: @dgrey;
@@ -38,33 +41,73 @@
     }
     &-content {
         padding: 20px;
-        background-color:  @white;
+        background-color: @white;
         color: @black;
-
-        // TODO ab hier geht es irgendwie nicht mehr...
-        &-table {
-            border: 1px;
-            border-color: @black;
-
-            &-label {
-                font-weight: bold;
-            }
+    }
+    &-table {
+        border: 1px;
+        border-color: @black;
+        width: 100%;
+        &-label, &-value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 0;
         }
+        &-label {
+            font-weight: bold;
+            width: 30%;
+        }
+        &-value {
+            width: 70%;
+
+        }
+
     }
 }
 
 .onboarding-gs-abschliessen {
     height: 4rem;
     width: 26.3rem;
-    min-width: 26.3rem;
-    max-width: 26.3rem;
-    margin-top: 1.7rem;
+    margin: 1.7rem auto;
     .onboarding-text();
     background-color: @primary;
     text-align: center;
     flex: 1;
     border: none;
     text-transform: uppercase;
+}
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2), only screen
+and (min-device-width: 375px)
+and (max-device-width: 667px)
+and (-webkit-min-device-pixel-ratio: 2), only screen
+and (min-device-width: 414px)
+and (max-device-width: 736px)
+and (-webkit-min-device-pixel-ratio: 3), only screen
+and (max-device-width: 640px), only screen
+and (max-device-width: 667px), only screen
+and (max-width: 480px) {
+
+    .onboarding-gs-abschliessen {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .onboarding-gs-angaben, .onboarding-gs-gemeinde {
+        width: 100%;
+    }
+}
+
+.onboarding-gs-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .onboarding {

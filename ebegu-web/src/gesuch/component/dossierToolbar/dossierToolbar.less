@@ -433,15 +433,17 @@
         }
     }
 
-    .dossier-toolbar-mobile-close, .mobile-logout {
-        background-color: transparent;
+    .dossier-toolbar-mobile-close , .mobile-logout, .dossier-toolbar-top-operations-container {
         color: @contrast-lightest;
         text-align: right;
         width: 100%;
         height: @navbar-height;
-        padding: 0 1.5rem 0 3rem;
         line-height: @navbar-height;
-        text-align: left; // todo ramon fragen duplicated!!! right?
+    }
+
+    .dossier-toolbar-mobile-close, .mobile-logout {
+        background-color: transparent;
+        padding: 0 1.5rem 0 3rem;
         span {
             text-transform: uppercase;
             font-size: 1.6rem;
@@ -458,15 +460,9 @@
         }
 
     }
-	// todo ramon fragen, kann man diese Sachen nicht kombinieren mit denen oben? viele sind gleich
-    .dossier-toolbar-top-operations-container {
+	 .dossier-toolbar-top-operations-container {
         background-color: @contrast-darkest;
-        color: @contrast-lightest;
-        text-align: right;
-        width: 100%;
-        height: @navbar-height;
         padding: 0 0 0 1rem;
-        line-height: @navbar-height;
         display: flex;
         flex-direction: row;
         justify-content: space-between;

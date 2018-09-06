@@ -54,6 +54,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     @Input() mobileMode?: boolean = false;
 
     public dossierList: TSDossier[] = [];
+    public dossierListWithoutSelected: TSDossier[] = [];
     selectedDossier?: TSDossier;
     fallNummer: string;
     private availableGemeindeList: TSGemeinde[] = [];
@@ -74,13 +75,13 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     private loadObjects() {
-        if (this.fallId) {
-            this.dossierRS.findDossiersByFall(this.fallId).then(dossiers => {
-                this.dossierList = dossiers;
-                this.setSelectedDossier();
-                this.addNewDossierToCreateToDossiersList();
-                this.retrieveListOfAvailableGemeinden();
+        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId) {
+            this.dossierRS.findDossier(this.dossierId).then(dossier => {
+                this.fallId = dossier.fall.id ? dossier.fall.id : '';
+                this.doLoading(this.fallId);
             });
+        } else if (this.fallId) {
+            this.doLoading(this.fallId);
         } else {
             this.emptyDossierList(); // if there is no fall there cannot be any dossier
             this.addNewDossierToCreateToDossiersList(); // only a new dossier can be added to a not yet created fall
@@ -308,7 +309,15 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         return '';
     }
 
-    public getDossierListWithoutSelected(): TSDossier[] {
-        return this.dossierList.filter(obj => obj !== this.selectedDossier);
+    public doLoading(fallId: string): void {
+        if (fallId) {
+            this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
+                this.dossierList = dossiers;
+                this.setSelectedDossier();
+                this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
+                this.addNewDossierToCreateToDossiersList();
+                this.retrieveListOfAvailableGemeinden();
+            });
+        }
     }
 }

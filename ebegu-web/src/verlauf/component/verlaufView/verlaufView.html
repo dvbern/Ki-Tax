@@ -13,17 +13,16 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossier.id">
+<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossier.id" hide-xs hide-sm>
 </dv-fall-toolbar>
 
 <dossier-toolbar flex="nogrow" dossier-id="{{vm.dossier.id}}"
-                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
-                 fall-id="{{vm.getFallId()}}">
+                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </dossier-toolbar>
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossier.id}}"
                                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
-                               fall-id="{{vm.getFallId()}}">
+                              >
 </dossier-toolbar-gesuchsteller>
 
 <div class="verlaufView overflow-auto" flex="auto">

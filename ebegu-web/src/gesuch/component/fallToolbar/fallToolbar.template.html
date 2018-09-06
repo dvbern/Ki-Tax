@@ -13,7 +13,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="fall-toolbar" *ngIf="!mobileMode; else mobile_mode">
+<div class="fall-toolbar" *ngIf="!mobileMode">
     <div layout="row" class="row fall-toolbar-content">
 
         <div class="dossier-list col-md-12">
@@ -46,16 +46,14 @@
 
     </div>
 </div>
-
-<ng-template #mobile_mode>
-	<div class="fall-toolbar-mobile">
+	<div class="fall-toolbar-mobile" *ngIf="mobileMode">
 		<div class="fall-toolbar-mobile-dropdown">
 			<button class="fall-toolbar-mobile-dropdown-button"
 					(click)="showdropdown = !showdropdown" aria-haspopup="true" [attr.aria-expanded]="showdropdown">
 				{{getCurrentGemeindeName()}} <i class="fa fa-angle-down fall-toolbar-mobile-caret"></i>
 			</button>
 			<ul class="fall-toolbar-mobile-dropdown-menu" *ngIf="showdropdown">
-				<li *ngFor="let dossier of getDossierListWithoutSelected()">
+				<li *ngFor="let dossier of this.dossierListWithoutSelected">
 					<button (click)="openDossier$(dossier)"
 							class="fall-toolbar-mobile-dropdown-button"
 							[disabled]="isNavigationDisabled()">{{dossier.extractGemeindeName()}}
@@ -71,4 +69,3 @@
 			</ul>
 		</div>
 	</div>
-</ng-template>

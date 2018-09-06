@@ -18,12 +18,13 @@
 
 <form (ngSubmit)="onSubmit(form)" #form="ngForm">
     <div class="onboarding-gemeinde-container">
-        <label class="onboarding-gemeinde-label" for="gemeinde">
-            {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
-        </label>
 
         <div class="onboarding-gemeinde-input-container">
             <div class="onboarding-gemeinde-search">
+
+                <label class="onboarding-gemeinde-label" for="gemeinde">
+                    {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
+                </label>
                 <div class="onboarding-gemeinde-search-input">
                     <div class="dv-select-style">
                         <select [(ngModel)]="gemeinde"
@@ -38,19 +39,20 @@
                         </select>
                     </div>
                 </div>
+
             </div>
 
             <button type="submit"
                     class="dv-btn onboarding-gemeinde-auswaehlen">{{'ONBOARDING_GEMEINDE_AUSWAEHLEN' | translate}}
             </button>
         </div>
-
-
         <dv-ng-error-messages [errorObject]="form.controls.gemeinde?.errors"
-                              [inputid]="'gemeinde'"
-                              [show]="form.submitted"
-                              class="input-error">
-        </dv-ng-error-messages>
+                                          [inputid]="'gemeinde'"
+                                          [show]="form.submitted"
+                                          class="input-error">
+    </dv-ng-error-messages>
+
+
     </div>
 </form>
 
