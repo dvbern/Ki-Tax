@@ -25,6 +25,7 @@ import ErrorService from './errors/service/ErrorService';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from './service/institutionRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import UserRS from './service/userRS.rest';
@@ -231,6 +232,16 @@ export const fallRSProvider = {
     deps: ['$injector']
 };
 
+export function institutionRSFactory(i: any) {
+    return i.get('InstitutionRS');
+}
+
+export const institutionRSProvider = {
+    provide: InstitutionRS,
+    useFactory: institutionRSFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -250,4 +261,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     antragStatusHistoryRSProvider,
     wizardStepManagerProvider,
     fallRSProvider,
+    institutionRSProvider,
 ];

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
@@ -37,7 +38,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	private long gemeindeNummer;
 
-	private boolean enabled;
+	private GemeindeStatus status;
 
 
 	@Nonnull
@@ -57,13 +58,14 @@ public class JaxGemeinde extends JaxAbstractDTO {
 		this.gemeindeNummer = gemeindeNummer;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public GemeindeStatus getStatus() {
+		return status;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setStatus(GemeindeStatus status) {
+		this.status = status;
 	}
+
 
 	@Override
 	public int compareTo(@Nonnull JaxAbstractDTO o) {
@@ -73,7 +75,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 			JaxGemeinde parsedEntity = (JaxGemeinde) o;
 			builder.append(this.getName(), parsedEntity.getName());
 			builder.append(this.getGemeindeNummer(), parsedEntity.getGemeindeNummer());
-			builder.append(this.isEnabled(), parsedEntity.isEnabled());
+			builder.append(this.getStatus(), parsedEntity.getStatus());
 			return builder.toComparison();
 		}
 		return builder.toComparison();

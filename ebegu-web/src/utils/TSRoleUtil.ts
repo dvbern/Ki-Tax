@@ -152,6 +152,11 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT];
     }
 
+    public static getAdministratorMandantRevisorRole(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+    }
+
     public static getAllAdministratorRevisorRole(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR,
             TSRole.ADMIN_MANDANT, TSRole.ADMIN_INSTITUTION, TSRole.ADMIN_TRAEGERSCHAFT];
