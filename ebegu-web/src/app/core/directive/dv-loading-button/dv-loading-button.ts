@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {SimpleChanges} from '@angular/core';
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
 import IHttpService = angular.IHttpService;
@@ -135,7 +136,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
-    $onChanges(changes: any) {
+    $onChanges(changes: SimpleChanges) {
         if (changes.buttonDisabled && !changes.buttonDisabled.isFirstChange()) {
             this.buttonDisabled = changes.buttonDisabled.currentValue;
         }
