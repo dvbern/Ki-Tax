@@ -427,17 +427,15 @@
                             <th translate>ROLLE</th>
                             <th translate>BERECHTIGUNG_GUELTIG_AB</th>
                             <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
-                            <th translate>INSTITUTIONTRAEGERSCHAFT</th>
                             <th translate>GESPERRT</th>
                             <th translate>GELOESCHT</th>
                         </tr>
                         <tr *ngFor="let entry of berechtigungHistoryList">
                             <td>{{getGeaendertDurch(entry)}}</td>
                             <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
-                            <td>{{getTranslatedRole(entry.role)}}</td>
+                            <td>{{getBerechtigungHistoryDescription(entry)}}</td>
                             <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
                             <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
-                            <td>{{entry.getInstitutionOrTraegerschaft()}}</td>
                             <td>{{(entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                             <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                         </tr>

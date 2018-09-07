@@ -178,6 +178,15 @@ export class BenutzerComponent implements OnInit {
         return this.translate.instant(rolePrefix() + role);
     }
 
+    public getBerechtigungHistoryDescription(history: TSBerechtigungHistory): string {
+        let descripton: string = this.getTranslatedRole(history.role);
+        let details = history.getDescription();
+        if (!EbeguUtil.isEmptyStringNullOrUndefined(details)) {
+            descripton += ' (' + details + ')';
+        }
+        return descripton;
+    }
+
     public saveBenutzerBerechtigungen(): void {
         if (!this.form.valid) {
             return;
