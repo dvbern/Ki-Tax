@@ -56,7 +56,7 @@
 
 <p class="onboarding-login" *ngIf="showLogin">
     {{'ONBOARDING_ACCOUNT_VORHANDEN' | translate}}<br>
-    <a href="" uiSref="authentication.login">{{'ONBOARDING_ANMELDEN' | translate}}</a>
+    <a href="" [uiSref]="'authentication.login'" [uiOptions]="{location: false}">{{'ONBOARDING_ANMELDEN' | translate}}</a>
     <ng-container *ngIf="isDummyMode$ | async">
         <br>
         <a href="" uiSref="authentication.locallogin">{{'ONBOARDING_LOCAL_LOGIN' | translate}}</a>

@@ -59,7 +59,7 @@ appRun.$inject = [
     'GlobalCacheService',
     '$transitions',
     'GemeindeRS',
-    'LOCALE_ID'
+    'LOCALE_ID',
 ];
 
 export function appRun(angularMomentConfig: any,
@@ -150,7 +150,7 @@ export function appRun(angularMomentConfig: any,
     }
 
     // Wir meochten eigentlich ueberall mit einem hotkey das formular submitten koennen
-    //https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys-
+    // https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',

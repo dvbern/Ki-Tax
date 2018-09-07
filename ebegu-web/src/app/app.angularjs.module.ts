@@ -14,7 +14,7 @@
  */
 
 import {upgradeModule} from '@uirouter/angular-hybrid';
-import {StateProvider} from '@uirouter/angularjs';
+import {StateProvider, Ng1StateDeclaration} from '@uirouter/angularjs';
 import * as angular from 'angular';
 import EbeguWebAdmin from '../admin/admin.module';
 import {EbeguWebAlleVerfuegungen} from '../alleVerfuegungen/alleVerfuegungen.module';
@@ -64,10 +64,12 @@ export const appModuleAngularJS = angular.module('ebeguWeb', [
 conf.$inject = ['$stateProvider'];
 
 function conf($stateProvider: StateProvider): void {
+    const definition: Ng1StateDeclaration = {
+        url: '?{debug:bool}',
+        name: 'app',
+        component: 'appRoot',
+    };
     $stateProvider.state(
-        {
-            name: 'app',
-            component: 'appRoot',
-        },
+        definition
     );
 }
