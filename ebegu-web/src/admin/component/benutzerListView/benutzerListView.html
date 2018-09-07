@@ -23,8 +23,10 @@
         pendenz="false">
     </dv-benutzer-list>
 
-    <dv-loading-button>
-        <span class="fa fa-plus"></span>
-        <span translate>BENUTZER_ADD</span>
-    </dv-loading-button>
+    <div dv-show-element dv-show-allowed-roles="vm.PERMISSION_BENUTZER_EINLADEN">
+        <dv-loading-button button-click="vm.onBenutzerEinladen()">
+            <span class="fa fa-plus"></span>
+            <span translate>BENUTZER_ADD</span>
+        </dv-loading-button>
+    </div>
 </div>
