@@ -15,6 +15,99 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>
-  benutzer-einladen works!
-</p>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 centered-content">
+        <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
+        <div class="row viewTitle">
+            <div class="col-md-12">
+                <h2 translate>BENUTZER_ADD</h2>
+                <hr class="header">
+            </div>
+        </div>
+        <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+            <pre>{{form.value | json}}</pre>
+            <form #nestedForm="ngForm">
+                <input type="text" name="nested" [(ngModel)]="nested">
+            </form>
+            <fieldset>
+                <!-- Name / Vorname -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="nachname_ID">NACHNAME</label>
+                            <input id="nachname_ID"
+                                   type="text"
+                                   name="nachname"
+                                   [(ngModel)]="benutzer.nachname"
+                                   required
+                                   class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.nachname?.errors"
+                                               inputId="nachname_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="vorname_ID">VORNAME</label>
+                            <input id="vorname_ID"
+                                   type="text"
+                                   name="vorname"
+                                   [(ngModel)]="benutzer.vorname"
+                                   required
+                                   class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.vorname?.errors"
+                                               inputId="vorname_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <!-- E-Mail -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="email_ID">EMAIL</label>
+                            <input id="email_ID"
+                                   type="text"
+                                   name="email"
+                                   [(ngModel)]="benutzer.email"
+                                   required
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Rolle -->
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <dv-benutzer-rolle inputId="rolle"
+                                               inputName="rolle"
+                                               [inputRequired]="true"
+                                               [(benutzerRolle)]="benutzer.currentBerechtigung.role"
+                                               [inputForm]="form">
+                            </dv-benutzer-rolle>
+                            <!--<dv-benutzer-rolle></dv-benutzer-rolle>-->
+                            <!--<label translate for="rolle">ROLLE</label>-->
+                            <!--<div class="dv-select-style">-->
+                            <!--<select aria-describedby="rolle-error" name="rolle" id="rolle"-->
+                            <!--class="form-control"-->
+                            <!--required-->
+                            <!--[(ngModel)]="benutzer.currentBerechtigung.role">-->
+                            <!--<option *ngFor="let r of (getRolesWithTranslations()) trackByRole"-->
+                            <!--[ngValue]="r.role">-->
+                            <!--{{r.translated}}-->
+                            <!--</option>-->
+                            <!--</select>-->
+                            <!--<dv-error-messages [inputid]="'rolle'"-->
+                            <!--[errorObject]="form.controls.rolle?.errors"-->
+                            <!--class="error">-->
+                            <!--</dv-error-messages>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <button class="dv-btn" type="submit" translate>BENUTZER_INVITE</button>
+            </fieldset>
+        </form>
+    </div>
+</div>

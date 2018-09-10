@@ -18,7 +18,7 @@
 <div class="dv-benutzer adminModul">
     <form role="form"
           #form="ngForm"
-          [ngClass]="{'submitted': form.submitted}"
+          [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="selectedUser"
           (ngSubmit)="saveBenutzerBerechtigungen()"
           novalidate>
@@ -39,12 +39,12 @@
                 <div class="row" dv-display-element dv-display-allowed-roles="['SUPER_ADMIN']">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="mandant_ID">MANDANT</label>
+                            <label translate for="mandant_ID">MANDANT</label>
                             <input id="mandant_ID"
                                    type="text"
                                    name="mandant"
                                    disabled
-                                   [value]="selectedUser.mandant.name"
+                                   [ngModel]="selectedUser.mandant.name"
                                    class="form-control">
                         </div>
                     </div>
@@ -53,12 +53,12 @@
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="username_ID">USERNAME</label>
+                            <label translate for="username_ID">USERNAME</label>
                             <input id="username_ID"
                                    type="text"
                                    name="username"
                                    disabled
-                                   [value]="selectedUser.username"
+                                   [ngModel]="selectedUser.username"
                                    class="form-control">
                         </div>
                     </div>
@@ -67,23 +67,23 @@
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="nachname_ID">NACHNAME</label>
+                            <label translate for="nachname_ID">NACHNAME</label>
                             <input id="nachname_ID"
                                    type="text"
                                    name="nachname"
                                    disabled
-                                   [value]="selectedUser.nachname"
+                                   [ngModel]="selectedUser.nachname"
                                    class="form-control">
                         </div>
                     </div>
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="vorname_ID">VORNAME</label>
+                            <label translate for="vorname_ID">VORNAME</label>
                             <input id="vorname_ID"
                                    type="text"
                                    name="vorname"
                                    disabled
-                                   [value]="selectedUser.vorname"
+                                   [ngModel]="selectedUser.vorname"
                                    class="form-control">
                         </div>
                     </div>
@@ -92,12 +92,12 @@
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="email_ID">EMAIL</label>
+                            <label translate for="email_ID">EMAIL</label>
                             <input id="email_ID"
                                    type="text"
                                    name="email"
                                    disabled
-                                   [value]="selectedUser.email"
+                                   [ngModel]="selectedUser.email"
                                    class="form-control">
                         </div>
                     </div>
@@ -127,24 +127,13 @@
                     <!-- Rolle -->
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float dv-benutzer-label"
-                                   translate for="rolle">ROLLE</label>
-                            <div class="dv-select-style">
-                                <select aria-describedby="rolle-error" name="rolle" id="rolle"
-                                        class="form-control"
-                                        required
-                                        [disabled]="!currentBerechtigung.enabled"
-                                        [(ngModel)]="currentBerechtigung.role">
-                                    <option *ngFor="let r of (getRolesWithTranslations()) trackByRole"
-                                            [ngValue]="r.role">
-                                        {{r.translated}}
-                                    </option>
-                                </select>
-                                <dv-ng-error-messages [inputid]="'rolle'"
-                                                      [errorObject]="form.controls.rolle?.errors"
-                                                      class="error">
-                                </dv-ng-error-messages>
-                            </div>
+                            <dv-benutzer-rolle inputId="rolle"
+                                               inputName="rolle"
+                                               [inputRequired]="true"
+                                               [inputDisabled]="!currentBerechtigung.enabled"
+                                               [(benutzerRolle)]="currentBerechtigung.role"
+                                               [inputForm]="form">
+                            </dv-benutzer-rolle>
                         </div>
                     </div>
                 </div>
@@ -153,8 +142,7 @@
                     <div class="col-sm-12 dv-input-container-medium"
                          *ngIf="isInstitutionBerechtigung(currentBerechtigung)">
                         <div class="form-group">
-                            <label class="md-no-float required dv-benutzer-label"
-                                   translate for="institution">INSTITUTION</label>
+                            <label class="dv-benutzer-label" translate for="institution">INSTITUTION</label>
                             <div class="dv-select-style">
                                 <select aria-describedby="institution-error" name="institution" id="institution"
                                         class="form-control"
@@ -165,10 +153,9 @@
                                         {{institution.name}}
                                     </option>
                                 </select>
-                                <dv-ng-error-messages [inputid]="'institution'"
-                                                      [errorObject]="form.controls.institution?.errors"
-                                                      [show]="form.submitted">
-                                </dv-ng-error-messages>
+                                <dv-error-messages inputId="institution"
+                                                   [errorObject]="form.controls.institution?.errors">
+                                </dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -176,8 +163,7 @@
                     <div class="col-sm-12 dv-input-container-medium"
                          *ngIf="isTraegerschaftBerechtigung(currentBerechtigung)">
                         <div class="form-group">
-                            <label class="md-no-float dv-benutzer-label"
-                                   translate for="traegerschaft">TRAEGERSCHAFT</label>
+                            <label class="dv-benutzer-label" translate for="traegerschaft">TRAEGERSCHAFT</label>
                             <div class="dv-select-style">
                                 <select aria-describedby="traegerschaft-error" name="traegerschaft"
                                         id="traegerschaft"
@@ -190,10 +176,9 @@
                                         {{traegerschaft.name}}
                                     </option>
                                 </select>
-                                <dv-ng-error-messages [inputid]="'traegerschaft'"
-                                                      [errorObject]="form.controls.traegerschaft?.errors"
-                                                      [show]="form.submitted">
-                                </dv-ng-error-messages>
+                                <dv-error-messages inputId="traegerschaft"
+                                                   [errorObject]="form.controls.traegerschaft?.errors">
+                                </dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -224,62 +209,52 @@
                         <!-- Rolle -->
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
-                                <label class="md-no-float dv-benutzer-label"
-                                       translate for="future_role">ROLLE</label>
-                                <div class="dv-select-style">
-                                    <select aria-describedby="future_role-error" name="future_role"
-                                            id="future_role"
-                                            class="form-control"
-                                            [disabled]="!futureBerechtigung.enabled"
-                                            required
-                                            [(ngModel)]="futureBerechtigung.role">
-                                        <option *ngFor="let r of (getRolesWithTranslations()) trackByRole"
-                                                [ngValue]="r.role">
-                                            {{r.translated}}
-                                        </option>
-                                    </select>
-                                    <dv-ng-error-messages [inputid]="'future_role'"
-                                                          [errorObject]="form.controls.future_role?.errors"
-                                                          [show]="form.submitted">
-                                    </dv-ng-error-messages>
-                                </div>
+                                <dv-benutzer-rolle inputId="future_role"
+                                                   inputName="future_role"
+                                                   [inputRequired]="true"
+                                                   [inputDisabled]="!futureBerechtigung.enabled"
+                                                   [(benutzerRolle)]="futureBerechtigung.role"
+                                                   [inputForm]="form">
+                                </dv-benutzer-rolle>
                             </div>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="md-no-float dv-benutzer-label" translate for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
+                                <label class="dv-benutzer-label" translate
+                                       for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigAb" id="futureGueltigAb"
                                        [matDatepicker]="futureGueltigAb"
                                        [disabled]="!futureBerechtigung.enabled"
                                        required
+                                       placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
                                 <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
                                                        [for]="futureGueltigAb">
                                 </mat-datepicker-toggle>
                                 <mat-datepicker #futureGueltigAb></mat-datepicker>
-                                <dv-ng-error-messages [inputid]="'futureGueltigAb'"
-                                                      [errorObject]="form.controls.futureGueltigAb?.errors"
-                                                      [show]="form.submitted">
-                                </dv-ng-error-messages>
+                                <dv-error-messages inputId="futureGueltigAb"
+                                                   [errorObject]="form.controls.futureGueltigAb?.errors">
+                                </dv-error-messages>
                             </div>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="md-no-float dv-benutzer-label" translate for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
+                                <label class="dv-benutzer-label" translate
+                                       for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigBis" id="futureGueltigBis"
                                        [matDatepicker]="futureGueltigBis"
+                                       placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [disabled]="!futureBerechtigung.enabled"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
                                 <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
                                                        [for]="futureGueltigBis">
                                 </mat-datepicker-toggle>
                                 <mat-datepicker #futureGueltigBis></mat-datepicker>
-                                <dv-ng-error-messages [inputid]="'futureGueltigBis'"
-                                                      [errorObject]="form.controls.futureGueltigBis?.errors"
-                                                      [show]="form.submitted">
-                                </dv-ng-error-messages>
+                                <dv-error-messages inputId="futureGueltigBis"
+                                                   [errorObject]="form.controls.futureGueltigBis?.errors">
+                                </dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -288,7 +263,7 @@
                         <div class="col-sm-12 dv-input-container-medium"
                              *ngIf="isInstitutionBerechtigung(futureBerechtigung)">
                             <div class="form-group">
-                                <label class="md-no-float required dv-benutzer-label"
+                                <label class="required dv-benutzer-label"
                                        translate for="futureInstitution">INSTITUTION</label>
                                 <div class="dv-select-style">
                                     <select aria-describedby="futureInstitution-error" name="futureInstitution"
@@ -301,10 +276,9 @@
                                             {{inst.name}}
                                         </option>
                                     </select>
-                                    <dv-ng-error-messages [inputid]="'futureInstitution'"
-                                                          [errorObject]="form.controls.futureInstitution?.errors"
-                                                          [show]="form.submitted">
-                                    </dv-ng-error-messages>
+                                    <dv-error-messages inputId="futureInstitution"
+                                                       [errorObject]="form.controls.futureInstitution?.errors">
+                                    </dv-error-messages>
                                 </div>
                             </div>
                         </div>
@@ -312,7 +286,7 @@
                         <div class="col-sm-12 dv-input-container-medium"
                              *ngIf="isTraegerschaftBerechtigung(futureBerechtigung)">
                             <div class="form-group">
-                                <label class="md-no-float dv-benutzer-label"
+                                <label class="dv-benutzer-label"
                                        translate for="futureTraegerschaft">TRAEGERSCHAFT</label>
                                 <div class="dv-select-style">
                                     <select aria-describedby="futureTraegerschaft-error" name="futureTraegerschaft"
@@ -325,10 +299,9 @@
                                             {{traeg.name}}
                                         </option>
                                     </select>
-                                    <dv-ng-error-messages [inputid]="'futureTraegerschaft'"
-                                                          [errorObject]="form.controls.futureTraegerschaft?.errors"
-                                                          [show]="form.submitted">
-                                    </dv-ng-error-messages>
+                                    <dv-error-messages inputId="futureTraegerschaft"
+                                                       [errorObject]="form.controls.futureTraegerschaft?.errors">
+                                    </dv-error-messages>
                                 </div>
                             </div>
                         </div>

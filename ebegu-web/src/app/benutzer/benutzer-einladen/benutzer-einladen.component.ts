@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import TSUser from '../../../models/TSUser';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('BenutzerEinladenComponent');
 
 @Component({
     selector: 'dv-benutzer-einladen',
@@ -25,10 +30,22 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class BenutzerEinladenComponent implements OnInit {
 
+    @ViewChild(NgForm) form: NgForm;
+
+    public nested: string;
+
+    public readonly benutzer = new TSUser();
+
     constructor() {
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
+    }
+
+    public onSubmit(form: NgForm): void {
+        LOG.info('is valid', form.valid);
+        LOG.info('errors', form.errors);
+        LOG.info('values', this.form.value);
     }
 
 }
