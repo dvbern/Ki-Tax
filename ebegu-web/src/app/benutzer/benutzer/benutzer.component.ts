@@ -150,6 +150,11 @@ export class BenutzerComponent implements OnInit {
             (berechtigung.role === TSRole.ADMIN_INSTITUTION || berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION);
     }
 
+    public isGemeindeabhaengigeBerechtigung(berechtigung: TSBerechtigung): boolean {
+        return berechtigung &&
+            TSRoleUtil.isGemeindeabhaengig(berechtigung.role);
+    }
+
     // noinspection JSMethodCanBeStatic
     public trackByRole(_i: number, role: string): string {
         return role;
@@ -344,7 +349,7 @@ export class BenutzerComponent implements OnInit {
         this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
             this.selectedUser.enabled = false;
             this.navigateBackToUsersList();
-        }).catch((err) => {
+        }).catch((err: any) => {
             LOG.error('Could not save Benutzer', err);
             this.initSelectedUser();
         });
