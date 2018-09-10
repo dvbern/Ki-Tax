@@ -223,7 +223,7 @@ export class BenutzerComponent implements OnInit {
     }
 
     public inactivateBenutzer(): void {
-        let enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
+        const enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
         if (!enabled || this.form.valid) {
             this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
@@ -234,7 +234,7 @@ export class BenutzerComponent implements OnInit {
     }
 
     public reactivateBenutzer(): void {
-        let enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
+        const enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
         if (!enabled || this.form.valid) {
             this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
