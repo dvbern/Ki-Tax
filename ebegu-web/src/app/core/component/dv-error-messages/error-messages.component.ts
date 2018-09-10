@@ -13,19 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ValidationErrors} from '@angular/forms';
 
 @Component({
-    selector: 'dv-ng-error-messages',
-    templateUrl: './dv-ng-error-messages.html',
-    styleUrls: ['./dv-error-messages.less']
+    selector: 'dv-error-messages',
+    templateUrl: './error-messages.component.html',
+    styleUrls: ['./dv-error-messages.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DvNgErrorMessages implements OnChanges {
+export class ErrorMessagesComponent implements OnChanges {
 
     @Input() errorObject: ValidationErrors | null;
-    @Input() show: boolean = false;
-    @Input() inputid: string;
+    @Input() inputId: string;
 
     public error: string = '';
 

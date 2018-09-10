@@ -22,7 +22,7 @@ import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
-import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
+import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -59,7 +59,7 @@ export function createTranslateLoader(http: HttpClient) {
     declarations: [
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        DvNgErrorMessages,
+        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
@@ -90,7 +90,7 @@ export function createTranslateLoader(http: HttpClient) {
 
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        DvNgErrorMessages,
+        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
