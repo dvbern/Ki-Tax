@@ -14,7 +14,7 @@
   -->
 
 <div class="dv-error-messages">
-    <div [ngSwitch]="(error)" id="{{inputId + '-error'}}" class="error">
+    <div [ngSwitch]="error" id="{{inputId + '-error'}}" class="error">
         <ng-container *ngSwitchCase="'required'">{{'ERROR_REQUIRED' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'minlength'">{{'ERROR_MIN_LENG' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'maxlength'">{{'ERROR_MAX_LENG' | translate}}</ng-container>

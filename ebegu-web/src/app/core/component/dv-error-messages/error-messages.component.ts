@@ -13,21 +13,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {ValidationErrors} from '@angular/forms';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {ControlContainer, NgForm, ValidationErrors} from '@angular/forms';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {LogFactory} from '../../logging/LogFactory';
+
+const LOG = LogFactory.createLog('ErrorMessagesComponent');
 
 @Component({
     selector: 'dv-error-messages',
     templateUrl: './error-messages.component.html',
     styleUrls: ['./dv-error-messages.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
-export class ErrorMessagesComponent implements OnChanges {
+export class ErrorMessagesComponent implements OnChanges, OnDestroy {
 
     @Input() errorObject: ValidationErrors | null;
     @Input() inputId: string;
 
     public error: string = '';
+
+    private readonly unsubscribe$ = new Subject<void>();
+
+    constructor(
+        public readonly form: NgForm,
+        public readonly changeDetectorRef: ChangeDetectorRef,
+    ) {
+        this.form.ngSubmit
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                () => this.changeDetectorRef.markForCheck(),
+                err => LOG.error(err)
+            );
+    }
 
     public ngOnChanges(changes: SimpleChanges): void {
         // when the errors change we need to update our error
@@ -36,15 +56,23 @@ export class ErrorMessagesComponent implements OnChanges {
         }
     }
 
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     private initError(errors: ValidationErrors | null): void {
+        this.error = this.findFirstErrorKey(errors);
+    }
+
+    private findFirstErrorKey(errors?: ValidationErrors | null): string {
         if (!errors) {
-            this.error = '';
-            return;
+            return '';
         }
 
         const firstErroneousKey = Object.keys(errors)
             .find(key => errors[key] === true);
 
-        this.error = firstErroneousKey ? firstErroneousKey : '';
+        return firstErroneousKey || '';
     }
 }
