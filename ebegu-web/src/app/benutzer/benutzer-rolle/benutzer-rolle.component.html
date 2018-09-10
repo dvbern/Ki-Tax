@@ -15,10 +15,9 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form #benutzerRolleForm="ngForm">
 <label translate [for]="inputId">ROLLE</label>
 <div class="dv-select-style">
-
+    <!--suppress HtmlFormInputWithoutLabel -->
     <select [attr.aria-describedby]="inputId + '-error'"
             class="form-control"
             [attr.id]="inputId"
@@ -31,9 +30,5 @@
             {{item.value | translate}}
         </option>
     </select>
-    <dv-error-messages [inputId]="inputId" [errorObject]="inputForm.controls.inputName?.errors"></dv-error-messages>
+    <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[inputName]?.errors"></dv-error-messages>
 </div>
-
-
-<input name="test" type="text" required placeholder="test" [(ngModel)]="test">
-</form>

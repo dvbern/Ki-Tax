@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ControlContainer, NgForm} from '@angular/forms';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -26,7 +26,8 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
     selector: 'dv-benutzer-rolle',
     templateUrl: './benutzer-rolle.component.html',
     styleUrls: ['./benutzer-rolle.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class BenutzerRolleComponent implements OnInit {
 
@@ -34,18 +35,16 @@ export class BenutzerRolleComponent implements OnInit {
     @Input() public readonly inputId: string;
     @Input() public readonly inputRequired: boolean = false;
     @Input() public readonly inputDisabled: boolean = false;
-    @Input() public readonly inputForm: NgForm;
 
     @Output() public benutzerRolleChange = new EventEmitter<TSRole>();
 
-    private _benutzerRolle: TSRole;
-
-    public test: string;
-
     public roles: Map<TSRole, string>;
 
+    private _benutzerRolle: TSRole;
+
     constructor(
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        public readonly form: NgForm,
     ) {
     }
 
