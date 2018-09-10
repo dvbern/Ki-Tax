@@ -252,15 +252,11 @@ dv-pulldown-user-menu {
 //roter hintergund bei den feldern die invalid sind
 form {
     &.ng-submitted {
-        input, textarea {
+        input, textarea, .form-control, .input-element, md-radio-group {
             &.ng-invalid {
                 .ErrorInput()
             }
         }
-        md-radio-group.ng-invalid {
-            .ErrorInput()
-        }
-
     }
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
@@ -268,7 +264,6 @@ form {
             .ErrorInput()
         }
     }
-
 }
 
 .row.is-flex {
