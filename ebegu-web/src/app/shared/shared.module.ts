@@ -32,6 +32,7 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {MaterialModule} from './material.module';
 import {UIRouterModule} from '@uirouter/angular';
 import {UiViewComponent} from './ui-view/ui-view.component';
@@ -69,6 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgShowElementDirective,
         DvPosteingangComponent,
         UiViewComponent,
+        FullHeightContainerComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -98,6 +100,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgRemoveDialogComponent,
         DvNgShowElementDirective,
         UiViewComponent,
+        FullHeightContainerComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

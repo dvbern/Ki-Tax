@@ -15,12 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
-    selector: 'dv-ui-view',
-    template: '<ui-view></ui-view>',
-    styles: [':host {display: flex; flex: 1;}'],
+    selector: 'dv-full-height-container',
+    templateUrl: './full-height-container.component.html',
+    styleUrls: ['./full-height-container.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UiViewComponent {
+export class FullHeightContainerComponent {
+
 }
