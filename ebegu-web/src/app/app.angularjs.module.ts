@@ -14,7 +14,7 @@
  */
 
 import {upgradeModule} from '@uirouter/angular-hybrid';
-import {StateProvider, Ng1StateDeclaration} from '@uirouter/angularjs';
+import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
 import EbeguWebAdmin from '../admin/admin.module';
 import {EbeguWebAlleVerfuegungen} from '../alleVerfuegungen/alleVerfuegungen.module';

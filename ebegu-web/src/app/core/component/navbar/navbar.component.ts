@@ -78,8 +78,7 @@ export class NavbarComponent implements OnDestroy {
                 }
                 ,
                 err => LOG.error(err)
-                ,
-                () => LOG.info('completed'));
+            );
     }
 
     public ngOnDestroy(): void {
