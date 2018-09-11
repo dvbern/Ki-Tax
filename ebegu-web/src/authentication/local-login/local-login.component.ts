@@ -16,6 +16,7 @@
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
+import {TSGemeindeStatus} from '../../models/enums/TSGemeindeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSInstitution from '../../models/TSInstitution';
@@ -134,7 +135,7 @@ export class LocalLoginComponent {
         bern.name = 'Bern';
         bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         bern.gemeindeNummer = 1;
-        bern.enabled = true;
+        bern.status = TSGemeindeStatus.AKTIV;
         return bern;
     }
 
@@ -147,7 +148,7 @@ export class LocalLoginComponent {
         ostermundigen.name = 'Ostermundigen';
         ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         ostermundigen.gemeindeNummer = 2;
-        ostermundigen.enabled = true;
+        ostermundigen.status = TSGemeindeStatus.AKTIV;
         return ostermundigen;
     }
 

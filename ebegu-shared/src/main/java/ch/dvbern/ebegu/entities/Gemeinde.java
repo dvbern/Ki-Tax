@@ -20,6 +20,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,6 +31,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -66,9 +69,10 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@NotNull
 	private String name;
 
-	@Column(nullable = false)
 	@NotNull
-	private boolean enabled;
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GemeindeStatus status = GemeindeStatus.REGISTRIERT;
 
 
 	public Mandant getMandant() {
@@ -96,12 +100,12 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 		this.name = name;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public GemeindeStatus getStatus() {
+		return status;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setStatus(GemeindeStatus status) {
+		this.status = status;
 	}
 
 	@Override
@@ -128,7 +132,7 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 		builder.append(this.getName(), o.getName());
 		builder.append(this.getGemeindeNummer(), o.getGemeindeNummer());
 		builder.append(this.getMandant(), o.getMandant());
-		builder.append(this.isEnabled(), o.isEnabled());
+		builder.append(this.getStatus(), o.getStatus());
 		builder.append(this.getId(), o.getId());
 		return builder.toComparison();
 	}

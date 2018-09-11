@@ -35,7 +35,7 @@ import ch.dvbern.ebegu.types.DateRange;
  * 		Meldung auf Verfügung: Kein Anspruch für Kinder ab dem zweiten Kindergartenjahr
  * - Vorschulalter: Bei dieser Auswahl werden BG nur für Kinder im Vorschulalter ausgestellt. D.h. ein Kind, welches das
  * 		erste Jahr im Kindergarten ist hat KEINEN Anspruch
- * 		Meldung auf Verfügung: Kein Anspruch für Kinder ab dem Kindergartenjahr
+ * 		Meldung auf Verfügung: Kein Anspruch für Kinder ab dem Kindergarten
  */
 public class SchulstufeCalcRule extends AbstractCalcRule {
 
