@@ -89,7 +89,8 @@ export function appRun(angularMomentConfig: any,
 
         const loginConnectorPaths = [
             'fedletSSOInit',
-            'sendRedirectForValidation'
+            'sendRedirectForValidation',
+            'locallogin',
         ];
 
         if (loginConnectorPaths.some(path => currentPath.includes(path))) {
