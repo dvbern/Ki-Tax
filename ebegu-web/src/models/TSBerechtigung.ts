@@ -28,8 +28,6 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
     private _role: TSRole;
     private _gemeindeList: Array<TSGemeinde> = [];
 
-    private _enabled: boolean; // Wird nicht zum Server gemappt, nur zur Anzeige im GUI
-
     constructor(gueltigkeit?: TSDateRange, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution) {
         super(gueltigkeit);
         this._role = role;
@@ -67,14 +65,6 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
 
     set gemeindeList(value: Array<TSGemeinde>) {
         this._gemeindeList = value;
-    }
-
-    get enabled(): boolean {
-        return this._enabled;
-    }
-
-    set enabled(value: boolean) {
-        this._enabled = value;
     }
 
     getRoleKey(): string {

@@ -38,6 +38,8 @@ export default class TSUser {
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
 
+    private _enabled: boolean; // Wird nicht zum Server gemappt, nur zur Anzeige im GUI
+
     constructor(vorname?: string,
                 nachname?: string,
                 username?: string,
@@ -170,6 +172,14 @@ export default class TSUser {
 
     set currentBerechtigung(value: TSBerechtigung) {
         this._currentBerechtigung = value;
+    }
+
+    get enabled(): boolean {
+        return this._enabled;
+    }
+
+    set enabled(value: boolean) {
+        this._enabled = value;
     }
 
     /**

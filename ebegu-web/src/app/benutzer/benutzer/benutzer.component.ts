@@ -150,6 +150,11 @@ export class BenutzerComponent implements OnInit {
             (berechtigung.role === TSRole.ADMIN_INSTITUTION || berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION);
     }
 
+    public isGemeindeabhaengigeBerechtigung(berechtigung: TSBerechtigung): boolean {
+        return berechtigung &&
+            TSRoleUtil.isGemeindeabhaengig(berechtigung.role);
+    }
+
     // noinspection JSMethodCanBeStatic
     public trackByRole(_i: number, role: string): string {
         return role;
@@ -232,18 +237,22 @@ export class BenutzerComponent implements OnInit {
     }
 
     public inactivateBenutzer(): void {
-        if (this.form.valid) {
+        const enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
+        if (!enabled || this.form.valid) {
             this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
+                this.selectedUser.enabled = enabled;
                 this.changeDetectorRef.markForCheck();
             });
         }
     }
 
     public reactivateBenutzer(): void {
-        if (this.form.valid) {
+        const enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
+        if (!enabled || this.form.valid) {
             this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
+                this.selectedUser.enabled = enabled;
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -258,15 +267,13 @@ export class BenutzerComponent implements OnInit {
         berechtigung.role = TSRole.GESUCHSTELLER;
         berechtigung.gueltigkeit = new TSDateRange();
         berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
-        berechtigung.enabled = true;
         this.futureBerechtigung = berechtigung;
         BenutzerComponent.initInstitution(this.futureBerechtigung);
         BenutzerComponent.initTraegerschaft(this.futureBerechtigung);
     }
 
-    // noinspection JSMethodCanBeStatic
-    public enableBerechtigung(berechtigung: TSBerechtigung): void {
-        berechtigung.enabled = true;
+    public enableBenutzer(): void {
+        this.selectedUser.enabled = true;
     }
 
     public removeBerechtigung(): void {
@@ -326,6 +333,10 @@ export class BenutzerComponent implements OnInit {
         return this.isAtLeastOneRoleInList(TSRoleUtil.getAllRolesButGesuchsteller());
     }
 
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
     private isAtLeastOneRoleInList(rolesToCheck: Array<TSRole>): boolean {
         // Es muessen alle vorhandenen Rollen geprueft werden
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
@@ -345,8 +356,9 @@ export class BenutzerComponent implements OnInit {
             this.selectedUser.berechtigungen.push(this.futureBerechtigung);
         }
         this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
+            this.selectedUser.enabled = false;
             this.navigateBackToUsersList();
-        }).catch((err) => {
+        }).catch((err: any) => {
             LOG.error('Could not save Benutzer', err);
             this.initSelectedUser();
         });
