@@ -199,13 +199,11 @@
                     </div>
 
                     <!-- Gemeinde(n) -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             *ngIf="isGemeindeabhaengigeBerechtigung(currentBerechtigung)">
-                            <div class="form-group">
-                                <dv-gemeinde-multiselect [selected]="currentBerechtigung.gemeindeList"
-                                                         [enabled]="selectedUser.enabled"></dv-gemeinde-multiselect>
-                            </div>
+                    <div class="col-sm-12 dv-input-container-medium"
+                         *ngIf="isGemeindeabhaengigeBerechtigung(currentBerechtigung)">
+                        <div class="form-group">
+                            <dv-gemeinde-multiselect [selected]="currentBerechtigung.gemeindeList"
+                                                     [enabled]="selectedUser.enabled"></dv-gemeinde-multiselect>
                         </div>
                     </div>
 

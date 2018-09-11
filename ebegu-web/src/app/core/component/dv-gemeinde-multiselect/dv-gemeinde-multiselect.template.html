@@ -1,23 +1,33 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2018 City of Bern Switzerland
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
+
 <div class="dv-benutzer">
     <label class="md-no-float required dv-benutzer-label" translate for="gemeinde">GEMEINDEN</label>
-    <ng-container *ngIf="allowedMap$ | async as allowedGemeinden">
-		<div *ngFor="let item of allowedGemeinden | keyvalue" id="gemeinde">
-			<input type="checkbox" [(ngModel)]="item.value" (change)="onChange(item)" *ngIf="enabled" name="gemeinde[]">
-			<span>{{item.key.name}}</span>
-		</div>
-    </ng-container>
+    <div *ngIf="enabled">
+        <ng-container *ngIf="allowedMap$ | async as allowedGemeinden">
+            <div *ngFor="let item of allowedGemeinden | keyvalue" id="gemeinde">
+                <input type="checkbox" [(ngModel)]="item.value" (change)="onChange(item)" name="gemeinde[]">
+                <span>{{item.key.name}}</span>
+            </div>
+        </ng-container>
+    </div>
+    <div *ngIf="!enabled">
+        <div *ngFor="let gmde of selected">
+            <span>{{gmde.name}}</span>
+        </div>
+    </div>
 </div>
