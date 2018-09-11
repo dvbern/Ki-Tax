@@ -122,7 +122,7 @@
                 <!--Spaltendefinitionen-->
                 <tbody>
                 <tr ng-repeat="row in vm.displayedCollection" st-select-row="row" st-select-mode="single"
-                    ng-init="gemeinden = row.currentBerechtigung.gemeindeList | gemeindenToString"
+                    ng-init="gemeinden = (row.currentBerechtigung.gemeindeList | gemeindenToString)"
                     ng-click="vm.editClicked(row, $event)">
                     <td class="ellipsis"
                         title="{{row.username}}"
