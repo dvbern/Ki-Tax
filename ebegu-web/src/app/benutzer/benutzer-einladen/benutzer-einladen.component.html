@@ -16,17 +16,18 @@
   -->
 
 <dv-full-height-container>
-    <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
-    <div class="row viewTitle">
-        <div class="col-md-12">
-            <h2 translate>BENUTZER_ADD</h2>
-            <hr class="header">
-        </div>
-    </div>
     <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
-        <fieldset>
-            <!-- Name / Vorname -->
+        <div class="dv-content">
+            <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
+            <div class="row viewTitle">
+                <div class="col-md-12">
+                    <h2 translate>BENUTZER_ADD</h2>
+                    <hr class="header">
+                </div>
+            </div>
+
             <div class="row">
+                <!-- Name / Vorname -->
                 <div class="col-sm-12 dv-input-container-medium">
                     <div class="form-group">
                         <label translate for="nachname_ID">NACHNAME</label>
@@ -56,8 +57,8 @@
                     </div>
                 </div>
             </div>
-            <!-- E-Mail -->
             <div class="row">
+                <!-- E-Mail -->
                 <div class="col-sm-12 dv-input-container-medium">
                     <div class="form-group">
                         <label translate for="email_ID">EMAIL</label>
@@ -72,8 +73,6 @@
                         </dv-error-messages>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <!-- Rolle -->
                 <div class="col-sm-12 dv-input-container-medium">
                     <div class="form-group">
@@ -86,10 +85,15 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="dv-footer">
-                <button class="dv-btn" type="submit" translate>BENUTZER_INVITE</button>
-            </div>
-        </fieldset>
+        <div class="dv-footer">
+            <button class="dv-btn" type="submit" translate>BENUTZER_INVITE</button>
+            <button type="button"
+                    class="dv-btn cancel-button"
+                    [uiSref]="'admin.benutzerlist'"
+                    translate>CANCEL
+            </button>
+        </div>
     </form>
 </dv-full-height-container>

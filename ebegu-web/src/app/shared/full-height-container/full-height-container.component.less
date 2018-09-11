@@ -24,12 +24,34 @@
     height: 100%;
     background: @lgrey;
     padding: 2.5rem;
-}
-
-/deep/ .dv-footer {
-    position: absolute;
-    bottom: 5rem;
-    width: calc(100% - 5rem);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: stretch;
+
+    /deep/ & {
+        > * {
+            // make any child grow to full height
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .dv-content {
+            // make sure the child element with this class grows to full height
+            flex-grow: 1;
+        }
+
+        .dv-footer {
+            // make sure to position of the child element with this class is at the bottom
+            align-self: flex-end;
+            margin-bottom: 2.5rem;
+            width: calc(100% - 5rem);
+            display: flex;
+            justify-content: center;
+
+            & > * {
+                margin: 0 0.75em;
+            }
+        }
+    }
 }
