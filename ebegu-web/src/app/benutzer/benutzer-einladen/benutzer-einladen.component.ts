@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSUser from '../../../models/TSUser';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -32,9 +33,8 @@ export class BenutzerEinladenComponent implements OnInit {
 
     @ViewChild(NgForm) form: NgForm;
 
-    public nested: string;
-
     public readonly benutzer = new TSUser();
+    public readonly excludedRoles: ReadonlyArray<TSRole> = [TSRole.GESUCHSTELLER];
 
     constructor() {
     }

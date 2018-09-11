@@ -35,6 +35,7 @@ export class BenutzerRolleComponent implements OnInit {
     @Input() public readonly inputId: string;
     @Input() public readonly inputRequired: boolean = false;
     @Input() public readonly inputDisabled: boolean = false;
+    @Input() public readonly exludedRoles: TSRole[] = [];
 
     @Output() public benutzerRolleChange = new EventEmitter<TSRole>();
 
@@ -49,10 +50,10 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        // TODO welche Rollen gelten für das Einladen?
-        this.roles = this.getRollen()
-            .reduce((rollenMap, role) => {
-                    return rollenMap.set(role, TSRoleUtil.translationKeyForRole(role));
+        this.roles = this.getRollenBasedOnPrincipal()
+            .filter(rolle => !this.exludedRoles.includes(rolle))
+            .reduce((rollenMap, rolle) => {
+                    return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
                 },
                 new Map<TSRole, string>()
             );
@@ -74,7 +75,7 @@ export class BenutzerRolleComponent implements OnInit {
         return item.key;
     }
 
-    private getRollen(): TSRole[] {
+    private getRollenBasedOnPrincipal(): TSRole[] {
         if (EbeguUtil.isTagesschulangebotEnabled()) {
             return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
                 ? TSRoleUtil.getAllRolesButAnonymous()

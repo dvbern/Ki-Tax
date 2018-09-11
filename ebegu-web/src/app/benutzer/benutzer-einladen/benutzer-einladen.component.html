@@ -80,6 +80,7 @@
                         <dv-benutzer-rolle inputId="rolle"
                                            inputName="rolle"
                                            [inputRequired]="true"
+                                           [exludedRoles]="excludedRoles"
                                            [(benutzerRolle)]="benutzer.currentBerechtigung.role">
                         </dv-benutzer-rolle>
                     </div>
