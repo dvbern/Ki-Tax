@@ -64,6 +64,7 @@ export class BenutzerComponent implements OnInit {
     public currentBerechtigung: TSBerechtigung;
     public futureBerechtigung: TSBerechtigung;
     public isDefaultVerantwortlicher: boolean = false;
+    public isDisabled = true;
 
     private _berechtigungHistoryList: TSBerechtigungHistory[];
 
@@ -237,22 +238,18 @@ export class BenutzerComponent implements OnInit {
     }
 
     public inactivateBenutzer(): void {
-        const enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
-        if (!enabled || this.form.valid) {
+        if (this.isDisabled || this.form.valid) {
             this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
-                this.selectedUser.enabled = enabled;
                 this.changeDetectorRef.markForCheck();
             });
         }
     }
 
     public reactivateBenutzer(): void {
-        const enabled: boolean = this.selectedUser.enabled; // Status soll bleiben wie er war
-        if (!enabled || this.form.valid) {
+        if (this.isDisabled || this.form.valid) {
             this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
-                this.selectedUser.enabled = enabled;
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -273,7 +270,7 @@ export class BenutzerComponent implements OnInit {
     }
 
     public enableBenutzer(): void {
-        this.selectedUser.enabled = true;
+        this.isDisabled = false;
     }
 
     public removeBerechtigung(): void {
@@ -356,7 +353,7 @@ export class BenutzerComponent implements OnInit {
             this.selectedUser.berechtigungen.push(this.futureBerechtigung);
         }
         this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
-            this.selectedUser.enabled = false;
+            this.isDisabled = true;
             this.navigateBackToUsersList();
         }).catch((err: any) => {
             LOG.error('Could not save Benutzer', err);
