@@ -107,13 +107,14 @@ export class DVBenutzerListController implements IOnInit {
      * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
      */
     private updateGemeindeList(): void {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            this.gemeindeRS.getAllGemeinden().then(value => {
-                this.gemeindeList = value;
-            });
-        } else {
-            this.gemeindeList = this.authServiceRS.getPrincipal().extractCurrentGemeinden();
-        }
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(take(1))
+            .subscribe(
+                gemeinden => {
+                    this.gemeindeList = gemeinden;
+                },
+                err => LOG.error(err)
+            );
     }
 
     editClicked(user: any, event: any) {
