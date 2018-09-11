@@ -1121,10 +1121,10 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_KITA_MIN, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "20", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "0", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "0", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);
