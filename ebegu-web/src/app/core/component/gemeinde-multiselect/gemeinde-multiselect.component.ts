@@ -22,6 +22,8 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../../models/TSGemeinde';
 
+let nextId = 0;
+
 /**
  * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
  * Keine Gemeinde wird by default ausgewaehlt, damit der Benutzer nicht aus Versehen die falsche Gemeinde auswaehlt.
@@ -30,16 +32,17 @@ import TSGemeinde from '../../../../models/TSGemeinde';
  */
 @Component({
     selector: 'dv-gemeinde-multiselect',
-    templateUrl: './dv-gemeinde-multiselect.template.html',
-    styleUrls: ['./dv-gemeinde-multiselect.less'],
+    templateUrl: './gemeinde-multiselect.template.html',
+    styleUrls: ['./gemeinde-multiselect.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DvGemeindeMultiselectComponent implements OnInit {
+export class GemeindeMultiselectComponent implements OnInit {
 
-    @Input() enabled: boolean = false;
-    @Input() selected!: TSGemeinde[]; // Die selektierten Gemeinden
+    @Input() public enabled: boolean = false;
+    @Input() public selected!: TSGemeinde[]; // Die selektierten Gemeinden
 
-    allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
+    public allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
+    public name = `gemeinde-select-${nextId++}`;
 
     constructor(private readonly authServiceRS: AuthServiceRS,
                 private readonly gemeindeRS: GemeindeRS) {
@@ -49,8 +52,8 @@ export class DvGemeindeMultiselectComponent implements OnInit {
         this.allowedMap$ = this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(map(gemeinden => {
                     return gemeinden.reduce((currentMap, currentValue) => {
-                        const value = !!this.selected.find(g => g.id === currentValue.id);
-                        return currentMap.set(currentValue, value);
+                        const found = this.selected.find(g => g.id === currentValue.id);
+                        return currentMap.set(found || currentValue, !!found);
                     }, new Map<TSGemeinde, boolean>());
                 }),
             );

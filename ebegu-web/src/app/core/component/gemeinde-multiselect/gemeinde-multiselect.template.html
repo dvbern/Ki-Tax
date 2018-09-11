@@ -15,19 +15,21 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-benutzer">
-    <label class="md-no-float required dv-benutzer-label" translate for="gemeinde">GEMEINDEN</label>
-    <div *ngIf="enabled">
-        <ng-container *ngIf="allowedMap$ | async as allowedGemeinden">
-            <div *ngFor="let item of allowedGemeinden | keyvalue" id="gemeinde">
-                <input type="checkbox" [(ngModel)]="item.value" (change)="onChange(item)" name="gemeinde[]">
-                <span>{{item.key.name}}</span>
-            </div>
-        </ng-container>
-    </div>
-    <div *ngIf="!enabled">
-        <div *ngFor="let gmde of selected">
-            <span>{{gmde.name}}</span>
+<div translate>GEMEINDEN</div>
+<ng-container *ngIf="enabled; else displayMode">
+    <ng-container *ngIf="allowedMap$ | async as allowedGemeinden">
+        <div *ngFor="let item of allowedGemeinden | keyvalue">
+            <label class="bold">
+                <input type="checkbox"
+                       [name]="name"
+                       [(ngModel)]="item.value"
+                       (change)="onChange(item)"> {{item.key.name}}
+            </label>
         </div>
+    </ng-container>
+</ng-container>
+<ng-template #displayMode>
+    <div *ngFor="let gmde of selected">
+        <span class="bold">{{gmde.name}}</span>
     </div>
-</div>
+</ng-template>
