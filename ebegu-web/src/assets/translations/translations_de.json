@@ -1347,5 +1347,6 @@
     "ONBOARDING_GS_ANGABEN_VORNAME": "Vorname",
     "ONBOARDING_GS_ANGABEN_NAME": "Name",
     "ONBOARDING_GS_ANGABEN_MAIL": "E-Mail",
-    "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen"
+    "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen",
+    "GEMEINDEN": "Gemeinde(n)"
 }

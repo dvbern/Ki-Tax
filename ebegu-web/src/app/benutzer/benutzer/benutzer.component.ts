@@ -139,16 +139,22 @@ export class BenutzerComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    public isTraegerschaftBerechtigung(berechtigung: TSBerechtigung): boolean {
+    public isTraegerschaftBerechtigung(berechtigung?: TSBerechtigung): boolean {
         return berechtigung &&
             (berechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
                 || berechtigung.role === TSRole.SACHBEARBEITER_TRAEGERSCHAFT);
     }
 
     // noinspection JSMethodCanBeStatic
-    public isInstitutionBerechtigung(berechtigung: TSBerechtigung): boolean {
+    public isInstitutionBerechtigung(berechtigung?: TSBerechtigung): boolean {
         return berechtigung &&
             (berechtigung.role === TSRole.ADMIN_INSTITUTION || berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION);
+    }
+
+    // noinspection JSMethodCanBeStatic
+    public isGemeindeabhaengigeBerechtigung(berechtigung?: TSBerechtigung): boolean {
+        return berechtigung &&
+            TSRoleUtil.isGemeindeabhaengig(berechtigung.role);
     }
 
     // noinspection JSMethodCanBeStatic
@@ -177,6 +183,13 @@ export class BenutzerComponent implements OnInit {
             return this.translate.instant(rolePrefix() + 'NONE');
         }
         return this.translate.instant(rolePrefix() + role);
+    }
+
+    public getBerechtigungHistoryDescription(history: TSBerechtigungHistory): string {
+        const role = this.getTranslatedRole(history.role);
+        const details = history.getDescription();
+
+        return EbeguUtil.isEmptyStringNullOrUndefined(details) ? role : `${role} (${details})`;
     }
 
     public saveBenutzerBerechtigungen(): void {
@@ -341,7 +354,7 @@ export class BenutzerComponent implements OnInit {
         this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
             this.isDisabled = true;
             this.navigateBackToUsersList();
-        }).catch((err) => {
+        }).catch(err => {
             LOG.error('Could not save Benutzer', err);
             this.initSelectedUser();
         });

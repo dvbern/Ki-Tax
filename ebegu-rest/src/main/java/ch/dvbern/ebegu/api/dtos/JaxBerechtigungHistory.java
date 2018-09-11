@@ -43,6 +43,9 @@ public class JaxBerechtigungHistory extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private JaxInstitution institution;
 
+	@Nullable
+	private String gemeinden;
+
 	private boolean gesperrt;
 
 	private boolean geloescht;
@@ -91,6 +94,15 @@ public class JaxBerechtigungHistory extends JaxAbstractDateRangedDTO {
 
 	public void setInstitution(@Nullable JaxInstitution institution) {
 		this.institution = institution;
+	}
+
+	@Nullable
+	public String getGemeinden() {
+		return gemeinden;
+	}
+
+	public void setGemeinden(@Nullable String gemeinden) {
+		this.gemeinden = gemeinden;
 	}
 
 	public boolean isGesperrt() {

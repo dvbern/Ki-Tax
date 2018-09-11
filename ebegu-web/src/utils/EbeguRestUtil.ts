@@ -1829,6 +1829,7 @@ export default class EbeguRestUtil {
             historyTS.role = historyFromServer.role;
             historyTS.traegerschaft = this.parseTraegerschaft(new TSTraegerschaft(), historyFromServer.traegerschaft);
             historyTS.institution = this.parseInstitution(new TSInstitution(), historyFromServer.institution);
+            historyTS.gemeinden = historyFromServer.gemeinden;
             historyTS.gesperrt = historyFromServer.gesperrt;
             historyTS.geloescht = historyFromServer.geloescht;
             return historyTS;
