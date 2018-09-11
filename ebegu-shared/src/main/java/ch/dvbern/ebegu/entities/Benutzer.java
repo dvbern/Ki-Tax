@@ -264,7 +264,7 @@ public class Benutzer extends AbstractMutableEntity {
 		return extractGemeindenForUser()
 			.stream()
 			.map(Gemeinde::getName)
-			.sorted(String::compareTo)
+			.sorted(String::compareToIgnoreCase)
 			.collect(Collectors.joining(", "));
 	}
 
