@@ -360,8 +360,8 @@
             </div>
 
             <!-- Info, wenn Defaultbenutzer -->
-            <div class="row">
-                <div class="col-md-12" *ngIf="isDefaultVerantwortlicher">
+            <div class="row" *ngIf="isDefaultVerantwortlicher">
+                <div class="col-md-12">
                     <div class="well well-status-bestaetigt">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         <span translate>BENUTZER_DEFAULTVERANTWORTLICHER_INFO</span>
@@ -370,18 +370,18 @@
             </div>
 
             <!-- Buttons -->
-            <div class="button-row dv-input-container-medium marginTop50">
+            <div class="button-row dv-input-container-medium">
 
-                <button type="button" class="dv-btn button-row-item"
+                <button type="button" class="dv-btn"
                         *ngIf="!isDefaultVerantwortlicher && isDisabled"
                         (click)="enableBenutzer()"
                         [textContent]="'BENUTZER_BEARBEITEN' | translate">
                 </button>
 
-                <button type="submit" class="dv-btn button-row-item"
-                        *ngIf="!isDefaultVerantwortlicher && !isDisabled"
-                        [textContent]="'BENUTZER_SAVE' | translate">
-                </button>
+                <dv-loading-button [type]="'submit'"
+                                   *ngIf="!isDefaultVerantwortlicher && !isDisabled">
+                    <span translate>BENUTZER_SAVE</span>
+                </dv-loading-button>
 
                 <div *ngIf="!selectedUser.gesperrt && !isDefaultVerantwortlicher"
                      class="button-row-item">
