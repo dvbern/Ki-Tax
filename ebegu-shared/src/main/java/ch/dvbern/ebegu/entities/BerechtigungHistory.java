@@ -53,17 +53,17 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_history_institution_id"))
-	private Institution institution;
+	private Institution institution = null;
 
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_history_traegerschaft_id"))
-	private Traegerschaft traegerschaft;
+	private Traegerschaft traegerschaft = null;
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String gemeinden;
+	private String gemeinden = null;
 
 	@NotNull
 	@Column(nullable = false)

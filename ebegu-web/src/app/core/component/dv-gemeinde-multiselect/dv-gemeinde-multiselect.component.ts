@@ -37,7 +37,7 @@ import TSGemeinde from '../../../../models/TSGemeinde';
 export class DvGemeindeMultiselectComponent implements OnInit {
 
     @Input() enabled: boolean = false;
-    @Input() selected: TSGemeinde[]; // Die selektierten Gemeinden
+    @Input() selected!: TSGemeinde[]; // Die selektierten Gemeinden
 
     allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
 
@@ -45,7 +45,7 @@ export class DvGemeindeMultiselectComponent implements OnInit {
                 private readonly gemeindeRS: GemeindeRS) {
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.allowedMap$ = this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(map(gemeinden => {
                     return gemeinden.reduce((currentMap, currentValue) => {
@@ -56,7 +56,7 @@ export class DvGemeindeMultiselectComponent implements OnInit {
             );
     }
 
-    onChange(item: {key: TSGemeinde, value: boolean}) {
+    public onChange(item: { key: TSGemeinde, value: boolean }): void {
         if (item.value) {
             this.selected.push(item.key);
         } else {

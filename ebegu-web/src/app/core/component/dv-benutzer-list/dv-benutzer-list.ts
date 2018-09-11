@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions, ILogService, IOnInit, IPromise, IWindowService} from 'angular';
+import {take} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
@@ -24,9 +25,12 @@ import TSUser from '../../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../logging/LogFactory';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('DVBenutzerListController');
 
 export class DVBenutzerListConfig implements IComponentOptions {
     transclude = false;
@@ -45,7 +49,8 @@ export class DVBenutzerListConfig implements IComponentOptions {
 
 export class DVBenutzerListController implements IOnInit {
 
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window', '$translate', 'GemeindeRS'];
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window',
+        '$translate', 'GemeindeRS'];
 
     totalResultCount: number;
     displayedCollection: Array<TSUser> = []; //Liste die im Gui angezeigt wird
