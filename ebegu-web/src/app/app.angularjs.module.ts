@@ -68,6 +68,8 @@ function conf($stateProvider: StateProvider): void {
         url: '?{debug:bool}',
         name: 'app',
         component: 'appRoot',
+        redirectTo: 'onboarding.start',
+        abstract: true,
     };
     $stateProvider.state(
         definition
