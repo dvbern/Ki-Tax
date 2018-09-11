@@ -185,7 +185,7 @@ export class BenutzerComponent implements OnInit {
 
     public getBerechtigungHistoryDescription(history: TSBerechtigungHistory): string {
         let descripton: string = this.getTranslatedRole(history.role);
-        let details = history.getDescription();
+        const details = history.getDescription();
         if (!EbeguUtil.isEmptyStringNullOrUndefined(details)) {
             descripton += ' (' + details + ')';
         }

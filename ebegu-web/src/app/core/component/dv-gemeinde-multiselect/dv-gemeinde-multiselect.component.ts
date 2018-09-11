@@ -48,8 +48,8 @@ export class DvGemeindeMultiselectComponent implements OnInit {
     ngOnInit() {
         this.allowedMap$ = this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(map(gemeinden => {
-                    return gemeinden.reduce((currentMap, currentValue)=> {
-                        let value = !!this.selected.find(g => g.id === currentValue.id);
+                    return gemeinden.reduce((currentMap, currentValue) => {
+                        const value = !!this.selected.find(g => g.id === currentValue.id);
                         return currentMap.set(currentValue, value);
                     }, new Map<TSGemeinde, boolean>());
                 }),
