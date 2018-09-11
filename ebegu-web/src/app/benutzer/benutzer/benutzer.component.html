@@ -203,7 +203,7 @@
                          *ngIf="isGemeindeabhaengigeBerechtigung(currentBerechtigung)">
                         <div class="form-group">
                             <dv-gemeinde-multiselect [selected]="currentBerechtigung.gemeindeList"
-                                                     [enabled]="selectedUser.enabled"></dv-gemeinde-multiselect>
+                                                     [enabled]="!isDisabled"></dv-gemeinde-multiselect>
                         </div>
                     </div>
 
