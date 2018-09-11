@@ -88,7 +88,8 @@ export const benutzerState: Ng2StateDeclaration = {
                 testdatenState,
                 batchjobTriggerState,
                 debuggingState,
-                benutzerState
+                benutzerState,
+                gemeindenState
             ]
         }),
     ],
