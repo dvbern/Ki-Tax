@@ -305,7 +305,7 @@ public enum MathUtil {
 	}
 
 	/**
-	 * Rundet die eingegebene Nummer in 10er Schritten.
+	 * Rundet die eingegebene Nummer in 5er Schritten.
 	 * Beispiel
 	 * 20 bis 22 = 20
 	 * 23 bis 25 = 25
