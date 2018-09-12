@@ -13,8 +13,8 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="traegerschaftView adminModul" flex="auto">
-    <div class="col-md-8 col-md-offset-2">
+<dv-full-height-container>
+    <div class="traegerschaftView adminModul dv-content">
         <div class="viewTitle">
             <h1 [textContent]="'TRAEGERSCHAFT' | translate"></h1>
         </div>
@@ -22,132 +22,103 @@
               unsaved-warning-form novalidate>
             <fieldset [disabled]="isReadonly()">
 
-                <div class="row">
-                    <!--Tabelle zum anzeigen aller Traegerschaften-->
-                    <div class="col-md-12 table-responsive traegerschaft-table">
+                <!--Tabelle zum anzeigen aller Traegerschaften-->
+                <div class="table-responsive traegerschaft-table">
 
-                        <mat-table #table [dataSource]="dataSource" matSort>
-                            <!-- Column Name -->
-                            <ng-container matColumnDef="name">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                    {{'TRAEGERSCHAFT' | translate}}
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let traegerschaft"
-                                          (click)="setSelectedTraegerschaft(traegerschaft)">
-                                    {{traegerschaft.name}}
-                                </mat-cell>
-                            </ng-container>
+                    <mat-table #table [dataSource]="dataSource" matSort>
+                        <!-- Column Name -->
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'TRAEGERSCHAFT' | translate}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let traegerschaft"
+                                      (click)="setSelectedTraegerschaft(traegerschaft)">
+                                {{traegerschaft.name}}
+                            </mat-cell>
+                        </ng-container>
 
-                            <!-- Column remove -->
-                            <ng-container matColumnDef="remove">
-                                <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                                <mat-cell *matCellDef="let traegerschaft">
-                                    <button dvNgDebounceClick
-                                            (debounceClick)="removeTraegerschaft(traegerschaft)"
-                                            class="dv-btn dv-btn-sm pull-right"
-                                            [disabled]="isReadonly()">
-                                        <i class="fa fa-minus"> </i>
-                                    </button>
-                                </mat-cell>
-                            </ng-container>
+                        <!-- Column remove -->
+                        <ng-container matColumnDef="remove">
+                            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                            <mat-cell *matCellDef="let traegerschaft">
+                                <dv-loading-button [buttonDisabled]="isReadonly()"
+                                                   buttonClass="dv-btn-sm"
+                                                   (buttonClick)="removeTraegerschaft(traegerschaft)">
+                                    <i class="fa fa-minus"></i>
+                                </dv-loading-button>
+                            </mat-cell>
+                        </ng-container>
 
-                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                        </mat-table>
-                        <div class="mat-row" *ngIf="showNoContentMessage()"
-                             [textContent]="'TRAEGERSCHAFTEN_NOCH_KEINE' | translate">
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>
+                </div>
+
+                <div class="mat-row" *ngIf="showNoContentMessage()"
+                     [textContent]="'TRAEGERSCHAFTEN_NOCH_KEINE' | translate">
+                </div>
+
+
+                <div class="marginTop40 form-group" *ngIf="traegerschaft">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="name" translate>NAME</label>
                         </div>
-
-
-                        <div class="row marginTop40" *ngIf="traegerschaft">
-                            <div class="col-md-6 form-group">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="md-no-float" for="name_ID" translate>NAME</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input id="name_ID" type="text" name="name" #name="ngModel"
-                                               [(ngModel)]="traegerschaft.name"
-                                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="form.controls.name?.errors"
-                                                           inputId="name"
-                                                           class="error"></dv-error-messages>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="md-no-float" translate for="mail_ID">EMAIL</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input id="mail_ID"
-                                               type="email"
-                                               name="mail"
-                                               #mail
-                                               [(ngModel)]="traegerschaft.mail"
-                                               [ngModelOptions]="{updateOn: 'blur'}"
-                                               [maxlength]="255"
-                                               class="form-control"
-                                               required>
-                                        <dv-error-messages [errorObject]="form.controls.mail?.errors"
-                                                           inputId="mail"
-                                                           class="error"></dv-error-messages>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-8 col-md-offset-4">
-
-                                    </div>
-                                </div>
-
-                                <!-- Buttons -->
-                                <div class="row">
-                                    <div class="col-xs-4">
-                                        <button dvNgDebounceClick
-                                                (debounceClick)="saveTraegerschaft()"
-                                                class="dv-btn color-success"
-                                                [disabled]="isReadonly()">
-                                            <span [textContent]="'SAVE' | translate"></span>
-                                        </button>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <button href="#"
-                                                id="cancelLink"
-                                                class="dv-btn cancel-button"
-                                                unsaved-warning-clear
-                                                (click)="cancelTraegerschaft(); $event.preventDefault();">
-                                            <span translate>CANCEL</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div *ngIf="!traegerschaft && !isReadonly()" class="marginTop50">
-                            <div class="row">
-                                <div class="col-md-6  form-group">
-                                    <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Traegerschaft-->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <button dvNgDebounceClick
-                                                    (debounceClick)="createTraegerschaft(); form.reset();"
-                                                    class="dv-btn dv-btn-sm color-success"
-                                                    [disabled]="traegerschaft">
-                                                <i class="glyphicon glyphicon-plus"></i>
-                                                <span [textContent]="'TRAEGERSCHAFT_HINZUFUEGEN' | translate"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-md-4">
+                            <input id="name" type="text" name="name"
+                                   [(ngModel)]="traegerschaft.name"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.name?.errors"
+                                               inputId="name">
+                            </dv-error-messages>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label translate for="mail">EMAIL</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input id="mail"
+                                   type="email"
+                                   name="mail"
+                                   [(ngModel)]="traegerschaft.mail"
+                                   [maxlength]="255"
+                                   class="form-control"
+                                   required>
+                            <dv-error-messages [errorObject]="form.controls.mail?.errors"
+                                               inputId="mail">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <dv-loading-button type="submit" (buttonClick)="saveTraegerschaft()">
+                                <span translate>SAVE</span>
+
+                            </dv-loading-button>
+                        </div>
+                        <div class="col-xs-2">
+                            <button class="dv-btn cancel-button"
+                                    unsaved-warning-clear
+                                    (click)="cancelTraegerschaft(); $event.preventDefault();">
+                                <span translate>CANCEL</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!traegerschaft && !isReadonly()" class="marginTop50">
+                    <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Traegerschaft-->
+                    <dv-loading-button [buttonDisabled]="traegerschaft"
+                                       (buttonClick)="createTraegerschaft(); form.reset();">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span translate>TRAEGERSCHAFT_HINZUFUEGEN</span>
+                    </dv-loading-button>
                 </div>
             </fieldset>
         </form>
     </div>
-</div>
+</dv-full-height-container>
