@@ -19,11 +19,13 @@ import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeMultiselectComponent} from '../../core/component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import UserRS from '../../core/service/userRS.rest';
 import {SharedModule} from '../../shared/shared.module';
+import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
 
 import {BenutzerComponent} from './benutzer.component';
 
@@ -44,7 +46,7 @@ describe('BenutzerComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [SharedModule, UIRouterModule.forRoot()],
-            declarations: [BenutzerComponent],
+            declarations: [BenutzerComponent, BenutzerRolleComponent],
             providers: [
                 {
                     provide: InstitutionRS,

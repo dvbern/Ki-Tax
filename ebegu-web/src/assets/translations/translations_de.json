@@ -1352,7 +1352,6 @@
     "ONBOARDING_GS_ANGABEN_NAME": "Name",
     "ONBOARDING_GS_ANGABEN_MAIL": "E-Mail",
     "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen",
-    "GEMEINDEN": "Gemeinde(n)",
     "DEBUGGING_UI_ROUTER": "UI Router Debugging",
     "DEBUGGING_TRACE_TRANSITIONS": "Transition Tracing",
     "DEBUGGING_UI_ROUTER_VISUALIZER": "UI Router Visualizer aktivieren"

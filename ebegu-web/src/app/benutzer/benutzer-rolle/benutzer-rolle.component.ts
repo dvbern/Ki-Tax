@@ -25,13 +25,12 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 @Component({
     selector: 'dv-benutzer-rolle',
     templateUrl: './benutzer-rolle.component.html',
-    styleUrls: ['./benutzer-rolle.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class BenutzerRolleComponent implements OnInit {
 
-    @Input() public readonly inputName: string;
+    @Input() public inputName: string;
     @Input() public readonly inputId: string;
     @Input() public readonly inputRequired: boolean = false;
     @Input() public readonly inputDisabled: boolean = false;

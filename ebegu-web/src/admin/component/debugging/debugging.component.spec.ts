@@ -15,7 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {UIRouterModule} from '@uirouter/angular';
+import {SharedModule} from '../../../app/shared/shared.module';
 
 import {DebuggingComponent} from './debugging.component';
 
@@ -25,7 +28,14 @@ describe('DebuggingComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DebuggingComponent]
+            imports: [
+                SharedModule,
+                UIRouterModule.forRoot()
+            ],
+            declarations: [DebuggingComponent],
+            providers: [
+                {provide: APP_BASE_HREF, useValue: '/'},
+            ]
         })
             .compileComponents();
     }));

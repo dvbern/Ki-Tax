@@ -312,7 +312,7 @@ export class TSRoleUtil {
 
     public static translationKeyForRole(role: TSRole,
                                         gesuchstellerNone: boolean = false): string {
-        // TODO wann soll der Gesuchsteller nicht normal angezeigt werden?
+
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }
 }

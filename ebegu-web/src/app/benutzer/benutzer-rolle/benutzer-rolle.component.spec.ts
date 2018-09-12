@@ -15,7 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NgForm} from '@angular/forms';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {SharedModule} from '../../shared/shared.module';
 
 import {BenutzerRolleComponent} from './benutzer-rolle.component';
 
@@ -23,9 +27,19 @@ describe('BenutzerRolleComponent', () => {
     let component: BenutzerRolleComponent;
     let fixture: ComponentFixture<BenutzerRolleComponent>;
 
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [BenutzerRolleComponent]
+            imports: [
+                SharedModule,
+            ],
+            declarations: [BenutzerRolleComponent],
+            providers: [
+                {provide: APP_BASE_HREF, useValue: '/'},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: NgForm, useValue: new NgForm([], [])},
+            ],
         })
             .compileComponents();
     }));
@@ -33,6 +47,7 @@ describe('BenutzerRolleComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(BenutzerRolleComponent);
         component = fixture.componentInstance;
+        component.inputName = 'test-name';
         fixture.detectChanges();
     });
 
