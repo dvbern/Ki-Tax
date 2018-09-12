@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {LOCALE_ID} from '@angular/core';
 import {StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
+import * as moment from 'moment';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
@@ -39,9 +41,11 @@ import ITimeoutService = angular.ITimeoutService;
 
 const LOG = LogFactory.createLog('appRun');
 
-appRun.$inject = ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService', 'hotkeys',
-    '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
-    'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS'];
+appRun.$inject =
+    ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService',
+        'hotkeys',
+        '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
+        'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS', 'LOCALE_ID'];
 
 export function appRun(angularMomentConfig: any,
                        routerHelper: RouterHelper,
@@ -62,6 +66,7 @@ export function appRun(angularMomentConfig: any,
                        globalCacheService: GlobalCacheService,
                        $transitions: TransitionService,
                        gemeindeRS: GemeindeRS,
+                       LOCALE_ID: string,
 ) {
     // navigationLogger.toggle();
     // $trace.enable(Category.TRANSITION);
@@ -99,6 +104,8 @@ export function appRun(angularMomentConfig: any,
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
         gesuchModelManager.updateFachstellenList();
     }
+
+    moment.locale(LOCALE_ID);
 
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(

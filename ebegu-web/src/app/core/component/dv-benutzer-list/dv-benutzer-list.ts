@@ -14,17 +14,23 @@
  */
 
 import {IComponentOptions, ILogService, IOnInit, IPromise, IWindowService} from 'angular';
+import {take} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../../../../models/enums/TSRole';
+import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
+import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUser from '../../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../logging/LogFactory';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('DVBenutzerListController');
 
 export class DVBenutzerListConfig implements IComponentOptions {
     transclude = false;
@@ -43,7 +49,8 @@ export class DVBenutzerListConfig implements IComponentOptions {
 
 export class DVBenutzerListController implements IOnInit {
 
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window', '$translate'];
+    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window',
+        '$translate', 'GemeindeRS'];
 
     totalResultCount: number;
     displayedCollection: Array<TSUser> = []; //Liste die im Gui angezeigt wird
@@ -51,12 +58,14 @@ export class DVBenutzerListController implements IOnInit {
 
     institutionenList: Array<TSInstitution>;
     traegerschaftenList: Array<TSTraegerschaft>;
+    gemeindeList: Array<TSGemeinde>;
 
     selectedUsername: string;
     selectedVorname: string;
     selectedNachname: string;
     selectedEmail: string;
     selectedRole: string;
+    selectedGemeinde: TSGemeinde;
     selectedInstitution: TSInstitution;
     selectedTraegerschaft: TSTraegerschaft;
     selectedGesperrt: string;
@@ -73,7 +82,8 @@ export class DVBenutzerListController implements IOnInit {
                 private readonly traegerschaftenRS: TraegerschaftRS,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly $window: IWindowService,
-                private readonly $translate: ITranslateService) {
+                private readonly $translate: ITranslateService,
+                private readonly gemeindeRS: GemeindeRS) {
 
         this.TSRoleUtil = TSRoleUtil;
     }
@@ -82,6 +92,7 @@ export class DVBenutzerListController implements IOnInit {
         //statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
+        this.updateGemeindeList();
     }
 
     private updateInstitutionenList(): void {
@@ -94,6 +105,21 @@ export class DVBenutzerListController implements IOnInit {
         this.traegerschaftenRS.getAllTraegerschaften().then((response: any) => {
             this.traegerschaftenList = angular.copy(response);
         });
+    }
+
+    /**
+     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert
+     * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
+     */
+    private updateGemeindeList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(take(1))
+            .subscribe(
+                gemeinden => {
+                    this.gemeindeList = gemeinden;
+                },
+                err => LOG.error(err)
+            );
     }
 
     editClicked(user: any, event: any) {
