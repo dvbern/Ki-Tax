@@ -74,7 +74,7 @@
                         <tab-title data-translate="GESUCHE_NACH_ZEITRAUM"></tab-title>
                         <tab-body>
                             <form name="gesuch_zeitraum"
-                                  ng-submit="vm.generateStatistik(gesuch_zeitraum, 'GESUCH_ZEITRAUM')" novalidate>
+                                  ng-submit="vm.generateStatistik(gesuch_zeitraum, vm.TSStatistikParameterType.GESUCH_ZEITRAUM)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -133,7 +133,7 @@
                         <tab-title data-translate="ZAHLUNGEN_NACH_PERIODE"></tab-title>
                         <tab-body>
                             <form name="zahlungen_periode"
-                                  ng-submit="vm.generateStatistik(zahlungen_periode, 'ZAHLUNGEN_PERIODE')" novalidate>
+                                  ng-submit="vm.generateStatistik(zahlungen_periode, vm.TSStatistikParameterType.ZAHLUNGEN_PERIODE)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <div class="form-group">
@@ -171,7 +171,7 @@
                         <tab-title data-translate="KINDER_UPPER"></tab-title>
                         <tab-body>
                             <form name="kinder"
-                                  ng-submit="vm.generateStatistik(kinder, 'KINDER')" novalidate>
+                                  ng-submit="vm.generateStatistik(kinder, vm.TSStatistikParameterType.KINDER)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -231,7 +231,7 @@
                         <tab-title data-translate="GESUCHSTELLER_UPPER"></tab-title>
                         <tab-body>
                             <form name="gesuchsteller"
-                                  ng-submit="vm.generateStatistik(gesuchsteller, 'GESUCHSTELLER')" novalidate>
+                                  ng-submit="vm.generateStatistik(gesuchsteller, vm.TSStatistikParameterType.GESUCHSTELLER)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -264,7 +264,7 @@
                         <tab-title data-translate="KANTON"></tab-title>
                         <tab-body>
                             <form name="kanton"
-                                  ng-submit="vm.generateStatistik(kanton, 'KANTON')" novalidate>
+                                  ng-submit="vm.generateStatistik(kanton, vm.TSStatistikParameterType.KANTON)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -306,7 +306,7 @@
                         <tab-title data-translate="MITARBEITERINNEN"></tab-title>
                         <tab-body>
                             <form name="mitarbeiterinnen"
-                                  ng-submit="vm.generateStatistik(mitarbeiterinnen, 'MITARBEITERINNEN')" novalidate>
+                                  ng-submit="vm.generateStatistik(mitarbeiterinnen, vm.TSStatistikParameterType.MITARBEITERINNEN)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -350,7 +350,7 @@
                         <tab-title data-translate="BENUTZER_STATISTIK"></tab-title>
                         <tab-body>
                             <form name="benutzer"
-                                  ng-submit="vm.generateStatistik(benutzer, 'BENUTZER')" novalidate>
+                                  ng-submit="vm.generateStatistik(benutzer, vm.TSStatistikParameterType.BENUTZER)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
                                         <dv-loading-button type="submit">
@@ -370,13 +370,14 @@
                         <tab-title data-translate="GESUCHSTELLER_KINDER_BETREUUNG"></tab-title>
                         <tab-body>
                             <form name="betreuung"
-                                  ng-submit="vm.generateStatistik(betreuung, 'GESUCHSTELLER_KINDER_BETREUUNG')"
+                                  ng-submit="vm.generateStatistik(betreuung, vm.TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG)"
                                   novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" for="von_betreuung" data-translate="VON"></label>
                                             <dv-datepicker name="von_betreuung"
+                                                           id="von_betreuung"
                                                            ng-model="vm.statistikParameter.von" ng-required="true"
                                                            class="input-element"
                                                            dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
@@ -486,7 +487,6 @@
             <dv-loading-button button-class="" button-click="vm.showAllJobs()" type="button">
                 <span class="fa fa-refresh"></span>
                 <span data-translate="SHOW_JOBS"></span>
-            </dv-loading-button>
             </dv-loading-button>
             <div ng-if="vm.allJobs">
                 <p>Batch Jobs from Wildfly Batch Module</p>
