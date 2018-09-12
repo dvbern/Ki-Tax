@@ -67,6 +67,18 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 	}
 
+	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV", responseContainer = "Collection", response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/active")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeinde> getAktiveGemeinden() {
+		return gemeindeService.getAktiveGemeinden().stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Returns the Gemeinde with the given Id.", response = JaxGemeinde.class)
 	@Nullable
 	@GET

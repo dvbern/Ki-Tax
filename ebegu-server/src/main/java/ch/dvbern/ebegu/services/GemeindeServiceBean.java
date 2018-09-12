@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,10 +26,17 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -49,6 +58,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@Nonnull
@@ -74,5 +86,26 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public Collection<Gemeinde> getAllGemeinden() {
 		return criteriaQueryHelper.getAllOrdered(Gemeinde.class, Gemeinde_.name);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getAktiveGemeinden() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		// Status muss aktiv sein
+		Predicate predicateStatusActive = cb.equal(root.get(Gemeinde_.status), GemeindeStatus.AKTIV);
+		predicates.add(predicateStatusActive);
+		// Nur Gemeinden meines Mandanten zurueckgeben
+		Mandant mandant = principalBean.getMandant();
+		if (mandant != null) {
+			Predicate predicateMandant = cb.equal(root.get(Gemeinde_.mandant), mandant);
+			predicates.add(predicateMandant);
+		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return persistence.getCriteriaResults(query);
 	}
 }

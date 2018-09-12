@@ -44,7 +44,7 @@ export class OnboardingComponent {
                 private readonly applicationPropertyRS: ApplicationPropertyRS,
                 private readonly stateService: StateService,
     ) {
-        this.gemeinden$ = from(this.gemeindeRs.getAllGemeinden())
+        this.gemeinden$ = from(this.gemeindeRs.getAktiveGemeinden())
             .pipe(map(gemeinden => gemeinden.sort((a, b) => a.name.localeCompare(b.name))));
 
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());

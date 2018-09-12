@@ -45,8 +45,8 @@ describe('testdatenView', () => {
         const applicationPropertyRSSpy = jasmine.createSpyObj('ApplicationPropertyRS', ['isDevMode']);
         applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
         const gesuchRSSpy = jasmine.createSpyObj('GesuchRS', ['gesuchVerfuegen']);
-        const gemeindeRSSpy = jasmine.createSpyObj('GemeindeRS', ['getAllGemeinden']);
-        gemeindeRSSpy.getAllGemeinden.and.returnValue(Promise.resolve(true));
+        const gemeindeRSSpy = jasmine.createSpyObj('GemeindeRS', ['getAktiveGemeinden']);
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(Promise.resolve(true));
 
         TestBed.configureTestingModule({
             imports: [

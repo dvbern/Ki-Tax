@@ -53,7 +53,7 @@ describe('fallToolbar', () => {
         initObjects();
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2]),
+            'getAktiveGemeinden': Promise.resolve([gemeinde1, gemeinde2]),
         });
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
             'getPrincipalRole': Promise.resolve(TSRole.SUPER_ADMIN),
@@ -169,7 +169,7 @@ describe('fallToolbar', () => {
         beforeEach(async(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
-                'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                'getAktiveGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             initTestBed();

@@ -44,4 +44,10 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Collection<Gemeinde> getAllGemeinden();
+
+	/**
+	 * Gibt alle Gemeinden im Status "AKTIV" zurueck.
+	 */
+	@Nonnull
+	Collection<Gemeinde> getAktiveGemeinden();
 }

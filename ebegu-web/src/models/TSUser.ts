@@ -16,6 +16,7 @@
 import DateUtil from '../utils/DateUtil';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
+import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import TSBerechtigung from './TSBerechtigung';
 import TSGemeinde from './TSGemeinde';
@@ -187,6 +188,11 @@ export default class TSUser {
         return this.currentBerechtigung.gemeindeList;
     }
 
+    public extractCurrentAktiveGemeinden(): TSGemeinde[] {
+        return this.currentBerechtigung.gemeindeList.filter(gmde => gmde.status === TSGemeindeStatus.AKTIV);
+    }
+
+
     getFullName(): string {
         return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
     }
@@ -200,7 +206,7 @@ export default class TSUser {
     }
 
     public hasJustOneGemeinde() {
-        return this.extractCurrentGemeinden().length === 1;
+        return this.extractCurrentAktiveGemeinden().length === 1;
     }
 
     public hasRole(role: TSRole): boolean {

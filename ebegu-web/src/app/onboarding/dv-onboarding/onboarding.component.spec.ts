@@ -33,7 +33,7 @@ describe('OnboardingComponent', () => {
     let component: OnboardingComponent;
     let fixture: ComponentFixture<OnboardingComponent>;
 
-    const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllGemeinden']);
+    const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
     const applicationPropertyRSSpy = createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
 
     let $injector: angular.auto.IInjectorService;
@@ -46,7 +46,7 @@ describe('OnboardingComponent', () => {
     }));
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAllGemeinden.and.returnValue(of([]).toPromise());
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
 
         TestBed.configureTestingModule({
@@ -84,7 +84,7 @@ describe('OnboardingComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load all Gemeinden', () => {
-        expect(gemeindeRSSpy.getAllGemeinden).toHaveBeenCalled();
+    it('should load all active Gemeinden', () => {
+        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
     });
 });
