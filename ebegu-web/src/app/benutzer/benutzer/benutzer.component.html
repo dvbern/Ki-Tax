@@ -186,8 +186,10 @@
                     <div class="col-sm-12 dv-input-container-medium"
                          *ngIf="isGemeindeabhaengigeBerechtigung(currentBerechtigung)">
                         <div class="form-group">
-                            <dv-gemeinde-multiselect [selected]="currentBerechtigung.gemeindeList"
-                                                     [enabled]="!isDisabled"></dv-gemeinde-multiselect>
+                            <dv-gemeinde-multiselect [(selected)]="currentBerechtigung.gemeindeList"
+                                                     [editMode]="!isDisabled"
+                                                     [inputRequired]="true">
+                            </dv-gemeinde-multiselect>
                         </div>
                     </div>
 

@@ -16,6 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {MatOptionSelectionChange} from '@angular/material';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
@@ -35,17 +37,21 @@ let nextId = 0;
     templateUrl: './gemeinde-multiselect.template.html',
     styleUrls: ['./gemeinde-multiselect.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class GemeindeMultiselectComponent implements OnInit {
 
-    @Input() public enabled: boolean = false;
+    @Input() public editMode: boolean = false;
+    @Input() public inputRequired: boolean = false;
     @Input() public selected!: TSGemeinde[]; // Die selektierten Gemeinden
 
     public allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
-    public name = `gemeinde-select-${nextId++}`;
+    public inputId = `gemeinde-select-${nextId++}`;
 
     constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly gemeindeRS: GemeindeRS) {
+                private readonly gemeindeRS: GemeindeRS,
+                public readonly form: NgForm,
+    ) {
     }
 
     public ngOnInit(): void {
@@ -59,11 +65,15 @@ export class GemeindeMultiselectComponent implements OnInit {
             );
     }
 
-    public onChange(item: { key: TSGemeinde, value: boolean }): void {
-        if (item.value) {
-            this.selected.push(item.key);
+    public onSelectionChange(item: MatOptionSelectionChange): void {
+        if (!item.isUserInput) {
+            return;
+        }
+
+        if (item.source.selected) {
+            this.selected.push(item.source.value);
         } else {
-            const index = this.selected.indexOf(item.key);
+            const index = this.selected.indexOf(item.source.value);
             this.selected.splice(index, 1);
         }
     }

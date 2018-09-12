@@ -85,6 +85,14 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <dv-gemeinde-multiselect [editMode]="true"
+                                             [inputRequired]="true"
+                                             [selected]="benutzer.currentBerechtigung.gemeindeList">
+                    </dv-gemeinde-multiselect>
+                </div>
+            </div>
         </div>
 
         <div class="dv-footer">
