@@ -116,7 +116,7 @@
             }
         }
     },
-    "defaultProject": "dv",
+    "defaultProject": "ebegu",
     "schematics": {
         "@schematics/angular:component": {
             "prefix": "dv",
