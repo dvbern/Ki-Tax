@@ -229,9 +229,7 @@
                                        required
                                        placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
-                                <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
-                                                       [for]="futureGueltigAb">
-                                </mat-datepicker-toggle>
+                                <mat-datepicker-toggle matSuffix [for]="futureGueltigAb"></mat-datepicker-toggle>
                                 <mat-datepicker #futureGueltigAb></mat-datepicker>
                                 <dv-error-messages inputId="futureGueltigAb"
                                                    [errorObject]="form.controls.futureGueltigAb?.errors">
@@ -248,9 +246,7 @@
                                        placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [disabled]="isDisabled"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
-                                <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
-                                                       [for]="futureGueltigBis">
-                                </mat-datepicker-toggle>
+                                <mat-datepicker-toggle matSuffix [for]="futureGueltigBis"></mat-datepicker-toggle>
                                 <mat-datepicker #futureGueltigBis></mat-datepicker>
                                 <dv-error-messages inputId="futureGueltigBis"
                                                    [errorObject]="form.controls.futureGueltigBis?.errors">
