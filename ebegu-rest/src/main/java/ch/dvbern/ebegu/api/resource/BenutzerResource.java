@@ -207,7 +207,7 @@ public class BenutzerResource {
 	@Path("/inactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
 	public JaxAuthLoginElement inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -223,7 +223,7 @@ public class BenutzerResource {
 	@Path("/reactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
 	public JaxAuthLoginElement reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -239,7 +239,7 @@ public class BenutzerResource {
 	@Path("/saveBenutzerBerechtigungen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
 	public JaxAuthLoginElement saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,

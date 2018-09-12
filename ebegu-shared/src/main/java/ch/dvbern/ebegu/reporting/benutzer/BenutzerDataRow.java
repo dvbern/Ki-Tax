@@ -31,6 +31,8 @@ public class BenutzerDataRow {
 	@Nullable
 	private LocalDate roleGueltigBis;
 	@Nullable
+	private String gemeinden;
+	@Nullable
 	private String institution;
 	@Nullable
 	private String traegerschaft;
@@ -101,6 +103,15 @@ public class BenutzerDataRow {
 
 	public void setRoleGueltigBis(@Nullable LocalDate roleGueltigBis) {
 		this.roleGueltigBis = roleGueltigBis;
+	}
+
+	@Nullable
+	public String getGemeinden() {
+		return gemeinden;
+	}
+
+	public void setGemeinden(@Nullable String gemeinden) {
+		this.gemeinden = gemeinden;
 	}
 
 	@Nullable

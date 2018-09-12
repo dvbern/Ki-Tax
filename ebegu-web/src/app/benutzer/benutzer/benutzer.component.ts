@@ -63,6 +63,7 @@ export class BenutzerComponent implements OnInit {
     public currentBerechtigung: TSBerechtigung;
     public futureBerechtigung: TSBerechtigung;
     public isDefaultVerantwortlicher: boolean = false;
+    public isDisabled = true;
 
     private _berechtigungHistoryList: TSBerechtigungHistory[];
 
@@ -136,20 +137,33 @@ export class BenutzerComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    public isTraegerschaftBerechtigung(berechtigung: TSBerechtigung): boolean {
+    public isTraegerschaftBerechtigung(berechtigung?: TSBerechtigung): boolean {
         return berechtigung &&
             (berechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
                 || berechtigung.role === TSRole.SACHBEARBEITER_TRAEGERSCHAFT);
     }
 
     // noinspection JSMethodCanBeStatic
-    public isInstitutionBerechtigung(berechtigung: TSBerechtigung): boolean {
+    public isInstitutionBerechtigung(berechtigung?: TSBerechtigung): boolean {
         return berechtigung &&
             (berechtigung.role === TSRole.ADMIN_INSTITUTION || berechtigung.role === TSRole.SACHBEARBEITER_INSTITUTION);
     }
 
+     // noinspection JSMethodCanBeStatic
+    public isGemeindeabhaengigeBerechtigung(berechtigung?: TSBerechtigung): boolean {
+        return berechtigung &&
+            TSRoleUtil.isGemeindeabhaengig(berechtigung.role);
+    }
+
     public getTranslatedRole(role: TSRole): string {
         return this.translate.instant(TSRoleUtil.translationKeyForRole(role, true));
+    }
+
+    public getBerechtigungHistoryDescription(history: TSBerechtigungHistory): string {
+        const role = this.getTranslatedRole(history.role);
+        const details = history.getDescription();
+
+        return EbeguUtil.isEmptyStringNullOrUndefined(details) ? role : `${role} (${details})`;
     }
 
     public saveBenutzerBerechtigungen(): void {
@@ -197,7 +211,7 @@ export class BenutzerComponent implements OnInit {
     }
 
     public inactivateBenutzer(): void {
-        if (this.form.valid) {
+        if (this.isDisabled || this.form.valid) {
             this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
                 this.changeDetectorRef.markForCheck();
@@ -206,7 +220,7 @@ export class BenutzerComponent implements OnInit {
     }
 
     public reactivateBenutzer(): void {
-        if (this.form.valid) {
+        if (this.isDisabled || this.form.valid) {
             this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
                 this.changeDetectorRef.markForCheck();
@@ -223,15 +237,13 @@ export class BenutzerComponent implements OnInit {
         berechtigung.role = TSRole.GESUCHSTELLER;
         berechtigung.gueltigkeit = new TSDateRange();
         berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
-        berechtigung.enabled = true;
         this.futureBerechtigung = berechtigung;
         BenutzerComponent.initInstitution(this.futureBerechtigung);
         BenutzerComponent.initTraegerschaft(this.futureBerechtigung);
     }
 
-    // noinspection JSMethodCanBeStatic
-    public enableBerechtigung(berechtigung: TSBerechtigung): void {
-        berechtigung.enabled = true;
+    public enableBenutzer(): void {
+        this.isDisabled = false;
     }
 
     public removeBerechtigung(): void {
@@ -291,6 +303,10 @@ export class BenutzerComponent implements OnInit {
         return this.isAtLeastOneRoleInList(TSRoleUtil.getAllRolesButGesuchsteller());
     }
 
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
     private isAtLeastOneRoleInList(rolesToCheck: Array<TSRole>): boolean {
         // Es muessen alle vorhandenen Rollen geprueft werden
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
@@ -310,8 +326,9 @@ export class BenutzerComponent implements OnInit {
             this.selectedUser.berechtigungen.push(this.futureBerechtigung);
         }
         this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
+            this.isDisabled = true;
             this.navigateBackToUsersList();
-        }).catch((err) => {
+        }).catch(err => {
             LOG.error('Could not save Benutzer', err);
             this.initSelectedUser();
         });
