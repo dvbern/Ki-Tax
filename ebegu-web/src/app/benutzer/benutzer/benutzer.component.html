@@ -224,6 +224,7 @@
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigAb" id="futureGueltigAb"
                                        [matDatepicker]="futureGueltigAb"
+                                       [min]="tomorrow"
                                        [disabled]="isDisabled"
                                        required
                                        placeholder="{{'DATE_PLACEHOLDER' | translate}}"
@@ -241,6 +242,7 @@
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigBis" id="futureGueltigBis"
                                        [matDatepicker]="futureGueltigBis"
+                                       [min]="tomorrow"
                                        placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [disabled]="isDisabled"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">

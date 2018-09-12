@@ -71,7 +71,7 @@ export class ErrorMessagesComponent implements OnChanges, OnDestroy {
         }
 
         const firstErroneousKey = Object.keys(errors)
-            .find(key => errors[key] === true);
+            .find(key => !!errors[key]);
 
         return firstErroneousKey || '';
     }
