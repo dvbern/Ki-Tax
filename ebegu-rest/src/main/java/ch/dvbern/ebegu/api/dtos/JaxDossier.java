@@ -32,9 +32,9 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	private JaxGemeinde gemeinde;
 
-	private JaxAuthLoginElement verantwortlicherBG;
+	private JaxBenutzer verantwortlicherBG;
 
-	private JaxAuthLoginElement verantwortlicherTS;
+	private JaxBenutzer verantwortlicherTS;
 
 
 	public JaxFall getFall() {
@@ -53,19 +53,19 @@ public class JaxDossier extends JaxAbstractDTO {
 		this.gemeinde = gemeinde;
 	}
 
-	public JaxAuthLoginElement getVerantwortlicherBG() {
+	public JaxBenutzer getVerantwortlicherBG() {
 		return verantwortlicherBG;
 	}
 
-	public void setVerantwortlicherBG(JaxAuthLoginElement verantwortlicherBG) {
+	public void setVerantwortlicherBG(JaxBenutzer verantwortlicherBG) {
 		this.verantwortlicherBG = verantwortlicherBG;
 	}
 
-	public JaxAuthLoginElement getVerantwortlicherTS() {
+	public JaxBenutzer getVerantwortlicherTS() {
 		return verantwortlicherTS;
 	}
 
-	public void setVerantwortlicherTS(JaxAuthLoginElement verantwortlicherTS) {
+	public void setVerantwortlicherTS(JaxBenutzer verantwortlicherTS) {
 		this.verantwortlicherTS = verantwortlicherTS;
 	}
 }

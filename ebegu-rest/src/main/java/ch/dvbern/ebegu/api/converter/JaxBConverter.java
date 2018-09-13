@@ -49,7 +49,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
@@ -2593,7 +2593,7 @@ public class JaxBConverter {
 		if (StringUtils.isNotEmpty(dokument.getUserErstellt())) {
 			Optional<Benutzer> userUploadedOptional = benutzerService.findBenutzer(dokument.getUserErstellt());
 			if (userUploadedOptional.isPresent()) {
-				JaxAuthLoginElement jaxAuthLoginElement = benutzerToAuthLoginElement(userUploadedOptional.get());
+				JaxBenutzer jaxAuthLoginElement = benutzerToAuthLoginElement(userUploadedOptional.get());
 				jaxDokument.setUserUploaded(jaxAuthLoginElement);
 			}
 		}

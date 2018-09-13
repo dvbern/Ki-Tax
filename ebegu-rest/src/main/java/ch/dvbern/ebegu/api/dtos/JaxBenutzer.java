@@ -14,6 +14,7 @@
  */
 package ch.dvbern.ebegu.api.dtos;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -22,14 +23,12 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.enums.Amt;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-/**
- * Wrapper DTO fuer einen Login Request
- */
-@XmlRootElement(name = "authLoginElement")
-public class JaxAuthLoginElement extends JaxAbstractDTO {
+@XmlRootElement(name = "benutzer")
+public class JaxBenutzer implements Serializable {
 
 	private static final long serialVersionUID = 2769899329796452129L;
 

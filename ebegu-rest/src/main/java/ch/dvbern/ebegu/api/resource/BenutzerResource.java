@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
@@ -94,7 +94,7 @@ public class BenutzerResource {
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
 	@Path("/JAorAdmin")
@@ -110,7 +110,7 @@ public class BenutzerResource {
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck",
 		responseContainer = "List",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
 	@Path("/SCHorAdmin")
@@ -118,7 +118,7 @@ public class BenutzerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
 		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxAuthLoginElement> getBenutzerSCHorAdminSCH() {
+	public List<JaxBenutzer> getBenutzerSCHorAdminSCH() {
 		return benutzerService.getBenutzerSCHorAdminSCH().stream()
 			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
 			.collect(Collectors.toList());
@@ -126,14 +126,14 @@ public class BenutzerResource {
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle Gesuchsteller zurueck",
 		responseContainer = "List",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
 	@Path("/gesuchsteller")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxAuthLoginElement> getGesuchsteller() {
+	public List<JaxBenutzer> getGesuchsteller() {
 		return benutzerService.getGesuchsteller().stream()
 			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
 			.collect(Collectors.toList());
@@ -182,14 +182,14 @@ public class BenutzerResource {
 	}
 
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nullable
 	@GET
 	@Path("/username/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public JaxAuthLoginElement findBenutzer(
+	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
 		Objects.requireNonNull(username);
@@ -201,7 +201,7 @@ public class BenutzerResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Inactivates a Benutzer in the database", response = JaxAuthLoginElement.class)
+	@ApiOperation(value = "Inactivates a Benutzer in the database", response = JaxBenutzer.class)
 	@Nullable
 	@PUT
 	@Path("/inactivate")
@@ -217,7 +217,7 @@ public class BenutzerResource {
 		return converter.benutzerToAuthLoginElement(benutzer);
 	}
 
-	@ApiOperation(value = "Reactivates a Benutzer in the database", response = JaxAuthLoginElement.class)
+	@ApiOperation(value = "Reactivates a Benutzer in the database", response = JaxBenutzer.class)
 	@Nullable
 	@PUT
 	@Path("/reactivate")
@@ -233,7 +233,7 @@ public class BenutzerResource {
 		return converter.benutzerToAuthLoginElement(benutzer);
 	}
 
-	@ApiOperation(value = "Updates a Benutzer in the database", response = JaxAuthLoginElement.class)
+	@ApiOperation(value = "Updates a Benutzer in the database", response = JaxBenutzer.class)
 	@Nullable
 	@PUT
 	@Path("/saveBenutzerBerechtigungen")

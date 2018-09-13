@@ -37,7 +37,7 @@ public class JaxAntragStatusHistory extends JaxAbstractDTO {
 	private String gesuchId;
 
 	@NotNull
-	private JaxAuthLoginElement benutzer;
+	private JaxBenutzer benutzer;
 
 	@NotNull
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
@@ -57,11 +57,11 @@ public class JaxAntragStatusHistory extends JaxAbstractDTO {
 		this.gesuchId = gesuchId;
 	}
 
-	public JaxAuthLoginElement getBenutzer() {
+	public JaxBenutzer getBenutzer() {
 		return benutzer;
 	}
 
-	public void setBenutzer(JaxAuthLoginElement benutzer) {
+	public void setBenutzer(JaxBenutzer benutzer) {
 		this.benutzer = benutzer;
 	}
 
