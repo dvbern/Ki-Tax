@@ -1729,7 +1729,7 @@ export default class EbeguRestUtil {
             user.vorname = userTS.vorname;
             user.email = userTS.email;
             user.mandant = this.mandantToRestObject({}, userTS.mandant);
-            user.gesperrt = userTS.gesperrt;
+            user.status = userTS.status;
             if (userTS.berechtigungen) {
                 user.berechtigungen = [];
                 userTS.berechtigungen.forEach((berecht: TSBerechtigung) => {
@@ -1751,7 +1751,7 @@ export default class EbeguRestUtil {
             userTS.email = userFromServer.email;
             userTS.mandant = this.parseMandant(new TSMandant(), userFromServer.mandant);
             userTS.amt = userFromServer.amt;
-            userTS.gesperrt = userFromServer.gesperrt;
+            userTS.status = userFromServer.status;
             userTS.currentBerechtigung = this.parseBerechtigung(new TSBerechtigung(), userFromServer.currentBerechtigung);
             userTS.berechtigungen = this.parseBerechtigungen(userFromServer.berechtigungen);
             return userTS;

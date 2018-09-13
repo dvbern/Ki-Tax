@@ -169,8 +169,7 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 			&& getRole() == otherBerechtigung.getRole()
 			&& Objects.equals(getInstitution(), otherBerechtigung.getInstitution())
 			&& Objects.equals(getTraegerschaft(), otherBerechtigung.getTraegerschaft())
-			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit())
-			&& Objects.equals(getBenutzer().getGesperrt(), otherBerechtigung.getBenutzer().getGesperrt());
+			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit());
 	}
 
 	@Override

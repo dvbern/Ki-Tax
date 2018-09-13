@@ -2877,7 +2877,7 @@ public class JaxBConverter {
 		benutzer.setEmail(jaxLoginElement.getEmail());
 		benutzer.setNachname(jaxLoginElement.getNachname());
 		benutzer.setVorname(jaxLoginElement.getVorname());
-		benutzer.setGesperrt(jaxLoginElement.isGesperrt());
+		benutzer.setStatus(jaxLoginElement.getStatus());
 		if (jaxLoginElement.getMandant() != null && jaxLoginElement.getMandant().getId() != null) {
 			final Optional<Mandant> mandantFromDB = mandantService.findMandant(jaxLoginElement.getMandant().getId());
 			if (mandantFromDB.isPresent()) {
@@ -2942,7 +2942,7 @@ public class JaxBConverter {
 		}
 		jaxLoginElement.setUsername(benutzer.getUsername());
 		jaxLoginElement.setExternalUUID(benutzer.getExternalUUID());
-		jaxLoginElement.setGesperrt(benutzer.getGesperrt());
+		jaxLoginElement.setStatus(benutzer.getStatus());
 		jaxLoginElement.setCurrentBerechtigung(berechtigungToJax(benutzer.getCurrentBerechtigung()));
 		// Berechtigungen
 		final Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
@@ -3038,7 +3038,7 @@ public class JaxBConverter {
 			jaxHistory.setTraegerschaft(traegerschaftToJAX(history.getTraegerschaft()));
 		}
 		jaxHistory.setGemeinden(history.getGemeinden());
-		jaxHistory.setGesperrt(history.getGesperrt());
+		jaxHistory.setStatus(history.getStatus());
 		jaxHistory.setGeloescht(history.getGeloescht());
 		return jaxHistory;
 	}

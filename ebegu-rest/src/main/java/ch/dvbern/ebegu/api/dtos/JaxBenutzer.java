@@ -55,7 +55,8 @@ public class JaxBenutzer implements Serializable {
 
 	private JaxMandant mandant;
 
-	private boolean gesperrt;
+	@Nonnull
+	private BenutzerStatus status = BenutzerStatus.GESPERRT;
 
 	@Nullable
 	private JaxBerechtigung currentBerechtigung;
@@ -136,12 +137,13 @@ public class JaxBenutzer implements Serializable {
 		this.mandant = mandant;
 	}
 
-	public boolean isGesperrt() {
-		return gesperrt;
+	@Nonnull
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
-	public void setGesperrt(boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public void setStatus(@Nonnull BenutzerStatus status) {
+		this.status = status;
 	}
 
 	@Nullable

@@ -46,7 +46,6 @@ public class BenutzerDataRow {
 	private Boolean isTagesschule = null;
 	private Boolean isFerieninsel = null;
 
-
 	public BenutzerDataRow() {
 	}
 
@@ -135,12 +134,13 @@ public class BenutzerDataRow {
 		this.traegerschaft = traegerschaft;
 	}
 
-	public Boolean isGesperrt() {
-		return gesperrt;
+	@Nullable
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
-	public void setGesperrt(Boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public void setStatus(@Nullable BenutzerStatus status) {
+		this.status = status;
 	}
 
 	public Boolean isKita() {
@@ -175,9 +175,13 @@ public class BenutzerDataRow {
 		isFerieninsel = ferieninsel;
 	}
 
-	public Boolean isTagesfamilien() { return isTagesfamilien; }
+	public Boolean isTagesfamilien() {
+		return isTagesfamilien;
+	}
 
-	public void setTagesfamilien(Boolean tagesfamilien) { isTagesfamilien = tagesfamilien; }
+	public void setTagesfamilien(Boolean tagesfamilien) {
+		isTagesfamilien = tagesfamilien;
+	}
 
 	public Boolean isJugendamt() {
 		return (this.isKita != null && this.isKita)

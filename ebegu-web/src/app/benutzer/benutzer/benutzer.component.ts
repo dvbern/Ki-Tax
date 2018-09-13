@@ -24,12 +24,13 @@ import * as moment from 'moment';
 import {of} from 'rxjs';
 import {filter, mergeMap} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import TSBenutzer from '../../../models/TSBenutzer';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -51,11 +52,12 @@ const LOG = LogFactory.createLog('BenutzerComponent');
 })
 export class BenutzerComponent implements OnInit {
 
-    @ViewChild(NgForm) form: NgForm;
+    @ViewChild(NgForm) private readonly form: NgForm;
 
-    TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
+    public readonly TSBenutzerStatus = TSBenutzerStatus;
 
-    tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
+    public tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
     public selectedUser: TSBenutzer;
     public institutionenList: Array<TSInstitution> = [];

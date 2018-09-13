@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -67,13 +68,17 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 
 	@NotNull
 	@Column(nullable = false)
-	private Boolean gesperrt = false;
+	@Enumerated(EnumType.STRING)
+	private final BenutzerStatus status;
 
 	@NotNull
 	@Column(nullable = false)
 	private Boolean geloescht = false;
 
-	public BerechtigungHistory() {
+	@SuppressWarnings("ConstantConditions")
+	protected BerechtigungHistory() {
+		this.status = null;
+		this.role = null;
 	}
 
 	public BerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted) {
@@ -81,8 +86,12 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		this.setGueltigkeit(berechtigung.getGueltigkeit());
 		this.institution = berechtigung.getInstitution();
 		this.traegerschaft = berechtigung.getTraegerschaft();
-		this.gemeinden = berechtigung.getBenutzer().extractGemeindenForUserAsString();
-		this.gesperrt = berechtigung.getBenutzer().getGesperrt();
+
+		Benutzer benutzer = berechtigung.getBenutzer();
+		this.username = benutzer.getUsername();
+		this.gemeinden = benutzer.extractGemeindenForUserAsString();
+		this.status = benutzer.getStatus();
+
 		this.geloescht = deleted;
 	}
 
@@ -109,16 +118,8 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		return gemeinden;
 	}
 
-	public void setGemeinden(@Nullable String gemeinden) {
-		this.gemeinden = gemeinden;
-	}
-
-	public Boolean getGesperrt() {
-		return gesperrt;
-	}
-
-	public void setGesperrt(Boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
 	public Boolean getGeloescht() {
@@ -147,7 +148,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		cb.append(this.getInstitution(), other.getInstitution());
 		cb.append(this.getTraegerschaft(), other.getTraegerschaft());
 		cb.append(this.getGemeinden(), other.getGemeinden());
-		cb.append(this.getGesperrt(), other.getGesperrt());
+		cb.append(this.getStatus(), other.getStatus());
 		cb.append(this.getGeloescht(), other.getGeloescht());
 		return cb.toComparison() == 0;
 	}
@@ -161,7 +162,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
 			.append("gemeinden", gemeinden)
-			.append("gesperrt", gesperrt)
+			.append("status", status)
 			.append("geloescht", geloescht)
 			.toString();
 	}

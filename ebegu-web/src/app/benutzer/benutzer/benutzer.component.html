@@ -106,7 +106,7 @@
 
             <!-- Warnung, wenn gesperrt -->
             <div class="row">
-                <div class="col-md-12" *ngIf="selectedUser.gesperrt">
+                <div class="col-md-12" *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT">
                     <div class="well well-status-warten">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         <span translate>BENUTZER_GESPERRT_INFO</span>
@@ -352,7 +352,7 @@
                     <span translate>BENUTZER_SAVE</span>
                 </dv-loading-button>
 
-                <div *ngIf="!selectedUser.gesperrt && !isDefaultVerantwortlicher"
+                <div *ngIf="selectedUser.status === TSBenutzerStatus.AKTIV && !isDefaultVerantwortlicher"
                      class="button-row-item">
                     <button type="button" class="dv-btn cancel-button"
                             (click)="inactivateBenutzer()"
@@ -360,7 +360,7 @@
                     </button>
                 </div>
 
-                <div *ngIf="selectedUser.gesperrt && !isDefaultVerantwortlicher"
+                <div *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT && !isDefaultVerantwortlicher"
                      class="button-row-item">
                     <button type="button" class="dv-btn cancel-button"
                             (click)="reactivateBenutzer()"

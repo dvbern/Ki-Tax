@@ -35,6 +35,7 @@ export default class TSBenutzer {
     private _mandant: TSMandant;
     private _amt: TSAmt;
     private _gesperrt: boolean;
+    private _status: TSBenutzerStatus;
 
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
@@ -147,12 +148,28 @@ export default class TSBenutzer {
         this._gesperrt = value;
     }
 
+    get status(): TSBenutzerStatus {
+        return this._status;
+    }
+
+    set status(value: TSBenutzerStatus) {
+        this._status = value;
+    }
+
     get berechtigungen(): Array<TSBerechtigung> {
         return this._berechtigungen;
     }
 
     set berechtigungen(value: Array<TSBerechtigung>) {
         this._berechtigungen = value;
+    }
+
+    isActive(): boolean {
+        return this._status === TSBenutzerStatus.AKTIV;
+    }
+
+    isGesperrt(): boolean {
+        return this._status === TSBenutzerStatus.GESPERRT;
     }
 
     get currentBerechtigung(): TSBerechtigung {
