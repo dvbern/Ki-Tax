@@ -301,6 +301,16 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Gemeinde(n) -->
+                        <div class="col-sm-12 dv-input-container-medium"
+                             *ngIf="isGemeindeabhaengigeBerechtigung(futureBerechtigung)">
+                            <div class="form-group">
+                                <dv-gemeinde-multiselect [(selected)]="futureBerechtigung.gemeindeList"
+                                                         [editMode]="!isDisabled"
+                                                         [inputRequired]="true">
+                                </dv-gemeinde-multiselect>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
 

@@ -82,7 +82,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		this.setGueltigkeit(berechtigung.getGueltigkeit());
 		this.institution = berechtigung.getInstitution();
 		this.traegerschaft = berechtigung.getTraegerschaft();
-		this.gemeinden = berechtigung.getBenutzer().extractGemeindenForUserAsString();
+		this.gemeinden = berechtigung.extractGemeindenForBerechtigungAsString();
 		this.gesperrt = berechtigung.getBenutzer().getGesperrt();
 		this.geloescht = deleted;
 	}

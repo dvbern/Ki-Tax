@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -257,15 +256,6 @@ public class Benutzer extends AbstractMutableEntity {
 			return this.currentBerechtigung.getGemeindeList();
 		}
 		return Collections.emptySet();
-	}
-
-	@Nonnull
-	public String extractGemeindenForUserAsString() {
-		return extractGemeindenForUser()
-			.stream()
-			.map(Gemeinde::getName)
-			.sorted(String::compareToIgnoreCase)
-			.collect(Collectors.joining(", "));
 	}
 
 	/**

@@ -1399,7 +1399,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			String institution = benutzer.getInstitution() != null ? benutzer.getInstitution().getName() : null;
 			String traegerschaft = getTraegerschaftForBenutzer(benutzer);
-			row.setGemeinden(benutzer.extractGemeindenForUserAsString());
+			row.setGemeinden(benutzer.getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
 			row.setInstitution(institution);
 			row.setTraegerschaft(traegerschaft);
 			row.setGesperrt(benutzer.getGesperrt());

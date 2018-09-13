@@ -16,9 +16,11 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -187,5 +189,14 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 
 	public boolean isAbgelaufen() {
 		return getGueltigkeit().endsBefore(LocalDate.now());
+	}
+
+	@Nonnull
+	public String extractGemeindenForBerechtigungAsString() {
+		return getGemeindeList()
+			.stream()
+			.map(Gemeinde::getName)
+			.sorted(String::compareToIgnoreCase)
+			.collect(Collectors.joining(", "));
 	}
 }
