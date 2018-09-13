@@ -1,4 +1,6 @@
 /*
+ * AGPL File-Header
+ *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,13 +20,12 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
-import ErrorService from '../core/errors/service/ErrorService';
-import {SharedModule} from '../shared/shared.module';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import ErrorService from '../../core/errors/service/ErrorService';
+import {SharedModule} from '../../shared/shared.module';
 import {GemeindeListComponent} from './gemeinde-list.component';
-
 
 describe('gemeindenView', () => {
 

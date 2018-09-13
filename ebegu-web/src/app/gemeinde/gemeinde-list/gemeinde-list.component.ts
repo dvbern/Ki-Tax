@@ -1,4 +1,6 @@
 /*
+ * AGPL File-Header
+ *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,12 +31,16 @@ import {MatDialog, MatSort, MatSortable, MatTableDataSource} from '@angular/mate
 import * as angular from 'angular';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
-import ErrorService from '../core/errors/service/ErrorService';
-import {LogFactory} from '../core/logging/LogFactory';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../models/TSGemeinde';
-import AbstractAdminViewController from '../../admin/abstractAdminView';
+import AbstractAdminViewController from '../../../admin/abstractAdminView';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSGemeinde from '../../../models/TSGemeinde';
+import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('GemeindeListComponent');
 
@@ -51,6 +57,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     gemeinde: TSGemeinde = undefined;
     dataSource: MatTableDataSource<TSGemeinde>;
     private readonly unsubscribe$ = new Subject<void>();
+    controllerAs = 'vm';
 
     @ViewChild(NgForm) form: NgForm;
     @ViewChild(MatSort) sort: MatSort;
@@ -92,7 +99,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
             });
     }
 
-    /**
+     /**
      * It sorts the table by default using the variable sort.
      */
     private sortTable() {
@@ -107,7 +114,17 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         this.gemeinde = angular.copy(selected);
     }
 
+    createGemeinde(): void {
+        this.gemeinde = new TSGemeinde();
+        this.gemeinde.status = TSGemeindeStatus.EINGELADEN;
+    }
+
+    isAccessible(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
     public showNoContentMessage(): boolean {
         return !this.dataSource || this.dataSource.data.length === 0;
     }
+
 }

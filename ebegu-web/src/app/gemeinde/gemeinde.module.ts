@@ -17,31 +17,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {GemeindeListComponent} from '../app/gemeinde/gemeinde-list/gemeinde-list.component';
-import {SharedModule} from '../app/shared/shared.module';
-import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
-import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
-import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {NgAdminRoutingModule} from './ng-admin-routing.module';
+import {NgAdminRoutingModule} from '../../admin/ng-admin-routing.module';
+import {SharedModule} from '../shared/shared.module';
+import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 
 @NgModule({
     imports: [
+        CommonModule,
         SharedModule,
         NgAdminRoutingModule,
     ],
     declarations: [
-        TraegerschaftViewComponent,
-        TestdatenViewComponent,
-        BatchjobTriggerViewComponent,
+        GemeindeListComponent,
     ],
     entryComponents: [
-        TraegerschaftViewComponent,
-        TestdatenViewComponent,
-        BatchjobTriggerViewComponent,
+        GemeindeListComponent,
     ],
     providers: [],
 })
-export class NgAdminModule {
+export class GemeindeModule {
 }
 

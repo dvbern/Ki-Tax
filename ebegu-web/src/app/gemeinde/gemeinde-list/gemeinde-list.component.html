@@ -1,19 +1,21 @@
 <!--
-  ~ Copyright (C) 2018 DV Bern AG, Switzerland
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  -->
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
 
 <div class="gemeindenView adminModul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
@@ -55,6 +57,25 @@
 
                         <div class="mat-row" *ngIf="showNoContentMessage()"
                              [textContent]="'GEMEINDEN_NOCH_KEINE' | translate">
+                        </div>
+                    </div>
+
+                    <div *ngIf="!gemeinde && !isReadonly() && isAccessible()" class="marginTop50">
+                        <div class="row">
+                            <div class="col-md-6  form-group">
+                                <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button dvNgDebounceClick
+                                                (debounceClick)="createGemeinde(); form.reset();"
+                                                class="dv-btn dv-btn-sm color-success"
+                                                [disabled]="gemeinde">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                            <span [textContent]="'GEMEINDE_HINZUFUEGEN' | translate"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
