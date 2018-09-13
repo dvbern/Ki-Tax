@@ -17,7 +17,7 @@ import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {LogFactory} from '../../logging/LogFactory';
 import UserRS from '../../service/userRS.rest';
 
@@ -58,9 +58,9 @@ export class UserselectController implements IController {
     static $inject: string[] = ['UserRS', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
-    selectedUser?: TSUser;
+    selectedUser?: TSBenutzer;
     smartTable: any;
-    userList: TSUser[];
+    userList: TSBenutzer[];
     dvUsersearch: string;
     initialAll: boolean;
     showSelectionAll: boolean;

@@ -16,6 +16,7 @@
 import DateUtil from '../utils/DateUtil';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
+import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import TSBerechtigung from './TSBerechtigung';
 import TSGemeinde from './TSGemeinde';
@@ -23,7 +24,7 @@ import TSInstitution from './TSInstitution';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
-export default class TSUser {
+export default class TSBenutzer {
 
     private _nachname: string;
     private _vorname: string;
@@ -176,7 +177,7 @@ export default class TSUser {
      * Returns the currentGemeinde for users with only 1 Gemeinde.
      * For a user with more than 1 Gemeinde undefined is returned
      */
-    public extractCurrentGemeindeId(): string {
+    public extractCurrentGemeindeId(): string | undefined {
         if (this.hasJustOneGemeinde()) {
             return this.currentBerechtigung.gemeindeList[0].id;
         }

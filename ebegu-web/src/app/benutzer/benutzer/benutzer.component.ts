@@ -29,7 +29,7 @@ import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -57,7 +57,7 @@ export class BenutzerComponent implements OnInit {
 
     tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
-    public selectedUser: TSUser;
+    public selectedUser: TSBenutzer;
     public institutionenList: Array<TSInstitution> = [];
     public traegerschaftenList: Array<TSTraegerschaft> = [];
 

@@ -14,7 +14,7 @@
  */
 
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {EbeguWebCore} from '../core.angularjs.module';
 import UserRS from './userRS.rest';
@@ -24,7 +24,7 @@ describe('userRS', () => {
     let userRS: UserRS;
     let $httpBackend: angular.IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
-    let mockUser: TSUser;
+    let mockUser: TSBenutzer;
     let mockUserRest: any;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
@@ -38,7 +38,7 @@ describe('userRS', () => {
     }));
 
     beforeEach(() => {
-        mockUser = new TSUser('Pedro', 'Jimenez');
+        mockUser = new TSBenutzer('Pedro', 'Jimenez');
         mockUserRest = ebeguRestUtil.userToRestObject({}, mockUser);
     });
 
@@ -48,7 +48,7 @@ describe('userRS', () => {
         });
     });
 
-    function checkFieldValues(user1: TSUser, user2: TSUser) {
+    function checkFieldValues(user1: TSBenutzer, user2: TSBenutzer) {
         expect(user1).toBeDefined();
         expect(user1.nachname).toEqual(user2.nachname);
         expect(user1.vorname).toEqual(user2.vorname);

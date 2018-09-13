@@ -19,7 +19,7 @@ import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import UserRS from '../../../app/core/service/userRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
 
@@ -62,7 +62,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
      * @param user
      * @param event optinally this function can check if ctrl was clicked when opeing
      */
-    public editBenutzer(user: TSUser, event: any): void {
+    public editBenutzer(user: TSBenutzer, event: any): void {
         if (user) {
             this.$state.go('admin.benutzer', {benutzerId: user.username});
         }

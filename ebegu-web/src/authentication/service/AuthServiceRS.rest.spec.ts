@@ -19,7 +19,7 @@ import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBerechtigung from '../../models/TSBerechtigung';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import {EbeguAuthentication} from '../authentication.module';
 import AuthServiceRS from './AuthServiceRS.rest';
@@ -64,14 +64,14 @@ describe('AuthServiceRS', () => {
         });
         it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSUser sein. Deswegen machen wir hier ein Objekt mit dem Inhalt, den die Cookie braucht
-            const user: TSUser = new TSUser('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
+            const user: TSBenutzer = new TSBenutzer('Emma', 'Gerber', 'geem', 'password5', 'emma.gerber@example.com', undefined, TSRole.GESUCHSTELLER);
             user.currentBerechtigung = new TSBerechtigung(undefined, TSRole.GESUCHSTELLER);
             const cookieContent: any = {vorname: 'Emma', nachname: 'Gerber', username: 'geem', email: 'emma.gerber@example.com', role: 'GESUCHSTELLER'};
             const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
             spyOn(userRS, 'findBenutzer').and.returnValue($q.when(user));
 
-            let cookieUser: TSUser;
+            let cookieUser: TSBenutzer;
             //if we can decode the cookie the client application assumes the user is logged in for ui purposes
             TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
             authServiceRS.loginRequest(user).then(response => {

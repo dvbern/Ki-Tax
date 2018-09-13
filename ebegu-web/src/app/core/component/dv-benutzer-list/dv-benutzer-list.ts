@@ -21,7 +21,7 @@ import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -53,7 +53,7 @@ export class DVBenutzerListController implements IOnInit {
         '$translate', 'GemeindeRS'];
 
     totalResultCount: number;
-    displayedCollection: Array<TSUser> = []; //Liste die im Gui angezeigt wird
+    displayedCollection: Array<TSBenutzer> = []; //Liste die im Gui angezeigt wird
     pagination: any;
 
     institutionenList: Array<TSInstitution>;

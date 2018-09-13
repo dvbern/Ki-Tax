@@ -17,7 +17,7 @@ import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPro
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import UserRS from '../../app/core/service/userRS.rest';
 import TSAntragDTO from '../../models/TSAntragDTO';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GesuchRS from '../service/gesuchRS.rest';
@@ -36,8 +36,8 @@ export class FreigabeController {
     private gesuch: TSAntragDTO;
     private selectedUserBG: string;
     private selectedUserTS: string;
-    private userBGList: Array<TSUser>;
-    private userTSList: Array<TSUser>;
+    private userBGList: Array<TSBenutzer>;
+    private userTSList: Array<TSBenutzer>;
     private fallNummer: string;
     private familie: string;
     private errorMessage: string;

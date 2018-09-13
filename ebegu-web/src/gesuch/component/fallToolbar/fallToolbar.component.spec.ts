@@ -23,7 +23,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import DossierRS from '../../service/dossierRS.rest';
 import {StateService} from '@uirouter/core';
@@ -45,7 +45,7 @@ describe('fallToolbar', () => {
     let gemeinde1: TSGemeinde;
     let gemeinde2: TSGemeinde;
     let gemeinde3: TSGemeinde;
-    const user: TSUser = new TSUser();
+    const user: TSBenutzer = new TSBenutzer();
 
 
     beforeEach(async(() => {
@@ -192,7 +192,7 @@ describe('fallToolbar', () => {
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
-            dossier1.fall.besitzer = new TSUser(); // it  is now an onlineGesuch
+            dossier1.fall.besitzer = new TSBenutzer(); // it  is now an onlineGesuch
             const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
                 'findDossiersByFall': Promise.resolve([dossier1, dossier2])
             });

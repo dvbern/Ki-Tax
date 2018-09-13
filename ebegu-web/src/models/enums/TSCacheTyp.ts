@@ -19,12 +19,3 @@ export enum TSCacheTyp {
     EBEGU_INSTITUTIONSSTAMMDATEN = 'ebeguInstitutionsStammdaten',
     EBEGU_GEMEINDEN = 'ebeguGemeinden'
 }
-
-export function getTSCacheTypValues(): Array<TSCacheTyp> {
-    return [
-        TSCacheTyp.EBEGU_DOCUMENT,
-        TSCacheTyp.EBEGU_EINSTELLUNGEN,
-        TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN,
-        TSCacheTyp.EBEGU_GEMEINDEN
-    ];
-}

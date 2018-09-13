@@ -20,7 +20,7 @@ import {LogFactory} from '../../app/core/logging/LogFactory';
 import UserRS from '../../app/core/service/userRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
@@ -38,14 +38,14 @@ export default class AuthServiceRS {
     static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
         'UserRS'];
 
-    private principal?: TSUser;
+    private principal?: TSBenutzer;
 
     // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
     // Thus the session restoration from the cookie is completed before the authenticationHook checks for
     // authentication.
-    private readonly principalSubject$ = new ReplaySubject<TSUser | null>(1);
+    private readonly principalSubject$ = new ReplaySubject<TSBenutzer | null>(1);
 
-    private _principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
+    private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
 
     constructor(private readonly $http: IHttpService,
                 private readonly $q: IQService,
@@ -59,15 +59,15 @@ export default class AuthServiceRS {
 
     // Use the observable, when the state must be updated automatically, when the principal changes.
     // e.g. printing the name of the current user
-    get principal$(): Observable<TSUser | null> {
+    get principal$(): Observable<TSBenutzer | null> {
         return this._principal$;
     }
 
-    set principal$(value$: Observable<TSUser | null>) {
+    set principal$(value$: Observable<TSBenutzer | null>) {
         this._principal$ = value$;
     }
 
-    public getPrincipal(): TSUser | undefined {
+    public getPrincipal(): TSBenutzer | undefined {
         return this.principal;
     }
 
@@ -78,7 +78,7 @@ export default class AuthServiceRS {
         return undefined;
     }
 
-    public loginRequest(userCredentials: TSUser): IPromise<TSUser> | undefined {
+    public loginRequest(userCredentials: TSBenutzer): IPromise<TSBenutzer> | undefined {
         if (!userCredentials) {
             return undefined;
         }
@@ -96,7 +96,7 @@ export default class AuthServiceRS {
             });
     }
 
-    public initWithCookie(): IPromise<TSUser> {
+    public initWithCookie(): IPromise<TSBenutzer> {
         LOG.debug('initWithCookie');
 
         const authIdbase64 = this.$cookies.get('authId');

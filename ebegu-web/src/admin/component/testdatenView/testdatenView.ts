@@ -30,7 +30,7 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 
 @Component({
@@ -46,8 +46,8 @@ export class TestdatenViewComponent implements OnInit {
     ereignisdatum: moment.Moment;
 
     creationType: string = 'verfuegt';
-    selectedBesitzer: TSUser;
-    gesuchstellerList: Array<TSUser>;
+    selectedBesitzer: TSBenutzer;
+    gesuchstellerList: Array<TSBenutzer>;
 
     selectedGesuchsperiode: TSGesuchsperiode;
     gesuchsperiodeList: Array<TSGesuchsperiode>;
@@ -69,7 +69,7 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.userRS.getAllGesuchsteller().then((result: Array<TSUser>) => {
+        this.userRS.getAllGesuchsteller().then((result: Array<TSBenutzer>) => {
             this.gesuchstellerList = result;
         });
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((result: Array<TSGesuchsperiode>) => {
