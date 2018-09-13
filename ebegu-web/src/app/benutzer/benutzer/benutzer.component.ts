@@ -24,7 +24,7 @@ import * as moment from 'moment';
 import {of} from 'rxjs';
 import {filter, mergeMap} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {rolePrefix, TSRole} from '../../../models/enums/TSRole';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
 import TSInstitution from '../../../models/TSInstitution';
@@ -71,7 +71,7 @@ export class BenutzerComponent implements OnInit {
     constructor(private readonly $transition$: Transition,
                 private readonly changeDetectorRef: ChangeDetectorRef,
                 private readonly $state: StateService,
-                public readonly translate: TranslateService,
+                private readonly translate: TranslateService,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly institutionRS: InstitutionRS,
                 private readonly traegerschaftenRS: TraegerschaftRS,
@@ -111,31 +111,34 @@ export class BenutzerComponent implements OnInit {
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
         const username: string = this.$transition$.params().benutzerId;
-        if (username) {
-            this.userRS.findBenutzer(username).then((result) => {
-                this.selectedUser = result;
-                this.initSelectedUser();
-                // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
-                // "Default-Verantwortlichen" des entsprechenden Amtes handelt
-                if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
-                    this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
-                        if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
-                            this.isDefaultVerantwortlicher = true;
-                        }
-                        this.changeDetectorRef.markForCheck();
-                    });
-                }
-                if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
-                    this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
-                        if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
-                            this.isDefaultVerantwortlicher = true;
-                        }
-                        this.changeDetectorRef.markForCheck();
-                    });
-                }
-                this.changeDetectorRef.markForCheck();
-            });
+
+        if (!username) {
+            return;
         }
+
+        this.userRS.findBenutzer(username).then(result => {
+            this.selectedUser = result;
+            this.initSelectedUser();
+            // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
+            // "Default-Verantwortlichen" des entsprechenden Amtes handelt
+            if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
+                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
+                    if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
+                        this.isDefaultVerantwortlicher = true;
+                    }
+                    this.changeDetectorRef.markForCheck();
+                });
+            }
+            if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
+                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
+                    if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
+                        this.isDefaultVerantwortlicher = true;
+                    }
+                    this.changeDetectorRef.markForCheck();
+                });
+            }
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     // noinspection JSMethodCanBeStatic
@@ -155,34 +158,6 @@ export class BenutzerComponent implements OnInit {
     public isGemeindeabhaengigeBerechtigung(berechtigung?: TSBerechtigung): boolean {
         return berechtigung &&
             TSRoleUtil.isGemeindeabhaengig(berechtigung.role);
-    }
-
-    // noinspection JSMethodCanBeStatic
-    public trackByRole(_i: number, role: string): string {
-        return role;
-    }
-
-    public getRolesWithTranslations(): Array<{ role: TSRole; translated: string }> {
-        return this.getRollen().map(role => ({role, translated: this.translate.instant(`TSRole_${role}`)}));
-    }
-
-    public getRollen(): Array<TSRole> {
-        if (EbeguUtil.isTagesschulangebotEnabled()) {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButAnonymous()
-                : TSRoleUtil.getAllRolesButSuperAdminAndAnonymous();
-        } else {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
-                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
-        }
-    }
-
-    public getTranslatedRole(role: TSRole): string {
-        if (role === TSRole.GESUCHSTELLER) {
-            return this.translate.instant(rolePrefix() + 'NONE');
-        }
-        return this.translate.instant(rolePrefix() + role);
     }
 
     public getBerechtigungHistoryDescription(history: TSBerechtigungHistory): string {
@@ -278,6 +253,10 @@ export class BenutzerComponent implements OnInit {
 
     public cancel(): void {
         this.navigateBackToUsersList();
+    }
+
+    private getTranslatedRole(role: TSRole): string {
+        return this.translate.instant(TSRoleUtil.translationKeyForRole(role, true));
     }
 
     private updateInstitutionenList(): void {

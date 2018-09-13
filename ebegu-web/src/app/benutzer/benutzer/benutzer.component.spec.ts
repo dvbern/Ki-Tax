@@ -24,6 +24,7 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import UserRS from '../../core/service/userRS.rest';
 import {SharedModule} from '../../shared/shared.module';
+import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
 
 import {BenutzerComponent} from './benutzer.component';
 
@@ -44,7 +45,7 @@ describe('BenutzerComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [SharedModule, UIRouterModule.forRoot()],
-            declarations: [BenutzerComponent],
+            declarations: [BenutzerComponent, BenutzerRolleComponent],
             providers: [
                 {
                     provide: InstitutionRS,

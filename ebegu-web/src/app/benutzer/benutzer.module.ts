@@ -18,15 +18,26 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
+import {BenutzerEinladenComponent} from './benutzer-einladen/benutzer-einladen.component';
+import {BenutzerRolleComponent} from './benutzer-rolle/benutzer-rolle.component';
+import {BenutzerRoutingModule} from './benutzer-routing/benutzer-routing.module';
 import {BenutzerComponent} from './benutzer/benutzer.component';
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
+        BenutzerRoutingModule,
     ],
-    declarations: [BenutzerComponent],
-    entryComponents: [BenutzerComponent],
+    declarations: [
+        BenutzerComponent,
+        BenutzerEinladenComponent,
+        BenutzerRolleComponent
+    ],
+    entryComponents: [
+        BenutzerComponent,
+        BenutzerEinladenComponent
+    ],
     exports: [BenutzerComponent],
 })
 export class BenutzerModule {

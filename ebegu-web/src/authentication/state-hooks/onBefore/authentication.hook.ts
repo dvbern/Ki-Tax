@@ -19,8 +19,8 @@ import {HookMatchCriteria, HookResult, StateService, Transition, TransitionServi
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
-import {OnBeforePriorities} from './onBeforePriorities';
 import AuthServiceRS from '../../service/AuthServiceRS.rest';
+import {OnBeforePriorities} from './onBeforePriorities';
 
 const LOG = LogFactory.createLog('authenticationHookRunBlock');
 
@@ -54,6 +54,8 @@ function redirectToLogin(transition: Transition): HookResult {
         .pipe(
             take(1),
             map(principal => {
+                LOG.debug('checking authentication of principal', principal);
+
                 if (!principal) {
                     LOG.debug('redirecting to login page');
 
