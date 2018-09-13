@@ -19,29 +19,32 @@ import java.time.LocalDate;
 
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.BenutzerStatus;
+
 public class BenutzerDataRow {
 
-	private String username;
-	private String vorname;
-	private String nachname;
-	private String email;
-	private String role;
+	private String username = null;
+	private String vorname = null;
+	private String nachname = null;
+	private String email = null;
+	private String role = null;
 	@Nullable
-	private LocalDate roleGueltigAb;
+	private LocalDate roleGueltigAb = null;
 	@Nullable
-	private LocalDate roleGueltigBis;
+	private LocalDate roleGueltigBis = null;
 	@Nullable
-	private String gemeinden;
+	private String gemeinden = null;
 	@Nullable
-	private String institution;
+	private String institution = null;
 	@Nullable
-	private String traegerschaft;
-	private Boolean gesperrt;
-	private Boolean isKita;
-	private Boolean isTagesfamilien;
-	private Boolean isTagi;
-	private Boolean isTagesschule;
-	private Boolean isFerieninsel;
+	private String traegerschaft = null;
+	@Nullable
+	private BenutzerStatus status = null;
+	private Boolean isKita = null;
+	private Boolean isTagesfamilien = null;
+	private Boolean isTagi = null;
+	private Boolean isTagesschule = null;
+	private Boolean isFerieninsel = null;
 
 
 	public BenutzerDataRow() {

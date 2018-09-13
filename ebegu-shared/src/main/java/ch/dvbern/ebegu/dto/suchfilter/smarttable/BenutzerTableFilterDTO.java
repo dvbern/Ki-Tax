@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.dto.suchfilter.smarttable;
 
 import java.io.Serializable;
 
+import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,35 +33,18 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class BenutzerTableFilterDTO implements Serializable {
 
 	private static final long serialVersionUID = 404959569485575365L;
-	private PaginationDTO pagination;
 
-	private BenutzerSearchDTO search;
+	@Valid
+	@Nullable
+	private PaginationDTO pagination = null;
 
-	private SortDTO sort;
+	@Valid
+	@Nullable
+	private BenutzerSearchDTO search = null;
 
-	public PaginationDTO getPagination() {
-		return pagination;
-	}
-
-	public void setPagination(PaginationDTO pagination) {
-		this.pagination = pagination;
-	}
-
-	public BenutzerSearchDTO getSearch() {
-		return search;
-	}
-
-	public void setSearch(BenutzerSearchDTO search) {
-		this.search = search;
-	}
-
-	public SortDTO getSort() {
-		return sort;
-	}
-
-	public void setSort(SortDTO sort) {
-		this.sort = sort;
-	}
+	@Valid
+	@Nullable
+	private SortDTO sort = null;
 
 	@Override
 	public String toString() {
@@ -68,5 +53,32 @@ public class BenutzerTableFilterDTO implements Serializable {
 			.append("search", search)
 			.append("sort", sort)
 			.toString();
+	}
+
+	@Nullable
+	public PaginationDTO getPagination() {
+		return pagination;
+	}
+
+	public void setPagination(@Nullable PaginationDTO pagination) {
+		this.pagination = pagination;
+	}
+
+	@Nullable
+	public BenutzerSearchDTO getSearch() {
+		return search;
+	}
+
+	public void setSearch(@Nullable BenutzerSearchDTO search) {
+		this.search = search;
+	}
+
+	@Nullable
+	public SortDTO getSort() {
+		return sort;
+	}
+
+	public void setSort(@Nullable SortDTO sort) {
+		this.sort = sort;
 	}
 }

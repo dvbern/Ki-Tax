@@ -82,12 +82,12 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	private Set<Gemeinde> gemeindeList = new TreeSet<>();
 
 	@Nullable
-	@ManyToOne(optional = true)
+	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_institution_id"))
 	private Institution institution;
 
 	@Nullable
-	@ManyToOne(optional = true)
+	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_traegerschaft_id"))
 	private Traegerschaft traegerschaft;
 
@@ -166,7 +166,7 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 		}
 		final Berechtigung otherBerechtigung = (Berechtigung) other;
 		return Objects.equals(getBenutzer(), otherBerechtigung.getBenutzer())
-			&& Objects.equals(getRole(), otherBerechtigung.getRole())
+			&& getRole() == otherBerechtigung.getRole()
 			&& Objects.equals(getInstitution(), otherBerechtigung.getInstitution())
 			&& Objects.equals(getTraegerschaft(), otherBerechtigung.getTraegerschaft())
 			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit())

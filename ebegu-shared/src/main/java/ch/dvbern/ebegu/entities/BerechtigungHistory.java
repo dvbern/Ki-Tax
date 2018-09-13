@@ -48,20 +48,20 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@NotNull
-	private UserRole role;
+	private final UserRole role;
 
 	@Nullable
-	@ManyToOne(optional = true)
+	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_history_institution_id"))
 	private Institution institution = null;
 
 	@Nullable
-	@ManyToOne(optional = true)
+	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_berechtigung_history_traegerschaft_id"))
 	private Traegerschaft traegerschaft = null;
 
 	@Nullable
-	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Column
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String gemeinden = null;
 
@@ -77,7 +77,6 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 	}
 
 	public BerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted) {
-		this.username = berechtigung.getBenutzer().getUsername();
 		this.role = berechtigung.getRole();
 		this.setGueltigkeit(berechtigung.getGueltigkeit());
 		this.institution = berechtigung.getInstitution();
@@ -91,16 +90,8 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		return username;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public UserRole getRole() {
 		return role;
-	}
-
-	public void setRole(UserRole role) {
-		this.role = role;
 	}
 
 	@Nullable
@@ -108,17 +99,9 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		return institution;
 	}
 
-	public void setInstitution(@Nullable Institution institution) {
-		this.institution = institution;
-	}
-
 	@Nullable
 	public Traegerschaft getTraegerschaft() {
 		return traegerschaft;
-	}
-
-	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
-		this.traegerschaft = traegerschaft;
 	}
 
 	@Nullable
@@ -140,10 +123,6 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 
 	public Boolean getGeloescht() {
 		return geloescht;
-	}
-
-	public void setGeloescht(Boolean geloescht) {
-		this.geloescht = geloescht;
 	}
 
 	@Override
