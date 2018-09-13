@@ -15,24 +15,37 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+	import java.util.Collection;
+	import java.util.Objects;
+	import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+	import javax.annotation.Nonnull;
+	import javax.annotation.Nullable;
+	import javax.annotation.security.PermitAll;
+	import javax.ejb.Local;
+	import javax.ejb.Stateless;
+	import javax.inject.Inject;
+	import javax.persistence.TypedQuery;
+	import javax.persistence.criteria.CriteriaBuilder;
+	import javax.persistence.criteria.CriteriaQuery;
+	import javax.persistence.criteria.ParameterExpression;
+	import javax.persistence.criteria.Predicate;
+	import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+	import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+	import ch.dvbern.ebegu.entities.Gemeinde;
+	import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+	import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
+	import ch.dvbern.ebegu.entities.Gemeinde_;
+	import ch.dvbern.ebegu.entities.Gesuch;
+	import ch.dvbern.ebegu.entities.Gesuch_;
+	import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
+	import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+	import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+	import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+	import ch.dvbern.lib.cdipersistence.Persistence;
+	import org.slf4j.Logger;
+	import org.slf4j.LoggerFactory;
 
 /**
  * Service fuer Gemeinden
@@ -75,4 +88,24 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	public Collection<Gemeinde> getAllGemeinden() {
 		return criteriaQueryHelper.getAllOrdered(Gemeinde.class, Gemeinde_.name);
 	}
+
+	@Nullable
+	@Override
+	public GemeindeStammdaten getStammdatenByGemeinde(@Nonnull String gemeindeId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
+
+		Root<Gesuch> root = query.from(GemeindeStammdaten.class);
+
+		ParameterExpression<String> gemeindeId = cb.parameter(String.class, "gemeindeId");
+		Predicate idPredicate = cb.equal(root.get(GemeindeStammdaten_.gemeinde).get(Gemeinde_.gemeindeNummer).get(AbstractPersonEntity_.nachname),
+			gemeindeId);
+
+		query.where(idPredicate);
+		TypedQuery<Gesuch> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(gemeindeId);
+
+		return q.getResult();
+	}
+
 }
