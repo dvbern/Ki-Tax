@@ -220,18 +220,16 @@
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="dv-benutzer-label" translate
-                                       for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
+                                <label translate for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigAb" id="futureGueltigAb"
                                        [matDatepicker]="futureGueltigAb"
+                                       [min]="tomorrow"
                                        [disabled]="isDisabled"
                                        required
                                        placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
-                                <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
-                                                       [for]="futureGueltigAb">
-                                </mat-datepicker-toggle>
+                                <mat-datepicker-toggle matSuffix [for]="futureGueltigAb"></mat-datepicker-toggle>
                                 <mat-datepicker #futureGueltigAb></mat-datepicker>
                                 <dv-error-messages inputId="futureGueltigAb"
                                                    [errorObject]="form.controls.futureGueltigAb?.errors">
@@ -240,17 +238,15 @@
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="dv-benutzer-label" translate
-                                       for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
+                                <label translate for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigBis" id="futureGueltigBis"
                                        [matDatepicker]="futureGueltigBis"
+                                       [min]="tomorrow"
                                        placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        [disabled]="isDisabled"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
-                                <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
-                                                       [for]="futureGueltigBis">
-                                </mat-datepicker-toggle>
+                                <mat-datepicker-toggle matSuffix [for]="futureGueltigBis"></mat-datepicker-toggle>
                                 <mat-datepicker #futureGueltigBis></mat-datepicker>
                                 <dv-error-messages inputId="futureGueltigBis"
                                                    [errorObject]="form.controls.futureGueltigBis?.errors">
