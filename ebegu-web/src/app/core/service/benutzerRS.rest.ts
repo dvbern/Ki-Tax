@@ -20,7 +20,7 @@ import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IEntityRS} from './iEntityRS.rest';
 
-export default class UserRS implements IEntityRS {
+export default class BenutzerRS implements IEntityRS {
 
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
@@ -41,10 +41,6 @@ export default class UserRS implements IEntityRS {
             this.$log.debug('PARSING user REST array object', response.data);
             return this.ebeguRestUtil.parseUserList(response.data);
         });
-    }
-
-    public getServiceName(): string {
-        return 'UserRS';
     }
 
     public getAllGesuchsteller(): IPromise<TSBenutzer[]> {

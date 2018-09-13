@@ -40,7 +40,7 @@ import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import UserRS from '../../core/service/userRS.rest';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('BenutzerComponent');
 
@@ -77,7 +77,7 @@ export class BenutzerComponent implements OnInit {
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly institutionRS: InstitutionRS,
                 private readonly traegerschaftenRS: TraegerschaftRS,
-                private readonly userRS: UserRS,
+                private readonly benutzerRS: BenutzerRS,
                 private readonly applicationPropertyRS: ApplicationPropertyRS,
                 private readonly dialog: MatDialog) {
     }
@@ -118,7 +118,7 @@ export class BenutzerComponent implements OnInit {
             return;
         }
 
-        this.userRS.findBenutzer(username).then(result => {
+        this.benutzerRS.findBenutzer(username).then(result => {
             this.selectedUser = result;
             this.initSelectedUser();
             // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
@@ -215,7 +215,7 @@ export class BenutzerComponent implements OnInit {
 
     public inactivateBenutzer(): void {
         if (this.isDisabled || this.form.valid) {
-            this.userRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
+            this.benutzerRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
                 this.changeDetectorRef.markForCheck();
             });
@@ -224,7 +224,7 @@ export class BenutzerComponent implements OnInit {
 
     public reactivateBenutzer(): void {
         if (this.isDisabled || this.form.valid) {
-            this.userRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
+            this.benutzerRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
                 this.selectedUser = changedUser;
                 this.changeDetectorRef.markForCheck();
             });
@@ -282,7 +282,7 @@ export class BenutzerComponent implements OnInit {
         BenutzerComponent.initInstitution(this.futureBerechtigung);
         BenutzerComponent.initTraegerschaft(this.currentBerechtigung);
         BenutzerComponent.initTraegerschaft(this.futureBerechtigung);
-        this.userRS.getBerechtigungHistoriesForBenutzer(this.selectedUser.username).then(result => {
+        this.benutzerRS.getBerechtigungHistoriesForBenutzer(this.selectedUser.username).then(result => {
             this._berechtigungHistoryList = result;
             this.changeDetectorRef.markForCheck();
         });
@@ -332,7 +332,7 @@ export class BenutzerComponent implements OnInit {
         if (this.futureBerechtigung) {
             this.selectedUser.berechtigungen.push(this.futureBerechtigung);
         }
-        this.userRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
+        this.benutzerRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
             this.isDisabled = true;
             this.navigateBackToUsersList();
         }).catch(err => {

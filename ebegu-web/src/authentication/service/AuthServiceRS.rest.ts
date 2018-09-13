@@ -17,7 +17,7 @@ import * as angular from 'angular';
 import {Observable, ReplaySubject} from 'rxjs';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
-import UserRS from '../../app/core/service/userRS.rest';
+import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
@@ -36,7 +36,7 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 export default class AuthServiceRS {
 
     static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
-        'UserRS'];
+        'BenutzerRS'];
 
     private principal?: TSBenutzer;
 
@@ -54,7 +54,7 @@ export default class AuthServiceRS {
                 private readonly ebeguRestUtil: EbeguRestUtil,
                 private readonly httpBuffer: HttpBuffer,
                 private readonly authLifeCycleService: AuthLifeCycleService,
-                private readonly userRS: UserRS) {
+                private readonly benutzerRS: BenutzerRS) {
     }
 
     // Use the observable, when the state must be updated automatically, when the principal changes.
@@ -108,7 +108,7 @@ export default class AuthServiceRS {
         try {
             const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
-            return this.userRS.findBenutzer(authData.authId).then(user => {
+            return this.benutzerRS.findBenutzer(authData.authId).then(user => {
                 this.principalSubject$.next(user);
                 this.principal = user;
                 this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');

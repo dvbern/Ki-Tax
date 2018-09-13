@@ -24,7 +24,7 @@ import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remov
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import UserRS from '../../../app/core/service/userRS.rest';
+import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
@@ -58,7 +58,7 @@ export class TestdatenViewComponent implements OnInit {
     devMode: boolean;
 
     constructor(public readonly testFaelleRS: TestFaelleRS,
-                private readonly userRS: UserRS,
+                private readonly benutzerRS: BenutzerRS,
                 private readonly errorService: ErrorService,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                 private readonly zahlungRS: ZahlungRS,
@@ -69,16 +69,16 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.userRS.getAllGesuchsteller().then((result: Array<TSBenutzer>) => {
+        this.benutzerRS.getAllGesuchsteller().then(result => {
             this.gesuchstellerList = result;
         });
-        this.gesuchsperiodeRS.getAllGesuchsperioden().then((result: Array<TSGesuchsperiode>) => {
+        this.gesuchsperiodeRS.getAllGesuchsperioden().then(result => {
             this.gesuchsperiodeList = result;
         });
-        this.applicationPropertyRS.isDevMode().then((response: boolean) => {
+        this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
         });
-        this.gemeindeRS.getAllGemeinden().then((response: any) => {
+        this.gemeindeRS.getAllGemeinden().then(response => {
             this.gemeindeList = angular.copy(response);
         });
     }

@@ -20,7 +20,7 @@ import TSGesuch from '../../../../models/TSGesuch';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import UserRS from '../../service/userRS.rest';
+import BenutzerRS from '../../service/benutzerRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
@@ -44,7 +44,7 @@ export class DvVerantwortlicherselect implements IDirective {
 
 export class VerantwortlicherselectController implements IController {
 
-    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
+    static $inject: string[] = ['BenutzerRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
 
     TSRoleUtil = TSRoleUtil;
     isSchulamt: boolean;
@@ -52,7 +52,7 @@ export class VerantwortlicherselectController implements IController {
 
     userList: Array<TSBenutzer>;
 
-    constructor(private readonly userRS: UserRS,
+    constructor(private readonly benutzerRS: BenutzerRS,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $translate: ITranslateService) {
@@ -141,13 +141,13 @@ export class VerantwortlicherselectController implements IController {
     }
 
     private updateSchulamtUserList(): void {
-        this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+        this.benutzerRS.getBenutzerSCHorAdminSCH().then(response => {
             this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
         });
     }
 
     private updateJugendAmtUserList(): void {
-        this.userRS.getBenutzerJAorAdmin().then(response => {
+        this.benutzerRS.getBenutzerJAorAdmin().then(response => {
             this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
         });
     }
