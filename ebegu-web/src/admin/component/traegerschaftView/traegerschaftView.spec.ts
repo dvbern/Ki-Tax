@@ -29,10 +29,9 @@ describe('traegerschaftView', () => {
     let fixture: ComponentFixture<TraegerschaftViewComponent>;
 
     beforeEach(async(() => {
-        const traegerschaftServiceSpy = jasmine.createSpyObj('TraegerschaftRS', ['createTraegerschaft']);
-        const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['getErrors']);
-        const dvDialogServiceSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
-        const authServiceSpy = jasmine.createSpyObj('AuthServiceRS', ['isOneOfRoles']);
+        const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['createTraegerschaft']);
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -42,7 +41,6 @@ describe('traegerschaftView', () => {
             providers: [
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: DvDialog, useValue: dvDialogServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [TraegerschaftViewComponent]

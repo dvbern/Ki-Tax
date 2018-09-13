@@ -93,7 +93,7 @@ export class TSRoleUtil {
     }
 
     public static getAdministratorRoles(): Array<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS];
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.ADMIN_MANDANT];
     }
 
     public static getSchulamtAdministratorRoles(): Array<TSRole> {
@@ -149,7 +149,17 @@ export class TSRoleUtil {
 
     public static getAdministratorRevisorRole(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT];
+    }
+
+    public static getAdministratorMandantRevisorRole(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR,
             TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+    }
+
+    public static getAllAdministratorRevisorRole(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS, TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT, TSRole.ADMIN_INSTITUTION, TSRole.ADMIN_TRAEGERSCHAFT];
     }
 
     public static getJugendamtRole(): Array<TSRole> {
@@ -169,6 +179,10 @@ export class TSRoleUtil {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE,
             TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR,
             TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT, TSRole.GESUCHSTELLER];
+    }
+
+    public static getMandantRoles(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
     public static getJugendamtAndSchulamtRole(): Array<TSRole> {

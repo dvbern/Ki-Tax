@@ -43,4 +43,5 @@ export function ngServicesMock($provide: angular.auto.IProvideService) {
         this.createNewDossier = (dossier: TSDossier) => Promise.resolve(dossier);
         this.createNewGesuch = (gesuch: TSGesuch) => Promise.resolve(gesuch);
     });
+    $provide.value('LOCALE_ID', 'de-CH');
 }

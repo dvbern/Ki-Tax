@@ -661,7 +661,7 @@ export default class EbeguRestUtil {
         if (gemeinde) {
             this.abstractMutableEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
-            restGemeinde.enabled = gemeinde.enabled;
+            restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             return restGemeinde;
         }
@@ -684,7 +684,7 @@ export default class EbeguRestUtil {
         if (gemeindeFromServer) {
             this.parseAbstractMutableEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;
-            gemeindeTS.enabled = gemeindeFromServer.enabled;
+            gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
             return gemeindeTS;
         }
@@ -1829,6 +1829,7 @@ export default class EbeguRestUtil {
             historyTS.role = historyFromServer.role;
             historyTS.traegerschaft = this.parseTraegerschaft(new TSTraegerschaft(), historyFromServer.traegerschaft);
             historyTS.institution = this.parseInstitution(new TSInstitution(), historyFromServer.institution);
+            historyTS.gemeinden = historyFromServer.gemeinden;
             historyTS.gesperrt = historyFromServer.gesperrt;
             historyTS.geloescht = historyFromServer.geloescht;
             return historyTS;

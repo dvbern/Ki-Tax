@@ -146,7 +146,8 @@ public class BenutzerResource {
 	@Path("/search")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		ADMIN_MANDANT, REVISOR})
 	public Response searchBenutzer(
 		@Nonnull @NotNull BenutzerTableFilterDTO benutzerSearch,
 		@Context UriInfo uriInfo,
@@ -206,7 +207,7 @@ public class BenutzerResource {
 	@Path("/inactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
 	public JaxAuthLoginElement inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -222,7 +223,7 @@ public class BenutzerResource {
 	@Path("/reactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
 	public JaxAuthLoginElement reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -238,7 +239,7 @@ public class BenutzerResource {
 	@Path("/saveBenutzerBerechtigungen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
 	public JaxAuthLoginElement saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
 		@Context UriInfo uriInfo,
@@ -271,7 +272,8 @@ public class BenutzerResource {
 	@Path("/berechtigunghistory/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_MANDANT, REVISOR})
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(()

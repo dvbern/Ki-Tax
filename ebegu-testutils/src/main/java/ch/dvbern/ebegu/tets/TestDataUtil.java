@@ -105,6 +105,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -336,7 +337,7 @@ public final class TestDataUtil {
 			gemeinde = new Gemeinde();
 			gemeinde.setId(GEMEINDE_BERN_ID);
 			gemeinde.setName("Testgemeinde");
-			gemeinde.setEnabled(true);
+			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
 			return persistence.persist(gemeinde);
 		}
@@ -369,7 +370,7 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_BERN_ID);
 		gemeinde.setName("Bern");
-		gemeinde.setEnabled(true);
+		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
@@ -380,7 +381,7 @@ public final class TestDataUtil {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
 		gemeinde.setName("Ostermundigen");
-		gemeinde.setEnabled(true);
+		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
@@ -1120,10 +1121,10 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_KITA_MIN, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "20", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "0", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "0", gesuchsperiode, persistence);
+		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);

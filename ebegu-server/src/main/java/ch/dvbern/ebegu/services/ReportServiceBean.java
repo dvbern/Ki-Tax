@@ -413,7 +413,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 			row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-			row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
+			row.setBgPensum(MathUtil.DEFAULT.fromNullSafe(zeitabschnitt.getBgPensum()));
 			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 			row.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 			row.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
@@ -1311,7 +1311,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1399,6 +1399,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			String institution = benutzer.getInstitution() != null ? benutzer.getInstitution().getName() : null;
 			String traegerschaft = getTraegerschaftForBenutzer(benutzer);
+			row.setGemeinden(benutzer.extractGemeindenForUserAsString());
 			row.setInstitution(institution);
 			row.setTraegerschaft(traegerschaft);
 			row.setGesperrt(benutzer.getGesperrt());

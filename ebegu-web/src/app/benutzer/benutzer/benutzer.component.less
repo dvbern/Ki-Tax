@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.form-group {
+    margin-bottom: 3rem;
+}
+
+mat-datepicker-toggle.benutzer-datepicker {
+    background: @contrast-light;
+    display: block;
+    width: 4rem;
+    float: right;
+    height: 4rem;
+    button.mat-icon-button {
+        height: 4rem;
+        width: 4rem;
+        line-height: 2.0rem;
+        font-size: 1rem;
+    }
+}
+
+.input-benutzer {
+    background: #F0F0F0;
+    padding: 1rem;
+    .md-input-focused & {
+        padding: 1rem;
+    }
+    &--datepicker {
+        width: calc(100% - 30px);
+    }
+}
+
+form.submitted {
+    // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
+    .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid, input.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
+        .ErrorInput()
+    }
+}
+
+.dv-benutzer {
+    background: #F0F0F0;
+    flex-grow: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 3rem;
+    display: block;
+    position: relative;
+    box-sizing: content-box;
+
+    .row {
+        .well {
+            margin-top: 4rem;
+            margin-left: -2.5rem;
+            margin-right: -2.5rem;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+            padding: 2rem 2.5rem 2rem 5rem;
+        }
+    }
+
+    hr.header {
+        margin-bottom: 2rem;
+    }
+}
+
+:host {
+    display: flex;
+    align-items: flex-start;
+}
+
+.button-row {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: start;
+    display: flex;
+    margin-top: 2rem;
+
+    & > * {
+        margin-right: 2rem;
+    }
+}
+
+.dv-btn-operation {
+    line-height: 5rem;
+    &[disabled], &[disabled]:hover {
+        color: @contrast-dark;
+    }
+}
+
+.dv-btn {
+    .fa {
+        width: 3rem;
+    }
+}

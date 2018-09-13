@@ -848,7 +848,7 @@ public class JaxBConverter {
 		Objects.requireNonNull(gemeindeJax);
 		convertAbstractVorgaengerFieldsToEntity(gemeindeJax, gemeinde);
 		gemeinde.setName(gemeindeJax.getName());
-		gemeinde.setEnabled(gemeindeJax.isEnabled());
+		gemeinde.setStatus(gemeindeJax.getStatus());
 		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
 		return gemeinde;
 	}
@@ -857,7 +857,7 @@ public class JaxBConverter {
 		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
 		convertAbstractVorgaengerFieldsToJAX(persistedGemeinde, jaxGemeinde);
 		jaxGemeinde.setName(persistedGemeinde.getName());
-		jaxGemeinde.setEnabled(persistedGemeinde.isEnabled());
+		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		return jaxGemeinde;
 	}
@@ -2550,6 +2550,7 @@ public class JaxBConverter {
 		if (history.getTraegerschaft() != null) {
 			jaxHistory.setTraegerschaft(traegerschaftToJAX(history.getTraegerschaft()));
 		}
+		jaxHistory.setGemeinden(history.getGemeinden());
 		jaxHistory.setGesperrt(history.getGesperrt());
 		jaxHistory.setGeloescht(history.getGeloescht());
 		return jaxHistory;
