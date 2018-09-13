@@ -14,10 +14,10 @@
  */
 
 export enum TSCacheTyp {
-    EBEGU_DOCUMENT = <any> 'ebeguDocument',
-    EBEGU_EINSTELLUNGEN = <any> 'einstellung',
-    EBEGU_INSTITUTIONSSTAMMDATEN = <any> 'ebeguInstitutionsStammdaten',
-    EBEGU_GEMEINDEN = <any> 'ebeguGemeinden'
+    EBEGU_DOCUMENT = 'ebeguDocument',
+    EBEGU_EINSTELLUNGEN = 'einstellung',
+    EBEGU_INSTITUTIONSSTAMMDATEN = 'ebeguInstitutionsStammdaten',
+    EBEGU_GEMEINDEN = 'ebeguGemeinden'
 }
 
 export function getTSCacheTypValues(): Array<TSCacheTyp> {
