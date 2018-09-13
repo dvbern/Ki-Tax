@@ -23,6 +23,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
 import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
+import {GemeindeMultiselectComponent} from '../core/component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -70,7 +71,8 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgShowElementDirective,
         DvPosteingangComponent,
         UiViewComponent,
-        LoadingButtonDirective
+        LoadingButtonDirective,
+        GemeindeMultiselectComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -81,6 +83,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvHelpmenuComponent,
         NavbarComponent,
         DvPosteingangComponent,
+        GemeindeMultiselectComponent
     ],
     exports: [
         CommonModule,
@@ -101,6 +104,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgShowElementDirective,
         UiViewComponent,
         LoadingButtonDirective,
+        GemeindeMultiselectComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

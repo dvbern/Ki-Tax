@@ -107,6 +107,7 @@ import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {EbeguErrors} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
+import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import AdresseRS from './service/adresseRS.rest';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
@@ -265,5 +266,6 @@ export const EbeguWebCore: angular.IModule = angular
     .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
-    .filter('arrayToString', () => arrayToString);
+    .filter('arrayToString', () => arrayToString)
+    .filter('gemeindenToString', () => gemeindenToString);
 

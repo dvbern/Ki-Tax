@@ -222,7 +222,6 @@ export default class TestDataUtil {
             berechtigung.gemeindeList.push(TestDataUtil.createGemeindeOstermundigen());
         }
         berechtigung.role = role;
-        berechtigung.enabled = true;
         return berechtigung;
     }
 

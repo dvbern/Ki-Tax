@@ -34,6 +34,7 @@ mat-datepicker-toggle.benutzer-datepicker {
         font-size: 1rem;
     }
 }
+
 .input-benutzer {
     background: #F0F0F0;
     padding: 1rem;
@@ -86,21 +87,13 @@ form.submitted {
 
 .button-row {
     flex-direction: row;
-    -ms-flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: start;
     display: flex;
-    margin-left: -16px;
-    padding-left: 16px;
-    margin-right: -16px;
-    padding-right: 16px;
     margin-top: 2rem;
-    .button-row-item {
-        margin-left: auto;
-        margin-right: auto;
 
-        position: static;
-        width: auto;
+    & > * {
+        margin-right: 2rem;
     }
 }
 
@@ -108,5 +101,11 @@ form.submitted {
     line-height: 5rem;
     &[disabled], &[disabled]:hover {
         color: @contrast-dark;
+    }
+}
+
+.dv-btn {
+    .fa {
+        width: 3rem;
     }
 }

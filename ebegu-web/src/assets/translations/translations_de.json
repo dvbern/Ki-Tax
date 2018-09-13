@@ -1303,8 +1303,6 @@
     "ROLLE_AB": "Zukünftige Rolle",
     "ROLLE_GUELTIG_AB": "gültig ab",
     "BERECHTIGUNG_HINZUFUEGEN": "Zukünftige Berechtigung erfassen",
-    "BERECHTIGUNG_AKTUELL_EDITIEREN": "Aktive Berechtigung ändern",
-    "BERECHTIGUNG_KUENFTIG_EDITIEREN": "Zukünftige Berechtigung ändern",
     "BERECHTIGUNG_ENTFERNEN": "Berechtigung entfernen",
     "BERECHTIGUNGHISTORY": "Berechtigungsänderungen",
     "BERECHTIGUNG_GEAENDERT_TS": "geändert am",
@@ -1318,6 +1316,7 @@
     "BENUTZER_GESPERRT_INFO": "Dieser Benutzer ist aktuell gesperrt",
     "BENUTZER_DEFAULTVERANTWORTLICHER_INFO": "Dieser Benutzer ist der Default-Verantwortliche. Sie müssen einen anderen Default-Verantwortlichen setzen, um die Berechtigungen für diesen Benutzer ändern zu können",
     "BENUTZER_SAVE": "Benutzer speichern",
+    "BENUTZER_BEARBEITEN": "Benutzer bearbeiten",
     "BENUTZER_CANCEL": "Zurück zur Liste",
     "BENUTZER_SPERREN": "Benutzer sperren",
     "BENUTZER_REAKTIVIEREN": "Benutzer reaktivieren",
@@ -1348,5 +1347,6 @@
     "ONBOARDING_GS_ANGABEN_VORNAME": "Vorname",
     "ONBOARDING_GS_ANGABEN_NAME": "Name",
     "ONBOARDING_GS_ANGABEN_MAIL": "E-Mail",
-    "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen"
+    "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen",
+    "GEMEINDEN": "Gemeinde(n)"
 }
