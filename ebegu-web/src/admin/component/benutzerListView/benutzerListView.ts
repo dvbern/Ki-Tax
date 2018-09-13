@@ -13,13 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {Permission} from '../../../app/authorisation/Permission';
+import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import UserRS from '../../../app/core/service/userRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSUser from '../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
-import {StateService} from '@uirouter/core';
 
 export class BenutzerListViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -36,6 +38,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'UserRS'];
 
     totalResultCount: string = '0';
+    public readonly PERMISSION_BENUTZER_EINLADEN = PERMISSIONS[Permission.BENUTZER_EINLADEN];
 
     constructor(private readonly $state: StateService,
                 private readonly $log: ILogService,
@@ -63,5 +66,9 @@ export class BenutzerListViewController extends AbstractAdminViewController {
         if (user) {
             this.$state.go('admin.benutzer', {benutzerId: user.username});
         }
+    }
+
+    public onBenutzerEinladen(): void {
+        this.$state.go('benutzer.einladen');
     }
 }

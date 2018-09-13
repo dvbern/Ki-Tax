@@ -16,7 +16,8 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
-import {map, switchMap} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
@@ -85,8 +86,13 @@ export class ZahlungsauftragViewController implements IController {
     private updateZahlungsauftrag() {
         this.authServiceRS.principal$
             .pipe(
-                map(principal => principal.getCurrentRole()),
-                switchMap(role => this.zahlungRS.getZahlungsauftraegeForRole$(role)),
+                switchMap(principal => {
+                    if (principal) {
+                        return this.zahlungRS.getZahlungsauftraegeForRole$(principal.getCurrentRole());
+                    }
+
+                    return of([]);
+                }),
             )
             .subscribe(
                 zahlungsAuftraege => {

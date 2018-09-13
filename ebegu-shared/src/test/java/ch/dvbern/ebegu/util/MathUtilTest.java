@@ -33,7 +33,6 @@ import static org.junit.Assert.assertTrue;
 public class MathUtilTest {
 
 	private static final RoundingMode DFLT_ROUNDING = RoundingMode.HALF_UP;
-	private static final int DFLT_PRECISION = 19;
 	private static final int DFLT_SCALE = 2;
 
 	public static void assertCompare(@Nullable BigDecimal ref, @Nullable BigDecimal other) {
@@ -45,7 +44,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testFrom_long() throws Exception {
+	public void testFrom_long() {
 		assertNull(MathUtil.DEFAULT.from((Long) null));
 
 		BigDecimal val = MathUtil.DEFAULT.from(123L);
@@ -55,7 +54,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testFrom_Double() throws Exception {
+	public void testFrom_Double() {
 		assertNull(MathUtil.DEFAULT.from((Double) null));
 
 		BigDecimal val = MathUtil.DEFAULT.from(123.45);
@@ -66,7 +65,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testFrom_BigDecimal() throws Exception {
+	public void testFrom_BigDecimal() {
 		assertNull(MathUtil.DEFAULT.from((BigDecimal) null));
 
 		BigDecimal val = MathUtil.DEFAULT.from(BigDecimal.valueOf(123.45).setScale(DFLT_SCALE, DFLT_ROUNDING));
@@ -77,7 +76,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testFrom_BigInteger() throws Exception {
+	public void testFrom_BigInteger() {
 		assertNull(MathUtil.DEFAULT.from((BigInteger) null));
 
 		BigDecimal val = MathUtil.DEFAULT.from(BigInteger.valueOf(123));
@@ -88,12 +87,12 @@ public class MathUtilTest {
 	}
 
 	@Test(expected = PrecisionTooLargeException.class)
-	public void test_LargeMathUtil1() throws Exception {
+	public void test_LargeMathUtil1() {
 		MathUtil.DEFAULT.from(new BigDecimal("12345678901234567890"));
 	}
 
 	@Test
-	public void testAdd() throws Exception {
+	public void testAdd() {
 		BigDecimal val = MathUtil.DEFAULT.add(MathUtil.DEFAULT.from(123L), MathUtil.DEFAULT.from(456L));
 		assertCompare(val, BigDecimal.valueOf(123L + 456L).setScale(DFLT_SCALE, DFLT_ROUNDING));
 		assertCompare(BigDecimal.valueOf(579.00), val);
@@ -102,7 +101,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testSubtract() throws Exception {
+	public void testSubtract() {
 		BigDecimal val = MathUtil.DEFAULT.subtract(MathUtil.DEFAULT.from(456L), MathUtil.DEFAULT.from(123L));
 		assertCompare(val, BigDecimal.valueOf(456L - 123L).setScale(DFLT_SCALE, DFLT_ROUNDING));
 		assertCompare(BigDecimal.valueOf(333.00), val);
@@ -111,7 +110,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testMultiply() throws Exception {
+	public void testMultiply() {
 		BigDecimal val = MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(123L), MathUtil.DEFAULT.from(456L));
 		assertCompare(val, BigDecimal.valueOf(123L * 456L).setScale(DFLT_SCALE, DFLT_ROUNDING));
 		assertCompare(BigDecimal.valueOf(56088.00), val);
@@ -120,7 +119,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testMultiplyWithManyArguments() throws Exception {
+	public void testMultiplyWithManyArguments() {
 		BigDecimal val = MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(123L), MathUtil.DEFAULT.from(456L), MathUtil.DEFAULT.from(789L));
 		assertCompare(val, BigDecimal.valueOf(123L * 456L * 789L).setScale(DFLT_SCALE, DFLT_ROUNDING));
 		assertCompare(BigDecimal.valueOf(44253432.00), val);
@@ -129,7 +128,7 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testDivide() throws Exception {
+	public void testDivide() {
 		BigDecimal val = MathUtil.DEFAULT.divide(MathUtil.DEFAULT.from(123L), MathUtil.DEFAULT.from(456L));
 		assertCompare(val, BigDecimal.valueOf(123.0 / 456.0).setScale(DFLT_SCALE, DFLT_ROUNDING));
 		// 0.27 (gerundet von 0.2697368421)
@@ -160,5 +159,22 @@ public class MathUtilTest {
 		assertEquals(20, MathUtil.roundIntToTens(19));
 		assertEquals(152360, MathUtil.roundIntToTens(152362));
 		assertEquals(152370, MathUtil.roundIntToTens(152365));
+	}
+
+	@Test
+	public void testRoundIntToFives() {
+		assertEquals(0, MathUtil.roundIntToFives(-1));
+		assertEquals(0, MathUtil.roundIntToFives(0));
+		assertEquals(0, MathUtil.roundIntToFives(1));
+		assertEquals(10, MathUtil.roundIntToFives(8)); // special case giving errors in Java6
+		assertEquals(10, MathUtil.roundIntToFives(9));
+		assertEquals(10, MathUtil.roundIntToFives(10));
+		assertEquals(10, MathUtil.roundIntToFives(11));
+		assertEquals(10, MathUtil.roundIntToFives(12));
+		assertEquals(15, MathUtil.roundIntToFives(13));
+		assertEquals(15, MathUtil.roundIntToFives(14));
+		assertEquals(15, MathUtil.roundIntToFives(17));
+		assertEquals(152360, MathUtil.roundIntToFives(152362));
+		assertEquals(152365, MathUtil.roundIntToFives(152363));
 	}
 }

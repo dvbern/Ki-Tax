@@ -25,7 +25,7 @@ public enum GemeindeStatus {
 	REGISTRIERT;
 
 	public boolean isEnabled() {
-		return AKTIV.equals(this);
+		return AKTIV == this;
 	}
 
 	public static List<GemeindeStatus> getValuesForFilter(String name) {
