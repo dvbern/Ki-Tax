@@ -34,7 +34,6 @@ export default class TSBenutzer {
     private _email: string;
     private _mandant: TSMandant;
     private _amt: TSAmt;
-    private _gesperrt: boolean;
     private _status: TSBenutzerStatus;
 
     private _currentBerechtigung: TSBerechtigung;
@@ -51,7 +50,7 @@ export default class TSBenutzer {
                 institution?: TSInstitution,
                 gemeinde?: TSGemeinde[],
                 amt?: TSAmt,
-                gesperrt?: boolean,
+                status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
                 externalUUID?: string) {
         this._vorname = vorname;
         this._nachname = nachname;
@@ -61,7 +60,7 @@ export default class TSBenutzer {
         this._email = email;
         this._mandant = mandant;
         this._amt = amt;
-        this._gesperrt = gesperrt;
+        this._status = status;
         // Berechtigung
         this._currentBerechtigung = new TSBerechtigung();
         this._currentBerechtigung.role = role;
@@ -138,14 +137,6 @@ export default class TSBenutzer {
 
     set amt(value: TSAmt) {
         this._amt = value;
-    }
-
-    get gesperrt(): boolean {
-        return this._gesperrt;
-    }
-
-    set gesperrt(value: boolean) {
-        this._gesperrt = value;
     }
 
     get status(): TSBenutzerStatus {

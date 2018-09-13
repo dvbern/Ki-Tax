@@ -394,7 +394,7 @@
                             <th translate>ROLLE</th>
                             <th translate>BERECHTIGUNG_GUELTIG_AB</th>
                             <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
-                            <th translate>GESPERRT</th>
+                            <th translate>STATUS</th>
                             <th translate>GELOESCHT</th>
                         </tr>
                         <tr *ngFor="let entry of berechtigungHistoryList">
@@ -403,7 +403,7 @@
                             <td>{{getBerechtigungHistoryDescription(entry)}}</td>
                             <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
                             <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
-                            <td>{{(entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                            <td>{{('BENUTZER_STATUS_' + entry.status) | translate}}</td>
                             <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                         </tr>
                     </table>
