@@ -133,7 +133,7 @@
                                 <select aria-describedby="rolle-error" name="rolle" id="rolle"
                                         class="form-control"
                                         required
-                                        [disabled]="!currentBerechtigung.enabled"
+                                        [disabled]="isDisabled"
                                         [(ngModel)]="currentBerechtigung.role">
                                     <option *ngFor="let r of (getRolesWithTranslations()) trackByRole"
                                             [ngValue]="r.role">
@@ -158,7 +158,7 @@
                             <div class="dv-select-style">
                                 <select aria-describedby="institution-error" name="institution" id="institution"
                                         class="form-control"
-                                        [disabled]="!currentBerechtigung.enabled"
+                                        [disabled]="isDisabled"
                                         [required]="isInstitutionBerechtigung(currentBerechtigung)"
                                         [(ngModel)]="currentBerechtigung.institution.id">
                                     <option *ngFor="let institution of institutionenList" [value]="institution.id">
@@ -182,7 +182,7 @@
                                 <select aria-describedby="traegerschaft-error" name="traegerschaft"
                                         id="traegerschaft"
                                         class="form-control"
-                                        [disabled]="!currentBerechtigung.enabled"
+                                        [disabled]="isDisabled"
                                         [required]="isTraegerschaftBerechtigung(currentBerechtigung)"
                                         [(ngModel)]="currentBerechtigung.traegerschaft.id">
                                     <option *ngFor="let traegerschaft of traegerschaftenList"
@@ -197,20 +197,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Gemeinde(n) -->
+                    <div class="col-sm-12 dv-input-container-medium"
+                         *ngIf="isGemeindeabhaengigeBerechtigung(currentBerechtigung)">
+                        <div class="form-group">
+                            <dv-gemeinde-multiselect [selected]="currentBerechtigung.gemeindeList"
+                                                     [enabled]="!isDisabled"></dv-gemeinde-multiselect>
+                        </div>
+                    </div>
+
                 </div>
             </fieldset>
 
-            <div class="row" *ngIf="!currentBerechtigung.enabled && !isDefaultVerantwortlicher">
-                <div class="col-sm-12">
-                    <button type="button" class="dv-btn dv-btn-operation"
-                            (click)="enableBerechtigung(currentBerechtigung)">
-                        <i class="fa fa-lg fa-pencil-square-o"></i>
-                        <span [textContent]="'BERECHTIGUNG_AKTUELL_EDITIEREN' | translate"></span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="row">
+            <div class="row" *ngIf="futureBerechtigung || !isDisabled">
                 <div class="marginTop50 col-md-12">
                     <h1 [textContent]="'ROLLE_KUENFTIG' | translate"></h1>
                     <hr class="header"/>
@@ -230,7 +230,7 @@
                                     <select aria-describedby="future_role-error" name="future_role"
                                             id="future_role"
                                             class="form-control"
-                                            [disabled]="!futureBerechtigung.enabled"
+                                            [disabled]="isDisabled"
                                             required
                                             [(ngModel)]="futureBerechtigung.role">
                                         <option *ngFor="let r of (getRolesWithTranslations()) trackByRole"
@@ -251,7 +251,7 @@
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigAb" id="futureGueltigAb"
                                        [matDatepicker]="futureGueltigAb"
-                                       [disabled]="!futureBerechtigung.enabled"
+                                       [disabled]="isDisabled"
                                        required
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
                                 <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
@@ -270,7 +270,7 @@
                                 <input class="input-benutzer input-benutzer--datepicker" type="text"
                                        name="futureGueltigBis" id="futureGueltigBis"
                                        [matDatepicker]="futureGueltigBis"
-                                       [disabled]="!futureBerechtigung.enabled"
+                                       [disabled]="isDisabled"
                                        [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
                                 <mat-datepicker-toggle class="benutzer-datepicker" matSuffix
                                                        [for]="futureGueltigBis">
@@ -294,7 +294,7 @@
                                     <select aria-describedby="futureInstitution-error" name="futureInstitution"
                                             id="futureInstitution"
                                             class="form-control"
-                                            [disabled]="!futureBerechtigung.enabled"
+                                            [disabled]="isDisabled"
                                             [required]="isInstitutionBerechtigung(futureBerechtigung)"
                                             [(ngModel)]="futureBerechtigung.institution.id">
                                         <option *ngFor="let inst of institutionenList" [value]="inst.id">
@@ -318,7 +318,7 @@
                                     <select aria-describedby="futureTraegerschaft-error" name="futureTraegerschaft"
                                             id="futureTraegerschaft"
                                             class="form-control"
-                                            [disabled]="!futureBerechtigung.enabled"
+                                            [disabled]="isDisabled"
                                             [required]="isTraegerschaftBerechtigung(futureBerechtigung)"
                                             [(ngModel)]="futureBerechtigung.traegerschaft.id">
                                         <option *ngFor="let traeg of traegerschaftenList" [value]="traeg.id">
@@ -335,29 +335,10 @@
                     </div>
                 </fieldset>
 
-                <!-- Edit Zukünftige Berechtigung -->
-                <div class="row" *ngIf="!futureBerechtigung.enabled && !isDefaultVerantwortlicher">
-                    <div class="col-sm-12">
-                        <button type="button" class="dv-btn"
-                                (click)="enableBerechtigung(futureBerechtigung)"
-                                [textContent]="'BERECHTIGUNG_KUENFTIG_EDITIEREN' | translate">
-                        </button>
-                    </div>
-                </div>
-                <!-- Remove Zukünftige Berechtigung -->
-                <div class="row" *ngIf="!isDefaultVerantwortlicher">
-                    <div class="col-sm-12">
-                        <button type="button" class="dv-btn dv-btn-operation"
-                                (click)="removeBerechtigung()">
-                            <i class="fa fa-lg fa-trash-o"></i>
-                            <span translate>BERECHTIGUNG_ENTFERNEN</span>
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <!-- Add Zukünftige Berechtigung -->
-            <div class="row" *ngIf="canAddBerechtigung() && !isDefaultVerantwortlicher">
+            <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && canAddBerechtigung();">
                 <div class="col-sm-12">
                     <button type="button" class="dv-btn dv-btn-operation"
                             (click)="addBerechtigung()">
@@ -367,9 +348,20 @@
                 </div>
             </div>
 
+            <!-- Remove Zukünftige Berechtigung -->
+            <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && !canAddBerechtigung();">
+                <div class="col-sm-12">
+                    <button type="button" class="dv-btn dv-btn-operation"
+                            (click)="removeBerechtigung()">
+                        <i class="fa fa-lg fa-trash-o"></i>
+                        <span translate>BERECHTIGUNG_ENTFERNEN</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Info, wenn Defaultbenutzer -->
-            <div class="row">
-                <div class="col-md-12" *ngIf="isDefaultVerantwortlicher">
+            <div class="row" *ngIf="isDefaultVerantwortlicher">
+                <div class="col-md-12">
                     <div class="well well-status-bestaetigt">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         <span translate>BENUTZER_DEFAULTVERANTWORTLICHER_INFO</span>
@@ -378,12 +370,18 @@
             </div>
 
             <!-- Buttons -->
-            <div class="button-row dv-input-container-medium marginTop50">
+            <div class="button-row dv-input-container-medium">
 
-                <button type="submit" class="dv-btn button-row-item"
-                        *ngIf="!isDefaultVerantwortlicher"
-                        [textContent]="'BENUTZER_SAVE' | translate">
+                <button type="button" class="dv-btn"
+                        *ngIf="!isDefaultVerantwortlicher && isDisabled"
+                        (click)="enableBenutzer()"
+                        [textContent]="'BENUTZER_BEARBEITEN' | translate">
                 </button>
+
+                <dv-loading-button [type]="'submit'"
+                                   *ngIf="!isDefaultVerantwortlicher && !isDisabled">
+                    <span translate>BENUTZER_SAVE</span>
+                </dv-loading-button>
 
                 <div *ngIf="!selectedUser.gesperrt && !isDefaultVerantwortlicher"
                      class="button-row-item">
@@ -412,7 +410,7 @@
         </fieldset>
 
         <!-- History Tabelle -->
-        <fieldset>
+        <fieldset *ngIf="isSuperAdmin()">
             <div class="row marginTop50">
                 <div class="col-md-12">
                     <h1 translate>BERECHTIGUNGHISTORY</h1>
@@ -427,17 +425,15 @@
                             <th translate>ROLLE</th>
                             <th translate>BERECHTIGUNG_GUELTIG_AB</th>
                             <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
-                            <th translate>INSTITUTIONTRAEGERSCHAFT</th>
                             <th translate>GESPERRT</th>
                             <th translate>GELOESCHT</th>
                         </tr>
                         <tr *ngFor="let entry of berechtigungHistoryList">
                             <td>{{getGeaendertDurch(entry)}}</td>
                             <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
-                            <td>{{getTranslatedRole(entry.role)}}</td>
+                            <td>{{getBerechtigungHistoryDescription(entry)}}</td>
                             <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
                             <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
-                            <td>{{entry.getInstitutionOrTraegerschaft()}}</td>
                             <td>{{(entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                             <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                         </tr>

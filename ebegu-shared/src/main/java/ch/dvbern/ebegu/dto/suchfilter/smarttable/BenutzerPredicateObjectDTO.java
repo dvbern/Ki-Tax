@@ -38,6 +38,7 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 	private String email;
 	private String role;
 	private String roleGueltigBis;
+	private String gemeinde;
 	private String institution;
 	private String traegerschaft;
 	private Boolean gesperrt;
@@ -90,6 +91,14 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 		this.roleGueltigBis = roleGueltigBis;
 	}
 
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
+	}
+
 	public String getInstitution() {
 		return institution;
 	}
@@ -123,6 +132,7 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 			.append("email", email)
 			.append("role", role)
 			.append("roleGueltigBis", roleGueltigBis)
+			.append("gemeinde", gemeinde)
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
 			.append("gesperrt", gesperrt)

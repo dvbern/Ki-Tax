@@ -29,14 +29,18 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 
 public final class FilterFunctions {
 
+	private FilterFunctions() {
+		// util
+	}
+
 	public static void getGemeindeFilterForCurrentUser(
 		@Nonnull Benutzer currentBenutzer,
 		@Nonnull Join<?, Gemeinde> joinGemeinde,
 		@Nonnull List<Predicate> predicates) {
 
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			Collection<Gemeinde> gemeindenFOrBenutzer = currentBenutzer.extractGemeindenForUser();
-			Predicate inGemeinde = joinGemeinde.in(gemeindenFOrBenutzer);
+			Collection<Gemeinde> gemeindenForBenutzer = currentBenutzer.extractGemeindenForUser();
+			Predicate inGemeinde = joinGemeinde.in(gemeindenForBenutzer);
 			predicates.add(inGemeinde);
 		}
 	}

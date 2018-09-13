@@ -107,6 +107,7 @@ import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {EbeguErrors} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
+import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import AdresseRS from './service/adresseRS.rest';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
@@ -215,7 +216,6 @@ export const EbeguWebCore: angular.IModule = angular
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
     .directive('dvNavigation', DVNavigation.factory())
     .directive('dvLoading', DVLoading.factory())
-    .directive('dvLoadingButton', DVLoadingButton.factory())
     .directive('dvSubmitevent', DVSubmitevent.factory())
     .directive('dvStPersistAntraege', DVSTPersistAntraege.factory())
     .directive('dvStPersistPendenzen', DVSTPersistPendenzen.factory())
@@ -235,6 +235,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .controller('DVElementController', DVRoleElementController)
+    .component('dvLoadingButton', new DVLoadingButton())
     .component('dvAdresse', new AdresseComponentConfig())
     .component('dvErrorMessages', new DvErrorMessagesComponentConfig())
     .component('dvErwerbspensumList', new DVErwerbspensumListConfig())
@@ -265,5 +266,6 @@ export const EbeguWebCore: angular.IModule = angular
     .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
-    .filter('arrayToString', () => arrayToString);
+    .filter('arrayToString', () => arrayToString)
+    .filter('gemeindenToString', () => gemeindenToString);
 
