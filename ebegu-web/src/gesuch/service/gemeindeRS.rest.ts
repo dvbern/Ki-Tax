@@ -81,7 +81,7 @@ export default class GemeindeRS implements IEntityRS {
             return of([]); // empty list for unknown user
         }
 
-        if (TSRoleUtil.isGemeindeabhaengig(user.getCurrentRole())) {
+        if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
             return of(angular.copy(user.extractCurrentGemeinden()));
         }
 
