@@ -14,6 +14,7 @@
  */
 package ch.dvbern.ebegu.api.dtos;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -22,14 +23,12 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.enums.Amt;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-/**
- * Wrapper DTO fuer einen Login Request
- */
-@XmlRootElement(name = "authLoginElement")
-public class JaxAuthLoginElement extends JaxAbstractDTO {
+@XmlRootElement(name = "benutzer")
+public class JaxBenutzer implements Serializable {
 
 	private static final long serialVersionUID = 2769899329796452129L;
 
@@ -51,12 +50,10 @@ public class JaxAuthLoginElement extends JaxAbstractDTO {
 	@Nonnull
 	private String email = "";
 
-	@Nonnull
-	private Amt amt;
-
 	private JaxMandant mandant;
 
-	private boolean gesperrt;
+	@Nonnull
+	private BenutzerStatus status = BenutzerStatus.GESPERRT;
 
 	@Nullable
 	private JaxBerechtigung currentBerechtigung;
@@ -120,15 +117,6 @@ public class JaxAuthLoginElement extends JaxAbstractDTO {
 		this.email = email;
 	}
 
-	@Nonnull
-	public Amt getAmt() {
-		return amt;
-	}
-
-	public void setAmt(@Nonnull Amt amt) {
-		this.amt = amt;
-	}
-
 	public JaxMandant getMandant() {
 		return mandant;
 	}
@@ -137,12 +125,13 @@ public class JaxAuthLoginElement extends JaxAbstractDTO {
 		this.mandant = mandant;
 	}
 
-	public boolean isGesperrt() {
-		return gesperrt;
+	@Nonnull
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
-	public void setGesperrt(boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public void setStatus(@Nonnull BenutzerStatus status) {
+		this.status = status;
 	}
 
 	@Nullable

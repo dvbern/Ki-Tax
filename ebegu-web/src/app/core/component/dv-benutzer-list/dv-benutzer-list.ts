@@ -17,11 +17,12 @@ import {IComponentOptions, ILogService, IOnInit, IPromise, IWindowService} from 
 import {take} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {rolePrefix, TSRole} from '../../../../models/enums/TSRole';
+import {TSBenutzerStatus} from '../../../../models/enums/TSBenutzerStatus';
+import {TSRole} from '../../../../models/enums/TSRole';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
-import TSUser from '../../../../models/TSUser';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -53,7 +54,7 @@ export class DVBenutzerListController implements IOnInit {
         '$translate', 'GemeindeRS'];
 
     totalResultCount: number;
-    displayedCollection: Array<TSUser> = []; //Liste die im Gui angezeigt wird
+    displayedCollection: Array<TSBenutzer> = []; //Liste die im Gui angezeigt wird
     pagination: any;
 
     institutionenList: Array<TSInstitution>;
@@ -64,11 +65,11 @@ export class DVBenutzerListController implements IOnInit {
     selectedVorname: string;
     selectedNachname: string;
     selectedEmail: string;
-    selectedRole: string;
+    selectedRole: TSRole;
     selectedGemeinde: TSGemeinde;
     selectedInstitution: TSInstitution;
     selectedTraegerschaft: TSTraegerschaft;
-    selectedGesperrt: string;
+    selectedBenutzerStatus: TSBenutzerStatus;
 
     tableId: string;
     tableTitle: string;
@@ -76,6 +77,7 @@ export class DVBenutzerListController implements IOnInit {
     onFilterChange: (changedTableState: any) => IPromise<any>;
     onEdit: (user: any) => void;
     TSRoleUtil: TSRoleUtil;
+    public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
 
     constructor(private readonly $log: ILogService,
                 private readonly institutionRS: InstitutionRS,
@@ -143,7 +145,7 @@ export class DVBenutzerListController implements IOnInit {
         }
     };
 
-    public getRollen(): Array<TSRole> {
+    public getRollen(): TSRole[] {
         if (EbeguUtil.isTagesschulangebotEnabled()) {
             return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
                 ? TSRoleUtil.getAllRolesButAnonymous()
@@ -153,10 +155,6 @@ export class DVBenutzerListController implements IOnInit {
                 ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
                 : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
         }
-    }
-
-    public getTranslatedRole(role: TSRole): string {
-        return this.$translate.instant(rolePrefix() + role);
     }
 
     /**

@@ -20,9 +20,9 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import UserRS from '../../core/service/userRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
 
@@ -35,7 +35,7 @@ describe('BenutzerComponent', () => {
     beforeEach(async(() => {
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-        const userSpy = jasmine.createSpyObj<UserRS>(UserRS.name,
+        const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
             ['getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
                 'inactivateBenutzer', 'reactivateBenutzer']);
 
@@ -56,8 +56,8 @@ describe('BenutzerComponent', () => {
                     useValue: traegerschaftSpy
                 },
                 {
-                    provide: UserRS,
-                    useValue: userSpy
+                    provide: BenutzerRS,
+                    useValue: benutzerSpy
                 },
                 {
                     provide: ApplicationPropertyRS,

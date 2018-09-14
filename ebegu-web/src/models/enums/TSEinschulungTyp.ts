@@ -14,18 +14,18 @@
  */
 
 export enum TSEinschulungTyp {
-    VORSCHULALTER = <any>'VORSCHULALTER',
-    KINDERGARTEN1 = <any>'KINDERGARTEN1',
-    KINDERGARTEN2 = <any>'KINDERGARTEN2',
-    KLASSE1 = <any>'KLASSE1',
-    KLASSE2 = <any>'KLASSE2',
-    KLASSE3 = <any>'KLASSE3',
-    KLASSE4 = <any>'KLASSE4',
-    KLASSE5 = <any>'KLASSE5',
-    KLASSE6 = <any>'KLASSE6',
-    KLASSE7 = <any>'KLASSE7',
-    KLASSE8 = <any>'KLASSE8',
-    KLASSE9 = <any>'KLASSE9',
+    VORSCHULALTER = 'VORSCHULALTER',
+    KINDERGARTEN1 = 'KINDERGARTEN1',
+    KINDERGARTEN2 = 'KINDERGARTEN2',
+    KLASSE1 = 'KLASSE1',
+    KLASSE2 = 'KLASSE2',
+    KLASSE3 = 'KLASSE3',
+    KLASSE4 = 'KLASSE4',
+    KLASSE5 = 'KLASSE5',
+    KLASSE6 = 'KLASSE6',
+    KLASSE7 = 'KLASSE7',
+    KLASSE8 = 'KLASSE8',
+    KLASSE9 = 'KLASSE9',
 }
 
 export function getTSEinschulungTypValues(): Array<TSEinschulungTyp> {

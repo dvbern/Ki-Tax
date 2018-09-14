@@ -29,7 +29,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import {StateService} from '@uirouter/core';
 
 import TestDataUtil from '../../utils/TestDataUtil.spec';
@@ -103,7 +103,7 @@ describe('posteingangView', () => {
         mockFall.fallNummer = 123;
         const mockDossier: TSDossier = new TSDossier();
         mockDossier.fall = mockFall;
-        const gesuchsteller: TSUser = new TSUser();
+        const gesuchsteller: TSBenutzer = new TSBenutzer();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
         const mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
             gesuchsteller, undefined, 'Frage', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, undefined);

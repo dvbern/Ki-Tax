@@ -25,7 +25,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {EbeguWebMitteilungen} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
@@ -44,8 +44,8 @@ describe('mitteilungenView', () => {
     let $rootScope: angular.IRootScopeService;
     let $q: angular.IQService;
     let controller: DVMitteilungListController;
-    let besitzer: TSUser;
-    let verantwortlicher: TSUser;
+    let besitzer: TSBenutzer;
+    let verantwortlicher: TSBenutzer;
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
 
@@ -72,11 +72,11 @@ describe('mitteilungenView', () => {
         dossier = new TSDossier();
         dossier.id = stateParams.dossierId;
         dossier.fall = fall;
-        besitzer = new TSUser();
+        besitzer = new TSBenutzer();
         besitzer.nachname = 'Romualdo Besitzer';
         fall.besitzer = besitzer;
         dossier.fall.besitzer = besitzer;
-        verantwortlicher = new TSUser();
+        verantwortlicher = new TSBenutzer();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
         dossier.verantwortlicherBG = verantwortlicher;
 
@@ -93,7 +93,7 @@ describe('mitteilungenView', () => {
     };
     describe('loading initial data', () => {
         it('should create an empty TSMItteilung for GS', () => {
-            const gesuchsteller: TSUser = new TSUser();
+            const gesuchsteller: TSBenutzer = new TSBenutzer();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
@@ -102,7 +102,7 @@ describe('mitteilungenView', () => {
             assertMitteilungContent();
         });
         it('should create an empty TSMItteilung for JA', () => {
-            const sachbearbeiter_bg: TSUser = new TSUser();
+            const sachbearbeiter_bg: TSBenutzer = new TSBenutzer();
             sachbearbeiter_bg.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0;
@@ -114,7 +114,7 @@ describe('mitteilungenView', () => {
             assertMitteilungContent();
         });
         it('should create an empty TSMItteilung for Institution', () => {
-            const sachbearbeiter_inst: TSUser = new TSUser();
+            const sachbearbeiter_inst: TSBenutzer = new TSBenutzer();
             sachbearbeiter_inst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0;
@@ -128,7 +128,7 @@ describe('mitteilungenView', () => {
     });
     describe('sendMitteilung', () => {
         it('should send the current mitteilung and update currentMitteilung with the new content', () => {
-            const gesuchsteller: TSUser = new TSUser();
+            const gesuchsteller: TSBenutzer = new TSBenutzer();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
@@ -153,7 +153,7 @@ describe('mitteilungenView', () => {
     });
     describe('setErledigt', () => {
         it('should change the status from GELESEN to ERLEDIGT and save the mitteilung', () => {
-            const gesuchsteller: TSUser = new TSUser();
+            const gesuchsteller: TSBenutzer = new TSBenutzer();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
@@ -184,7 +184,7 @@ describe('mitteilungenView', () => {
         });
     });
 
-    function compareCommonAttributes(currentUser: TSUser): void {
+    function compareCommonAttributes(currentUser: TSBenutzer): void {
         expect(controller.getCurrentMitteilung()).toBeDefined();
         expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
         expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
@@ -193,7 +193,7 @@ describe('mitteilungenView', () => {
         expect(controller.getCurrentMitteilung().message).toBeUndefined();
     }
 
-    function createMitteilungForUser(user: TSUser): void {
+    function createMitteilungForUser(user: TSBenutzer): void {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
         spyOn(dossierRS, 'findDossier').and.returnValue($q.when(dossier));
         spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.when([{}]));

@@ -19,7 +19,7 @@ import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSGemeinde from '../../models/TSGemeinde';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import GemeindeRS from './gemeindeRS.rest';
 
@@ -91,7 +91,7 @@ describe('dossier', () => {
     });
 
     function createUser(role: TSRole, createGemeinde: boolean) {
-        const user: TSUser = new TSUser('Pedrito', 'Fuentes');
+        const user: TSBenutzer = new TSBenutzer('Pedrito', 'Fuentes');
         user.currentBerechtigung = TestDataUtil.createBerechtigung(role, createGemeinde);
         return user;
     }

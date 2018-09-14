@@ -17,9 +17,9 @@ import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {LogFactory} from '../../logging/LogFactory';
-import UserRS from '../../service/userRS.rest';
+import BenutzerRS from '../../service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('UserselectController');
 
@@ -55,12 +55,12 @@ export class DVUserselect implements IDirective {
  */
 export class UserselectController implements IController {
 
-    static $inject: string[] = ['UserRS', 'AuthServiceRS'];
+    static $inject: string[] = ['BenutzerRS', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
-    selectedUser?: TSUser;
+    selectedUser?: TSBenutzer;
     smartTable: any;
-    userList: TSUser[];
+    userList: TSBenutzer[];
     dvUsersearch: string;
     initialAll: boolean;
     showSelectionAll: boolean;
@@ -68,7 +68,7 @@ export class UserselectController implements IController {
     onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     schulamt: string;
 
-    constructor(private readonly userRS: UserRS,
+    constructor(private readonly benutzerRS: BenutzerRS,
                 private readonly authServiceRS: AuthServiceRS) {
 
     }
@@ -101,11 +101,11 @@ export class UserselectController implements IController {
 
     private updateUserList(): void {
         if (this.schulamt) {
-            this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+            this.benutzerRS.getBenutzerSCHorAdminSCH().then(response => {
                 this.userList = response;
             });
         } else {
-            this.userRS.getBenutzerJAorAdmin().then(response => {
+            this.benutzerRS.getBenutzerJAorAdmin().then(response => {
                 this.userList = response;
             });
         }

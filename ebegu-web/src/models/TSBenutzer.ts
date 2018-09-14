@@ -17,6 +17,7 @@ import DateUtil from '../utils/DateUtil';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
+import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import TSBerechtigung from './TSBerechtigung';
 import TSGemeinde from './TSGemeinde';
@@ -24,7 +25,7 @@ import TSInstitution from './TSInstitution';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
-export default class TSUser {
+export default class TSBenutzer {
 
     private _nachname: string;
     private _vorname: string;
@@ -34,7 +35,7 @@ export default class TSUser {
     private _email: string;
     private _mandant: TSMandant;
     private _amt: TSAmt;
-    private _gesperrt: boolean;
+    private _status: TSBenutzerStatus;
 
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
@@ -50,7 +51,7 @@ export default class TSUser {
                 institution?: TSInstitution,
                 gemeinde?: TSGemeinde[],
                 amt?: TSAmt,
-                gesperrt?: boolean,
+                status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
                 externalUUID?: string) {
         this._vorname = vorname;
         this._nachname = nachname;
@@ -60,7 +61,7 @@ export default class TSUser {
         this._email = email;
         this._mandant = mandant;
         this._amt = amt;
-        this._gesperrt = gesperrt;
+        this._status = status;
         // Berechtigung
         this._currentBerechtigung = new TSBerechtigung();
         this._currentBerechtigung.role = role;
@@ -139,12 +140,12 @@ export default class TSUser {
         this._amt = value;
     }
 
-    get gesperrt(): boolean {
-        return this._gesperrt;
+    get status(): TSBenutzerStatus {
+        return this._status;
     }
 
-    set gesperrt(value: boolean) {
-        this._gesperrt = value;
+    set status(value: TSBenutzerStatus) {
+        this._status = value;
     }
 
     get berechtigungen(): Array<TSBerechtigung> {
@@ -153,6 +154,14 @@ export default class TSUser {
 
     set berechtigungen(value: Array<TSBerechtigung>) {
         this._berechtigungen = value;
+    }
+
+    isActive(): boolean {
+        return this._status === TSBenutzerStatus.AKTIV;
+    }
+
+    isGesperrt(): boolean {
+        return this._status === TSBenutzerStatus.GESPERRT;
     }
 
     get currentBerechtigung(): TSBerechtigung {
@@ -164,7 +173,7 @@ export default class TSUser {
             }
         }
         if (!this._currentBerechtigung) {
-            console.log('ERROR - Benutzer {} hat keine Berechtigung!', this.username);
+            console.log('ERROR - Benutzer hat keine Berechtigung!', this.username);
         }
         return this._currentBerechtigung;
     }
@@ -177,7 +186,7 @@ export default class TSUser {
      * Returns the currentGemeinde for users with only 1 Gemeinde.
      * For a user with more than 1 Gemeinde undefined is returned
      */
-    public extractCurrentGemeindeId(): string {
+    public extractCurrentGemeindeId(): string | undefined {
         if (this.hasJustOneGemeinde()) {
             return this.currentBerechtigung.gemeindeList[0].id;
         }

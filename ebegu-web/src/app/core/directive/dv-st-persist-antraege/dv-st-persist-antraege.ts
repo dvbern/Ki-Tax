@@ -25,7 +25,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
-import UserRS from '../../service/userRS.rest';
+import BenutzerRS from '../../service/benutzerRS.rest';
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
@@ -33,7 +33,7 @@ import UserRS from '../../service/userRS.rest';
  */
 export default class DVSTPersistAntraege implements IDirective {
 
-    static $inject: string[] = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
+    static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
         'AuthLifeCycleService'];
 
     restrict = 'A';
@@ -41,7 +41,7 @@ export default class DVSTPersistAntraege implements IDirective {
     link: IDirectiveLinkFn;
     obss: Subscription;
 
-    constructor(private readonly userRS: UserRS,
+    constructor(private readonly benutzerRS: BenutzerRS,
                 private readonly institutionRS: InstitutionRS,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly dVsTPersistService: DVsTPersistService,
@@ -59,15 +59,15 @@ export default class DVSTPersistAntraege implements IDirective {
     }
 
     static factory(): IDirectiveFactory {
-        const directive = (userRS: any,
+        const directive = (benutzerRS: any,
                            institutionRS: any,
                            authServiceRS: any,
                            dVsTPersistService: any,
                            gemeindeRS: any,
                            authLifeCycleService: any) =>
-            new DVSTPersistAntraege(userRS, institutionRS, authServiceRS, dVsTPersistService, gemeindeRS, authLifeCycleService);
+            new DVSTPersistAntraege(benutzerRS, institutionRS, authServiceRS, dVsTPersistService, gemeindeRS, authLifeCycleService);
 
-        directive.$inject = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS', 'AuthLifeCycleService'];
+        directive.$inject = ['BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS', 'AuthLifeCycleService'];
         return directive;
     }
 
@@ -142,7 +142,7 @@ export default class DVSTPersistAntraege implements IDirective {
     private setVerantwortlicherBGFromName(antragListController: DVAntragListController,
                                           verantwortlicherBGFullname: string): void {
         if (verantwortlicherBGFullname && antragListController) {
-            this.userRS.getBenutzerJAorAdmin().then(userList => {
+            this.benutzerRS.getBenutzerJAorAdmin().then(userList => {
                 antragListController.selectedVerantwortlicherBG = userList.find(
                     user => user.getFullName() === verantwortlicherBGFullname);
             });
@@ -157,7 +157,7 @@ export default class DVSTPersistAntraege implements IDirective {
     private setVerantwortlicherTSFromName(antragListController: DVAntragListController,
                                           verantwortlicherTSFullname: string): void {
         if (verantwortlicherTSFullname && antragListController) {
-            this.userRS.getBenutzerSCHorAdminSCH().then(userList => {
+            this.benutzerRS.getBenutzerSCHorAdminSCH().then(userList => {
                 antragListController.selectedVerantwortlicherTS = userList.find(
                     user => user.getFullName() === verantwortlicherTSFullname);
             });

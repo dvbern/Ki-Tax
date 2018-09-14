@@ -19,7 +19,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import UserRS from '../../../app/core/service/userRS.rest';
+import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -37,8 +37,8 @@ describe('testdatenView', () => {
             ['createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
-        const userRSSpy = jasmine.createSpyObj<UserRS>(UserRS.name, ['getAllGesuchsteller']);
-        userRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
+        const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['getAllGesuchsteller']);
+        benutzerRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
         const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
             ['getAllGesuchsperioden', 'removeGesuchsperiode']);
@@ -59,7 +59,7 @@ describe('testdatenView', () => {
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
-                {provide: UserRS, useValue: userRSSpy},
+                {provide: BenutzerRS, useValue: benutzerRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: ZahlungRS, useValue: zahlungRSSpy},
