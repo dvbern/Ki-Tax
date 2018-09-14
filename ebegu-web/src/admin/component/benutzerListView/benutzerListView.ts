@@ -17,9 +17,9 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
-import UserRS from '../../../app/core/service/userRS.rest';
+import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
 
@@ -35,7 +35,7 @@ export class BenutzerListViewComponentConfig implements IComponentOptions {
 
 export class BenutzerListViewController extends AbstractAdminViewController {
 
-    static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'UserRS'];
+    static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'BenutzerRS'];
 
     totalResultCount: string = '0';
     public readonly PERMISSION_BENUTZER_EINLADEN = PERMISSIONS[Permission.BENUTZER_EINLADEN];
@@ -43,14 +43,14 @@ export class BenutzerListViewController extends AbstractAdminViewController {
     constructor(private readonly $state: StateService,
                 private readonly $log: ILogService,
                 authServiceRS: AuthServiceRS,
-                private readonly userRS: UserRS) {
+                private readonly benutzerRS: BenutzerRS) {
         super(authServiceRS);
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSUserSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
 
-        return this.userRS.searchUsers(tableFilterState).then((response: TSUserSearchresultDTO) => {
+        return this.benutzerRS.searchUsers(tableFilterState).then((response: TSUserSearchresultDTO) => {
             this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
             return response;
         });
@@ -62,7 +62,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
      * @param user
      * @param event optinally this function can check if ctrl was clicked when opeing
      */
-    public editBenutzer(user: TSUser, event: any): void {
+    public editBenutzer(user: TSBenutzer, event: any): void {
         if (user) {
             this.$state.go('admin.benutzer', {benutzerId: user.username});
         }

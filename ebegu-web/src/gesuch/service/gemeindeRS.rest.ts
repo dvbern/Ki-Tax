@@ -20,7 +20,7 @@ import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -76,7 +76,7 @@ export default class GemeindeRS implements IEntityRS {
             );
     }
 
-    public toGemeindenForPrincipal$(user: TSUser | null): Observable<TSGemeinde[]> {
+    public toGemeindenForPrincipal$(user: TSBenutzer | null): Observable<TSGemeinde[]> {
         if (!user) {
             return of([]); // empty list for unknown user
         }

@@ -14,9 +14,9 @@
  */
 
 export enum TSKinderabzug {
-    KEIN_ABZUG = <any> 'KEIN_ABZUG',
-    HALBER_ABZUG = <any> 'HALBER_ABZUG',
-    GANZER_ABZUG = <any> 'GANZER_ABZUG'
+    KEIN_ABZUG = 'KEIN_ABZUG',
+    HALBER_ABZUG = 'HALBER_ABZUG',
+    GANZER_ABZUG = 'GANZER_ABZUG'
 }
 
 export function getTSKinderabzugValues(): Array<TSKinderabzug> {

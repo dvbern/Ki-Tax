@@ -14,6 +14,7 @@
  */
 
 import EbeguUtil from '../utils/EbeguUtil';
+import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSInstitution from './TSInstitution';
@@ -27,7 +28,7 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
     private _traegerschaft: TSTraegerschaft;
     private _institution: TSInstitution;
     private _gemeinden: string;
-    private _gesperrt: boolean;
+    private _status: TSBenutzerStatus;
     private _geloescht: boolean;
 
     public get userErstellt(): string {
@@ -78,12 +79,12 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
         this._gemeinden = value;
     }
 
-    public get gesperrt(): boolean {
-        return this._gesperrt;
+    public get status(): TSBenutzerStatus {
+        return this._status;
     }
 
-    public set gesperrt(value: boolean) {
-        this._gesperrt = value;
+    public set status(value: TSBenutzerStatus) {
+        this._status = value;
     }
 
     public get geloescht(): boolean {

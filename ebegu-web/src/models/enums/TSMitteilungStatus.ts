@@ -14,10 +14,10 @@
  */
 
 export enum TSMitteilungStatus {
-    ENTWURF = <any> 'ENTWURF',
-    NEU = <any> 'NEU',
-    GELESEN = <any> 'GELESEN',
-    ERLEDIGT = <any> 'ERLEDIGT'
+    ENTWURF = 'ENTWURF',
+    NEU = 'NEU',
+    GELESEN = 'GELESEN',
+    ERLEDIGT = 'ERLEDIGT'
 }
 
 export function getTSMitteilungsStatusForFilter(): Array<TSMitteilungStatus> {
