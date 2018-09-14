@@ -28,16 +28,15 @@ import {
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatSort, MatSortable, MatTableDataSource} from '@angular/material';
+import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import {TSRole} from '../../../models/enums/TSRole';
 import TSGemeinde from '../../../models/TSGemeinde';
-import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import TSUser from '../../../models/TSUser';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -45,7 +44,7 @@ import {LogFactory} from '../../core/logging/LogFactory';
 const LOG = LogFactory.createLog('GemeindeListComponent');
 
 @Component({
-    selector: 'dv-gemeinden-view',
+    selector: 'gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
     styleUrls: ['./gemeinde-list.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,6 +62,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     @ViewChild(MatSort) sort: MatSort;
 
     constructor(private readonly gemeindeRS: GemeindeRS,
+                private readonly $state: StateService,
                 private readonly errorService: ErrorService,
                 private readonly dialog: MatDialog,
                 private readonly changeDetectorRef: ChangeDetectorRef,
@@ -114,10 +114,21 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         this.gemeinde = angular.copy(selected);
     }
 
-    createGemeinde(): void {
-        this.gemeinde = new TSGemeinde();
-        this.gemeinde.status = TSGemeindeStatus.EINGELADEN;
+    /**
+     * @param gemeinde
+     * @param event optinally this function can check if ctrl was clicked when opeing
+     */
+    public editGemeinde(gemeinde: TSGemeinde, event: any): void {
+        if (gemeinde) {
+            this.setSelectedGemeinde(gemeinde);
+            this.$state.go('admin.addgemeinde', {gemeindeId: this.gemeinde.id});
+        }
     }
+
+    public addGemeinde(): void {
+        this.$state.go('admin.addgemeinde', {gemeindeId: null});
+    }
+
 
     isAccessible(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());

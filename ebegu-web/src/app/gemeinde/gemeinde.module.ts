@@ -21,6 +21,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {NgAdminRoutingModule} from '../../admin/ng-admin-routing.module';
 import {SharedModule} from '../shared/shared.module';
+import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 
 @NgModule({
@@ -31,9 +32,11 @@ import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
     ],
     declarations: [
         GemeindeListComponent,
+        AddGemeindeComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
+        AddGemeindeComponent,
     ],
     providers: [],
 })

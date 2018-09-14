@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 
-<div class="gemeindenView adminModul" flex="auto">
+<div class="gemeinde-list adminModul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
         <div class="viewTitle">
             <h1 [textContent]="'GEMEINDEN' | translate"></h1>
@@ -28,11 +28,13 @@
                 <div class="row">
                     <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
                     <div class="col-md-12 table-responsive gemeinden-table">
-                            <mat-table #table [dataSource]="dataSource" matSort>
+                            <mat-table #table [dataSource]="dataSource" matSort
+                                       on-edit="vm.editGemeinde(gemeinde, event)">
+
                                 <!-- Column Name -->
                                 <ng-container matColumnDef="name">
                                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                        {{'GEMEINDEN' | translate}}
+                                        {{'GEMEINDE' | translate}}
                                     </mat-header-cell>
                                     <mat-cell *matCellDef="let gemeinde"
                                               (click)="setSelectedGemeinde(gemeinde)">
@@ -67,7 +69,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <button dvNgDebounceClick
-                                                (debounceClick)="createGemeinde(); form.reset();"
+                                                (debounceClick)="addGemeinde(); form.reset();"
                                                 class="dv-btn dv-btn-sm color-success"
                                                 [disabled]="gemeinde">
                                             <i class="glyphicon glyphicon-plus"></i>

@@ -27,7 +27,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeListComponent} from './gemeinde-list.component';
 
-describe('gemeindenView', () => {
+describe('gemeindeListView', () => {
 
     let component: GemeindeListComponent;
     let fixture: ComponentFixture<GemeindeListComponent>;

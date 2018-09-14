@@ -27,7 +27,7 @@ import {SharedModule} from '../../shared/shared.module';
 
 import {BenutzerComponent} from './benutzer.component';
 
-describe('BenutzerComponent', () => {
+describe('AddGemeindeComponent', () => {
     let component: BenutzerComponent;
     let fixture: ComponentFixture<BenutzerComponent>;
 

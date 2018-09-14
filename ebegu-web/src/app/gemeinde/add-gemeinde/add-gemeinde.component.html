@@ -1,0 +1,95 @@
+<!--
+  ~ AGPL File-Header
+  ~
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="add-gemeinde adminModul">
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'submitted': form.submitted}"
+          (ngSubmit)="saveGemeinde()"
+          novalidate>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="viewTitle">
+                    <h1 [textContent]="'NEUE_GEMEINDE' | translate"></h1>
+                </div>
+                <hr class="header"/>
+            </div>
+        </div>
+
+        <fieldset>
+            <!-- Gemeindename | Betreuungsgutscheine anbieten ab -->
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label class="md-no-float" translate for="gemeinde_ID">GEMEINDENAME</label>
+                        <input id="gemeinde_ID"
+                               type="text"
+                               name="name"
+                               disabled
+                               [value]="selectedGemeinde.name"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                        <input id="begu_start_ID"
+                               type="text"
+                               name="begu_start"
+                               disabled
+                               [value]="selectedGemeinde.gemeindeNummer"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Administrator - E-Mail Adresse -->
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label class="md-no-float" translate for="admin_mail_ID">ADMIN_MAIL</label>
+                        <input id="admin_mail_ID"
+                               type="text"
+                               name="admin_mail"
+                               disabled
+                               [value]="selectedGemeinde.status"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Buttons -->
+        <div class="button-row dv-input-container-medium">
+
+            <dv-loading-button [type]="'submit'"
+                               *ngIf="!isDisabled">
+                <span translate>EINLADUNG_SENDEN</span>
+            </dv-loading-button>
+
+            <div class="button-row-item">
+                <button type="button" class="dv-btn cancel-button"
+                        (click)="cancel()"
+                        [textContent]="'ZURUECK_ONLY_UPPER' | translate">
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

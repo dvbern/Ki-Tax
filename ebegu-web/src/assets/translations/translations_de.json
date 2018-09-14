@@ -698,7 +698,6 @@
     "INSTITUTIONEN_NOCH_KEINE": "Noch keine Institutionen",
     "VERFUEGUNGEN_NOCH_KEINE": "Noch keine Verfügungen erfasst",
     "TRAEGERSCHAFT": "Trägerschaft",
-    "GEMEINDEN": "Gemeinden",
     "AKTIV": "Aktiv",
     "GESPERRT": "Gesperrt",
     "REGISTRIERT": "Registriert",
@@ -1348,5 +1347,11 @@
     "ONBOARDING_GS_ANGABEN_NAME": "Name",
     "ONBOARDING_GS_ANGABEN_MAIL": "E-Mail",
     "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen",
-    "GEMEINDEN": "Gemeinde(n)"
+    "GEMEINDEN": "Gemeinde(n)",
+    "GEMEINDE": "Gemeinde",
+    "NEUE_GEMEINDE": "Neue Gemeinde",
+    "GEMEINDENAME": "Gemeindename",
+    "BEGU_START": "Betreuungsgutscheine anbieten ab",
+    "ADMIN_MAIL": "Administrator - E-Mail Adresse",
+    "EINLADUNG_SENDEN": "Einladung senden"
 }
