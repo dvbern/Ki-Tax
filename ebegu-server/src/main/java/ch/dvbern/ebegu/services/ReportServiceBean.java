@@ -308,9 +308,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		EntityManager em = persistence.getEntityManager();
 
-		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE };
-		int schulamtParam = principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
-
 		TypedQuery<GesuchZeitraumDataRow> query =
 			em.createNamedQuery("GesuchZeitraumNativeSQLQuery", GesuchZeitraumDataRow.class);
 
@@ -319,7 +316,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("toDateTime", Constants.SQL_DATE_FORMAT.format(dateBis));
 		query.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
-		query.setParameter("onlySchulamt", schulamtParam);
+		query.setParameter("onlySchulamt", onlySchulamt());
 
 		return query.getResultList();
 	}
@@ -1646,18 +1643,20 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		List<Benutzer> benutzerList = persistence.getCriteriaResults(query);
 
-		return convertToBenutzerDataRow(benutzerList);
+		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();
+		return convertToBenutzerDataRow(benutzerList, betreuungsangebotMap);
 	}
 
 	@Nonnull
-	private List<BenutzerDataRow> convertToBenutzerDataRow(@Nonnull List<Benutzer> benutzerList) {
+	private List<BenutzerDataRow> convertToBenutzerDataRow(@Nonnull List<Benutzer> benutzerList, Map<String, EnumSet<BetreuungsangebotTyp>>
+		betreuungsangebotMap) {
 		return benutzerList.stream()
-			.map(this::benutzerToDataRow)
+			.map(benutzer -> benutzerToDataRow(benutzer, betreuungsangebotMap))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private BenutzerDataRow benutzerToDataRow(@Nonnull Benutzer benutzer) {
+	private BenutzerDataRow benutzerToDataRow(@Nonnull Benutzer benutzer, Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap) {
 		BenutzerDataRow row = new BenutzerDataRow();
 		row.setUsername(benutzer.getUsername());
 
@@ -1679,7 +1678,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setInstitution(institution);
 		row.setTraegerschaft(traegerschaft);
 		row.setStatus(benutzer.getStatus());
-		setBetreuungsangebote(row, benutzer);
+		setBetreuungsangebote(row, benutzer, betreuungsangebotMap);
 
 		return row;
 	}
@@ -1702,7 +1701,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return null;
 	}
 
-	public void setBetreuungsangebote(@Nonnull BenutzerDataRow row, @Nonnull Benutzer benutzer) {
+	public void setBetreuungsangebote(@Nonnull BenutzerDataRow row, @Nonnull Benutzer benutzer, Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap) {
 		// we go through all Traegerschaft/Inst/InstStammdaten and check which kind of Angebot they offer.
 		// We don't get this information directly from the sql-query because it would be quite difficult and the
 		// result very long
@@ -1710,9 +1709,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		// to improve performance we have a Map where we save already calculated results. We use the ID so we can have
 		// a Map for both traegerschaft and Institutionen
-		// FIXME what is the point, when the map is created each time!? See warning "condition is always true"
-		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();
-
 		// traegerschaft has a higher priority than institution
 		if (benutzer.getTraegerschaft() != null) {
 			if (!betreuungsangebotMap.containsKey(benutzer.getTraegerschaft().getId())) {
@@ -1730,7 +1726,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			setBetreuungsangebotValues(row, betreuungsangebotMap.get(benutzer.getInstitution().getId()));
 		}
-
 	}
 
 	public void setBetreuungsangebotValues(
@@ -1745,7 +1740,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private int onlySchulamt() {
-		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE };
+		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS};
 
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
 	}

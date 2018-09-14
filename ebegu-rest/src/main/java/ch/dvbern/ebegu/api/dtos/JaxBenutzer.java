@@ -50,9 +50,6 @@ public class JaxBenutzer implements Serializable {
 	@Nonnull
 	private String email = "";
 
-	@Nonnull
-	private Amt amt;
-
 	private JaxMandant mandant;
 
 	@Nonnull
@@ -118,15 +115,6 @@ public class JaxBenutzer implements Serializable {
 
 	public void setEmail(@Nonnull String email) {
 		this.email = email;
-	}
-
-	@Nonnull
-	public Amt getAmt() {
-		return amt;
-	}
-
-	public void setAmt(@Nonnull Amt amt) {
-		this.amt = amt;
 	}
 
 	public JaxMandant getMandant() {

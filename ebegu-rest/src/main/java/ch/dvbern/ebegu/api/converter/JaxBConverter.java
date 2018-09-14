@@ -406,8 +406,7 @@ public class JaxBConverter {
 
 	/***
 	 * Konvertiert eine DateRange fuer den Client. Wenn das DatumBis {@link Constants#END_OF_TIME} entspricht wird es
-	 * NICHT
-	 * konvertiert
+	 * NICHT konvertiert
 	 */
 	private void convertAbstractDateRangedFieldsToJAX(
 		@Nonnull final AbstractDateRangedEntity dateRangedEntity,
@@ -2392,8 +2391,7 @@ public class JaxBConverter {
 
 		// change the existing collection to reflect changes
 		// Already tested: All existing Betreuungspensen of the list remain as they were, that means their data are
-		// updated
-		// and the objects are not created again. ID and InsertTimeStamp are the same as before
+		// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
 		existingAbwesenheiten.clear();
 		existingAbwesenheiten.addAll(transformedAbwesenheitContainers);
 	}
@@ -2447,8 +2445,7 @@ public class JaxBConverter {
 				abwesenheitGS = abwesenheitContainer.getAbwesenheitGS();
 			}
 			// Das Setzen von alten IDs ist noetigt im Fall dass Betreuungsangebot fuer eine existierende Abwesenheit
-			// geaendert wird, da sonst doppelte
-			// Verknuepfungen gemacht werden
+			// geaendert wird, da sonst doppelte Verknuepfungen gemacht werden
 			final String oldID = abwesenheitGS.getId();
 			final Abwesenheit convertedAbwesenheitGS =
 				abwesenheitToEntity(jaxAbwesenheitContainers.getAbwesenheitGS(), abwesenheitGS);
@@ -2931,7 +2928,6 @@ public class JaxBConverter {
 		return convertedBerechtigungen;
 	}
 
-	// TODO braucht der einen Status
 	public JaxBenutzer benutzerToAuthLoginElement(Benutzer benutzer) {
 		JaxBenutzer jaxLoginElement = new JaxBenutzer();
 		jaxLoginElement.setVorname(benutzer.getVorname());
@@ -3401,6 +3397,8 @@ public class JaxBConverter {
 	public Mahnung mahnungToEntity(@Nonnull final JaxMahnung jaxMahnung, @Nonnull final Mahnung mahnung) {
 		Objects.requireNonNull(mahnung);
 		Objects.requireNonNull(jaxMahnung);
+		Objects.requireNonNull(jaxMahnung.getGesuch());
+		Objects.requireNonNull(jaxMahnung.getGesuch().getId());
 
 		convertAbstractVorgaengerFieldsToEntity(jaxMahnung, mahnung);
 

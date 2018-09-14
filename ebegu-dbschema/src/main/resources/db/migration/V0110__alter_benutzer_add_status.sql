@@ -13,7 +13,7 @@ ALTER TABLE benutzer
 
 
 ALTER TABLE benutzer_aud
-	ADD status VARCHAR(255) NOT NULL DEFAULT 'AKTIV';
+	ADD status VARCHAR(255) DEFAULT 'AKTIV';
 
 UPDATE benutzer_aud
 SET status = 'GESPERRT'
@@ -41,7 +41,7 @@ ALTER TABLE berechtigung_history
 
 
 ALTER TABLE berechtigung_history_aud
-	ADD status VARCHAR(255) NOT NULL DEFAULT 'AKTIV';
+	ADD status VARCHAR(255) DEFAULT 'AKTIV';
 
 UPDATE berechtigung_history_aud
 SET status = 'GESPERRT'

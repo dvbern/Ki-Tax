@@ -65,11 +65,11 @@ export class DVBenutzerListController implements IOnInit {
     selectedVorname: string;
     selectedNachname: string;
     selectedEmail: string;
-    selectedRole: TSRole[];
+    selectedRole: TSRole;
     selectedGemeinde: TSGemeinde;
     selectedInstitution: TSInstitution;
     selectedTraegerschaft: TSTraegerschaft;
-    selectedBenutzerStatuses: TSBenutzerStatus[];
+    selectedBenutzerStatus: TSBenutzerStatus;
 
     tableId: string;
     tableTitle: string;

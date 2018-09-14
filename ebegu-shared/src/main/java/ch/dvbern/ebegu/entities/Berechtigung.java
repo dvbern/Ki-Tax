@@ -82,12 +82,12 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	private Set<Gemeinde> gemeindeList = new TreeSet<>();
 
 	@Nullable
-	@ManyToOne
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_institution_id"))
 	private Institution institution;
 
 	@Nullable
-	@ManyToOne
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_traegerschaft_id"))
 	private Traegerschaft traegerschaft;
 
