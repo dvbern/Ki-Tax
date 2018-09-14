@@ -111,7 +111,7 @@
                             <select st-input-event="change" name="status" id="status" st-search="status"
                                     class="form-control"
                                     ng-options="('BENUTZER_STATUS_' + status | translate ) for status in vm.benutzerStatuses track by status"
-                                    ng-model="vm.selectedBenutzerStatuses">
+                                    ng-model="vm.selectedBenutzerStatus">
                                 <option value="">{{"ALLE" | translate}}</option>
                             </select>
                         </div>
@@ -140,8 +140,8 @@
                         ng-bind="row.email">
                     </td>
                     <td class="ellipsis"
-                        title="{{vm.getTranslatedRole(row.getCurrentRole())}}"
-                        ng-bind="vm.getTranslatedRole(row.getCurrentRole())">
+                        title="{{'TSRole_' + row.getCurrentRole() | translate}}"
+                        ng-bind="'TSRole_' + row.getCurrentRole() | translate">
                     </td>
                     <td class="ellipsis"
                         title="{{row.currentBerechtigung.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'}}"

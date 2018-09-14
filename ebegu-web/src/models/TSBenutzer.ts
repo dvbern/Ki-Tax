@@ -172,7 +172,7 @@ export default class TSBenutzer {
             }
         }
         if (!this._currentBerechtigung) {
-            console.log('ERROR - Benutzer {} hat keine Berechtigung!', this.username);
+            console.log('ERROR - Benutzer hat keine Berechtigung!', this.username);
         }
         return this._currentBerechtigung;
     }
