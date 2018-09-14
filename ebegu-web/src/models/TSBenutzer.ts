@@ -201,7 +201,6 @@ export default class TSBenutzer {
         return this.currentBerechtigung.gemeindeList.filter(gmde => gmde.status === TSGemeindeStatus.AKTIV);
     }
 
-
     getFullName(): string {
         return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
     }
