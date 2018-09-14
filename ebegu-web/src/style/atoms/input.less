@@ -28,8 +28,7 @@ md-input-container {
 }
 
 [disabled] md-input-container .md-input {
-    background: @contrast;
-    color: @contrast-darkest;
+    .DisabledInput();
     .ebeguDisabledPlaceholder();
 }
 
@@ -39,8 +38,7 @@ input[type="text"], input[type="number"], input[type="email"], textarea, textare
         background: @contrast-lighter;
     }
     &[disabled], &:disabled {
-        background: @contrast;
-        color: @contrast-darkest;
+        .DisabledInput();
         -webkit-text-fill-color: @contrast-darkest;
         .ebeguDisabledPlaceholder();
     }
@@ -63,7 +61,6 @@ input[type="text"], input[type="number"], input[type="email"], textarea, textare
     &:focus {
         outline: 2px solid @contrast-darkest;
         outline-offset: 0;
-        -webkit-box-shadow: none /*@secondary-dark*/;
         box-shadow: none /*@secondary-dark*/;
     }
 }
@@ -95,8 +92,7 @@ input[type="number"] {
         -moz-box-sizing: border-box;
         box-sizing: border-box;
         &[disabled], &:disabled {
-            background: @contrast;
-            color: @contrast-darkest;
+           .DisabledInput();
         }
         &:hover {
             cursor: pointer;

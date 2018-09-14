@@ -57,6 +57,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <!-- E-Mail -->
                 <div class="col-sm-12 dv-input-container-medium">
@@ -73,24 +74,13 @@
                         </dv-error-messages>
                     </div>
                 </div>
-                <!-- Rolle -->
-                <div class="col-sm-12 dv-input-container-medium">
-                    <div class="form-group">
-                        <dv-benutzer-rolle inputId="rolle"
-                                           inputName="rolle"
-                                           [inputRequired]="true"
-                                           [exludedRoles]="excludedRoles"
-                                           [(benutzerRolle)]="benutzer.currentBerechtigung.role">
-                        </dv-benutzer-rolle>
-                    </div>
-                </div>
             </div>
+
             <div class="row">
                 <div class="col-sm-12 dv-input-container-medium">
-                    <dv-gemeinde-multiselect [editMode]="true"
-                                             [inputRequired]="true"
-                                             [selected]="benutzer.currentBerechtigung.gemeindeList">
-                    </dv-gemeinde-multiselect>
+                    <dv-berechtigung [berechtigung]="benutzer.currentBerechtigung"
+                                     [exludedRoles]="excludedRoles">
+                    </dv-berechtigung>
                 </div>
             </div>
         </div>

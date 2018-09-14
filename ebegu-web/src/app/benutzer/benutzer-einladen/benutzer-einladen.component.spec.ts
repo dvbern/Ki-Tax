@@ -21,8 +21,11 @@ import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
+import {BerechtigungComponent} from '../berechtigung/berechtigung.component';
 
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
 
@@ -30,21 +33,29 @@ describe('BenutzerEinladenComponent', () => {
     let component: BenutzerEinladenComponent;
     let fixture: ComponentFixture<BenutzerEinladenComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['isRole', 'getGemeindenForPrincipal$']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
+    const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
     beforeEach(async(() => {
+        insitutionSpy.getAllInstitutionen.and.returnValue([]);
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
+        gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
+
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 UIRouterModule.forRoot()
             ],
-            declarations: [BenutzerEinladenComponent, BenutzerRolleComponent],
+            declarations: [BenutzerEinladenComponent, BerechtigungComponent, BenutzerRolleComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: GemeindeRS, useValue: gemeindeSpy},
+                {provide: InstitutionRS, useValue: insitutionSpy},
+                {provide: TraegerschaftRS, useValue: traegerschaftSpy},
             ]
         })
             .compileComponents();
