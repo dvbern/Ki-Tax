@@ -6,7 +6,7 @@
 <#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>Ki-Tax – Neue Gesuchsperiode freigeschaltet</@base64Header>
+Subject: <@base64Header>kiBon – Neue Gesuchsperiode freigeschaltet</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -25,13 +25,13 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Gerne möchten wir Sie mit dieser Mail informieren, dass die Gesuchperiode ${gesuchsperiode.gesuchsperiodeString} ab sofort
-		für die Erfassung Ihrer Daten in Ki-Tax offen steht. Weitere Informationen finden Sie unter:
+		für die Erfassung Ihrer Daten in kiBon offen steht. Weitere Informationen finden Sie unter:
 		<a href="www.bern.ch/kinderbetreuung">www.bern.ch/kinderbetreuung</a> und
 		<a href="www.bern.ch/kinderbetreuung/ki-tax">www.bern.ch/kinderbetreuung/ki-tax</a>.<br/>
 		Bei Fragen stehen wir während den Bürozeiten gerne zur Verfügung (Tel. 031 321 51 15).
 	</p>
 	<p>
-		Wichtig: In Ihrem Ki-Tax-Formular wählen Sie das Betreuungsangebot für Ihr Kind. Dieses Angebot muss durch die betreuende Institution
+		Wichtig: In Ihrem kiBon-Formular wählen Sie das Betreuungsangebot für Ihr Kind. Dieses Angebot muss durch die betreuende Institution
 		(Kita, Tagi, Tageseltern) online bestätigt werden, was bis zu vier Tage dauern kann. Ohne diese Bestätigung können Sie Ihr Gesuch nicht abschliessen,
 		beginnen Sie daher bitte frühzeitig mit dem Ausfüllen des Gesuchs.
 	</p>
