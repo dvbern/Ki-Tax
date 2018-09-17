@@ -33,6 +33,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Fall;
@@ -361,6 +362,15 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			LOG.error("E-Mail mit Report versendet konnte nicht verschickt werden an {}", receiverEmail, e);
 			throw e;
 		}
+	}
+
+	@Override
+	public void sendBenutzerEinladung(
+		@Nonnull Benutzer einladender,
+		@Nonnull Benutzer eingeladener) throws MailException {
+
+		mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener);
+		// FIXME
 	}
 
 	private void sendMail(

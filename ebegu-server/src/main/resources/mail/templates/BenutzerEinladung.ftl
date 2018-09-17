@@ -6,7 +6,7 @@
 <#-- @ftlvariable name="rollenZusatzTitel" type="java.lang.String" -->
 <#-- @ftlvariable name="rollenZusatz" type="java.lang.String" -->
 <#-- @ftlvariable name="acceptLink" type="java.lang.String" -->
-<#-- @ftlvariable name="acceptDate" type="java.lang.String" -->
+<#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${eingeladener.getFullName()} <${eingeladener.email}>
 Subject: <@base64Header>kiBon – Einladung</@base64Header>
@@ -564,7 +564,7 @@ Content-Type: text/html;charset=utf-8
 										<div style="color:#252626;line-height:120%;font-family:'Open Sans', Helvetica, Arial, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
 											<div style="font-size:12px;line-height:14px;font-family:'Open Sans', Helvetica, Arial, sans-serif;color:#252626;text-align:left;">
 												<p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center">
-													<span style="font-size: 10px; line-height: 12px;">Diese Einladung ist bis zum <strong>${acceptDate}</strong> gültig.</span>
+													<span style="font-size: 10px; line-height: 12px;">Diese Einladung ist bis zum <strong>${acceptExpire}</strong> gültig.</span>
 												</p></div>
 										</div>
 										<!--[if mso]></td></tr></table><![endif]-->

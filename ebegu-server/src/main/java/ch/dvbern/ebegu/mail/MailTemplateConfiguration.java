@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.mail;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -28,6 +27,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -62,164 +62,312 @@ public class MailTemplateConfiguration {
 	private EbeguConfiguration ebeguConfiguration;
 
 	public MailTemplateConfiguration() {
-		final Configuration ourFreeMarkerConfig = new Configuration();
-		ourFreeMarkerConfig.setClassForTemplateLoading(MailTemplateConfiguration.class, "/mail/templates");
-		ourFreeMarkerConfig.setDefaultEncoding("UTF-8");
-		this.freeMarkerConfiguration = ourFreeMarkerConfig;
+		this.freeMarkerConfiguration = new Configuration();
+		this.freeMarkerConfiguration.setClassForTemplateLoading(MailTemplateConfiguration.class, "/mail/templates");
+		this.freeMarkerConfiguration.setDefaultEncoding("UTF-8");
 	}
 
-	public String getInfoBetreuungAbgelehnt(@Nonnull Betreuung betreuung, @Nonnull Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateBetreuung("InfoBetreuungAbgelehnt.ftl", betreuung, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoBetreuungAbgelehnt(
+		@Nonnull Betreuung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateBetreuung(
+			"InfoBetreuungAbgelehnt.ftl",
+			betreuung,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoBetreuungenBestaetigt(@Nonnull Gesuch gesuch, @Nonnull Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateGesuch("InfoBetreuungenBestaetigt.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoBetreuungenBestaetigt(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateGesuch(
+			"InfoBetreuungenBestaetigt.ftl",
+			gesuch,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoSchulamtAnmeldungUebernommen(@Nonnull Betreuung betreuung, @Nonnull Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateBetreuung("InfoSchulamtAnmeldungUebernommen.ftl", betreuung, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoSchulamtAnmeldungUebernommen(
+		@Nonnull Betreuung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateBetreuung(
+			"InfoSchulamtAnmeldungUebernommen.ftl",
+			betreuung,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoSchulamtAnmeldungAbgelehnt(@Nonnull Betreuung betreuung, @Nonnull Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateBetreuung("InfoSchulamtAnmeldungAbgelehnt.ftl", betreuung, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoSchulamtAnmeldungAbgelehnt(
+		@Nonnull Betreuung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateBetreuung(
+			"InfoSchulamtAnmeldungAbgelehnt.ftl",
+			betreuung,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoBetreuungGeloescht(@Nonnull Betreuung betreuung, @Nonnull Fall fall, @Nonnull Gesuchsteller gesuchsteller1, @Nonnull Kind kind,
-		@Nonnull Institution institution, @Nonnull String empfaengerMail, @Nonnull LocalDate datumErstellung, @Nonnull LocalDate birthdayKind) {
+	public String getInfoBetreuungGeloescht(
+		@Nonnull Betreuung betreuung,
+		@Nonnull Fall fall,
+		@Nonnull Gesuchsteller gesuchsteller1,
+		@Nonnull Kind kind,
+		@Nonnull Institution institution,
+		@Nonnull String empfaengerMail,
+		@Nonnull LocalDate datumErstellung,
+		@Nonnull LocalDate birthdayKind) {
 
-		return processTemplateBetreuungGeloescht("InfoBetreuungGeloescht.ftl", betreuung, fall, kind, gesuchsteller1, institution,
-			toArgumentPair(EMPFAENGER_MAIL, empfaengerMail),
-			toArgumentPair("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung)),
-			toArgumentPair("birthday", Constants.DATE_FORMATTER.format(birthdayKind)));
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
+		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
+
+		return processTemplateBetreuungGeloescht(
+			betreuung,
+			fall,
+			kind,
+			gesuchsteller1,
+			institution,
+			paramMap);
 	}
 
-	public String getInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung, @Nonnull Fall fall, @Nonnull Gesuchsteller gesuchsteller1, @Nonnull Kind kind,
-		@Nonnull Institution institution, @Nonnull String empfaengerMail, @Nonnull LocalDate birthdayKind) {
+	public String getInfoBetreuungVerfuegt(
+		@Nonnull Betreuung betreuung,
+		@Nonnull Fall fall,
+		@Nonnull Gesuchsteller gesuchsteller1,
+		@Nonnull Kind kind,
+		@Nonnull Institution institution,
+		@Nonnull String empfaengerMail,
+		@Nonnull LocalDate birthdayKind) {
 
-		return processTemplateBetreuungVerfuegt("InfoBetreuungVerfuegt.ftl", betreuung, fall, kind, gesuchsteller1, institution,
-			toArgumentPair(EMPFAENGER_MAIL, empfaengerMail),
-			toArgumentPair("birthday", Constants.DATE_FORMATTER.format(birthdayKind)));
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
+
+		return processTemplateBetreuungVerfuegt(
+			betreuung,
+			fall,
+			kind,
+			gesuchsteller1,
+			institution,
+			paramMap);
 	}
 
 	public String getInfoMitteilungErhalten(@Nonnull Mitteilung mitteilung, @Nonnull String empfaengerMail) {
-		return processTemplateMitteilung("InfoMitteilungErhalten.ftl", mitteilung, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoVerfuegtGesuch(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateGesuch("InfoVerfuegtGesuch.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoVerfuegtGesuch(
+		@Nonnull Gesuch gesuch,
+		Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateGesuch(
+			"InfoVerfuegtGesuch.ftl",
+			gesuch,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoVerfuegtMutation(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateGesuch("InfoVerfuegtMutation.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoVerfuegtMutation(
+		@Nonnull Gesuch gesuch,
+		Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateGesuch(
+			"InfoVerfuegtMutation.ftl",
+			gesuch,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
 	public String getInfoMahnung(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateGesuch("InfoMahnung.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+		return processTemplateGesuch(
+			"InfoMahnung.ftl",
+			gesuch,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getWarnungGesuchNichtFreigegeben(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail, int anzahlTage) {
-		return processTemplateGesuch("WarnungGesuchNichtFreigegeben.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail), toArgumentPair(ANZAHL_TAGE, anzahlTage));
+	public String getWarnungGesuchNichtFreigegeben(
+		@Nonnull Gesuch gesuch,
+		Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		int anzahlTage) {
+
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put(ANZAHL_TAGE, anzahlTage);
+
+		return processTemplateGesuch("WarnungGesuchNichtFreigegeben.ftl", gesuch, gesuchsteller, paramMap);
 	}
 
-	public String getWarnungFreigabequittungFehlt(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail, int anzahlTage) {
+	public String getWarnungFreigabequittungFehlt(
+		@Nonnull Gesuch gesuch,
+		Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		int anzahlTage) {
+
 		LocalDate datumLoeschung = LocalDate.now().plusDays(anzahlTage).minusDays(1);
-		return processTemplateGesuch("WarnungFreigabequittungFehlt.ftl", gesuch, gesuchsteller,
-			toArgumentPair(EMPFAENGER_MAIL, empfaengerMail),
-			toArgumentPair(ANZAHL_TAGE, anzahlTage),
-			toArgumentPair(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung)));
+
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put(ANZAHL_TAGE, anzahlTage);
+		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
+
+		return processTemplateGesuch("WarnungFreigabequittungFehlt.ftl", gesuch, gesuchsteller, paramMap);
 	}
 
-	public String getInfoGesuchGeloescht(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplateGesuch("InfoGesuchGeloescht.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoGesuchGeloescht(
+		@Nonnull Gesuch gesuch,
+		Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		return processTemplateGesuch(
+			"InfoGesuchGeloescht.ftl",
+			gesuch,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail));
 	}
 
-	public String getInfoFreischaltungGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
-		return processTemplate("InfoFreischaltungGesuchsperiode.ftl",
-			toArgumentPair(GESUCHSPERIODE, gesuchsperiode),
-			toArgumentPair(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb())),
-			toArgumentPair(GESUCHSTELLER, gesuchsteller),
-			toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
+	public String getInfoFreischaltungGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail) {
+
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
+		paramMap.put(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()));
+		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
+
+		return doProcessTemplate("InfoFreischaltungGesuchsperiode.ftl", paramMap);
 	}
 
-	private String processTemplateGesuch(@Nonnull String nameOfTemplate, @Nonnull Gesuch gesuch, @Nonnull Gesuchsteller gesuchsteller, @Nonnull Object[]... extraValuePairs) {
-		Object[][] paramsToPass = Arrays.copyOf(extraValuePairs, extraValuePairs.length + 2);
-		paramsToPass[paramsToPass.length - 1] = new Object[] { "gesuch", gesuch };
-		paramsToPass[paramsToPass.length - 2] = new Object[] { GESUCHSTELLER, gesuchsteller };
-		return doProcessTemplate(nameOfTemplate, DEFAULT_LOCALE, paramsToPass);
+	@Nonnull
+	public String getBenutzerEinladung(
+		@Nonnull Benutzer einladender,
+		@Nonnull Benutzer eingeladener) {
+
+		// FIXME
+		Map<Object, Object> paramMap = initParamMap();
+		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
+		paramMap.put("einladender", einladender);
+		paramMap.put("eingeladener", eingeladener);
+
+		return doProcessTemplate("BenutzerEinladung.ftl", paramMap);
 	}
 
-	private String processTemplateBetreuung(@Nonnull String nameOfTemplate, @Nonnull Betreuung betreuung, @Nonnull Gesuchsteller gesuchsteller, @Nonnull Object[]... extraValuePairs) {
-		Object[][] paramsToPass = Arrays.copyOf(extraValuePairs, extraValuePairs.length + 2);
-		paramsToPass[paramsToPass.length - 1] = new Object[] { "betreuung", betreuung };
-		paramsToPass[paramsToPass.length - 2] = new Object[] { GESUCHSTELLER, gesuchsteller };
-		return doProcessTemplate(nameOfTemplate, DEFAULT_LOCALE, paramsToPass);
+	private String processTemplateGesuch(
+		@Nonnull String nameOfTemplate,
+		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull Map<Object, Object> paramMap) {
+
+		paramMap.put("gesuch", gesuch);
+		paramMap.put(GESUCHSTELLER, gesuchsteller);
+
+		return doProcessTemplate(nameOfTemplate, paramMap);
 	}
 
-	@SuppressWarnings("Duplicates")
-	private String processTemplateBetreuungGeloescht(String nameOfTemplate, Betreuung betreuung, Fall fall, Kind kind, Gesuchsteller gesuchsteller1, Institution institution, Object[]... extraValuePairs) {
-		Object[][] paramsToPass = Arrays.copyOf(extraValuePairs, extraValuePairs.length + 5);
-		paramsToPass[paramsToPass.length - 1] = new Object[] { "betreuung", betreuung };
-		paramsToPass[paramsToPass.length - 2] = new Object[] { "fall", fall };
-		paramsToPass[paramsToPass.length - 3] = new Object[] { "kind", kind };
-		paramsToPass[paramsToPass.length - 4] = new Object[] { GESUCHSTELLER, gesuchsteller1 };
-		paramsToPass[paramsToPass.length - 5] = new Object[] { "institution", institution };
-		return doProcessTemplate(nameOfTemplate, DEFAULT_LOCALE, paramsToPass);
+	private String processTemplateBetreuung(
+		@Nonnull String nameOfTemplate,
+		@Nonnull Betreuung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull Map<Object, Object> paramMap) {
+
+		paramMap.put("betreuung", betreuung);
+		paramMap.put(GESUCHSTELLER, gesuchsteller);
+
+		return doProcessTemplate(nameOfTemplate, paramMap);
 	}
 
-	@SuppressWarnings("Duplicates")
-	private String processTemplateBetreuungVerfuegt(String nameOfTemplate, Betreuung betreuung, Fall fall, Kind kind, Gesuchsteller gesuchsteller1, Institution institution, Object[]... extraValuePairs) {
-		Object[][] paramsToPass = Arrays.copyOf(extraValuePairs, extraValuePairs.length + 5);
-		paramsToPass[paramsToPass.length - 1] = new Object[] { "betreuung", betreuung };
-		paramsToPass[paramsToPass.length - 2] = new Object[] { "fall", fall };
-		paramsToPass[paramsToPass.length - 3] = new Object[] { "kind", kind };
-		paramsToPass[paramsToPass.length - 4] = new Object[] { GESUCHSTELLER, gesuchsteller1 };
-		paramsToPass[paramsToPass.length - 5] = new Object[] { "institution", institution };
-		return doProcessTemplate(nameOfTemplate, DEFAULT_LOCALE, paramsToPass);
+	private String processTemplateBetreuungGeloescht(
+		Betreuung betreuung,
+		Fall fall,
+		Kind kind,
+		Gesuchsteller gesuchsteller1,
+		Institution institution,
+		@Nonnull Map<Object, Object> paramMap) {
+
+		return processTemplateBetreuungStatus(
+			"InfoBetreuungGeloescht.ftl",
+			betreuung,
+			fall,
+			kind,
+			gesuchsteller1,
+			institution,
+			paramMap);
 	}
 
-	private String processTemplateMitteilung(@Nonnull String nameOfTemplate, @Nonnull Mitteilung mitteilung, @Nonnull Object[]... extraValuePairs) {
-		Object[][] paramsToPass = Arrays.copyOf(extraValuePairs, extraValuePairs.length + 1);
-		paramsToPass[paramsToPass.length - 1] = new Object[] { "mitteilung", mitteilung };
-		return doProcessTemplate(nameOfTemplate, DEFAULT_LOCALE, paramsToPass);
+	private String processTemplateBetreuungStatus(
+		String nameOfTemplate,
+		Betreuung betreuung,
+		Fall fall,
+		Kind kind,
+		Gesuchsteller gesuchsteller1,
+		Institution institution,
+		@Nonnull Map<Object, Object> paramMap) {
+
+		paramMap.put("betreuung", betreuung);
+		paramMap.put("fall", fall);
+		paramMap.put("kind", kind);
+		paramMap.put(GESUCHSTELLER, gesuchsteller1);
+		paramMap.put("institution", institution);
+
+		return doProcessTemplate(nameOfTemplate, paramMap);
 	}
 
-	private String processTemplate(@Nonnull String nameOfTemplate, @Nonnull Object[]... extraValuePairs) {
-		Object[][] paramsToPass = Arrays.copyOf(extraValuePairs, extraValuePairs.length);
-		return doProcessTemplate(nameOfTemplate, DEFAULT_LOCALE, paramsToPass);
+	private String processTemplateBetreuungVerfuegt(
+		Betreuung betreuung,
+		Fall fall,
+		Kind kind,
+		Gesuchsteller gesuchsteller1,
+		Institution institution,
+		@Nonnull Map<Object, Object> paramMap) {
+
+		return processTemplateBetreuungStatus(
+			"InfoBetreuungVerfuegt.ftl",
+			betreuung,
+			fall,
+			kind,
+			gesuchsteller1,
+			institution,
+			paramMap);
 	}
 
-	private String doProcessTemplate(@Nonnull final String name, @Nonnull Locale loc, final Object[]... extraValuePairs) {
+	private String processTemplateMitteilung(
+		@Nonnull Mitteilung mitteilung,
+		@Nonnull Map<Object, Object> paramMap) {
+
+		paramMap.put("mitteilung", mitteilung);
+
+		return doProcessTemplate("InfoMitteilungErhalten.ftl", paramMap);
+	}
+
+	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
+
 		try {
-			final Map<Object, Object> rootMap = new HashMap<>();
-			rootMap.put("configuration", ebeguConfiguration);
-			rootMap.put("templateConfiguration", this);
-			rootMap.put("base64Header", new UTF8Base64MailHeaderDirective());
-			if (extraValuePairs != null) {
-				for (final Object[] extraValuePair : extraValuePairs) {
-					if (extraValuePair.length > 0) {
-						assert extraValuePair.length == 2;
-						rootMap.put(extraValuePair[0], extraValuePair[1]);
-					}
-				}
-			}
-
-			final Template template = freeMarkerConfiguration.getTemplate(name, loc);
+			final Template template = freeMarkerConfiguration.getTemplate(name, DEFAULT_LOCALE);
 			final StringWriter out = new StringWriter(50);
 			template.process(rootMap, out);
 
 			return out.toString();
 		} catch (final IOException e) {
-			throw new EbeguRuntimeException("doProcessTemplate()", String.format("Failed to load template %s.", name), e);
+			throw new EbeguRuntimeException(
+				"doProcessTemplate()",
+				String.format("Failed to load template %s.", name),
+				e);
 		} catch (final TemplateException e) {
-			throw new EbeguRuntimeException("doProcessTemplate()", String.format("Failed to process template %s.", name), e);
+			throw new EbeguRuntimeException(
+				"doProcessTemplate()",
+				String.format("Failed to process template %s.", name),
+				e);
 		}
-	}
-
-	private Object[] toArgumentPair(String key, Object value) {
-		Object[] args = new Object[2];
-		args[0] = key;
-		args[1] = value;
-		return args;
 	}
 
 	public String getMailCss() {
@@ -229,5 +377,23 @@ public class MailTemplateConfiguration {
 			"        }\n" +
 			"      .kursInfoHeader {background-color: #bce1ff; font-weight: bold;}" +
 			"    </style>";
+	}
+
+	@Nonnull
+	private Map<Object, Object> initParamMap() {
+		Map<Object, Object> paramMap = new HashMap<>();
+		paramMap.put("configuration", ebeguConfiguration);
+		paramMap.put("templateConfiguration", this);
+		paramMap.put("base64Header", new UTF8Base64MailHeaderDirective());
+
+		return paramMap;
+	}
+
+	@Nonnull
+	private Map<Object, Object> paramsWithEmpfaenger(@Nonnull String empfaenger) {
+		Map<Object, Object> paramMap = initParamMap();
+		paramMap.put(EMPFAENGER_MAIL, empfaenger);
+
+		return paramMap;
 	}
 }
