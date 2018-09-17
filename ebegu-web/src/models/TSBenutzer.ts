@@ -16,6 +16,7 @@
 import DateUtil from '../utils/DateUtil';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
+import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import TSBerechtigung from './TSBerechtigung';
@@ -199,7 +200,6 @@ export default class TSBenutzer {
     public extractCurrentAktiveGemeinden(): TSGemeinde[] {
         return this.currentBerechtigung.gemeindeList.filter(gmde => gmde.status === TSGemeindeStatus.AKTIV);
     }
-
 
     getFullName(): string {
         return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
