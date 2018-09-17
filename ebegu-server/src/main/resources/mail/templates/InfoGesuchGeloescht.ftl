@@ -5,7 +5,7 @@
 <#assign datumGeloescht = .now>
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>Ki-Tax – Ihr Gesuch wurde gelöscht</@base64Header>
+Subject: <@base64Header>kiBon – Ihr Gesuch wurde gelöscht</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>

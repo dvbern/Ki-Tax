@@ -90,19 +90,19 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
             expect(fallCreationview.getTitle()).toBe('Änderung Ihrer Daten');
         });
-        it('should return Ki-Tax – Erstgesuch der Periode', () => {
+        it('should return kiBon – Erstgesuch der Periode', () => {
             const gesuchsperiode: TSGesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('Ki-Tax – Erstgesuch der Periode 2016/17');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch der Periode 2016/17');
         });
-        it('should return Ki-Tax – Erstgesuch', () => {
+        it('should return kiBon – Erstgesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('Ki-Tax – Erstgesuch');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch');
         });
     });
 });
