@@ -34,16 +34,16 @@ let nextId = 0;
  */
 @Component({
     selector: 'dv-gemeinde-multiselect',
-    templateUrl: './gemeinde-multiselect.template.html',
-    styleUrls: ['./gemeinde-multiselect.less'],
+    templateUrl: './gemeinde-multiselect.component.html',
+    styleUrls: ['./gemeinde-multiselect.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class GemeindeMultiselectComponent implements OnInit {
 
-    @Input() public editMode: boolean = false;
-    @Input() public inputRequired: boolean = false;
+    @Input() public required: boolean = false;
     @Input() public selected!: TSGemeinde[]; // Die selektierten Gemeinden
+    @Input() public disabled: boolean = false;
 
     public allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
     public inputId = `gemeinde-select-${nextId++}`;
