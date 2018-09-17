@@ -41,7 +41,7 @@ public enum UserRole {
 	GESUCHSTELLER(false);
 
 
-	private boolean isGemeindeabhaengig;
+	private final boolean isGemeindeabhaengig;
 
 	UserRole(boolean isGemeindeabhaengig) {
 		this.isGemeindeabhaengig = isGemeindeabhaengig;
