@@ -2914,7 +2914,7 @@ public class JaxBConverter {
 				.stream()
 				.filter(existingBerechtigung -> existingBerechtigung.getId().equals(jaxBerechtigung.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
-				.orElse(new Berechtigung());
+				.orElseGet(Berechtigung::new);
 			final Berechtigung berechtigungToAdd = berechtigungToEntity(jaxBerechtigung, berechtigungToMergeWith);
 			berechtigungToAdd.setBenutzer(benutzer);
 			final boolean added = convertedBerechtigungen.add(berechtigungToAdd);
@@ -2966,8 +2966,7 @@ public class JaxBConverter {
 				throw new EbeguEntityNotFoundException(
 					"berechtigungToEntity",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxBerechtigung
-						.getInstitution().getId());
+					jaxBerechtigung.getInstitution().getId());
 			}
 		} else {
 			berechtigung.setInstitution(null);
@@ -2983,8 +2982,7 @@ public class JaxBConverter {
 				throw new EbeguEntityNotFoundException(
 					"berechtigungToEntity -> traegerschaft",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxBerechtigung
-						.getTraegerschaft().getId());
+					jaxBerechtigung.getTraegerschaft().getId());
 			}
 		} else {
 			berechtigung.setTraegerschaft(null);

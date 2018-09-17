@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -73,6 +71,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer Benutzer  (Auf client userRS.rest.ts also eigentlich die UserResources)
@@ -90,6 +89,24 @@ public class BenutzerResource {
 
 	@Inject
 	private Authorizer authorizer;
+
+	@ApiOperation("Erstellt einen Benutzer mit Status EINGELADEN und sendet ihm eine E-Mail")
+	@POST
+	@Path("/einladen")
+	@RolesAllowed({
+		SUPER_ADMIN,
+		ADMIN_BG,
+		ADMIN_GEMEINDE,
+		ADMIN_TS,
+		ADMIN_MANDANT,
+		ADMIN_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT,
+	})
+	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
+		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
+
+		return converter.benutzerToJaxBenutzer(benutzerService.einladen(benutzer));
+	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, "
 		+ "SACHBEARBEITER_GEMEINDE zurueck",
@@ -177,8 +194,9 @@ public class BenutzerResource {
 		JaxBenutzerSearchresultDTO resultDTO = new JaxBenutzerSearchresultDTO();
 		resultDTO.setBenutzerDTOs(benutzerDTOList);
 		PaginationDTO pagination = benutzerSearch.getPagination();
-		pagination.setTotalItemCount(searchResultPair.getLeft());
+		requireNonNull(pagination).setTotalItemCount(searchResultPair.getLeft());
 		resultDTO.setPaginationDTO(pagination);
+
 		return resultDTO;
 	}
 
@@ -193,7 +211,7 @@ public class BenutzerResource {
 	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		Objects.requireNonNull(username);
+		requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
@@ -270,8 +288,8 @@ public class BenutzerResource {
 		JaxBenutzer jaxBenutzerOld = converter.benutzerToJaxBenutzer(benutzerOld);
 		jaxBenutzerOld.evaluateCurrentBerechtigung();
 		jaxBenutzerNew.evaluateCurrentBerechtigung();
-		Objects.requireNonNull(jaxBenutzerOld.getCurrentBerechtigung());
-		Objects.requireNonNull(jaxBenutzerNew.getCurrentBerechtigung());
+		requireNonNull(jaxBenutzerOld.getCurrentBerechtigung());
+		requireNonNull(jaxBenutzerNew.getCurrentBerechtigung());
 
 		return !jaxBenutzerOld.getCurrentBerechtigung().isSame(jaxBenutzerNew.getCurrentBerechtigung());
 	}

@@ -52,6 +52,9 @@ public interface BenutzerService {
 	@Nonnull
 	Benutzer saveBenutzer(@Nonnull Benutzer benutzer);
 
+	@Nonnull
+	Benutzer einladen(@Nonnull Benutzer benutzer);
+
 	/**
 	 * @param username PK (id) des Benutzers
 	 * @return Benutzer mit dem gegebenen key oder null falls nicht vorhanden
@@ -115,7 +118,8 @@ public interface BenutzerService {
 	Benutzer updateOrStoreUserFromIAM(@Nonnull Benutzer benutzer);
 
 	/**
-	 * Setzt den uebergebenen Benutzer auf gesperrt. Es werden auch alle möglicherweise noch vorhandenen AuthentifizierteBenutzer gelöscht.
+	 * Setzt den uebergebenen Benutzer auf gesperrt. Es werden auch alle möglicherweise noch vorhandenen
+	 * AuthentifizierteBenutzer gelöscht.
 	 */
 	@Nonnull
 	Benutzer sperren(@Nonnull String username);
@@ -134,6 +138,7 @@ public interface BenutzerService {
 
 	/**
 	 * Setzt alle Benutzer mit abgelaufenen Rollen auf die Rolle GESUCHSTELLER zurück.
+	 *
 	 * @return Die Anzahl zurückgesetzter Benutzer
 	 */
 	int handleAbgelaufeneRollen(@Nonnull LocalDate stichtag);
