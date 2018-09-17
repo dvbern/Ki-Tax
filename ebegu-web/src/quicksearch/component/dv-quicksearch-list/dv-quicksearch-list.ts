@@ -31,7 +31,7 @@ import TSFallAntragDTO from '../../../models/TSFallAntragDTO';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitution from '../../../models/TSInstitution';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
 const LOG = LogFactory.createLog('DVQuicksearchListController');
@@ -68,8 +68,8 @@ export class DVQuicksearchListController implements IController {
     tableId: string;
     tableTitle: string;
 
-    selectedVerantwortlicherBG: TSUser;
-    selectedVerantwortlicherTS: TSUser;
+    selectedVerantwortlicherBG: TSBenutzer;
+    selectedVerantwortlicherTS: TSBenutzer;
     selectedEingangsdatum: string;
     selectedKinder: string;
     selectedFallNummer: string;
@@ -100,7 +100,7 @@ export class DVQuicksearchListController implements IController {
     ) {
     }
 
-    public userChanged(selectedUser: TSUser): void {
+    public userChanged(selectedUser: TSBenutzer): void {
         this.onUserChanged({user: selectedUser});
     }
 

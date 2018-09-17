@@ -21,7 +21,7 @@ import java.time.Month;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -74,7 +74,7 @@ public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(foundDossier.getVerantwortlicherBG());
 		Assert.assertNotEquals(sachbearbeiter.getUsername(), foundDossier.getVerantwortlicherBG().getUsername());
 
-		JaxAuthLoginElement userToSet = converter.benutzerToAuthLoginElement(sachbearbeiter);
+		JaxBenutzer userToSet = converter.benutzerToAuthLoginElement(sachbearbeiter);
 		foundDossier.setVerantwortlicherBG(userToSet);
 		JaxDossier updatedDossier = (JaxDossier) dossierResource.create(foundDossier, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		Assert.assertNotNull(updatedDossier);

@@ -1,0 +1,107 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-full-height-container>
+    <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+        <div class="dv-content">
+            <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
+            <div class="row viewTitle">
+                <div class="col-md-12">
+                    <h2 translate>BENUTZER_ADD</h2>
+                    <hr class="header">
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Name / Vorname -->
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label translate for="nachname_ID">NACHNAME</label>
+                        <input id="nachname_ID"
+                               type="text"
+                               name="nachname"
+                               [(ngModel)]="benutzer.nachname"
+                               required
+                               class="form-control">
+                        <dv-error-messages [errorObject]="form.controls['nachname']?.errors"
+                                           inputId="nachname_ID">
+                        </dv-error-messages>
+                    </div>
+                </div>
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label translate for="vorname_ID">VORNAME</label>
+                        <input id="vorname_ID"
+                               type="text"
+                               name="vorname"
+                               [(ngModel)]="benutzer.vorname"
+                               required
+                               class="form-control">
+                        <dv-error-messages [errorObject]="form.controls['vorname']?.errors"
+                                           inputId="vorname_ID">
+                        </dv-error-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- E-Mail -->
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <label translate for="email_ID">EMAIL</label>
+                        <input id="email_ID"
+                               type="text"
+                               name="email"
+                               [(ngModel)]="benutzer.email"
+                               required
+                               class="form-control">
+                        <dv-error-messages [errorObject]="form.controls['email']?.errors"
+                                           inputId="email_ID">
+                        </dv-error-messages>
+                    </div>
+                </div>
+                <!-- Rolle -->
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="form-group">
+                        <dv-benutzer-rolle inputId="rolle"
+                                           inputName="rolle"
+                                           [inputRequired]="true"
+                                           [exludedRoles]="excludedRoles"
+                                           [(benutzerRolle)]="benutzer.currentBerechtigung.role">
+                        </dv-benutzer-rolle>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <dv-gemeinde-multiselect [editMode]="true"
+                                             [inputRequired]="true"
+                                             [selected]="benutzer.currentBerechtigung.gemeindeList">
+                    </dv-gemeinde-multiselect>
+                </div>
+            </div>
+        </div>
+
+        <div class="dv-footer">
+            <button class="dv-btn" type="submit" translate>BENUTZER_INVITE</button>
+            <button type="button"
+                    class="dv-btn cancel-button"
+                    [uiSref]="'admin.benutzerlist'"
+                    translate>CANCEL
+            </button>
+        </div>
+    </form>
+</dv-full-height-container>

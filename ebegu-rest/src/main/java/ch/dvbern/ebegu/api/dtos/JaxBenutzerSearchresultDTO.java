@@ -32,14 +32,14 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 public class JaxBenutzerSearchresultDTO implements Serializable {
 
 	private static final long serialVersionUID = 3939072050781289382L;
-	private List<JaxAuthLoginElement> benutzerDTOs;
+	private List<JaxBenutzer> benutzerDTOs;
 	private PaginationDTO paginationDTO;
 
-	public List<JaxAuthLoginElement> getBenutzerDTOs() {
+	public List<JaxBenutzer> getBenutzerDTOs() {
 		return benutzerDTOs;
 	}
 
-	public void setBenutzerDTOs(List<JaxAuthLoginElement> benutzerDTOs) {
+	public void setBenutzerDTOs(List<JaxBenutzer> benutzerDTOs) {
 		this.benutzerDTOs = benutzerDTOs;
 	}
 

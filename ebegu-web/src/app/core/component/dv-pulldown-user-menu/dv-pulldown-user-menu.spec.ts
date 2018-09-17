@@ -18,7 +18,7 @@ import {IComponentControllerService, IQService, IScope} from 'angular';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {EbeguWebCore} from '../../core.angularjs.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import IInjectorService = angular.auto.IInjectorService;
@@ -32,7 +32,7 @@ describe('DvPulldownUserMenuController', () => {
     let component: DvPulldownUserMenuController;
     let $componentController: IComponentControllerService;
 
-    const user: TSUser = new TSUser('pedro');
+    const user: TSBenutzer = new TSBenutzer('pedro');
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
 

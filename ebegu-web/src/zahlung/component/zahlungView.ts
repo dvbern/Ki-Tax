@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
+import {of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
@@ -61,8 +62,14 @@ export class ZahlungViewController implements IController {
 
         this.authServiceRS.principal$
             .pipe(
-                map(principal => principal.getCurrentRole()),
-                switchMap(role => this.zahlungRS.getZahlungsauftragForRole$(role, this.$stateParams.zahlungsauftragId)),
+                switchMap(principal => {
+                    if (principal) {
+                        const zahlungsauftragId = this.$stateParams.zahlungsauftragId;
+                        return this.zahlungRS.getZahlungsauftragForRole$(principal.getCurrentRole(), zahlungsauftragId);
+                    }
+
+                    return of(null);
+                }),
                 map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : [])
             )
             .subscribe(

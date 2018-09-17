@@ -27,7 +27,7 @@ import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
@@ -45,7 +45,7 @@ describe('gesuchGenerator', () => {
     let fall: TSFall;
     let gesuchGenerator: GesuchGenerator;
     let gesuchsperiode: TSGesuchsperiode;
-    let user: TSUser;
+    let user: TSBenutzer;
 
     beforeEach(async(() => {
 
@@ -197,7 +197,7 @@ describe('gesuchGenerator', () => {
     function initValues(): void {
         gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = GP_ID;
-        user = new TSUser();
+        user = new TSBenutzer();
         fall = new TSFall();
         dossier = new TSDossier();
         dossier.id = DOSSIER_ID;

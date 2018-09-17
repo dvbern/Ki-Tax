@@ -14,9 +14,9 @@
  */
 
 export enum TSZahlungsauftragsstatus {
-    ENTWURF = <any> 'ENTWURF',
-    AUSGELOEST = <any> 'AUSGELOEST',
-    BESTAETIGT = <any> 'BESTAETIGT'
+    ENTWURF = 'ENTWURF',
+    AUSGELOEST = 'AUSGELOEST',
+    BESTAETIGT = 'BESTAETIGT'
 }
 
 

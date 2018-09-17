@@ -119,8 +119,8 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		} else if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
 		}
-		// Der Anspruch wird immer auf 10-er Schritten gerundet.
-		return MathUtil.roundIntToTens(anspruch);
+		// Der Anspruch wird immer auf 5-er Schritten gerundet.
+		return MathUtil.roundIntToFives(anspruch);
 	}
 
 	@Nonnull

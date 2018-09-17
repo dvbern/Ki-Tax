@@ -17,6 +17,7 @@ import {NgModule} from '@angular/core';
 import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
 import {SharedModule} from '../app/shared/shared.module';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
@@ -31,12 +32,14 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         GemeindeListComponent,
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
+        DebuggingComponent,
     ],
     entryComponents: [
         TraegerschaftViewComponent,
         GemeindeListComponent,
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
+        DebuggingComponent,
     ],
     providers: [],
 })

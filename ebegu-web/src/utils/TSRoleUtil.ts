@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, TSRole} from '../models/enums/TSRole';
+import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../models/enums/TSRole';
 
 /**
  * Hier findet man unterschiedliche Hilfsmethoden, um die Rollen von TSRole zu holen
@@ -308,5 +308,11 @@ export class TSRoleUtil {
         return [TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.STEUERAMT, TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS, TSRole.JURIST, TSRole.REVISOR];
+    }
+
+    public static translationKeyForRole(role: TSRole,
+                                        gesuchstellerNone: boolean = false): string {
+
+        return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }
 }

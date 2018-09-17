@@ -13,8 +13,8 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-error-messages" *ngIf="show">
-    <div [ngSwitch]="(error)" id="{{inputid + '-error'}}">
+<div class="dv-error-messages">
+    <div [ngSwitch]="error" id="{{inputId + '-error'}}" class="error">
         <ng-container *ngSwitchCase="'required'">{{'ERROR_REQUIRED' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'minlength'">{{'ERROR_MIN_LENG' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'maxlength'">{{'ERROR_MAX_LENG' | translate}}</ng-container>
@@ -27,8 +27,10 @@
         <ng-container *ngSwitchCase="'max'">{{'ERROR_MAX' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'valueinput'">{{'ERROR_VALUE' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dvMinDate'">{{'ERROR_MIN_DATE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'matDatepickerMin'">{{'ERROR_MIN_DATE' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dvMaxDate'">{{'ERROR_MAX_DATE' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dateTime'">{{'ERROR_DATETIME' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'matDatepickerParse'">{{'ERROR_DATETIME' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dvMinDateTime'">{{'ERROR_MIN_DATETIME' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dvMaxDateTime'">{{'ERROR_MAX_DATETIME' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dvNoFutureDate'">{{'ERROR_NO_FUTURE_DATE' | translate}}</ng-container>

@@ -14,19 +14,19 @@
  */
 
 export enum TSMonth {
-    VORJAHR = <any> 'VORJAHR',
-    JANURAY = <any> 'JANUARY',
-    FEBRUARY = <any> 'FEBRUARY',
-    MARCH = <any> 'MARCH',
-    APRIL = <any> 'APRIL',
-    MAY = <any> 'MAY',
-    JUNE = <any> 'JUNE',
-    JULY = <any> 'JULY',
-    AUGUST = <any> 'AUGUST',
-    SEPTEMBER = <any> 'SEPTEMBER',
-    OCTOBER = <any> 'OCTOBER',
-    NOVEMBER = <any> 'NOVEMBER',
-    DECEMBER = <any> 'DECEMBER',
+    VORJAHR = 'VORJAHR',
+    JANURAY = 'JANUARY',
+    FEBRUARY = 'FEBRUARY',
+    MARCH = 'MARCH',
+    APRIL = 'APRIL',
+    MAY = 'MAY',
+    JUNE = 'JUNE',
+    JULY = 'JULY',
+    AUGUST = 'AUGUST',
+    SEPTEMBER = 'SEPTEMBER',
+    OCTOBER = 'OCTOBER',
+    NOVEMBER = 'NOVEMBER',
+    DECEMBER = 'DECEMBER',
 }
 
 export function getTSMonthValues(): Array<TSMonth> {

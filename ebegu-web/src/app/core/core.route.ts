@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {LOCALE_ID} from '@angular/core';
 import {StateService, TransitionService} from '@uirouter/core';
 import * as angular from 'angular';
 import {IWindowService} from 'angular';
@@ -36,16 +35,31 @@ import ListResourceRS from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 import ILocationService = angular.ILocationService;
-import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 
 const LOG = LogFactory.createLog('appRun');
 
-appRun.$inject =
-    ['angularMomentConfig', 'RouterHelper', 'ListResourceRS', 'MandantRS', '$injector', 'AuthLifeCycleService',
-        'hotkeys',
-        '$timeout', 'AuthServiceRS', '$state', '$location', '$window', '$log', 'GesuchModelManager', 'GesuchsperiodeRS',
-        'InstitutionStammdatenRS', 'GlobalCacheService', '$transitions', 'GemeindeRS', 'LOCALE_ID'];
+appRun.$inject = [
+    'angularMomentConfig',
+    'RouterHelper',
+    'ListResourceRS',
+    'MandantRS',
+    '$injector',
+    'AuthLifeCycleService',
+    'hotkeys',
+    '$timeout',
+    'AuthServiceRS',
+    '$state',
+    '$location',
+    '$window',
+    'GesuchModelManager',
+    'GesuchsperiodeRS',
+    'InstitutionStammdatenRS',
+    'GlobalCacheService',
+    '$transitions',
+    'GemeindeRS',
+    'LOCALE_ID',
+];
 
 export function appRun(angularMomentConfig: any,
                        routerHelper: RouterHelper,
@@ -59,7 +73,6 @@ export function appRun(angularMomentConfig: any,
                        $state: StateService,
                        $location: ILocationService,
                        $window: IWindowService,
-                       $log: ILogService,
                        gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS,
                        institutionsStammdatenRS: InstitutionStammdatenRS,
@@ -68,8 +81,6 @@ export function appRun(angularMomentConfig: any,
                        gemeindeRS: GemeindeRS,
                        LOCALE_ID: string,
 ) {
-    // navigationLogger.toggle();
-    // $trace.enable(Category.TRANSITION);
 
     function onNotAuthenticated() {
         authServiceRS.clearPrincipal();
@@ -77,7 +88,8 @@ export function appRun(angularMomentConfig: any,
 
         const loginConnectorPaths = [
             'fedletSSOInit',
-            'sendRedirectForValidation'
+            'sendRedirectForValidation',
+            'locallogin',
         ];
 
         if (loginConnectorPaths.some(path => currentPath.includes(path))) {
@@ -138,7 +150,7 @@ export function appRun(angularMomentConfig: any,
     }
 
     // Wir meochten eigentlich ueberall mit einem hotkey das formular submitten koennen
-    //https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys-
+    // https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',

@@ -20,7 +20,7 @@ import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSBetreuung from './TSBetreuung';
 import TSDossier from './TSDossier';
-import TSUser from './TSUser';
+import TSBenutzer from './TSBenutzer';
 
 export default class TSMitteilung extends TSAbstractMutableEntity {
 
@@ -28,15 +28,15 @@ export default class TSMitteilung extends TSAbstractMutableEntity {
     private _betreuung: TSBetreuung;
     private _senderTyp: TSMitteilungTeilnehmerTyp;
     private _empfaengerTyp: TSMitteilungTeilnehmerTyp;
-    private _sender: TSUser;
-    private _empfaenger: TSUser;
+    private _sender: TSBenutzer;
+    private _empfaenger: TSBenutzer;
     private _subject: string;
     private _message: string;
     private _mitteilungStatus: TSMitteilungStatus;
     private _sentDatum: moment.Moment;
 
-    constructor(dossier?: TSDossier, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSUser,
-                empfaenger?: TSUser, subject?: string, message?: string, mitteilungStatus?: TSMitteilungStatus,
+    constructor(dossier?: TSDossier, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSBenutzer,
+                empfaenger?: TSBenutzer, subject?: string, message?: string, mitteilungStatus?: TSMitteilungStatus,
                 sentDatum?: moment.Moment) {
         super();
         this._dossier = dossier;
@@ -83,19 +83,19 @@ export default class TSMitteilung extends TSAbstractMutableEntity {
         this._empfaengerTyp = value;
     }
 
-    get sender(): TSUser {
+    get sender(): TSBenutzer {
         return this._sender;
     }
 
-    set sender(value: TSUser) {
+    set sender(value: TSBenutzer) {
         this._sender = value;
     }
 
-    get empfaenger(): TSUser {
+    get empfaenger(): TSBenutzer {
         return this._empfaenger;
     }
 
-    set empfaenger(value: TSUser) {
+    set empfaenger(value: TSBenutzer) {
         this._empfaenger = value;
     }
 

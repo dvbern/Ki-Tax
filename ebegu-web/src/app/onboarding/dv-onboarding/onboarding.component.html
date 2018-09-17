@@ -14,17 +14,17 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<div class="onboarding-subtitle">{{'ONBOARDING_BG_BEANTRAGEN' | translate}}</div>
+<div class="onboarding-subtitle" translate>ONBOARDING_BG_BEANTRAGEN</div>
 
-<form (ngSubmit)="onSubmit(form)" #form="ngForm">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
     <div class="onboarding-gemeinde-container">
-        <label class="onboarding-gemeinde-label" for="gemeinde">
-            {{'ONBOARDING_GEMEINDE_AUSWAHL' | translate}}
+        <label class="onboarding-gemeinde-label" for="gemeinde" translate>
+            ONBOARDING_GEMEINDE_AUSWAHL
         </label>
 
         <div class="onboarding-gemeinde-input-container">
             <div class="onboarding-gemeinde-search">
-                <div class="onboarding-gemeinde-search-input">
+                <div class="onboarding-gemeinde-search-input form-group">
                     <div class="dv-select-style">
                         <select [(ngModel)]="gemeinde"
                                 name="gemeinde"
@@ -41,24 +41,25 @@
             </div>
 
             <dv-loading-button [buttonClass]="'onboarding-gemeinde-auswaehlen'"
-                               [type]="'submit'">{{'ONBOARDING_GEMEINDE_AUSWAEHLEN' | translate}}
+                               [type]="'submit'" translate>ONBOARDING_GEMEINDE_AUSWAEHLEN
             </dv-loading-button>
         </div>
 
 
-        <dv-ng-error-messages [errorObject]="form.controls.gemeinde?.errors"
-                              [inputid]="'gemeinde'"
-                              [show]="form.submitted"
-                              class="input-error">
-        </dv-ng-error-messages>
+        <dv-error-messages [errorObject]="form.controls.gemeinde?.errors"
+                           inputId="gemeinde"
+                           class="input-error">
+        </dv-error-messages>
     </div>
 </form>
 
 <p class="onboarding-login" *ngIf="showLogin">
     {{'ONBOARDING_ACCOUNT_VORHANDEN' | translate}}<br>
-    <a href="" uiSref="authentication.login">{{'ONBOARDING_ANMELDEN' | translate}}</a>
+    <a href=""
+       uiSref="authentication.login"
+       [uiOptions]="{location: false}" translate>ONBOARDING_ANMELDEN</a>
     <ng-container *ngIf="isDummyMode$ | async">
         <br>
-        <a href="" uiSref="authentication.locallogin">{{'ONBOARDING_LOCAL_LOGIN' | translate}}</a>
+        <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
     </ng-container>
 </p>

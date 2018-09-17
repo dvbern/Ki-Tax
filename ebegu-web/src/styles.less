@@ -26,6 +26,7 @@
 @import 'style/atoms/radio.less';
 @import 'style/molecules/table.less';
 @import 'style/molecules/dv-ebegu-calendar.less';
+@import 'style/organisms/sidenav.less';
 @import 'style/variables.less';
 @import 'style/mixins.less';
 @import 'style/typography.less';
@@ -58,7 +59,6 @@ dv-posteingang {
     table-layout: fixed;
 }
 
-/* Add Component LESS Above */
 .loaded {
     opacity: 1 !important;
     -moz-transition: opacity 0.3s ease;
@@ -251,15 +251,11 @@ dv-pulldown-user-menu {
 //roter hintergund bei den feldern die invalid sind
 form {
     &.ng-submitted {
-        input, textarea {
+        input, textarea, .form-control, .input-element, md-radio-group {
             &.ng-invalid {
                 .ErrorInput()
             }
         }
-        md-radio-group.ng-invalid {
-            .ErrorInput()
-        }
-
     }
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
@@ -267,7 +263,6 @@ form {
             .ErrorInput()
         }
     }
-
 }
 
 .row.is-flex {
@@ -478,7 +473,6 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
     align-items: stretch;
     justify-content: stretch;
     width: 100%;
-    padding: 5px 10%;
 
     .dv-btn {
         text-transform: uppercase;
