@@ -6,7 +6,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>Ki-Tax – Freigabequittung ausstehend</@base64Header>
+Subject: <@base64Header>kiBon – Freigabequittung ausstehend</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -25,7 +25,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Sie haben via Ki-Tax Ihr Gesuch vollständig erfasst, besten Dank!
+		Sie haben via kiBon Ihr Gesuch vollständig erfasst, besten Dank!
 	</p>
 	<p>
 		Leider ist Ihre Freigabequittung bisher nicht bei uns eingetroffen. Bitte schicken Sie uns das unterschriebene
