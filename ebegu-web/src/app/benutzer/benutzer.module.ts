@@ -22,6 +22,7 @@ import {BenutzerEinladenComponent} from './benutzer-einladen/benutzer-einladen.c
 import {BenutzerRolleComponent} from './benutzer-rolle/benutzer-rolle.component';
 import {BenutzerRoutingModule} from './benutzer-routing/benutzer-routing.module';
 import {BenutzerComponent} from './benutzer/benutzer.component';
+import {BerechtigungComponent} from './berechtigung/berechtigung.component';
 
 @NgModule({
     imports: [
@@ -32,11 +33,12 @@ import {BenutzerComponent} from './benutzer/benutzer.component';
     declarations: [
         BenutzerComponent,
         BenutzerEinladenComponent,
-        BenutzerRolleComponent
+        BenutzerRolleComponent,
+        BerechtigungComponent,
     ],
     entryComponents: [
         BenutzerComponent,
-        BenutzerEinladenComponent
+        BenutzerEinladenComponent,
     ],
     exports: [BenutzerComponent],
 })

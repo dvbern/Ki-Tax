@@ -14,6 +14,6 @@
  */
 
 export enum TSDokumentGrundPersonType {
-    KIND = <any> 'KIND',
-    GESUCHSTELLER = <any> 'GESUCHSTELLER'
+    KIND = 'KIND',
+    GESUCHSTELLER = 'GESUCHSTELLER'
 }

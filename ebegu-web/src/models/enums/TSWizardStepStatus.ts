@@ -14,13 +14,13 @@
  */
 
 export enum TSWizardStepStatus {
-    MUTIERT = <any> 'MUTIERT',
-    OK = <any> 'OK',
-    NOK = <any> 'NOK',
-    PLATZBESTAETIGUNG = <any> 'PLATZBESTAETIGUNG',
-    WARTEN = <any> 'WARTEN',
-    IN_BEARBEITUNG = <any> 'IN_BEARBEITUNG',
-    UNBESUCHT = <any> 'UNBESUCHT',
+    MUTIERT = 'MUTIERT',
+    OK = 'OK',
+    NOK = 'NOK',
+    PLATZBESTAETIGUNG = 'PLATZBESTAETIGUNG',
+    WARTEN = 'WARTEN',
+    IN_BEARBEITUNG = 'IN_BEARBEITUNG',
+    UNBESUCHT = 'UNBESUCHT',
 }
 
 export function getTSWizardStepStatusValues(): Array<TSWizardStepStatus> {

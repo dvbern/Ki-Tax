@@ -18,7 +18,7 @@ import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {IGesuchStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -41,7 +41,7 @@ describe('dossierToolbar', () => {
     let $stateParams: IGesuchStateParams;
     let $scope: angular.IScope;
     let $rootScope: angular.IRootScopeService;
-    let user: TSUser;
+    let user: TSBenutzer;
     let $mdSidenav: angular.material.ISidenavService;
     let gesuchsperiodeRS: GesuchsperiodeRS;
     let dossierRS: DossierRS;
@@ -64,7 +64,7 @@ describe('dossierToolbar', () => {
         $rootScope = $injector.get('$rootScope');
         $mdSidenav = $injector.get('$mdSidenav');
         $scope = $rootScope.$new();
-        user = new TSUser('Emiliana', 'Camacho');
+        user = new TSBenutzer('Emiliana', 'Camacho');
         $stateParams.gesuchId = '123456789';
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
         dossierRS = $injector.get('DossierRS');

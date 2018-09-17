@@ -106,7 +106,7 @@
 
             <!-- Warnung, wenn gesperrt -->
             <div class="row">
-                <div class="col-md-12" *ngIf="selectedUser.gesperrt">
+                <div class="col-md-12" *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT">
                     <div class="well well-status-warten">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         <span translate>BENUTZER_GESPERRT_INFO</span>
@@ -122,79 +122,9 @@
             </div>
 
             <!-- Aktive Rolle -->
-            <fieldset>
-                <div class="row">
-                    <!-- Rolle -->
-                    <div class="col-sm-12 dv-input-container-medium">
-                        <div class="form-group">
-                            <dv-benutzer-rolle inputId="rolle"
-                                               inputName="rolle"
-                                               [inputRequired]="true"
-                                               [inputDisabled]="isDisabled"
-                                               [(benutzerRolle)]="currentBerechtigung.role">
-                            </dv-benutzer-rolle>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Institution -->
-                    <div class="col-sm-12 dv-input-container-medium"
-                         *ngIf="isInstitutionBerechtigung(currentBerechtigung)">
-                        <div class="form-group">
-                            <label class="dv-benutzer-label" translate for="institution">INSTITUTION</label>
-                            <div class="dv-select-style">
-                                <select aria-describedby="institution-error" name="institution" id="institution"
-                                        class="form-control"
-                                        [disabled]="isDisabled"
-                                        [required]="isInstitutionBerechtigung(currentBerechtigung)"
-                                        [(ngModel)]="currentBerechtigung.institution.id">
-                                    <option *ngFor="let institution of institutionenList" [value]="institution.id">
-                                        {{institution.name}}
-                                    </option>
-                                </select>
-                                <dv-error-messages inputId="institution"
-                                                   [errorObject]="form.controls.institution?.errors">
-                                </dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Traegerschaft -->
-                    <div class="col-sm-12 dv-input-container-medium"
-                         *ngIf="isTraegerschaftBerechtigung(currentBerechtigung)">
-                        <div class="form-group">
-                            <label class="dv-benutzer-label" translate for="traegerschaft">TRAEGERSCHAFT</label>
-                            <div class="dv-select-style">
-                                <select aria-describedby="traegerschaft-error" name="traegerschaft"
-                                        id="traegerschaft"
-                                        class="form-control"
-                                        [disabled]="isDisabled"
-                                        [required]="isTraegerschaftBerechtigung(currentBerechtigung)"
-                                        [(ngModel)]="currentBerechtigung.traegerschaft.id">
-                                    <option *ngFor="let traegerschaft of traegerschaftenList"
-                                            [value]="traegerschaft.id">
-                                        {{traegerschaft.name}}
-                                    </option>
-                                </select>
-                                <dv-error-messages inputId="traegerschaft"
-                                                   [errorObject]="form.controls.traegerschaft?.errors">
-                                </dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gemeinde(n) -->
-                    <div class="col-sm-12 dv-input-container-medium"
-                         *ngIf="isGemeindeabhaengigeBerechtigung(currentBerechtigung)">
-                        <div class="form-group">
-                            <dv-gemeinde-multiselect [(selected)]="currentBerechtigung.gemeindeList"
-                                                     [editMode]="!isDisabled"
-                                                     [inputRequired]="true">
-                            </dv-gemeinde-multiselect>
-                        </div>
-                    </div>
-
-                </div>
-            </fieldset>
+            <dv-berechtigung [berechtigung]="currentBerechtigung"
+                             [disabled]="isDisabled">
+            </dv-berechtigung>
 
             <div class="row" *ngIf="futureBerechtigung || !isDisabled">
                 <div class="marginTop50 col-md-12">
@@ -204,102 +134,44 @@
             </div>
 
             <!-- Zukünftige Berechtigung -->
-            <div *ngIf="futureBerechtigung">
-                <fieldset>
-                    <div class="row">
-                        <!-- Rolle -->
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <div class="form-group">
-                                <dv-benutzer-rolle inputId="future_role"
-                                                   inputName="future_role"
-                                                   [inputRequired]="true"
-                                                   [inputDisabled]="isDisabled"
-                                                   [(benutzerRolle)]="futureBerechtigung.role">
-                                </dv-benutzer-rolle>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 dv-input-container-small">
-                            <div class="form-group">
-                                <label translate for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
-                                <input class="input-benutzer input-benutzer--datepicker" type="text"
-                                       name="futureGueltigAb" id="futureGueltigAb"
-                                       [matDatepicker]="futureGueltigAb"
-                                       [min]="tomorrow"
-                                       [disabled]="isDisabled"
-                                       required
-                                       placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                       [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
-                                <mat-datepicker-toggle matSuffix [for]="futureGueltigAb"></mat-datepicker-toggle>
-                                <mat-datepicker #futureGueltigAb></mat-datepicker>
-                                <dv-error-messages inputId="futureGueltigAb"
-                                                   [errorObject]="form.controls.futureGueltigAb?.errors">
-                                </dv-error-messages>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 dv-input-container-small">
-                            <div class="form-group">
-                                <label translate for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
-                                <input class="input-benutzer input-benutzer--datepicker" type="text"
-                                       name="futureGueltigBis" id="futureGueltigBis"
-                                       [matDatepicker]="futureGueltigBis"
-                                       [min]="tomorrow"
-                                       placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                       [disabled]="isDisabled"
-                                       [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
-                                <mat-datepicker-toggle matSuffix [for]="futureGueltigBis"></mat-datepicker-toggle>
-                                <mat-datepicker #futureGueltigBis></mat-datepicker>
-                                <dv-error-messages inputId="futureGueltigBis"
-                                                   [errorObject]="form.controls.futureGueltigBis?.errors">
-                                </dv-error-messages>
-                            </div>
+            <fieldset *ngIf="futureBerechtigung">
+                <dv-berechtigung [berechtigung]="futureBerechtigung"
+                                 [disabled]="isDisabled">
+                </dv-berechtigung>
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <div class="form-group">
+                            <label translate for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
+                            <input class="input-benutzer input-benutzer--datepicker" type="text"
+                                   name="futureGueltigAb" id="futureGueltigAb"
+                                   [matDatepicker]="futureGueltigAb"
+                                   [min]="tomorrow"
+                                   [disabled]="isDisabled"
+                                   required
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                   [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
+                            <mat-datepicker-toggle matSuffix [for]="futureGueltigAb"></mat-datepicker-toggle>
+                            <mat-datepicker #futureGueltigAb></mat-datepicker>
+                            <dv-error-messages inputId="futureGueltigAb"
+                                               [errorObject]="form.controls.futureGueltigAb?.errors">
+                            </dv-error-messages>
                         </div>
                     </div>
-                    <div class="row">
-                        <!-- Institution -->
-                        <div class="col-sm-12 dv-input-container-medium"
-                             *ngIf="isInstitutionBerechtigung(futureBerechtigung)">
-                            <div class="form-group">
-                                <label class="dv-benutzer-label"
-                                       translate for="futureInstitution">INSTITUTION</label>
-                                <div class="dv-select-style">
-                                    <select aria-describedby="futureInstitution-error" name="futureInstitution"
-                                            id="futureInstitution"
-                                            class="form-control"
-                                            [disabled]="isDisabled"
-                                            [required]="isInstitutionBerechtigung(futureBerechtigung)"
-                                            [(ngModel)]="futureBerechtigung.institution.id">
-                                        <option *ngFor="let inst of institutionenList" [value]="inst.id">
-                                            {{inst.name}}
-                                        </option>
-                                    </select>
-                                    <dv-error-messages inputId="futureInstitution"
-                                                       [errorObject]="form.controls.futureInstitution?.errors">
-                                    </dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Traegerschaft -->
-                        <div class="col-sm-12 dv-input-container-medium"
-                             *ngIf="isTraegerschaftBerechtigung(futureBerechtigung)">
-                            <div class="form-group">
-                                <label class="dv-benutzer-label"
-                                       translate for="futureTraegerschaft">TRAEGERSCHAFT</label>
-                                <div class="dv-select-style">
-                                    <select aria-describedby="futureTraegerschaft-error" name="futureTraegerschaft"
-                                            id="futureTraegerschaft"
-                                            class="form-control"
-                                            [disabled]="isDisabled"
-                                            [required]="isTraegerschaftBerechtigung(futureBerechtigung)"
-                                            [(ngModel)]="futureBerechtigung.traegerschaft.id">
-                                        <option *ngFor="let traeg of traegerschaftenList" [value]="traeg.id">
-                                            {{traeg.name}}
-                                        </option>
-                                    </select>
-                                    <dv-error-messages inputId="futureTraegerschaft"
-                                                       [errorObject]="form.controls.futureTraegerschaft?.errors">
-                                    </dv-error-messages>
-                                </div>
-                            </div>
+                    <div class="col-sm-12 dv-input-container-small">
+                        <div class="form-group">
+                            <label translate for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
+                            <input class="input-benutzer input-benutzer--datepicker" type="text"
+                                   name="futureGueltigBis" id="futureGueltigBis"
+                                   [matDatepicker]="futureGueltigBis"
+                                   [min]="tomorrow"
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                   [disabled]="isDisabled"
+                                   [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
+                            <mat-datepicker-toggle matSuffix [for]="futureGueltigBis"></mat-datepicker-toggle>
+                            <mat-datepicker #futureGueltigBis></mat-datepicker>
+                            <dv-error-messages inputId="futureGueltigBis"
+                                               [errorObject]="form.controls.futureGueltigBis?.errors">
+                            </dv-error-messages>
                         </div>
                         <!-- Gemeinde(n) -->
                         <div class="col-sm-12 dv-input-container-medium"
@@ -312,9 +184,8 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
-
-            </div>
+                </div>
+            </fieldset>
 
             <!-- Add Zukünftige Berechtigung -->
             <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && canAddBerechtigung();">
@@ -362,7 +233,7 @@
                     <span translate>BENUTZER_SAVE</span>
                 </dv-loading-button>
 
-                <div *ngIf="!selectedUser.gesperrt && !isDefaultVerantwortlicher"
+                <div *ngIf="selectedUser.status === TSBenutzerStatus.AKTIV && !isDefaultVerantwortlicher"
                      class="button-row-item">
                     <button type="button" class="dv-btn cancel-button"
                             (click)="inactivateBenutzer()"
@@ -370,7 +241,7 @@
                     </button>
                 </div>
 
-                <div *ngIf="selectedUser.gesperrt && !isDefaultVerantwortlicher"
+                <div *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT && !isDefaultVerantwortlicher"
                      class="button-row-item">
                     <button type="button" class="dv-btn cancel-button"
                             (click)="reactivateBenutzer()"
@@ -404,7 +275,7 @@
                             <th translate>ROLLE</th>
                             <th translate>BERECHTIGUNG_GUELTIG_AB</th>
                             <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
-                            <th translate>GESPERRT</th>
+                            <th translate>STATUS</th>
                             <th translate>GELOESCHT</th>
                         </tr>
                         <tr *ngFor="let entry of berechtigungHistoryList">
@@ -413,7 +284,7 @@
                             <td>{{getBerechtigungHistoryDescription(entry)}}</td>
                             <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
                             <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
-                            <td>{{(entry.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                            <td>{{('BENUTZER_STATUS_' + entry.status) | translate}}</td>
                             <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
                         </tr>
                     </table>

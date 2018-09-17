@@ -29,7 +29,7 @@ import TSBetreuung from '../../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../../models/TSDossier';
 import TSMitteilung from '../../../../models/TSMitteilung';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -163,7 +163,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private initMitteilungForCurrentBenutzer() {
-        const currentUser: TSUser = this.authServiceRS.getPrincipal();
+        const currentUser: TSBenutzer = this.authServiceRS.getPrincipal();
         //common attributes
         this.currentMitteilung = new TSMitteilung();
         this.currentMitteilung.dossier = this.dossier;

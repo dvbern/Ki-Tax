@@ -26,6 +26,25 @@ export const PERMISSIONS: { [k in Permission]: TSRole[] } = {
         TSRole.ADMIN_TS,
         TSRole.ADMIN_MANDANT,
         TSRole.ADMIN_INSTITUTION,
-        TSRole.ADMIN_TRAEGERSCHAFT
-    ]
+        TSRole.ADMIN_TRAEGERSCHAFT,
+    ],
+    [Permission.ROLE_TRAEGERSCHAFT]: [
+        TSRole.ADMIN_TRAEGERSCHAFT,
+        TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+    ],
+    [Permission.ROLE_INSTITUTION]: [
+        TSRole.ADMIN_INSTITUTION,
+        TSRole.SACHBEARBEITER_INSTITUTION,
+    ],
+    [Permission.ROLE_GEMEINDE]: [
+        TSRole.ADMIN_BG,
+        TSRole.SACHBEARBEITER_BG,
+        TSRole.ADMIN_GEMEINDE,
+        TSRole.SACHBEARBEITER_GEMEINDE,
+        TSRole.STEUERAMT,
+        TSRole.ADMIN_TS,
+        TSRole.SACHBEARBEITER_TS,
+        TSRole.JURIST,
+        TSRole.REVISOR,
+    ],
 };

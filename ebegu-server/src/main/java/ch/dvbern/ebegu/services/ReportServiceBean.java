@@ -15,10 +15,8 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -33,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -47,18 +46,20 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
@@ -116,6 +117,7 @@ import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -127,6 +129,7 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import ch.dvbern.oss.lib.excelmerger.RowFiller;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -151,7 +154,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@SuppressWarnings("unchecked")
 @Stateless
 @Local(ReportService.class)
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
@@ -225,38 +227,41 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private static final String MIME_TYPE_EXCEL = "application/vnd.ms-excel";
 
-
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<GesuchStichtagDataRow> getReportDataGesuchStichtag(@Nonnull LocalDate date, @Nullable String gesuchPeriodeID) {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<GesuchStichtagDataRow> getReportDataGesuchStichtag(
+		@Nonnull LocalDate date,
+		@Nullable String gesuchPeriodeID) {
 
 		Objects.requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
 		EntityManager em = persistence.getEntityManager();
 
-		List<GesuchStichtagDataRow> results = new ArrayList<>();
+		TypedQuery<GesuchStichtagDataRow> query =
+			em.createNamedQuery("GesuchStichtagNativeSQLQuery", GesuchStichtagDataRow.class);
 
-		if (em != null) {
-			@SuppressWarnings("JpaQueryApiInspection") Query gesuchStichtagQuery = em.createNamedQuery("GesuchStichtagNativeSQLQuery");
-			// Wir rechnen zum Stichtag einen Tag dazu, damit es bis 24.00 des Vorabends gilt.
-			gesuchStichtagQuery.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
-			gesuchStichtagQuery.setParameter("gesuchPeriodeID", gesuchPeriodeID);
-			gesuchStichtagQuery.setParameter("onlySchulamt", principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE) ? 1 :
-				0);
-			results = gesuchStichtagQuery.getResultList();
-		}
-		return results;
+		// Wir rechnen zum Stichtag einen Tag dazu, damit es bis 24.00 des Vorabends gilt.
+		query.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
+		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
+		query.setParameter("onlySchulamt", onlySchulamt());
+
+		return query.getResultList();
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportGesuchStichtag(@Nonnull LocalDate date, @Nullable String gesuchPeriodeID) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportGesuchStichtag(@Nonnull LocalDate date, @Nullable String gesuchPeriodeID)
+		throws ExcelMergeException {
 
 		Objects.requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
@@ -276,7 +281,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -284,9 +290,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(@Nonnull LocalDate dateVon, @Nonnull LocalDate dateBis, @Nullable String gesuchPeriodeID) {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
+		@Nonnull LocalDate dateVon,
+		@Nonnull LocalDate dateBis,
+		@Nullable String gesuchPeriodeID) {
 
 		validateDateParams(dateVon, dateBis);
 
@@ -297,29 +308,31 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		EntityManager em = persistence.getEntityManager();
 
-		List<GesuchZeitraumDataRow> results = new ArrayList<>();
+		TypedQuery<GesuchZeitraumDataRow> query =
+			em.createNamedQuery("GesuchZeitraumNativeSQLQuery", GesuchZeitraumDataRow.class);
 
-		if (em != null) {
-			@SuppressWarnings("JpaQueryApiInspection") Query gesuchPeriodeQuery = em.createNamedQuery("GesuchZeitraumNativeSQLQuery");
-			gesuchPeriodeQuery.setParameter("fromDateTime", Constants.SQL_DATE_FORMAT.format(dateVon));
-			gesuchPeriodeQuery.setParameter("fromDate", Constants.SQL_DATE_FORMAT.format(dateVon));
-			gesuchPeriodeQuery.setParameter("toDateTime", Constants.SQL_DATE_FORMAT.format(dateBis));
-			gesuchPeriodeQuery.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
-			gesuchPeriodeQuery.setParameter("gesuchPeriodeID", gesuchPeriodeID);
-			gesuchPeriodeQuery.setParameter("onlySchulamt", principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS, SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE) ? 1 :
-				0);
-			results = gesuchPeriodeQuery.getResultList();
-		}
-		return results;
+		query.setParameter("fromDateTime", Constants.SQL_DATE_FORMAT.format(dateVon));
+		query.setParameter("fromDate", Constants.SQL_DATE_FORMAT.format(dateVon));
+		query.setParameter("toDateTime", Constants.SQL_DATE_FORMAT.format(dateBis));
+		query.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
+		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
+		query.setParameter("onlySchulamt", onlySchulamt());
+
+		return query.getResultList();
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportGesuchZeitraum(@Nonnull LocalDate dateVon, @Nonnull LocalDate dateBis, @Nullable String gesuchPeriodeID) throws ExcelMergeException, IOException, URISyntaxException {
+	public UploadFileInfo generateExcelReportGesuchZeitraum(
+		@Nonnull LocalDate dateVon,
+		@Nonnull LocalDate dateBis,
+		@Nullable String gesuchPeriodeID) throws ExcelMergeException {
 
 		validateDateParams(dateVon, dateBis);
 		validateDateParams(dateVon, dateBis);
@@ -340,7 +353,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -349,16 +363,20 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	@SuppressWarnings("PMD.NcssMethodCount, PMD.AvoidDuplicateLiterals")
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<KantonDataRow> getReportDataKanton(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis) {
 		validateDateParams(datumVon, datumBis);
 
-		Collection<Gesuchsperiode> relevanteGesuchsperioden = gesuchsperiodeService.getGesuchsperiodenBetween(datumVon, datumBis);
+		Collection<Gesuchsperiode> relevanteGesuchsperioden =
+			gesuchsperiodeService.getGesuchsperiodenBetween(datumVon, datumBis);
 		if (relevanteGesuchsperioden.isEmpty()) {
 			return Collections.emptyList();
 		}
-		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt verfuegte.
+		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
+		// verfuegte.
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = builder.createQuery(VerfuegungZeitabschnitt.class);
 		query.distinct(true);
@@ -368,9 +386,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
-		Predicate predicateStart = builder.lessThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb), datumBis);
+		Predicate predicateStart = builder.lessThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			datumBis);
 		predicatesToUse.add(predicateStart);
-		Predicate predicateEnd = builder.greaterThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis), datumVon);
+		Predicate predicateEnd = builder.greaterThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			datumVon);
 		predicatesToUse.add(predicateEnd);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = builder.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
@@ -378,17 +400,24 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		// Sichtbarkeit nach eingeloggtem Benutzer
 
-		boolean isInstitutionsbenutzer = principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
+		boolean isInstitutionsbenutzer =
+			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
-			Collection<Institution> allowedInstitutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung).get(Verfuegung_.betreuung).get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution).in(allowedInstitutionen);
+			Collection<Institution> allowedInstitutionen =
+				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.institution)
+				.in(allowedInstitutionen);
 			predicatesToUse.add(predicateAllowedInstitutionen);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicatesToUse));
 		List<VerfuegungZeitabschnitt> zeitabschnittList = persistence.getCriteriaResults(query);
 		List<KantonDataRow> kantonDataRowList = convertToKantonDataRow(zeitabschnittList);
-		kantonDataRowList.sort(Comparator.comparing(KantonDataRow::getBgNummer).thenComparing(KantonDataRow::getZeitabschnittVon));
+		kantonDataRowList.sort(Comparator.comparing(KantonDataRow::getBgNummer)
+			.thenComparing(KantonDataRow::getZeitabschnittVon));
 		return kantonDataRowList;
 	}
 
@@ -429,12 +458,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportKanton(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis) throws ExcelMergeException, IOException, URISyntaxException {
+	public UploadFileInfo generateExcelReportKanton(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis)
+		throws ExcelMergeException {
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_KANTON;
@@ -446,14 +478,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis);
-		ExcelMergerDTO excelMergerDTO = kantonExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(), datumVon, datumBis);
+		ExcelMergerDTO excelMergerDTO =
+			kantonExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(), datumVon, datumBis);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		kantonExcelConverter.applyAutoSize(sheet);
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -462,8 +496,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	// MitarbeterInnen
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<MitarbeiterinnenDataRow> getReportMitarbeiterinnen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis) {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<MitarbeiterinnenDataRow> getReportMitarbeiterinnen(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis) {
 		validateDateParams(datumVon, datumBis);
 
 		List<Tuple> numberVerantwortlicheGesuche = getAllVerantwortlicheGesuche();
@@ -485,23 +522,42 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		final Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.INNER);
-		final Join<Dossier, Benutzer> verantwortlicherJoin = dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
-		SetJoin<Benutzer, Berechtigung> verantwortlicherBerechtigungenJoin = verantwortlicherJoin.join(Benutzer_.berechtigungen);
+		final Join<Dossier, Benutzer> verantwortlicherJoin =
+			dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
+		SetJoin<Benutzer, Berechtigung> verantwortlicherBerechtigungenJoin =
+			verantwortlicherJoin.join(Benutzer_.berechtigungen);
 
-		query.multiselect(verantwortlicherJoin.get(Benutzer_.id).alias(Benutzer_.id.getName()),
+		query.multiselect(
+			verantwortlicherJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
 			verantwortlicherJoin.get(Benutzer_.nachname).alias(Benutzer_.nachname.getName()),
 			verantwortlicherJoin.get(Benutzer_.vorname).alias(Benutzer_.vorname.getName()),
-			builder.count(root).alias("allVerantwortlicheGesuche"));
+			builder.count(root).alias("allVerantwortlicheGesuche")
+		);
 
-		query.groupBy(verantwortlicherJoin.get(Benutzer_.id), verantwortlicherJoin.get(Benutzer_.nachname), verantwortlicherJoin.get(Benutzer_.vorname));
+		query.groupBy(
+			verantwortlicherJoin.get(AbstractEntity_.id),
+			verantwortlicherJoin.get(Benutzer_.nachname),
+			verantwortlicherJoin.get(Benutzer_.vorname)
+		);
 		query.orderBy(builder.asc(verantwortlicherJoin.get(Benutzer_.nachname)));
 
-		// Der Benutzer muss eine aktive Berechtigung mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE oder SACHBEARBEITER_GEMEINDE haben
-		Predicate predicateActive = builder.between(builder.literal(LocalDate.now()),
-			verantwortlicherBerechtigungenJoin.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			verantwortlicherBerechtigungenJoin.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate isRolleCorrect = verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(UserRole.ADMIN_BG, UserRole.SACHBEARBEITER_BG,
-			UserRole.ADMIN_GEMEINDE, UserRole.SACHBEARBEITER_GEMEINDE);
+		// Der Benutzer muss eine aktive Berechtigung mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE oder
+		// SACHBEARBEITER_GEMEINDE haben
+		Path<DateRange> dateRange = verantwortlicherBerechtigungenJoin.get(AbstractDateRangedEntity_.gueltigkeit);
+		Predicate predicateActive = builder.between(
+			builder.literal(LocalDate.now()),
+			dateRange.get(DateRange_.gueltigAb),
+			dateRange.get(DateRange_.gueltigBis)
+		);
+
+		Set<UserRole> requiredRoles = Sets.newHashSet(
+			UserRole.ADMIN_BG,
+			UserRole.SACHBEARBEITER_BG,
+			UserRole.ADMIN_GEMEINDE,
+			UserRole.SACHBEARBEITER_GEMEINDE);
+
+		Predicate isRolleCorrect =
+			verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(requiredRoles);
 
 		query.where(predicateActive, isRolleCorrect);
 
@@ -519,11 +575,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.distinct(true);
 
 		Root<AntragStatusHistory> root = query.from(AntragStatusHistory.class);
-		final Join<AntragStatusHistory, Benutzer> benutzerJoin = root.join(AntragStatusHistory_.benutzer, JoinType.INNER);
+		final Join<AntragStatusHistory, Benutzer> benutzerJoin =
+			root.join(AntragStatusHistory_.benutzer, JoinType.INNER);
 		SetJoin<Benutzer, Berechtigung> joinBerechtigungen = benutzerJoin.join(Benutzer_.berechtigungen);
 
 		query.multiselect(
-			benutzerJoin.get(Benutzer_.id).alias(Benutzer_.id.getName()),
+			benutzerJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
 			benutzerJoin.get(Benutzer_.nachname).alias(Benutzer_.nachname.getName()),
 			benutzerJoin.get(Benutzer_.vorname).alias(Benutzer_.vorname.getName()),
 			builder.count(root).alias("allVerfuegteGesuche"));
@@ -531,60 +588,81 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Status ist verfuegt
 		Predicate predicateStatus = root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates());
 		// Datum der Verfuegung muss nach (oder gleich) dem Anfang des Abfragezeitraums sein
-		final Predicate predicateDatumVon = builder.greaterThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumVon.atStartOfDay());
+		final Predicate predicateDatumVon =
+			builder.greaterThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumVon.atStartOfDay());
 		// Datum der Verfuegung muss vor (oder gleich) dem Ende des Abfragezeitraums sein
-		final Predicate predicateDatumBis = builder.lessThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumBis.atStartOfDay());
+		final Predicate predicateDatumBis =
+			builder.lessThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumBis.atStartOfDay());
 		// Der Benutzer muss eine aktive Berechtigung mit Rolle ADMIN_BG oder SACHBEARBEITER_BG haben
-		Predicate predicateActive = builder.between(builder.literal(LocalDate.now()),
+		Predicate predicateActive = builder.between(
+			builder.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate isCorrectRole = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtSuperadminRoles());
+		Predicate isCorrectRole =
+			joinBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtSuperadminRoles());
 
 		query.where(predicateStatus, predicateDatumVon, predicateDatumBis, predicateActive, isCorrectRole);
 
-		query.groupBy(benutzerJoin.get(Benutzer_.id), benutzerJoin.get(Benutzer_.nachname), benutzerJoin.get(Benutzer_.vorname));
+		query.groupBy(
+			benutzerJoin.get(AbstractEntity_.id),
+			benutzerJoin.get(Benutzer_.nachname),
+			benutzerJoin.get(Benutzer_.vorname));
 		query.orderBy(builder.asc(benutzerJoin.get(Benutzer_.nachname)));
 
 		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
-	private List<MitarbeiterinnenDataRow> convertToMitarbeiterinnenDataRow(List<Tuple> numberVerantwortlicheGesuche, List<Tuple> numberVerfuegteGesuche) {
+	private List<MitarbeiterinnenDataRow> convertToMitarbeiterinnenDataRow(
+		List<Tuple> numberVerantwortlicheGesuche,
+		List<Tuple> numberVerfuegteGesuche) {
+
 		final Map<String, MitarbeiterinnenDataRow> result = new HashMap<>();
+
 		for (Tuple tupleVerant : numberVerantwortlicheGesuche) {
 			MitarbeiterinnenDataRow row = createMitarbeiterinnenDataRow(tupleVerant,
 				new BigDecimal((Long) tupleVerant.get("allVerantwortlicheGesuche")), BigDecimal.ZERO);
-			result.put((String) tupleVerant.get(Benutzer_.id.getName()), row);
+			result.put((String) tupleVerant.get(AbstractEntity_.id.getName()), row);
 		}
+
 		for (Tuple tupleVerfuegte : numberVerfuegteGesuche) {
 			final BigDecimal numberVerfuegte = new BigDecimal((Long) tupleVerfuegte.get("allVerfuegteGesuche"));
-			final MitarbeiterinnenDataRow existingRow = result.get((String) tupleVerfuegte.get(Benutzer_.id.getName()));
+			final MitarbeiterinnenDataRow existingRow = result.get(tupleVerfuegte.get(AbstractEntity_.id.getName()));
 			if (existingRow != null) {
 				existingRow.setVerfuegungenAusgestellt(numberVerfuegte);
 			} else {
-				MitarbeiterinnenDataRow row = createMitarbeiterinnenDataRow(tupleVerfuegte, BigDecimal.ZERO, numberVerfuegte);
-				result.put((String) tupleVerfuegte.get(Benutzer_.id.getName()), row);
+				MitarbeiterinnenDataRow row =
+					createMitarbeiterinnenDataRow(tupleVerfuegte, BigDecimal.ZERO, numberVerfuegte);
+				result.put((String) tupleVerfuegte.get(AbstractEntity_.id.getName()), row);
 			}
 		}
+
 		return new ArrayList<>(result.values());
 	}
 
 	@Nonnull
-	private MitarbeiterinnenDataRow createMitarbeiterinnenDataRow(Tuple tuple, BigDecimal numberVerant, BigDecimal numberVerfuegte) {
+	private MitarbeiterinnenDataRow createMitarbeiterinnenDataRow(
+		Tuple tuple,
+		BigDecimal numberVerant,
+		BigDecimal numberVerfuegte) {
+
 		MitarbeiterinnenDataRow row = new MitarbeiterinnenDataRow();
 		row.setName((String) tuple.get(Benutzer_.nachname.getName()));
 		row.setVorname((String) tuple.get(Benutzer_.vorname.getName()));
 		row.setVerantwortlicheGesuche(numberVerant);
 		row.setVerfuegungenAusgestellt(numberVerfuegte);
+
 		return row;
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportMitarbeiterinnen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis) throws ExcelMergeException, IOException, URISyntaxException {
+	public UploadFileInfo generateExcelReportMitarbeiterinnen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis)
+		throws ExcelMergeException {
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MITARBEITERINNEN;
@@ -596,14 +674,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis);
-		ExcelMergerDTO excelMergerDTO = mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(), datumVon, datumBis);
+		ExcelMergerDTO excelMergerDTO =
+			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(), datumVon, datumBis);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		mitarbeiterinnenExcelConverter.applyAutoSize(sheet);
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -614,13 +694,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		try {
 			return new MimeType(MIME_TYPE_EXCEL);
 		} catch (MimeTypeParseException e) {
-			throw new EbeguRuntimeException("getContentTypeForExport", "could not parse mime type", e, MIME_TYPE_EXCEL);
-
+			throw new EbeguRuntimeException("getContentTypeForExport", "could not parse mime type", e,
+				MIME_TYPE_EXCEL);
 		}
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -628,14 +709,22 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportZahlungAuftrag(@Nonnull String auftragId) throws ExcelMergeException {
 
 		Zahlungsauftrag zahlungsauftrag = zahlungService.findZahlungsauftrag(auftragId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("generateExcelReportZahlungAuftrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"generateExcelReportZahlungAuftrag",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				auftragId));
 
-		return getUploadFileInfoZahlung(zahlungsauftrag.getZahlungen(), zahlungsauftrag.getFilename(), zahlungsauftrag.getBeschrieb(),
-			zahlungsauftrag.getDatumGeneriert(), zahlungsauftrag.getDatumFaellig());
+		return getUploadFileInfoZahlung(
+			zahlungsauftrag.getZahlungen(),
+			zahlungsauftrag.getFilename(),
+			zahlungsauftrag.getBeschrieb(),
+			zahlungsauftrag.getDatumGeneriert(),
+			zahlungsauftrag.getDatumFaellig());
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -645,16 +734,36 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<Zahlung> reportData = new ArrayList<>();
 
 		Zahlung zahlung = zahlungService.findZahlung(zahlungId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("generateExcelReportZahlungAuftrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungId));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"generateExcelReportZahlungAuftrag",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				zahlungId));
 
 		reportData.add(zahlung);
 
-		return getUploadFileInfoZahlung(reportData, zahlung.getZahlungsauftrag().getFilename() + '_' + zahlung.getInstitutionStammdaten().getInstitution().getName(),
-			zahlung.getZahlungsauftrag().getBeschrieb(), zahlung.getZahlungsauftrag().getDatumGeneriert(), zahlung.getZahlungsauftrag().getDatumFaellig());
+		Zahlungsauftrag zahlungsauftrag = zahlung.getZahlungsauftrag();
+
+		String fileName = zahlungsauftrag.getFilename() + '_' + zahlung.getInstitutionStammdaten()
+			.getInstitution()
+			.getName();
+
+		return getUploadFileInfoZahlung(
+			reportData,
+			fileName,
+			zahlungsauftrag.getBeschrieb(),
+			zahlungsauftrag.getDatumGeneriert(),
+			zahlungsauftrag.getDatumFaellig()
+		);
 	}
 
 	@Nonnull
-	private UploadFileInfo getUploadFileInfoZahlung(List<Zahlung> reportData, String excelFileName, String bezeichnung, LocalDateTime datumGeneriert, LocalDate datumFaellig) throws ExcelMergeException {
+	private UploadFileInfo getUploadFileInfoZahlung(
+		List<Zahlung> reportData,
+		String excelFileName,
+		String bezeichnung,
+		LocalDateTime datumGeneriert,
+		LocalDate datumFaellig) throws ExcelMergeException {
+
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
@@ -674,24 +783,32 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			excelFileName + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportZahlungPeriode(@Nonnull String gesuchsperiodeId) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportZahlungPeriode(@Nonnull String gesuchsperiodeId)
+		throws ExcelMergeException {
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("generateExcelReportZahlungPeriode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"generateExcelReportZahlungPeriode",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId));
 
-		final Collection<Zahlungsauftrag> zahlungsauftraegeInPeriode = zahlungService.getZahlungsauftraegeInPeriode(gesuchsperiode.getGueltigkeit().getGueltigAb(), gesuchsperiode.getGueltigkeit().getGueltigBis());
+		final Collection<Zahlungsauftrag> zahlungsauftraegeInPeriode = zahlungService.getZahlungsauftraegeInPeriode(
+			gesuchsperiode.getGueltigkeit().getGueltigAb(),
+			gesuchsperiode.getGueltigkeit().getGueltigBis());
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE;
 
@@ -705,49 +822,77 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			.flatMap(zahlungsauftrag -> zahlungsauftrag.getZahlungen().stream())
 			.collect(Collectors.toList());
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(allZahlungen, gesuchsperiode.getGesuchsperiodeString(), Locale.getDefault());
+		ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(
+			allZahlungen,
+			gesuchsperiode.getGesuchsperiodeString(),
+			Locale.getDefault());
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		zahlungAuftragPeriodeExcelConverter.applyAutoSize(sheet);
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
 
 	@Nonnull
-	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchstellerKinderBetreuung(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable Gesuchsperiode gesuchsperiode) {
+	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchstellerKinderBetreuung(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable Gesuchsperiode gesuchsperiode) {
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
-		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList);
-		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer).thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+		List<GesuchstellerKinderBetreuungDataRow> dataRows =
+			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList);
+
+		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
+			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+
 		return dataRows;
 	}
 
 	@Nonnull
-	private List<GesuchstellerKinderBetreuungDataRow> getReportDataKinder(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable Gesuchsperiode gesuchsperiode) {
+	private List<GesuchstellerKinderBetreuungDataRow> getReportDataKinder(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable Gesuchsperiode gesuchsperiode) {
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
 		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList);
-		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer).thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+
+		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
+			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+
 		return dataRows;
 	}
 
 	@Nonnull
 	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchsteller(@Nonnull LocalDate stichtag) {
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(stichtag);
-		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList);
-		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer).thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+
+		List<GesuchstellerKinderBetreuungDataRow> dataRows =
+			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList);
+
+		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
+			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
+
 		return dataRows;
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable Gesuchsperiode gesuchsperiode) {
+	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable Gesuchsperiode gesuchsperiode) {
 		validateDateParams(datumVon, datumBis);
 
-		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt verfuegte.
+		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
+		// verfuegte.
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = builder.createQuery(VerfuegungZeitabschnitt.class);
 		query.distinct(true);
@@ -757,14 +902,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
-		Predicate predicateStart = builder.lessThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb), datumBis);
+		Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
+		Predicate predicateStart = builder.lessThanOrEqualTo(dateRangePath.get(DateRange_.gueltigAb), datumBis);
 		predicatesToUse.add(predicateStart);
-		Predicate predicateEnd = builder.greaterThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis), datumVon);
+		Predicate predicateEnd = builder.greaterThanOrEqualTo(dateRangePath.get(DateRange_.gueltigBis), datumVon);
 		predicatesToUse.add(predicateEnd);
 		// Gesuchsperiode
 		if (gesuchsperiode != null) {
-			Predicate predicateGesuchsperiode = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung).get(Verfuegung_.betreuung).get(Betreuung_.kind)
-				.get(KindContainer_.gesuch).get(Gesuch_.gesuchsperiode), gesuchsperiode);
+			Predicate predicateGesuchsperiode = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.kind)
+				.get(KindContainer_.gesuch)
+				.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 			predicatesToUse.add(predicateGesuchsperiode);
 		}
 		// Nur neueste Verfuegung jedes Falls beachten
@@ -772,10 +921,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		predicatesToUse.add(predicateGueltig);
 
 		// Sichtbarkeit nach eingeloggtem Benutzer
-		boolean isInstitutionsbenutzer = principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
+		boolean isInstitutionsbenutzer =
+			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
-			Collection<Institution> allowedInstitutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung).get(Verfuegung_.betreuung).get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution).in(allowedInstitutionen);
+			Collection<Institution> allowedInstitutionen =
+				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.institution)
+				.in(allowedInstitutionen);
 			predicatesToUse.add(predicateAllowedInstitutionen);
 		}
 		Predicate predicateForBenutzerRole = getPredicateForBenutzerRole(builder, root);
@@ -787,16 +942,24 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nullable
-	private Predicate getPredicateForBenutzerRole(@Nonnull CriteriaBuilder builder, @Nonnull Root<VerfuegungZeitabschnitt> root) {
+	private Predicate getPredicateForBenutzerRole(
+		@Nonnull CriteriaBuilder builder,
+		@Nonnull Root<VerfuegungZeitabschnitt> root) {
 		boolean isTSBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_TS, UserRole.ADMIN_TS);
 		boolean isBGBenutzer = principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_BG, UserRole.ADMIN_BG);
 
 		if (isTSBenutzer) {
-			Predicate predicateSchulamt = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung).get(Verfuegung_.betreuung).get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+			Predicate predicateSchulamt = builder.equal(root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
 			return predicateSchulamt;
 		}
 		if (isBGBenutzer) {
-			Predicate predicateNotSchulamt = builder.notEqual(root.get(VerfuegungZeitabschnitt_.verfuegung).get(Verfuegung_.betreuung).get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+			Predicate predicateNotSchulamt = builder.notEqual(root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
 			return predicateNotSchulamt;
 		}
 		return null;
@@ -807,7 +970,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(@Nonnull LocalDate stichtag) {
 		Objects.requireNonNull(stichtag, VALIDIERUNG_STICHTAG);
 
-		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt verfuegte.
+		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
+		// verfuegte.
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = builder.createQuery(VerfuegungZeitabschnitt.class);
 		query.distinct(true);
@@ -817,19 +981,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// Stichtag
-		Predicate intervalPredicate = builder.between(builder.literal(stichtag),
-			root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb),
-			root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis));
+		Predicate intervalPredicate = builder.between(
+			builder.literal(stichtag),
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 		predicatesToUse.add(intervalPredicate);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = builder.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicatesToUse.add(predicateGueltig);
 
 		// Sichtbarkeit nach eingeloggtem Benutzer
-		boolean isInstitutionsbenutzer = principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
+		boolean isInstitutionsbenutzer =
+			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
-			Collection<Institution> allowedInstitutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung).get(Verfuegung_.betreuung).get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution).in(allowedInstitutionen);
+			Collection<Institution> allowedInstitutionen =
+				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung)
+				.get(Verfuegung_.betreuung)
+				.get(Betreuung_.institutionStammdaten)
+				.get(InstitutionStammdaten_.institution)
+				.in(allowedInstitutionen);
 			predicatesToUse.add(predicateAllowedInstitutionen);
 		}
 		Predicate predicateForBenutzerRole = getPredicateForBenutzerRole(builder, root);
@@ -840,11 +1011,21 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return persistence.getCriteriaResults(query);
 	}
 
-	private void addStammdaten(GesuchstellerKinderBetreuungDataRow row, VerfuegungZeitabschnitt zeitabschnitt, Gesuch gesuch) {
-		row.setInstitution(zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten().getInstitution().getName());
+	private void addStammdaten(
+		GesuchstellerKinderBetreuungDataRow row,
+		VerfuegungZeitabschnitt zeitabschnitt,
+		Gesuch gesuch) {
+
+		row.setInstitution(zeitabschnitt.getVerfuegung()
+			.getBetreuung()
+			.getInstitutionStammdaten()
+			.getInstitution()
+			.getName());
+
 		row.setBetreuungsTyp(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
-		row.setGesuchStatus(ServerMessageUtil.getMessage(AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name()));
+		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
+		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey));
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
 			if (AntragStatus.getAllVerfuegtStates().contains(antragStatusHistory.getStatus())) {
@@ -855,11 +1036,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgNummer(zeitabschnitt.getVerfuegung().getBetreuung().getBGNummer());
 	}
 
-	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(GesuchstellerKinderBetreuungDataRow row, GesuchstellerContainer containerGS1) {
+	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
+		GesuchstellerKinderBetreuungDataRow row,
+		GesuchstellerContainer containerGS1) {
+
 		Gesuchsteller gs1 = containerGS1.getGesuchstellerJA();
 		row.setGs1Name(gs1.getNachname());
 		row.setGs1Vorname(gs1.getVorname());
 		GesuchstellerAdresse gs1Adresse = containerGS1.getWohnadresseAm(row.getZeitabschnittVon());
+
 		if (gs1Adresse != null) {
 			row.setGs1Strasse(gs1Adresse.getStrasse());
 			row.setGs1Hausnummer(gs1Adresse.getHausnummer());
@@ -894,11 +1079,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 	}
 
-	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(GesuchstellerKinderBetreuungDataRow row, GesuchstellerContainer containerGS2) {
+	private void addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(
+		GesuchstellerKinderBetreuungDataRow row,
+		GesuchstellerContainer containerGS2) {
+
 		Gesuchsteller gs2 = containerGS2.getGesuchstellerJA();
 		row.setGs2Name(gs2.getNachname());
 		row.setGs2Vorname(gs2.getVorname());
 		GesuchstellerAdresse gs2Adresse = containerGS2.getWohnadresseAm(row.getZeitabschnittVon());
+
 		if (gs2Adresse != null) {
 			row.setGs2Strasse(gs2Adresse.getStrasse());
 			row.setGs2Hausnummer(gs2Adresse.getHausnummer());
@@ -932,7 +1121,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 	}
 
-	private void addKindToGesuchstellerKinderBetreuungDataRow(GesuchstellerKinderBetreuungDataRow row, Betreuung betreuung) {
+	private void addKindToGesuchstellerKinderBetreuungDataRow(
+		GesuchstellerKinderBetreuungDataRow row,
+		Betreuung betreuung) {
+
 		Kind kind = betreuung.getKind().getKindJA();
 		row.setKindName(kind.getNachname());
 		row.setKindVorname(kind.getVorname());
@@ -940,16 +1132,24 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (row.getKindGeburtsdatum() == null || row.getKindGeburtsdatum().isBefore(MIN_DATE)) {
 			row.setKindGeburtsdatum(MIN_DATE);
 		}
-		row.setKindFachstelle(kind.getPensumFachstelle() != null ? kind.getPensumFachstelle().getFachstelle().getName() : StringUtils.EMPTY);
+		row.setKindFachstelle(kind.getPensumFachstelle() != null ?
+			kind.getPensumFachstelle().getFachstelle().getName() :
+			StringUtils.EMPTY);
 		row.setKindErwBeduerfnisse(betreuung.getErweiterteBeduerfnisse());
 		row.setKindDeutsch(kind.getMutterspracheDeutsch());
 		row.setKindEinschulungTyp(kind.getEinschulungTyp());
 	}
 
-	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(GesuchstellerKinderBetreuungDataRow row, VerfuegungZeitabschnitt zeitabschnitt, Betreuung betreuung) {
+	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(
+		GesuchstellerKinderBetreuungDataRow row,
+		VerfuegungZeitabschnitt zeitabschnitt,
+		Betreuung betreuung) {
+
 		row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 		row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-		row.setBetreuungsStatus(ServerMessageUtil.getMessage(Betreuungsstatus.class.getSimpleName() + '_' + betreuung.getBetreuungsstatus().name()));
+		row.setBetreuungsStatus(ServerMessageUtil.getMessage(Betreuungsstatus.class.getSimpleName()
+			+ '_'
+			+ betreuung.getBetreuungsstatus().name()));
 		row.setBetreuungsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensum()));
 		row.setAnspruchsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getAnspruchberechtigtesPensum()));
 		row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
@@ -959,11 +1159,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setVerguenstigt(zeitabschnitt.getVerguenstigung());
 	}
 
+	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportGesuchstellerKinderBetreuung(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable String gesuchPeriodeId) throws ExcelMergeException, IOException, URISyntaxException {
+	public UploadFileInfo generateExcelReportGesuchstellerKinderBetreuung(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable String gesuchPeriodeId) throws ExcelMergeException {
 		Objects.requireNonNull(datumVon, VALIDIERUNG_DATUM_VON);
 		Objects.requireNonNull(datumBis, VALIDIERUNG_DATUM_BIS);
 
@@ -977,34 +1182,48 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Gesuchsperiode gesuchsperiode = null;
 		if (gesuchPeriodeId != null) {
-			Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
+			Optional<Gesuchsperiode> gesuchsperiodeOptional =
+				gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
 			if (gesuchsperiodeOptional.isPresent()) {
 				gesuchsperiode = gesuchsperiodeOptional.get();
 			}
 		}
 
-		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode);
+		List<GesuchstellerKinderBetreuungDataRow> reportData =
+			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode);
 
-		final XSSFSheet xsslSheet = (XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(reportData, sheet, datumVon, datumBis, gesuchsperiode);
+		final XSSFSheet xsslSheet =
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(
+				reportData,
+				sheet,
+				datumVon,
+				datumBis,
+				gesuchsperiode);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData);
 		return saveExcelDokument(reportResource, rowFiller);
 	}
 
-	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(List<VerfuegungZeitabschnitt> zeitabschnittList) {
+	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(
+		List<VerfuegungZeitabschnitt> zeitabschnittList) {
+
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache = new HashMap<>();
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
-			GesuchstellerKinderBetreuungDataRow row = createRowForGesuchstellerKinderBetreuungReport(zeitabschnitt, neustesVerfuegtesGesuchCache);
+			GesuchstellerKinderBetreuungDataRow row =
+				createRowForGesuchstellerKinderBetreuungReport(zeitabschnitt, neustesVerfuegtesGesuchCache);
 			dataRowList.add(row);
 		}
+
 		return dataRowList;
 	}
 
 	@SuppressWarnings({ "Duplicates", "PMD.NcssMethodCount" })
-	private GesuchstellerKinderBetreuungDataRow createRowForGesuchstellerKinderBetreuungReport(VerfuegungZeitabschnitt zeitabschnitt, Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
+	private GesuchstellerKinderBetreuungDataRow createRowForGesuchstellerKinderBetreuungReport(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
 		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
 		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
@@ -1051,7 +1270,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Familiensituation / Einkommen
 		FamiliensituationContainer familiensituationContainer = gueltigeGesuch.getFamiliensituationContainer();
 		if (familiensituationContainer != null) {
-			Familiensituation familiensituation = familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
+			Familiensituation familiensituation =
+				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
 			if (familiensituation.hasSecondGesuchsteller()) {
 				row.setKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
@@ -1065,12 +1285,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setMassgEink(zeitabschnitt.getMassgebendesEinkommen());
 		row.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
 		if (gueltigeGesuch.getEinkommensverschlechterungInfoContainer() != null) {
-			row.setEkvVorhanden(gueltigeGesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung());
+			row.setEkvVorhanden(gueltigeGesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEinkommensverschlechterung());
 		}
 		row.setStvGeprueft(gesuch.isGeprueftSTV());
 		if (gueltigeGesuch.getGesuchsteller1() != null &&
 			gueltigeGesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
-			row.setVeranlagt(gueltigeGesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerveranlagungErhalten());
+			row.setVeranlagt(gueltigeGesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getSteuerveranlagungErhalten());
 		} else {
 			row.setVeranlagt(Boolean.FALSE);
 		}
@@ -1082,11 +1307,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportKinder(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable String gesuchPeriodeId) throws ExcelMergeException, IOException, URISyntaxException {
+	public UploadFileInfo generateExcelReportKinder(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable String gesuchPeriodeId) throws ExcelMergeException {
 		Objects.requireNonNull(datumVon, VALIDIERUNG_DATUM_VON);
 		Objects.requireNonNull(datumBis, VALIDIERUNG_DATUM_BIS);
 
@@ -1100,7 +1330,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Gesuchsperiode gesuchsperiode = null;
 		if (gesuchPeriodeId != null) {
-			Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
+			Optional<Gesuchsperiode> gesuchsperiodeOptional =
+				gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
 			if (gesuchsperiodeOptional.isPresent()) {
 				gesuchsperiode = gesuchsperiodeOptional.get();
 			}
@@ -1108,19 +1339,28 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataKinder(datumVon, datumBis, gesuchsperiode);
 
-		final XSSFSheet xsslSheet = (XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(reportData, sheet, datumVon, datumBis, gesuchsperiode);
+		final XSSFSheet xsslSheet =
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(
+				reportData,
+				sheet,
+				datumVon,
+				datumBis,
+				gesuchsperiode);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData);
 		return saveExcelDokument(reportResource, rowFiller);
 	}
 
-	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(List<VerfuegungZeitabschnitt> zeitabschnittList) {
+	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(
+		List<VerfuegungZeitabschnitt> zeitabschnittList) {
+
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache = new HashMap<>();
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
-			GesuchstellerKinderBetreuungDataRow row = createRowForKinderReport(zeitabschnitt, neustesVerfuegtesGesuchCache);
+			GesuchstellerKinderBetreuungDataRow row =
+				createRowForKinderReport(zeitabschnitt, neustesVerfuegtesGesuchCache);
 			dataRowList.add(row);
 		}
 
@@ -1128,7 +1368,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@SuppressWarnings("Duplicates")
-	private GesuchstellerKinderBetreuungDataRow createRowForKinderReport(VerfuegungZeitabschnitt zeitabschnitt, Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
+	private GesuchstellerKinderBetreuungDataRow createRowForKinderReport(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
 		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
 		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
@@ -1175,35 +1417,43 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private Gesuch getGueltigesGesuch(Map<Long, Gesuch> neustesVerfuegtesGesuchCache, Gesuch gesuch) {
 		Gesuch gueltigeGesuch;
-		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(gesuch.getFall().getFallNummer(),
+		gueltigeGesuch = neustesVerfuegtesGesuchCache.getOrDefault(
+			gesuch.getFall().getFallNummer(),
 			gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false)
 				.orElse(gesuch));
 		return gueltigeGesuch;
 	}
 
-	private Betreuung getGueltigeBetreuung(VerfuegungZeitabschnitt zeitabschnitt, Betreuung gueltigeBetreuung, Optional<KindContainer> gueltigeKind) {
-		if (gueltigeKind.isPresent()) {
-			gueltigeBetreuung = gueltigeKind.get().getBetreuungen().stream().filter(betreuung -> betreuung
+	private Betreuung getGueltigeBetreuung(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		Betreuung gueltigeBetreuung,
+		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<KindContainer> gueltigeKind) {
+
+		return gueltigeKind
+			.map(gk -> gk.getBetreuungen().stream().filter(betreuung -> betreuung
 				.getBetreuungNummer()
 				.equals(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungNummer()))
 				.findFirst()
-				.orElse(zeitabschnitt.getVerfuegung().getBetreuung());
-		}
-		return gueltigeBetreuung;
+				.orElse(zeitabschnitt.getVerfuegung().getBetreuung()))
+			.orElse(gueltigeBetreuung);
 	}
 
 	private Optional<KindContainer> getGueltigesKind(VerfuegungZeitabschnitt zeitabschnitt, Gesuch gueltigeGesuch) {
-		return gueltigeGesuch.getKindContainers().stream().filter(kindContainer -> kindContainer
-			.getKindNummer().equals(zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindNummer()))
+		Integer kindNummer = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindNummer();
+
+		return gueltigeGesuch.getKindContainers().stream()
+			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
 			.findFirst();
 	}
 
+	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, ADMIN_TS, SACHBEARBEITER_TS,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag) throws ExcelMergeException, IOException, URISyntaxException {
+	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag) throws ExcelMergeException {
 		Objects.requireNonNull(stichtag, VALIDIERUNG_STICHTAG);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER;
@@ -1216,7 +1466,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag);
 
-		final XSSFSheet xsslSheet = (XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(reportData, sheet, stichtag);
+		final XSSFSheet xsslSheet =
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(reportData, sheet, stichtag);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData);
 		return saveExcelDokument(reportResource, rowFiller);
@@ -1226,10 +1477,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	 * fuegt die Daten der Excelsheet hinzu und gibt den Rowfiller zurueck
 	 */
 	@Nonnull
-	private RowFiller fillAndMergeRows(ReportVorlage reportResource, XSSFSheet sheet, List<GesuchstellerKinderBetreuungDataRow> reportData) {
-		RowFiller rowFiller = RowFiller.initRowFiller(sheet, MergeFieldProvider.toMergeFields(reportResource.getMergeFields()), reportData.size());
+	private RowFiller fillAndMergeRows(
+		ReportVorlage reportResource,
+		XSSFSheet sheet,
+		List<GesuchstellerKinderBetreuungDataRow> reportData) {
+
+		RowFiller rowFiller = RowFiller.initRowFiller(
+			sheet,
+			MergeFieldProvider.toMergeFields(reportResource.getMergeFields()),
+			reportData.size());
+
 		gesuchstellerKinderBetreuungExcelConverter.mergeRows(rowFiller, reportData);
 		gesuchstellerKinderBetreuungExcelConverter.applyAutoSize(sheet);
+
 		return rowFiller;
 	}
 
@@ -1242,7 +1502,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		rowFiller.getSheet().getWorkbook().dispose();
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportResource.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -1311,7 +1572,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1333,7 +1595,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
+		return fileSaverService.save(
+			bytes,
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
@@ -1353,71 +1616,83 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<Predicate> predicates = new ArrayList<>();
 
 		// Gesuchsteller sollen nicht ausgegeben werden
-		Predicate predicateActive = builder.between(builder.literal(LocalDate.now()),
-			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
+		Path<DateRange> dateRangePath = joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit);
+		Predicate predicateActive = builder.between(
+			builder.literal(LocalDate.now()),
+			dateRangePath.get(DateRange_.gueltigAb),
+			dateRangePath.get(DateRange_.gueltigBis)
+		);
 		Predicate predicateRoleNotGS = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER).not();
 		predicates.add(predicateActive);
 		predicates.add(predicateRoleNotGS);
 
-		// Wenn es sich nicht um einen SuperAdmin handelt, muss noch der Mandant beachtet werden, sowie die SuperAdmin ausgefiltert werden.
-		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged in"));
+		// Wenn es sich nicht um einen SuperAdmin handelt, muss noch der Mandant beachtet werden, sowie die SuperAdmin
+		// ausgefiltert werden.
+		Benutzer user = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged in"));
 		UserRole role = user.getRole();
 		if (role != UserRole.SUPER_ADMIN) {
 			// Admins duerfen alle Benutzer ihres Mandanten sehen
 			predicates.add(builder.equal(root.get(Benutzer_.mandant), user.getMandant()));
 			// Und sie duerfen keine Superadmins sehen
-			Predicate predicateRoleNotSuperadmin = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN).not();
+			Predicate predicateRoleNotSuperadmin =
+				joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN).not();
 			predicates.add(predicateRoleNotSuperadmin);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		List<Benutzer> benutzerList = persistence.getCriteriaResults(query);
-		List<BenutzerDataRow> dataRowList = convertToBenutzerDataRow(benutzerList);
-		return dataRowList;
+
+		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();
+		return convertToBenutzerDataRow(benutzerList, betreuungsangebotMap);
 	}
 
 	@Nonnull
-	private List<BenutzerDataRow> convertToBenutzerDataRow(List<Benutzer> benutzerList) {
-		List<BenutzerDataRow> dataRowList = new ArrayList<>();
+	private List<BenutzerDataRow> convertToBenutzerDataRow(@Nonnull List<Benutzer> benutzerList, Map<String, EnumSet<BetreuungsangebotTyp>>
+		betreuungsangebotMap) {
+		return benutzerList.stream()
+			.map(benutzer -> benutzerToDataRow(benutzer, betreuungsangebotMap))
+			.collect(Collectors.toList());
+	}
 
-		for (Benutzer benutzer : benutzerList) {
-			BenutzerDataRow row = new BenutzerDataRow();
-			row.setUsername(benutzer.getUsername());
+	@Nonnull
+	private BenutzerDataRow benutzerToDataRow(@Nonnull Benutzer benutzer, Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap) {
+		BenutzerDataRow row = new BenutzerDataRow();
+		row.setUsername(benutzer.getUsername());
 
-			row.setNachname(benutzer.getNachname());
-			row.setVorname(benutzer.getVorname());
-			row.setEmail(benutzer.getEmail());
-			row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole()));
-			LocalDate gueltigAb = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigAb();
-			if (gueltigAb.isAfter(Constants.START_OF_TIME)) {
-				row.setRoleGueltigAb(gueltigAb);
-			}
-			LocalDate gueltigBis = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigBis();
-			if (gueltigBis.isBefore(Constants.END_OF_TIME)) {
-				row.setRoleGueltigBis(gueltigBis);
-			}
-			String institution = benutzer.getInstitution() != null ? benutzer.getInstitution().getName() : null;
-			String traegerschaft = getTraegerschaftForBenutzer(benutzer);
-			row.setGemeinden(benutzer.getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
-			row.setInstitution(institution);
-			row.setTraegerschaft(traegerschaft);
-			row.setGesperrt(benutzer.getGesperrt());
-			setBetreuungsangebote(row, benutzer);
-			dataRowList.add(row);
+		row.setNachname(benutzer.getNachname());
+		row.setVorname(benutzer.getVorname());
+		row.setEmail(benutzer.getEmail());
+		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole()));
+		LocalDate gueltigAb = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigAb();
+		if (gueltigAb.isAfter(Constants.START_OF_TIME)) {
+			row.setRoleGueltigAb(gueltigAb);
 		}
-		return dataRowList;
+		LocalDate gueltigBis = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigBis();
+		if (gueltigBis.isBefore(Constants.END_OF_TIME)) {
+			row.setRoleGueltigBis(gueltigBis);
+		}
+		String institution = benutzer.getInstitution() != null ? benutzer.getInstitution().getName() : null;
+		String traegerschaft = getTraegerschaftForBenutzer(benutzer);
+		row.setGemeinden(benutzer.getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
+		row.setInstitution(institution);
+		row.setTraegerschaft(traegerschaft);
+		row.setStatus(benutzer.getStatus());
+		setBetreuungsangebote(row, benutzer, betreuungsangebotMap);
+
+		return row;
 	}
 
 	/**
-	 * The Traegerschaft comes directly from the user when it has one. If it has an Institution the tragerschaft will be the one
+	 * The Traegerschaft comes directly from the user when it has one. If it has an Institution the tragerschaft will
+	 * be the one
 	 * the institution belongs to.
 	 * Nuull is returned when the user has no traegerschaft and no institution or this one has no traegerschaft.
 	 * The role isn't taken into account!
 	 */
 	@Nullable
 	private String getTraegerschaftForBenutzer(@Nonnull Benutzer benutzer) {
-		if (benutzer.getTraegerschaft() != null ) {
+		if (benutzer.getTraegerschaft() != null) {
 			return benutzer.getTraegerschaft().getName();
 		}
 		if (benutzer.getInstitution() != null && benutzer.getInstitution().getTraegerschaft() != null) {
@@ -1426,15 +1701,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return null;
 	}
 
-	public void setBetreuungsangebote(@Nonnull BenutzerDataRow row, @Nonnull Benutzer benutzer) {
+	public void setBetreuungsangebote(@Nonnull BenutzerDataRow row, @Nonnull Benutzer benutzer, Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap) {
 		// we go through all Traegerschaft/Inst/InstStammdaten and check which kind of Angebot they offer.
-		// We don't get this information directly from the sql-query because it would be quite difficult and the result very long
+		// We don't get this information directly from the sql-query because it would be quite difficult and the
+		// result very long
 		// since it is a report and the users allow them to take long to execute, this shouldn't be any problem.
 
-		// to improve performance we have a Map where we save already calculated results. We use the ID so we can have a Map for both
-		// traegerschaft and Institutionen
-		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();
-
+		// to improve performance we have a Map where we save already calculated results. We use the ID so we can have
+		// a Map for both traegerschaft and Institutionen
 		// traegerschaft has a higher priority than institution
 		if (benutzer.getTraegerschaft() != null) {
 			if (!betreuungsangebotMap.containsKey(benutzer.getTraegerschaft().getId())) {
@@ -1452,14 +1726,22 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			setBetreuungsangebotValues(row, betreuungsangebotMap.get(benutzer.getInstitution().getId()));
 		}
-
 	}
 
-	public void setBetreuungsangebotValues(@Nonnull BenutzerDataRow row, @Nonnull EnumSet<BetreuungsangebotTyp> angebote) {
+	public void setBetreuungsangebotValues(
+		@Nonnull BenutzerDataRow row,
+		@Nonnull EnumSet<BetreuungsangebotTyp> angebote) {
+
 		row.setKita(angebote.stream().anyMatch(BetreuungsangebotTyp::isKita));
 		row.setTagesfamilien(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesfamilien));
 		row.setTagi(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagi));
 		row.setTagesschule(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesschule));
 		row.setFerieninsel(angebote.stream().anyMatch(BetreuungsangebotTyp::isFerieninsel));
+	}
+
+	private int onlySchulamt() {
+		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS};
+
+		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
 	}
 }

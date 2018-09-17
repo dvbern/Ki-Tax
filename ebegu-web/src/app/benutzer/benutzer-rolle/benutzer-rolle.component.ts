@@ -30,10 +30,10 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 })
 export class BenutzerRolleComponent implements OnInit {
 
-    @Input() public inputName: string;
+    @Input() public name: string;
     @Input() public readonly inputId: string;
-    @Input() public readonly inputRequired: boolean = false;
-    @Input() public readonly inputDisabled: boolean = false;
+    @Input() public readonly required: boolean = false;
+    @Input() public readonly disabled: boolean = false;
     @Input() public readonly exludedRoles: TSRole[] = [];
 
     @Output() public benutzerRolleChange = new EventEmitter<TSRole>();

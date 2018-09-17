@@ -69,7 +69,7 @@ import TSGesuchsteller from '../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../models/TSKindContainer';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import TSVerfuegung from '../../models/TSVerfuegung';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -555,7 +555,7 @@ export default class GesuchModelManager {
             let gesuchsteller: TSGesuchsteller;
             // die daten die wir aus iam importiert haben werden bei gs1 abgefuellt
             if (this.gesuchstellerNumber === 1 && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                const principal: TSUser = this.authServiceRS.getPrincipal();
+                const principal: TSBenutzer = this.authServiceRS.getPrincipal();
                 const name: string = principal ? principal.nachname : undefined;
                 const vorname: string = principal ? principal.vorname : undefined;
                 const email: string = principal ? principal.email : undefined;
@@ -1004,7 +1004,7 @@ export default class GesuchModelManager {
     /**
      * Sets the current user as VerantwortlicherTS and saves it in the DB
      */
-    public setUserAsFallVerantwortlicherTS(user: TSUser) {
+    public setUserAsFallVerantwortlicherTS(user: TSBenutzer) {
         if (this.gesuch && this.gesuch.dossier) {
             this.dossierRS.setVerantwortlicherTS(this.gesuch.dossier.id, user ? user.username : null)
                 .then(() => {
@@ -1016,7 +1016,7 @@ export default class GesuchModelManager {
     /**
      * Sets the current user as VerantwortlicherBG and saves it in the DB
      */
-    public setUserAsFallVerantwortlicherBG(user: TSUser) {
+    public setUserAsFallVerantwortlicherBG(user: TSBenutzer) {
         if (this.gesuch && this.gesuch.dossier) {
             this.dossierRS.setVerantwortlicherBG(this.gesuch.dossier.id, user ? user.username : null)
                 .then(() => {
@@ -1025,14 +1025,14 @@ export default class GesuchModelManager {
         }
     }
 
-    public getFallVerantwortlicherBG(): TSUser {
+    public getFallVerantwortlicherBG(): TSBenutzer {
         if (this.gesuch && this.gesuch.dossier) {
             return this.gesuch.dossier.getHauptverantwortlicher();
         }
         return undefined;
     }
 
-    public getFallVerantwortlicherTS(): TSUser {
+    public getFallVerantwortlicherTS(): TSBenutzer {
         if (this.gesuch && this.gesuch.dossier) {
             return this.gesuch.dossier.verantwortlicherTS;
         }

@@ -18,7 +18,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('BenutzerEinladenComponent');
@@ -30,7 +30,7 @@ const LOG = LogFactory.createLog('BenutzerEinladenComponent');
 })
 export class BenutzerEinladenComponent {
 
-    public readonly benutzer = new TSUser();
+    public readonly benutzer = new TSBenutzer();
     public readonly excludedRoles: ReadonlyArray<TSRole> = [TSRole.GESUCHSTELLER];
 
     public onSubmit(form: NgForm): void {

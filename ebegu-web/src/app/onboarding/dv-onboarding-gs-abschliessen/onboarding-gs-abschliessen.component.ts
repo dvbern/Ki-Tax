@@ -24,7 +24,7 @@ import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 
 @Component({
     selector: 'dv-onboarding-gs-abschliessen',
@@ -34,7 +34,7 @@ import TSUser from '../../../models/TSUser';
 })
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
-    public user$: Observable<TSUser>;
+    public user$: Observable<TSBenutzer>;
     public gemeinde$: Observable<TSGemeinde>;
 
     private readonly gemeindeId: string; // Parameter aus URL

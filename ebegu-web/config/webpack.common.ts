@@ -148,7 +148,7 @@ export default (env: string): webpack.Configuration => {
                 showErrors: true,
                 chunks: 'all',
                 excludeChunks: [],
-                title: 'Ki-Tax',
+                title: 'kiBon',
                 xhtml: true,
                 chunksSortMode: chunksSort,
             }),
