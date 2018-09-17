@@ -26,7 +26,8 @@
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js"
                         ],
-                        "extractCss": true
+                        "extractCss": true,
+                        "extractLicenses": true
                     },
                     "configurations": {
                         "production": {
@@ -116,7 +117,7 @@
             }
         }
     },
-    "defaultProject": "dv",
+    "defaultProject": "ebegu",
     "schematics": {
         "@schematics/angular:component": {
             "prefix": "dv",

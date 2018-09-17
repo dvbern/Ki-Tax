@@ -22,7 +22,8 @@ import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
-import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
+import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
+import {GemeindeMultiselectComponent} from '../core/component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -32,6 +33,8 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
+import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {MaterialModule} from './material.module';
 import {UIRouterModule} from '@uirouter/angular';
 import {UiViewComponent} from './ui-view/ui-view.component';
@@ -59,7 +62,7 @@ export function createTranslateLoader(http: HttpClient) {
     declarations: [
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        DvNgErrorMessages,
+        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
@@ -69,6 +72,9 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgShowElementDirective,
         DvPosteingangComponent,
         UiViewComponent,
+        FullHeightContainerComponent,
+        LoadingButtonDirective,
+        GemeindeMultiselectComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -79,6 +85,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvHelpmenuComponent,
         NavbarComponent,
         DvPosteingangComponent,
+        GemeindeMultiselectComponent
     ],
     exports: [
         CommonModule,
@@ -90,7 +97,7 @@ export function createTranslateLoader(http: HttpClient) {
 
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        DvNgErrorMessages,
+        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
@@ -98,6 +105,9 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgRemoveDialogComponent,
         DvNgShowElementDirective,
         UiViewComponent,
+        FullHeightContainerComponent,
+        LoadingButtonDirective,
+        GemeindeMultiselectComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

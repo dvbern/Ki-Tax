@@ -25,9 +25,10 @@ import ErrorService from './errors/service/ErrorService';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from './service/institutionRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
-import UserRS from './service/userRS.rest';
+import BenutzerRS from './service/benutzerRS.rest';
 import ZahlungRS from './service/zahlungRS.rest';
 import DossierRS from '../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
@@ -89,13 +90,13 @@ export const testFaelleRSProvider = {
 };
 
 // UserRS
-export function userRSProviderServiceFactory(i: any) {
-    return i.get('UserRS');
+export function benutzerRSProviderServiceFactory(i: any) {
+    return i.get('BenutzerRS');
 }
 
-export const userRSProvider = {
-    provide: UserRS,
-    useFactory: userRSProviderServiceFactory,
+export const benutzerRSProvider = {
+    provide: BenutzerRS,
+    useFactory: benutzerRSProviderServiceFactory,
     deps: ['$injector']
 };
 
@@ -231,13 +232,23 @@ export const fallRSProvider = {
     deps: ['$injector']
 };
 
+export function institutionRSFactory(i: any) {
+    return i.get('InstitutionRS');
+}
+
+export const institutionRSProvider = {
+    provide: InstitutionRS,
+    useFactory: institutionRSFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
     traegerschaftRSProvider,
     errorServiceProvider,
     testFaelleRSProvider,
-    userRSProvider,
+    benutzerRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
     zahlungRSProvider,
@@ -250,4 +261,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     antragStatusHistoryRSProvider,
     wizardStepManagerProvider,
     fallRSProvider,
+    institutionRSProvider,
 ];

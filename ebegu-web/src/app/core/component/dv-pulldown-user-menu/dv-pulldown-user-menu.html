@@ -22,6 +22,13 @@
 
         <md-menu-content class="user-menu">
 
+            <!-- Debugging -->
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
+                <md-button ui-sref-active="active" ui-sref="admin.debugging" aria-label="{{'ADMIN' | translate}}">
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="DEBUGGING"></a>
+                </md-button>
+            </md-menu-item>
+
             <!-- Testdaten -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
                 <md-button ui-sref-active="active" ui-sref="admin.testdaten" aria-label="{{'ADMIN' | translate}}">
@@ -75,6 +82,13 @@
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getMandantRoles()">
                 <md-button ui-sref-active="active" ui-sref="admin.traegerschaft" aria-label="{{'TRAEGERSCHAFT' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="TRAEGERSCHAFT" aria-hidden></a>
+                </md-button>
+            </md-menu-item>
+
+            <!-- Gemeinden -->
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorMandantRevisorRole()">
+                <md-button ui-sref-active="active" ui-sref="admin.gemeinden" aria-label="{{'GEMEINDEN' | translate}}">
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="GEMEINDEN" aria-hidden></a>
                 </md-button>
             </md-menu-item>
 

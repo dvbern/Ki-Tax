@@ -29,27 +29,27 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class JaxExternalBenutzer implements Serializable {
 	private static final long serialVersionUID = -2418503680503363364L;
 
-	private String username;
+	private String username = null;
 	@Nullable
-	private String externalUUID;
-	private String vorname;
-	private String nachname;
-	private String email;
-	private String institutionId;
-	private String traegerschaftId;
-	private String mandantId;
-	private String role;
+	private String externalUUID = null;
+	private String vorname = null;
+	private String nachname = null;
+	private String email = null;
+	private String institutionId = null;
+	private String traegerschaftId = null;
+	private String mandantId = null;
+	private String role = null;
 
-	private String commonName;
-	private String telephoneNumber;
-	private String mobile;
-	private String preferredLang;
-	private String postalAddress;
-	private String street;
-	private String postalCode;
-	private String state;
-	private String countryCode;
-	private String country;
+	private String commonName = null;
+	private String telephoneNumber = null;
+	private String mobile = null;
+	private String preferredLang = null;
+	private String postalAddress = null;
+	private String street = null;
+	private String postalCode = null;
+	private String state = null;
+	private String countryCode = null;
+	private String country = null;
 
 	private boolean gesperrt;
 

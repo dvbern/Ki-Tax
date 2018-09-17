@@ -91,7 +91,7 @@ import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import TSUser from '../models/TSUser';
+import TSBenutzer from '../models/TSBenutzer';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
 import TSVorlage from '../models/TSVorlage';
@@ -607,7 +607,7 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(fallTS, fallFromServer);
             fallTS.fallNummer = fallFromServer.fallNummer;
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
-            fallTS.besitzer = this.parseUser(new TSUser(), fallFromServer.besitzer);
+            fallTS.besitzer = this.parseUser(new TSBenutzer(), fallFromServer.besitzer);
             return fallTS;
         }
         return undefined;
@@ -623,7 +623,7 @@ export default class EbeguRestUtil {
         if (gemeinde) {
             this.abstractMutableEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
-            restGemeinde.enabled = gemeinde.enabled;
+            restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             return restGemeinde;
         }
@@ -640,7 +640,7 @@ export default class EbeguRestUtil {
         if (gemeindeFromServer) {
             this.parseAbstractMutableEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;
-            gemeindeTS.enabled = gemeindeFromServer.enabled;
+            gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
             return gemeindeTS;
         }
@@ -670,8 +670,8 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(dossierTS, dossierFromServer);
             dossierTS.fall = this.parseFall(new TSFall(), dossierFromServer.fall);
             dossierTS.gemeinde = this.parseGemeinde(new TSGemeinde(), dossierFromServer.gemeinde);
-            dossierTS.verantwortlicherBG = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherBG);
-            dossierTS.verantwortlicherTS = this.parseUser(new TSUser(), dossierFromServer.verantwortlicherTS);
+            dossierTS.verantwortlicherBG = this.parseUser(new TSBenutzer(), dossierFromServer.verantwortlicherBG);
+            dossierTS.verantwortlicherTS = this.parseUser(new TSBenutzer(), dossierFromServer.verantwortlicherTS);
             return dossierTS;
         }
         return undefined;
@@ -1588,7 +1588,7 @@ export default class EbeguRestUtil {
             :  [this.parsePendenzBetreuungen(new TSPendenzBetreuung(), data)];
     }
 
-    public userToRestObject(user: any, userTS: TSUser): any {
+    public userToRestObject(user: any, userTS: TSBenutzer): any {
         if (userTS) {
             user.username = userTS.username;
             user.externalUUID = userTS.externalUUID;
@@ -1597,7 +1597,7 @@ export default class EbeguRestUtil {
             user.vorname = userTS.vorname;
             user.email = userTS.email;
             user.mandant = this.mandantToRestObject({}, userTS.mandant);
-            user.gesperrt = userTS.gesperrt;
+            user.status = userTS.status;
             if (userTS.berechtigungen) {
                 user.berechtigungen = [];
                 userTS.berechtigungen.forEach((berecht: TSBerechtigung) => {
@@ -1609,7 +1609,7 @@ export default class EbeguRestUtil {
         }
     }
 
-    public parseUser(userTS: TSUser, userFromServer: any): TSUser {
+    public parseUser(userTS: TSBenutzer, userFromServer: any): TSBenutzer {
         if (userFromServer) {
             userTS.username = userFromServer.username;
             userTS.externalUUID = userFromServer.externalUUID;
@@ -1619,7 +1619,7 @@ export default class EbeguRestUtil {
             userTS.email = userFromServer.email;
             userTS.mandant = this.parseMandant(new TSMandant(), userFromServer.mandant);
             userTS.amt = userFromServer.amt;
-            userTS.gesperrt = userFromServer.gesperrt;
+            userTS.status = userFromServer.status;
             userTS.currentBerechtigung = this.parseBerechtigung(new TSBerechtigung(), userFromServer.currentBerechtigung);
             userTS.berechtigungen = this.parseBerechtigungen(userFromServer.berechtigungen);
             return userTS;
@@ -1633,10 +1633,10 @@ export default class EbeguRestUtil {
             :  [this.parseBerechtigung(new TSBerechtigung(), data)];
     }
 
-    public parseUserList(data: any): TSUser[] {
+    public parseUserList(data: any): TSBenutzer[] {
         return data && Array.isArray(data)
-            ?  data.map(item => this.parseUser(new TSUser(), item))
-            :  [this.parseUser(new TSUser(), data)];
+            ?  data.map(item => this.parseUser(new TSBenutzer(), item))
+            :  [this.parseUser(new TSBenutzer(), data)];
     }
 
     public berechtigungToRestObject(berechtigung: any, berechtigungTS: TSBerechtigung): any {
@@ -1673,7 +1673,8 @@ export default class EbeguRestUtil {
             historyTS.role = historyFromServer.role;
             historyTS.traegerschaft = this.parseTraegerschaft(new TSTraegerschaft(), historyFromServer.traegerschaft);
             historyTS.institution = this.parseInstitution(new TSInstitution(), historyFromServer.institution);
-            historyTS.gesperrt = historyFromServer.gesperrt;
+            historyTS.gemeinden = historyFromServer.gemeinden;
+            historyTS.status = historyFromServer.status;
             historyTS.geloescht = historyFromServer.geloescht;
             return historyTS;
         }
@@ -1728,7 +1729,7 @@ export default class EbeguRestUtil {
             dokument.filepfad = dokumentFromServer.filepfad;
             dokument.filesize = dokumentFromServer.filesize;
             dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
-            dokument.userUploaded = this.parseUser(new TSUser(), dokumentFromServer.userUploaded);
+            dokument.userUploaded = this.parseUser(new TSBenutzer(), dokumentFromServer.userUploaded);
             return dokument;
         }
         return undefined;
@@ -1916,7 +1917,7 @@ export default class EbeguRestUtil {
     public parseAntragStatusHistory(antragStatusHistoryTS: TSAntragStatusHistory, antragStatusHistoryFromServer: any): TSAntragStatusHistory {
         this.parseAbstractMutableEntity(antragStatusHistoryTS, antragStatusHistoryFromServer);
         antragStatusHistoryTS.gesuchId = antragStatusHistoryFromServer.gesuchId;
-        antragStatusHistoryTS.benutzer = this.parseUser(new TSUser(), antragStatusHistoryFromServer.benutzer);
+        antragStatusHistoryTS.benutzer = this.parseUser(new TSBenutzer(), antragStatusHistoryFromServer.benutzer);
         antragStatusHistoryTS.timestampVon = DateUtil.localDateTimeToMoment(antragStatusHistoryFromServer.timestampVon);
         antragStatusHistoryTS.timestampBis = DateUtil.localDateTimeToMoment(antragStatusHistoryFromServer.timestampBis);
         antragStatusHistoryTS.status = antragStatusHistoryFromServer.status;
@@ -2117,8 +2118,8 @@ export default class EbeguRestUtil {
             }
             tsMitteilung.senderTyp = mitteilungFromServer.senderTyp;
             tsMitteilung.empfaengerTyp = mitteilungFromServer.empfaengerTyp;
-            tsMitteilung.sender = this.parseUser(new TSUser(), mitteilungFromServer.sender);
-            tsMitteilung.empfaenger = this.parseUser(new TSUser(), mitteilungFromServer.empfaenger);
+            tsMitteilung.sender = this.parseUser(new TSBenutzer(), mitteilungFromServer.sender);
+            tsMitteilung.empfaenger = this.parseUser(new TSBenutzer(), mitteilungFromServer.empfaenger);
             tsMitteilung.subject = mitteilungFromServer.subject;
             tsMitteilung.message = mitteilungFromServer.message;
             tsMitteilung.mitteilungStatus = mitteilungFromServer.mitteilungStatus;

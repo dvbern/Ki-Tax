@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import EbeguUtil from '../utils/EbeguUtil';
+import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSInstitution from './TSInstitution';
@@ -25,7 +27,8 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
     private _role: TSRole;
     private _traegerschaft: TSTraegerschaft;
     private _institution: TSInstitution;
-    private _gesperrt: boolean;
+    private _gemeinden: string;
+    private _status: TSBenutzerStatus;
     private _geloescht: boolean;
 
     public get userErstellt(): string {
@@ -68,12 +71,20 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
         this._institution = value;
     }
 
-    public get gesperrt(): boolean {
-        return this._gesperrt;
+    public get gemeinden(): string {
+        return this._gemeinden;
     }
 
-    public set gesperrt(value: boolean) {
-        this._gesperrt = value;
+    public set gemeinden(value: string) {
+        this._gemeinden = value;
+    }
+
+    public get status(): TSBenutzerStatus {
+        return this._status;
+    }
+
+    public set status(value: TSBenutzerStatus) {
+        this._status = value;
     }
 
     public get geloescht(): boolean {
@@ -84,13 +95,15 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
         this._geloescht = value;
     }
 
-    public getInstitutionOrTraegerschaft(): string {
+    public getDescription(): string {
         if (this.institution) {
             return this.institution.name;
         } else if (this.traegerschaft) {
             return this.traegerschaft.name;
+        } else if (!EbeguUtil.isEmptyStringNullOrUndefined(this.gemeinden)) {
+            return this.gemeinden;
         } else {
-            return '';
+            return null;
         }
     }
 }

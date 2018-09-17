@@ -102,14 +102,22 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal fromNullSafe(@Nonnull Integer src) {
+		BigDecimal val = new BigDecimal(src)
+			.setScale(scale, roundingMode);
+		return validatePrecision(val);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal from(@Nullable Integer src) {
 		if (src == null) {
 			return null;
 		}
-		BigDecimal val = new BigDecimal(src)
-			.setScale(scale, roundingMode);
-		return validatePrecision(val);
+		return fromNullSafe(src);
 	}
 
 	/**
@@ -300,8 +308,18 @@ public enum MathUtil {
 	 * 20 bis 24 = 20
 	 * 25 bis 29 = 30
 	 */
-	public static int roundIntToTens(int pensumFachstelle) {
-		return (int) (Math.round((double) pensumFachstelle / 10) * 10);
+	public static int roundIntToTens(int value) {
+		return (int) (Math.round((double) value / 10) * 10);
+	}
+
+	/**
+	 * Rundet die eingegebene Nummer in 5er Schritten.
+	 * Beispiel
+	 * 20 bis 22 = 20
+	 * 23 bis 25 = 25
+	 */
+	public static int roundIntToFives(int value) {
+		return (int) (Math.round((double) value / 5) * 5);
 	}
 
 	/**

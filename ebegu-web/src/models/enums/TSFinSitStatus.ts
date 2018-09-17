@@ -14,6 +14,6 @@
  */
 
 export enum TSFinSitStatus {
-    AKZEPTIERT = <any> 'AKZEPTIERT',
-    ABGELEHNT = <any> 'ABGELEHNT'
+    AKZEPTIERT = 'AKZEPTIERT',
+    ABGELEHNT = 'ABGELEHNT'
 }

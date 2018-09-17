@@ -14,7 +14,7 @@
  */
 
 export enum TSGesuchBetreuungenStatus {
-    WARTEN = <any> 'WARTEN',
-    ALLE_BESTAETIGT = <any> 'ALLE_BESTAETIGT',
-    ABGEWIESEN = <any> 'ABGEWIESEN'
+    WARTEN = 'WARTEN',
+    ALLE_BESTAETIGT = 'ALLE_BESTAETIGT',
+    ABGEWIESEN = 'ABGEWIESEN'
 }

@@ -15,7 +15,7 @@
 
 import ICacheFactoryService = angular.ICacheFactoryService;
 import ICacheObject = angular.ICacheObject;
-import {getTSCacheTypValues, TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 
 /**
  * Class to store cache Global
@@ -25,13 +25,11 @@ export default class GlobalCacheService {
     static $inject = ['$cacheFactory'];
 
     constructor(private readonly $cacheFactory: ICacheFactoryService) {
-        for (const cache of getTSCacheTypValues()) {
-            $cacheFactory(TSCacheTyp[cache]);
-        }
+        Object.values(TSCacheTyp).forEach(value => this.$cacheFactory(value));
     }
 
     getCache(cacheType: TSCacheTyp): ICacheObject {
-        return this.$cacheFactory.get(TSCacheTyp[cacheType]);
+        return this.$cacheFactory.get(cacheType);
     }
 
 }

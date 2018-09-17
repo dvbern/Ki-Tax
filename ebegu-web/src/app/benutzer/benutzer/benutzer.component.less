@@ -1,18 +1,35 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-@import (reference) '../../../../style/variables.less';
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.form-group {
+    margin-bottom: 3rem;
+}
+
+.input-benutzer {
+    padding: 1rem;
+    .md-input-focused & {
+        padding: 1rem;
+    }
+    &--datepicker {
+        width: calc(100% - 30px);
+    }
+}
 
 .dv-benutzer {
     background: #F0F0F0;
@@ -26,6 +43,7 @@
 
     .row {
         .well {
+            margin-top: 4rem;
             margin-left: -2.5rem;
             margin-right: -2.5rem;
             box-shadow: none;
@@ -40,27 +58,32 @@
     }
 }
 
-dv-benutzer {
+:host {
     display: flex;
     align-items: flex-start;
 }
 
 .button-row {
     flex-direction: row;
-    -ms-flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: start;
     display: flex;
-    margin-left: -16px;
-    padding-left: 16px;
-    margin-right: -16px;
-    padding-right: 16px;
     margin-top: 2rem;
-    .button-row-item {
-        margin-left: auto;
-        margin-right: auto;
 
-        position: static;
-        width: auto;
+    & > * {
+        margin-right: 2rem;
+    }
+}
+
+.dv-btn-operation {
+    line-height: 5rem;
+    &[disabled], &[disabled]:hover {
+        color: @contrast-dark;
+    }
+}
+
+.dv-btn {
+    .fa {
+        width: 3rem;
     }
 }
