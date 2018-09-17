@@ -1,6 +1,6 @@
 ## Contributing
 
-First off, thank you for considering contributing to Ki-Tax!
+First off, thank you for considering contributing to kiBon!
 ### 1. Where do I go from here?
 
 If you've noticed a bug or have a question that doesn't belong on the
