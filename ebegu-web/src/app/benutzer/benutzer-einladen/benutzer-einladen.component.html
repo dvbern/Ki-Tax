@@ -76,13 +76,9 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-sm-12 dv-input-container-medium">
-                    <dv-berechtigung [berechtigung]="benutzer.currentBerechtigung"
-                                     [exludedRoles]="excludedRoles">
-                    </dv-berechtigung>
-                </div>
-            </div>
+            <dv-berechtigung [berechtigung]="benutzer.currentBerechtigung"
+                             [exludedRoles]="excludedRoles">
+            </dv-berechtigung>
         </div>
 
         <div class="dv-footer">
