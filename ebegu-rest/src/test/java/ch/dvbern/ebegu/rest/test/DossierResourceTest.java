@@ -74,7 +74,7 @@ public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(foundDossier.getVerantwortlicherBG());
 		Assert.assertNotEquals(sachbearbeiter.getUsername(), foundDossier.getVerantwortlicherBG().getUsername());
 
-		JaxBenutzer userToSet = converter.benutzerToAuthLoginElement(sachbearbeiter);
+		JaxBenutzer userToSet = converter.benutzerToJaxBenutzer(sachbearbeiter);
 		foundDossier.setVerantwortlicherBG(userToSet);
 		JaxDossier updatedDossier = (JaxDossier) dossierResource.create(foundDossier, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		Assert.assertNotNull(updatedDossier);

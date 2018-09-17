@@ -109,7 +109,7 @@ public class MailTemplateConfiguration {
 		return processTemplateGesuch("InfoVerfuegtGesuch.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
 	}
 
-	public String getInfoVerfuegtMutaion(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
+	public String getInfoVerfuegtMutation(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
 		return processTemplateGesuch("InfoVerfuegtMutation.ftl", gesuch, gesuchsteller, toArgumentPair(EMPFAENGER_MAIL, empfaengerMail));
 	}
 

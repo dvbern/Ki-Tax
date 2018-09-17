@@ -38,6 +38,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -105,7 +106,7 @@ public class BenutzerResource {
 		ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxBenutzer> getBenutzerJAorAdmin() {
 		return benutzerService.getBenutzerBGorAdmin().stream()
-			.map(converter::benutzerToAuthLoginElement)
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
@@ -122,7 +123,7 @@ public class BenutzerResource {
 		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxBenutzer> getBenutzerSCHorAdminSCH() {
 		return benutzerService.getBenutzerSCHorAdminSCH().stream()
-			.map(converter::benutzerToAuthLoginElement)
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
@@ -137,7 +138,7 @@ public class BenutzerResource {
 	@RolesAllowed(SUPER_ADMIN)
 	public List<JaxBenutzer> getGesuchsteller() {
 		return benutzerService.getGesuchsteller().stream()
-			.map(converter::benutzerToAuthLoginElement)
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
@@ -160,7 +161,7 @@ public class BenutzerResource {
 			List<Benutzer> foundBenutzer = searchResultPair.getRight();
 
 			List<JaxBenutzer> benutzerDTOList = foundBenutzer.stream()
-				.map(converter::benutzerToAuthLoginElement)
+				.map(converter::benutzerToJaxBenutzer)
 				.collect(Collectors.toList());
 
 			return buildResultDTO(benutzerSearch, searchResultPair, benutzerDTOList);
@@ -196,7 +197,7 @@ public class BenutzerResource {
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
-		return benutzerOptional.map(converter::benutzerToAuthLoginElement)
+		return benutzerOptional.map(converter::benutzerToJaxBenutzer)
 			.orElse(null);
 	}
 
@@ -214,7 +215,7 @@ public class BenutzerResource {
 		@Context HttpServletResponse response) {
 
 		Benutzer benutzer = benutzerService.sperren(benutzerJax.getUsername());
-		return converter.benutzerToAuthLoginElement(benutzer);
+		return converter.benutzerToJaxBenutzer(benutzer);
 	}
 
 	@ApiOperation(value = "Reactivates a Benutzer in the database", response = JaxBenutzer.class)
@@ -231,7 +232,7 @@ public class BenutzerResource {
 		@Context HttpServletResponse response) {
 
 		Benutzer benutzer = benutzerService.reaktivieren(benutzerJax.getUsername());
-		return converter.benutzerToAuthLoginElement(benutzer);
+		return converter.benutzerToJaxBenutzer(benutzer);
 	}
 
 	@ApiOperation(value = "Updates a Benutzer in the database", response = JaxBenutzer.class)
@@ -256,20 +257,22 @@ public class BenutzerResource {
 
 		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
 		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
-			converter.authLoginElementToBenutzer(benutzerJax, benutzer),
+			converter.jaxBenutzerToBenutzer(benutzerJax, benutzer),
 			currentBerechtigungChanged);
 
-		return converter.benutzerToAuthLoginElement(mergedBenutzer);
+		return converter.benutzerToJaxBenutzer(mergedBenutzer);
 	}
 
 	private boolean hasCurrentBerechtigungChanged(
 		@Nonnull JaxBenutzer jaxBenutzerNew,
 		@Nonnull Benutzer benutzerOld) {
-		JaxBenutzer jaxBenutzerOld = converter.benutzerToAuthLoginElement(benutzerOld);
+
+		JaxBenutzer jaxBenutzerOld = converter.benutzerToJaxBenutzer(benutzerOld);
 		jaxBenutzerOld.evaluateCurrentBerechtigung();
 		jaxBenutzerNew.evaluateCurrentBerechtigung();
 		Objects.requireNonNull(jaxBenutzerOld.getCurrentBerechtigung());
 		Objects.requireNonNull(jaxBenutzerNew.getCurrentBerechtigung());
+
 		return !jaxBenutzerOld.getCurrentBerechtigung().isSame(jaxBenutzerNew.getCurrentBerechtigung());
 	}
 
@@ -284,11 +287,13 @@ public class BenutzerResource {
 		ADMIN_MANDANT, REVISOR })
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"getBerechtigungHistoriesForBenutzer",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"username invalid: " + username));
+
+		Benutzer benutzer = benutzerService.findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getBerechtigungHistoriesForBenutzer",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"username invalid: " + username));
+
 		return benutzerService.getBerechtigungHistoriesForBenutzer(benutzer).stream()
 			.map(history -> converter.berechtigungHistoryToJax(history))
 			.collect(Collectors.toList());

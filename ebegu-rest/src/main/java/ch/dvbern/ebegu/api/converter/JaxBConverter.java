@@ -49,10 +49,10 @@ import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
-import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -942,7 +942,7 @@ public class JaxBConverter {
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
 		if (persistedFall.getBesitzer() != null) {
-			jaxFall.setBesitzer(benutzerToAuthLoginElement(persistedFall.getBesitzer()));
+			jaxFall.setBesitzer(benutzerToJaxBenutzer(persistedFall.getBesitzer()));
 		}
 		return jaxFall;
 	}
@@ -1056,10 +1056,10 @@ public class JaxBConverter {
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(this.gemeindeToJAX(persistedDossier.getGemeinde()));
 		if (persistedDossier.getVerantwortlicherBG() != null) {
-			jaxDossier.setVerantwortlicherBG(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherBG()));
+			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherBG()));
 		}
 		if (persistedDossier.getVerantwortlicherTS() != null) {
-			jaxDossier.setVerantwortlicherTS(benutzerToAuthLoginElement(persistedDossier.getVerantwortlicherTS()));
+			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherTS()));
 		}
 		return jaxDossier;
 	}
@@ -2863,37 +2863,34 @@ public class JaxBConverter {
 	}
 
 	@Nonnull
-	public Benutzer authLoginElementToBenutzer(
-		@Nonnull JaxBenutzer jaxLoginElement,
+	public Benutzer jaxBenutzerToBenutzer(
+		@Nonnull JaxBenutzer jaxBenutzer,
 		@Nonnull Benutzer benutzer) {
 
-		benutzer.setUsername(jaxLoginElement.getUsername());
+		benutzer.setUsername(jaxBenutzer.getUsername());
 		benutzer.setExternalUUID(
-			Strings.isNullOrEmpty(jaxLoginElement.getExternalUUID()) ? null : jaxLoginElement.getExternalUUID()
+			Strings.isNullOrEmpty(jaxBenutzer.getExternalUUID()) ? null : jaxBenutzer.getExternalUUID()
 		);
-		benutzer.setEmail(jaxLoginElement.getEmail());
-		benutzer.setNachname(jaxLoginElement.getNachname());
-		benutzer.setVorname(jaxLoginElement.getVorname());
-		benutzer.setStatus(jaxLoginElement.getStatus());
-		if (jaxLoginElement.getMandant() != null && jaxLoginElement.getMandant().getId() != null) {
-			final Optional<Mandant> mandantFromDB = mandantService.findMandant(jaxLoginElement.getMandant().getId());
-			if (mandantFromDB.isPresent()) {
-				// Mandant darf nicht vom Client ueberschrieben werden
-				benutzer.setMandant(mandantFromDB.get());
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"authLoginElementToBenutzer -> mandant",
+		benutzer.setEmail(jaxBenutzer.getEmail());
+		benutzer.setNachname(jaxBenutzer.getNachname());
+		benutzer.setVorname(jaxBenutzer.getVorname());
+		benutzer.setStatus(jaxBenutzer.getStatus());
+		if (jaxBenutzer.getMandant() != null && jaxBenutzer.getMandant().getId() != null) {
+			// Mandant darf nicht vom Client ueberschrieben werden
+			Mandant mandantFromDB = mandantService.findMandant(jaxBenutzer.getMandant().getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"jaxBenutzerToBenutzer -> mandant",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					benutzer.getMandant().getId());
-			}
+					benutzer.getMandant().getId()));
+			benutzer.setMandant(mandantFromDB);
 		} else {
 			throw new EbeguEntityNotFoundException(
-				"authLoginElementToBenutzer -> mandant",
+				"jaxBenutzerToBenutzer -> mandant",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
 		// Berechtigungen
 		final Set<Berechtigung> convertedBerechtigungen = berechtigungenListToEntity(
-			jaxLoginElement.getBerechtigungen(),
+			jaxBenutzer.getBerechtigungen(),
 			benutzer.getBerechtigungen(),
 			benutzer
 		);
@@ -2928,7 +2925,7 @@ public class JaxBConverter {
 		return convertedBerechtigungen;
 	}
 
-	public JaxBenutzer benutzerToAuthLoginElement(Benutzer benutzer) {
+	public JaxBenutzer benutzerToJaxBenutzer(Benutzer benutzer) {
 		JaxBenutzer jaxLoginElement = new JaxBenutzer();
 		jaxLoginElement.setVorname(benutzer.getVorname());
 		jaxLoginElement.setNachname(benutzer.getNachname());
@@ -3065,10 +3062,9 @@ public class JaxBConverter {
 		if (jaxDokumentGrund.getDokumente() == null) {
 			jaxDokumentGrund.setDokumente(new HashSet<>());
 		}
-		for (Dokument dokument : dokumentGrund.getDokumente()) {
-
-			jaxDokumentGrund.getDokumente().add(dokumentToJax(dokument));
-		}
+		dokumentGrund.getDokumente().stream()
+			.map(this::dokumentToJax)
+			.forEach(d -> jaxDokumentGrund.getDokumente().add(d));
 
 		return jaxDokumentGrund;
 	}
@@ -3078,11 +3074,9 @@ public class JaxBConverter {
 		convertFileToJax(dokument, jaxDokument);
 		jaxDokument.setTimestampUpload(dokument.getTimestampUpload());
 		if (StringUtils.isNotEmpty(dokument.getUserErstellt())) {
-			Optional<Benutzer> userUploadedOptional = benutzerService.findBenutzer(dokument.getUserErstellt());
-			if (userUploadedOptional.isPresent()) {
-				JaxBenutzer jaxAuthLoginElement = benutzerToAuthLoginElement(userUploadedOptional.get());
-				jaxDokument.setUserUploaded(jaxAuthLoginElement);
-			}
+			benutzerService.findBenutzer(dokument.getUserErstellt())
+				.map(this::benutzerToJaxBenutzer)
+				.ifPresent(jaxDokument::setUserUploaded);
 		}
 		return jaxDokument;
 	}
@@ -3250,7 +3244,7 @@ public class JaxBConverter {
 			antragStatusHistory.getGesuch(),
 			antragStatusHistory.getStatus())
 		);
-		jaxAntragStatusHistory.setBenutzer(benutzerToAuthLoginElement(antragStatusHistory.getBenutzer()));
+		jaxAntragStatusHistory.setBenutzer(benutzerToJaxBenutzer(antragStatusHistory.getBenutzer()));
 		jaxAntragStatusHistory.setTimestampVon(antragStatusHistory.getTimestampVon());
 		jaxAntragStatusHistory.setTimestampBis(antragStatusHistory.getTimestampBis());
 		return jaxAntragStatusHistory;
@@ -3539,7 +3533,7 @@ public class JaxBConverter {
 	public JaxMitteilung mitteilungToJAX(Mitteilung persistedMitteilung, JaxMitteilung jaxMitteilung) {
 		convertAbstractVorgaengerFieldsToJAX(persistedMitteilung, jaxMitteilung);
 		if (persistedMitteilung.getEmpfaenger() != null) {
-			jaxMitteilung.setEmpfaenger(benutzerToAuthLoginElement(persistedMitteilung.getEmpfaenger()));
+			jaxMitteilung.setEmpfaenger(benutzerToJaxBenutzer(persistedMitteilung.getEmpfaenger()));
 		}
 		jaxMitteilung.setEmpfaengerTyp(persistedMitteilung.getEmpfaengerTyp());
 		jaxMitteilung.setDossier(this.dossierToJAX(persistedMitteilung.getDossier()));
@@ -3549,7 +3543,7 @@ public class JaxBConverter {
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());
 		if (persistedMitteilung.getSender() != null) {
-			jaxMitteilung.setSender(benutzerToAuthLoginElement(persistedMitteilung.getSender()));
+			jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
 		}
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());

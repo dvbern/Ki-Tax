@@ -17,7 +17,9 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.function.BiFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,10 +32,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
@@ -50,6 +48,9 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -57,12 +58,13 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Senden von E-Mails
@@ -70,7 +72,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Stateless
 @Local(MailService.class)
 @PermitAll
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class MailServiceBean extends AbstractMailServiceBean implements MailService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MailServiceBean.class.getSimpleName());
@@ -85,70 +86,50 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	private BetreuungService betreuungService;
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public void sendInfoBetreuungenBestaetigt(@Nonnull Gesuch gesuch) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoBetreuungBestaetigt wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoBetreuungenBestaetigt because Gesuchsteller 1 or mailaddr is null");
-			}
-		}
+		sendMail(
+			gesuch,
+			"InfoBetreuungBestaetigt",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr)
+		);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public void sendInfoBetreuungAbgelehnt(@Nonnull Betreuung betreuung) throws MailException {
-		if (doSendMail(betreuung.extractGesuch().getFall())) {
-			Gesuchsteller gesuchsteller = betreuung.extractGesuch().extractGesuchsteller1();
-			String mailaddress = fallService.getCurrentEmailAddress(betreuung.extractGesuch().getFall().getId()).orElse(null);
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoBetreuungAbgelehnt(betreuung, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoBetreuungAbgelehnt wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoBetreuungAbgelehnt because Gesuchsteller 1 or mailaddress is null");
-			}
-		}
+		sendMail(
+			betreuung.extractGesuch(),
+			"InfoBetreuungAbgelehnt",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungAbgelehnt(betreuung, gesuchsteller, adr)
+		);
 	}
 
 	@Override
 	public void sendInfoSchulamtAnmeldungUebernommen(@Nonnull Betreuung betreuung) throws MailException {
-		if (doSendMail(betreuung.extractGesuch().getFall())) {
-			Gesuchsteller gesuchsteller = betreuung.extractGesuch().extractGesuchsteller1();
-			String mailaddress = fallService.getCurrentEmailAddress(betreuung.extractGesuch().getFall().getId()).orElse(null);
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoSchulamtAnmeldungUebernommen wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoSchulamtAnmeldungUebernommen because Gesuchsteller 1 or mailaddress is null");
-			}
-		}
+		sendMail(
+			betreuung.extractGesuch(),
+			"InfoSchulamtAnmeldungUebernommen",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, adr)
+		);
 	}
 
 	@Override
 	public void sendInfoSchulamtAnmeldungAbgelehnt(@Nonnull Betreuung betreuung) throws MailException {
-		if (doSendMail(betreuung.extractGesuch().getFall())) {
-			Gesuchsteller gesuchsteller = betreuung.extractGesuch().extractGesuchsteller1();
-			String mailaddress = fallService.getCurrentEmailAddress(betreuung.extractGesuch().getFall().getId()).orElse(null);
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoSchulamtAnmeldungAbgelehnt(betreuung, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoSchulamtAnmeldungAbgelehnt wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoSchulamtAnmeldungAbgelehnt because Gesuchsteller 1 or mailaddress is null");
-			}
-		}
+		sendMail(
+			betreuung.extractGesuch(),
+			"InfoSchulamtAnmeldungAbgelehnt",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoSchulamtAnmeldungAbgelehnt(betreuung, gesuchsteller, adr)
+		);
 	}
 
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoMitteilungErhalten(@Nonnull Mitteilung mitteilung) throws MailException {
 		if (doSendMail(mitteilung.getFall())) {
 			String mailaddress = fallService.getCurrentEmailAddress(mitteilung.getFall().getId()).orElse(null);
@@ -163,130 +144,109 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS })
 	public void sendInfoVerfuegtGesuch(@Nonnull Gesuch gesuch) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoVerfuegtGesuch(gesuch, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoVerfuegtGesuch wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoVerfuegtGesuch because Gesuchsteller 1 is null");
-			}
-		}
+		sendMail(
+			gesuch,
+			"InfoVerfuegtGesuch",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtGesuch(gesuch, gesuchsteller, adr)
+		);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS })
 	public void sendInfoVerfuegtMutation(@Nonnull Gesuch gesuch) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoVerfuegtMutaion(gesuch, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoVerfuegtMutation wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoVerfuegtMutation because Gesuchsteller 1 is null");
-			}
-		}
+		sendMail(
+			gesuch,
+			"InfoVerfuegtMutation",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtMutation(gesuch, gesuchsteller, adr)
+		);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoMahnung(@Nonnull Gesuch gesuch) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoMahnung(gesuch, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoMahnung wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoMahnung because Gesuchsteller 1 is null");
-			}
-		}
+		sendMail(
+			gesuch,
+			"InfoMahnung",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoMahnung(gesuch, gesuchsteller, adr)
+		);
 	}
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public void sendWarnungGesuchNichtFreigegeben(@Nonnull Gesuch gesuch, int anzahlTageBisLoeschung) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getWarnungGesuchNichtFreigegeben(gesuch, gesuchsteller, mailaddress, anzahlTageBisLoeschung);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer WarnungGesuchNichtFreigegeben wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendWarnungGesuchNichtFreigegeben because Gesuchsteller 1 is null");
-			}
-		}
+	public void sendWarnungGesuchNichtFreigegeben(@Nonnull Gesuch gesuch, int anzahlTageBisLoeschung)
+		throws MailException {
+		sendMail(
+			gesuch,
+			"WarnungGesuchNichtFreigegeben",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getWarnungGesuchNichtFreigegeben(gesuch, gesuchsteller, adr, anzahlTageBisLoeschung)
+		);
 	}
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public void sendWarnungFreigabequittungFehlt(@Nonnull Gesuch gesuch, int anzahlTageBisLoeschung) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getWarnungFreigabequittungFehlt(gesuch, gesuchsteller, mailaddress, anzahlTageBisLoeschung);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer WarnungFreigabequittungFehlt wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendWarnungFreigabequittungFehlt because Gesuchsteller 1 is null");
-			}
-		}
+	public void sendWarnungFreigabequittungFehlt(@Nonnull Gesuch gesuch, int anzahlTageBisLoeschung)
+		throws MailException {
+		sendMail(
+			gesuch,
+			"WarnungFreigabequittungFehlt",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getWarnungFreigabequittungFehlt(gesuch, gesuchsteller, adr, anzahlTageBisLoeschung)
+		);
 	}
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void sendInfoGesuchGeloescht(@Nonnull Gesuch gesuch) throws MailException {
-		if (doSendMail(gesuch.getFall())) {
-			String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-			Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-			if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoGesuchGeloescht(gesuch, gesuchsteller, mailaddress);
-				sendMessageWithTemplate(message, mailaddress);
-				LOG.info("Email fuer InfoGesuchGeloescht wurde versendet an {}", mailaddress);
-			} else {
-				LOG.warn("skipping sendInfoGesuchGeloescht because Gesuchsteller 1 is null");
-			}
-		}
+		sendMail(
+			gesuch,
+			"InfoGesuchGeloescht",
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoGesuchGeloescht(gesuch, gesuchsteller, adr)
+		);
 	}
 
 	@Override
 	@Asynchronous
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
-	public Future<Integer> sendInfoFreischaltungGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<Gesuch> gesucheToSendMail) {
+	public Future<Integer> sendInfoFreischaltungGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull List<Gesuch> gesucheToSendMail) {
 		int i = 0;
 		for (Gesuch gesuch : gesucheToSendMail) {
 			try {
 				if (doSendMail(gesuch.getFall())) {
-					String mailaddress = fallService.getCurrentEmailAddress(gesuch.getFall().getId()).orElse(null);
-					Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-					if (gesuchsteller != null && StringUtils.isNotEmpty(mailaddress)) {
-						String message = mailTemplateConfig.getInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuchsteller, mailaddress);
-						sendMessageWithTemplate(message, mailaddress);
-						LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", mailaddress);
+					Optional<String> emailAddress = findEMailAddress(gesuch);
+					Optional<Gesuchsteller> gesuchsteller = gesuch.extractGesuchsteller1();
+					if (gesuchsteller.isPresent() && emailAddress.isPresent()) {
+						String adr = emailAddress.get();
+						String message = mailTemplateConfig
+							.getInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuchsteller.get(), adr);
+						sendMessageWithTemplate(message, adr);
+						LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", adr);
 					} else {
 						LOG.warn("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 is null");
 					}
 				}
 				i++;
 			} catch (Exception e) {
-				LOG.error("Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch {}", gesuch.getId(), e);
+				LOG.error(
+					"Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch {}",
+					gesuch.getId(),
+					e);
 			}
 		}
 		return new AsyncResult<>(i);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoBetreuungGeloescht(@Nonnull List<Betreuung> betreuungen) {
 
 		for (Betreuung betreuung : betreuungen) {
@@ -295,10 +255,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			String mailaddress = institution.getMail();
 			Gesuch gesuch = betreuung.extractGesuch();
 			Fall fall = gesuch.getFall();
-			Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1();
+			Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"sendInfoBetreuungGeloescht",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					"Gesuchsteller1"));
 			Kind kind = betreuung.getKind().getKindJA();
 			Betreuungsstatus status = betreuung.getBetreuungsstatus();
-			LocalDate datumErstellung = betreuung.getTimestampErstellt().toLocalDate();
+			LocalDate datumErstellung = requireNonNull(betreuung.getTimestampErstellt()).toLocalDate();
 			LocalDate birthdayKind = kind.getGeburtsdatum();
 
 			String message = mailTemplateConfig.getInfoBetreuungGeloescht(betreuung, fall, gesuchsteller1, kind,
@@ -306,22 +270,24 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 			try {
 				if (gesuch.getTyp().isMutation()) {
-					//wenn Gesuch Mutation ist
+					// wenn Gesuch Mutation ist
 					if (betreuung.getVorgaengerId() == null) { //this is a new Betreuung for this Antrag
 						if (status.isSendToInstitution()) { //wenn status warten, abgewiesen oder bestaetigt ist
 							sendMessageWithTemplate(message, mailaddress);
 							LOG.info("Email fuer InfoBetreuungGeloescht wurde versendet an {}", mailaddress);
 						}
 					} else {
-						Betreuung vorgaengerBetreuung = betreuungService.findBetreuung(betreuung
-							.getVorgaengerId()).orElseThrow(() -> new EbeguEntityNotFoundException
-							("sendInfoBetreuungGeloescht", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, betreuung.getVorgaengerId()));
+						Betreuung vorgaengerBetreuung = betreuungService.findBetreuung(betreuung.getVorgaengerId())
+							.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"sendInfoBetreuungGeloescht",
+								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+								betreuung.getVorgaengerId()));
 
-						//wenn Vorgaengerbetreuung vorhanden
+						// wenn Vorgaengerbetreuung vorhanden
 						if ((status == Betreuungsstatus.BESTAETIGT && !betreuung.isSame(vorgaengerBetreuung))
 							|| (status == Betreuungsstatus.WARTEN || status == Betreuungsstatus.ABGEWIESEN)) {
-							//wenn status der aktuellen Betreuung bestaetigt ist UND wenn vorgaenger NICHT die gleiche ist wie die aktuelle
-							//oder wenn status der aktuellen Betreuung warten oder abgewiesen ist
+							// wenn status der aktuellen Betreuung bestaetigt ist UND wenn vorgaenger NICHT die gleiche
+							// ist wie die aktuelle oder wenn status der aktuellen Betreuung warten oder abgewiesen ist
 							sendMessageWithTemplate(message, mailaddress);
 							LOG.info("Email fuer InfoBetreuungGeloescht wurde versendet an {}", mailaddress);
 						}
@@ -336,20 +302,28 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 				}
 			} catch (MailException e) {
-				LOG.error("Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung {}", betreuung.getId(), e);
+				LOG.error(
+					"Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung {}",
+					betreuung.getId(),
+					e);
 			}
 		}
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung) {
 
 		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
 		String mailaddress = institution.getMail();
 		Gesuch gesuch = betreuung.extractGesuch();
 		Fall fall = gesuch.getFall();
-		Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1();
+		Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sendInfoBetreuungVerfuegt",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Gesuchsteller1"));
 		Kind kind = betreuung.getKind().getKindJA();
 		LocalDate birthdayKind = kind.getGeburtsdatum();
 
@@ -360,20 +334,26 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			sendMessageWithTemplate(message, mailaddress);
 			LOG.info("Email fuer InfoBetreuungVerfuegt wurde versendet an {}", mailaddress);
 		} catch (MailException e) {
-			LOG.error("Mail InfoBetreuungVerfuegt konnte nicht verschickt werden fuer Betreuung {}", betreuung.getId(), e);
+			LOG.error(
+				"Mail InfoBetreuungVerfuegt konnte nicht verschickt werden fuer Betreuung {}",
+				betreuung.getId(),
+				e);
 		}
 	}
 
 	@Override
-	public void sendDocumentCreatedEmail(@Nonnull String receiverEmail, @Nullable DownloadFile attachement, @Nonnull String downloadurl) throws MailException {
+	public void sendDocumentCreatedEmail(
+		@Nonnull String receiverEmail,
+		@Nullable DownloadFile attachement,
+		@Nonnull String downloadurl) throws MailException {
 		try {
 			final String subj = ServerMessageUtil.getMessage("MAIL_REPORT_SUBJECT");
 			String body = ServerMessageUtil.getMessage("MAIL_REPORT_BODY");
 
 			body = body + '\n' + downloadurl;
 			if (attachement != null) {
-				sendMessage(subj, body, receiverEmail,  attachement);
-			} else{
+				sendMessage(subj, body, receiverEmail, attachement);
+			} else {
 				sendMessage(subj, body, receiverEmail);
 			}
 			LOG.debug("E-Mail mit Report versendet an {}", receiverEmail);
@@ -383,10 +363,43 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		}
 	}
 
+	private void sendMail(
+		@Nonnull Gesuch gesuch,
+		@Nonnull String logId,
+		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider) throws MailException {
+		if (!doSendMail(gesuch.getFall())) {
+			return;
+		}
+
+		Optional<Gesuchsteller> gesuchsteller = gesuch.extractGesuchsteller1();
+		Optional<String> emailAddress = findEMailAddress(gesuch);
+
+		if (gesuchsteller.isPresent() && emailAddress.isPresent()) {
+			String message = messageProvider.apply(gesuchsteller.get(), emailAddress.get());
+			sendMessageWithTemplate(message, emailAddress.get());
+
+			LOG.info("Sent Email for {} to {}", logId, emailAddress.get());
+
+			return;
+		}
+
+		LOG.warn(
+			"Not sending Email to {} because Gesuchsteller or Email Address is NULL: {}, {}",
+			logId,
+			gesuchsteller,
+			emailAddress);
+	}
+
 	/**
 	 * Hier wird an einer Stelle definiert, an welche Benutzergruppen ein Mail geschickt werden soll.
 	 */
-	private boolean doSendMail(Fall fall) {
+	private boolean doSendMail(@Nonnull Fall fall) {
 		return fall.getBesitzer() != null;
+	}
+
+	@Nonnull
+	private Optional<String> findEMailAddress(@Nonnull Gesuch gesuch) {
+		return fallService.getCurrentEmailAddress(gesuch.getFall().getId())
+			.filter(StringUtils::isNotEmpty);
 	}
 }
