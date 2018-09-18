@@ -31,7 +31,7 @@
 
     <!-- Gemeinde(n) -->
     <div class="col-sm-12 dv-input-container-medium" *ngIf="berechtigung.hasGemeindeRole()">
-        <dv-gemeinde-multiselect [(selected)]="berechtigung.gemeindeList"
+        <dv-gemeinde-multiselect [selected]="berechtigung.gemeindeList"
                                  [disabled]="disabled"
                                  [required]="true">
         </dv-gemeinde-multiselect>

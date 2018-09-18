@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -268,15 +267,6 @@ public class Benutzer extends AbstractMutableEntity {
 	}
 
 	@Nonnull
-	public String extractGemeindenForUserAsString() {
-		return extractGemeindenForUser()
-			.stream()
-			.map(Gemeinde::getName)
-			.sorted(String::compareToIgnoreCase)
-			.collect(Collectors.joining(", "));
-	}
-
-	@Nonnull
 	public Optional<String> extractRollenAbhaengigkeitAsString() {
 		RollenAbhaengigkeit rollenAbhaengigkeit = getRole().getRollenAbhaengigkeit();
 
@@ -284,7 +274,7 @@ public class Benutzer extends AbstractMutableEntity {
 		case NONE:
 			return Optional.empty();
 		case GEMEINDE:
-			return Optional.of(extractGemeindenForUserAsString());
+			return Optional.of(getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
 		case INSTITUTION:
 			return Optional.of(requireNonNull(getInstitution()).getName());
 		case TRAEGERSCHAFT:
