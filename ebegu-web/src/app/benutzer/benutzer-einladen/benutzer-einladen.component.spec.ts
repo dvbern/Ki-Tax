@@ -21,12 +21,12 @@ import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from '../berechtigung/berechtigung.component';
-
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
 
 describe('BenutzerEinladenComponent', () => {
@@ -38,6 +38,7 @@ describe('BenutzerEinladenComponent', () => {
     const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+    const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
 
     beforeEach(async(() => {
         insitutionSpy.getAllInstitutionen.and.returnValue([]);
@@ -54,6 +55,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeSpy},
+                {provide: BenutzerRS, useValue: benutzerSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
             ]
