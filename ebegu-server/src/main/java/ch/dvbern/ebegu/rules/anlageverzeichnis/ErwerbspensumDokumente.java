@@ -73,7 +73,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
 	@Override
-	public void getAllDokumente(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
+	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
 
 		final LocalDate gueltigAb = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 
@@ -138,44 +138,20 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 				gesuchstellerNumber,
 				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
 
-			add(getDokument(
-				DokumentTyp.NACHWEIS_UNREG_ARBEITSZ,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_LANG_ARBEITSWEG,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensumJA, erwerbspensumJA.getName(), DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
 		}
 	}
 
+	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(DokumentTyp dokumentTyp, Erwerbspensum erwerbspensum, LocalDate periodenstart) {
 		return isDokumentNeeded(dokumentTyp, erwerbspensum);

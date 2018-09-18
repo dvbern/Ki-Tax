@@ -96,7 +96,7 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		this.needed = !DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundTyp);
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, @Nullable String tag,
+	public DokumentGrund(@Nonnull DokumentGrundTyp dokumentGrundTyp, @Nullable String tag,
 		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber) {
 		this.dokumentGrundTyp = dokumentGrundTyp;
 		this.needed = !DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundTyp);
@@ -105,14 +105,14 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		this.personNumber = personNumber;
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, DokumentTyp dokumentTyp) {
+	public DokumentGrund(@Nonnull DokumentGrundTyp dokumentGrundTyp, @Nonnull DokumentTyp dokumentTyp) {
 		this(dokumentGrundTyp);
 		this.dokumente = new HashSet<>();
 		this.dokumentTyp = dokumentTyp;
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, String tag,
-		DokumentGrundPersonType personType, Integer personNumber, DokumentTyp dokumentTyp) {
+	public DokumentGrund(@Nonnull DokumentGrundTyp dokumentGrundTyp, @Nullable String tag,
+		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber, @Nonnull DokumentTyp dokumentTyp) {
 		this(dokumentGrundTyp, tag, personType, personNumber);
 		this.dokumente = new HashSet<>();
 		this.dokumentTyp = dokumentTyp;
