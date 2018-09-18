@@ -30,6 +30,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -80,6 +81,18 @@ public class GemeindeResource {
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
 
+		return gemeindeOptional.map(gemeinde -> converter.gemeindeToJAX(gemeinde)).orElse(null);
+	}
+
+	@ApiOperation(value = "Returns the Gemeinde with the given name.", response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/name/{gemeindeName}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeinde findGemeindeByName(
+		@Nonnull @NotNull @PathParam("gemeindeName") String name) {
+		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeindeByName(name);
 		return gemeindeOptional.map(gemeinde -> converter.gemeindeToJAX(gemeinde)).orElse(null);
 	}
 }

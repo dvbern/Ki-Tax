@@ -17,13 +17,14 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="add-gemeinde adminModul">
+<div class="dv-benutzer adminModul">
     <form role="form"
           #form="ngForm"
           [ngClass]="{'submitted': form.submitted}"
-          (ngSubmit)="saveGemeinde()"
+          (ngSubmit)="gemeindeEinladen()"
           novalidate>
 
+        <fieldset>
         <div class="row">
             <div class="col-md-12">
                 <div class="viewTitle">
@@ -39,38 +40,50 @@
                 <div class="col-sm-12 dv-input-container-medium">
                     <div class="form-group">
                         <label class="md-no-float" translate for="gemeinde_ID">GEMEINDENAME</label>
-                        <input id="gemeinde_ID"
-                               type="text"
-                               name="name"
-                               disabled
-                               [value]="selectedGemeinde.name"
-                               class="form-control">
+                        <input id="gemeinde_ID" type="text" name="name" #name="ngModel"
+                               [(ngModel)]="gemeinde.name"
+                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                               [maxlength]="255" class="form-control" required>
+                        <dv-ng-error-messages [errorObject]="form.controls.name?.errors"
+                                              [inputid]="'name'"
+                                              [show]="form.controls.name?.touched"
+                                              class="error">
+                        </dv-ng-error-messages>
                     </div>
                 </div>
                 <div class="col-sm-12 dv-input-container-medium">
                     <div class="form-group">
                         <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
-                        <input id="begu_start_ID"
-                               type="text"
-                               name="begu_start"
-                               disabled
-                               [value]="selectedGemeinde.gemeindeNummer"
-                               class="form-control">
+                        <input id="begu_start_ID" type="text" name="begu_start"
+                               [(ngModel)]="beguStartDatum" data-date
+                               [matDatepicker]="begu_start"
+                               placeholder="01.mm.jjjj"
+                               class="form-control" required>
+                        <!-- <mat-datepicker-toggle class="testfall-datepicker" matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                        <mat-datepicker #begu_start></mat-datepicker> -->
+                        <dv-ng-error-messages [inputid]="'beguStartDatum'"
+                                              [errorObject]="form.controls.beguStartDatum?.errors"
+                                              [show]="form.controls.beguStartDatum?.touched"
+                                              class="error">
+                        </dv-ng-error-messages>
                     </div>
                 </div>
             </div>
 
-            <!-- Administrator - E-Mail Adresse -->
+				   <!-- Administrator - E-Mail Adresse -->
             <div class="row">
                 <div class="col-sm-12 dv-input-container-medium">
                     <div class="form-group">
                         <label class="md-no-float" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                        <input id="admin_mail_ID"
-                               type="text"
-                               name="admin_mail"
-                               disabled
-                               [value]="selectedGemeinde.status"
-                               class="form-control">
+                        <input id="admin_mail_ID" type="text" name="admin_mail" #admin_mail="ngModel"
+                               [(ngModel)]="adminMail" email
+                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                               [maxlength]="255" class="form-control" required>
+                        <dv-ng-error-messages [errorObject]="form.controls.admin_mail?.errors"
+                                              [inputid]="'begu_start'"
+                                              [show]="form.controls.admin_mail?.touched"
+                                              class="error">
+                        </dv-ng-error-messages>
                     </div>
                 </div>
             </div>
@@ -91,5 +104,6 @@
                 </button>
             </div>
         </div>
+        </fieldset>
     </form>
 </div>

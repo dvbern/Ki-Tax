@@ -14,6 +14,7 @@
  */
 
 import {Provider} from '@angular/core';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import FallRS from '../../gesuch/service/fallRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
@@ -232,6 +233,7 @@ export const fallRSProvider = {
     deps: ['$injector']
 };
 
+// InstitutionRS
 export function institutionRSFactory(i: any) {
     return i.get('InstitutionRS');
 }
@@ -240,6 +242,17 @@ export const institutionRSProvider = {
     provide: InstitutionRS,
     useFactory: institutionRSFactory,
     deps: ['$injector'],
+};
+
+// EinstellungRS
+export function einstellungRSServiceFactory(i: any) {
+    return i.get('EinstellungRS');
+}
+
+export const einstellungRSProvider = {
+    provide: EinstellungRS,
+    useFactory: einstellungRSServiceFactory,
+    deps: ['$injector']
 };
 
 export const UPGRADED_PROVIDERS: Provider[] = [
@@ -262,4 +275,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     wizardStepManagerProvider,
     fallRSProvider,
     institutionRSProvider,
+    einstellungRSProvider,
 ];

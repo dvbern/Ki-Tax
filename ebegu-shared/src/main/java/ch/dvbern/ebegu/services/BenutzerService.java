@@ -60,6 +60,13 @@ public interface BenutzerService {
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
 
 	/**
+	 * @param email E-Mail Adresse des Benutzers
+	 * @return Benutzer mit der gegebenen E-Mail Adresse oder null falls nicht vorhanden
+	 */
+	@Nonnull
+	Optional<Benutzer> findBenutzerByEmail(@Nonnull String email);
+
+	/**
 	 * Sucht einen Benutzer nach externalUUID: Diese Methode wird nur von den Connectoren gebraucht.
 	 * Innerhalb ebegu verwenden wir weiterhin die ID.
 	 */

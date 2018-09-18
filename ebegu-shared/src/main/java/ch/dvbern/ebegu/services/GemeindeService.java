@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 
@@ -32,6 +33,12 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Optional<Gemeinde> findGemeinde(@Nonnull String id);
+
+	/**
+	 * Sucht eine Gemeinde anhand des Namens.
+	 */
+	@Nonnull
+	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name);
 
 	/**
 	 * Gibt die erste (und aktuell einzige) Gemeinde aus der DB zurueck

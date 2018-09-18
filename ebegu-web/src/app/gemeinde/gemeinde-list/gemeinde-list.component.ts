@@ -46,7 +46,7 @@ const LOG = LogFactory.createLog('GemeindeListComponent');
 @Component({
     selector: 'gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
-    styleUrls: ['./gemeinde-list.component.less'],
+    styleUrls: ['../../../admin/component/traegerschaftView/traegerschaftView.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
@@ -85,7 +85,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         this.unsubscribe$.complete();
     }
 
-    private updateGemeindenList(): void {
+    public updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(map(gemeinden => {
                     const dataSource = new MatTableDataSource(gemeinden);

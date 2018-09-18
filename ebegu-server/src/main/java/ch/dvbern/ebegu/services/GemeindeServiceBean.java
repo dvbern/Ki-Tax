@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -57,6 +58,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
 		return Optional.ofNullable(gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
+		Objects.requireNonNull(name, "Gemeindename muss gesetzt sein");
+		return criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
 	}
 
 	@Nonnull
