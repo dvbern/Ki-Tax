@@ -338,7 +338,7 @@ Content-Type: text/html;charset=utf-8
 
 			<div style="background-color:#D50025; padding-bottom: 30px; margin-bottom: -30px;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #D50025;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#D50025;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -359,7 +359,7 @@ Content-Type: text/html;charset=utf-8
 									<!--<![endif]-->
 
 
-									<div class="">
+									<div>
 										<!--[if mso]>
 										<table width="100%" cellpadding="0" cellspacing="0" border="0">
 											<tr>
@@ -384,7 +384,7 @@ Content-Type: text/html;charset=utf-8
 			</div>
 			<div style="background-color:transparent;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -405,7 +405,7 @@ Content-Type: text/html;charset=utf-8
 									<!--<![endif]-->
 
 
-									<div class="">
+									<div>
 										<!--[if mso]>
 										<table width="100%" cellpadding="0" cellspacing="0" border="0">
 											<tr>
@@ -431,7 +431,7 @@ Content-Type: text/html;charset=utf-8
 			</div>
 			<div style="background-color:transparent;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -452,7 +452,7 @@ Content-Type: text/html;charset=utf-8
 									<!--<![endif]-->
 
 
-									<div class="">
+									<div>
 										<!--[if mso]>
 										<table width="100%" cellpadding="0" cellspacing="0" border="0">
 											<tr>
@@ -461,7 +461,7 @@ Content-Type: text/html;charset=utf-8
 										<div style="color:#000000;line-height:120%;font-family:'Open Sans', Helvetica, Arial, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
 											<div style="font-size:12px;line-height:14px;color:#000000;font-family:'Open Sans', Helvetica, Arial, sans-serif;text-align:left;">
 												<p style="margin: 0;font-size: 14px;line-height: 17px"><span
-														style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">Sie wurden von ${einladender.getFullName()} für die kiBon-Plattform eingeladen. Nach der Annahme der Einladung benötigen Sie ein <strong>BE-Login</strong>. Danach besitzen Sie folgende Rolle: <strong>${rolle}</strong></span><#if hasRollenZusatz>
+														style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">Sie wurden von ${einladender.getFullName()} für die kiBon-Plattform eingeladen. Nach der Annahme der Einladung benötigen Sie ein <strong>BE-Login</strong>. Danach besitzen Sie folgende Berechtigung:<br>Rolle: <strong>${rolle}</strong></span><#if hasRollenZusatz>
 													<br><span
 															style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">${rollenZusatzTitel}: <strong>${rollenZusatz}</strong></span></#if>
 												</p></div>
@@ -478,7 +478,7 @@ Content-Type: text/html;charset=utf-8
 			</div>
 			<div style="background-color:transparent;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -509,15 +509,15 @@ Content-Type: text/html;charset=utf-8
 													align="center">
 													<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml"
 																 xmlns:w="urn:schemas-microsoft-com:office:word"
-																 href="https://dev-kibon.dvbern.ch/web/#/locallogin"
-																 style="height:34pt; v-text-anchor:middle; width:206pt;"
+																 href="${acceptLink}
+																 style="height:34pt; v-text-anchor:middle; width:228pt;"
 																 arcsize="0%" strokecolor="#D50025" fillcolor="#D50025">
 														<w:anchorlock/>
 														<v:textbox inset="0,0,0,0">
 															<center style="color:#ffffff; font-family:'Open Sans', Helvetica, Arial, sans-serif; font-size:18px;">
 										<![endif]-->
 										<a href="${acceptLink}" target="_blank"
-										   style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #D50025; border-radius: 0px; -webkit-border-radius: 0px; -moz-border-radius: 0px; max-width: 275px; width: 215px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 30px; padding-bottom: 5px; padding-left: 30px; font-family: 'Open Sans', Helvetica, Arial, sans-serif;mso-border-alt: none">
+										   style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #D50025; border-radius: 0px; -webkit-border-radius: 0px; -moz-border-radius: 0px; max-width: 280px; width: 215px;width: auto; margin: 0 auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 30px; padding-bottom: 5px; padding-left: 30px; font-family: 'Open Sans', Helvetica, Arial, sans-serif;mso-border-alt: none">
 											<span style="font-family:'Open Sans', Helvetica, Arial, sans-serif;font-size:16px;line-height:32px;"><strong><span
 													style="font-size: 18px; line-height: 36px;">EINLADUNG ANNEHMEN</span></strong></span>
 										</a>
@@ -534,7 +534,7 @@ Content-Type: text/html;charset=utf-8
 			</div>
 			<div style="background-color:transparent;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -555,7 +555,7 @@ Content-Type: text/html;charset=utf-8
 									<!--<![endif]-->
 
 
-									<div class="">
+									<div>
 										<!--[if mso]>
 										<table width="100%" cellpadding="0" cellspacing="0" border="0">
 											<tr>
@@ -579,7 +579,7 @@ Content-Type: text/html;charset=utf-8
 			</div>
 			<div style="background-color:transparent;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -600,15 +600,15 @@ Content-Type: text/html;charset=utf-8
 									<!--<![endif]-->
 
 
-									<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider "
+									<table border="0" cellpadding="0" cellspacing="0" width="100%" class="divider"
 										   style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
 										<tbody>
 										<tr style="vertical-align: top">
-											<td class="divider_inner"
+											<td class="divider_inner" align="center"
 												style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-right: 10px;padding-left: 10px;padding-top: 31px;padding-bottom: 10px;min-width: 100%;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
 												<table class="divider_content" height="0px" align="center" border="0"
 													   cellpadding="0" cellspacing="0" width="50%"
-													   style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #BBBBBB;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
+													   style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #BBBBBB;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
 													<tbody>
 													<tr style="vertical-align: top">
 														<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">
@@ -631,7 +631,7 @@ Content-Type: text/html;charset=utf-8
 			</div>
 			<div style="background-color:transparent;">
 				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid ">
+					 class="block-grid">
 					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
 						<!--[if (mso)|(IE)]>
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -652,7 +652,7 @@ Content-Type: text/html;charset=utf-8
 									<!--<![endif]-->
 
 
-									<div class="">
+									<div>
 										<!--[if mso]>
 										<table width="100%" cellpadding="0" cellspacing="0" border="0">
 											<tr>
@@ -669,7 +669,8 @@ Content-Type: text/html;charset=utf-8
 												<p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center">
 													<span style="font-size: 10px; line-height: 12px;"><a
 															style="color:#252626;text-decoration: underline;"
-															href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}}" target="_blank" rel="noopener">${configuration.hostname}</a></span>
+															href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}}"
+															target="_blank" rel="noopener">${configuration.hostname}</a></span>
 												</p></div>
 										</div>
 										<!--[if mso]></td></tr></table><![endif]-->
