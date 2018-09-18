@@ -86,10 +86,10 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 		this.setGueltigkeit(berechtigung.getGueltigkeit());
 		this.institution = berechtigung.getInstitution();
 		this.traegerschaft = berechtigung.getTraegerschaft();
+		this.gemeinden = berechtigung.extractGemeindenForBerechtigungAsString();
 
 		Benutzer benutzer = berechtigung.getBenutzer();
 		this.username = benutzer.getUsername();
-		this.gemeinden = benutzer.extractGemeindenForUserAsString();
 		this.status = benutzer.getStatus();
 
 		this.geloescht = deleted;
