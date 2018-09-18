@@ -48,11 +48,13 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 			add(getDokument(DokumentTyp.NACHWEIS_TRENNUNG, famsitErstgesuch, gesuch.extractFamiliensituation(),
 				null, null, null, DokumentGrundTyp.FAMILIENSITUATION), anlageVerzeichnis);
 		}
-		// dieses Dokument gehoert eigentlich zur FinSit aber muss hier hinzugefuegt werden, da es Daten aus der Familiensituation benoetigt
+		// dieses Dokument gehoert eigentlich zur FinSit aber muss hier hinzugefuegt werden, da es Daten aus der
+		// Familiensituation benoetigt
 		add(getDokument(DokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG, gesuch.extractFamiliensituation(),
 			null, null, null, DokumentGrundTyp.FINANZIELLESITUATION), anlageVerzeichnis);
 	}
 
+	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Familiensituation familiensituation) {
 		if (familiensituation == null) {
@@ -68,14 +70,19 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, Familiensituation familiensituationErstgesuch, Familiensituation familiensituationMutation) {
+	public boolean isDokumentNeeded(
+		@Nonnull DokumentTyp dokumentTyp,
+		Familiensituation familiensituationErstgesuch,
+		Familiensituation familiensituationMutation) {
+
 		if (familiensituationErstgesuch == null || familiensituationMutation == null) {
 			return false;
 		}
 		switch (dokumentTyp) {
 		case NACHWEIS_TRENNUNG:
 			//überprüfen, ob ein Wechsel von zwei Gesuchsteller auf einen stattgefunden hat.
-			return familiensituationErstgesuch.hasSecondGesuchsteller() && !familiensituationMutation.hasSecondGesuchsteller();
+			return familiensituationErstgesuch.hasSecondGesuchsteller()
+				&& !familiensituationMutation.hasSecondGesuchsteller();
 		default:
 			return false;
 		}

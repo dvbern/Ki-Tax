@@ -35,7 +35,11 @@ abstract class AbstractDokumente<T1, T2> {
 
 	public abstract boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable T1 dataForDocument);
 
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable T1 dataForDocument1, @Nullable T2 dataForDocument2) {
+	public boolean isDokumentNeeded(
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nullable T1 dataForDocument1,
+		@Nullable T2 dataForDocument2) {
+
 		return isDokumentNeeded(dokumentTyp, dataForDocument1);
 	}
 
@@ -61,8 +65,14 @@ abstract class AbstractDokumente<T1, T2> {
 	}
 
 	@Nullable
-	DokumentGrund getDokument(@Nonnull DokumentTyp dokumentTyp, @Nonnull T1 dataForDocument1, @Nullable T2 dataForDocument2, @Nullable String tag,
-		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber, @Nonnull DokumentGrundTyp dokumentGrundTyp) {
+	DokumentGrund getDokument(
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nonnull T1 dataForDocument1,
+		@Nullable T2 dataForDocument2,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		@Nonnull DokumentGrundTyp dokumentGrundTyp) {
 
 		if (isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2)) {
 			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
