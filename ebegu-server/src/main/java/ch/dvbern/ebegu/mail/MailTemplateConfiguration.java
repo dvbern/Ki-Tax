@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -36,8 +37,10 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -249,13 +252,20 @@ public class MailTemplateConfiguration {
 	}
 
 	@Nonnull
-	public String getBenutzerEinladung(
-		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener) {
+	public String getBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Benutzer eingeladener) {
 
-		// FIXME
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
+		paramMap.put("acceptLink", "https://www.dvbern.ch"); // TODO
+		paramMap.put("rolle", ServerMessageUtil.translateEnumValue(eingeladener.getRole()));
+
+		RollenAbhaengigkeit rollenAbhaengigkeit = eingeladener.getRole().getRollenAbhaengigkeit();
+		Optional<String> rollenZusatz = eingeladener.extractRollenAbhaengigkeitAsString();
+		paramMap.put("hasRollenZusatz", rollenZusatz.isPresent());
+		rollenZusatz.ifPresent(zusatz -> {
+			paramMap.put("rollenZusatzTitel", ServerMessageUtil.translateEnumValue(rollenAbhaengigkeit));
+			paramMap.put("rollenZusatz", zusatz);
+		});
 		paramMap.put("einladender", einladender);
 		paramMap.put("eingeladener", eingeladener);
 

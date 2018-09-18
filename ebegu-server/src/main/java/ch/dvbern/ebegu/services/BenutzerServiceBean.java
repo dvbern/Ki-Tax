@@ -73,6 +73,8 @@ import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -125,6 +127,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private AuthService authService;
 
+	@Inject
+	private MailService mailService;
+
 	@Nonnull
 	@Override
 	@PermitAll
@@ -162,7 +167,21 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
-		return persistence.persist(benutzer);
+		if (findBenutzer(benutzer.getUsername()).isPresent()) {
+			throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
+		}
+
+		Benutzer persisted = persistence.persist(benutzer);
+
+		try {
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted);
+		} catch (MailException e) {
+			String message =
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", benutzer.getEmail());
+			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
+		}
+
+		return persisted;
 	}
 
 	@Nonnull

@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
  * Created by imanol on 02.03.16.
  * Oberklasse fuer Runtime Exceptions in ebegu
  */
+@SuppressWarnings("OverloadedVarargsMethod")
 @ApplicationException(rollback = true)
 public class EbeguRuntimeException extends RuntimeException {
 
@@ -37,37 +38,71 @@ public class EbeguRuntimeException extends RuntimeException {
 
 	private final String methodName;
 	private final List<Serializable> args;
-	private ErrorCodeEnum errorCodeEnum = null;
-	private String customMessage;
+	@Nullable
+	private final ErrorCodeEnum errorCodeEnum;
+	@Nullable
+	private final String customMessage;
 
-	public EbeguRuntimeException(@Nullable String methodeName, @Nonnull String message, @Nonnull Serializable... messageArgs) {
+	public EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nonnull String message,
+		@Nonnull Serializable... messageArgs) {
+
 		super(message);
 		methodName = methodeName;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		errorCodeEnum = null;
+		customMessage = null;
 	}
 
-	public EbeguRuntimeException(@Nullable String methodeName, @Nonnull String message, @Nullable String customMessage, @Nonnull Serializable... messageArgs) {
+	public EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nonnull String message,
+		@Nullable String customMessage,
+		@Nonnull Serializable... messageArgs) {
+
 		super(message);
 		methodName = methodeName;
 		this.customMessage = customMessage;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
-
+		errorCodeEnum = null;
 	}
 
-	public EbeguRuntimeException(@Nullable String methodeName, @Nullable String message, @Nullable Throwable cause, @Nonnull Serializable... messageArgs) {
+	public EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nullable String message,
+		@Nullable Throwable cause,
+		@Nonnull Serializable... messageArgs) {
+
 		super(message, cause);
 		this.methodName = methodeName;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		errorCodeEnum = null;
+		customMessage = null;
 	}
 
-	protected EbeguRuntimeException(@Nullable String methodeName, @Nullable String message, @Nullable ErrorCodeEnum errorCodeEnum, @Nullable Throwable cause, @Nonnull Serializable... messageArgs) {
+	protected EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nullable String message,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nullable Throwable cause,
+		@Nonnull Serializable... messageArgs) {
+
 		super(message, cause);
 		this.errorCodeEnum = errorCodeEnum;
 		this.methodName = methodeName;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		customMessage = null;
 	}
 
-	protected EbeguRuntimeException(@Nullable String methodeName, @Nullable String message, @Nullable String customMessage, @Nullable ErrorCodeEnum errorCodeEnum, @Nullable Throwable cause, @Nonnull Serializable... messageArgs) {
+	protected EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nullable String message,
+		@Nullable String customMessage,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nullable Throwable cause,
+		@Nonnull Serializable... messageArgs) {
+
 		super(message, cause);
 		this.errorCodeEnum = errorCodeEnum;
 		this.customMessage = customMessage;
@@ -75,27 +110,42 @@ public class EbeguRuntimeException extends RuntimeException {
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
 	}
 
-	public EbeguRuntimeException(@Nullable String methodeName, @Nullable String message, @Nullable ErrorCodeEnum errorCodeEnum, @Nonnull Serializable... messageArgs) {
+	public EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nullable String message,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nonnull Serializable... messageArgs) {
+
 		super(message);
 		methodName = methodeName;
 		this.errorCodeEnum = errorCodeEnum;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		customMessage = null;
 	}
 
-	public EbeguRuntimeException(@Nullable String methodName, @Nullable ErrorCodeEnum errorCodeEnum, @Nonnull Serializable... args) {
+	public EbeguRuntimeException(
+		@Nullable String methodName,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nonnull Serializable... args) {
+
 		super(errorCodeEnum != null ? errorCodeEnum.name() : null);
 		this.methodName = methodName;
 		this.errorCodeEnum = errorCodeEnum;
 		this.args = Collections.unmodifiableList(Arrays.asList(args));
-
+		customMessage = null;
 	}
 
-	public EbeguRuntimeException(@Nullable String methodName, @Nullable ErrorCodeEnum errorCodeEnum, @Nullable Throwable cause, @Nonnull Serializable... args) {
+	public EbeguRuntimeException(
+		@Nullable String methodName,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nullable Throwable cause,
+		@Nonnull Serializable... args) {
+
 		super(cause);
 		this.methodName = methodName;
 		this.errorCodeEnum = errorCodeEnum;
 		this.args = Collections.unmodifiableList(Arrays.asList(args));
-
+		customMessage = null;
 	}
 
 	public String getMethodName() {
@@ -106,10 +156,12 @@ public class EbeguRuntimeException extends RuntimeException {
 		return args;
 	}
 
+	@Nullable
 	public ErrorCodeEnum getErrorCodeEnum() {
 		return errorCodeEnum;
 	}
 
+	@Nullable
 	public String getCustomMessage() {
 		return customMessage;
 	}

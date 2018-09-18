@@ -369,8 +369,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull Benutzer einladender,
 		@Nonnull Benutzer eingeladener) throws MailException {
 
-		mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener);
-		// FIXME
+		String message = mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener);
+		sendMessageWithTemplate(message, eingeladener.getEmail());
 	}
 
 	private void sendMail(

@@ -22,10 +22,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
-import {LogFactory} from '../../core/logging/LogFactory';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
-
-const LOG = LogFactory.createLog('BenutzerEinladenComponent');
 
 @Component({
     selector: 'dv-benutzer-einladen',
