@@ -364,27 +364,17 @@
 
 
                         <!-- Status texts -->
-                        <div class="row">
-                            <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusWarten() && !vm.isSavingData">
-                                <div class="well well-status-warten">
-                                    <i class="fa fa-hourglass" aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_WARTEN_TEXT"></span>
-                                </div>
-                            </div>
+                        <div class="well well-status-warten" ng-if="vm.isBetreuungsstatusWarten() && !vm.isSavingData">
+                            <i class="fa fa-hourglass" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_WARTEN_TEXT"></span>
                         </div>
-                        <div class="row">
 
-                            <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusAbgewiesen() && !vm.isSavingData">
-                                <div class="well well-status-abgewiesen">
-                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_ABGEWIESEN_TEXT"
-                                          data-translate-value-grund="{{vm.getBetreuungModel().grundAblehnung}}"
-                                          data-translate-value-date="{{vm.getBetreuungModel().datumAblehnung  | amDateFormat : 'DD.MM.YYYY'}}">
-                        </span>
-                                </div>
-                            </div>
+                        <div class="well well-status-abgewiesen" ng-if="vm.isBetreuungsstatusAbgewiesen() && !vm.isSavingData">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_ABGEWIESEN_TEXT"
+                                  data-translate-value-grund="{{vm.getBetreuungModel().grundAblehnung}}"
+                                  data-translate-value-date="{{vm.getBetreuungModel().datumAblehnung  | amDateFormat : 'DD.MM.YYYY'}}">
+                            </span>
                         </div>
                         <div class="row">
                             <div class="col-md-12"
@@ -396,24 +386,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusNichtEingetreten() && !vm.isSavingData">
-                                <div class="well well-status-bestaetigt">
-                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_NICHT_EINGETRETEN_TEXT"
-                                          data-translate-value-date="{{vm.getBetreuungModel().datumBestaetigung  | amDateFormat : 'DD.MM.YYYY'}}"></span>
-                                </div>
-                            </div>
+                        <div class="well well-status-bestaetigt"
+                             ng-if="vm.isBetreuungsstatusNichtEingetreten() && !vm.isSavingData">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_NICHT_EINGETRETEN_TEXT"
+                                  data-translate-value-date="{{vm.getBetreuungModel().datumBestaetigung  | amDateFormat : 'DD.MM.YYYY'}}"></span>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12"
-                                 ng-if="vm.isStorniert() && !vm.isSavingData">
-                                <div class="well well-status-bestaetigt">
-                                    <i class="fa fa-exclamation " aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_STORNIERT_TEXT"></span>
-                                </div>
-                            </div>
+                        <div class="well well-status-bestaetigt" ng-if="vm.isStorniert() && !vm.isSavingData">
+                            <i class="fa fa-exclamation" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_STORNIERT_TEXT"></span>
                         </div>
 
                         <!--falsche Angaben-->
