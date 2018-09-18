@@ -56,8 +56,9 @@
                         <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
                         <input id="begu_start_ID" type="text" name="begu_start"
                                [(ngModel)]="beguStartDatum" data-date
+                               [min]="beguStartDatumMin"
                                [matDatepicker]="begu_start"
-                               placeholder="01.mm.jjjj"
+                               placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
                                class="form-control" required>
                         <!-- <mat-datepicker-toggle class="testfall-datepicker" matSuffix [for]="begu_start"></mat-datepicker-toggle>
                         <mat-datepicker #begu_start></mat-datepicker> -->

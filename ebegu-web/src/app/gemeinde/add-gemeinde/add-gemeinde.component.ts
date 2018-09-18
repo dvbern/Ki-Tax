@@ -27,12 +27,9 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSGemeinde from '../../../models/TSGemeinde';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
-import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import UserRS from '../../core/service/userRS.rest';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('AddGemeindeComponent');
 
@@ -48,16 +45,17 @@ export class AddGemeindeComponent implements OnInit {
 
     gemeinde: TSGemeinde = undefined;
     adminMail: string = undefined;
-    beguStartDatum: moment.Moment = undefined;
+    beguStartDatum: moment.Moment;
+    beguStartDatumMin: moment.Moment;
     isDisabled = false;
 
     constructor(private readonly $transition$: Transition,
                 private readonly $state: StateService,
                 private readonly errorService: ErrorService,
                 private readonly gemeindeRS: GemeindeRS,
+                private readonly benutzerRS: BenutzerRS,
                 private readonly einstellungRS: EinstellungRS,
                 private readonly authServiceRS: AuthServiceRS,
-                private readonly userRS: UserRS,
                 private readonly dialog: MatDialog) {
     }
 
@@ -75,6 +73,7 @@ export class AddGemeindeComponent implements OnInit {
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStartDatum = futureMonthBegin;
+        this.beguStartDatumMin = futureMonthBegin;
     }
 
     public cancel(): void {
@@ -97,7 +96,7 @@ export class AddGemeindeComponent implements OnInit {
                 }).catch(reason => {
                     // Normalfall; sie Gemeinde existiert noch nicht.
 
-                    this.userRS.findBenutzerByEmail(this.adminMail).then((result) => {
+                    this.benutzerRS.findBenutzerByEmail(this.adminMail).then((result) => {
                         // Der Benutzer existiert bereits.
                         const user = result;
                         this.errorService.addMesageAsInfo('Der Benutzer ' + user.vorname + ' ' + user.nachname + ' (' + user.email + ') existiert bereits!');

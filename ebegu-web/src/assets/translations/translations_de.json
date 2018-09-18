@@ -636,6 +636,7 @@
     "ERWERBSPENSEN_LIST_HINT": "Sämtliche Erwerbspensen für die ganze Gesuchsperiode müssen hier erfasst werden!",
     "UMZUG_LIST_HINT": "Sämtliche Umzugsadressen für die ganze Gesuchsperiode müssen hier erfasst werden!",
     "DATE_PLACEHOLDER": "tt.mm.jjjj",
+    "DATE_PLACEHOLDER_FIRSTOFMONTH": "01.mm.jjjj",
     "PERCENTAGE_PLACEHOLDER": "Angabe in %",
     "FAM_ERGAENZENDE_BETREUUNG_HELP": "Besucht Ihr Kind in der Stadt Bern eine Kita, ein Tagi, eine Ferieninsel, Tageseltern oder eine Tagesschule? Oder ist der Besuch geplant?",
     "FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE": "Um dieses Feld editieren zu können, löschen Sie zuerst alle Betreuungen des Kindes",

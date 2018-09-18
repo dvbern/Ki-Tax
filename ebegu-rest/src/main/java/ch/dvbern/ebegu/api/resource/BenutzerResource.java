@@ -182,14 +182,14 @@ public class BenutzerResource {
 	}
 
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen  E-Mail in der Datenbank.",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nullable
 	@GET
 	@Path("/email/{email}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public JaxAuthLoginElement findBenutzerByEmail(
+	public JaxBenutzer findBenutzerByEmail(
 		@Nonnull @NotNull @PathParam("email") String email) {
 
 		Objects.requireNonNull(email);
