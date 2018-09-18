@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +34,6 @@ import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSUser from '../../../models/TSUser';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -44,9 +41,8 @@ import {LogFactory} from '../../core/logging/LogFactory';
 const LOG = LogFactory.createLog('GemeindeListComponent');
 
 @Component({
-    selector: 'gemeinde-list',
+    selector: 'dv-gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
-    styleUrls: ['../../../admin/component/traegerschaftView/traegerschaftView.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 

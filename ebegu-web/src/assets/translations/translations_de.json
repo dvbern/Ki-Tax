@@ -1173,6 +1173,7 @@
     "AFA_INDEXBAR": "Benutzernavigation",
     "AFA_GESUCHSFORMULAR": "Gesuchsformular",
     "AFA_BENUTZERVERWALTUNG": "Benutzerverwaltung",
+    "AFA_GEMEINDEVERWALTUNG": "Gemeindeverwaltung",
     "BESTAETIGUNG_DIALOG": "Bestätigungs",
     "DOKUMENT_DOWNLOAD": "Dokument herunterladen",
     "DOKUMENT_LOOK": "Dokument betrachten",
@@ -1361,7 +1362,7 @@
     "GEMEINDENAME": "Gemeindename",
     "BEGU_START": "Betreuungsgutscheine anbieten ab",
     "ADMIN_MAIL": "Administrator - E-Mail Adresse",
-    "EINLADUNG_SENDEN": "Einladung senden"
+    "EINLADUNG_SENDEN": "Einladung senden",
     "DEBUGGING_UI_ROUTER": "UI Router Debugging",
     "DEBUGGING_TRACE_TRANSITIONS": "Transition Tracing",
     "DEBUGGING_UI_ROUTER_VISUALIZER": "UI Router Visualizer aktivieren"

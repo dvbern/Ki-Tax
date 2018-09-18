@@ -1,6 +1,4 @@
 <!--
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,70 +16,59 @@
  -->
 
 <div class="gemeinde-list adminModul" flex="auto">
+
     <div class="col-md-8 col-md-offset-2">
+
+        <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
         <div class="viewTitle">
-            <h1 [textContent]="'GEMEINDEN' | translate"></h1>
+            <h2 translate>GEMEINDEN</h2>
+            <hr class="header">
         </div>
-        <form #form="ngForm" role="form" name="form" class="" unsaved-warning-form novalidate>
-            <fieldset [disabled]="isReadonly()">
 
-                <div class="row">
-                    <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
-                    <div class="col-md-12 table-responsive gemeinden-table">
-                            <mat-table #table [dataSource]="dataSource" matSort
-                                       on-edit="vm.editGemeinde(gemeinde, event)">
+        <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
+        <div class="table-responsive gemeinden-table">
+            <mat-table #table [dataSource]="dataSource" matSort
+                       on-edit="vm.editGemeinde(gemeinde, event)">
 
-                                <!-- Column Name -->
-                                <ng-container matColumnDef="name">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                        {{'GEMEINDE' | translate}}
-                                    </mat-header-cell>
-                                    <mat-cell *matCellDef="let gemeinde"
-                                              (click)="setSelectedGemeinde(gemeinde)">
-                                        {{gemeinde.name}}
-                                    </mat-cell>
-                                </ng-container>
+                <!-- Column Name -->
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'GEMEINDE' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let gemeinde"
+                              (click)="setSelectedGemeinde(gemeinde)">
+                        {{gemeinde.name}}
+                    </mat-cell>
+                </ng-container>
 
-                                <!-- Column Status -->
-                                <ng-container matColumnDef="status">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                        {{'STATUS' | translate}}
-                                    </mat-header-cell>
-                                    <mat-cell *matCellDef="let gemeinde"
-                                              (click)="setSelectedGemeinde(gemeinde)">
-                                        {{'GEMEINDE_STATUS_' + gemeinde.status | translate}}
-                                    </mat-cell>
-                                </ng-container>
+                <!-- Column Status -->
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'STATUS' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let gemeinde"
+                              (click)="setSelectedGemeinde(gemeinde)">
+                        {{gemeinde.status | translate}}
+                    </mat-cell>
+                </ng-container>
 
-                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                            </mat-table>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
 
-                        <div class="mat-row" *ngIf="showNoContentMessage()"
-                             [textContent]="'GEMEINDEN_NOCH_KEINE' | translate">
-                        </div>
-                    </div>
+            <div class="mat-row" *ngIf="showNoContentMessage()"
+                 [textContent]="'GEMEINDEN_NOCH_KEINE' | translate">
+            </div>
+        </div>
 
-                    <div *ngIf="!gemeinde && !isReadonly() && isAccessible()" class="marginTop50">
-                        <div class="row">
-                            <div class="col-md-6  form-group">
-                                <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <button dvNgDebounceClick
-                                                (debounceClick)="addGemeinde(); form.reset();"
-                                                class="dv-btn dv-btn-sm color-success"
-                                                [disabled]="gemeinde">
-                                            <i class="glyphicon glyphicon-plus"></i>
-                                            <span [textContent]="'GEMEINDE_HINZUFUEGEN' | translate"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
+        <div *ngIf="!isReadonly() && isAccessible()"
+             class="marginTop50 row">
+            <div class="col-md-3">
+                <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
+                <dv-loading-button (buttonClick)="addGemeinde();">
+                    <span translate>GEMEINDE_HINZUFUEGEN</span>
+                </dv-loading-button>
+            </div>
+        </div>
     </div>
 </div>

@@ -17,94 +17,83 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-benutzer adminModul">
+<dv-full-height-container>
     <form role="form"
           #form="ngForm"
-          [ngClass]="{'submitted': form.submitted}"
+          [ngClass]="{'ng-submitted': form.submitted}"
           (ngSubmit)="gemeindeEinladen()"
           novalidate>
 
-        <fieldset>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="viewTitle">
-                    <h1 [textContent]="'NEUE_GEMEINDE' | translate"></h1>
-                </div>
-                <hr class="header"/>
+        <div class="dv-content">
+
+            <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
+            <div class="viewTitle">
+                <h2 translate>NEUE_GEMEINDE</h2>
+                <hr class="header">
             </div>
+
+            <fieldset>
+                <!-- Gemeindename | Betreuungsgutscheine anbieten ab -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="gemeinde_ID">GEMEINDENAME</label>
+                            <input id="gemeinde_ID" type="text" name="gemeinde_name" #name="ngModel"
+                                   [(ngModel)]="gemeinde.name"
+                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.gemeinde_name?.errors"
+                                               inputId="gemeinde_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                            <input id="begu_start_ID" type="text" name="begu_start"
+                                   [(ngModel)]="beguStartDatum" data-date
+                                   [min]="beguStartDatumMin"
+                                   [matDatepicker]="begu_start"
+                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                   class="form-control" required>
+                            <!-- <mat-datepicker-toggle class="testfall-datepicker" matSuffix [for]="begu_start"></mat-datepicker-toggle>
+							<mat-datepicker #begu_start></mat-datepicker> -->
+                            <dv-error-messages inputid="begu_start_ID"
+                                               [errorObject]="form.controls.begu_start?.errors">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administrator - E-Mail Adresse -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="admin_mail_ID">ADMIN_MAIL</label>
+                            <input id="admin_mail_ID" type="text" name="admin_mail" #admin_mail="ngModel"
+                                   [(ngModel)]="adminMail" email
+                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
+                                               inputid="admin_mail_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
         </div>
 
-        <fieldset>
-            <!-- Gemeindename | Betreuungsgutscheine anbieten ab -->
-            <div class="row">
-                <div class="col-sm-12 dv-input-container-medium">
-                    <div class="form-group">
-                        <label class="md-no-float" translate for="gemeinde_ID">GEMEINDENAME</label>
-                        <input id="gemeinde_ID" type="text" name="name" #name="ngModel"
-                               [(ngModel)]="gemeinde.name"
-                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                               [maxlength]="255" class="form-control" required>
-                        <dv-ng-error-messages [errorObject]="form.controls.name?.errors"
-                                              [inputid]="'name'"
-                                              [show]="form.controls.name?.touched"
-                                              class="error">
-                        </dv-ng-error-messages>
-                    </div>
-                </div>
-                <div class="col-sm-12 dv-input-container-medium">
-                    <div class="form-group">
-                        <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
-                        <input id="begu_start_ID" type="text" name="begu_start"
-                               [(ngModel)]="beguStartDatum" data-date
-                               [min]="beguStartDatumMin"
-                               [matDatepicker]="begu_start"
-                               placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                               class="form-control" required>
-                        <!-- <mat-datepicker-toggle class="testfall-datepicker" matSuffix [for]="begu_start"></mat-datepicker-toggle>
-                        <mat-datepicker #begu_start></mat-datepicker> -->
-                        <dv-ng-error-messages [inputid]="'beguStartDatum'"
-                                              [errorObject]="form.controls.beguStartDatum?.errors"
-                                              [show]="form.controls.beguStartDatum?.touched"
-                                              class="error">
-                        </dv-ng-error-messages>
-                    </div>
-                </div>
-            </div>
-
-				   <!-- Administrator - E-Mail Adresse -->
-            <div class="row">
-                <div class="col-sm-12 dv-input-container-medium">
-                    <div class="form-group">
-                        <label class="md-no-float" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                        <input id="admin_mail_ID" type="text" name="admin_mail" #admin_mail="ngModel"
-                               [(ngModel)]="adminMail" email
-                               ngModel [ngModelOptions]="{updateOn: 'blur'}"
-                               [maxlength]="255" class="form-control" required>
-                        <dv-ng-error-messages [errorObject]="form.controls.admin_mail?.errors"
-                                              [inputid]="'begu_start'"
-                                              [show]="form.controls.admin_mail?.touched"
-                                              class="error">
-                        </dv-ng-error-messages>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-
         <!-- Buttons -->
-        <div class="button-row dv-input-container-medium">
-
+        <div class="dv-footer">
             <dv-loading-button [type]="'submit'"
                                *ngIf="!isDisabled">
                 <span translate>EINLADUNG_SENDEN</span>
             </dv-loading-button>
 
-            <div class="button-row-item">
-                <button type="button" class="dv-btn cancel-button"
-                        (click)="cancel()"
-                        [textContent]="'ZURUECK_ONLY_UPPER' | translate">
-                </button>
-            </div>
+            <button type="button" class="dv-btn cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'ZURUECK_ONLY_UPPER' | translate">
+            </button>
         </div>
-        </fieldset>
     </form>
-</div>
+</dv-full-height-container>

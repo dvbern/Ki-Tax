@@ -34,9 +34,8 @@ import BenutzerRS from '../../core/service/benutzerRS.rest';
 const LOG = LogFactory.createLog('AddGemeindeComponent');
 
 @Component({
-    selector: 'add-gemeinde',
+    selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
-    styleUrls: ['../../benutzer/benutzer/benutzer.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddGemeindeComponent implements OnInit {
@@ -120,6 +119,11 @@ export class AddGemeindeComponent implements OnInit {
             this.errorService.addMesageAsInfo('Das Startdatum muss in der Zukunft liegen!');
             return false;
         }
+        return true;
+    }
+
+    private persist(): boolean {
+
         return true;
     }
 

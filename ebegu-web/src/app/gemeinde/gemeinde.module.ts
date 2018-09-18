@@ -26,7 +26,6 @@ import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 
 @NgModule({
     imports: [
-        CommonModule,
         SharedModule,
         NgAdminRoutingModule,
     ],

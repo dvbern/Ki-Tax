@@ -96,7 +96,6 @@ export const benutzerState: Ng2StateDeclaration = {
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [traegerschaftState, gemeindeListState, addGemeindenState, testdatenState, batchjobTriggerState, benutzerState]}),
         UIRouterUpgradeModule.forChild({
             states: [
                 traegerschaftState,
@@ -104,7 +103,8 @@ export const benutzerState: Ng2StateDeclaration = {
                 batchjobTriggerState,
                 debuggingState,
                 benutzerState,
-                gemeindenState
+                gemeindeListState,
+                addGemeindenState,
             ]
         }),
     ],
