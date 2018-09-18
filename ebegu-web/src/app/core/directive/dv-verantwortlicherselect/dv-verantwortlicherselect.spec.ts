@@ -16,12 +16,13 @@
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import TSDossier from '../../../../models/TSDossier';
 import TSGesuch from '../../../../models/TSGesuch';
-import TSUser from '../../../../models/TSUser';
 import {EbeguWebCore} from '../../core.angularjs.module';
-import UserRS from '../../service/userRS.rest';
+import BenutzerRS from '../../service/benutzerRS.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
+import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
 describe('dvVerantwortlicherSelect', () => {
@@ -29,9 +30,9 @@ describe('dvVerantwortlicherSelect', () => {
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
     let authServiceRS: AuthServiceRS;
-    let userRS: UserRS;
-    let user: TSUser;
-    let $mdSidenav: angular.material.ISidenavService;
+    let benutzerRS: BenutzerRS;
+    let benutzer: TSBenutzer;
+    let $mdSidenav: ISidenavService;
     let $translate: ITranslateService;
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
@@ -41,12 +42,12 @@ describe('dvVerantwortlicherSelect', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
-        userRS = $injector.get('UserRS');
+        benutzerRS = $injector.get('BenutzerRS');
         $mdSidenav = $injector.get('$mdSidenav');
-        user = new TSUser('Emiliano', 'Camacho');
+        benutzer = new TSBenutzer('Emiliano', 'Camacho');
         $translate = $injector.get('$translate');
 
-        verantwortlicherselectController = new VerantwortlicherselectController(userRS,
+        verantwortlicherselectController = new VerantwortlicherselectController(benutzerRS,
             authServiceRS, gesuchModelManager, $translate);
     }));
 
@@ -56,7 +57,7 @@ describe('dvVerantwortlicherSelect', () => {
         });
 
         it('returns the fullname of the verantwortlicherBG', () => {
-            const verantwortlicher: TSUser = new TSUser('Emiliano', 'Camacho');
+            const verantwortlicher: TSBenutzer = new TSBenutzer('Emiliano', 'Camacho');
             const gesuch: TSGesuch = new TSGesuch();
             gesuch.dossier = new TSDossier();
             gesuch.dossier.verantwortlicherBG = verantwortlicher;
@@ -70,13 +71,13 @@ describe('dvVerantwortlicherSelect', () => {
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
             verantwortlicherselectController.setVerantwortlicher(undefined);
-            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
+            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(benutzer);
         });
         it('sets the user as the verantwortlicherBG of the current fall', () => {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
-            const newUser: TSUser = new TSUser('Adolfo', 'Contreras');
+            const newUser: TSBenutzer = new TSBenutzer('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
             expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
         });
@@ -85,7 +86,7 @@ describe('dvVerantwortlicherSelect', () => {
     function createGesuch() {
         const gesuch: TSGesuch = new TSGesuch();
         const dossier: TSDossier = new TSDossier();
-        dossier.verantwortlicherBG = user;
+        dossier.verantwortlicherBG = benutzer;
         gesuch.dossier = dossier;
         gesuchModelManager.setGesuch(gesuch);
     }

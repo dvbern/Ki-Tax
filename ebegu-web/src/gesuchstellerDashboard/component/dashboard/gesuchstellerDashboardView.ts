@@ -200,7 +200,8 @@ export class GesuchstellerDashboardViewController {
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
-        return periode.hasTagesschulenAnmeldung() && !!antrag &&
+        const isSchulamtAngeboteEnabled: boolean = EbeguUtil.isTagesschulangebotEnabled();
+        return isSchulamtAngeboteEnabled && periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
             && this.isNeuestAntragOfGesuchsperiode(periode, antrag);

@@ -19,7 +19,7 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
@@ -36,7 +36,7 @@ export class DvPulldownUserMenuController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
-    public principal?: TSUser = undefined;
+    public principal?: TSBenutzer = undefined;
 
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;

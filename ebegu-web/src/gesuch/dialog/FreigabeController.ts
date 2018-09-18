@@ -14,10 +14,10 @@
  */
 
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
+import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import UserRS from '../../app/core/service/userRS.rest';
 import TSAntragDTO from '../../models/TSAntragDTO';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GesuchRS from '../service/gesuchRS.rest';
@@ -30,22 +30,28 @@ import ITranslateService = angular.translate.ITranslateService;
  */
 export class FreigabeController {
 
-    static $inject: string[] = ['docID', '$mdDialog', 'GesuchRS', 'UserRS', 'AuthServiceRS',
+    static $inject: string[] = ['docID', '$mdDialog', 'GesuchRS', 'BenutzerRS', 'AuthServiceRS',
         'EbeguUtil', 'CONSTANTS', '$translate', 'ApplicationPropertyRS'];
 
     private gesuch: TSAntragDTO;
     private selectedUserBG: string;
     private selectedUserTS: string;
-    private userBGList: Array<TSUser>;
-    private userTSList: Array<TSUser>;
+    private userBGList: Array<TSBenutzer>;
+    private userTSList: Array<TSBenutzer>;
     private fallNummer: string;
     private familie: string;
     private errorMessage: string;
     TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly docID: string, private readonly $mdDialog: IDialogService, private readonly gesuchRS: GesuchRS,
-                private readonly userRS: UserRS, private readonly authService: AuthServiceRS, private readonly ebeguUtil: EbeguUtil,
-                CONSTANTS: any, private readonly $translate: ITranslateService, private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    constructor(private readonly docID: string,
+                private readonly $mdDialog: IDialogService,
+                private readonly gesuchRS: GesuchRS,
+                private readonly benutzerRS: BenutzerRS,
+                private readonly authService: AuthServiceRS,
+                private readonly ebeguUtil: EbeguUtil,
+                CONSTANTS: any,
+                private readonly $translate: ITranslateService,
+                private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value
@@ -90,7 +96,7 @@ export class FreigabeController {
         }
         // Schulamt
         if (this.gesuch.verantwortlicherTS && this.gesuch.verantwortlicherUsernameTS) {
-           this.selectedUserTS = this.gesuch.verantwortlicherUsernameTS;
+            this.selectedUserTS = this.gesuch.verantwortlicherUsernameTS;
         } else {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
@@ -104,10 +110,10 @@ export class FreigabeController {
     }
 
     private updateUserList() {
-        this.userRS.getBenutzerJAorAdmin().then((response: any) => {
+        this.benutzerRS.getBenutzerJAorAdmin().then((response: any) => {
             this.userBGList = angular.copy(response);
         });
-        this.userRS.getBenutzerSCHorAdminSCH().then((response: any) => {
+        this.benutzerRS.getBenutzerSCHorAdminSCH().then((response: any) => {
             this.userTSList = angular.copy(response);
         });
     }

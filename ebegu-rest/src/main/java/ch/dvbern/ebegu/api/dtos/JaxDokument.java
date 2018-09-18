@@ -37,7 +37,7 @@ public class JaxDokument extends JaxFile {
 	private LocalDateTime timestampUpload;
 
 	@Nullable
-	private JaxAuthLoginElement userUploaded;
+	private JaxBenutzer userUploaded;
 
 	public LocalDateTime getTimestampUpload() {
 		return timestampUpload;
@@ -48,11 +48,11 @@ public class JaxDokument extends JaxFile {
 	}
 
 	@Nullable
-	public JaxAuthLoginElement getUserUploaded() {
+	public JaxBenutzer getUserUploaded() {
 		return userUploaded;
 	}
 
-	public void setUserUploaded(@Nullable JaxAuthLoginElement userUploaded) {
+	public void setUserUploaded(@Nullable JaxBenutzer userUploaded) {
 		this.userUploaded = userUploaded;
 	}
 }

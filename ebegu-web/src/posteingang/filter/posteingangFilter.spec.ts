@@ -20,7 +20,7 @@ import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehm
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import {EbeguWebPosteingang} from '../posteingang.module';
 
 describe('posteingangFilter', () => {
@@ -40,15 +40,15 @@ describe('posteingangFilter', () => {
     beforeEach(angular.mock.inject($injector => {
         posteingangFilter = $injector.get('$filter')('posteingangFilter');
 
-        const ja1 = new TSUser();
+        const ja1 = new TSBenutzer();
         ja1.nachname = 'Blaser';
         ja1.vorname = 'Kurt';
 
-        const ja2 = new TSUser();
+        const ja2 = new TSBenutzer();
         ja2.nachname = 'Becker';
         ja2.vorname = 'Julian';
 
-        const gesuchsteller1 = new TSUser();
+        const gesuchsteller1 = new TSBenutzer();
         gesuchsteller1.nachname = 'Berger';
         gesuchsteller1.vorname = 'Michael';
         const fall1 = new TSFall();
@@ -57,7 +57,7 @@ describe('posteingangFilter', () => {
         const dossier1 = new TSDossier();
         dossier1.fall = fall1;
 
-        const gesuchsteller2 = new TSUser();
+        const gesuchsteller2 = new TSBenutzer();
         gesuchsteller2.nachname = 'Gerber';
         gesuchsteller2.vorname = 'Emma';
         const fall2 = new TSFall();

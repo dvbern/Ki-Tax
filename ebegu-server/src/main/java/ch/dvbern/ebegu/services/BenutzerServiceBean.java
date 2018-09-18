@@ -67,6 +67,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -318,15 +319,16 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public Benutzer sperren(@Nonnull String username) {
-		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"sperren",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchId invalid: " + username));
+		Benutzer benutzerFromDB = findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"sperren",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"GesuchId invalid: " + username));
 
-		benutzerFromDB.setGesperrt(Boolean.TRUE);
+		benutzerFromDB.setStatus(BenutzerStatus.GESPERRT);
 		int deletedAuthBenutzer = authService.logoutAndDeleteAuthorisierteBenutzerForUser(username);
 		logSperreBenutzer(benutzerFromDB, deletedAuthBenutzer);
+
 		return persistence.merge(benutzerFromDB);
 	}
 
@@ -344,13 +346,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public Benutzer reaktivieren(@Nonnull String username) {
-		Benutzer benutzerFromDB = findBenutzer(username).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"reaktivieren",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchId invalid: " + username));
-		benutzerFromDB.setGesperrt(Boolean.FALSE);
+		Benutzer benutzerFromDB = findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"reaktivieren",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"GesuchId invalid: " + username));
+
+		benutzerFromDB.setStatus(BenutzerStatus.AKTIV);
 		logReaktivierenBenutzer(benutzerFromDB);
+
 		return persistence.merge(benutzerFromDB);
 	}
 
@@ -480,8 +484,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		getGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 
 		//prepare predicates
-		BenutzerPredicateObjectDTO predicateObjectDto = benutzerTableFilterDTO.getSearch().getPredicateObject();
-		if (predicateObjectDto != null) {
+		if (benutzerTableFilterDTO.getSearch() != null) {
+			BenutzerPredicateObjectDTO predicateObjectDto = benutzerTableFilterDTO.getSearch().getPredicateObject();
 			// username
 			if (predicateObjectDto.getUsername() != null) {
 				Expression<String> expression = root.get(Benutzer_.username).as(String.class);
@@ -508,9 +512,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// role;
 			if (predicateObjectDto.getRole() != null) {
-				predicates.add(cb.equal(
-					currentBerechtigung.get(Berechtigung_.role),
-					valueOf(predicateObjectDto.getRole())));
+				predicates.add(cb.equal(currentBerechtigung.get(Berechtigung_.role), predicateObjectDto.getRole()));
 			}
 			// roleGueltigBis;
 			if (predicateObjectDto.getRoleGueltigBis() != null) {
@@ -539,8 +541,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 					predicateObjectDto.getTraegerschaft()));
 			}
 			// gesperrt;
-			if (predicateObjectDto.getGesperrt() != null) {
-				predicates.add(cb.equal(root.get(Benutzer_.gesperrt), predicateObjectDto.getGesperrt()));
+			if (predicateObjectDto.getStatus() != null) {
+				predicates.add(cb.equal(root.get(Benutzer_.status), predicateObjectDto.getStatus()));
 			}
 		}
 		// Construct the select- and where-clause
@@ -574,8 +576,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Pair<Long, List<Benutzer>> result = null;
 		switch (mode) {
 		case SEARCH:
-			List<String> benutzerIds =
-				persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
+			//select all ids in order, may contain duplicates
+			List<String> benutzerIds = persistence.getCriteriaResults(query);
 			List<Benutzer> pagedResult;
 			if (benutzerTableFilterDTO.getPagination() != null) {
 				int firstIndex = benutzerTableFilterDTO.getPagination().getStart();
@@ -641,8 +643,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			case "traegerschaft":
 				expression = traegerschaft.get(Traegerschaft_.name);
 				break;
-			case "gesperrt":
-				expression = root.get(Benutzer_.gesperrt);
+			case "status":
+				expression = root.get(Benutzer_.status);
 				break;
 			default:
 				LOG.warn(

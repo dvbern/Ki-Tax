@@ -14,9 +14,9 @@
  */
 
 export enum TSVerfuegungZeitabschnittZahlungsstatus {
-    NEU = <any> 'NEU',
-    VERRECHNET = <any> 'VERRECHNET',
-    VERRECHNET_KORRIGIERT = <any> 'VERRECHNET_KORRIGIERT',
-    IGNORIERT = <any> 'IGNORIERT',
-    IGNORIEREND = <any> 'IGNORIEREND'
+    NEU = 'NEU',
+    VERRECHNET = 'VERRECHNET',
+    VERRECHNET_KORRIGIERT = 'VERRECHNET_KORRIGIERT',
+    IGNORIERT = 'IGNORIERT',
+    IGNORIEREND = 'IGNORIEREND'
 }

@@ -14,15 +14,15 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSUser from './TSUser';
+import TSBenutzer from './TSBenutzer';
 
 export default class TSFall extends TSAbstractMutableEntity {
 
     private _fallNummer: number;
     private _nextNumberKind: number;
-    private _besitzer: TSUser;
+    private _besitzer: TSBenutzer;
 
-    constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSUser) {
+    constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSBenutzer) {
         super();
         this._fallNummer = fallNummer;
         this._nextNumberKind = nextNumberKind;
@@ -45,11 +45,11 @@ export default class TSFall extends TSAbstractMutableEntity {
         this._nextNumberKind = value;
     }
 
-    get besitzer(): TSUser {
+    get besitzer(): TSBenutzer {
         return this._besitzer;
     }
 
-    set besitzer(value: TSUser) {
+    set besitzer(value: TSBenutzer) {
         this._besitzer = value;
     }
 }

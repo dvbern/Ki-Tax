@@ -34,7 +34,7 @@ import TSGesuch from '../../models/TSGesuch';
 import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
 import TSKind from '../../models/TSKind';
 import TSKindContainer from '../../models/TSKindContainer';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import TSVerfuegung from '../../models/TSVerfuegung';
 import DateUtil from '../../utils/DateUtil';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
@@ -148,7 +148,7 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
                     spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
                     spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                    const user: TSUser = new TSUser('Emilianito', 'Camacho');
+                    const user: TSBenutzer = new TSBenutzer('Emilianito', 'Camacho');
                     gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
                     scope.$apply();
                     expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);

@@ -23,7 +23,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import com.github.oxo42.stateless4j.StateMachineConfig;
 
 /**
- * CDI Producer fuer StateMachineConfig die wir in KiTax benoetigen
+ * CDI Producer fuer StateMachineConfig die wir in kiBon benoetigen
  * <p>
  * Hier werden zudem saemtliche onEntry Actions getriggered und an die Services weiterdelegiert.
  */

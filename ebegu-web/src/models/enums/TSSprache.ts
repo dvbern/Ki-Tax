@@ -14,8 +14,8 @@
  */
 
 export enum TSSprache {
-    DEUTSCH = <any> 'DEUTSCH',
-    FRANZOESISCH = <any> 'FRANZOESISCH',
+    DEUTSCH = 'DEUTSCH',
+    FRANZOESISCH = 'FRANZOESISCH',
 }
 
 export function getTSSpracheValues(): Array<TSSprache> {

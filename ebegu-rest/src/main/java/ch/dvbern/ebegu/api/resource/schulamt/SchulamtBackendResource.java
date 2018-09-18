@@ -101,7 +101,7 @@ public class SchulamtBackendResource {
 	@Inject
 	private VerfuegungService verfuegungService;
 
-	@ApiOperation(value = "Gibt die Version von Ki-Tax zurück. Kann als Testmethode verwendet werden, da ohne Authentifizierung aufrufbar",
+	@ApiOperation(value = "Gibt die Version von kiBon zurück. Kann als Testmethode verwendet werden, da ohne Authentifizierung aufrufbar",
 		response = String.class)
 	@GET
 	@Path("/heartbeat")

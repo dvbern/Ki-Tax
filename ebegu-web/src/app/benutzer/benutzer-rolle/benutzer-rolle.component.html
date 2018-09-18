@@ -1,0 +1,34 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<label translate [for]="inputId">ROLLE</label>
+<div class="dv-select-style">
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <select [attr.aria-describedby]="inputId + '-error'"
+            class="form-control"
+            [id]="inputId"
+            [name]="name"
+            [required]="required"
+            [disabled]="disabled"
+            [(ngModel)]="benutzerRolle">
+        <option *ngFor="let item of roles | keyvalue; trackBy: trackByRole"
+                [ngValue]="item.key">
+            {{item.value | translate}}
+        </option>
+    </select>
+    <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[name]?.errors"></dv-error-messages>
+</div>
