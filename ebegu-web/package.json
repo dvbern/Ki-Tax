@@ -89,6 +89,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-junit-reporter": "~1.2.0",
     "karma-mocha-reporter": "~2.2.5",
+    "karma-sonarqube-unit-reporter": "0.0.18",
     "karma-sourcemap-loader": "~0.3.7",
     "karma-webpack": "^3.0.0",
     "less": "^3.8.0",
