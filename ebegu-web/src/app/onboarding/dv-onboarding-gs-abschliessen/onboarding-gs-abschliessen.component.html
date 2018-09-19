@@ -38,18 +38,18 @@
                 <span>{{'ONBOARDING_GS_ANGABEN_TITLE' | translate}}</span>
             </div>
             <div class="onboarding-gs-angaben-content">
-                <table class="onboarding-gs-angaben-content-table">
+                <table class="onboarding-gs-angaben-table">
                     <tr>
                         <td class="onboarding-gs-angaben-table-label">Vorname</td>
-                        <td>{{(user$ | async).vorname}}</td>
+                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).vorname}}</td>
                     </tr>
                     <tr>
                         <td class="onboarding-gs-angaben-table-label">Name</td>
-                        <td>{{(user$ | async).nachname}}</td>
+                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).nachname}}</td>
                     </tr>
                     <tr>
                         <td class="onboarding-gs-angaben-table-label">E-Mail</td>
-                        <td>{{(user$ | async).email}}</td>
+                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).email}}</td>
                     </tr>
                 </table>
             </div>

@@ -51,12 +51,15 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     @Input() fallId: string;
     @Input() dossierId: string;
     @Input() currentDossier: TSDossier;
+    @Input() mobileMode?: boolean = false;
 
     public dossierList: TSDossier[] = [];
+    public dossierListWithoutSelected: TSDossier[] = [];
     selectedDossier?: TSDossier;
     fallNummer: string;
     private availableGemeindeList: TSGemeinde[] = [];
     gemeindeText: string;
+    showdropdown: boolean = false;
 
     constructor(private readonly dossierRS: DossierRS,
                 private readonly dialog: MatDialog,
@@ -67,17 +70,18 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
+        this.loadObjects(); // todo fragen it gets called twice!! ngChanges. siehe Kommentar unten
         // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 
     private loadObjects() {
-        if (this.fallId) {
-            this.dossierRS.findDossiersByFall(this.fallId).then(dossiers => {
-                this.dossierList = dossiers;
-                this.setSelectedDossier();
-                this.addNewDossierToCreateToDossiersList();
-                this.retrieveListOfAvailableGemeinden();
+        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId) {
+            this.dossierRS.findDossier(this.dossierId).then(dossier => {
+                this.fallId = dossier.fall.id ? dossier.fall.id : '';
+                this.doLoading(this.fallId);
             });
+        } else if (this.fallId) {
+            this.doLoading(this.fallId);
         } else {
             this.emptyDossierList(); // if there is no fall there cannot be any dossier
             this.addNewDossierToCreateToDossiersList(); // only a new dossier can be added to a not yet created fall
@@ -296,5 +300,24 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     public showAddGemeindeText(): boolean {
         return !!this.gemeindeText;
+    }
+
+    public getCurrentGemeindeName(): string {
+        if (this.currentDossier) {
+            return this.currentDossier.extractGemeindeName();
+        }
+        return '';
+    }
+
+    public doLoading(fallId: string): void {
+        if (fallId) {
+            this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
+                this.dossierList = dossiers;
+                this.setSelectedDossier();
+                this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
+                this.addNewDossierToCreateToDossiersList();
+                this.retrieveListOfAvailableGemeinden();
+            });
+        }
     }
 }
