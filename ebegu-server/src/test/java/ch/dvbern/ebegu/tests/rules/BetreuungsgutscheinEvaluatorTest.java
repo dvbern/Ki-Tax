@@ -43,6 +43,8 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdaten;
 
@@ -71,6 +73,8 @@ import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdat
  */
 public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(BetreuungsgutscheinEvaluatorTest.class);
+
 	private final DateRange erwerbspensumGS1_1 = new DateRange(LocalDate.of(2010, Month.FEBRUARY, 2), LocalDate.of(2017, Month.MARCH, 20));
 	private final DateRange erwerbspensumGS1_2 = new DateRange(LocalDate.of(2017, Month.JANUARY, 1), LocalDate.of(2017, Month.JULY, 31));
 
@@ -86,7 +90,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		evaluator.evaluate(testgesuch, getParameter());
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				System.out.println(betreuung.getVerfuegung());
+				LOG.info("{}", betreuung.getVerfuegung());
 			}
 		}
 	}

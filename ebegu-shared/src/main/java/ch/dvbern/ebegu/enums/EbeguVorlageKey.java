@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.enums;
 
+import javax.annotation.Nullable;
+
 /**
  * Keys für die zeitabhängigen E-BEGU-Vorlagen
  */
@@ -100,8 +102,9 @@ public enum EbeguVorlageKey {
 		this.defaultVorlagePath = defaultVorlagePath;
 	}
 
-	@SuppressWarnings("OverlyComplexMethod")
-	public static EbeguVorlageKey getBenutzerHandbuchKeyForRole(UserRole userRole) {
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
+	@Nullable
+	public static EbeguVorlageKey getBenutzerHandbuchKeyForRole(@Nullable UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
 				case ADMIN_BG:
