@@ -47,7 +47,7 @@ describe('BenutzerRolleComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(BenutzerRolleComponent);
         component = fixture.componentInstance;
-        component.inputName = 'test-name';
+        component.name = 'test-name';
         fixture.detectChanges();
     });
 

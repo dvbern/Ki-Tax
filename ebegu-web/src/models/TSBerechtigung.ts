@@ -13,8 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {TSAmt} from './enums/TSAmt';
-import {rolePrefix, TSRole} from './enums/TSRole';
+import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSGemeinde from './TSGemeinde';
 import TSInstitution from './TSInstitution';
@@ -23,12 +24,15 @@ import {TSDateRange} from './types/TSDateRange';
 
 export default class TSBerechtigung extends TSAbstractDateRangedEntity {
 
-    private _traegerschaft: TSTraegerschaft;
-    private _institution: TSInstitution;
+    private _traegerschaft?: TSTraegerschaft;
+    private _institution?: TSInstitution;
     private _role: TSRole;
     private _gemeindeList: Array<TSGemeinde> = [];
 
-    constructor(gueltigkeit?: TSDateRange, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution) {
+    constructor(gueltigkeit?: TSDateRange,
+                role?: TSRole,
+                traegerschaft?: TSTraegerschaft,
+                institution?: TSInstitution) {
         super(gueltigkeit);
         this._role = role;
         this._traegerschaft = traegerschaft;
@@ -67,14 +71,11 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
         this._gemeindeList = value;
     }
 
-    getRoleKey(): string {
-        return rolePrefix() + this.role;
-    }
-
     /**
-     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie zu speichern
-     * waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server gesetzt und zum Client geschickt.
-     * Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
+     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie
+     * zu speichern waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server
+     * gesetzt und zum Client geschickt. Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
+     *
      * ACHTUNG Diese Logik existiert auch im Server UserRole. Aenderungen muessen in beiden Orten gemacht werden.
      */
     public analyseAmt(): TSAmt {
@@ -91,6 +92,30 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
                 return TSAmt.GEMEINDE;
             default:
                 return TSAmt.NONE;
+        }
+    }
+
+    public hasGemeindeRole(): boolean {
+        return TSRoleUtil.isGemeindeRole(this.role);
+    }
+
+    public hasInstitutionRole(): boolean {
+        return TSRoleUtil.isInstitutionRole(this.role);
+    }
+
+    public hasTraegerschaftRole(): boolean {
+        return TSRoleUtil.isTraegerschaftRole(this.role);
+    }
+
+    public prepareForSave(): void {
+        if (!this.hasGemeindeRole()) {
+            this.gemeindeList = [];
+        }
+        if (!this.hasInstitutionRole()) {
+            this.institution = undefined;
+        }
+        if (!this.hasTraegerschaftRole()) {
+            this.traegerschaft = undefined;
         }
     }
 }

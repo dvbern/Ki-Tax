@@ -216,7 +216,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
-                    if (principal && TSRoleUtil.isGemeindeabhaengig(principal.getCurrentRole())) {
+                    if (principal && TSRoleUtil.isGemeindeRole(principal.getCurrentRole())) {
                         return of(principal.extractCurrentGemeinden());
                     }
 

@@ -15,20 +15,22 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<label translate [for]="inputId">ROLLE</label>
-<div class="dv-select-style">
-    <!--suppress HtmlFormInputWithoutLabel -->
-    <select [attr.aria-describedby]="inputId + '-error'"
-            class="form-control"
-            [id]="inputId"
-            [name]="name"
-            [required]="required"
-            [disabled]="disabled"
-            [(ngModel)]="benutzerRolle">
-        <option *ngFor="let item of roles | keyvalue; trackBy: trackByRole"
-                [ngValue]="item.key">
-            {{item.value | translate}}
-        </option>
-    </select>
-    <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[name]?.errors"></dv-error-messages>
+
+<div *ngIf="allowedMap$ | async as allowedGemeinden" class="form-group">
+    <label [for]="id" translate>GEMEINDEN</label>
+    <mat-select class="form-control"
+                [ngModel]="selected"
+                [name]="inputId"
+                [disabled]="disabled"
+                [id]="inputId"
+                [required]="required"
+                [multiple]="true">
+        <mat-option *ngFor="let item of allowedGemeinden | keyvalue"
+                    (onSelectionChange)="onSelectionChange($event)"
+                    [value]="item.key">
+            {{item.key.name}}
+        </mat-option>
+    </mat-select>
+    <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[inputId]?.errors">
+    </dv-error-messages>
 </div>

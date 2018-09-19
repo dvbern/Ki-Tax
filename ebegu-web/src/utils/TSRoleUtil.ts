@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {Permission} from '../app/authorisation/Permission';
+import {PERMISSIONS} from '../app/authorisation/Permissions';
 import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../models/enums/TSRole';
 
 /**
@@ -300,14 +302,16 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_MANDANT];
     }
 
-    public static isGemeindeabhaengig(role: TSRole): boolean {
-        return this.getAllGemeindeabhaengigeRoles().some(value => value === role);
+    public static isGemeindeRole(role: TSRole): boolean {
+        return PERMISSIONS[Permission.ROLE_GEMEINDE].includes(role);
     }
 
-    public static getAllGemeindeabhaengigeRoles(): Array<TSRole> {
-        return [TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE,
-            TSRole.STEUERAMT, TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS, TSRole.JURIST, TSRole.REVISOR];
+    public static isInstitutionRole(role: TSRole): boolean {
+        return PERMISSIONS[Permission.ROLE_INSTITUTION].includes(role);
+    }
+
+    public static isTraegerschaftRole(role: TSRole): boolean {
+        return PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT].includes(role);
     }
 
     public static translationKeyForRole(role: TSRole,

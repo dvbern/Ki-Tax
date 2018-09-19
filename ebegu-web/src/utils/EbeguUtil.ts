@@ -13,21 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CONSTANTS} from '../app/core/constants/CONSTANTS';
-import TSDossier from '../models/TSDossier';
-import TSGemeinde from '../models/TSGemeinde';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {IFilterService, ILogService} from 'angular';
-import TSAbstractEntity from '../models/TSAbstractEntity';
-import TSFall from '../models/TSFall';
-import DateUtil from './DateUtil';
-import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import {Moment} from 'moment';
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
+import {Displayable} from '../app/shared/interfaces/displayable';
 import TSBetreuungsnummerParts from '../models/dto/TSBetreuungsnummerParts';
-import TSGesuch from '../models/TSGesuch';
+import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSBetreuung from '../models/TSBetreuung';
+import TSDossier from '../models/TSDossier';
+import TSFall from '../models/TSFall';
+import TSGemeinde from '../models/TSGemeinde';
+import TSGesuch from '../models/TSGesuch';
+import TSGesuchsperiode from '../models/TSGesuchsperiode';
+import DateUtil from './DateUtil';
 import ITranslateService = angular.translate.ITranslateService;
-import * as moment from 'moment';
-import Moment = moment.Moment;
 
 /**
  * Klasse die allgemeine utils Methoden implementiert
@@ -39,6 +39,14 @@ export default class EbeguUtil {
     constructor(private readonly $filter: IFilterService,
                 private readonly $translate: ITranslateService,
                 private readonly $log: ILogService) {
+    }
+
+    public static compareByName<T extends Displayable>(a: T, b: T): number {
+        return a.name.localeCompare(b.name);
+    }
+
+    public static compareById<T extends TSAbstractEntity>(a: T, b: T): boolean {
+        return a && b ? a.id === b.id : a === b;
     }
 
     public static isTagesschulangebotEnabled(): boolean {
@@ -54,10 +62,8 @@ export default class EbeguUtil {
     }
 
     /**
-     * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als string zurueck
-     * @param number
-     * @param length
-     * @returns {any}
+     * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als
+     * string zurueck
      */
     public static addZerosToNumber(number: number, length: number): string {
         if (number != null) {
@@ -223,7 +229,11 @@ export default class EbeguUtil {
     }
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
-    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode, fall: TSFall, gemeinde: TSGemeinde, kindContainerNumber: number, betreuungNumber: number): string {
+    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode,
+                                 fall: TSFall,
+                                 gemeinde: TSGemeinde,
+                                 kindContainerNumber: number,
+                                 betreuungNumber: number): string {
         let betreuungsId: string = '';
         if (gesuchsperiode && fall) {
             betreuungsId =
@@ -251,7 +261,8 @@ export default class EbeguUtil {
     }
 
     /**
-     * hilfsmethode um die betreuungsnummer in ihre einzelteile zu zerlegen. gibt ein objekt zurueck welches die werte einzeln enthaelt
+     * hilfsmethode um die betreuungsnummer in ihre einzelteile zu zerlegen. gibt ein objekt zurueck welches die werte
+     * einzeln enthaelt
      * @param betreuungsnummer im format JJ.Fallnr.GemeindeNr.kindnr.betrnr
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
@@ -283,7 +294,8 @@ export default class EbeguUtil {
 
     /**
      * Returns a string like "fallID GesuchstellerName". The name of the GS comes from the name of the
-     * owner of the given fall. Use this method instead of getGesuchNameFromGesuch only when there is no Gesuch but a fall
+     * owner of the given fall. Use this method instead of getGesuchNameFromGesuch only when there is no Gesuch but a
+     * fall
      */
     public getGesuchNameFromDossier(dossier: TSDossier): string {
         let text = '';

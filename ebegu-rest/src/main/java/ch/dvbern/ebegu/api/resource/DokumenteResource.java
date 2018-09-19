@@ -94,9 +94,9 @@ public class DokumenteResource {
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId.getId());
 		if (gesuch.isPresent()) {
 			final Set<DokumentGrund> dokumentGrundsNeeded = dokumentenverzeichnisEvaluator.calculate(gesuch.get());
-			//TODO reviewer addSonstige und addPapiergesuch sollte moeglichwerweise hier nicht zu den needed hinzugefuegt werden... weil sie ja eigentlich nicht needed sind und nur auf dem GUI angezeigt werden sollen
 			dokumentenverzeichnisEvaluator.addSonstige(dokumentGrundsNeeded);
-			dokumentenverzeichnisEvaluator.addPapiergesuch(dokumentGrundsNeeded, gesuch.get());
+			dokumentenverzeichnisEvaluator.addPapiergesuch(dokumentGrundsNeeded);
+			dokumentenverzeichnisEvaluator.addFreigabequittung(dokumentGrundsNeeded);
 			final Collection<DokumentGrund> persistedDokumentGrund = dokumentGrundService.findAllDokumentGrundByGesuch(gesuch.get());
 			final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrund);
 			return converter.dokumentGruendeToJAX(dokumentGrundsMerged);
@@ -118,7 +118,8 @@ public class DokumenteResource {
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId.getId());
 		if (gesuch.isPresent()) {
 			final Set<DokumentGrund> dokumentGrundsNeeded = new HashSet<>();
-			dokumentenverzeichnisEvaluator.addPapiergesuch(dokumentGrundsNeeded, gesuch.get());
+			dokumentenverzeichnisEvaluator.addPapiergesuch(dokumentGrundsNeeded);
+			dokumentenverzeichnisEvaluator.addFreigabequittung(dokumentGrundsNeeded);
 			final Collection<DokumentGrund> persistedDokumentGrund = dokumentGrundService.findAllDokumentGrundByGesuchAndDokumentType(gesuch.get(), dokumentGrundTyp);
 			final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrund);
 			return converter.dokumentGruendeToJAX(dokumentGrundsMerged);
