@@ -38,13 +38,13 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.RuleKey;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static ch.dvbern.ebegu.tets.TestDataUtil.createDefaultInstitutionStammdaten;
+import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdaten;
 
 /**
  * Test der als Proof of Concept dienen soll fuer das Regelsystem

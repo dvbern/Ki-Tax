@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tets.data;
+package ch.dvbern.ebegu.test.data;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;

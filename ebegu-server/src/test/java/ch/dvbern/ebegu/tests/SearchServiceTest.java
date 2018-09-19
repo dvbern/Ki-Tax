@@ -37,7 +37,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.SearchService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jboss.arquillian.junit.Arquillian;
@@ -49,7 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static ch.dvbern.ebegu.tets.TestDataUtil.createAndPersistFeutzYvonneGesuch;
+import static ch.dvbern.ebegu.test.TestDataUtil.createAndPersistFeutzYvonneGesuch;
 
 /**
  * Arquillian Tests fuer die Klasse SearchService

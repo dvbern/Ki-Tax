@@ -19,7 +19,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeindeValidator;
 import org.junit.Assert;
 import org.junit.Before;

@@ -49,7 +49,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.ErwerbspensumDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.KindDokumente;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
