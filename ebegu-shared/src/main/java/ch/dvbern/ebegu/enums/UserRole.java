@@ -22,29 +22,29 @@ import javax.annotation.Nonnull;
 
 public enum UserRole {
 
-	SUPER_ADMIN(false),
-	ADMIN_BG(true),
-	SACHBEARBEITER_BG(true),
-	SACHBEARBEITER_TRAEGERSCHAFT(false),
-	ADMIN_TRAEGERSCHAFT(false),
-	ADMIN_INSTITUTION(false),
-	SACHBEARBEITER_INSTITUTION(false),
-	JURIST(true),
-	REVISOR(true),
-	STEUERAMT(true),
-	ADMIN_TS(true),
-	ADMIN_GEMEINDE(true),
-	SACHBEARBEITER_TS(true),
-	SACHBEARBEITER_GEMEINDE(true),
-	ADMIN_MANDANT(false),
-	SACHBEARBEITER_MANDANT(false),
-	GESUCHSTELLER(false);
+	SUPER_ADMIN(RollenAbhaengigkeit.NONE),
+	ADMIN_BG(RollenAbhaengigkeit.GEMEINDE),
+	SACHBEARBEITER_BG(RollenAbhaengigkeit.GEMEINDE),
+	SACHBEARBEITER_TRAEGERSCHAFT(RollenAbhaengigkeit.TRAEGERSCHAFT),
+	ADMIN_TRAEGERSCHAFT(RollenAbhaengigkeit.TRAEGERSCHAFT),
+	ADMIN_INSTITUTION(RollenAbhaengigkeit.INSTITUTION),
+	SACHBEARBEITER_INSTITUTION(RollenAbhaengigkeit.INSTITUTION),
+	JURIST(RollenAbhaengigkeit.GEMEINDE),
+	REVISOR(RollenAbhaengigkeit.GEMEINDE),
+	STEUERAMT(RollenAbhaengigkeit.GEMEINDE),
+	ADMIN_TS(RollenAbhaengigkeit.GEMEINDE),
+	ADMIN_GEMEINDE(RollenAbhaengigkeit.GEMEINDE),
+	SACHBEARBEITER_TS(RollenAbhaengigkeit.GEMEINDE),
+	SACHBEARBEITER_GEMEINDE(RollenAbhaengigkeit.GEMEINDE),
+	ADMIN_MANDANT(RollenAbhaengigkeit.NONE),
+	SACHBEARBEITER_MANDANT(RollenAbhaengigkeit.NONE),
+	GESUCHSTELLER(RollenAbhaengigkeit.NONE);
 
+	@Nonnull
+	private final RollenAbhaengigkeit rollenAbhaengigkeit;
 
-	private boolean isGemeindeabhaengig;
-
-	UserRole(boolean isGemeindeabhaengig) {
-		this.isGemeindeabhaengig = isGemeindeabhaengig;
+	UserRole(@Nonnull RollenAbhaengigkeit rollenAbhaengigkeit) {
+		this.rollenAbhaengigkeit = rollenAbhaengigkeit;
 	}
 
 	public boolean isRoleSchulamt() {
@@ -123,6 +123,11 @@ public enum UserRole {
 	}
 
 	public boolean isRoleGemeindeabhaengig(){
-		return isGemeindeabhaengig;
+		return this.rollenAbhaengigkeit == RollenAbhaengigkeit.GEMEINDE;
+	}
+
+	@Nonnull
+	public RollenAbhaengigkeit getRollenAbhaengigkeit() {
+		return rollenAbhaengigkeit;
 	}
 }

@@ -62,12 +62,12 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_benutzer_id"))
-	private Benutzer benutzer;
+	private Benutzer benutzer = null;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@NotNull
-	private UserRole role;
+	private UserRole role = null;
 
 	@NotNull
 	@ManyToMany
@@ -85,12 +85,12 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_institution_id"))
-	private Institution institution;
+	private Institution institution = null;
 
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Berechtigung_traegerschaft_id"))
-	private Traegerschaft traegerschaft;
+	private Traegerschaft traegerschaft = null;
 
 
 	public Benutzer getBenutzer() {
@@ -174,7 +174,7 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 	}
 
 	@Override
-	public int compareTo(Berechtigung o) {
+	public int compareTo(@Nonnull Berechtigung o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getGueltigkeit().getGueltigAb(), o.getGueltigkeit().getGueltigAb());
 		builder.append(this.getId(), o.getId());

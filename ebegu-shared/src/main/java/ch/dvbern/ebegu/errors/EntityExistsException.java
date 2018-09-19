@@ -15,9 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// TODO evtl. global setzen?
-.dv-btn {
-    .fa {
-        width: 3rem;
-    }
+package ch.dvbern.ebegu.errors;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+
+public class EntityExistsException extends EbeguRuntimeException {
+
+	private static final long serialVersionUID = -7412913095961290661L;
+
+	public <T extends AbstractEntity> EntityExistsException(
+		@Nonnull Class<T> entityClass,
+		@Nonnull String constraintName,
+		@Nonnull String duplicateValue) {
+
+		super(null, ErrorCodeEnum.ERROR_ENTITY_EXISTS, entityClass.getSimpleName(), constraintName, duplicateValue);
+	}
 }

@@ -31,15 +31,13 @@
 
                     <!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
                     <div ng-if="vm.isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
-                        <p class="ebeguH3" data-translate="GESUCHSPERIODE_INAKTIV_HINT">
-                        </p>
+                        <p class="ebeguH3" data-translate="GESUCHSPERIODE_INAKTIV_HINT"></p>
                     </div>
                     <!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
                     <div dv-show-expression="vm.gesuchModelManager.getGesuch().isFolgegesuch()" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
                          class="well well-status-warten">
-                        <p class="ebeguH3" data-translate="FOLGEGESUCH_HINT">
-                        </p>
+                        <p class="ebeguH3" data-translate="FOLGEGESUCH_HINT"></p>
                     </div>
 
                     <!--Willkommnstext bei Erstgesuch-->

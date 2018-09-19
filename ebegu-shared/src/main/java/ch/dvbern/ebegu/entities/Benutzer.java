@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,6 +44,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BenutzerChangedEntityListener;
 import ch.dvbern.ebegu.util.Constants;
@@ -54,6 +56,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static java.util.Objects.requireNonNull;
 
 @Entity
 @EntityListeners(BenutzerChangedEntityListener.class)
@@ -225,7 +228,7 @@ public class Benutzer extends AbstractMutableEntity {
 				}
 			}
 		}
-		Objects.requireNonNull(currentBerechtigung, "Keine aktive Berechtigung vorhanden fuer Benutzer " + username);
+		requireNonNull(currentBerechtigung, "Keine aktive Berechtigung vorhanden fuer Benutzer " + username);
 		return currentBerechtigung;
 	}
 
@@ -261,6 +264,24 @@ public class Benutzer extends AbstractMutableEntity {
 		return this.currentBerechtigung == null ?
 			Collections.emptySet() :
 			this.currentBerechtigung.getGemeindeList();
+	}
+
+	@Nonnull
+	public Optional<String> extractRollenAbhaengigkeitAsString() {
+		RollenAbhaengigkeit rollenAbhaengigkeit = getRole().getRollenAbhaengigkeit();
+
+		switch (rollenAbhaengigkeit) {
+		case NONE:
+			return Optional.empty();
+		case GEMEINDE:
+			return Optional.of(getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
+		case INSTITUTION:
+			return Optional.of(requireNonNull(getInstitution()).getName());
+		case TRAEGERSCHAFT:
+			return Optional.of(requireNonNull(getTraegerschaft()).getName());
+		}
+
+		throw new IllegalStateException("No mapping defined for " + rollenAbhaengigkeit);
 	}
 
 	/**

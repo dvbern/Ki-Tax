@@ -73,6 +73,8 @@ import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -88,7 +90,6 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getJugendamtRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getSchulamtRoles;
-import static ch.dvbern.ebegu.enums.UserRole.valueOf;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
@@ -99,6 +100,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Benutzer
@@ -124,11 +127,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private AuthService authService;
 
+	@Inject
+	private MailService mailService;
+
 	@Nonnull
 	@Override
 	@PermitAll
 	public Benutzer saveBenutzerBerechtigungen(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged) {
-		Objects.requireNonNull(benutzer);
+		requireNonNull(benutzer);
 		prepareBenutzerForSave(benutzer, currentBerechtigungChanged);
 		return persistence.merge(benutzer);
 	}
@@ -137,7 +143,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public Benutzer saveBenutzer(@Nonnull Benutzer benutzer) {
-		Objects.requireNonNull(benutzer);
+		requireNonNull(benutzer);
 		if (benutzer.isNew()) {
 			return persistence.persist(benutzer);
 		}
@@ -146,9 +152,43 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
+	@RolesAllowed({
+		SUPER_ADMIN,
+		ADMIN_BG,
+		ADMIN_GEMEINDE,
+		ADMIN_TS,
+		ADMIN_MANDANT,
+		ADMIN_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT,
+	})
+	public Benutzer einladen(@Nonnull Benutzer benutzer) {
+		requireNonNull(benutzer);
+		checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
+		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
+
+		if (findBenutzer(benutzer.getUsername()).isPresent()) {
+			throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
+		}
+
+		Benutzer persisted = persistence.persist(benutzer);
+
+		try {
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted);
+		} catch (MailException e) {
+			String message =
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", benutzer.getEmail());
+			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
+		}
+
+		return persisted;
+	}
+
+	@Nonnull
+	@Override
 	@PermitAll
 	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
-		Objects.requireNonNull(username, "username muss gesetzt sein");
+		requireNonNull(username, "username muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
 	}
 
@@ -156,7 +196,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID) {
-		Objects.requireNonNull(externalUUID, "externalUUID muss gesetzt sein");
+		requireNonNull(externalUUID, "externalUUID muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, externalUUID, Benutzer_.externalUUID);
 	}
 
@@ -233,7 +273,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public void removeBenutzer(@Nonnull String username) {
-		Objects.requireNonNull(username);
+		requireNonNull(username);
 		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -272,7 +312,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public Benutzer updateOrStoreUserFromIAM(@Nonnull Benutzer benutzer) {
-		Objects.requireNonNull(benutzer.getExternalUUID());
+		requireNonNull(benutzer.getExternalUUID());
 		Optional<Benutzer> foundUserOptional = this.findBenutzerByExternalUUID(benutzer.getExternalUUID());
 
 		if (foundUserOptional.isPresent()) {
@@ -765,7 +805,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
 	public Optional<Berechtigung> findBerechtigung(@Nonnull String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		requireNonNull(id, "id muss gesetzt sein");
 		return Optional.ofNullable(persistence.find(Berechtigung.class, id));
 	}
 

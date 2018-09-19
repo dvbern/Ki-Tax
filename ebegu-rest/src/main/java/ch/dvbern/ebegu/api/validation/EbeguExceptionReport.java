@@ -32,27 +32,33 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.resteasy.api.validation.Validation;
+
+import static ch.dvbern.ebegu.util.ServerMessageUtil.translateEnumValue;
 
 /**
  * Created by imanol on 02.03.16.
  * Dies ist die Reportklasse fuer {@link EbeguException} und {@link EbeguRuntimeException}
  */
-@XmlRootElement(
-	name = "ebeguReport"
-)
+@XmlRootElement(name = "ebeguReport")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EbeguExceptionReport {
 
+	@Nullable
 	private String exceptionName;
+	@Nullable
 	private String methodName;
+	@Nullable
 	private String translatedMessage;
+	@Nullable
 	private String customMessage;
+	@Nullable
 	private ErrorCodeEnum errorCodeEnum;
-	private String stackTrace;
+	private String stackTrace = null;
+	@Nullable
 	private String objectId; // das ID vom betroffenen Objekt, wenn es eins gibt
+	@Nullable
 	private List<Serializable> argumentList = new ArrayList<>();
 
 	//	public EbeguExceptionReport(EbeguException exception) {
@@ -75,9 +81,15 @@ public class EbeguExceptionReport {
 	//		}
 	//	}
 
-	public EbeguExceptionReport(@Nullable String exceptionName, @Nullable ErrorCodeEnum errorCodeEnum, @Nullable String methodName,
-		@Nullable String translatedMessage, @Nullable String customMessage, @Nullable String objectId,
+	public EbeguExceptionReport(
+		@Nullable String exceptionName,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nullable String methodName,
+		@Nullable String translatedMessage,
+		@Nullable String customMessage,
+		@Nullable String objectId,
 		@Nullable List<Serializable> argumentList) {
+
 		this.exceptionName = exceptionName;
 		this.errorCodeEnum = errorCodeEnum;
 		this.methodName = methodName;
@@ -87,47 +99,53 @@ public class EbeguExceptionReport {
 		this.objectId = objectId;
 	}
 
+	@Nullable
 	public String getExceptionName() {
 		return exceptionName;
 	}
 
-	public void setExceptionName(String exceptionName) {
+	public void setExceptionName(@Nullable String exceptionName) {
 		this.exceptionName = exceptionName;
 	}
 
+	@Nullable
 	public String getMethodName() {
 		return methodName;
 	}
 
-	public void setMethodName(String methodName) {
+	public void setMethodName(@Nullable String methodName) {
 		this.methodName = methodName;
 	}
 
+	@Nullable
 	public String getTranslatedMessage() {
 		return translatedMessage;
 	}
 
-	public void setTranslatedMessage(String translatedMessage) {
+	public void setTranslatedMessage(@Nullable String translatedMessage) {
 		this.translatedMessage = translatedMessage;
 	}
 
+	@Nullable
 	public List<Serializable> getArgumentList() {
 		return argumentList;
 	}
 
+	@Nullable
 	public String getCustomMessage() {
 		return customMessage;
 	}
 
-	public void setCustomMessage(String customMessage) {
+	public void setCustomMessage(@Nullable String customMessage) {
 		this.customMessage = customMessage;
 	}
 
+	@Nullable
 	public ErrorCodeEnum getErrorCodeEnum() {
 		return errorCodeEnum;
 	}
 
-	public void setErrorCodeEnum(ErrorCodeEnum errorCodeEnum) {
+	public void setErrorCodeEnum(@Nullable ErrorCodeEnum errorCodeEnum) {
 		this.errorCodeEnum = errorCodeEnum;
 	}
 
@@ -139,33 +157,53 @@ public class EbeguExceptionReport {
 		this.stackTrace = stackTrace;
 	}
 
-	public void setArgumentList(List<Serializable> argumentList) {
+	public void setArgumentList(@Nullable List<Serializable> argumentList) {
 		this.argumentList = argumentList;
 	}
 
+	@Nullable
 	public String getObjectId() {
 		return objectId;
 	}
 
-	public void setObjectId(String objectId) {
+	public void setObjectId(@Nullable String objectId) {
 		this.objectId = objectId;
 	}
 
 	@Nonnull
-	public static Response buildResponse(Response.Status status, EbeguException ex, Locale localeFromHeader, boolean addDebugInfo) {
+	public static Response buildResponse(
+		Response.Status status,
+		EbeguException ex,
+		Locale localeFromHeader,
+		boolean addDebugInfo) {
+
 		Response.ResponseBuilder builder = setResponseHeaderAndStatus(status);
-		String translatedEnumMessage = ServerMessageUtil.translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, ex.getArgs().toArray());
-		EbeguExceptionReport exceptionReport = new EbeguExceptionReport(ex.getClass().getSimpleName(), ex.getErrorCodeEnum(), ex.getMethodName(), translatedEnumMessage,
-			ex.getCustomMessage(), null, ex.getArgs());
+		Object[] args = ex.getArgs().toArray();
+		String translatedEnumMessage = translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, args);
+
+		EbeguExceptionReport exceptionReport = new EbeguExceptionReport(
+			ex.getClass().getSimpleName(),
+			ex.getErrorCodeEnum(),
+			ex.getMethodName(),
+			translatedEnumMessage,
+			ex.getCustomMessage(),
+			null,
+			ex.getArgs());
+
 		if (addDebugInfo) {
 			addDevelopmentDebugInformation(exceptionReport, ex);
 		}
-		return builder.entity(exceptionReport).build();
 
+		return builder.entity(exceptionReport).build();
 	}
 
 	@Nonnull
-	public static Response buildResponse(Response.Status status, EbeguRuntimeException ex, Locale localeFromHeader, boolean addDebugInfo) {
+	public static Response buildResponse(
+		Response.Status status,
+		EbeguRuntimeException ex,
+		Locale localeFromHeader,
+		boolean addDebugInfo) {
+
 		Response.ResponseBuilder builder = setResponseHeaderAndStatus(status);
 
 		String objectId = null;
@@ -173,14 +211,22 @@ public class EbeguExceptionReport {
 			objectId = ((EbeguExistingAntragException) ex).getGesuchId();
 		}
 
-		String translatedEnumMessage = ServerMessageUtil.translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, ex.getArgs().toArray());
-		EbeguExceptionReport exceptionReport = new EbeguExceptionReport(ex.getClass().getSimpleName(), ex.getErrorCodeEnum(),
-			ex.getMethodName(), translatedEnumMessage, ex.getCustomMessage(), objectId, ex.getArgs());
+		Object[] args = ex.getArgs().toArray();
+		String translatedEnumMessage = translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, args);
+		EbeguExceptionReport exceptionReport = new EbeguExceptionReport(
+			ex.getClass().getSimpleName(),
+			ex.getErrorCodeEnum(),
+			ex.getMethodName(),
+			translatedEnumMessage,
+			ex.getCustomMessage(),
+			objectId,
+			ex.getArgs());
+
 		if (addDebugInfo) {
 			addDevelopmentDebugInformation(exceptionReport, ex);
 		}
-		return builder.entity(exceptionReport).build();
 
+		return builder.entity(exceptionReport).build();
 	}
 
 	private static void addDevelopmentDebugInformation(EbeguExceptionReport exceptionReport, Exception e) {
@@ -194,5 +240,4 @@ public class EbeguExceptionReport {
 		builder.type(MediaType.APPLICATION_JSON_TYPE);
 		return builder;
 	}
-
 }

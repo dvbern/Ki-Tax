@@ -15,9 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// TODO evtl. global setzen?
-.dv-btn {
-    .fa {
-        width: 3rem;
-    }
+package ch.dvbern.ebegu.enums;
+
+public enum RollenAbhaengigkeit {
+	GEMEINDE,
+	INSTITUTION,
+	TRAEGERSCHAFT,
+	NONE
 }
