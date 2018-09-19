@@ -52,6 +52,9 @@ public interface BenutzerService {
 	@Nonnull
 	Benutzer saveBenutzer(@Nonnull Benutzer benutzer);
 
+	/**
+	 * Saves the given Benutzer and sends him an Einladungsemail
+	 */
 	@Nonnull
 	Benutzer einladen(@Nonnull Benutzer benutzer);
 

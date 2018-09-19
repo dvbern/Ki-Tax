@@ -1149,7 +1149,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@PermitAll
 	public boolean isNeustesGesuch(@Nonnull Gesuch gesuch) {
-		final Optional<Gesuch> neustesGesuchFuerGesuch = // FIXME
+		final Optional<Gesuch> neustesGesuchFuerGesuch =
 			getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
 		return neustesGesuchFuerGesuch.isPresent() && Objects.equals(
 			neustesGesuchFuerGesuch.get().getId(),
