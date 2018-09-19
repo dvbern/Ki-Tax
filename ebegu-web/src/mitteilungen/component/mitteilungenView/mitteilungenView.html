@@ -19,14 +19,14 @@
 <dossier-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
                  hide-action-buttons="{{true}}"
                  force-loading-from-fall="{{true}}"
-
-                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+                 dv-show-element
+                 dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </dossier-toolbar>
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossierId}}"
                                hide-action-buttons="{{true}}"
-
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+                               dv-show-element
+                               dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
 </dossier-toolbar-gesuchsteller>
 
 <div class="mitteilungenView overflow-auto" flex="auto">

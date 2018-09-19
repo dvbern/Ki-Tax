@@ -647,4 +647,8 @@ export class DossierToolbarController implements IDVFocusableController {
     public setFocusBack(elementID: string): void {
         angular.element('#kontaktButton').first().focus();
     }
+
+    public getGesuchName(): string {
+        return this.gesuchModelManager.getGesuchName();
+    }
 }

@@ -45,8 +45,7 @@
         color: @black;
     }
     &-table {
-        border: 1px;
-        border-color: @black;
+        border: 1px @black;
         width: 100%;
         &-label, &-value {
             overflow: hidden;
@@ -76,31 +75,6 @@
     flex: 1;
     border: none;
     text-transform: uppercase;
-}
-
-@media only screen
-and (min-device-width: 320px)
-and (max-device-width: 568px)
-and (-webkit-min-device-pixel-ratio: 2), only screen
-and (min-device-width: 375px)
-and (max-device-width: 667px)
-and (-webkit-min-device-pixel-ratio: 2), only screen
-and (min-device-width: 414px)
-and (max-device-width: 736px)
-and (-webkit-min-device-pixel-ratio: 3), only screen
-and (max-device-width: 640px), only screen
-and (max-device-width: 667px), only screen
-and (max-width: 480px) {
-
-    .onboarding-gs-abschliessen {
-        width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-    }
-
-    .onboarding-gs-angaben, .onboarding-gs-gemeinde {
-        width: 100%;
-    }
 }
 
 .onboarding-gs-container {
