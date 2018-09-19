@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSEWKPerson from './TSEWKPerson';
 
 /**
  * DTO für Resultate aus dem EWK
  */
-export default class TSEWKResultat extends TSAbstractEntity {
+export default class TSEWKResultat extends TSAbstractMutableEntity {
 
     private _maxResultate: number;
     private _anzahlResultate: number;

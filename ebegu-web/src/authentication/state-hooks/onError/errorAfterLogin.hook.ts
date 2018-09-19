@@ -17,6 +17,7 @@
 
 import {HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, mergeMap, take} from 'rxjs/operators';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import AuthServiceRS from '../../service/AuthServiceRS.rest';
@@ -27,13 +28,20 @@ import {onErrorPriorities} from './onErrorPriorities';
  */
 errorAfterLoginHookRunBlock.$inject = ['$transitions'];
 
-const loginStates = ['authentication.login', 'authentication.localogin'];
+const loginStates = ['authentication.login', 'authentication.locallogin'];
 
 export function errorAfterLoginHookRunBlock($transitions: TransitionService) {
     $transitions.onError({from: state => loginStates.includes(state.name)}, recover, {priority: onErrorPriorities.ERROR_AFTER_LOGIN});
 }
 
+const LOG = LogFactory.createLog('errorAfterLoginHookRunBlock');
+
 function recover(transition: Transition): HookResult {
+    LOG.debug('recover from navigation error after login', transition.isActive());
+    if (!transition.isActive()) {
+        return;
+    }
+
     const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
 
     return authService.principal$

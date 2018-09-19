@@ -42,28 +42,50 @@
                     <th st-sort="nachname" class="sortable row-nachname" data-translate="NACHNAME"></th>
                     <th st-sort="email" class="sortable row-email" data-translate="EMAIL"></th>
                     <th st-sort="role" class="sortable row-role" data-translate="ROLLE"></th>
-                    <th st-sort="roleGueltigAb" class="sortable row-roleGueltigAb" data-translate="ROLLE_GUELTIG_AB"></th>
-                    <th st-sort="roleGueltigBis" class="sortable row-roleGueltigBis" data-translate="ROLLE_GUELTIG_BIS"></th>
+                    <th st-sort="roleGueltigAb" class="sortable row-roleGueltigAb"
+                        data-translate="ROLLE_GUELTIG_AB"></th>
+                    <th st-sort="roleGueltigBis" class="sortable row-roleGueltigBis"
+                        data-translate="ROLLE_GUELTIG_BIS"></th>
+                    <th st-sort="gemeinde" class="sortable row-gemeinde" data-translate="GEMEINDEN"></th>
                     <th st-sort="institution" class="sortable row-institution" data-translate="INSTITUTION"></th>
                     <th st-sort="traegerschaft" class="sortable row-traegerschaft" data-translate="TRAEGERSCHAFT"></th>
-                    <th st-sort="gesperrt" class="sortable row-gesperrt" data-translate="GESPERRT"></th>
+                    <th st-sort="status" class="sortable row-status" data-translate="STATUS"></th>
                 </tr>
                 <!--Filterspalten-->
                 <tr>
-                    <th><input st-search="username" class="form-control" type="text" ng-model="vm.selectedUsername"/></th>
-                    <th><input st-search="vorname" class="form-control" type="text" ng-model="vm.selectedVorname"/></th>
-                    <th><input st-search="nachname" class="form-control" type="text" ng-model="vm.selectedNachname"/></th>
-                    <th><input st-search="email" class="form-control" type="text" ng-model="vm.selectedEmail"/></th>
+                    <th>
+                        <input st-search="username" class="form-control" type="text" ng-model="vm.selectedUsername"/>
+                    </th>
+                    <th>
+                        <input st-search="vorname" class="form-control" type="text" ng-model="vm.selectedVorname"/>
+                    </th>
+                    <th>
+                        <input st-search="nachname" class="form-control" type="text" ng-model="vm.selectedNachname"/>
+                    </th>
+                    <th>
+                        <input st-search="email" class="form-control" type="text" ng-model="vm.selectedEmail"/>
+                    </th>
                     <th>
                         <div class="dv-select-style">
-                        <select st-input-event="change" name="role" id="role" st-search="role" class="form-control" ng-model="vm.selectedRole"
-                            ng-options="vm.getTranslatedRole(r) for r in vm.getRollen() track by r">
-                            <option value="">{{"ALLE" | translate}}</option>
-                        </select>
+                            <select st-input-event="change" name="role" id="role" st-search="role" class="form-control"
+                                    ng-model="vm.selectedRole"
+                                    ng-options="('TSRole_' + r | translate) for r in vm.getRollen() track by r">
+                                <option value="">{{"ALLE" | translate}}</option>
+                            </select>
                         </div>
                     </th>
                     <th><input st-search="roleGueltigAb" class="form-control" type="text"/></th>
                     <th><input st-search="roleGueltigBis" class="form-control" type="text"/></th>
+                    <th>
+                        <div class="dv-select-style">
+                            <select st-input-event="change" name="gemeinde" id="gemeinde"
+                                    st-search="gemeinde" class="form-control"
+                                    ng-options="gemeinde.name for gemeinde in vm.gemeindeList | orderBy: 'name' track by gemeinde.name"
+                                    ng-model="vm.selectedGemeinde">
+                                <option value="">{{"ALLE" | translate}}</option>
+                            </select>
+                        </div>
+                    </th>
                     <th>
                         <div class="dv-select-style">
                             <select st-input-event="change" name="institution" id="institution"
@@ -86,13 +108,12 @@
                     </th>
                     <th>
                         <div class="dv-select-style">
-                        <select st-input-event="change" name="gesperrt" id="gesperrt" st-search="gesperrt"
-                        class="form-control"
-                        ng-model="vm.selectedGesperrt">
-                        <option value="">{{"ALLE" | translate}}</option>
-                        <option value="{{true}}">{{"LABEL_JA" | translate}}</option>
-                        <option value="{{false}}">{{"LABEL_NEIN" | translate}}</option>
-                        </select>
+                            <select st-input-event="change" name="status" id="status" st-search="status"
+                                    class="form-control"
+                                    ng-options="('BENUTZER_STATUS_' + status | translate ) for status in vm.benutzerStatuses track by status"
+                                    ng-model="vm.selectedBenutzerStatus">
+                                <option value="">{{"ALLE" | translate}}</option>
+                            </select>
                         </div>
                     </th>
                 </tr>
@@ -100,21 +121,52 @@
                 <!--Spaltendefinitionen-->
                 <tbody>
                 <tr ng-repeat="row in vm.displayedCollection" st-select-row="row" st-select-mode="single"
-                     ng-click="vm.editClicked(row, $event)">
-
-                    <td class="ellipsis" title="{{row.username}}" ng-bind="row.username"></td>
-                    <td class="ellipsis" title="{{row.vorname}}" ng-bind="row.vorname"></td>
-                    <td class="ellipsis" title="{{row.nachname}}" ng-bind="row.nachname"></td>
-                    <td class="ellipsis" title="{{row.email}}" ng-bind="row.email"></td>
-                    <td class="ellipsis" title="{{vm.getTranslatedRole(row.getCurrentRole())}}" ng-bind="vm.getTranslatedRole(row.getCurrentRole())"></td>
-                    <td class="ellipsis" title="{{row.currentBerechtigung.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'}}"
-                        ng-bind="row.currentBerechtigung.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
-                    <td class="ellipsis" title="{{row.currentBerechtigung.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'}}"
-                        ng-bind="row.currentBerechtigung.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                    <td class="ellipsis" title="{{row.currentBerechtigung.institution.name}}" ng-bind="row.currentBerechtigung.institution.name"></td>
-                    <td class="ellipsis" title="{{row.currentBerechtigung.traegerschaft.name}}" ng-bind="row.currentBerechtigung.traegerschaft.name"></td>
-                    <td class="ellipsis" title="{{(row.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}"
-                        ng-bind="(row.gesperrt ? 'LABEL_JA' : 'LABEL_NEIN') | translate"></td>
+                    ng-init="gemeinden = (row.currentBerechtigung.gemeindeList | gemeindenToString)"
+                    ng-click="vm.editClicked(row, $event)">
+                    <td class="ellipsis"
+                        title="{{row.username}}"
+                        ng-bind="row.username">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.vorname}}"
+                        ng-bind="row.vorname">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.nachname}}"
+                        ng-bind="row.nachname">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.email}}"
+                        ng-bind="row.email">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{'TSRole_' + row.getCurrentRole() | translate}}"
+                        ng-bind="'TSRole_' + row.getCurrentRole() | translate">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.currentBerechtigung.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'}}"
+                        ng-bind="row.currentBerechtigung.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.currentBerechtigung.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'}}"
+                        ng-bind="row.currentBerechtigung.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{gemeinden}}"
+                        ng-bind="gemeinden">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.currentBerechtigung.institution.name}}"
+                        ng-bind="row.currentBerechtigung.institution.name">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{row.currentBerechtigung.traegerschaft.name}}"
+                        ng-bind="row.currentBerechtigung.traegerschaft.name">
+                    </td>
+                    <td class="ellipsis"
+                        title="{{'BENUTZER_STATUS_' + row.status  | translate}}"
+                        ng-bind="'BENUTZER_STATUS_' + row.status  | translate">
+                    </td>
                 </tr>
                 <tr>
                 <tr ng-if="vm.displayedCollection.length === 0">

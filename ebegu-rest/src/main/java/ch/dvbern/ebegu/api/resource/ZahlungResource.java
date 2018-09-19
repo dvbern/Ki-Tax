@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
@@ -59,9 +58,17 @@ import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -95,7 +102,7 @@ public class ZahlungResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.ADMIN, UserRoleName.SACHBEARBEITER_JA, UserRoleName.JURIST, UserRoleName.REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<JaxZahlungsauftrag> getAllZahlungsauftraege() {
 		return zahlungService.getAllZahlungsauftraege().stream()
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, false))
@@ -110,7 +117,7 @@ public class ZahlungResource {
 	@Path("/institution")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.SACHBEARBEITER_INSTITUTION, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT})
 	public List<JaxZahlungsauftrag> getAllZahlungsauftraegeInstitution() {
 
 		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
@@ -128,7 +135,7 @@ public class ZahlungResource {
 	@Path("/zahlungsauftrag/{zahlungsauftragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.ADMIN, UserRoleName.SACHBEARBEITER_JA, UserRoleName.JURIST, UserRoleName.REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxZahlungsauftrag findZahlungsauftrag(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
@@ -136,10 +143,9 @@ public class ZahlungResource {
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
-		if (!optional.isPresent()) {
-			return null;
-		}
-		return converter.zahlungsauftragToJAX(optional.get(), true);
+		return optional
+			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, true))
+			.orElse(null);
 	}
 
 	@ApiOperation(value = "Gibt den Zahlungsauftrag mit der uebebergebenen Id zurueck, jedoch nur mit den Eintraegen " +
@@ -150,7 +156,7 @@ public class ZahlungResource {
 	@Path("/zahlungsauftraginstitution/{zahlungsauftragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ UserRoleName.SUPER_ADMIN, UserRoleName.SACHBEARBEITER_INSTITUTION, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT})
 	public JaxZahlungsauftrag findZahlungsauftraginstitution(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
@@ -158,12 +164,10 @@ public class ZahlungResource {
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
-		if (!optional.isPresent()) {
-			return null;
-		}
-		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-
-		return converter.zahlungsauftragToJAX(optional.get(), principalBean.discoverMostPrivilegedRole(), allowedInst);
+		return optional
+			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(),
+				institutionService.getAllowedInstitutionenForCurrentBenutzer(false)))
+			.orElse(null);
 	}
 
 	@ApiOperation(value = "Setzt den Status des Zahlungsautrags auf ausgeloest. Danach kann er nicht mehr veraendert " +
@@ -173,7 +177,7 @@ public class ZahlungResource {
 	@Path("/ausloesen/{zahlungsauftragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public JaxZahlungsauftrag zahlungsauftragAusloesen(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) throws MimeTypeParseException {
 
@@ -194,7 +198,7 @@ public class ZahlungResource {
 	@Path("/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA})
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
 	public JaxZahlungsauftrag createZahlung(
 		@QueryParam("faelligkeitsdatum") String stringFaelligkeitsdatum,
 		@QueryParam("beschrieb") String beschrieb,
@@ -219,7 +223,7 @@ public class ZahlungResource {
 	@Path("/pruefen")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.WILDCARD)
-	@RolesAllowed({SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA})
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
 	public Response pruefeZahlungen() {
 		zahlungService.zahlungenKontrollieren();
 		return Response.ok().build();
@@ -247,7 +251,7 @@ public class ZahlungResource {
 	@Path("/bestaetigen/{zahlungId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxZahlung zahlungBestaetigen(
 		@Nonnull @NotNull @PathParam("zahlungId") JaxId zahlungJAXPId) {
 

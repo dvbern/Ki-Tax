@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>Ki-Tax – Gesuch kann freigegeben werden</@base64Header>
+Subject: <@base64Header>kiBon – Gesuch kann freigegeben werden</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>Ki-Tax – Gesuch kann freigegeben werden</title>
+	<title>kiBon – Gesuch kann freigegeben werden</title>
 
 </head>
 
@@ -24,7 +24,7 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Sämtliche Betreuungsangebote wurden bestätigt. Das Ki-Tax-Gesuch kann
+		Sämtliche Betreuungsangebote wurden bestätigt. Das kiBon-Gesuch kann
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">hier</a>
 		freigegeben werden.
 	<p>

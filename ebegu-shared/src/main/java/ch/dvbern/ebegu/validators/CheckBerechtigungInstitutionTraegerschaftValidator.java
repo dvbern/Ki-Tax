@@ -21,6 +21,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.util.EnumUtil;
 
 /**
  * Dieser Validator prueft dass die angelegte Benutzer, mit den richtigen Parameter erstellt werden.
@@ -37,19 +38,18 @@ public class CheckBerechtigungInstitutionTraegerschaftValidator implements Const
 	 * - Wenn Rolle=SACHBEARBEITER_INSTITUTION der Benutzer muss mit einer Institution verknuepft werden
 	 * - Wenn Rolle=SACHBEARBEITER_TRAEGERSCHAFT der Benutzer muss mit einer Traegerschaft verknuepft werden
 	 *
-	 * @param instance Benutzer
+	 * @param berechtigung Benutzer
 	 * @param context context
 	 * @return true wenn die Regeln erfuellt sind
 	 */
 	@Override
-	public boolean isValid(Berechtigung instance, @Nullable ConstraintValidatorContext context) {
-		if (UserRole.SACHBEARBEITER_INSTITUTION == instance.getRole()) {
-			return instance.getInstitution() != null;
+	public boolean isValid(Berechtigung berechtigung, @Nullable ConstraintValidatorContext context) {
+		if (EnumUtil.isOneOf(berechtigung.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)) {
+			return berechtigung.getInstitution() != null;
 		}
-		if (UserRole.SACHBEARBEITER_TRAEGERSCHAFT == instance.getRole()) {
-			return instance.getTraegerschaft() != null;
+		if (EnumUtil.isOneOf(berechtigung.getRole(), UserRole.ADMIN_TRAEGERSCHAFT, UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
+			return berechtigung.getTraegerschaft() != null;
 		}
-
-		return instance.getTraegerschaft() == null && instance.getInstitution() == null; // alle anderen Benutzer duerfen keine Inst/Traeg haben
+		return berechtigung.getTraegerschaft() == null && berechtigung.getInstitution() == null; // alle anderen Benutzer duerfen keine Inst/Traeg haben
 	}
 }

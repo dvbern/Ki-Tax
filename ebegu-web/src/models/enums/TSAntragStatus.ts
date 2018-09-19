@@ -17,25 +17,25 @@ import {TSEingangsart} from './TSEingangsart';
 import {TSRole} from './TSRole';
 
 export enum TSAntragStatus {
-    IN_BEARBEITUNG_GS = <any> 'IN_BEARBEITUNG_GS',
-    FREIGABEQUITTUNG = <any> 'FREIGABEQUITTUNG',
-    NUR_SCHULAMT = <any> 'NUR_SCHULAMT',
-    FREIGEGEBEN = <any> 'FREIGEGEBEN',
-    ERSTE_MAHNUNG = <any> 'ERSTE_MAHNUNG',
-    ERSTE_MAHNUNG_ABGELAUFEN = <any> 'ERSTE_MAHNUNG_ABGELAUFEN',
-    ZWEITE_MAHNUNG = <any> 'ZWEITE_MAHNUNG',
-    ZWEITE_MAHNUNG_ABGELAUFEN = <any> 'ZWEITE_MAHNUNG_ABGELAUFEN',
-    IN_BEARBEITUNG_JA = <any> 'IN_BEARBEITUNG_JA',
-    GEPRUEFT = <any> 'GEPRUEFT',
-    PLATZBESTAETIGUNG_ABGEWIESEN = <any> 'PLATZBESTAETIGUNG_ABGEWIESEN',
-    PLATZBESTAETIGUNG_WARTEN = <any> 'PLATZBESTAETIGUNG_WARTEN',
-    VERFUEGEN = <any> 'VERFUEGEN',
-    VERFUEGT = <any> 'VERFUEGT',
-    KEIN_ANGEBOT = <any> 'KEIN_ANGEBOT',
-    BESCHWERDE_HAENGIG = <any> 'BESCHWERDE_HAENGIG',
-    PRUEFUNG_STV = <any> 'PRUEFUNG_STV',
-    IN_BEARBEITUNG_STV = <any> 'IN_BEARBEITUNG_STV',
-    GEPRUEFT_STV = <any> 'GEPRUEFT_STV'
+    IN_BEARBEITUNG_GS = 'IN_BEARBEITUNG_GS',
+    FREIGABEQUITTUNG = 'FREIGABEQUITTUNG',
+    NUR_SCHULAMT = 'NUR_SCHULAMT',
+    FREIGEGEBEN = 'FREIGEGEBEN',
+    ERSTE_MAHNUNG = 'ERSTE_MAHNUNG',
+    ERSTE_MAHNUNG_ABGELAUFEN = 'ERSTE_MAHNUNG_ABGELAUFEN',
+    ZWEITE_MAHNUNG = 'ZWEITE_MAHNUNG',
+    ZWEITE_MAHNUNG_ABGELAUFEN = 'ZWEITE_MAHNUNG_ABGELAUFEN',
+    IN_BEARBEITUNG_JA = 'IN_BEARBEITUNG_JA',
+    GEPRUEFT = 'GEPRUEFT',
+    PLATZBESTAETIGUNG_ABGEWIESEN = 'PLATZBESTAETIGUNG_ABGEWIESEN',
+    PLATZBESTAETIGUNG_WARTEN = 'PLATZBESTAETIGUNG_WARTEN',
+    VERFUEGEN = 'VERFUEGEN',
+    VERFUEGT = 'VERFUEGT',
+    KEIN_ANGEBOT = 'KEIN_ANGEBOT',
+    BESCHWERDE_HAENGIG = 'BESCHWERDE_HAENGIG',
+    PRUEFUNG_STV = 'PRUEFUNG_STV',
+    IN_BEARBEITUNG_STV = 'IN_BEARBEITUNG_STV',
+    GEPRUEFT_STV = 'GEPRUEFT_STV'
 }
 
 export const IN_BEARBEITUNG_BASE_NAME = 'IN_BEARBEITUNG';
@@ -74,15 +74,21 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
                 TSAntragStatus.PRUEFUNG_STV,
                 TSAntragStatus.IN_BEARBEITUNG_STV
             ];
-        case TSRole.SCHULAMT:
-        case TSRole.ADMINISTRATOR_SCHULAMT:
-        case TSRole.SACHBEARBEITER_JA:
-        case TSRole.ADMIN:
+        case TSRole.SACHBEARBEITER_TS:
+        case TSRole.ADMIN_TS:
+        case TSRole.SACHBEARBEITER_BG:
+        case TSRole.ADMIN_BG:
+        case TSRole.SACHBEARBEITER_GEMEINDE:
+        case TSRole.ADMIN_GEMEINDE:
         case TSRole.REVISOR:
         case TSRole.JURIST:
+        case TSRole.ADMIN_MANDANT:
+        case TSRole.SACHBEARBEITER_MANDANT:
             return getTSAntragStatusValues().filter(element => (element !== TSAntragStatus.IN_BEARBEITUNG_GS
                 && element !== TSAntragStatus.FREIGABEQUITTUNG));
+        case TSRole.ADMIN_INSTITUTION:
         case TSRole.SACHBEARBEITER_INSTITUTION:
+        case TSRole.ADMIN_TRAEGERSCHAFT:
         case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
             return getTSAntragStatusValues().filter(element => (element !== TSAntragStatus.PRUEFUNG_STV
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV && element !== TSAntragStatus.GEPRUEFT_STV));
@@ -99,15 +105,19 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
 export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntragStatus> {
     const allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
     switch (userrole) {
-        case TSRole.SACHBEARBEITER_JA:
-        case TSRole.ADMIN:
+        case TSRole.SACHBEARBEITER_BG:
+        case TSRole.ADMIN_BG:
+        case TSRole.SACHBEARBEITER_GEMEINDE:
+        case TSRole.ADMIN_GEMEINDE:
         case TSRole.REVISOR:
         case TSRole.JURIST:
+        case TSRole.ADMIN_MANDANT:
+        case TSRole.SACHBEARBEITER_MANDANT:
             return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
                 && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV && element !== TSAntragStatus.PRUEFUNG_STV));
-        case TSRole.SCHULAMT:
-        case TSRole.ADMINISTRATOR_SCHULAMT:
+        case TSRole.SACHBEARBEITER_TS:
+        case TSRole.ADMIN_TS:
             return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
                 && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT
                 && element !== TSAntragStatus.VERFUEGEN && element !== TSAntragStatus.IN_BEARBEITUNG_STV

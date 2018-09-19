@@ -19,7 +19,6 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -39,19 +38,23 @@ export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     template = require('./gesuchstellerDashboardView.html');
     controller = GesuchstellerDashboardViewController;
     controllerAs = 'vm';
+    bindings = {
+        dossier: '<'
+    };
 }
 
 export class GesuchstellerDashboardViewController {
 
     static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
-        '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService', 'DossierRS'];
+        '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
 
     private antragList: Array<TSAntragDTO> = [];
     private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     dossier: TSDossier;
     totalResultCount: string = '-';
     amountNewMitteilungen: number;
-    mapOfNewestAntraege: { [key: string]: string } = {}; // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
+    // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
+    mapOfNewestAntraege: { [key: string]: string } = {};
 
     constructor(private readonly $state: StateService,
                 private readonly $log: ILogService,
@@ -62,27 +65,19 @@ export class GesuchstellerDashboardViewController {
                 private readonly $translate: ITranslateService,
                 private readonly mitteilungRS: MitteilungRS,
                 private readonly gesuchRS: GesuchRS,
-                private readonly errorService: ErrorService,
-                private readonly dossierRS: DossierRS) {
+                private readonly errorService: ErrorService) {
     }
 
     $onInit() {
-        if (this.$state.params.gesuchstellerDashboardStateParams) {
-            if (this.$state.params.gesuchstellerDashboardStateParams.infoMessage) {
-                this.errorService.addMesageAsInfo(this.$translate.instant(this.$state.params.gesuchstellerDashboardStateParams.infoMessage));
-            }
-            if (this.$state.params.gesuchstellerDashboardStateParams.dossierId) {
-                this.loadDossierById();
-            } else {
-                this.loadNewestDossierForGesuchsteller();
-            }
-        } else {
-            this.loadNewestDossierForGesuchsteller();
+        const params = this.$state.params.gesuchstellerDashboardStateParams;
+        if (params && params.infoMessage) {
+            this.errorService.addMesageAsInfo(this.$translate.instant(params.infoMessage));
         }
+
+        this.initViewModel();
     }
 
-    private initViewModel(dossierFromParam: TSDossier) {
-        this.dossier = dossierFromParam;
+    private initViewModel() {
         return this.searchRS.getAntraegeOfDossier(this.dossier.id).then((response: any) => {
             this.antragList = angular.copy(response);
             this.getAmountNewMitteilungen();
@@ -91,32 +86,18 @@ export class GesuchstellerDashboardViewController {
         });
     }
 
-    private loadDossierById() {
-        this.dossierRS.findDossier(this.$state.params.gesuchstellerDashboardStateParams.dossierId)
-            .then((dossierFromParam: TSDossier) => {
-                this.initViewModel(dossierFromParam);
-            });
-    }
-
-    private loadNewestDossierForGesuchsteller() {
-        this.dossierRS.findNewestDossierByCurrentBenutzerAsBesitzer()
-            .then((dossierFromParam: TSDossier) => {
-                this.initViewModel(dossierFromParam);
-            });
-    }
-
     private getAmountNewMitteilungen(): void {
-        if (this.dossier) {
-            this.mitteilungRS.getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossier.id).then((response: number) => {
+        this.mitteilungRS.getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossier.id)
+            .then((response: number) => {
                 this.amountNewMitteilungen = response;
             });
-        }
     }
 
     private updateActiveGesuchsperiodenList(): void {
         this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this._activeGesuchsperiodenList = angular.copy(response);
-            // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils neueste Gesuch pro Periode
+            // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils
+            // neueste Gesuch pro Periode
             for (const gp of this._activeGesuchsperiodenList) {
                 this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(response => {
                     this.mapOfNewestAntraege[gp.id] = response;
@@ -136,26 +117,17 @@ export class GesuchstellerDashboardViewController {
         });
     }
 
-    public getFallId(): string {
-        if (this.dossier && this.dossier.fall) {
-            return this.dossier.fall.id;
-        }
-        return '';
-    }
-
     public getAntragList(): Array<TSAntragDTO> {
         return this.antragList;
     }
 
     public displayAnsehenButton(periode: TSGesuchsperiode): boolean {
         const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
-        if (antrag) {
-            if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status) {
-                return false;
-            }
-            return true;
+        if (!antrag) {
+            return false;
         }
-        return false;
+
+        return TSAntragStatus.IN_BEARBEITUNG_GS !== antrag.status;
     }
 
     public getNumberMitteilungen(): number {
@@ -228,7 +200,8 @@ export class GesuchstellerDashboardViewController {
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
-        return periode.hasTagesschulenAnmeldung() && !!antrag &&
+        const isSchulamtAngeboteEnabled: boolean = EbeguUtil.isTagesschulangebotEnabled();
+        return isSchulamtAngeboteEnabled && periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
             && this.isNeuestAntragOfGesuchsperiode(periode, antrag);
@@ -278,7 +251,8 @@ export class GesuchstellerDashboardViewController {
     }
 
     /**
-     * Status muss speziell uebersetzt werden damit Gesuchsteller nur "In Bearbeitung" sieht und nicht in "Bearbeitung Gesuchsteller"
+     * Status muss speziell uebersetzt werden damit Gesuchsteller nur "In Bearbeitung" sieht und nicht in
+     * "Bearbeitung Gesuchsteller"
      */
     public translateStatus(antrag: TSAntragDTO) {
         const status: TSAntragStatus = antrag.status;

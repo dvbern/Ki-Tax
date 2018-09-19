@@ -13,8 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {TSAmt} from './enums/TSAmt';
-import {rolePrefix, TSRole} from './enums/TSRole';
+import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSGemeinde from './TSGemeinde';
 import TSInstitution from './TSInstitution';
@@ -23,14 +24,15 @@ import {TSDateRange} from './types/TSDateRange';
 
 export default class TSBerechtigung extends TSAbstractDateRangedEntity {
 
-    private _traegerschaft: TSTraegerschaft;
-    private _institution: TSInstitution;
+    private _traegerschaft?: TSTraegerschaft;
+    private _institution?: TSInstitution;
     private _role: TSRole;
     private _gemeindeList: Array<TSGemeinde> = [];
 
-    private _enabled: boolean; // Wird nicht zum Server gemappt, nur zur Anzeige im GUI
-
-    constructor(gueltigkeit?: TSDateRange, role?: TSRole, traegerschaft?: TSTraegerschaft, institution?: TSInstitution) {
+    constructor(gueltigkeit?: TSDateRange,
+                role?: TSRole,
+                traegerschaft?: TSTraegerschaft,
+                institution?: TSInstitution) {
         super(gueltigkeit);
         this._role = role;
         this._traegerschaft = traegerschaft;
@@ -69,35 +71,51 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
         this._gemeindeList = value;
     }
 
-    get enabled(): boolean {
-        return this._enabled;
-    }
-
-    set enabled(value: boolean) {
-        this._enabled = value;
-    }
-
-    getRoleKey(): string {
-        return rolePrefix() + this.role;
-    }
-
     /**
-     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie zu speichern
-     * waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server gesetzt und zum Client geschickt.
-     * Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
+     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie
+     * zu speichern waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server
+     * gesetzt und zum Client geschickt. Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
+     *
      * ACHTUNG Diese Logik existiert auch im Server UserRole. Aenderungen muessen in beiden Orten gemacht werden.
      */
-    private analyseAmt(): TSAmt {
+    public analyseAmt(): TSAmt {
         switch (this.role) {
-            case TSRole.SACHBEARBEITER_JA:
-            case TSRole.ADMIN:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_BG:
             case TSRole.SUPER_ADMIN:
                 return TSAmt.JUGENDAMT;
-            case TSRole.SCHULAMT:
-            case TSRole.ADMINISTRATOR_SCHULAMT:
+            case TSRole.SACHBEARBEITER_TS:
+            case TSRole.ADMIN_TS:
                 return TSAmt.SCHULAMT;
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+                return TSAmt.GEMEINDE;
             default:
                 return TSAmt.NONE;
+        }
+    }
+
+    public hasGemeindeRole(): boolean {
+        return TSRoleUtil.isGemeindeRole(this.role);
+    }
+
+    public hasInstitutionRole(): boolean {
+        return TSRoleUtil.isInstitutionRole(this.role);
+    }
+
+    public hasTraegerschaftRole(): boolean {
+        return TSRoleUtil.isTraegerschaftRole(this.role);
+    }
+
+    public prepareForSave(): void {
+        if (!this.hasGemeindeRole()) {
+            this.gemeindeList = [];
+        }
+        if (!this.hasInstitutionRole()) {
+            this.institution = undefined;
+        }
+        if (!this.hasTraegerschaftRole()) {
+            this.traegerschaft = undefined;
         }
     }
 }

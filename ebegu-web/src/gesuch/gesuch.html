@@ -12,9 +12,8 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.getDossierId()"
-                 [current-dossier]="vm.getDossier()">
+                 [current-dossier]="vm.getDossier()" hide-xs hide-sm>
 </dv-fall-toolbar>
 
 <dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getDossierId()}}"
@@ -23,7 +22,8 @@
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" gesuchid="{{vm.getGesuchId()}}"
                                dossier-id="{{vm.getDossierId()}}"
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                               fall-id="{{vm.getFallId()}}">
 </dossier-toolbar-gesuchsteller>
 <!--Gesuchnavigation (Uebersicht)  fuer den Gesuchsteller (mobile)-->
 <div class="mobile-sidenav-toggle mobile-open" flex="none" layout="row" layout-align="center center" dv-show-element
@@ -65,7 +65,7 @@
                    title="{{'DOKUMENTE_HOCHGELADEN'|translate}}" aria-label="{{'DOKUMENTE_HOCHGELADEN'|translate}}"></i>
                 <br>
                 <span class="zuletzt" data-translate="ZULETZT_BEARBEITER"
-                      data-translate-value-username="{{vm.getUserFullname()}}"></span>
+                      data-translate-value-username="{{vm.userFullName}}"></span>
                 <br>
                 <span class="zuletzt" ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
                       data-translate="GUELTIGES_GESUCH"></span>

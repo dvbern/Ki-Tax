@@ -77,18 +77,16 @@ const ng1States: Ng1StateDeclaration[] = [
             applicationProperties: applicationPropertiesResolver
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {
         name: 'admin.benutzerlist',
         template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
         url: '/benutzerlist',
-    },
-    {
-        name: 'admin.benutzer',
-        template: '<dv-benutzer flex="auto" class="overflow-scroll"></dv-benutzer>',
-        url: '/benutzerlist/benutzer/:benutzerId',
+        data: {
+            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+        },
     },
     {
         name: 'admin.institutionen',
@@ -99,7 +97,7 @@ const ng1States: Ng1StateDeclaration[] = [
             institutionen: institutionenResolver,
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getMandantRoles(),
         },
     },
     {
@@ -116,7 +114,7 @@ const ng1States: Ng1StateDeclaration[] = [
             mandant: mandantResolver
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getMandantRoles(),
         }
     },
     {
@@ -127,7 +125,7 @@ const ng1States: Ng1StateDeclaration[] = [
             institutionStammdatenId: '',
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getMandantRoles(),
         },
     },
     {
@@ -135,7 +133,7 @@ const ng1States: Ng1StateDeclaration[] = [
         template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
         url: '/parameter',
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {
@@ -147,7 +145,7 @@ const ng1States: Ng1StateDeclaration[] = [
             gesuchsperiodeId: '',
         },
         data: {
-            roles: TSRoleUtil.getAdministratorRevisorRole(),
+            roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
     {

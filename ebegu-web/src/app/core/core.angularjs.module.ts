@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {LOCALE_ID} from '@angular/core';
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import 'angular-animate';
@@ -55,12 +56,12 @@ import WizardStepRS from '../../gesuch/service/WizardStepRS.rest';
 import {PosteingangService} from '../../posteingang/service/posteingang.service';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
+import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
 import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
-import {DVBenutzerConfig} from './component/dv-benutzer/dv-benutzer';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
@@ -106,6 +107,7 @@ import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
 import {EbeguErrors} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
+import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import AdresseRS from './service/adresseRS.rest';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
@@ -131,7 +133,7 @@ import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
-import UserRS from './service/userRS.rest';
+import BenutzerRS from './service/benutzerRS.rest';
 import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
@@ -165,6 +167,7 @@ export const EbeguWebCore: angular.IModule = angular
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
     .constant('CONSTANTS', CONSTANTS)
+    .factory('LOCALE_ID', downgradeInjectable(LOCALE_ID))
     .service('ApplicationPropertyRS', ApplicationPropertyRS)
     .service('EbeguRestUtil', EbeguRestUtil)
     .service('EbeguUtil', EbeguUtil)
@@ -189,7 +192,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
-    .service('UserRS', UserRS)
+    .service('BenutzerRS', BenutzerRS)
     .service('VerfuegungRS', VerfuegungRS)
     .service('DokumenteRS', DokumenteRS)
     .service('UploadRS', UploadRS)
@@ -213,7 +216,6 @@ export const EbeguWebCore: angular.IModule = angular
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
     .directive('dvNavigation', DVNavigation.factory())
     .directive('dvLoading', DVLoading.factory())
-    .directive('dvLoadingButton', DVLoadingButton.factory())
     .directive('dvSubmitevent', DVSubmitevent.factory())
     .directive('dvStPersistAntraege', DVSTPersistAntraege.factory())
     .directive('dvStPersistPendenzen', DVSTPersistPendenzen.factory())
@@ -233,6 +235,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .controller('DVElementController', DVRoleElementController)
+    .component('dvLoadingButton', new DVLoadingButton())
     .component('dvAdresse', new AdresseComponentConfig())
     .component('dvErrorMessages', new DvErrorMessagesComponentConfig())
     .component('dvErwerbspensumList', new DVErwerbspensumListConfig())
@@ -255,13 +258,14 @@ export const EbeguWebCore: angular.IModule = angular
     .component('dvAccordionTab', new DvAccordionTabComponentConfig())
     .component('dvVersion', new DVVersionComponentConfig())
     .component('dvBenutzerList', new DVBenutzerListConfig())
-    .component('dvBenutzer', new DVBenutzerConfig())
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
+    .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
-    .filter('arrayToString', () => arrayToString);
+    .filter('arrayToString', () => arrayToString)
+    .filter('gemeindenToString', () => gemeindenToString);
 

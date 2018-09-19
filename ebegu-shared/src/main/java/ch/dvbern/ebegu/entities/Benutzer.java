@@ -27,6 +27,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
@@ -40,6 +42,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BenutzerChangedEntityListener;
 import ch.dvbern.ebegu.util.Constants;
@@ -67,9 +70,15 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Benutzer extends AbstractEntity {
+public class Benutzer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6372688971894279665L;
+
+	@NotNull
+	@Nonnull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private BenutzerStatus status = BenutzerStatus.AKTIV;
 
 	@NotNull
 	@Column(nullable = false)
@@ -77,7 +86,7 @@ public class Benutzer extends AbstractEntity {
 	private String username = null;
 
 	@Nullable
-	@Column(nullable = true, length = Constants.UUID_LENGTH)
+	@Column(length = Constants.UUID_LENGTH)
 	@Size(max = Constants.UUID_LENGTH)
 	private String externalUUID = null;
 
@@ -110,10 +119,6 @@ public class Benutzer extends AbstractEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_benutzer_mandant_id"))
 	private Mandant mandant = null;
-
-	@NotNull
-	@Column(nullable = false)
-	private Boolean gesperrt = false;
 
 	public String getUsername() {
 		return username;
@@ -172,12 +177,13 @@ public class Benutzer extends AbstractEntity {
 		this.mandant = mandant;
 	}
 
-	public Boolean getGesperrt() {
-		return gesperrt;
+	@Nonnull
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
-	public void setGesperrt(Boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public void setStatus(@Nonnull BenutzerStatus status) {
+		this.status = status;
 	}
 
 	@Nonnull
@@ -252,10 +258,9 @@ public class Benutzer extends AbstractEntity {
 
 	@Nonnull
 	public Set<Gemeinde> extractGemeindenForUser() {
-		if (this.currentBerechtigung != null) {
-			return this.currentBerechtigung.getGemeindeList();
-		}
-		return Collections.emptySet();
+		return this.currentBerechtigung == null ?
+			Collections.emptySet() :
+			this.currentBerechtigung.getGemeindeList();
 	}
 
 	/**
@@ -263,8 +268,8 @@ public class Benutzer extends AbstractEntity {
 	 * A user whose role is linked to 1..n Gemeinden can see only those Gemeinden
 	 */
 	public boolean belongsToGemeinde(@Nonnull Gemeinde gemeinde) {
-		return getRole().isRoleGemeindeabhaengig()
-			? getCurrentBerechtigung().getGemeindeList().stream().anyMatch(gemeinde::equals)
-			: true;
+		return !getRole().isRoleGemeindeabhaengig() || getCurrentBerechtigung().getGemeindeList()
+			.stream()
+			.anyMatch(gemeinde::equals);
 	}
 }

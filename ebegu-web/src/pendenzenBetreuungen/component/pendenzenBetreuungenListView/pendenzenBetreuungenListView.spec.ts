@@ -78,8 +78,7 @@ describe('pendenzenBetreuungenListView', () => {
                 mockRestCalls();
                 spyOn(gesuchsperiodeRS, 'getAllActiveGesuchsperioden').and.returnValue($q.when([TestDataUtil.createGesuchsperiode20162017()]));
                 pendenzBetreuungenListViewController = new PendenzenBetreuungenListViewController(pendenzBetreuungenRS, undefined,
-                    institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state, gemeindeRS,
-                    authServiceRS);
+                    institutionRS, institutionStammdatenRS, gesuchsperiodeRS, gesuchModelManager, berechnungsManager, $state, gemeindeRS);
                 pendenzBetreuungenListViewController.$onInit();
 
                 $scope.$apply();

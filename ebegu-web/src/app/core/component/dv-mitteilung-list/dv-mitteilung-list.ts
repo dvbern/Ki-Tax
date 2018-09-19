@@ -29,7 +29,7 @@ import TSBetreuung from '../../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../../models/TSDossier';
 import TSMitteilung from '../../../../models/TSMitteilung';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -110,11 +110,9 @@ export class DVMitteilungListController implements IOnInit {
                     this.loadEntwurf();
                     // Wenn JA oder Institution -> Neue Mitteilungen als gelesen markieren
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
-                        this.setAllMitteilungenGelesen().then((response) => {
+                        this.setAllMitteilungenGelesen().then(() => {
                             this.loadAllMitteilungen();
-                            if (this.posteingangService) {
-                                this.posteingangService.posteingangChanged();
-                            }
+                            this.posteingangService.posteingangChanged();
                         });
                     } else {
                         // Fuer Revisor und Jurist: Nur laden
@@ -165,7 +163,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private initMitteilungForCurrentBenutzer() {
-        const currentUser: TSUser = this.authServiceRS.getPrincipal();
+        const currentUser: TSBenutzer = this.authServiceRS.getPrincipal();
         //common attributes
         this.currentMitteilung = new TSMitteilung();
         this.currentMitteilung.dossier = this.dossier;
@@ -272,22 +270,25 @@ export class DVMitteilungListController implements IOnInit {
 
     private getMitteilungTeilnehmerTypForUserRole(role: TSRole): TSMitteilungTeilnehmerTyp {
         switch (role) {
-            case TSRole.GESUCHSTELLER: {
+            case TSRole.GESUCHSTELLER:
                 return TSMitteilungTeilnehmerTyp.GESUCHSTELLER;
-            }
+            case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
-            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
                 return TSMitteilungTeilnehmerTyp.INSTITUTION;
-            }
             case TSRole.SUPER_ADMIN:
-            case TSRole.ADMIN:
+            case TSRole.ADMIN_BG:
             case TSRole.JURIST:
             case TSRole.REVISOR:
-            case TSRole.SACHBEARBEITER_JA:
-            case TSRole.SCHULAMT:
-            case TSRole.ADMINISTRATOR_SCHULAMT: {
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+            case TSRole.SACHBEARBEITER_TS:
+            case TSRole.ADMIN_TS:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
                 return TSMitteilungTeilnehmerTyp.JUGENDAMT;
-            }
             default:
                 return null;
         }

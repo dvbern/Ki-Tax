@@ -16,14 +16,16 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
+import {of} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import {ReportRS} from '../../app/core/service/reportRS.rest';
 import ZahlungRS from '../../app/core/service/zahlungRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../gesuch/dialog/RemoveDialogController';
-import {TSRole} from '../../models/enums/TSRole';
 import {TSZahlungsauftragsstatus} from '../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungsstatus} from '../../models/enums/TSZahlungsstatus';
 import TSDownloadFile from '../../models/TSDownloadFile';
@@ -34,6 +36,8 @@ import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../gesuch/dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('ZahlungsauftragViewController');
 
 export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -48,8 +52,8 @@ export class ZahlungsauftragViewController implements IController {
         'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
 
     form: IFormController;
-    private zahlungsauftragen: Array<TSZahlungsauftrag>;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
+    public zahlungsAuftraege: TSZahlungsauftrag[] = [];
 
     beschrieb: string;
     faelligkeitsdatum: moment.Moment;
@@ -70,12 +74,9 @@ export class ZahlungsauftragViewController implements IController {
                 private readonly $translate: ITranslateService) {
     }
 
-    public getZahlungsauftragen() {
-        return this.zahlungsauftragen;
-    }
-
     public $onInit() {
-        this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days'); // Testlauf darf auch nur in die Zukunft gemacht werden!
+        // Testlauf darf auch nur in die Zukunft gemacht werden!
+        this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
         this.updateZahlungsauftrag();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
@@ -83,36 +84,26 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     private updateZahlungsauftrag() {
-        if (this.authServiceRS.getPrincipal()) {
-            switch (this.authServiceRS.getPrincipal().getCurrentRole()) {
+        this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (principal) {
+                        return this.zahlungRS.getZahlungsauftraegeForRole$(principal.getCurrentRole());
+                    }
 
-                case TSRole.SACHBEARBEITER_INSTITUTION:
-                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT: {
-                    this.zahlungRS.getAllZahlungsauftraegeInstitution().then((response: any) => {
-                        this.zahlungsauftragen = angular.copy(response);
-
-                    });
-                    break;
-                }
-                case TSRole.SUPER_ADMIN:
-                case TSRole.ADMIN:
-                case TSRole.SACHBEARBEITER_JA:
-                case TSRole.JURIST:
-                case TSRole.REVISOR: {
-                    this.zahlungRS.getAllZahlungsauftraege().then((response: any) => {
-                        this.zahlungsauftragen = angular.copy(response);
-
-                    });
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
+                    return of([]);
+                }),
+            )
+            .subscribe(
+                zahlungsAuftraege => {
+                    this.zahlungsAuftraege = zahlungsAuftraege;
+                },
+                err => LOG.error(err)
+            );
     }
 
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag) {
-        this.$state.go('zahlung', {
+        this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id
         });
     }
@@ -125,11 +116,12 @@ export class ZahlungsauftragViewController implements IController {
                 parentController: undefined,
                 elementID: undefined
             }).then(() => {   //User confirmed removal
-                this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert).then((response: TSZahlungsauftrag) => {
-                    this.zahlungsauftragen.push(response);
-                    this.resetEditZahlungsauftrag();
-                    this.resetForm();
-                });
+                this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
+                    .then((response: TSZahlungsauftrag) => {
+                        this.zahlungsAuftraege.push(response);
+                        this.resetEditZahlungsauftrag();
+                        this.resetForm();
+                    });
             });
         }
     }
@@ -164,11 +156,11 @@ export class ZahlungsauftragViewController implements IController {
             elementID: undefined
         }).then(() => {   //User confirmed removal
             this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
-                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsauftragen);
+                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
                 if (index > -1) {
-                    this.zahlungsauftragen[index] = response;
+                    this.zahlungsAuftraege[index] = response;
                 }
-                EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsauftragen);
+                EbeguUtil.handleSmarttablesUpdateBug(this.zahlungsAuftraege);
             });
         });
     }
@@ -180,14 +172,19 @@ export class ZahlungsauftragViewController implements IController {
     public save(zahlungsauftrag: TSZahlungsauftrag) {
         if (this.isEditValid()) {
             this.zahlungRS.updateZahlungsauftrag(
-                this.zahlungsauftragToEdit.beschrieb, this.zahlungsauftragToEdit.datumFaellig, this.zahlungsauftragToEdit.id).then((response: TSZahlungsauftrag) => {
-                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsauftragen);
-                if (index > -1) {
-                    this.zahlungsauftragen[index] = response;
-                }
-                this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-                this.resetEditZahlungsauftrag();
-            });
+                this.zahlungsauftragToEdit.beschrieb,
+                this.zahlungsauftragToEdit.datumFaellig,
+                this.zahlungsauftragToEdit.id
+            )
+                .then((response: TSZahlungsauftrag) => {
+                    const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
+                    if (index > -1) {
+                        this.zahlungsAuftraege[index] = response;
+                    }
+                    // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
+                    this.form.$setPristine();
+                    this.resetEditZahlungsauftrag();
+                });
 
         }
     }

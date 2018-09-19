@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSGemeinde extends TSAbstractEntity {
+export default class TSGemeinde extends TSAbstractMutableEntity {
 
     private _name: string;
     private _gemeindeNummer: number;
-    private _enabled: boolean;
+    private _status: TSGemeindeStatus;
 
     public get name(): string {
         return this._name;
@@ -37,11 +38,11 @@ export default class TSGemeinde extends TSAbstractEntity {
         this._gemeindeNummer = value;
     }
 
-    public get enabled(): boolean {
-        return this._enabled;
+    get status(): TSGemeindeStatus {
+        return this._status;
     }
 
-    public set enabled(value: boolean) {
-        this._enabled = value;
+    set status(value: TSGemeindeStatus) {
+        this._status = value;
     }
 }

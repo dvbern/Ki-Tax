@@ -1,0 +1,286 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="dv-benutzer adminModul">
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          *ngIf="selectedUser"
+          (ngSubmit)="saveBenutzerBerechtigungen()"
+          novalidate>
+
+        <fieldset>
+            <div class="row">
+                <div class="marginTop50 col-md-12">
+                    <h1>
+                        {{'BENUTZER_DETAIL' | translate: {name: selectedUser.nachname, vorname: selectedUser.vorname} }}
+                    </h1>
+                    <hr class="header"/>
+                </div>
+            </div>
+
+            <!-- Daten aus Portal -->
+            <fieldset>
+                <!-- Mandant -->
+                <div class="row" dv-display-element dv-display-allowed-roles="['SUPER_ADMIN']">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="mandant_ID">MANDANT</label>
+                            <input id="mandant_ID"
+                                   type="text"
+                                   name="mandant"
+                                   disabled
+                                   [ngModel]="selectedUser.mandant.name"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <!-- Username -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="username_ID">USERNAME</label>
+                            <input id="username_ID"
+                                   type="text"
+                                   name="username"
+                                   disabled
+                                   [ngModel]="selectedUser.username"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <!-- Name / Vorname -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="nachname_ID">NACHNAME</label>
+                            <input id="nachname_ID"
+                                   type="text"
+                                   name="nachname"
+                                   disabled
+                                   [ngModel]="selectedUser.nachname"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="vorname_ID">VORNAME</label>
+                            <input id="vorname_ID"
+                                   type="text"
+                                   name="vorname"
+                                   disabled
+                                   [ngModel]="selectedUser.vorname"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <!-- E-Mail -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="email_ID">EMAIL</label>
+                            <input id="email_ID"
+                                   type="text"
+                                   name="email"
+                                   disabled
+                                   [ngModel]="selectedUser.email"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Warnung, wenn gesperrt -->
+            <div class="row">
+                <div class="col-md-12" *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT">
+                    <div class="well well-status-warten">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span translate>BENUTZER_GESPERRT_INFO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="marginTop50 col-md-12">
+                    <h1 [textContent]="'ROLLE_AKTIV' | translate"></h1>
+                    <hr class="header"/>
+                </div>
+            </div>
+
+            <!-- Aktive Rolle -->
+            <dv-berechtigung [berechtigung]="currentBerechtigung"
+                             [disabled]="isDisabled">
+            </dv-berechtigung>
+
+            <div class="row" *ngIf="futureBerechtigung || !isDisabled">
+                <div class="marginTop50 col-md-12">
+                    <h1 [textContent]="'ROLLE_KUENFTIG' | translate"></h1>
+                    <hr class="header"/>
+                </div>
+            </div>
+
+            <!-- Zukünftige Berechtigung -->
+            <fieldset *ngIf="futureBerechtigung">
+                <dv-berechtigung [berechtigung]="futureBerechtigung"
+                                 [disabled]="isDisabled">
+                </dv-berechtigung>
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <div class="form-group">
+                            <label translate for="futureGueltigAb">ROLLE_GUELTIG_AB</label>
+                            <input class="input-benutzer input-benutzer--datepicker" type="text"
+                                   name="futureGueltigAb" id="futureGueltigAb"
+                                   [matDatepicker]="futureGueltigAb"
+                                   [min]="tomorrow"
+                                   [disabled]="isDisabled"
+                                   required
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                   [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigAb">
+                            <mat-datepicker-toggle matSuffix [for]="futureGueltigAb"></mat-datepicker-toggle>
+                            <mat-datepicker #futureGueltigAb></mat-datepicker>
+                            <dv-error-messages inputId="futureGueltigAb"
+                                               [errorObject]="form.controls.futureGueltigAb?.errors">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-small">
+                        <div class="form-group">
+                            <label translate for="futureGueltigBis">ROLLE_GUELTIG_BIS</label>
+                            <input class="input-benutzer input-benutzer--datepicker" type="text"
+                                   name="futureGueltigBis" id="futureGueltigBis"
+                                   [matDatepicker]="futureGueltigBis"
+                                   [min]="tomorrow"
+                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                   [disabled]="isDisabled"
+                                   [(ngModel)]="futureBerechtigung.gueltigkeit.gueltigBis">
+                            <mat-datepicker-toggle matSuffix [for]="futureGueltigBis"></mat-datepicker-toggle>
+                            <mat-datepicker #futureGueltigBis></mat-datepicker>
+                            <dv-error-messages inputId="futureGueltigBis"
+                                               [errorObject]="form.controls.futureGueltigBis?.errors">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Add Zukünftige Berechtigung -->
+            <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && canAddBerechtigung();">
+                <div class="col-sm-12">
+                    <button type="button" class="dv-btn dv-btn-operation"
+                            (click)="addBerechtigung()">
+                        <i class="fa fa-lg fa-plus-circle"></i>
+                        <span translate>BERECHTIGUNG_HINZUFUEGEN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Remove Zukünftige Berechtigung -->
+            <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && !canAddBerechtigung();">
+                <div class="col-sm-12">
+                    <button type="button" class="dv-btn dv-btn-operation"
+                            (click)="removeBerechtigung()">
+                        <i class="fa fa-lg fa-trash-o"></i>
+                        <span translate>BERECHTIGUNG_ENTFERNEN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info, wenn Defaultbenutzer -->
+            <div class="row" *ngIf="isDefaultVerantwortlicher">
+                <div class="col-md-12">
+                    <div class="well well-status-bestaetigt">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span translate>BENUTZER_DEFAULTVERANTWORTLICHER_INFO</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-row dv-input-container-medium">
+
+                <button type="button" class="dv-btn"
+                        *ngIf="!isDefaultVerantwortlicher && isDisabled"
+                        (click)="enableBenutzer()"
+                        [textContent]="'BENUTZER_BEARBEITEN' | translate">
+                </button>
+
+                <dv-loading-button [type]="'submit'"
+                                   *ngIf="!isDefaultVerantwortlicher && !isDisabled">
+                    <span translate>BENUTZER_SAVE</span>
+                </dv-loading-button>
+
+                <div *ngIf="selectedUser.status === TSBenutzerStatus.AKTIV && !isDefaultVerantwortlicher"
+                     class="button-row-item">
+                    <button type="button" class="dv-btn cancel-button"
+                            (click)="inactivateBenutzer()"
+                            [textContent]="'BENUTZER_SPERREN' | translate">
+                    </button>
+                </div>
+
+                <div *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT && !isDefaultVerantwortlicher"
+                     class="button-row-item">
+                    <button type="button" class="dv-btn cancel-button"
+                            (click)="reactivateBenutzer()"
+                            [textContent]="'BENUTZER_REAKTIVIEREN' | translate">
+                    </button>
+                </div>
+
+                <div class="button-row-item">
+                    <button type="button" class="dv-btn cancel-button"
+                            (click)="cancel()"
+                            [textContent]="'CANCEL' | translate">
+                    </button>
+                </div>
+
+            </div>
+        </fieldset>
+
+        <!-- History Tabelle -->
+        <fieldset *ngIf="isSuperAdmin()">
+            <div class="row marginTop50">
+                <div class="col-md-12">
+                    <h1 translate>BERECHTIGUNGHISTORY</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th translate>BERECHTIGUNG_GEAENDERT_USER</th>
+                            <th translate>BERECHTIGUNG_GEAENDERT_TS</th>
+                            <th translate>ROLLE</th>
+                            <th translate>BERECHTIGUNG_GUELTIG_AB</th>
+                            <th translate>BERECHTIGUNG_GUELTIG_BIS</th>
+                            <th translate>STATUS</th>
+                            <th translate>GELOESCHT</th>
+                        </tr>
+                        <tr *ngFor="let entry of berechtigungHistoryList">
+                            <td>{{getGeaendertDurch(entry)}}</td>
+                            <td>{{entry.timestampErstellt?.format('L LTS')}}</td>
+                            <td>{{getBerechtigungHistoryDescription(entry)}}</td>
+                            <td>{{entry.gueltigkeit.gueltigAb?.format('L')}}</td>
+                            <td>{{entry.gueltigkeit.gueltigBis?.format('L')}}</td>
+                            <td>{{('BENUTZER_STATUS_' + entry.status) | translate}}</td>
+                            <td>{{(entry.geloescht ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+
+    </form>
+</div>

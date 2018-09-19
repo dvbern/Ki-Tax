@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 @import (reference) 'variables.less';
 @import (reference) 'mixins.less';
 
@@ -76,6 +75,20 @@ md-input-container label:not(.md-container-ignore).md-required {
         .ebeguLabel();
         display: inline-block;
         color: @contrast-darkest;
+    }
+}
+
+.mat-datepicker-toggle {
+    background: @contrast-light;
+    display: block;
+    width: 4rem;
+    float: right;
+    height: 4rem;
+    .mat-icon-button {
+        height: 4rem;
+        width: 4rem;
+        line-height: 2.0rem;
+        font-size: 1rem;
     }
 }
 

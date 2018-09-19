@@ -16,13 +16,14 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
+import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import DossierRS from '../../service/dossierRS.rest';
 import {StateService} from '@uirouter/core';
@@ -44,7 +45,7 @@ describe('fallToolbar', () => {
     let gemeinde1: TSGemeinde;
     let gemeinde2: TSGemeinde;
     let gemeinde3: TSGemeinde;
-    let user: TSUser;
+    const user: TSBenutzer = new TSBenutzer();
 
 
     beforeEach(async(() => {
@@ -60,6 +61,8 @@ describe('fallToolbar', () => {
             'isRole': false,
             'isOneOfRoles': false,
         });
+        authServiceSpy.principal$ = of(user) as any;
+
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
             'findDossiersByFall': Promise.resolve([dossier1, dossier2])
         });
@@ -189,7 +192,7 @@ describe('fallToolbar', () => {
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
-            dossier1.fall.besitzer = new TSUser(); // it  is now an onlineGesuch
+            dossier1.fall.besitzer = new TSBenutzer(); // it  is now an onlineGesuch
             const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
                 'findDossiersByFall': Promise.resolve([dossier1, dossier2])
             });
@@ -237,8 +240,6 @@ describe('fallToolbar', () => {
         dossier1.gemeinde = gemeinde1;
         dossier2 = TestDataUtil.createDossier(DOSSIER_ID_2, fall);
         dossier2.gemeinde = gemeinde2;
-
-        user = new TSUser();
     }
 
     function initTestBed() {

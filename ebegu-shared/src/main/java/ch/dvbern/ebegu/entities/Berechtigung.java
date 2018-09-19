@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -166,11 +167,10 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 		}
 		final Berechtigung otherBerechtigung = (Berechtigung) other;
 		return Objects.equals(getBenutzer(), otherBerechtigung.getBenutzer())
-			&& Objects.equals(getRole(), otherBerechtigung.getRole())
+			&& getRole() == otherBerechtigung.getRole()
 			&& Objects.equals(getInstitution(), otherBerechtigung.getInstitution())
 			&& Objects.equals(getTraegerschaft(), otherBerechtigung.getTraegerschaft())
-			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit())
-			&& Objects.equals(getBenutzer().getGesperrt(), otherBerechtigung.getBenutzer().getGesperrt());
+			&& Objects.equals(getGueltigkeit(), otherBerechtigung.getGueltigkeit());
 	}
 
 	@Override
@@ -187,5 +187,14 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 
 	public boolean isAbgelaufen() {
 		return getGueltigkeit().endsBefore(LocalDate.now());
+	}
+
+	@Nonnull
+	public String extractGemeindenForBerechtigungAsString() {
+		return getGemeindeList()
+			.stream()
+			.map(Gemeinde::getName)
+			.sorted(String::compareToIgnoreCase)
+			.collect(Collectors.joining(", "));
 	}
 }

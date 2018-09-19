@@ -37,7 +37,7 @@ public class CheckZuschlagErwerbspensumValidatorTest {
 	private ValidatorFactory customFactory;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null));

@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
-import {from as fromPromise, Observable, of} from 'rxjs';
-import {filter, switchMap} from 'rxjs/operators';
+import {from as fromPromise, Observable, of, Subject} from 'rxjs';
+import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -26,60 +26,46 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+
+const LOG = LogFactory.createLog('NavbarComponent');
 
 @Component({
     selector: 'dv-navbar',
     templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.less']
+    styleUrls: ['./navbar.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnDestroy {
 
-    TSRoleUtil: any = TSRoleUtil;
+    public TSRoleUtil = TSRoleUtil;
+
+    private readonly unsubscribe$ = new Subject<void>();
 
     constructor(private readonly authServiceRS: AuthServiceRS,
+                private readonly changeDetectorRef: ChangeDetectorRef,
                 private readonly dialog: MatDialog,
                 private readonly $state: StateService,
                 private readonly gemeindeRS: GemeindeRS) {
-    }
 
-    public getGemeindeIDFromUser$(): Observable<string> {
-        if (this.authServiceRS.getPrincipal().hasJustOneGemeinde()) {
-            return of(this.authServiceRS.getPrincipal().extractCurrentGemeindeId());
-
-        } else {
-            return this.getListOfGemeinden$()
-                .pipe(
-                    switchMap(gemeindeList => {
-                        const dialogConfig = new MatDialogConfig();
-                        dialogConfig.data = {gemeindeList};
-
-                        return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
-        }           )
-                );
-        }
-
-    }
-
-    /**
-     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert
-     * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
-     */
-    private getListOfGemeinden$(): Observable<TSGemeinde[]> {
-        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            return fromPromise(this.gemeindeRS.getAllGemeinden());
-        } else {
-            return of(this.authServiceRS.getPrincipal().extractCurrentGemeinden());
-        }
+        // navbar depends on the principal. trigger change detection when the principal changes
+        authServiceRS.principal$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                () => changeDetectorRef.markForCheck(),
+                err => LOG.error(err)
+            );
     }
 
     public createNewFall(): void {
         this.getGemeindeIDFromUser$()
             .pipe(
-                filter(gemeindeId => !!gemeindeId)
+                take(1),
+                filter(gemeindeId => !!gemeindeId),
             )
             .subscribe(
-                (gemeindeId) => {
+                gemeindeId => {
                     const params: INewFallStateParams = {
                         gesuchsperiodeId: null,
                         creationAction: TSCreationAction.CREATE_NEW_FALL,
@@ -90,6 +76,47 @@ export class NavbarComponent {
                     };
                     this.$state.go('gesuch.fallcreation', params);
                 }
+                ,
+                err => LOG.error(err)
             );
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    private getGemeindeIDFromUser$(): Observable<string> {
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (principal && principal.hasJustOneGemeinde()) {
+                        return of(principal.extractCurrentGemeinden());
+                    }
+
+                    return this.getListOfGemeinden$()
+                        .pipe(
+                            switchMap(gemeindeList => {
+                                const dialogConfig = new MatDialogConfig();
+                                dialogConfig.data = {gemeindeList};
+
+                                return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+                            })
+                        );
+                })
+            );
+    }
+
+    /**
+     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert
+     * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
+     */
+    private getListOfGemeinden$(): Observable<TSGemeinde[]> {
+        if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
+            return fromPromise(this.gemeindeRS.getAllGemeinden());
+        } else {
+            return this.authServiceRS.principal$
+                .pipe(map(p => p.extractCurrentGemeinden()));
+        }
     }
 }

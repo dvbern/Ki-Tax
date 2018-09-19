@@ -32,7 +32,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -51,15 +50,21 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMINISTRATOR_SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SCHULAMT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -68,7 +73,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(VerfuegungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class VerfuegungServiceBean extends AbstractBaseService implements VerfuegungService {
 
 	@Inject
@@ -82,9 +88,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private WizardStepService wizardStepService;
-
-	@Inject
-	private MandantService mandantService;
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -103,7 +106,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
 		setZahlungsstatus(verfuegung, betreuungId, ignorieren);
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.VERFUEGT);
@@ -118,7 +121,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public void generateVerfuegungDokument(@Nonnull Betreuung betreuung) {
 		try {
 			generatedDokumentService
@@ -131,7 +134,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@SuppressWarnings("LocalVariableNamingConvention")
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
 		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
 		final Gesuch gesuch = betreuung.extractGesuch();
@@ -209,7 +212,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId) {
 		// Bei Nich-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
@@ -233,7 +236,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, @Nonnull Betreuungsstatus betreuungsstatus) {
 		Objects.requireNonNull(verfuegung);
 		Objects.requireNonNull(betreuungId);
@@ -261,7 +264,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Verfuegung> findVerfuegung(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Verfuegung a = persistence.find(Verfuegung.class, id);
@@ -271,7 +275,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Collection<Verfuegung> getAllVerfuegungen() {
 		Collection<Verfuegung> verfuegungen = criteriaQueryHelper.getAll(Verfuegung.class);
 		authorizer.checkReadAuthorizationVerfuegungen(verfuegungen);
@@ -279,7 +284,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public void removeVerfuegung(@Nonnull Verfuegung verfuegung) {
 		Objects.requireNonNull(verfuegung);
 		Optional<Verfuegung> entityToRemove = this.findVerfuegung(verfuegung.getId());
@@ -295,15 +300,15 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@SuppressWarnings("OptionalIsPresent")
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gesuch calculateVerfuegung(@Nonnull Gesuch gesuch) {
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
-		Mandant mandant = mandantService.getFirst();   //gesuch get mandant?
-		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(mandant, gesuch.getGesuchsperiode());
+		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
-		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(mandant, gesuch.getGesuchsperiode());
+		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
 		gesuch.getKindContainers()
@@ -322,8 +327,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	public Verfuegung getEvaluateFamiliensituationVerfuegung(@Nonnull Gesuch gesuch) {
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
-		Mandant mandant = gesuch.getFall().getMandant();
-		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(mandant, gesuch.getGesuchsperiode());
+		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
@@ -332,8 +336,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
-		ADMINISTRATOR_SCHULAMT, SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
 		if (betreuung.getVorgaengerId() == null) {
@@ -354,8 +359,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, JURIST, REVISOR, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SCHULAMT,
-		ADMINISTRATOR_SCHULAMT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<LocalDate> findVorgaengerVerfuegungDate(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
 		Optional<Verfuegung> vorgaengerVerfuegungOpt = findVorgaengerVerfuegung(betreuung);

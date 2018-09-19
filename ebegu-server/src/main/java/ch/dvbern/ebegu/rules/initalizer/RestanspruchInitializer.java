@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules.initalizer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -59,11 +60,16 @@ public class RestanspruchInitializer {
 
 	protected void restanspruchUebernehmen(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt sourceZeitabschnitt, VerfuegungZeitabschnitt targetZeitabschnitt) {
 		//Die  vom der letzen Berechnung uebernommenen Zeitabschnitte betrachten und den restanspruch berechnen.
+		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchberechtigtesPensum();
 			int betreuungspensum = sourceZeitabschnitt.getBetreuungspensum();
+			int anspruchspensumRest = sourceZeitabschnitt.getAnspruchspensumRest();
 			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
-			if (betreuungspensum < anspruchberechtigtesPensum) {
+			if (anspruchberechtigtesPensum == 0 && anspruchspensumRest != -1) {
+				// Der Restanspruch war schon initialisiert und bleibt gleich wie auf der vorherigen Betreuung
+				targetZeitabschnitt.setAnspruchspensumRest(anspruchspensumRest);
+			} else if (betreuungspensum < anspruchberechtigtesPensum) {
 				targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum);
 			} else {
 				targetZeitabschnitt.setAnspruchspensumRest(0);

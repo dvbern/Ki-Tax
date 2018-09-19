@@ -23,20 +23,21 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.EbeguParameter;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.EbeguParameterKey;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
-import static ch.dvbern.ebegu.enums.EbeguParameterKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 
 /**
  * Configurator, welcher die Regeln und ihre Reihenfolge konfiguriert. Als Parameter erhält er den Mandanten sowie
@@ -48,34 +49,36 @@ public class BetreuungsgutscheinConfigurator {
 
 	private final List<Rule> rules = new LinkedList<>();
 
-	public List<Rule> configureRulesForMandant(@Nullable Mandant mandant, @Nonnull Map<EbeguParameterKey, EbeguParameter> ebeguRuleParameter) {
+	@Nonnull
+	public List<Rule> configureRulesForMandant(@Nonnull Gemeinde gemeinde, @Nonnull Map<EinstellungKey, Einstellung> ebeguRuleParameter) {
 		useBernerRules(ebeguRuleParameter);
 		return rules;
 	}
 
-	public Set<EbeguParameterKey> getRequiredParametersForMandant(@Nullable Mandant mandant) {
+	public Set<EinstellungKey> getRequiredParametersForGemeinde(@Nonnull Gemeinde gemeinde) {
 		return requiredBernerParameters();
 	}
 
-	public Set<EbeguParameterKey> requiredBernerParameters() {
+	public Set<EinstellungKey> requiredBernerParameters() {
 		return EnumSet.of(
 			PARAM_MASSGEBENDES_EINKOMMEN_MAX,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
-			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
+			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
+			BG_BIS_UND_MIT_SCHULSTUFE);
 	}
 
-	private void useBernerRules(Map<EbeguParameterKey, EbeguParameter> ebeguParameter) {
+	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
 
-		abschnitteErstellenRegeln(ebeguParameter);
-		berechnenAnspruchRegeln(ebeguParameter);
-		reduktionsRegeln(ebeguParameter);
+		abschnitteErstellenRegeln(einstellungen);
+		berechnenAnspruchRegeln(einstellungen);
+		reduktionsRegeln(einstellungen);
 
 	}
 
-	private void abschnitteErstellenRegeln(Map<EbeguParameterKey, EbeguParameter> ebeguParameter) {
+	private void abschnitteErstellenRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 
 		// - Erwerbspensum: Erstellt die grundlegenden Zeitschnitze (keine Korrekturen, nur einfügen)
@@ -83,13 +86,13 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(erwerbspensumAbschnittRule);
 
 		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
-		EbeguParameter param_pauschalabzug_pro_person_familiengroesse_3 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_3, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 muss gesetzt sein");
-		EbeguParameter param_pauschalabzug_pro_person_familiengroesse_4 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_4 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_4, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 muss gesetzt sein");
-		EbeguParameter param_pauschalabzug_pro_person_familiengroesse_5 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_5 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_5, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 muss gesetzt sein");
-		EbeguParameter param_pauschalabzug_pro_person_familiengroesse_6 = ebeguParameter.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
+		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_6, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
 
 		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(defaultGueltigkeit,
@@ -119,10 +122,6 @@ public class BetreuungsgutscheinConfigurator {
 		EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(defaultGueltigkeit);
 		rules.add(einreichungsfristAbschnittRule);
 
-		// Mindestalter Kind
-		MindestalterAbschnittRule mindestalterAbschnittRule = new MindestalterAbschnittRule(defaultGueltigkeit);
-		rules.add(mindestalterAbschnittRule);
-
 		// Abwesenheit
 		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit);
 		rules.add(abwesenheitAbschnittRule);
@@ -132,7 +131,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(zivilstandsaenderungAbschnittRule);
 	}
 
-	private void berechnenAnspruchRegeln(Map<EbeguParameterKey, EbeguParameter> ebeguParameter) {
+	private void berechnenAnspruchRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// GRUNDREGELN_CALC: Berechnen / Ändern den Anspruch
 
 		// - Storniert
@@ -140,7 +139,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(storniertCalcRule);
 
 		// - Erwerbspensum
-		EbeguParameter maxZuschlagValue = ebeguParameter.get(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
+		Einstellung maxZuschlagValue = einstellungMap.get(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
 		Objects.requireNonNull(maxZuschlagValue, "Parameter PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM muss gesetzt sein");
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(defaultGueltigkeit, maxZuschlagValue.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);
@@ -152,18 +151,13 @@ public class BetreuungsgutscheinConfigurator {
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
 		rules.add(fachstelleCalcRule);
-
-		// - Kind wohnt im gleichen Haushalt: Muss zwingend nach Fachstelle durchgefuehrt werden
-		WohnhaftImGleichenHaushaltCalcRule wohnhaftImGleichenHaushaltRule = new WohnhaftImGleichenHaushaltCalcRule(defaultGueltigkeit);
-		rules.add(wohnhaftImGleichenHaushaltRule);
-
 	}
 
-	private void reduktionsRegeln(Map<EbeguParameterKey, EbeguParameter> ebeguParameter) {
+	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// REDUKTIONSREGELN: Setzen Anpsruch auf 0
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
-		EbeguParameter paramMassgebendesEinkommenMax = ebeguParameter.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
+		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
 		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter PARAM_MASSGEBENDES_EINKOMMEN_MAX muss gesetzt sein");
 		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(defaultGueltigkeit, paramMassgebendesEinkommenMax.getValueAsBigDecimal());
 		rules.add(maxEinkommenCalcRule);
@@ -171,10 +165,6 @@ public class BetreuungsgutscheinConfigurator {
 		// Betreuungsangebot Tagesschule nicht berechnen
 		BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(defaultGueltigkeit);
 		rules.add(betreuungsangebotTypCalcRule);
-
-		// Mindestalter Kind
-		MindestalterCalcRule mindestalterRule = new MindestalterCalcRule(defaultGueltigkeit);
-		rules.add(mindestalterRule);
 
 		// Wohnsitz (Zuzug und Wegzug)
 		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit);
@@ -184,18 +174,18 @@ public class BetreuungsgutscheinConfigurator {
 		EinreichungsfristCalcRule einreichungsfristRule = new EinreichungsfristCalcRule(defaultGueltigkeit);
 		rules.add(einreichungsfristRule);
 
-		// Mindestalter Kind
-		MindestalterCalcRule mindestalterCalcRule = new MindestalterCalcRule(defaultGueltigkeit);
-		rules.add(mindestalterCalcRule);
-
 		// Abwesenheit
 		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit);
 		rules.add(abwesenheitCalcRule);
 
+		// - Schulstufe des Kindes: Je nach Gemeindeeinstellung wird bis zu einer gewissen STufe ein Gutschein ausgestellt
+		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE);
+		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
+		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
+		rules.add(schulstufeCalcRule);
+
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);
 		rules.add(restanspruchLimitCalcRule);
-
 	}
-
 }

@@ -14,15 +14,15 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
-import {EbeguParameterRS} from '../../../admin/service/ebeguParameterRS.rest';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import {TSEbeguParameterKey} from '../../../models/enums/TSEbeguParameterKey';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {getTSZuschlagsgruendeForGS, getTSZuschlagsgrunde, TSZuschlagsgrund} from '../../../models/enums/TSZuschlagsgrund';
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
+import TSEinstellung from '../../../models/TSEinstellung';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
@@ -46,7 +46,7 @@ export class ErwerbspensumViewComponentConfig implements IComponentOptions {
 export class ErwerbspensumViewController extends AbstractGesuchViewController<TSErwerbspensumContainer> {
 
     static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
-        'CONSTANTS', '$scope', 'ErrorService', 'AuthServiceRS', 'WizardStepManager', '$q', '$translate', 'EbeguParameterRS', 'GlobalCacheService', '$timeout'];
+        'CONSTANTS', '$scope', 'ErrorService', 'AuthServiceRS', 'WizardStepManager', '$q', '$translate', 'EinstellungRS', 'GlobalCacheService', '$timeout'];
 
     gesuchsteller: TSGesuchstellerContainer;
     patternPercentage: string;
@@ -55,7 +55,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     constructor($stateParams: IErwerbspensumStateParams, gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
                 private readonly authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private readonly $q: IQService,
-                private readonly $translate: ITranslateService, private readonly ebeguParameterRS: EbeguParameterRS, private readonly globalCacheService: GlobalCacheService,
+                private readonly $translate: ITranslateService, private readonly einstellungRS: EinstellungRS, private readonly globalCacheService: GlobalCacheService,
                 $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ERWERBSPENSUM, $timeout);
         this.patternPercentage = this.CONSTANTS.PATTERN_PERCENTAGE;
@@ -73,10 +73,10 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
             console.log('kein gesuchsteller gefunden');
         }
-        ebeguParameterRS.getEbeguParameterByGesuchsperiodeCached(
+        einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_PARAMETER)).then((response: TSEbeguParameter[]) => {
-            const found = response.find(r => r.name === TSEbeguParameterKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
+            const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
             if (found) {
                 // max Wert für Zuschlag Erwerbspensum
                 this.maxZuschlagsprozent = Number(found.value);

@@ -78,3 +78,50 @@
 
     }
 }
+
+.fall-toolbar-mobile {
+    &-dropdown {
+        padding: 0;
+    }
+
+    &-dropdown-menu {
+        background: @contrast-darkest;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border: 0;
+        text-align: left;
+        padding: 0;
+    }
+
+    &-dropdown {
+        height: 5rem;
+        text-align: left;
+    }
+    &-dropdown-button {
+        color: @contrast-lightest;
+        text-decoration: none;
+        background: transparent;
+        height: 100%;
+        border: 0;
+        padding: 0 2rem;
+        &.active, &:active, &:hover, &:focus {
+            background-color: transparent;
+            color: @contrast-lightest;
+            outline: none;
+            text-decoration: none !important;
+            outline: 0;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+
+        }
+    }
+}
+
+.fall-toolbar-symbol-padding {
+    padding-right: 0.5rem;
+}
+
+.fall-toolbar-mobile-caret {
+    margin-left: 1rem;
+}

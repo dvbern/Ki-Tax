@@ -13,14 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory, IController} from 'angular';
-import {takeUntil} from 'rxjs/operators';
+import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {Subject} from 'rxjs';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
-import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
-import TSUser from '../../../../models/TSUser';
+import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import UserRS from '../../service/userRS.rest';
+import TSBenutzer from '../../../../models/TSBenutzer';
+import {LogFactory} from '../../logging/LogFactory';
+import BenutzerRS from '../../service/benutzerRS.rest';
+
+const LOG = LogFactory.createLog('UserselectController');
 
 export class DVUserselect implements IDirective {
     restrict = 'E';
@@ -48,17 +49,18 @@ export class DVUserselect implements IDirective {
         return directive;
     }
 }
+
 /**
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
 export class UserselectController implements IController {
 
-    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'AuthLifeCycleService'];
+    static $inject: string[] = ['BenutzerRS', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
-    selectedUser: TSUser;
+    selectedUser?: TSBenutzer;
     smartTable: any;
-    userList: Array<TSUser>;
+    userList: TSBenutzer[];
     dvUsersearch: string;
     initialAll: boolean;
     showSelectionAll: boolean;
@@ -66,20 +68,22 @@ export class UserselectController implements IController {
     onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     schulamt: string;
 
-    constructor(private readonly userRS: UserRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
+    constructor(private readonly benutzerRS: BenutzerRS,
+                private readonly authServiceRS: AuthServiceRS) {
 
     }
 
-    //wird von angular aufgerufen
-    $onInit() {
+    public $onInit(): void {
         this.updateUserList();
         if (!this.initialAll) { //tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
-            this.selectedUser = this.authServiceRS.getPrincipal();
-            this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+            this.authServiceRS.principal$
                 .pipe(takeUntil(this.unsubscribe$))
-                .subscribe(() => { this.selectedUser = this.authServiceRS.getPrincipal(); });
+                .subscribe(
+                    principal => {
+                        this.selectedUser = principal;
+                    },
+                    err => LOG.error(err)
+                );
         }
         //initial nach aktuell eingeloggtem filtern
         if (this.smartTable && !this.initialAll && this.selectedUser) {
@@ -90,18 +94,18 @@ export class UserselectController implements IController {
         };
     }
 
-    $onDestroy() {
+    public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
 
     private updateUserList(): void {
         if (this.schulamt) {
-            this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+            this.benutzerRS.getBenutzerSCHorAdminSCH().then(response => {
                 this.userList = response;
             });
         } else {
-            this.userRS.getBenutzerJAorAdmin().then(response => {
+            this.benutzerRS.getBenutzerJAorAdmin().then(response => {
                 this.userList = response;
             });
         }

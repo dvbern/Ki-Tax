@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class BelegungTagesschule extends AbstractEntity {
+public class BelegungTagesschule extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -8403435739182708718L;
 

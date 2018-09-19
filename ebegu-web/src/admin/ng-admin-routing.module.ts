@@ -16,9 +16,12 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
+import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 
@@ -34,7 +37,16 @@ export const traegerschaftState: Ng2StateDeclaration = {
         }
     ],
     data: {
-        roles: TSRoleUtil.getAdministratorRevisorRole(),
+        roles: TSRoleUtil.getMandantRoles(),
+    }
+};
+
+export const gemeindenState: Ng2StateDeclaration = {
+    name: 'admin.gemeinden',
+    url: '/gemeinden',
+    component: GemeindeListComponent,
+    data: {
+        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
     }
 };
 
@@ -42,6 +54,9 @@ export const testdatenState: Ng2StateDeclaration = {
     name: 'admin.testdaten',
     url: '/testdaten',
     component: TestdatenViewComponent,
+    data: {
+        roles: TSRoleUtil.getSuperAdminRoles(),
+    }
 };
 
 export const batchjobTriggerState: Ng2StateDeclaration = {
@@ -50,9 +65,33 @@ export const batchjobTriggerState: Ng2StateDeclaration = {
     component: BatchjobTriggerViewComponent,
 };
 
+export const debuggingState: Ng2StateDeclaration = {
+    name: 'admin.debugging',
+    url: '/debug',
+    component: DebuggingComponent,
+};
+
+export const benutzerState: Ng2StateDeclaration = {
+    name: 'admin.benutzer',
+    component: BenutzerComponent,
+    url: '/benutzerlist/benutzer/:benutzerId',
+    data: {
+        roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+    },
+};
+
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [traegerschaftState, testdatenState, batchjobTriggerState]}),
+        UIRouterUpgradeModule.forChild({
+            states: [
+                traegerschaftState,
+                testdatenState,
+                batchjobTriggerState,
+                debuggingState,
+                benutzerState,
+                gemeindenState
+            ]
+        }),
     ],
     exports: [
         UIRouterUpgradeModule

@@ -54,7 +54,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Entity
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
-public class GesuchstellerContainer extends AbstractEntity implements Searchable {
+public class GesuchstellerContainer extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -8403117439764700618L;
 

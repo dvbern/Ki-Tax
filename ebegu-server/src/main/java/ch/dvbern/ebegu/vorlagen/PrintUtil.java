@@ -242,15 +242,6 @@ public final class PrintUtil {
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
 			bemerkungenBuilder.append(ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp()));
-			if (StringUtils.isNotEmpty(dokumentGrund.getFullName())) {
-				bemerkungenBuilder.append(" (");
-				bemerkungenBuilder.append(dokumentGrund.getFullName());
-
-				if (dokumentGrund.getTag() != null) {
-					bemerkungenBuilder.append(" / ").append(dokumentGrund.getTag());
-				}
-				bemerkungenBuilder.append(')');
-			}
 		}
 		return bemerkungenBuilder;
 	}

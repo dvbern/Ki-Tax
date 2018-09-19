@@ -16,7 +16,7 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -27,7 +27,7 @@ import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
@@ -35,7 +35,6 @@ import GemeindeRS from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
 import GesuchRS from './gesuchRS.rest';
 import WizardStepManager from './wizardStepManager';
-import Spy = jasmine.Spy;
 
 describe('gesuchGenerator', () => {
 
@@ -46,7 +45,7 @@ describe('gesuchGenerator', () => {
     let fall: TSFall;
     let gesuchGenerator: GesuchGenerator;
     let gesuchsperiode: TSGesuchsperiode;
-    let user: TSUser;
+    let user: TSBenutzer;
 
     beforeEach(async(() => {
 
@@ -59,13 +58,14 @@ describe('gesuchGenerator', () => {
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
             'isOneOfRoles': true,
         });
-        authServiceSpy.principal$ = <Observable<TSUser> & Spy>of(user);
+        authServiceSpy.principal$ = of(user) as any;
 
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
             'findDossier': Promise.resolve(dossier)
         });
 
-        const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name, ['loadLastStatusChange']);
+        const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
+            ['loadLastStatusChange']);
         antragStatusHistoryServiceSpy.loadLastStatusChange.and.callFake((gesuch: TSGesuch) => Promise.resolve(gesuch));
 
         const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, {
@@ -82,8 +82,7 @@ describe('gesuchGenerator', () => {
         const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['createGesuch']);
 
         TestBed.configureTestingModule({
-            imports: [
-            ],
+            imports: [],
             providers: [
                 {provide: GesuchRS, useValue: gesuchServiceSpy},
                 {provide: AntragStatusHistoryRS, useValue: antragStatusHistoryServiceSpy},
@@ -198,7 +197,7 @@ describe('gesuchGenerator', () => {
     function initValues(): void {
         gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = GP_ID;
-        user = new TSUser();
+        user = new TSBenutzer();
         fall = new TSFall();
         dossier = new TSDossier();
         dossier.id = DOSSIER_ID;

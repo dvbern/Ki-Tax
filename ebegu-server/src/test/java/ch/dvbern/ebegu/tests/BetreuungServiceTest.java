@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -48,6 +49,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -76,10 +78,18 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	private Benutzer empfaengerJA = null;
 	private Benutzer sender = null;
 
+	private Gesuchsperiode gesuchsperiode;
+
+	@Before
+	public void setUp() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+	}
+
 	@Test
 	public void createAndUpdateBetreuungTest() {
 		Assert.assertNotNull(betreuungService);
-		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence);
+		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence, gesuchsperiode);
 		Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungWithBetreuungsPensen(persitedBetreuung.getId());
 		Assert.assertTrue(betreuungOpt.isPresent());
 		Betreuung betreuung = betreuungOpt.get();
@@ -103,7 +113,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void removeBetreuungTest() {
 		Assert.assertNotNull(betreuungService);
-		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence);
+		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence, gesuchsperiode);
 		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(persitedBetreuung.getId());
 		Assert.assertTrue(betreuungOptional.isPresent());
 		Betreuung betreuung = betreuungOptional.get();
@@ -124,7 +134,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void removeBetreuungWithMitteilungTest() {
 		prepareDependentObjects();
-		Gesuch dagmarGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
+		Gesuch dagmarGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		Mitteilung mitteilung = TestDataUtil.createMitteilung(dagmarGesuch.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		Betreuung betreuungUnderTest = dagmarGesuch.extractAllBetreuungen().get(0);
@@ -153,7 +163,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void removeBetreuungsmitteilungTest() throws LoginException {
 		prepareDependentObjects();
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		final Betreuung betreuungUnderTest = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		loginAsSachbearbeiterInst("sainst", betreuungUnderTest.getInstitutionStammdaten().getInstitution());
@@ -184,7 +194,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void betreuungMitBelegungFerieninsel() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		final Betreuung betreuungUnderTest = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		BelegungFerieninsel belegungFerieninsel = TestDataUtil.createDefaultBelegungFerieninsel();
@@ -222,7 +232,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	private void prepareDependentObjects() {
 		mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_JA, "saja",
+		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja",
 			null, null, mandant, persistence);
 		persistence.persist(empfaengerJA);
 
@@ -278,7 +288,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void validateBetreuungszeitraumInnerhalbInstitutionsGueltigkeit() {
 		prepareDependentObjects();
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		// *** Kita-Zeitraum = Gesuchsperiode (mindestens)
@@ -330,7 +340,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void validateBetreuungszeitraumInstitutionsGueltigkeitInGesuchsperiodeOpen() {
 		prepareDependentObjects();
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		// *** Kita hat innerhalb GP neu geöffnet
@@ -383,7 +393,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void validateBetreuungszeitraumInstitutionsGueltigkeitInGesuchsperiodeClosed() {
 		prepareDependentObjects();
-		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now());
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		// *** Kita wird innerhalb GP geschlossen

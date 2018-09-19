@@ -102,14 +102,22 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal fromNullSafe(@Nonnull Integer src) {
+		BigDecimal val = new BigDecimal(src)
+			.setScale(scale, roundingMode);
+		return validatePrecision(val);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal from(@Nullable Integer src) {
 		if (src == null) {
 			return null;
 		}
-		BigDecimal val = new BigDecimal(src)
-			.setScale(scale, roundingMode);
-		return validatePrecision(val);
+		return fromNullSafe(src);
 	}
 
 	/**
@@ -128,15 +136,23 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal augment) {
+		BigDecimal result = value
+			.add(augment)
+			.setScale(scale, roundingMode);
+		return validatePrecision(result);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal add(@Nullable BigDecimal value, @Nullable BigDecimal augment) {
 		if (value == null || augment == null) {
 			return null;
 		}
-		BigDecimal result = value
-			.add(augment)
-			.setScale(scale, roundingMode);
-		return validatePrecision(result);
+		return addNullSafe(value, augment);
 	}
 
 	/**
@@ -146,7 +162,7 @@ public enum MathUtil {
 	 */
 	@Nullable
 	public BigDecimal add(@Nullable BigDecimal value, @Nullable BigDecimal... augment) {
-		if (augment.length == 0) {
+		if (augment == null || augment.length == 0) {
 			return null;
 		}
 
@@ -164,15 +180,23 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal subtractNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal subtrahend) {
+		BigDecimal result = value
+			.subtract(subtrahend)
+			.setScale(scale, roundingMode);
+		return validatePrecision(result);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal subtract(@Nullable BigDecimal value, @Nullable BigDecimal subtrahend) {
 		if (value == null || subtrahend == null) {
 			return null;
 		}
-		BigDecimal result = value
-			.subtract(subtrahend)
-			.setScale(scale, roundingMode);
-		return validatePrecision(result);
+		return subtractNullSafe(value, subtrahend);
 	}
 
 	/**
@@ -204,6 +228,16 @@ public enum MathUtil {
 		return validatePrecision(result);
 	}
 
+	@Nonnull
+	public BigDecimal divideNullSafe(@Nonnull BigDecimal dividend, @Nonnull BigDecimal divisor) {
+
+		if (0 == BigDecimal.ZERO.compareTo(divisor)) {
+			throw new IllegalArgumentException("Divide by zero: " + dividend + '/' + divisor);
+		}
+		BigDecimal result = dividend.divide(divisor, scale, roundingMode);
+		return validatePrecision(result);
+	}
+
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
@@ -212,11 +246,7 @@ public enum MathUtil {
 		if (dividend == null || divisor == null) {
 			return null;
 		}
-		if (0 == BigDecimal.ZERO.compareTo(divisor)) {
-			throw new IllegalArgumentException("Divide by zero: " + dividend + '/' + divisor);
-		}
-		BigDecimal result = dividend.divide(divisor, scale, roundingMode);
-		return validatePrecision(result);
+		return divideNullSafe(dividend, divisor);
 	}
 
 	/**
@@ -278,8 +308,18 @@ public enum MathUtil {
 	 * 20 bis 24 = 20
 	 * 25 bis 29 = 30
 	 */
-	public static int roundIntToTens(int pensumFachstelle) {
-		return (int) (Math.round((double) pensumFachstelle / 10) * 10);
+	public static int roundIntToTens(int value) {
+		return (int) (Math.round((double) value / 10) * 10);
+	}
+
+	/**
+	 * Rundet die eingegebene Nummer in 5er Schritten.
+	 * Beispiel
+	 * 20 bis 22 = 20
+	 * 23 bis 25 = 25
+	 */
+	public static int roundIntToFives(int value) {
+		return (int) (Math.round((double) value / 5) * 5);
 	}
 
 	/**

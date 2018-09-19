@@ -13,60 +13,77 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
+import {StateService} from '@uirouter/core';
+import {IComponentControllerService, IQService, IScope} from 'angular';
+import {of} from 'rxjs';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import {EbeguWebCore} from '../../core.angularjs.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
-import {StateService} from '@uirouter/core';
+import IInjectorService = angular.auto.IInjectorService;
 
 describe('DvPulldownUserMenuController', () => {
 
     let authServiceRS: AuthServiceRS;
-    let authLifeCycleService: AuthLifeCycleService;
     let $state: StateService;
-    let controller: DvPulldownUserMenuController;
-    let $q: angular.IQService;
-    let scope: angular.IScope;
+    let $q: IQService;
+    let scope: IScope;
+    let component: DvPulldownUserMenuController;
+    let $componentController: IComponentControllerService;
+
+    const user: TSBenutzer = new TSBenutzer('pedro');
 
     beforeEach(angular.mock.module(EbeguWebCore.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
+    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         authServiceRS = $injector.get('AuthServiceRS');
-        authLifeCycleService = $injector.get('AuthLifeCycleService');
         scope = $injector.get('$rootScope').$new();
         $q = $injector.get('$q');
         $state = $injector.get('$state');
+        $componentController = $injector.get('$componentController');
     }));
 
-    beforeEach(() => {
-        controller = new DvPulldownUserMenuController($state, authServiceRS, authLifeCycleService);
+    it('should be defined', () => {
+        component = $componentController('dvPulldownUserMenu', {$scope: scope});
+        expect(component).toBeDefined();
     });
 
     describe('API Usage', () => {
+
         describe('logout()', () => {
             it('must call the logout function and redirect to the login page', () => {
+                spyOnProperty(authServiceRS, 'principal$', 'get').and.returnValue(of(user));
                 spyOn($state, 'go');
 
-                controller.logout();
-                scope.$apply();
+                component = $componentController('dvPulldownUserMenu', {$scope: scope}, {});
+                component.$onInit();
+
+                component.logout();
+
                 //actual logout happens on login page
                 expect($state.go).toHaveBeenCalledWith('authentication.login', {type: 'logout'});
             });
         });
         describe('change Principal', () => {
+
             it('just after the controller is created Principal is undefined', () => {
-                expect(controller.principal).toBeUndefined();
+                spyOnProperty(authServiceRS, 'principal$', 'get').and.returnValue(of(undefined));
+
+                component = $componentController('dvPulldownUserMenu', {$scope: scope});
+                component.$onInit();
+
+                expect(component.principal).toBeUndefined();
             });
             it('When the user logs in the principal must be updated', () => {
-                const user: TSUser = new TSUser('pedro');
-                spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
-                controller.$onInit();
+                spyOnProperty(authServiceRS, 'principal$', 'get').and.returnValue(of(user));
 
-                expect(controller.principal).toBe(user);
+                component = $componentController('dvPulldownUserMenu', {$scope: scope});
+                component.$onInit();
+
+                expect(component.principal).toBe(user);
             });
         });
     });

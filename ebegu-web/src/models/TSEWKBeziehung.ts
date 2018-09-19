@@ -13,14 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
 import TSEWKAdresse from './TSEWKAdresse';
 
 /**
  * DTO für eine Beziehung aus dem EWK
  */
-export default class TSEWKBeziehung extends TSAbstractEntity {
+export default class TSEWKBeziehung extends TSAbstractMutableEntity {
 
     private _beziehungstyp: string;
     private _beziehungstypTxt: string;

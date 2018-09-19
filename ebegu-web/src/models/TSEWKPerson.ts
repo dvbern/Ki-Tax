@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
 import {TSGeschlecht} from './enums/TSGeschlecht';
 import TSEWKEinwohnercode from './TSEWKEinwohnercode';
@@ -23,7 +23,7 @@ import TSEWKBeziehung from './TSEWKBeziehung';
 /**
  * DTO für eine Person aus dem EWK
  */
-export default class TSEWKPerson extends TSAbstractEntity {
+export default class TSEWKPerson extends TSAbstractMutableEntity {
 
     private _personID: string;
     private _einwohnercodes: Array<TSEWKEinwohnercode>;

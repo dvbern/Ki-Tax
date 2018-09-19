@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {of} from 'rxjs';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
@@ -28,7 +29,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSMitteilung from '../../models/TSMitteilung';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import {StateService} from '@uirouter/core';
 
 import TestDataUtil from '../../utils/TestDataUtil.spec';
@@ -82,8 +83,8 @@ describe('posteingangView', () => {
         describe('searchMitteilungen', () => {
             it('should return the list of Mitteilungen', () => {
                 mockRestCalls();
-                spyOn(gemeindeRS, 'getGemeindenForPrincipal').and.returnValue($q.when([]));
-                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, authServiceRS, gemeindeRS, $log, authLifeCycleService);
+                spyOn(gemeindeRS, 'getGemeindenForPrincipal$').and.returnValue(of([]));
+                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, authServiceRS, gemeindeRS);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(result => {
@@ -102,7 +103,7 @@ describe('posteingangView', () => {
         mockFall.fallNummer = 123;
         const mockDossier: TSDossier = new TSDossier();
         mockDossier.fall = mockFall;
-        const gesuchsteller: TSUser = new TSUser();
+        const gesuchsteller: TSBenutzer = new TSBenutzer();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
         const mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
             gesuchsteller, undefined, 'Frage', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, undefined);

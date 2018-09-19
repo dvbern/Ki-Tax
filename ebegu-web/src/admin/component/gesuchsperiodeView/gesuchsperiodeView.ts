@@ -23,13 +23,13 @@ import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogControl
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {getTSGesuchsperiodeStatusValues, TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import TSEbeguParameter from '../../../models/TSEbeguParameter';
+import TSEinstellung from '../../../models/TSEinstellung';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
-import {EbeguParameterRS} from '../../service/ebeguParameterRS.rest';
+import {EinstellungRS} from '../../service/einstellungRS.rest';
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
@@ -42,18 +42,18 @@ export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
 
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
-    static $inject = ['EbeguParameterRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log', '$stateParams',
+    static $inject = ['EinstellungRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log', '$stateParams',
         '$state', 'AuthServiceRS'];
 
     form: IFormController;
     gesuchsperiode: TSGesuchsperiode;
-    ebeguParameterListGesuchsperiode: TSEbeguParameter[];
+    einstellungenGesuchsperiode: TSEinstellung[];
 
     initialStatus: TSGesuchsperiodeStatus;
     datumFreischaltungTagesschule: moment.Moment;
     datumFreischaltungMax: moment.Moment;
 
-    constructor(private readonly ebeguParameterRS: EbeguParameterRS,
+    constructor(private readonly einstellungenRS: EinstellungRS,
                 private readonly dvDialog: DvDialog,
                 private readonly globalCacheService: GlobalCacheService,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -81,14 +81,14 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     private setSelectedGesuchsperiode(gesuchsperiode: any): void {
         this.gesuchsperiode = gesuchsperiode;
-        this.readEbeguParameterByGesuchsperiode();
+        this.readEinstellungenByGesuchsperiode();
         this.datumFreischaltungTagesschule = undefined;
         this.datumFreischaltungMax = this.getDatumFreischaltungMax();
     }
 
-    private readEbeguParameterByGesuchsperiode(): void {
-        this.ebeguParameterRS.getEbeguParameterByGesuchsperiode(this.gesuchsperiode.id).then((response: TSEbeguParameter[]) => {
-            this.ebeguParameterListGesuchsperiode = response;
+    private readEinstellungenByGesuchsperiode(): void {
+        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
+            this.einstellungenGesuchsperiode = response;
         });
     }
 
@@ -140,9 +140,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.updateGesuchsperiode(this.gesuchsperiode).then((response: TSGesuchsperiode) => {
             this.gesuchsperiode = response;
             this.datumFreischaltungTagesschule = undefined;
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_PARAMETER).removeAll();
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
             // Die E-BEGU-Parameter für die neue Periode lesen bzw. erstellen, wenn noch nicht vorhanden
-            this.readEbeguParameterByGesuchsperiode();
+            this.readEinstellungenByGesuchsperiode();
             this.gesuchsperiodeRS.updateActiveGesuchsperiodenList(); //reset gesuchperioden in manager
             this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
             this.initialStatus = this.gesuchsperiode.status;
@@ -163,8 +163,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        this.ebeguParameterListGesuchsperiode.forEach(param => this.ebeguParameterRS.saveEbeguParameter(param));
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_PARAMETER).removeAll();
+        this.einstellungenGesuchsperiode.forEach(param => this.einstellungenRS.saveEinstellung(param));
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
     }

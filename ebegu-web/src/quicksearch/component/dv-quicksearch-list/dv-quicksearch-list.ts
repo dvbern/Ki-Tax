@@ -15,6 +15,9 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IFilterService} from 'angular';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -28,8 +31,10 @@ import TSFallAntragDTO from '../../../models/TSFallAntragDTO';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitution from '../../../models/TSInstitution';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import EbeguUtil from '../../../utils/EbeguUtil';
+
+const LOG = LogFactory.createLog('DVQuicksearchListController');
 
 export class DVQuicksearchListConfig implements IComponentOptions {
     transclude = false;
@@ -63,8 +68,8 @@ export class DVQuicksearchListController implements IController {
     tableId: string;
     tableTitle: string;
 
-    selectedVerantwortlicherBG: TSUser;
-    selectedVerantwortlicherTS: TSUser;
+    selectedVerantwortlicherBG: TSBenutzer;
+    selectedVerantwortlicherTS: TSBenutzer;
     selectedEingangsdatum: string;
     selectedKinder: string;
     selectedFallNummer: string;
@@ -82,6 +87,8 @@ export class DVQuicksearchListController implements IController {
     gemeindenList: Array<TSGemeinde>;
     onUserChanged: (user: any) => void;
 
+    private readonly unsubscribe$ = new Subject<void>();
+
     constructor(private readonly ebeguUtil: EbeguUtil,
                 private readonly $filter: IFilterService,
                 private readonly institutionRS: InstitutionRS,
@@ -93,7 +100,7 @@ export class DVQuicksearchListController implements IController {
     ) {
     }
 
-    public userChanged(selectedUser: TSUser): void {
+    public userChanged(selectedUser: TSBenutzer): void {
         this.onUserChanged({user: selectedUser});
     }
 
@@ -101,6 +108,11 @@ export class DVQuicksearchListController implements IController {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -131,10 +143,13 @@ export class DVQuicksearchListController implements IController {
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal(this.authServiceRS.getPrincipal())
-            .then(gemeinden => {
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(gemeinden => {
                 this.gemeindenList = gemeinden;
-            });
+            },
+                err => LOG.error(err)
+            );
     }
 
     public getQuicksearchList(): Array<TSAntragDTO> {

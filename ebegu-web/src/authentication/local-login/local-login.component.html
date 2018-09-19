@@ -32,7 +32,29 @@
                          [textContent]="'Einloggen als ' + superadmin.vorname  + ' ' + superadmin.nachname"
                          (click)="logIn(superadmin)"></div></td>
             </tr>
+            <!-- Mandant Kanton Bern -->
+            <tr>
+                <td>Administrator Kanton Bern</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorKantonBern.vorname  + ' ' + administratorKantonBern.nachname"
+                         (click)="logIn(administratorKantonBern)"></div></td>
+            </tr>
+            <tr>
+                <td>Sachbearbeiter Kanton Bern</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterKantonBern.vorname  + ' ' + sachbearbeiterKantonBern.nachname"
+                         (click)="logIn(sachbearbeiterKantonBern)"></div></td>
+            </tr>
             <!-- Institutionen / Traegerschaften -->
+            <tr>
+                <td>Administrator Institution: Kita Brünnen</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorInstitutionKitaBruennen.vorname  + ' ' + administratorInstitutionKitaBruennen.nachname"
+                         (click)="logIn(administratorInstitutionKitaBruennen)"></div></td>
+            </tr>
             <tr>
                 <td>Sachbearbeiter Institution: Kita Brünnen</td>
                 <td></td>
@@ -46,6 +68,13 @@
                 <td><div class="first-row panel panel-default mark-hover panel-body"
                          [textContent]="'Einloggen als ' + sachbearbeiterTraegerschaftStadtBern.vorname  + ' ' + sachbearbeiterTraegerschaftStadtBern.nachname"
                          (click)="logIn(sachbearbeiterTraegerschaftStadtBern)"></div></td>
+            </tr>
+            <tr>
+                <td>Administrator Tägerschaft: LeoLea</td>
+                <td></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorTraegerschaftLeoLea.vorname  + ' ' + administratorTraegerschaftLeoLea.nachname"
+                         (click)="logIn(administratorTraegerschaftLeoLea)"></div></td>
             </tr>
             <tr>
                 <td>Sachbearbeiter Tägerschaft: LeoLea</td>
@@ -148,6 +177,33 @@
                          [textContent]="'Einloggen als ' + sachbearbeiterTSBernOstermundigen.vorname + ' ' + sachbearbeiterTSBernOstermundigen.nachname"
                          (click)="logIn(sachbearbeiterTSBernOstermundigen)"></div></td>
             </tr>
+            <!-- Admin GEMEINDE -->
+            <tr>
+                <td>Administrator Gemeinde</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorGemeindeBern.vorname + ' ' + administratorGemeindeBern.nachname"
+                         (click)="logIn(administratorGemeindeBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorGemeindeOstermundigen.vorname + ' ' + administratorGemeindeOstermundigen.nachname"
+                         (click)="logIn(administratorGemeindeOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + administratorGemeindeBernOstermundigen.vorname + ' ' + administratorGemeindeBernOstermundigen.nachname"
+                         (click)="logIn(administratorGemeindeBernOstermundigen)"></div></td>
+            </tr>
+            <!-- Sachbearbeiter GEMEINDE -->
+            <tr>
+                <td>Sachbearbeiter Gemeinde</td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeBern.vorname + ' ' + sachbearbeiterGemeindeBern.nachname"
+                         (click)="logIn(sachbearbeiterGemeindeBern)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeOstermundigen.vorname + ' ' + sachbearbeiterGemeindeOstermundigen.nachname"
+                         (click)="logIn(sachbearbeiterGemeindeOstermundigen)"></div></td>
+                <td><div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeBernOstermundigen.vorname + ' ' + sachbearbeiterGemeindeBernOstermundigen.nachname"
+                         (click)="logIn(sachbearbeiterGemeindeBernOstermundigen)"></div></td>
+            </tr>
+
             <!-- Divese -->
             <tr>
                 <td>Steueramt</td>

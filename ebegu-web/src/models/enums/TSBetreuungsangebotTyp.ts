@@ -16,11 +16,11 @@
 import EbeguUtil from '../../utils/EbeguUtil';
 
 export enum TSBetreuungsangebotTyp {
-    KITA = <any> 'KITA',
-    TAGESFAMILIEN = <any> 'TAGESFAMILIEN',
-    TAGI = <any> 'TAGI',
-    TAGESSCHULE = <any> 'TAGESSCHULE',
-    FERIENINSEL = <any> 'FERIENINSEL'
+    KITA = 'KITA',
+    TAGESFAMILIEN = 'TAGESFAMILIEN',
+    TAGI = 'TAGI',
+    TAGESSCHULE = 'TAGESSCHULE',
+    FERIENINSEL = 'FERIENINSEL'
 }
 
 export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
@@ -47,12 +47,12 @@ export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array
         return [
             TSBetreuungsangebotTyp.KITA,
             TSBetreuungsangebotTyp.TAGESFAMILIEN,
+            TSBetreuungsangebotTyp.TAGESSCHULE
         ];
     } else {
         return [
             TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE
+            TSBetreuungsangebotTyp.TAGESFAMILIEN
         ];
     }
 }

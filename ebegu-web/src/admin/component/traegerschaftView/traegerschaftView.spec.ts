@@ -17,7 +17,6 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '../../../app/shared/shared.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
 
@@ -29,10 +28,9 @@ describe('traegerschaftView', () => {
     let fixture: ComponentFixture<TraegerschaftViewComponent>;
 
     beforeEach(async(() => {
-        const traegerschaftServiceSpy = jasmine.createSpyObj('TraegerschaftRS', ['createTraegerschaft']);
-        const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['getErrors']);
-        const dvDialogServiceSpy = jasmine.createSpyObj('DvDialog', ['showDialog']);
-        const authServiceSpy = jasmine.createSpyObj('AuthServiceRS', ['isOneOfRoles']);
+        const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['createTraegerschaft']);
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -42,7 +40,6 @@ describe('traegerschaftView', () => {
             providers: [
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: DvDialog, useValue: dvDialogServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [TraegerschaftViewComponent]

@@ -27,12 +27,12 @@ import {TSRole} from '../../../../models/enums/TSRole';
  * # SYNTAX
  * As a structural directive it should be used with an asterisk. Using it inside an ng-template is allowed though.
  *
- * *dvNgShowElement="true; roles: ['ADMIN']"                  --->  will grant permission if the role of the current user is ADMIN
- * *dvNgShowElement="true; roles: ['ADMIN', 'GESUCHSTELLER']" --->  will grant permission if the role of the current user is ADMIN or GESUCHSTELLER
+ * *dvNgShowElement="true; roles: ['ADMIN_BG']"                  --->  will grant permission if the role of the current user is ADMIN_BG
+ * *dvNgShowElement="true; roles: ['ADMIN_BG', 'GESUCHSTELLER']" --->  will grant permission if the role of the current user is ADMIN_BG or GESUCHSTELLER
  * *dvNgShowElement="true; roles: ['']"                       --->  won't grant any permission. DOM element will always be hidden
  * *dvNgShowElement="true;"                                   --->  won't grant any permission. DOM element will always be hidden
- * *dvNgShowElement="false; roles: ['ADMIN']"                 --->  won't grant any permission. DOM element will always be hidden
- * *dvNgShowElement="getBooleanValue(); roles: ['ADMIN']"     --->  will show the DOM element for users of role ADMIN when getBooleanValue() evaluates to true
+ * *dvNgShowElement="false; roles: ['ADMIN_BG']"                 --->  won't grant any permission. DOM element will always be hidden
+ * *dvNgShowElement="getBooleanValue(); roles: ['ADMIN_BG']"     --->  will show the DOM element for users of role ADMIN_BG when getBooleanValue() evaluates to true
  *
  */
 @Directive({ selector: '[dvNgShowElement]' })

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
@@ -31,6 +31,10 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
     styleUrls: ['./onboarding.component.less', '../onboarding.less'],
 })
 export class OnboardingComponent {
+
+    @Input() nextState: string = 'onboarding.be-login';
+    @Input() showLogin: boolean = true;
+
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
 
@@ -51,6 +55,6 @@ export class OnboardingComponent {
             return;
         }
 
-        this.stateService.go('onboarding.be-login', {gemeindeId: this.gemeinde.id});
+        this.stateService.go(this.nextState, {gemeindeId: this.gemeinde.id});
     }
 }

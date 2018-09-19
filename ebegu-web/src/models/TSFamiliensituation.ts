@@ -15,10 +15,10 @@
 
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
 
-export default class TSFamiliensituation extends TSAbstractEntity {
+export default class TSFamiliensituation extends TSAbstractMutableEntity {
 
     private _familienstatus: TSFamilienstatus;
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;

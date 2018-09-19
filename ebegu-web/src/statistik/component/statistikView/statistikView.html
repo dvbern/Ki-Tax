@@ -14,12 +14,14 @@
   -->
 
 <div class="statistikView" dv-show-element
-     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR', 'ADMINISTRATOR_SCHULAMT', 'SCHULAMT','SACHBEARBEITER_INSTITUTION', 'SACHBEARBEITER_TRAEGERSCHAFT']">
+     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_GEMEINDE', 'SUPER_ADMIN','REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS',
+     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
     <div class="row marginTop50">
         <div class="col-md-10 col-md-offset-1">
             <dv-accordion allow-multiple-sections="false">
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR','ADMINISTRATOR_SCHULAMT', 'SCHULAMT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_GEMEINDE', 'SUPER_ADMIN', 'REVISOR',
+                     'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuch_stichtag">
                         <tab-title data-translate="GESUCHE_NACH_STICHTAG"></tab-title>
                         <tab-body>
@@ -32,8 +34,7 @@
                                                    data-translate="STICHTAG"></label>
                                             <dv-datepicker name="stichtag_gesuch" id="stichtag_gesuch"
                                                            ng-model="vm.statistikParameter.stichtag" ng-required="true"
-                                                           class="input-element"
-                                                           dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
+                                                           class="input-element">
                                             </dv-datepicker>
                                             <dv-error-messages for="gesuch_stichtag.stichtag_gesuch.$error"
                                                                class="error"></dv-error-messages>
@@ -67,20 +68,20 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR','ADMINISTRATOR_SCHULAMT', 'SCHULAMT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_BG', 'SUPER_ADMIN',
+                     'REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuch_zeitraum">
                         <tab-title data-translate="GESUCHE_NACH_ZEITRAUM"></tab-title>
                         <tab-body>
                             <form name="gesuch_zeitraum"
-                                  ng-submit="vm.generateStatistik(gesuch_zeitraum, 'GESUCH_ZEITRAUM')" novalidate>
+                                  ng-submit="vm.generateStatistik(gesuch_zeitraum, vm.TSStatistikParameterType.GESUCH_ZEITRAUM)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" for="von_gesuch" data-translate="VON"></label>
                                             <dv-datepicker name="von_gesuch" id="von_gesuch"
                                                            ng-model="vm.statistikParameter.von" ng-required="true"
-                                                           class="input-element"
-                                                           dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
+                                                           class="input-element">
                                             </dv-datepicker>
                                             <dv-error-messages for="gesuch_zeitraum.von_gesuch.$error"
                                                                class="error"></dv-error-messages>
@@ -91,8 +92,7 @@
                                             <label class="md-no-float" for="bis_gesuch" data-translate="BIS"></label>
                                             <dv-datepicker name="bis_gesuch" id="bis_gesuch"
                                                            ng-model="vm.statistikParameter.bis" ng-required="true"
-                                                           class="input-element"
-                                                           dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
+                                                           class="input-element">
                                             </dv-datepicker>
                                             <dv-error-messages for="gesuch_zeitraum.bis_gesuch.$error"
                                                                class="error"></dv-error-messages>
@@ -127,12 +127,13 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
+                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="zahlungen_periode">
                         <tab-title data-translate="ZAHLUNGEN_NACH_PERIODE"></tab-title>
                         <tab-body>
                             <form name="zahlungen_periode"
-                                  ng-submit="vm.generateStatistik(zahlungen_periode, 'ZAHLUNGEN_PERIODE')" novalidate>
+                                  ng-submit="vm.generateStatistik(zahlungen_periode, vm.TSStatistikParameterType.ZAHLUNGEN_PERIODE)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <div class="form-group">
@@ -163,12 +164,14 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR','SACHBEARBEITER_INSTITUTION','SACHBEARBEITER_TRAEGERSCHAFT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+                     'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT', 'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT',
+                     'SACHBEARBEITER_TRAEGERSCHAFT']">
                     <dv-accordion-tab tabid="kinder">
                         <tab-title data-translate="KINDER_UPPER"></tab-title>
                         <tab-body>
                             <form name="kinder"
-                                  ng-submit="vm.generateStatistik(kinder, 'KINDER')" novalidate>
+                                  ng-submit="vm.generateStatistik(kinder, vm.TSStatistikParameterType.KINDER)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -222,12 +225,13 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+                     'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuchsteller">
                         <tab-title data-translate="GESUCHSTELLER_UPPER"></tab-title>
                         <tab-body>
                             <form name="gesuchsteller"
-                                  ng-submit="vm.generateStatistik(gesuchsteller, 'GESUCHSTELLER')" novalidate>
+                                  ng-submit="vm.generateStatistik(gesuchsteller, vm.TSStatistikParameterType.GESUCHSTELLER)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -253,12 +257,14 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR','SACHBEARBEITER_INSTITUTION','SACHBEARBEITER_TRAEGERSCHAFT']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
+                     'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMIN_MANDANT',
+                     'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="kanton">
                         <tab-title data-translate="KANTON"></tab-title>
                         <tab-body>
                             <form name="kanton"
-                                  ng-submit="vm.generateStatistik(kanton, 'KANTON')" novalidate>
+                                  ng-submit="vm.generateStatistik(kanton, vm.TSStatistikParameterType.KANTON)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -295,12 +301,12 @@
                     </dv-accordion-tab>
                 </div>
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="mitarbeiterinnen">
                         <tab-title data-translate="MITARBEITERINNEN"></tab-title>
                         <tab-body>
                             <form name="mitarbeiterinnen"
-                                  ng-submit="vm.generateStatistik(mitarbeiterinnen, 'MITARBEITERINNEN')" novalidate>
+                                  ng-submit="vm.generateStatistik(mitarbeiterinnen, vm.TSStatistikParameterType.MITARBEITERINNEN)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
@@ -308,8 +314,7 @@
                                                    data-translate="VON"></label>
                                             <dv-datepicker name="von_mitarbeiterinnen" id="von_mitarbeiterinnen"
                                                            ng-model="vm.statistikParameter.von" ng-required="true"
-                                                           class="input-element"
-                                                           dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
+                                                           class="input-element">
                                             </dv-datepicker>
                                             <dv-error-messages for="mitarbeiterinnen.von_mitarbeiterinnen.$error"
                                                                class="error"></dv-error-messages>
@@ -321,8 +326,7 @@
                                                    data-translate="BIS"></label>
                                             <dv-datepicker name="bis_mitarbeiterinnen" id="bis_mitarbeiterinnen"
                                                            ng-model="vm.statistikParameter.bis" ng-required="true"
-                                                           class="input-element"
-                                                           dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
+                                                           class="input-element">
                                             </dv-datepicker>
                                             <dv-error-messages for="mitarbeiterinnen.bis_mitarbeiterinnen.$error"
                                                                class="error"></dv-error-messages>
@@ -340,12 +344,13 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['ADMIN','SUPER_ADMIN']">
+                     dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_TS', 'ADMIN_GEMEINDE', 'SUPER_ADMIN', 'REVISOR', 'ADMIN_TRAEGERSCHAFT',
+                     'ADMIN_INSTITUTION', 'ADMIN_MANDANT']">
                     <dv-accordion-tab tabid="benutzer">
                         <tab-title data-translate="BENUTZER_STATISTIK"></tab-title>
                         <tab-body>
                             <form name="benutzer"
-                                  ng-submit="vm.generateStatistik(benutzer, 'BENUTZER')" novalidate>
+                                  ng-submit="vm.generateStatistik(benutzer, vm.TSStatistikParameterType.BENUTZER)" novalidate>
                                 <div class="row">
                                     <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
                                         <dv-loading-button type="submit">
@@ -359,18 +364,20 @@
                 </div>
 
                 <div dv-show-element
-                     dv-show-allowed-roles="['SACHBEARBEITER_JA','ADMIN','SUPER_ADMIN','REVISOR']">
+                     dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
+                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="betreuung">
                         <tab-title data-translate="GESUCHSTELLER_KINDER_BETREUUNG"></tab-title>
                         <tab-body>
                             <form name="betreuung"
-                                  ng-submit="vm.generateStatistik(betreuung, 'GESUCHSTELLER_KINDER_BETREUUNG')"
+                                  ng-submit="vm.generateStatistik(betreuung, vm.TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG)"
                                   novalidate>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" for="von_betreuung" data-translate="VON"></label>
                                             <dv-datepicker name="von_betreuung"
+                                                           id="von_betreuung"
                                                            ng-model="vm.statistikParameter.von" ng-required="true"
                                                            class="input-element"
                                                            dv-min-date="vm.minDate" dv-max-date="vm.maxDate">
@@ -479,12 +486,11 @@
 
             <dv-loading-button button-class="" button-click="vm.showAllJobs()" type="button">
                 <span class="fa fa-refresh"></span>
-                <span  data-translate="SHOW_JOBS"></span>
-            </dv-loading-button>
+                <span data-translate="SHOW_JOBS"></span>
             </dv-loading-button>
             <div ng-if="vm.allJobs">
                 <p>Batch Jobs from Wildfly Batch Module</p>
-            <pre>{{vm.allJobs |json}}</pre>
+                <pre>{{vm.allJobs |json}}</pre>
             </div>
         </div>
     </div>

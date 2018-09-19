@@ -17,10 +17,13 @@ package ch.dvbern.ebegu.dto.suchfilter.smarttable;
 
 import java.io.Serializable;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
@@ -32,87 +35,26 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 
 	private static final long serialVersionUID = -2248051428962150142L;
 
-	private String username;
-	private String vorname;
-	private String nachname;
-	private String email;
-	private String role;
-	private String roleGueltigBis;
-	private String institution;
-	private String traegerschaft;
-	private Boolean gesperrt;
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getVorname() {
-		return vorname;
-	}
-
-	public void setVorname(String vorname) {
-		this.vorname = vorname;
-	}
-
-	public String getNachname() {
-		return nachname;
-	}
-
-	public void setNachname(String nachname) {
-		this.nachname = nachname;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public String getRoleGueltigBis() {
-		return roleGueltigBis;
-	}
-
-	public void setRoleGueltigBis(String roleGueltigBis) {
-		this.roleGueltigBis = roleGueltigBis;
-	}
-
-	public String getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
-
-	public String getTraegerschaft() {
-		return traegerschaft;
-	}
-
-	public void setTraegerschaft(String traegerschaft) {
-		this.traegerschaft = traegerschaft;
-	}
-
-	public Boolean getGesperrt() {
-		return gesperrt;
-	}
-
-	public void setGesperrt(Boolean gesperrt) {
-		this.gesperrt = gesperrt;
-	}
+	@Nullable
+	private String username = null;
+	@Nullable
+	private String vorname = null;
+	@Nullable
+	private String nachname = null;
+	@Nullable
+	private String email = null;
+	@Nullable
+	private UserRole role = null;
+	@Nullable
+	private String roleGueltigBis = null;
+	@Nullable
+	private String gemeinde = null;
+	@Nullable
+	private String institution = null;
+	@Nullable
+	private String traegerschaft = null;
+	@Nullable
+	private BenutzerStatus status = null;
 
 	@Override
 	public String toString() {
@@ -123,9 +65,100 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 			.append("email", email)
 			.append("role", role)
 			.append("roleGueltigBis", roleGueltigBis)
+			.append("gemeinde", gemeinde)
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
-			.append("gesperrt", gesperrt)
+			.append("status", status)
 			.toString();
+	}
+
+	@Nullable
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(@Nullable String username) {
+		this.username = username;
+	}
+
+	@Nullable
+	public String getVorname() {
+		return vorname;
+	}
+
+	public void setVorname(@Nullable String vorname) {
+		this.vorname = vorname;
+	}
+
+	@Nullable
+	public String getNachname() {
+		return nachname;
+	}
+
+	public void setNachname(@Nullable String nachname) {
+		this.nachname = nachname;
+	}
+
+	@Nullable
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(@Nullable String email) {
+		this.email = email;
+	}
+
+	@Nullable
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(@Nullable UserRole role) {
+		this.role = role;
+	}
+
+	@Nullable
+	public String getRoleGueltigBis() {
+		return roleGueltigBis;
+	}
+
+	public void setRoleGueltigBis(@Nullable String roleGueltigBis) {
+		this.roleGueltigBis = roleGueltigBis;
+	}
+
+	@Nullable
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nullable String gemeinde) {
+		this.gemeinde = gemeinde;
+	}
+
+	@Nullable
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(@Nullable String institution) {
+		this.institution = institution;
+	}
+
+	@Nullable
+	public String getTraegerschaft() {
+		return traegerschaft;
+	}
+
+	public void setTraegerschaft(@Nullable String traegerschaft) {
+		this.traegerschaft = traegerschaft;
+	}
+
+	@Nullable
+	public BenutzerStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(@Nullable BenutzerStatus status) {
+		this.status = status;
 	}
 }

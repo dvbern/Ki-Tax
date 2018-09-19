@@ -105,11 +105,12 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	private Persistence persistence;
 
 	private final JaxBConverter converter = new JaxBConverter();
+	private Gesuchsperiode gesuchsperiode;
 
 	@Before
 	public void init() {
 		// Tests initialisieren
-		Gesuchsperiode gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		final InstitutionStammdaten kitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		final InstitutionStammdaten tagiAaregg = TestDataUtil.createInstitutionStammdatenTagiWeissenstein();
@@ -121,11 +122,12 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	@Test
 	public void gesuchSpeichernDarfGesuchsperiodeNichtUpdaten() {
-		Gesuchsperiode gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
 		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, gesuchsperiode.getStatus());
 
-		Gesuch gesuch = testdataCreationService.createErstgesuch(ErstgesuchConfig.createErstgesuchVerfuegt(
-			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now()));
+		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
+			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
+
+		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		jaxGesuch.setDossier(converter.dossierToJAX(gesuch.getDossier()));
 		jaxGesuch.setGesuchsperiode(converter.gesuchsperiodeToJAX(gesuchsperiode));
@@ -161,8 +163,6 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten() {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
-		final Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
-		persistence.persist(gesuchsperiode1718);
 		Institution institution = TestDataUtil.createDefaultInstitution();
 		institution.setMandant(mandant);
 		institution.setTraegerschaft(null);
@@ -183,9 +183,10 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		Assert.assertEquals(Constants.START_OF_TIME, kitaBruennen.getGueltigkeit().getGueltigAb());
 
-		Gesuchsperiode gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
-		Gesuch gesuch = testdataCreationService.createErstgesuch(ErstgesuchConfig.createErstgesuchVerfuegt(
-			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now()));
+		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
+			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
+
+		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		Betreuung betreuung = gesuch.extractAllBetreuungen().get(0);
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
 		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenToJAX(kitaBruennen));
@@ -202,9 +203,10 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		fachstelle = persistence.persist(fachstelle);
 		Assert.assertEquals("Fachstelle1", fachstelle.getName());
 
-		Gesuchsperiode gesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
-		Gesuch gesuch = testdataCreationService.createErstgesuch(ErstgesuchConfig.createErstgesuchVerfuegt(
-			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now()));
+		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
+			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
+
+		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
 		PensumFachstelle pensumFachstelle = new PensumFachstelle();
 		pensumFachstelle.setFachstelle(fachstelle);

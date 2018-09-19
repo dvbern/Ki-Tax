@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,7 +40,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Mahnung extends AbstractEntity {
+public class Mahnung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -4210097012467874096L;
 
@@ -82,12 +83,12 @@ public class Mahnung extends AbstractEntity {
 		this.gesuch = gesuch;
 	}
 
-	@Nullable
+	@Nonnull
 	public MahnungTyp getMahnungTyp() {
 		return mahnungTyp;
 	}
 
-	public void setMahnungTyp(@Nullable MahnungTyp mahnungTyp) {
+	public void setMahnungTyp(@Nonnull MahnungTyp mahnungTyp) {
 		this.mahnungTyp = mahnungTyp;
 	}
 

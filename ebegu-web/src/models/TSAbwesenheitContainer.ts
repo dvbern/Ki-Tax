@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSAbwesenheit from './TSAbwesenheit';
 
-export default class TSAbwesenheitContainer extends TSAbstractEntity {
+export default class TSAbwesenheitContainer extends TSAbstractMutableEntity {
 
     private _abwesenheitGS: TSAbwesenheit;
     private _abwesenheitJA: TSAbwesenheit;

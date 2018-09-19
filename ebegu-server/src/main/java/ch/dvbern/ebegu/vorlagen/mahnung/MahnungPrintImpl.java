@@ -69,7 +69,7 @@ public class MahnungPrintImpl extends BriefPrintImpl implements MahnungPrint {
 		for (KindContainer kindContainer : getGesuch().getKindContainers()) {
 			listAngebot.addAll(
 				kindContainer.getBetreuungen().stream()
-					.map(betreuung -> betreuung.getKind().getKindJA().getFullName() + " (" + betreuung.getInstitutionStammdaten().getInstitution().getName() + ")")
+					.map(betreuung -> betreuung.getKind().getKindJA().getFullName() + " (" + betreuung.getInstitutionStammdaten().getInstitution().getName() + ')')
 					.collect(Collectors.toList()));
 		}
 
@@ -97,12 +97,12 @@ public class MahnungPrintImpl extends BriefPrintImpl implements MahnungPrint {
 
 	@Override
 	public List<AufzaehlungPrint> getFehlendeUnterlagen() {
-
 		List<AufzaehlungPrint> fehlendeUnterlagen = new ArrayList<>();
-
-		String[] splitFehlendeUnterlagen = mahnung.getBemerkungen().split("[" + System.getProperty("line.separator") + "]+");
-		for (String fehlendeUnterlage : splitFehlendeUnterlagen) {
-			fehlendeUnterlagen.add(new AufzaehlungPrintImpl(fehlendeUnterlage));
+		if (mahnung.getBemerkungen() != null) {
+			String[] splitFehlendeUnterlagen = mahnung.getBemerkungen().split('[' + System.getProperty("line.separator") + "]+");
+			for (String fehlendeUnterlage : splitFehlendeUnterlagen) {
+				fehlendeUnterlagen.add(new AufzaehlungPrintImpl(fehlendeUnterlage));
+			}
 		}
 		return fehlendeUnterlagen;
 	}
@@ -111,19 +111,16 @@ public class MahnungPrintImpl extends BriefPrintImpl implements MahnungPrint {
 	public String getMahnFristDatum() {
 		if (mahnung.getDatumFristablauf() != null) {
 			return Constants.DATE_FORMATTER.format(mahnung.getDatumFristablauf());
-		} else {
-			// Im Status ENTWURF ist noch kein Datum Fristablauf gesetzt
-			return "";
 		}
+		// Im Status ENTWURF ist noch kein Datum Fristablauf gesetzt
+		return "";
 	}
 
 	@Override
 	public String getErsteMahnDatum() {
-		if (mahnung.getMahnungTyp() == MahnungTyp.ZWEITE_MAHNUNG && vorgaengerMahnung != null) {
+		if (mahnung.getMahnungTyp() == MahnungTyp.ZWEITE_MAHNUNG && vorgaengerMahnung != null && vorgaengerMahnung.getTimestampErstellt() != null) {
 			return Constants.DATE_FORMATTER.format(vorgaengerMahnung.getTimestampErstellt());
-		} else {
-			return "";
 		}
+		return "";
 	}
-
 }

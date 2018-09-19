@@ -50,41 +50,36 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class DokumentGrund extends AbstractEntity implements Comparable<DokumentGrund> {
+public class DokumentGrund extends AbstractMutableEntity implements Comparable<DokumentGrund> {
 
 	private static final long serialVersionUID = 5417585258130227434L;
 
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dokumentGrund_gesuch_id"), nullable = false)
-	private Gesuch gesuch;
+	private Gesuch gesuch = null;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private DokumentGrundTyp dokumentGrundTyp;
+	private DokumentGrundTyp dokumentGrundTyp = null;
 
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	@Nullable
-	private String fullName;
-
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	@Nullable
-	private String tag;
+	private String tag = null;
 
 	@Enumerated(EnumType.STRING)
 	@Nullable
-	private DokumentGrundPersonType personType;
+	private DokumentGrundPersonType personType = null;
 
 	@Nullable
-	private Integer personNumber;
+	private Integer personNumber = null;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private DokumentTyp dokumentTyp;
+	private DokumentTyp dokumentTyp = null;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "dokumentGrund")
 	private Set<Dokument> dokumente = new HashSet<>();
@@ -101,8 +96,12 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		this.needed = !DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundTyp);
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, @Nullable String tag,
-		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber) {
+	public DokumentGrund(
+		@Nonnull DokumentGrundTyp dokumentGrundTyp,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber) {
+
 		this.dokumentGrundTyp = dokumentGrundTyp;
 		this.needed = !DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundTyp);
 		this.tag = tag;
@@ -110,25 +109,30 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		this.personNumber = personNumber;
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, DokumentTyp dokumentTyp) {
+	public DokumentGrund(@Nonnull DokumentGrundTyp dokumentGrundTyp, @Nonnull DokumentTyp dokumentTyp) {
 		this(dokumentGrundTyp);
 		this.dokumente = new HashSet<>();
 		this.dokumentTyp = dokumentTyp;
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, String tag,
-		DokumentGrundPersonType personType, Integer personNumber, DokumentTyp dokumentTyp) {
+	public DokumentGrund(
+		@Nonnull DokumentGrundTyp dokumentGrundTyp,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		@Nonnull DokumentTyp dokumentTyp) {
+
 		this(dokumentGrundTyp, tag, personType, personNumber);
 		this.dokumente = new HashSet<>();
 		this.dokumentTyp = dokumentTyp;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<Dokument> getDokumente() {
 		return dokumente;
 	}
 
-	public void setDokumente(@Nullable Set<Dokument> dokumente) {
+	public void setDokumente(@Nonnull Set<Dokument> dokumente) {
 		this.dokumente = dokumente;
 	}
 
@@ -146,17 +150,6 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 
 	public void setDokumentGrundTyp(DokumentGrundTyp dokumentGrundTyp) {
 		this.dokumentGrundTyp = dokumentGrundTyp;
-	}
-
-	@Deprecated
-	@Nullable
-	public String getFullName() {
-		return fullName;
-	}
-
-	@Deprecated
-	public void setFullName(@Nullable String fullname) {
-		this.fullName = fullname;
 	}
 
 	@Nullable
@@ -206,7 +199,6 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	public String toString() {
 		return "DokumentGrund{" +
 			"dokumentGrundTyp=" + dokumentGrundTyp +
-			", fullName='" + fullName + '\'' +
 			", year='" + tag + '\'' +
 			", dokumente=" + dokumente +
 			'}';
@@ -219,13 +211,10 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	 * cannot be done with this methode.
 	 */
 	@Override
-	public int compareTo(DokumentGrund o) {
+	public int compareTo(@Nonnull DokumentGrund o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getDokumentGrundTyp(), o.getDokumentGrundTyp());
 		builder.append(this.getDokumentTyp(), o.getDokumentTyp());
-		if (this.getFullName() != null && o.getFullName() != null) {
-			builder.append(this.getFullName(), o.getFullName());
-		}
 		if (this.getTag() != null && o.getTag() != null) {
 			builder.append(this.getTag(), o.getTag());
 		}
@@ -239,7 +228,7 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 	}
 
 	public boolean isEmpty() {
-		return getDokumente() == null || getDokumente().size() <= 0;
+		return getDokumente().size() <= 0;
 	}
 
 	@Nonnull
@@ -249,18 +238,12 @@ public class DokumentGrund extends AbstractEntity implements Comparable<Dokument
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			target.setDokumentGrundTyp(this.getDokumentGrundTyp());
-			target.setFullName(this.getFullName()); // todo deprecated
 			target.setTag(this.getTag());
 			target.setPersonNumber(this.getPersonNumber());
 			target.setPersonType(this.getPersonType());
 			target.setDokumentTyp(this.getDokumentTyp());
-			if (this.getDokumente() != null) {
-				if (target.getDokumente() == null) {
-					target.setDokumente(new HashSet<>());
-				}
-				for (Dokument dokument : this.getDokumente()) {
-					target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
-				}
+			for (Dokument dokument : this.getDokumente()) {
+				target.getDokumente().add(dokument.copyDokument(new Dokument(), copyType, target));
 			}
 			if (DokumentGrundTyp.isSonstigeOrPapiergesuch(this.getDokumentGrundTyp())) {
 				target.setNeeded(false);

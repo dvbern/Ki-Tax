@@ -91,22 +91,22 @@ public enum ReportVorlage {
 		if (role == null) {
 			return false;
 		}
+
+		if (UserRole.getInstitutionTraegerschaftAdminRoles().contains(role)) {
+			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON
+				|| vorlage == VORLAGE_REPORT_BENUTZER;
+		}
+
 		if (UserRole.getInstitutionTraegerschaftRoles().contains(role)) {
-			if (vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON) {
-				return true;
-			}
-			return false;
+			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON;
 		}
+
 		if (UserRole.getSchulamtRoles().contains(role)) {
-			if (vorlage == VORLAGE_REPORT_GESUCH_STICHTAG || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM
-				|| vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_GESUCHSTELLER) {
-				return true;
-			}
-			return false;
+			return vorlage == VORLAGE_REPORT_GESUCH_STICHTAG || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM
+				|| vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_GESUCHSTELLER
+				|| vorlage == VORLAGE_REPORT_BENUTZER;
 		}
-		if (UserRole.GESUCHSTELLER == role || UserRole.STEUERAMT == role || UserRole.JURIST == role) {
-			return false;
-		}
-		return true;
+
+		return UserRole.GESUCHSTELLER != role && UserRole.STEUERAMT != role && UserRole.JURIST != role;
 	}
 }

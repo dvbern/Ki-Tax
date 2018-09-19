@@ -54,6 +54,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     dokumenteKinder: TSDokumentGrund[] = [];
     dokumenteSonst: TSDokumentGrund[] = [];
     dokumentePapiergesuch: TSDokumentGrund[] = [];
+    dokumenteFreigabequittung: TSDokumentGrund[] = [];
 
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly dokumenteRS: DokumenteRS, private readonly $log: ILogService, wizardStepManager: WizardStepManager,
@@ -76,6 +77,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                     this.searchDokumente(promiseValue, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
                     this.searchDokumente(promiseValue, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
                     this.searchDokumente(promiseValue, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
+                    this.searchDokumente(promiseValue, this.dokumenteFreigabequittung, TSDokumentGrundTyp.FREIGABEQUITTUNG);
                 });
         } else {
             this.$log.debug('No gesuch für dokumente');
@@ -93,13 +95,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             let result: number = 0;
 
             if (n1 && n2) {
-                if (n1.fullName && n2.fullName) {
-                    result = n1.fullName.localeCompare(n2.fullName);
-                }
-                if (result === 0) {
-                    if (n1.tag && n2.tag) {
-                        result = n1.tag.localeCompare(n2.tag);
-                    }
+                if (n1.tag && n2.tag) {
+                    result = n1.tag.localeCompare(n2.tag);
                 }
                 if (result === 0) {
                     if (n1.dokumentTyp && n2.dokumentTyp) {

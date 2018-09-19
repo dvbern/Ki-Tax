@@ -53,7 +53,6 @@ import ch.dvbern.ebegu.entities.GeneratedDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Pain001Dokument;
 import ch.dvbern.ebegu.entities.Pain001Dokument_;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -87,11 +86,17 @@ import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_JA;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -124,9 +129,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Inject
 	private VerfuegungService verfuegungService;
-
-	@Inject
-	private MandantService mandantService;
 
 	@Inject
 	private GesuchService gesuchService;
@@ -489,11 +491,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	private BetreuungsgutscheinEvaluator initEvaluator(@Nonnull Gesuch gesuch) {
-		Mandant mandant = mandantService.getFirst();   //gesuch get mandant?
-		List<Rule> rules = rulesService.getRulesForGesuchsperiode(mandant, gesuch.getGesuchsperiode());
+		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
-		loadCalculatorParameters(mandant, gesuch.getGesuchsperiode());
+		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;
 	}
 
@@ -638,7 +639,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public WriteProtectedDokument getPain001DokumentAccessTokenGeneratedDokument(@Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Boolean forceCreation) throws MimeTypeParseException {
 
 		WriteProtectedDokument persistedDokument = null;
@@ -682,9 +684,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		pain001DTO.setSchuldnerIBAN(debitorIban == null ? DEF_DEBTOR_IBAN : debitorIban);
 		pain001DTO.setSchuldnerBIC(debitorBic == null ? DEF_DEBTOR_BIC : debitorBic);
 		pain001DTO.setSchuldnerIBANGebuehren(debitorIbanGebuehren == null ? pain001DTO.getSchuldnerIBAN() : debitorIbanGebuehren);
-		pain001DTO.setSoftwareName("Ki-Tax");
+		pain001DTO.setSoftwareName("kiBon");
 		// we use the currentTimeMillis so that it is always different
-		pain001DTO.setMsgId("KiTax" + Long.toString(System.currentTimeMillis()));
+		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
 
 		pain001DTO.setAuszahlungen(new ArrayList<>());
 		zahlungsauftrag.getZahlungen().stream()
@@ -713,7 +715,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public void removeAllGeneratedDokumenteFromGesuch(@Nonnull Gesuch gesuch) {
 		LOGGER.info("Searching GeneratedDokuments of Gesuch: {} / {}", gesuch.getFall().getFallNummer(), gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		Collection<GeneratedDokument> genDokFromGesuch = findGeneratedDokumentsFromGesuch(gesuch);

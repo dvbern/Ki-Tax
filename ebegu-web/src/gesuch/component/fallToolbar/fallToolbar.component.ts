@@ -17,8 +17,8 @@ import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
-import {from as fromPromise, Observable, of} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {from as fromPromise, from, Observable, of} from 'rxjs';
+import {filter, switchMap, map} from 'rxjs/operators';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -35,6 +35,8 @@ import DossierRS from '../../service/dossierRS.rest';
 import GemeindeRS from '../../service/gemeindeRS.rest';
 import GesuchRS from '../../service/gesuchRS.rest';
 
+const LOG = LogFactory.createLog('FallToolbarComponent');
+
 @Component({
     selector: 'dv-fall-toolbar',
     templateUrl: './fallToolbar.template.html',
@@ -49,12 +51,15 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     @Input() fallId: string;
     @Input() dossierId: string;
     @Input() currentDossier: TSDossier;
+    @Input() mobileMode?: boolean = false;
 
-    dossierList: TSDossier[] = [];
+    public dossierList: TSDossier[] = [];
+    public dossierListWithoutSelected: TSDossier[] = [];
     selectedDossier?: TSDossier;
     fallNummer: string;
-    availableGemeindeList: TSGemeinde[] = [];
+    private availableGemeindeList: TSGemeinde[] = [];
     gemeindeText: string;
+    showdropdown: boolean = false;
 
     constructor(private readonly dossierRS: DossierRS,
                 private readonly dialog: MatDialog,
@@ -65,17 +70,18 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
+        this.loadObjects(); // todo fragen it gets called twice!! ngChanges. siehe Kommentar unten
         // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 
     private loadObjects() {
-        if (this.fallId) {
-            this.dossierRS.findDossiersByFall(this.fallId).then(dossiers => {
-                this.dossierList = dossiers;
-                this.setSelectedDossier();
-                this.addNewDossierToCreateToDossiersList();
-                this.retrieveListOfAvailableGemeinden();
+        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId) {
+            this.dossierRS.findDossier(this.dossierId).then(dossier => {
+                this.fallId = dossier.fall.id ? dossier.fall.id : '';
+                this.doLoading(this.fallId);
             });
+        } else if (this.fallId) {
+            this.doLoading(this.fallId);
         } else {
             this.emptyDossierList(); // if there is no fall there cannot be any dossier
             this.addNewDossierToCreateToDossiersList(); // only a new dossier can be added to a not yet created fall
@@ -180,7 +186,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     private navigateToDashboard(): void {
         this.$state.go('gesuchsteller.dashboard', {
-            gesuchstellerDashboardStateParams: {dossierId: this.selectedDossier.id}
+            dossierId: this.selectedDossier.id
         });
     }
 
@@ -207,27 +213,31 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      * so that in the end the list only contains those Gemeinden that are still available for new Dossiers.
      */
     private retrieveListOfAvailableGemeinden(): void {
-        if (TSRoleUtil.isGemeindeabhaengig(this.authServiceRS.getPrincipalRole())) {
-            this.availableGemeindeList = this.authServiceRS.getPrincipal().extractCurrentGemeinden();
-            this.cleanGemeindenList();
-        } else {
-            this.gemeindeRS.getAllGemeinden().then((value: TSGemeinde[]) => {
-                this.availableGemeindeList = value;
-                this.cleanGemeindenList();
-            });
-        }
+        this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (principal && TSRoleUtil.isGemeindeRole(principal.getCurrentRole())) {
+                        return of(principal.extractCurrentGemeinden());
+                    }
+
+                    return from(this.gemeindeRS.getAllGemeinden());
+                }),
+                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden))
+            )
+            .subscribe(
+                gemeinden => {
+                    this.availableGemeindeList = gemeinden;
+                },
+                err => LOG.error(err)
+            );
     }
 
     /**
      * Takes the list of availableGemenden and removes all Gemeinden for which the fall already has a
      * Dossier.
      */
-    private cleanGemeindenList(): void {
-        this.dossierList.forEach(dossier => {
-            this.availableGemeindeList = this.availableGemeindeList.filter(gemeinde =>
-                gemeinde.id !== dossier.gemeinde.id
-            );
-        });
+    private toGemeindenWithoutDossier(gemeinden: TSGemeinde[]): TSGemeinde[] {
+        return gemeinden.filter(g => !this.dossierList.some(d => d.gemeinde.id === g.id));
     }
 
     /**
@@ -290,5 +300,24 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     public showAddGemeindeText(): boolean {
         return !!this.gemeindeText;
+    }
+
+    public getCurrentGemeindeName(): string {
+        if (this.currentDossier) {
+            return this.currentDossier.extractGemeindeName();
+        }
+        return '';
+    }
+
+    public doLoading(fallId: string): void {
+        if (fallId) {
+            this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
+                this.dossierList = dossiers;
+                this.setSelectedDossier();
+                this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
+                this.addNewDossierToCreateToDossiersList();
+                this.retrieveListOfAvailableGemeinden();
+            });
+        }
     }
 }

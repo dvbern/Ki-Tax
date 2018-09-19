@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
 @Audited
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class AbstractFinanzielleSituation extends AbstractEntity {
+public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 2596930494846119259L;
 

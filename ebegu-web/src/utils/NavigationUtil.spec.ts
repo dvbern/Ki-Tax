@@ -51,7 +51,7 @@ describe('NavigationUtil', () => {
         it('should navigate to fallcreation for other roles', () => {
             const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
             NavigationUtil.navigateToStartsiteOfGesuchForRole(
-                TSRole.SACHBEARBEITER_JA,
+                TSRole.SACHBEARBEITER_BG,
                 stateServiceSpy,
                 gesuchId);
 

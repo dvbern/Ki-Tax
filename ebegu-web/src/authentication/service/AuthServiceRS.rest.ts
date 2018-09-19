@@ -17,10 +17,10 @@ import * as angular from 'angular';
 import {Observable, ReplaySubject} from 'rxjs';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
-import UserRS from '../../app/core/service/userRS.rest';
+import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
-import TSUser from '../../models/TSUser';
+import TSBenutzer from '../../models/TSBenutzer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
@@ -36,15 +36,16 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 export default class AuthServiceRS {
 
     static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
-        'UserRS'];
+        'BenutzerRS'];
 
-    private principal?: TSUser;
+    private principal?: TSBenutzer;
 
     // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
-    // Thus the session restoration from the cookie is completed before the authenticationHook checks for authentication.
-    private readonly principalSubject$ = new ReplaySubject<TSUser | null>(1);
+    // Thus the session restoration from the cookie is completed before the authenticationHook checks for
+    // authentication.
+    private readonly principalSubject$ = new ReplaySubject<TSBenutzer | null>(1);
 
-    public principal$: Observable<TSUser | null> = this.principalSubject$.asObservable();
+    private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
 
     constructor(private readonly $http: IHttpService,
                 private readonly $q: IQService,
@@ -53,13 +54,20 @@ export default class AuthServiceRS {
                 private readonly ebeguRestUtil: EbeguRestUtil,
                 private readonly httpBuffer: HttpBuffer,
                 private readonly authLifeCycleService: AuthLifeCycleService,
-                private readonly userRS: UserRS) {
+                private readonly benutzerRS: BenutzerRS) {
     }
 
-    /**
-     * @deprecated use getPrincipal$ instead
-     */
-    public getPrincipal(): TSUser | undefined {
+    // Use the observable, when the state must be updated automatically, when the principal changes.
+    // e.g. printing the name of the current user
+    get principal$(): Observable<TSBenutzer | null> {
+        return this._principal$;
+    }
+
+    set principal$(value$: Observable<TSBenutzer | null>) {
+        this._principal$ = value$;
+    }
+
+    public getPrincipal(): TSBenutzer | undefined {
         return this.principal;
     }
 
@@ -70,12 +78,13 @@ export default class AuthServiceRS {
         return undefined;
     }
 
-    public loginRequest(userCredentials: TSUser): IPromise<TSUser> | undefined {
+    public loginRequest(userCredentials: TSBenutzer): IPromise<TSBenutzer> | undefined {
         if (!userCredentials) {
             return undefined;
         }
 
-        return this.$http.post(CONSTANTS.REST_API + 'auth/login', this.ebeguRestUtil.userToRestObject({}, userCredentials))
+        return this.$http.post(CONSTANTS.REST_API + 'auth/login',
+            this.ebeguRestUtil.userToRestObject({}, userCredentials))
             .then(() => {
                 // try to reload buffered requests
                 this.httpBuffer.retryAll((config: IRequestConfig) => config);
@@ -87,7 +96,7 @@ export default class AuthServiceRS {
             });
     }
 
-    public initWithCookie(): IPromise<TSUser> {
+    public initWithCookie(): IPromise<TSBenutzer> {
         LOG.debug('initWithCookie');
 
         const authIdbase64 = this.$cookies.get('authId');
@@ -99,10 +108,10 @@ export default class AuthServiceRS {
         try {
             const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
-            return this.userRS.findBenutzer(authData.authId).then(user => {
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
+            return this.benutzerRS.findBenutzer(authData.authId).then(user => {
                 this.principalSubject$.next(user);
                 this.principal = user;
+                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
 
                 return user;
             });
@@ -144,7 +153,7 @@ export default class AuthServiceRS {
      */
     public isRole(role: TSRole) {
         if (role && this.principal) {
-            return this.principal.getCurrentRole() === role;
+            return this.principal.hasRole(role);
         }
         return false;
     }
@@ -154,9 +163,7 @@ export default class AuthServiceRS {
      */
     public isOneOfRoles(roles: Array<TSRole>): boolean {
         if (roles !== undefined && roles !== null && this.principal) {
-            const principalRole = this.principal.getCurrentRole();
-
-            return roles.some(role => role === principalRole);
+            return this.principal.hasOneOfRoles(roles);
         }
         return false;
     }

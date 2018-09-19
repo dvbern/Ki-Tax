@@ -95,12 +95,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
+
 /**
  * Service fuer erstellen und mutieren von Testfällen
  */
 @Stateless
 @Local(TestfaelleService.class)
-@RolesAllowed({ UserRoleName.ADMIN, UserRoleName.SUPER_ADMIN })
+@RolesAllowed(SUPER_ADMIN)
 public class TestfaelleServiceBean extends AbstractBaseService implements TestfaelleService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBean.class);
@@ -279,11 +281,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Nonnull
 	@Override
 	@SuppressWarnings("PMD.NcssMethodCount")
-	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId) {
+	public Gesuch createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen, @Nonnull String gemeindeId,
+			@Nonnull Gesuchsperiode gesuchsperiode) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveTestfaelle",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
-		Gesuchsperiode gesuchsperiode = getNeuesteGesuchsperiode();
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
 
 		if (WAELTI_DAGMAR.equals(fallid)) {

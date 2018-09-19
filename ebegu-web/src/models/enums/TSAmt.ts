@@ -14,14 +14,16 @@
  */
 
 export enum TSAmt {
-    JUGENDAMT = <any> 'JUGENDAMT',
-    SCHULAMT = <any> 'SCHULAMT',
-    NONE = <any> 'NONE'
+    JUGENDAMT = 'JUGENDAMT',
+    SCHULAMT = 'SCHULAMT',
+    GEMEINDE = 'GEMEINDE',
+    NONE = 'NONE'
 }
 
 export function getAemterForFilter(): Array<TSAmt> {
     return [
         TSAmt.JUGENDAMT,
-        TSAmt.SCHULAMT
+        TSAmt.SCHULAMT,
+        TSAmt.GEMEINDE
     ];
 }

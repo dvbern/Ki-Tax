@@ -303,7 +303,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.Betreuung"/>
 	<entity class="ch.dvbern.ebegu.entities.Betreuungspensum"/>
 	<entity class="ch.dvbern.ebegu.entities.BetreuungspensumContainer"/>
-	<entity class="ch.dvbern.ebegu.entities.EbeguParameter"/>
 	<entity class="ch.dvbern.ebegu.entities.Benutzer"/>
 	<entity class="ch.dvbern.ebegu.entities.AuthorisierterBenutzer"/>
 	<entity class="ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo"/>
@@ -344,5 +343,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.BerechtigungHistory"/>
 	<entity class="ch.dvbern.ebegu.entities.Dossier"/>
 	<entity class="ch.dvbern.ebegu.entities.Gemeinde"/>
+	<entity class="ch.dvbern.ebegu.entities.Einstellung"/>
 
 </entity-mappings>

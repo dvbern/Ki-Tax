@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export class TSTraegerschaft extends TSAbstractEntity {
+export class TSTraegerschaft extends TSAbstractMutableEntity {
 
     private _name: string;
     private _active: boolean;
