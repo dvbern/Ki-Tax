@@ -15,6 +15,8 @@
 
 import * as angular from 'angular';
 import {Observable, ReplaySubject} from 'rxjs';
+import {Permission} from '../../app/authorisation/Permission';
+import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import BenutzerRS from '../../app/core/service/benutzerRS.rest';
@@ -171,23 +173,31 @@ export default class AuthServiceRS {
 
     public getVisibleRolesForPrincipal(): TSRole[] {
         switch (this.getPrincipalRole()) {
-            // todo KIBON version2. Add Schulamt users
             case TSRole.SUPER_ADMIN:
                 return TSRoleUtil.getAllRoles();
+
             case TSRole.ADMIN_INSTITUTION:
-                return TSRoleUtil.getInstitutionOnlyRoles();
+                return PERMISSIONS[Permission.ROLE_INSTITUTION];
+
             case TSRole.ADMIN_TRAEGERSCHAFT:
-                return TSRoleUtil.getTraegerschaftInstitutionOnlyRoles();
+                return PERMISSIONS[Permission.ROLE_INSTITUTION]
+                    .concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
+
             case TSRole.ADMIN_MANDANT:
-                return TSRoleUtil.getMandantOnlyRoles();
+                return PERMISSIONS[Permission.ROLE_MANDANT];
+
             case TSRole.ADMIN_BG:
-                return TSRoleUtil.getVisibleRolesForBG();
+                return PERMISSIONS[Permission.ROLE_BG];
+
             case TSRole.ADMIN_TS:
-                return TSRoleUtil.getVisibleRolesForTS();
+                return PERMISSIONS[Permission.ROLE_GEMEINDE];
+
             case TSRole.ADMIN_GEMEINDE:
-                return TSRoleUtil.getVisibleRolesForGemeinde();
+                return PERMISSIONS[Permission.ROLE_GEMEINDE];
+
             case TSRole.REVISOR:
-                return TSRoleUtil.getVisibleRolesForGemeinde();
+                return PERMISSIONS[Permission.ROLE_GEMEINDE];
+
             default:
                 return TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
         }
