@@ -49,10 +49,10 @@ import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
-import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
@@ -469,8 +469,9 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
 		jaxEinstellung.setKey(einstellung.getKey());
 		jaxEinstellung.setValue(einstellung.getValue());
-		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
-
+		jaxEinstellung.setGemeindeId(null==einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
+		jaxEinstellung.setGesuchsperiodeId(einstellung.getGesuchsperiode().getId());
+		// Mandant wird aktuell nicht gemappt
 		return jaxEinstellung;
 	}
 
@@ -478,14 +479,25 @@ public class JaxBConverter {
 	public Einstellung einstellungToEntity(
 		final JaxEinstellung jaxEinstellung,
 		@Nonnull final Einstellung einstellung) {
-
 		Objects.requireNonNull(einstellung);
 		Objects.requireNonNull(jaxEinstellung);
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
-		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
-
+		if (null != jaxEinstellung.getGemeindeId()) {
+			einstellung.setGemeinde(gemeindeService.findGemeinde(jaxEinstellung.getGemeindeId()).orElse(null));
+		}
+		final Optional<Gesuchsperiode> gesuchsperiode =
+			gesuchsperiodeService.findGesuchsperiode(jaxEinstellung.getGesuchsperiodeId());
+		if (gesuchsperiode.isPresent()) {
+			einstellung.setGesuchsperiode(gesuchsperiode.get());
+		} else {
+			throw new EbeguEntityNotFoundException(
+				"einstellungToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jaxEinstellung.getGesuchsperiodeId());
+		}
+		// Mandant wird aktuell nicht gemappt
 		return einstellung;
 	}
 

@@ -91,6 +91,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	public Einstellung saveEinstellung(@Nonnull Einstellung einstellung) {
 		Objects.requireNonNull(einstellung);
 		if (einstellung.getGemeinde() != null) {
+			// Mandant bei Gemeindespezifischen Einstellungen setzen
 			einstellung.setMandant(einstellung.getGemeinde().getMandant());
 		}
 		if (einstellung.isNew()) {

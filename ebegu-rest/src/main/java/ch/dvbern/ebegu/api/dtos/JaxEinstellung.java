@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,7 +40,13 @@ public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private String value;
 
-	// Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt!
+	@Nullable
+	private String gemeindeId;
+
+	@NotNull
+	private String gesuchsperiodeId;
+
+	// Mandant wird aktuell nicht gemappt!
 
 	public EinstellungKey getKey() {
 		return key;
@@ -57,4 +64,19 @@ public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 		this.value = value;
 	}
 
+	public String getGemeindeId() {
+		return gemeindeId;
+	}
+
+	public void setGemeindeId(@Nullable String gemeindeId) {
+		this.gemeindeId = gemeindeId;
+	}
+
+	public String getGesuchsperiodeId() {
+		return gesuchsperiodeId;
+	}
+
+	public void setGesuchsperiodeId(String gesuchsperiodeId) {
+		this.gesuchsperiodeId = gesuchsperiodeId;
+	}
 }

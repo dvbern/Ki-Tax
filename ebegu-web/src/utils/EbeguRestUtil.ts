@@ -37,6 +37,7 @@ import TSBatchJobInformation from '../models/TSBatchJobInformation';
 import TSBelegungFerieninsel from '../models/TSBelegungFerieninsel';
 import TSBelegungFerieninselTag from '../models/TSBelegungFerieninselTag';
 import TSBelegungTagesschule from '../models/TSBelegungTagesschule';
+import TSBenutzer from '../models/TSBenutzer';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSBerechtigungHistory from '../models/TSBerechtigungHistory';
 import TSBetreuung from '../models/TSBetreuung';
@@ -91,7 +92,6 @@ import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import TSBenutzer from '../models/TSBenutzer';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
 import TSVorlage from '../models/TSVorlage';
@@ -157,7 +157,9 @@ export default class EbeguRestUtil {
             this.parseDateRangeEntity(tsEinstellung, receivedEinstellung);
             tsEinstellung.key = receivedEinstellung.key;
             tsEinstellung.value = receivedEinstellung.value;
-            // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
+            tsEinstellung.gemeindeId = receivedEinstellung.gemeindeId;
+            tsEinstellung.gesuchsperiodeId = receivedEinstellung.gesuchsperiodeId;
+            // Mandant wird aktuell nicht gemappt
             return tsEinstellung;
         }
         return undefined;
@@ -168,7 +170,9 @@ export default class EbeguRestUtil {
             this.abstractDateRangeEntityToRestObject(restEinstellung, tsEinstellung);
             restEinstellung.key = tsEinstellung.key;
             restEinstellung.value = tsEinstellung.value;
-            // Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
+            restEinstellung.gemeindeId = tsEinstellung.gemeindeId;
+            restEinstellung.gesuchsperiodeId = tsEinstellung.gesuchsperiodeId;
+            // Mandant wird aktuell nicht gemappt
             return restEinstellung;
         }
         return undefined;

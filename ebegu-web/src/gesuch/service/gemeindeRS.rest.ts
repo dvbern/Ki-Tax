@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
@@ -21,6 +23,7 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSBenutzer from '../../models/TSBenutzer';
+import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -46,7 +49,7 @@ export default class GemeindeRS implements IEntityRS {
 
     public getAllGemeinden(): IPromise<TSGemeinde[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
-        return this.$http.get(this.serviceURL + '/all', {cache: cache})
+        return this.$http.get(this.serviceURL + '/all', {cache: cache} )
             .then((response: any) => {
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeindeList(response.data);
@@ -89,10 +92,31 @@ export default class GemeindeRS implements IEntityRS {
             return of([]); // empty list for unknown user
         }
 
-        if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
+            if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
             return of(angular.copy(user.extractCurrentGemeinden()));
         }
 
         return from(this.getAllGemeinden());
     }
+
+    public createGemeinde(gemeinde: TSGemeinde): IPromise<TSGemeinde> {
+        // Reset Gemeinde cache to make Gemeinde visible upon reload
+        // this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
+        return this.saveGemeinde(gemeinde);
+    }
+
+    private saveGemeinde(gemeinde: TSGemeinde) {
+        let restGemeinde = {};
+        restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
+        return this.$http.put(this.serviceURL, restGemeinde, {
+            headers: { 'Content-Type': 'application/json' }
+        }).then((response: any) => {
+            // Reset Gemeinde cache to make Gemeinde visible upon reload
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
+            this.initGemeindenForPrincipal();
+            this.$log.debug('PARSING traegerschaft REST object ', response.data);
+            return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
+        });
+    }
+
 }

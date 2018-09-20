@@ -72,7 +72,7 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@NotNull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private GemeindeStatus status = GemeindeStatus.REGISTRIERT;
+	private GemeindeStatus status = GemeindeStatus.EINGELADEN;
 
 
 	public Mandant getMandant() {

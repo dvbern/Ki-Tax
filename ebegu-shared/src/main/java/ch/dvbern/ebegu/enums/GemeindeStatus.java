@@ -22,7 +22,7 @@ public enum GemeindeStatus {
 
 	AKTIV,
 	GESPERRT,
-	REGISTRIERT;
+	EINGELADEN;
 
 	public boolean isEnabled() {
 		return AKTIV == this;
