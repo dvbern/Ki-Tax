@@ -229,24 +229,26 @@
         <!-- Buttons -->
         <div class="dv-footer">
             <button type="button" class="dv-btn"
-                    *ngIf="!isDefaultVerantwortlicher && isDisabled"
+                    *dvNgShowElement="!isDefaultVerantwortlicher && isDisabled; roles: TSRoleUtil.getAllAdminRoles()"
                     (click)="enableBenutzer()"
                     [textContent]="'BENUTZER_BEARBEITEN' | translate">
             </button>
 
             <dv-loading-button [type]="'submit'"
-                               *ngIf="!isDefaultVerantwortlicher && !isDisabled">
+                               *dvNgShowElement="!isDefaultVerantwortlicher && !isDisabled; roles: TSRoleUtil.getAllAdminRoles()">
                 <span translate>BENUTZER_SAVE</span>
             </dv-loading-button>
 
             <button type="button" class="dv-btn cancel-button"
-                    *ngIf="selectedUser.status === TSBenutzerStatus.AKTIV && !isDefaultVerantwortlicher"
+                    *dvNgShowElement="selectedUser.status === TSBenutzerStatus.AKTIV && !isDefaultVerantwortlicher;
+                        roles: TSRoleUtil.getAllAdminRoles()"
                     (click)="inactivateBenutzer()"
                     [textContent]="'BENUTZER_SPERREN' | translate">
             </button>
 
             <button type="button" class="dv-btn cancel-button"
-                    *ngIf="selectedUser.status === TSBenutzerStatus.GESPERRT && !isDefaultVerantwortlicher"
+                    *dvNgShowElement="selectedUser.status === TSBenutzerStatus.GESPERRT && !isDefaultVerantwortlicher;
+                        roles: TSRoleUtil.getAllAdminRoles()"
                     (click)="reactivateBenutzer()"
                     [textContent]="'BENUTZER_REAKTIVIEREN' | translate">
             </button>
