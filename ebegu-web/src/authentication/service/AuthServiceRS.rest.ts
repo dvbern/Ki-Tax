@@ -22,6 +22,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
 import ICookiesService = angular.cookies.ICookiesService;
@@ -166,5 +167,29 @@ export default class AuthServiceRS {
             return this.principal.hasOneOfRoles(roles);
         }
         return false;
+    }
+
+    public getVisibleRolesForPrincipal(): TSRole[] {
+        switch (this.getPrincipalRole()) {
+            // todo KIBON version2. Add Schulamt users
+            case TSRole.SUPER_ADMIN:
+                return TSRoleUtil.getAllRoles();
+            case TSRole.ADMIN_INSTITUTION:
+                return TSRoleUtil.getInstitutionOnlyRoles();
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+                return TSRoleUtil.getTraegerschaftInstitutionOnlyRoles();
+            case TSRole.ADMIN_MANDANT:
+                return TSRoleUtil.getMandantOnlyRoles();
+            case TSRole.ADMIN_BG:
+                return TSRoleUtil.getVisibleRolesForBG();
+            case TSRole.ADMIN_TS:
+                return TSRoleUtil.getVisibleRolesForTS();
+            case TSRole.ADMIN_GEMEINDE:
+                return TSRoleUtil.getVisibleRolesForGemeinde();
+            case TSRole.REVISOR:
+                return TSRoleUtil.getVisibleRolesForGemeinde();
+            default:
+                return TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
+        }
     }
 }

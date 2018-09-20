@@ -34,7 +34,7 @@ export class BenutzerRolleComponent implements OnInit {
     @Input() public readonly inputId: string;
     @Input() public readonly required: boolean = false;
     @Input() public readonly disabled: boolean = false;
-    @Input() public readonly exludedRoles: TSRole[] = [];
+    @Input() public readonly excludedRoles: TSRole[] = [];
 
     @Output() public benutzerRolleChange = new EventEmitter<TSRole>();
 
@@ -49,8 +49,8 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.roles = this.getRollenBasedOnPrincipal()
-            .filter(rolle => !this.exludedRoles.includes(rolle))
+        this.roles = this.authServiceRS.getVisibleRolesForPrincipal()
+            .filter(rolle => !this.excludedRoles.includes(rolle))
             .reduce((rollenMap, rolle) => {
                     return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
                 },
@@ -72,17 +72,5 @@ export class BenutzerRolleComponent implements OnInit {
     // noinspection JSMethodCanBeStatic
     public trackByRole(index: number, item: { key: TSRole, value: string }): string {
         return item.key;
-    }
-
-    private getRollenBasedOnPrincipal(): TSRole[] {
-        if (EbeguUtil.isTagesschulangebotEnabled()) {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButAnonymous()
-                : TSRoleUtil.getAllRolesButSuperAdminAndAnonymous();
-        } else {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
-                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
-        }
     }
 }
