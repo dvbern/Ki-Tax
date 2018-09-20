@@ -101,11 +101,12 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 		this.benutzer = benutzer;
 	}
 
+	@Nonnull
 	public UserRole getRole() {
 		return role;
 	}
 
-	public void setRole(UserRole role) {
+	public void setRole(@Nonnull UserRole role) {
 		this.role = role;
 	}
 

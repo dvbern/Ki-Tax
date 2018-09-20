@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.enums;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -82,6 +83,10 @@ public enum UserRole {
 		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
 	}
 
+	public static List<UserRole> getMandantRoles() {
+		return Arrays.asList(ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+	}
+
 	public static List<UserRole> getJugendamtSuperadminRoles() {
 		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SUPER_ADMIN);
 	}
@@ -96,6 +101,18 @@ public enum UserRole {
 
 	public static List<UserRole> getSuperadminAllGemeindeRoles() {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS);
+	}
+
+	public static List<UserRole> getRolesByAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {
+		return Arrays.stream(UserRole.values())
+			.filter(userRole -> userRole.getRollenAbhaengigkeit() == abhaengigkeit)
+			.collect(Collectors.toList());
+	}
+
+	public static List<UserRole> getRolesByAbhaengigkeiten(List<RollenAbhaengigkeit> abhaengigkeitList) {
+		return Arrays.stream(UserRole.values())
+			.filter(userRole -> abhaengigkeitList.contains(userRole.getRollenAbhaengigkeit()))
+			.collect(Collectors.toList());
 	}
 
 	/**
