@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
 import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
 import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Test;
 
 /**

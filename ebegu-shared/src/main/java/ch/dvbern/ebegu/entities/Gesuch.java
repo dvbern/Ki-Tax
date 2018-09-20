@@ -909,12 +909,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return "";
 	}
 
-	@Nullable
-	public Gesuchsteller extractGesuchsteller1() {
-		if (this.getGesuchsteller1() != null) {
-			return this.getGesuchsteller1().getGesuchstellerJA();
-		}
-		return null;
+	@Nonnull
+	public Optional<Gesuchsteller> extractGesuchsteller1() {
+		return Optional.ofNullable(this.gesuchsteller1)
+			.map(GesuchstellerContainer::getGesuchstellerJA);
 	}
 
 	@Nullable

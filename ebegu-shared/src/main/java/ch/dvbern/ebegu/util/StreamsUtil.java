@@ -21,10 +21,7 @@ import java.util.function.Supplier;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
-/**
- *
- */
-public class StreamsUtil {
+public final class StreamsUtil {
 	private StreamsUtil() {
 	}
 

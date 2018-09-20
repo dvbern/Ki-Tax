@@ -14,8 +14,8 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IEntityRS} from './iEntityRS.rest';
@@ -25,7 +25,10 @@ export default class BenutzerRS implements IEntityRS {
     static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     serviceURL: string;
 
-    constructor(public $http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, private readonly $log: ILogService) {
+    constructor(public $http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'benutzer';
     }
 
@@ -57,7 +60,9 @@ export default class BenutzerRS implements IEntityRS {
             }
         }).then((response: any) => {
             this.$log.debug('PARSING benutzer REST array object', response.data);
-            return new TSUserSearchresultDTO(this.ebeguRestUtil.parseUserList(response.data.benutzerDTOs), response.data.paginationDTO.totalItemCount);
+            const tsBenutzers = this.ebeguRestUtil.parseUserList(response.data.benutzerDTOs);
+
+            return new TSUserSearchresultDTO(tsBenutzers, response.data.paginationDTO.totalItemCount);
         });
     }
 
@@ -88,24 +93,23 @@ export default class BenutzerRS implements IEntityRS {
         });
     }
 
-    public reactivateBenutzer(user: TSBenutzer): IPromise<TSBenutzer> {
-        const userRest = this.ebeguRestUtil.userToRestObject({}, user);
-        return this.$http.put(this.serviceURL + '/reactivate/', userRest, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+    public reactivateBenutzer(benutzer: TSBenutzer): IPromise<TSBenutzer> {
+        const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
+        return this.$http.put(this.serviceURL + '/reactivate/', benutzerRest).then((response: any) => {
             return this.ebeguRestUtil.parseUser(new TSBenutzer(), response.data);
         });
     }
 
-    public saveBenutzerBerechtigungen(user: TSBenutzer): IPromise<TSBenutzer> {
-        const userRest = this.ebeguRestUtil.userToRestObject({}, user);
-        return this.$http.put(this.serviceURL + '/saveBenutzerBerechtigungen/', userRest, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+    public einladen(benutzer: TSBenutzer): IPromise<TSBenutzer> {
+        const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
+        return this.$http.post(this.serviceURL + '/einladen/', benutzerRest).then((response: any) => {
+            return this.ebeguRestUtil.parseUser(new TSBenutzer(), response.data);
+        });
+    }
+
+    public saveBenutzerBerechtigungen(benutzer: TSBenutzer): IPromise<TSBenutzer> {
+        const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
+        return this.$http.put(this.serviceURL + '/saveBenutzerBerechtigungen/', benutzerRest).then((response: any) => {
             return this.ebeguRestUtil.parseUser(new TSBenutzer(), response.data);
         });
     }

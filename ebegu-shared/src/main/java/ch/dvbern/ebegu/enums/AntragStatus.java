@@ -218,7 +218,7 @@ public enum AntragStatus {
 	 * @param userRole die Rolle
 	 * @return Liefert die einsehbaren Antragsstatus fuer die Rolle
 	 */
-	@SuppressWarnings("Duplicates")
+	@SuppressWarnings({"Duplicates", "checkstyle:CyclomaticComplexity"})
 	public static Set<AntragStatus> allowedforRole(UserRole userRole) {
         switch (userRole) {
 			case SUPER_ADMIN: return  all;
@@ -243,6 +243,7 @@ public enum AntragStatus {
     }
 
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public static Set<AntragStatus> pendenzenForRole(UserRole userRole) {
         switch (userRole) {
 			case SUPER_ADMIN:
@@ -265,6 +266,7 @@ public enum AntragStatus {
         }
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public static Set<AntragStatus> writeAllowedForRole(UserRole userRole) {
 		switch (userRole) {
 			case SUPER_ADMIN:

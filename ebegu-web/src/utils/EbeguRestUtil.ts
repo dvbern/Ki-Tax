@@ -116,15 +116,9 @@ export default class EbeguRestUtil {
      * @returns {TSApplicationProperty[]}
      */
     public parseApplicationProperties(data: any): TSApplicationProperty[] {
-        const appProperties: TSApplicationProperty[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                appProperties[i] = this.parseApplicationProperty(new TSApplicationProperty('', ''), data[i]);
-            }
-        } else {
-            appProperties[0] = this.parseApplicationProperty(new TSApplicationProperty('', ''), data);
-        }
-        return appProperties;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseApplicationProperty(new TSApplicationProperty('', ''), item))
+            :  [this.parseApplicationProperty(new TSApplicationProperty('', ''), data)];
     }
 
     /**
@@ -141,15 +135,9 @@ export default class EbeguRestUtil {
     }
 
     public parseEinstellungList(data: any): TSEinstellung[] {
-        const einstellungenList: TSEinstellung[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                einstellungenList[i] = this.parseEinstellung(new TSEinstellung(), data[i]);
-            }
-        } else {
-            einstellungenList[0] = this.parseEinstellung(new TSEinstellung(), data);
-        }
-        return einstellungenList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseEinstellung(new TSEinstellung(), item))
+            :  [this.parseEinstellung(new TSEinstellung(), data)];
     }
 
     public parseEinstellung(tsEinstellung: TSEinstellung, receivedEinstellung: any): TSEinstellung {
@@ -179,15 +167,9 @@ export default class EbeguRestUtil {
     }
 
     public parseEbeguVorlages(data: any): TSEbeguVorlage[] {
-        const ebeguVorlages: TSEbeguVorlage[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                ebeguVorlages[i] = this.parseEbeguVorlage(new TSEbeguVorlage(), data[i]);
-            }
-        } else {
-            ebeguVorlages[0] = this.parseEbeguVorlage(new TSEbeguVorlage(), data);
-        }
-        return ebeguVorlages;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseEbeguVorlage(new TSEbeguVorlage(), item))
+            :  [this.parseEbeguVorlage(new TSEbeguVorlage(), data)];
     }
 
     public parseEbeguVorlage(ebeguVorlageTS: TSEbeguVorlage, receivedEbeguVorlage: any): TSEbeguVorlage {
@@ -332,14 +314,6 @@ export default class EbeguRestUtil {
         antragTS.eingangsart = antragFromServer.eingangsart;
     }
 
-    private adressenListToRestObject(adressen: Array<TSAdresse>): Array<any> {
-        if (!Array.isArray(adressen)) {
-            return [];
-        }
-
-        return adressen.map(a => this.adresseToRestObject({}, a));
-    }
-
     public adresseToRestObject(restAdresse: any, adresse: TSAdresse): TSAdresse {
         if (adresse) {
             this.abstractDateRangeEntityToRestObject(restAdresse, adresse);
@@ -357,14 +331,6 @@ export default class EbeguRestUtil {
         }
         return undefined;
 
-    }
-
-    private parseAdressenList(adressen: Array<any>): Array<TSAdresse> {
-        if (!Array.isArray(adressen)) {
-            return [];
-        }
-
-        return adressen.map(a => this.parseAdresse(new TSAdresse(), a));
     }
 
     public parseAdresse(adresseTS: TSAdresse, receivedAdresse: any): TSAdresse {
@@ -652,13 +618,9 @@ export default class EbeguRestUtil {
     }
 
     private gemeindeListToRestObject(gemeindeListTS: Array<TSGemeinde>): Array<any> {
-        const list: any[] = [];
-        if (gemeindeListTS) {
-            for (let i = 0; i < gemeindeListTS.length; i++) {
-                list[i] = this.gemeindeToRestObject({}, gemeindeListTS[i]);
-            }
-        }
-        return list;
+        return gemeindeListTS
+            ?  gemeindeListTS.map(item => this.gemeindeToRestObject({}, item))
+            :  [];
     }
 
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
@@ -673,15 +635,9 @@ export default class EbeguRestUtil {
     }
 
     public parseGemeindeList(data: any): TSGemeinde[] {
-        const gemeindeListTS: TSGemeinde[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                gemeindeListTS[i] = this.parseGemeinde(new TSGemeinde(), data[i]);
-            }
-        } else {
-            gemeindeListTS[0] = this.parseGemeinde(new TSGemeinde(), data);
-        }
-        return gemeindeListTS;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseGemeinde(new TSGemeinde(), item))
+            :  [this.parseGemeinde(new TSGemeinde(), data)];
     }
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
@@ -785,15 +741,9 @@ export default class EbeguRestUtil {
     }
 
     public parseFachstellen(data: any): TSFachstelle[] {
-        const fachstellen: TSFachstelle[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                fachstellen[i] = this.parseFachstelle(new TSFachstelle(), data[i]);
-            }
-        } else {
-            fachstellen[0] = this.parseFachstelle(new TSFachstelle(), data);
-        }
-        return fachstellen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseFachstelle(new TSFachstelle(), item))
+            :  [this.parseFachstelle(new TSFachstelle(), data)];
     }
 
     public parseFachstelle(parsedFachstelle: TSFachstelle, receivedFachstelle: any): TSFachstelle {
@@ -835,15 +785,9 @@ export default class EbeguRestUtil {
     }
 
     public parseTraegerschaften(data: Array<any>): TSTraegerschaft[] {
-        const traegerschaftenen: TSTraegerschaft[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                traegerschaftenen[i] = this.parseTraegerschaft(new TSTraegerschaft(), data[i]);
-            }
-        } else {
-            traegerschaftenen[0] = this.parseTraegerschaft(new TSTraegerschaft(), data);
-        }
-        return traegerschaftenen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseTraegerschaft(new TSTraegerschaft(), item))
+            :  [this.parseTraegerschaft(new TSTraegerschaft(), data)];
     }
 
     public parseTraegerschaft(traegerschaftTS: TSTraegerschaft, traegerschaftFromServer: any): TSTraegerschaft {
@@ -882,15 +826,9 @@ export default class EbeguRestUtil {
     }
 
     public parseInstitutionen(data: Array<any>): TSInstitution[] {
-        const institutionen: TSInstitution[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                institutionen[i] = this.parseInstitution(new TSInstitution(), data[i]);
-            }
-        } else {
-            institutionen[0] = this.parseInstitution(new TSInstitution(), data);
-        }
-        return institutionen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseInstitution(new TSInstitution(), item))
+            :  [this.parseInstitution(new TSInstitution(), data)];
     }
 
     public institutionStammdatenToRestObject(restInstitutionStammdaten: any, institutionStammdaten: TSInstitutionStammdaten): any {
@@ -932,15 +870,9 @@ export default class EbeguRestUtil {
     }
 
     public parseInstitutionStammdatenArray(data: Array<any>): TSInstitutionStammdaten[] {
-        const institutionStammdaten: TSInstitutionStammdaten[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                institutionStammdaten[i] = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data[i]);
-            }
-        } else {
-            institutionStammdaten[0] = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data);
-        }
-        return institutionStammdaten;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), item))
+            :  [this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data)];
     }
 
     public institutionStammdatenFerieninselToRestObject(restInstitutionStammdatenFerieninsel: any,
@@ -1202,15 +1134,9 @@ export default class EbeguRestUtil {
     }
 
     public parseKindDubletteList(data: Array<any>): TSKindDublette[] {
-        const kindContainerList: TSKindDublette[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                kindContainerList[i] = this.parseKindDublette(new TSKindDublette(), data[i]);
-            }
-        } else {
-            kindContainerList[0] = this.parseKindDublette(new TSKindDublette(), data);
-        }
-        return kindContainerList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseKindDublette(new TSKindDublette(), item))
+            :  [this.parseKindDublette(new TSKindDublette(), data)];
     }
 
     public parseKindDublette(kindContainerTS: TSKindDublette, kindContainerFromServer: any): TSKindDublette {
@@ -1225,15 +1151,9 @@ export default class EbeguRestUtil {
     }
 
     public parseKindContainerList(data: Array<any>): TSKindContainer[] {
-        const kindContainerList: TSKindContainer[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                kindContainerList[i] = this.parseKindContainer(new TSKindContainer(), data[i]);
-            }
-        } else {
-            kindContainerList[0] = this.parseKindContainer(new TSKindContainer(), data);
-        }
-        return kindContainerList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseKindContainer(new TSKindContainer(), item))
+            :  [this.parseKindContainer(new TSKindContainer(), data)];
     }
 
     public parseKindContainer(kindContainerTS: TSKindContainer, kindContainerFromServer: any): TSKindContainer {
@@ -1287,13 +1207,9 @@ export default class EbeguRestUtil {
     }
 
     private betreuungListToRestObject(betreuungen: Array<TSBetreuung>): Array<any> {
-        const list: any[] = [];
-        if (betreuungen) {
-            for (let i = 0; i < betreuungen.length; i++) {
-                list[i] = this.betreuungToRestObject({}, betreuungen[i]);
-            }
-        }
-        return list;
+        return betreuungen
+            ?  betreuungen.map(item => this.betreuungToRestObject({}, item))
+            :  [];
     }
 
     public betreuungToRestObject(restBetreuung: any, betreuung: TSBetreuung): any {
@@ -1384,16 +1300,10 @@ export default class EbeguRestUtil {
         return restAbwesenheit;
     }
 
-    public parseBetreuungList(betreuungen: Array<any>): TSBetreuung[] {
-        const resultList: TSBetreuung[] = [];
-        if (betreuungen && Array.isArray(betreuungen)) {
-            for (let i = 0; i < betreuungen.length; i++) {
-                resultList[i] = this.parseBetreuung(new TSBetreuung(), betreuungen[i]);
-            }
-        } else {
-            resultList[0] = this.parseBetreuung(new TSBetreuung(), betreuungen);
-        }
-        return resultList;
+    public parseBetreuungList(data: Array<any>): TSBetreuung[] {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseBetreuung(new TSBetreuung(), item))
+            :  [this.parseBetreuung(new TSBetreuung(), data)];
     }
 
     public parseBetreuung(betreuungTS: TSBetreuung, betreuungFromServer: any): TSBetreuung {
@@ -1428,27 +1338,15 @@ export default class EbeguRestUtil {
     }
 
     public parseBetreuungspensumContainers(data: Array<any>): TSBetreuungspensumContainer[] {
-        const betPensContainers: TSBetreuungspensumContainer[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                betPensContainers[i] = this.parseBetreuungspensumContainer(new TSBetreuungspensumContainer(), data[i]);
-            }
-        } else {
-            betPensContainers[0] = this.parseBetreuungspensumContainer(new TSBetreuungspensumContainer(), data);
-        }
-        return betPensContainers;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseBetreuungspensumContainer(new TSBetreuungspensumContainer(), item))
+            :  [this.parseBetreuungspensumContainer(new TSBetreuungspensumContainer(), data)];
     }
 
     public parseAbwesenheitContainers(data: Array<any>): TSAbwesenheitContainer[] {
-        const abwesenheitContainers: TSAbwesenheitContainer[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                abwesenheitContainers[i] = this.parseAbwesenheitContainer(new TSAbwesenheitContainer(), data[i]);
-            }
-        } else if (data) {
-            abwesenheitContainers[0] = this.parseAbwesenheitContainer(new TSAbwesenheitContainer(), data);
-        }
-        return abwesenheitContainers;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseAbwesenheitContainer(new TSAbwesenheitContainer(), item))
+            :  [this.parseAbwesenheitContainer(new TSAbwesenheitContainer(), data)];
     }
 
     public parseBetreuungspensumContainer(betPensContainerTS: TSBetreuungspensumContainer, betPensContFromServer: any): TSBetreuungspensumContainer {
@@ -1505,17 +1403,9 @@ export default class EbeguRestUtil {
     }
 
     private parseErwerbspensenContainers(data: Array<any>): TSErwerbspensumContainer[] {
-        const erwerbspensen: TSErwerbspensumContainer[] = [];
-        if (data !== null && data !== undefined) {
-            if (Array.isArray(data)) {
-                for (let i = 0; i < data.length; i++) {
-                    erwerbspensen[i] = this.parseErwerbspensumContainer(new TSErwerbspensumContainer(), data[i]);
-                }
-            } else {
-                erwerbspensen[0] = this.parseErwerbspensumContainer(new TSErwerbspensumContainer(), data);
-            }
-        }
-        return erwerbspensen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseErwerbspensumContainer(new TSErwerbspensumContainer(), item))
+            :  [this.parseErwerbspensumContainer(new TSErwerbspensumContainer(), data)];
     }
 
     public gesuchsperiodeToRestObject(restGesuchsperiode: any, gesuchsperiode: TSGesuchsperiode): any {
@@ -1541,15 +1431,9 @@ export default class EbeguRestUtil {
     }
 
     public parseGesuchsperioden(data: any): TSGesuchsperiode[] {
-        const gesuchsperioden: TSGesuchsperiode[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                gesuchsperioden[i] = this.parseGesuchsperiode(new TSGesuchsperiode(), data[i]);
-            }
-        } else {
-            gesuchsperioden[0] = this.parseGesuchsperiode(new TSGesuchsperiode(), data);
-        }
-        return gesuchsperioden;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseGesuchsperiode(new TSGesuchsperiode(), item))
+            :  [this.parseGesuchsperiode(new TSGesuchsperiode(), data)];
     }
 
     public antragDTOToRestObject(restPendenz: any, pendenz: TSAntragDTO): any {
@@ -1622,15 +1506,9 @@ export default class EbeguRestUtil {
     }
 
     public parseAntragDTOs(data: any): TSAntragDTO[] {
-        const pendenzen: TSAntragDTO[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                pendenzen[i] = this.parseAntragDTO(new TSAntragDTO(), data[i]);
-            }
-        } else {
-            pendenzen[0] = this.parseAntragDTO(new TSAntragDTO(), data);
-        }
-        return pendenzen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseAntragDTO(new TSAntragDTO(), item))
+            :  [this.parseAntragDTO(new TSAntragDTO(), data)];
     }
 
     public parseQuickSearchResult(dataFromServer: any): TSQuickSearchResult {
@@ -1641,14 +1519,10 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private parseSearchResultEntries(entries: Array<any>): Array<TSSearchResultEntry> {
-        const searchResultEntries: TSSearchResultEntry[] = [];
-        if (entries && Array.isArray(entries)) {
-            for (let i = 0; i < entries.length; i++) {
-                searchResultEntries[i] = this.parseSearchResultEntry(new TSSearchResultEntry(), entries[i]);
-            }
-        }
-        return searchResultEntries;
+    private parseSearchResultEntries(data: Array<any>): Array<TSSearchResultEntry> {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseSearchResultEntry(new TSSearchResultEntry(), item))
+            :  [];
     }
 
     private parseSearchResultEntry(entry: TSSearchResultEntry, dataFromServer: any): TSSearchResultEntry {
@@ -1713,15 +1587,9 @@ export default class EbeguRestUtil {
     }
 
     public parsePendenzBetreuungenList(data: any): TSPendenzBetreuung[] {
-        const pendenzen: TSPendenzBetreuung[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                pendenzen[i] = this.parsePendenzBetreuungen(new TSPendenzBetreuung(), data[i]);
-            }
-        } else {
-            pendenzen[0] = this.parsePendenzBetreuungen(new TSPendenzBetreuung(), data);
-        }
-        return pendenzen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parsePendenzBetreuungen(new TSPendenzBetreuung(), item))
+            :  [this.parsePendenzBetreuungen(new TSPendenzBetreuung(), data)];
     }
 
     public userToRestObject(user: any, userTS: TSBenutzer): any {
@@ -1764,27 +1632,15 @@ export default class EbeguRestUtil {
     }
 
     public parseBerechtigungen(data: Array<any>): TSBerechtigung[] {
-        const berechtigungenList: TSBerechtigung[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                berechtigungenList[i] = this.parseBerechtigung(new TSBerechtigung(), data[i]);
-            }
-        } else if (data) {
-            berechtigungenList[0] = this.parseBerechtigung(new TSBerechtigung(), data);
-        }
-        return berechtigungenList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseBerechtigung(new TSBerechtigung(), item))
+            :  [this.parseBerechtigung(new TSBerechtigung(), data)];
     }
 
     public parseUserList(data: any): TSBenutzer[] {
-        const users: TSBenutzer[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                users[i] = this.parseUser(new TSBenutzer(), data[i]);
-            }
-        } else {
-            users[0] = this.parseUser(new TSBenutzer(), data);
-        }
-        return users;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseUser(new TSBenutzer(), item))
+            :  [this.parseUser(new TSBenutzer(), data)];
     }
 
     public berechtigungToRestObject(berechtigung: any, berechtigungTS: TSBerechtigung): any {
@@ -1813,18 +1669,6 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseBerechtigungenList(data: any): TSBerechtigung[] {
-        const berechtigungen: TSBerechtigung[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                berechtigungen[i] = this.parseBerechtigung(new TSBerechtigung(), data[i]);
-            }
-        } else {
-            berechtigungen[0] = this.parseBerechtigung(new TSBerechtigung(), data);
-        }
-        return berechtigungen;
-    }
-
     public parseBerechtigungHistory(historyTS: TSBerechtigungHistory, historyFromServer: any): TSBerechtigungHistory {
         if (historyFromServer) {
             this.parseDateRangeEntity(historyTS, historyFromServer);
@@ -1842,15 +1686,9 @@ export default class EbeguRestUtil {
     }
 
     public parseBerechtigungHistoryList(data: any): TSBerechtigungHistory[] {
-        const tsHistoryList: TSBerechtigungHistory[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                tsHistoryList[i] = this.parseBerechtigungHistory(new TSBerechtigungHistory(), data[i]);
-            }
-        } else {
-            tsHistoryList[0] = this.parseBerechtigungHistory(new TSBerechtigungHistory(), data);
-        }
-        return tsHistoryList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseBerechtigungHistory(new TSBerechtigungHistory(), item))
+            :  [this.parseBerechtigungHistory(new TSBerechtigungHistory(), data)];
     }
 
     parseDokumenteDTO(dokumenteDTO: TSDokumenteDTO, dokumenteFromServer: any): TSDokumenteDTO {
@@ -1861,16 +1699,10 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private parseDokumentGruende(dokumentGruende: Array<any>): TSDokumentGrund[] {
-        const resultList: TSDokumentGrund[] = [];
-        if (dokumentGruende && Array.isArray(dokumentGruende)) {
-            for (let i = 0; i < dokumentGruende.length; i++) {
-                resultList[i] = this.parseDokumentGrund(new TSDokumentGrund(), dokumentGruende[i]);
-            }
-        } else {
-            resultList[0] = this.parseDokumentGrund(new TSDokumentGrund(), dokumentGruende);
-        }
-        return resultList;
+    private parseDokumentGruende(data: Array<any>): TSDokumentGrund[] {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseDokumentGrund(new TSDokumentGrund(), item))
+            :  [this.parseDokumentGrund(new TSDokumentGrund(), data)];
     }
 
     parseDokumentGrund(dokumentGrund: TSDokumentGrund, dokumentGrundFromServer: any): TSDokumentGrund {
@@ -1888,16 +1720,10 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private parseDokumente(dokumente: Array<any>): TSDokument[] {
-        const resultList: TSDokument[] = [];
-        if (dokumente && Array.isArray(dokumente)) {
-            for (let i = 0; i < dokumente.length; i++) {
-                resultList[i] = this.parseDokument(new TSDokument(), dokumente[i]);
-            }
-        } else {
-            resultList[0] = this.parseDokument(new TSDokument(), dokumente);
-        }
-        return resultList;
+    private parseDokumente(data: Array<any>): TSDokument[] {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseDokument(new TSDokument(), item))
+            :  [this.parseDokument(new TSDokument(), data)];
     }
 
     private parseDokument(dokument: TSDokument, dokumentFromServer: any): TSDokument {
@@ -1929,14 +1755,10 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private dokumenteToRestObject(dokumente: Array<TSDokument>): Array<any> {
-        const list: any[] = [];
-        if (dokumente) {
-            for (let i = 0; i < dokumente.length; i++) {
-                list[i] = this.dokumentToRestObject({}, dokumente[i]);
-            }
-        }
-        return list;
+    private dokumenteToRestObject(data: Array<TSDokument>): Array<any> {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.dokumentToRestObject({}, item))
+            :  [];
     }
 
     private dokumentToRestObject(dokument: any, dokumentTS: TSDokument): any {
@@ -1983,26 +1805,16 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private zeitabschnittListToRestObject(zeitabschnitte: Array<TSVerfuegungZeitabschnitt>): Array<any> {
-        const list: any[] = [];
-        if (zeitabschnitte) {
-            for (let i = 0; i < zeitabschnitte.length; i++) {
-                list[i] = this.zeitabschnittToRestObject({}, zeitabschnitte[i]);
-            }
-        }
-        return list;
+    private zeitabschnittListToRestObject(data: Array<TSVerfuegungZeitabschnitt>): Array<any> {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.zeitabschnittToRestObject({}, item))
+            :  [];
     }
 
-    private parseVerfuegungZeitabschnitte(zeitabschnitte: Array<any>): TSVerfuegungZeitabschnitt[] {
-        const resultList: TSVerfuegungZeitabschnitt[] = [];
-        if (zeitabschnitte && Array.isArray(zeitabschnitte)) {
-            for (let i = 0; i < zeitabschnitte.length; i++) {
-                resultList[i] = this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), zeitabschnitte[i]);
-            }
-        } else {
-            resultList[0] = this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), zeitabschnitte);
-        }
-        return resultList;
+    private parseVerfuegungZeitabschnitte(data: Array<any>): TSVerfuegungZeitabschnitt[] {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), item))
+            :  [this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), data)];
     }
 
     public zeitabschnittToRestObject(zeitabschnitt: any, zeitabschnittTS: TSVerfuegungZeitabschnitt): any {
@@ -2095,27 +1907,15 @@ export default class EbeguRestUtil {
     }
 
     public parseWizardStepList(data: any): TSWizardStep[] {
-        const wizardSteps: TSWizardStep[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                wizardSteps[i] = this.parseWizardStep(new TSWizardStep(), data[i]);
-            }
-        } else {
-            wizardSteps[0] = this.parseWizardStep(new TSWizardStep(), data);
-        }
-        return wizardSteps;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseWizardStep(new TSWizardStep(), item))
+            :  [this.parseWizardStep(new TSWizardStep(), data)];
     }
 
-    public parseAntragStatusHistoryCollection(antragStatusHistoryCollection: Array<any>): TSAntragStatusHistory[] {
-        const resultList: TSAntragStatusHistory[] = [];
-        if (antragStatusHistoryCollection && Array.isArray(antragStatusHistoryCollection)) {
-            for (let i = 0; i < antragStatusHistoryCollection.length; i++) {
-                resultList[i] = this.parseAntragStatusHistory(new TSAntragStatusHistory(), antragStatusHistoryCollection[i]);
-            }
-        } else {
-            resultList[0] = this.parseAntragStatusHistory(new TSAntragStatusHistory(), antragStatusHistoryCollection);
-        }
-        return resultList;
+    public parseAntragStatusHistoryCollection(data: Array<any>): TSAntragStatusHistory[] {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseAntragStatusHistory(new TSAntragStatusHistory(), item))
+            :  [this.parseAntragStatusHistory(new TSAntragStatusHistory(), data)];
     }
 
     public parseAntragStatusHistory(antragStatusHistoryTS: TSAntragStatusHistory, antragStatusHistoryFromServer: any): TSAntragStatusHistory {
@@ -2153,15 +1953,9 @@ export default class EbeguRestUtil {
     }
 
     public parseMahnungen(data: Array<any>): TSMahnung[] {
-        const mahnungen: TSMahnung[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                mahnungen[i] = this.parseMahnung(new TSMahnung(), data[i]);
-            }
-        } else {
-            mahnungen[0] = this.parseMahnung(new TSMahnung(), data);
-        }
-        return mahnungen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseMahnung(new TSMahnung(), item))
+            :  [this.parseMahnung(new TSMahnung(), data)];
     }
 
     public parseMahnung(tsMahnung: TSMahnung, mahnungFromServer: any): TSMahnung {
@@ -2251,13 +2045,9 @@ export default class EbeguRestUtil {
     }
 
     private adressenContainerListToRestObject(adressen: Array<TSAdresseContainer>) {
-        const list: any[] = [];
-        if (adressen) {
-            for (let i = 0; i < adressen.length; i++) {
-                list[i] = this.adresseContainerToRestObject({}, adressen[i]);
-            }
-        }
-        return list;
+        return adressen
+            ?  adressen.map(item => this.adresseContainerToRestObject({}, item))
+            :  [];
     }
 
     private adresseContainerToRestObject(restAddresseCont: any, adresseContTS: TSAdresseContainer): any {
@@ -2271,11 +2061,9 @@ export default class EbeguRestUtil {
     }
 
     private parseAdressenContainerList(adressen: any): Array<TSAdresseContainer> {
-        if (!Array.isArray(adressen)) {
-            return [];
-        }
-
-        return adressen.map(a => this.parseAdresseContainer(new TSAdresseContainer(), a));
+        return adressen
+            ?  adressen.map((item: any) => this.parseAdresseContainer(new TSAdresseContainer(), item))
+            :  [];
     }
 
     private parseAdresseContainer(adresseContainerTS: TSAdresseContainer, adresseFromServer: any): TSAdresseContainer {
@@ -2289,14 +2077,9 @@ export default class EbeguRestUtil {
     }
 
     public parseWorkJobList(jobWrapper: any): Array<TSWorkJob> {
-        const workJobList: Array<TSWorkJob> = [];
-        if (jobWrapper && jobWrapper.jobs) {    //wrapped jobs
-            // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < jobWrapper.jobs.length; i++) {
-                workJobList.push(this.parseWorkJob(new TSWorkJob, jobWrapper.jobs[i]));
-            }
-        }
-        return workJobList;
+        return jobWrapper && jobWrapper.jobs
+            ?  jobWrapper.map((item: any) => this.parseWorkJob(new TSWorkJob, item))
+            :  [];
     }
 
     private parseWorkJob(tsWorkJob: TSWorkJob, workjobFromServer: any): TSWorkJob {
@@ -2417,13 +2200,9 @@ export default class EbeguRestUtil {
     }
 
     public parseZahlungsauftragList(data: any): TSZahlungsauftrag[] {
-        const zahlungsauftrag: TSZahlungsauftrag[] = [];
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                zahlungsauftrag[i] = this.parseZahlungsauftrag(new TSZahlungsauftrag(), data[i]);
-            }
-        }
-        return zahlungsauftrag;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseZahlungsauftrag(new TSZahlungsauftrag(), item))
+            :  [];
     }
 
     public parseZahlungsauftrag(tsZahlungsauftrag: TSZahlungsauftrag, zahlungsauftragFromServer: any): TSZahlungsauftrag {
@@ -2443,13 +2222,9 @@ export default class EbeguRestUtil {
     }
 
     public parseZahlungen(data: any): TSZahlung[] {
-        const zahlungen: TSZahlung[] = [];
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                zahlungen[i] = this.parseZahlung(new TSZahlung(), data[i]);
-            }
-        }
-        return zahlungen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseZahlung(new TSZahlung(), item))
+            :  [];
     }
 
     public parseZahlung(tsZahlung: TSZahlung, zahlungFromServer: any): TSZahlung {
@@ -2476,13 +2251,9 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKPersonList(data: any): TSEWKPerson[] {
-        const personen: TSEWKPerson[] = [];
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                personen[i] = this.parseEWKPerson(new TSEWKPerson(), data[i]);
-            }
-        }
-        return personen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseEWKPerson(new TSEWKPerson(), item))
+            :  [];
     }
 
     private parseEWKPerson(tsEWKPerson: TSEWKPerson, ewkPersonFromServer: any): TSEWKPerson {
@@ -2511,13 +2282,9 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKEinwohnercodeList(data: any): TSEWKEinwohnercode[] {
-        const codes: TSEWKEinwohnercode[] = [];
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                codes[i] = this.parseEWKEinwohnercode(new TSEWKEinwohnercode(), data[i]);
-            }
-        }
-        return codes;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseEWKEinwohnercode(new TSEWKEinwohnercode(), item))
+            :  [];
     }
 
     private parseEWKEinwohnercode(tsEWKEinwohnercode: TSEWKEinwohnercode, ewkEinwohnercodeFromServer: any): TSEWKEinwohnercode {
@@ -2532,13 +2299,9 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKAdresseList(data: any): TSEWKAdresse[] {
-        const adressen: TSEWKAdresse[] = [];
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                adressen[i] = this.parseEWKAdresse(new TSEWKAdresse(), data[i]);
-            }
-        }
-        return adressen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseEWKAdresse(new TSEWKAdresse(), item))
+            :  [];
     }
 
     private parseEWKAdresse(tsEWKAdresse: TSEWKAdresse, ewkAdresseFromServer: any): TSEWKAdresse {
@@ -2562,13 +2325,9 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKBeziehungList(data: any): TSEWKBeziehung[] {
-        const beziehungen: TSEWKBeziehung[] = [];
-        if (data) {
-            for (let i = 0; i < data.length; i++) {
-                beziehungen[i] = this.parseEWKBeziehung(new TSEWKBeziehung(), data[i]);
-            }
-        }
-        return beziehungen;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseEWKBeziehung(new TSEWKBeziehung(), item))
+            :  [];
     }
 
     private parseEWKBeziehung(tsEWKBeziehung: TSEWKBeziehung, ewkBeziehungFromServer: any): TSEWKBeziehung {
@@ -2588,15 +2347,9 @@ export default class EbeguRestUtil {
     }
 
     public parseModuleTagesschuleArray(data: Array<any>): TSModulTagesschule[] {
-        const moduleTagesschule: TSModulTagesschule[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                moduleTagesschule[i] = this.parseModulTagesschule(new TSModulTagesschule(), data[i]);
-            }
-        } else {
-            moduleTagesschule[0] = this.parseModulTagesschule(new TSModulTagesschule(), data);
-        }
-        return moduleTagesschule;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseModulTagesschule(new TSModulTagesschule(), item))
+            :  [this.parseModulTagesschule(new TSModulTagesschule(), data)];
     }
 
     private parseModulTagesschule(modulTagesschuleTS: TSModulTagesschule, modulFromServer: any): TSModulTagesschule {
@@ -2611,14 +2364,10 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private moduleTagesschuleArrayToRestObject(moduleTagesschule: Array<TSModulTagesschule>): any[] {
-        const list: any[] = [];
-        if (moduleTagesschule) {
-            for (let i = 0; i < moduleTagesschule.length; i++) {
-                list[i] = this.modulTagesschuleToRestObject({}, moduleTagesschule[i]);
-            }
-        }
-        return list;
+    private moduleTagesschuleArrayToRestObject(data: Array<TSModulTagesschule>): any[] {
+        return data && Array.isArray(data)
+            ?  data.map(item => this.modulTagesschuleToRestObject({}, item))
+            :  [];
     }
 
     private modulTagesschuleToRestObject(restModul: any, modulTagesschuleTS: TSModulTagesschule): any {
@@ -2654,15 +2403,9 @@ export default class EbeguRestUtil {
     }
 
     public parseFerieninselStammdatenList(data: any): TSFerieninselStammdaten[] {
-        const ferieninselStammdatenList: TSFerieninselStammdaten[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                ferieninselStammdatenList[i] = this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data[i]);
-            }
-        } else {
-            ferieninselStammdatenList[0] = this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data);
-        }
-        return ferieninselStammdatenList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), item))
+            :  [this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data)];
     }
 
     public parseFerieninselStammdaten(ferieninselStammdatenTS: TSFerieninselStammdaten, receivedFerieninselStammdaten: any): TSFerieninselStammdaten {
@@ -2714,18 +2457,6 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseBelegungFerieninselList(data: any): TSBelegungFerieninsel[] {
-        const belegungFerieninselList: TSBelegungFerieninsel[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                belegungFerieninselList[i] = this.parseBelegungFerieninsel(new TSBelegungFerieninsel(), data[i]);
-            }
-        } else {
-            belegungFerieninselList[0] = this.parseBelegungFerieninsel(new TSBelegungFerieninsel(), data);
-        }
-        return belegungFerieninselList;
-    }
-
     public parseBelegungFerieninsel(belegungFerieninselTS: TSBelegungFerieninsel, receivedBelegungFerieninsel: any): TSBelegungFerieninsel {
         if (receivedBelegungFerieninsel) {
             this.parseAbstractMutableEntity(belegungFerieninselTS, receivedBelegungFerieninsel);
@@ -2737,15 +2468,9 @@ export default class EbeguRestUtil {
     }
 
     private parseBelegungFerieninselTagList(data: any): TSBelegungFerieninselTag[] {
-        const belegungFerieninselTagList: TSBelegungFerieninselTag[] = [];
-        if (data && Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                belegungFerieninselTagList[i] = this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data[i]);
-            }
-        } else {
-            belegungFerieninselTagList[0] = this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data);
-        }
-        return belegungFerieninselTagList;
+        return data && Array.isArray(data)
+            ?  data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
+            :  [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
     }
 
     private parseBelegungFerieninselTag(belegungFerieninselTagTS: TSBelegungFerieninselTag, receivedBelegungFerieninselTag: any): TSBelegungFerieninselTag {

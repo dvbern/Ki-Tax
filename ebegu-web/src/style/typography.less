@@ -94,4 +94,10 @@ md-input-container label:not(.md-container-ignore).md-required {
 
 .form-group {
     margin: 0;
+
+    & > :last-child:not(dv-error-messages) {
+        // When there is no dv-error-messages component (e.g. always disabled inputs), then add a similar
+        // margin as the dv-error-messages component would use
+        margin-bottom: 3rem;
+    }
 }

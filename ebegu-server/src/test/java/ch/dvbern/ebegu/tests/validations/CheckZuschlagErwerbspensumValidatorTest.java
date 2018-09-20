@@ -21,7 +21,7 @@ import javax.validation.ValidatorFactory;
 
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckZuschlagErwerbspensumZuschlagUndGrund;
 import org.junit.Before;
 import org.junit.Test;
