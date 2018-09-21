@@ -16,6 +16,7 @@
 import {TSGemeindeStatus} from '../models/enums/TSGemeindeStatus';
 import {TSRole} from '../models/enums/TSRole';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
+import TSBenutzer from '../models/TSBenutzer';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSDossier from '../models/TSDossier';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
@@ -237,5 +238,14 @@ export default class TestDataUtil {
         dossier.id = id;
         dossier.fall = fall;
         return dossier;
+    }
+
+    public static createSuperadmin(): TSBenutzer {
+        const user = new TSBenutzer();
+        user.nachname = 'system';
+        user.vorname = 'system';
+        user.currentBerechtigung = new TSBerechtigung();
+        user.currentBerechtigung.role = TSRole.SUPER_ADMIN;
+        return user;
     }
 }

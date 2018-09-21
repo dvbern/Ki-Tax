@@ -23,6 +23,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -41,6 +42,8 @@ describe('EditBerechtigungComponent', () => {
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
     beforeEach(async(() => {
+        const superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);

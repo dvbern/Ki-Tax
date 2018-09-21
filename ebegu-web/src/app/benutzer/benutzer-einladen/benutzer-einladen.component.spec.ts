@@ -21,6 +21,7 @@ import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -41,6 +42,8 @@ describe('BenutzerEinladenComponent', () => {
     const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
 
     beforeEach(async(() => {
+        const superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
