@@ -98,7 +98,7 @@ export class DVBenutzerListController implements IOnInit {
     }
 
     private updateInstitutionenList(): void {
-        this.institutionRS.getAllInstitutionen().then((response: any) => {
+        this.institutionRS.getInstitutionenForCurrentBenutzer().then((response: any) => {
             this.institutionenList = angular.copy(response);
         });
     }

@@ -17,9 +17,11 @@
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {from, Observable} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -47,7 +49,7 @@ export class BerechtigungComponent {
     public readonly traegerschaftId: string;
 
     public readonly institutionen$: Observable<TSInstitution[]>;
-    public readonly traegerschaften$: Observable<TSTraegerschaft[]>;
+    public traegerschaften$: Observable<TSTraegerschaft[]>;
 
     public readonly compareById = EbeguUtil.compareById;
 
@@ -55,15 +57,30 @@ export class BerechtigungComponent {
         public readonly form: NgForm,
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftenRS: TraegerschaftRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
         this.rolleId = 'rolle-' + this.inputId;
         this.institutionId = 'institution-' + this.inputId;
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
 
-        this.institutionen$ = from(this.institutionRS.getAllInstitutionen())
+        this.institutionen$ = from(this.institutionRS.getInstitutionenForCurrentBenutzer())
             .pipe(map(arr => arr.sort(EbeguUtil.compareByName)));
 
-        this.traegerschaften$ = from(this.traegerschaftenRS.getAllTraegerschaften())
-            .pipe(map(arr => arr.sort(EbeguUtil.compareByName)));
+        this.updateTraegerschaftenList();
+    }
+
+    private updateTraegerschaftenList(): void {
+        this.authServiceRS.principal$.subscribe((principal: TSBenutzer) => {
+            if (principal && principal.currentBerechtigung.traegerschaft) {
+                this.traegerschaften$ = of([principal.currentBerechtigung.traegerschaft]);
+
+            } else if (principal && principal.currentBerechtigung.isSuperadmin()) {
+                this.traegerschaften$ = from(this.traegerschaftenRS.getAllTraegerschaften())
+                    .pipe(map(arr => arr.sort(EbeguUtil.compareByName)));
+
+            } else {
+                this.traegerschaften$ = of([]);
+            }
+        });
     }
 }

@@ -34,13 +34,15 @@ describe('EditBerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
     beforeEach(async(() => {
-        insitutionSpy.getAllInstitutionen.and.returnValue([]);
+        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
+        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
 
@@ -73,7 +75,7 @@ describe('EditBerechtigungComponent', () => {
 
     it('should load institutionen and traegerschaften', () => {
         fixture.detectChanges();
-        expect(insitutionSpy.getAllInstitutionen).toHaveBeenCalled();
+        expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
         expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
     });
 

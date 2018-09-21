@@ -60,6 +60,10 @@ public enum UserRole {
 		return  ADMIN_GEMEINDE == this || SACHBEARBEITER_GEMEINDE == this;
 	}
 
+	public boolean isRoleMandant() {
+		return  ADMIN_MANDANT == this || SACHBEARBEITER_MANDANT == this;
+	}
+
 	public boolean isSuperadmin() {
 		return SUPER_ADMIN == this;
 	}
@@ -67,6 +71,11 @@ public enum UserRole {
 	public static List<UserRole> getAllAdminSuperAdminRevisorRoles() {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_MANDANT, ADMIN_INSTITUTION,
 			ADMIN_TRAEGERSCHAFT, REVISOR);
+	}
+
+	public static List<UserRole> getAllAdminRoles() {
+		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_MANDANT, ADMIN_INSTITUTION,
+			ADMIN_TRAEGERSCHAFT);
 	}
 
 	/**

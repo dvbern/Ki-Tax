@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -84,6 +85,7 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRole.getAllAdminRoles;
 
 /**
  * Authorizer Implementation
@@ -399,6 +401,61 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				&& !principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getUsername())) {
 			throwViolation(benutzer);
 		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull Benutzer benutzer) {
+		if (!isWriteAuthorized(benutzer)) {
+			throwViolation(benutzer);
+		}
+	}
+
+	private boolean isWriteAuthorized(@Nonnull Benutzer benutzer) {
+		if ("anonymous".equals(principalBean.getPrincipal().getName())) {
+			// when a user logs in, it is created by anonymous. So we must allow that
+			return true;
+		}
+		if (benutzer.equals(principalBean.getBenutzer())) {
+			return true;
+		}
+		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return true;
+		}
+		if (!principalBean.isCallerInAnyOfRole(getAllAdminRoles())) {
+			return false;
+		}
+		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE)) {
+			return userHasSameGemeindeAsPrincipal(benutzer);
+		}
+		if (principalBean.isCallerInRole(ADMIN_MANDANT)) {
+			return benutzer.getRole().isRoleMandant();
+		}
+		if (principalBean.isCallerInRole(ADMIN_TRAEGERSCHAFT)) {
+			return userBelongsToTraegerschaftOfPrincipal(benutzer);
+		}
+		if (principalBean.isCallerInRole(ADMIN_INSTITUTION) && benutzer.getInstitution() != null) {
+			return userBelongsToInstitutionOfPrincipal(benutzer);
+		}
+
+		return false;
+	}
+
+	private boolean userBelongsToInstitutionOfPrincipal(@Nonnull Benutzer benutzer) {
+		return benutzer.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.INSTITUTION
+			&& Objects.requireNonNull(principalBean.getBenutzer().getInstitution()).equals(benutzer.getInstitution());
+	}
+
+	private boolean userBelongsToTraegerschaftOfPrincipal(@Nonnull Benutzer benutzer) {
+		return (benutzer.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.TRAEGERSCHAFT
+			|| benutzer.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.INSTITUTION)
+			&& Objects.requireNonNull(principalBean.getBenutzer().getTraegerschaft()).equals(benutzer.getTraegerschaft())
+			|| institutionService.getAllInstitutionenFromTraegerschaft(principalBean.getBenutzer().getTraegerschaft().getId())
+				.contains(benutzer.getInstitution());
+	}
+
+	private boolean userHasSameGemeindeAsPrincipal(@Nonnull Benutzer benutzer) {
+		return principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList().stream()
+			.anyMatch(gemeinde -> benutzer.getCurrentBerechtigung().getGemeindeList().contains(gemeinde));
 	}
 
 	@Override

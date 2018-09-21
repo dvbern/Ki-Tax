@@ -27,9 +27,12 @@ describe('BenutzerRolleComponent', () => {
     let component: BenutzerRolleComponent;
     let fixture: ComponentFixture<BenutzerRolleComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal']);
 
     beforeEach(async(() => {
+        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
+
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,

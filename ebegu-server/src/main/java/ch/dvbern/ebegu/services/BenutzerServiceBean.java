@@ -133,12 +133,17 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private MailService mailService;
 
+	@Inject
+	private Authorizer authorizer;
+
+
 	@Nonnull
 	@Override
 	@PermitAll
 	public Benutzer saveBenutzerBerechtigungen(@Nonnull Benutzer benutzer, boolean currentBerechtigungChanged) {
 		requireNonNull(benutzer);
 		prepareBenutzerForSave(benutzer, currentBerechtigungChanged);
+		authorizer.checkWriteAuthorization(benutzer);
 		return persistence.merge(benutzer);
 	}
 
@@ -147,6 +152,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@PermitAll
 	public Benutzer saveBenutzer(@Nonnull Benutzer benutzer) {
 		requireNonNull(benutzer);
+		authorizer.checkWriteAuthorization(benutzer);
 		if (benutzer.isNew()) {
 			return persistence.persist(benutzer);
 		}
@@ -281,6 +287,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			username));
+
+		authorizer.checkWriteAuthorization(benutzer);
+
 		// Den Benutzer ausloggen und seine AuthBenutzer loeschen
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(username);
 		removeBerechtigungHistoryForBenutzer(benutzer);
@@ -360,6 +369,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"GesuchId invalid: " + username));
 
+		authorizer.checkWriteAuthorization(benutzerFromDB);
+
 		benutzerFromDB.setStatus(BenutzerStatus.GESPERRT);
 		int deletedAuthBenutzer = authService.logoutAndDeleteAuthorisierteBenutzerForUser(username);
 		logSperreBenutzer(benutzerFromDB, deletedAuthBenutzer);
@@ -386,6 +397,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				"reaktivieren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"GesuchId invalid: " + username));
+
+		authorizer.checkWriteAuthorization(benutzerFromDB);
 
 		benutzerFromDB.setStatus(BenutzerStatus.AKTIV);
 		logReaktivierenBenutzer(benutzerFromDB);
