@@ -858,6 +858,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		mitteilungen.forEach(this::checkReadAuthorizationMitteilung);
 	}
 
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	@Override
 	public void checkReadAuthorizationMitteilung(@Nullable Mitteilung mitteilung) {
 		if (mitteilung != null) {
