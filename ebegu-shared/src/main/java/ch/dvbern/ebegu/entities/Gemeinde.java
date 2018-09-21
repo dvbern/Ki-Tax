@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -64,6 +65,11 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private long gemeindeNummer = 0;
 
+	@Nullable
+	@Column(nullable = true)
+	@Field(bridge = @FieldBridge(impl = LongBridge.class))
+	private Long bfsNummer;
+
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@NotNull
@@ -106,6 +112,15 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 
 	public void setStatus(GemeindeStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public Long getBfsNummer() {
+		return bfsNummer;
+	}
+
+	public void setBfsNummer(@Nullable Long bfsNummer) {
+		this.bfsNummer = bfsNummer;
 	}
 
 	@Override

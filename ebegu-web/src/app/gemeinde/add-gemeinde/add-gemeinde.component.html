@@ -31,9 +31,9 @@
             </div>
 
             <fieldset>
-                <!-- Gemeindename | Betreuungsgutscheine anbieten ab -->
+                <!-- Gemeindename | BFS-Nummer der Gemeinde -->
                 <div class="row">
-                    <div class="col-sm-12 dv-input-container-medium">
+                    <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" translate for="gemeinde_ID">GEMEINDENAME</label>
                             <input id="gemeinde_ID" type="text" name="gemeinde_name" #name="ngModel"
@@ -45,7 +45,23 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-12 dv-input-container-medium">
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
+                            <input id="bfs_nummer_ID" type="number" name="bfs_nummer" #name="ngModel"
+                                   [(ngModel)]="gemeinde.bfsNummer"
+                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                                   [min]="1" [max]="6806" [maxlength]="4" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.bfs_nummer?.errors"
+                                               inputId="bfs_nummer_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Betreuungsgutscheine anbieten ab | Administrator - E-Mail Adresse -->
+                <div class="row">
+                    <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
                             <input id="begu_start_ID" type="text" name="begu_start"
@@ -61,14 +77,10 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                </div>
-
-                <!-- Administrator - E-Mail Adresse -->
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-medium">
+                    <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                            <input id="admin_mail_ID" type="text" name="admin_mail" #admin_mail="ngModel"
+                            <input id="admin_mail_ID" type="email" name="admin_mail" #admin_mail="ngModel"
                                    [(ngModel)]="adminMail" email
                                    ngModel [ngModelOptions]="{updateOn: 'blur'}"
                                    [maxlength]="255" class="form-control" required>

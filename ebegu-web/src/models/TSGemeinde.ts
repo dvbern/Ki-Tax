@@ -22,6 +22,7 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
 
     private _name: string;
     private _gemeindeNummer: number;
+    private _bfsNummer: number;
     private _status: TSGemeindeStatus;
 
     public get name(): string {
@@ -46,5 +47,13 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
 
     set status(value: TSGemeindeStatus) {
         this._status = value;
+    }
+
+    get bfsNummer(): number {
+        return this._bfsNummer;
+    }
+
+    set bfsNummer(value: number) {
+        this._bfsNummer = value;
     }
 }

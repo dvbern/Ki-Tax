@@ -629,6 +629,7 @@ export default class EbeguRestUtil {
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
+            restGemeinde.bfsNummer = gemeinde.bfsNummer;
             return restGemeinde;
         }
         return undefined;
@@ -646,6 +647,7 @@ export default class EbeguRestUtil {
             gemeindeTS.name = gemeindeFromServer.name;
             gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
+            gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
             return gemeindeTS;
         }
         return undefined;

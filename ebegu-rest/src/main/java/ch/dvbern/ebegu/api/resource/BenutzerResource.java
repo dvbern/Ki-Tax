@@ -211,12 +211,12 @@ public class BenutzerResource {
 	public JaxBenutzer findBenutzerByEmail(
 		@Nonnull @NotNull @PathParam("email") String email) {
 
-		Objects.requireNonNull(email);
+		requireNonNull(email);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerByEmail(email);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
 		return benutzerOptional
-			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
+			.map(benutzer -> converter.benutzerToJaxBenutzer(benutzer))
 			.orElse(null);
 	}
 

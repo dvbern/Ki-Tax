@@ -989,6 +989,7 @@ public class JaxBConverter {
 		gemeinde.setName(gemeindeJax.getName());
 		gemeinde.setStatus(gemeindeJax.getStatus());
 		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
+		gemeinde.setBfsNummer(gemeindeJax.getBfsNummer());
 		return gemeinde;
 	}
 
@@ -998,6 +999,7 @@ public class JaxBConverter {
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
+		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
 		return jaxGemeinde;
 	}
 
