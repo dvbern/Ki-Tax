@@ -52,7 +52,6 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     gemeinde: TSGemeinde = undefined;
     dataSource: MatTableDataSource<TSGemeinde>;
     private readonly unsubscribe$ = new Subject<void>();
-    controllerAs = 'vm';
 
     @ViewChild(NgForm) form: NgForm;
     @ViewChild(MatSort) sort: MatSort;
@@ -108,17 +107,8 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
 
     setSelectedGemeinde(selected: TSGemeinde): void {
         this.gemeinde = angular.copy(selected);
-    }
-
-    /**
-     * @param gemeinde
-     * @param event optinally this function can check if ctrl was clicked when opeing
-     */
-    public editGemeinde(gemeinde: TSGemeinde, event: any): void {
-        if (gemeinde) {
-            this.setSelectedGemeinde(gemeinde);
-            this.$state.go('admin.addgemeinde', {gemeindeId: this.gemeinde.id});
-        }
+        // Gemeinde edit is not provided
+        // this.$state.go('admin.addgemeinde', {gemeindeId: this.gemeinde.id});
     }
 
     public addGemeinde(): void {

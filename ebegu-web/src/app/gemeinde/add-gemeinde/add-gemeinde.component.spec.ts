@@ -1,4 +1,6 @@
 /*
+ * AGPL File-Header
+ *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,21 +20,26 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
+import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {GemeindeListComponent} from './gemeinde-list.component';
+import {AddGemeindeComponent} from './add-gemeinde.component';
 
-describe('GemeindeListComponent', () => {
+describe('AddGemeindeComponent', () => {
 
-    let component: GemeindeListComponent;
-    let fixture: ComponentFixture<GemeindeListComponent>;
+    let component: AddGemeindeComponent;
+    let fixture: ComponentFixture<AddGemeindeComponent>;
 
     beforeEach(async(() => {
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const benutzerServiceSpy = jasmine.createSpyObj<ErrorService>(BenutzerRS.name, ['findBenutzerByEmail']);
+        const einstellungServiceSpy = jasmine.createSpyObj<ErrorService>(EinstellungRS.name, ['saveEinstellung']);
+        const gesuchsperiodeServiceSpy = jasmine.createSpyObj<ErrorService>(GesuchsperiodeRS.name, ['getAllGesuchsperioden']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -42,8 +49,11 @@ describe('GemeindeListComponent', () => {
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: BenutzerRS, useValue: benutzerServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungServiceSpy},
+                {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
             ],
-            declarations: [GemeindeListComponent]
+            declarations: [AddGemeindeComponent]
         }).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
@@ -51,7 +61,7 @@ describe('GemeindeListComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(GemeindeListComponent);
+        fixture = TestBed.createComponent(AddGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

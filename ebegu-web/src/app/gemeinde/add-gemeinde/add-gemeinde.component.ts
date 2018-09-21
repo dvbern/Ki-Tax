@@ -21,7 +21,6 @@ import {MatDialog} from '@angular/material';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
@@ -60,7 +59,6 @@ export class AddGemeindeComponent implements OnInit {
                 private readonly benutzerRS: BenutzerRS,
                 private readonly einstellungRS: EinstellungRS,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly authServiceRS: AuthServiceRS,
                 private readonly dialog: MatDialog) {
     }
 
@@ -101,10 +99,12 @@ export class AddGemeindeComponent implements OnInit {
                     this.benutzerRS.findBenutzerByEmail(this.adminMail).then((result) => {
                         // Der Benutzer existiert bereits.
                         const user = result;
+                        // TODO hier kann man was machen, falls der Benutzer bereits exisiert
                         this.errorService.addMesageAsInfo('Der Benutzer ' + user.vorname + ' ' + user.nachname + ' (' + user.email + ') existiert bereits!');
                         this.persistGemeinde();
                     }).catch(reason => {
                         // Der Benutzer existiert noch nicht.
+                        // TODO hier kann man was machen, falls der Benutzer noch nicht exisiert
                         this.errorService.addMesageAsInfo('Für ' + this.adminMail + ' existiert noch kein Benutzer!');
                         this.persistGemeinde();
                     });

@@ -27,8 +27,7 @@
 
         <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
         <div class="table-responsive gemeinden-table">
-            <mat-table #table [dataSource]="dataSource" matSort
-                       on-edit="vm.editGemeinde(gemeinde, event)">
+            <mat-table #table [dataSource]="dataSource" matSort>
 
                 <!-- Column Name -->
                 <ng-container matColumnDef="name">
