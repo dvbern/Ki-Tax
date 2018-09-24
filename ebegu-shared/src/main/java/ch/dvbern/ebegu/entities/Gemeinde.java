@@ -65,6 +65,7 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private long gemeindeNummer = 0;
 
+	// todo fragen darf es ueberhaupt null sein?
 	@Nullable
 	@Column(nullable = true)
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))

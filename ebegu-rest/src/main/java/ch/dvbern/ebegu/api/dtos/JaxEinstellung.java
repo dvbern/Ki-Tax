@@ -64,6 +64,7 @@ public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 		this.value = value;
 	}
 
+	@Nullable
 	public String getGemeindeId() {
 		return gemeindeId;
 	}
@@ -72,11 +73,12 @@ public class JaxEinstellung extends JaxAbstractDateRangedDTO {
 		this.gemeindeId = gemeindeId;
 	}
 
+	@NotNull
 	public String getGesuchsperiodeId() {
 		return gesuchsperiodeId;
 	}
 
-	public void setGesuchsperiodeId(String gesuchsperiodeId) {
+	public void setGesuchsperiodeId(@NotNull String gesuchsperiodeId) {
 		this.gesuchsperiodeId = gesuchsperiodeId;
 	}
 }

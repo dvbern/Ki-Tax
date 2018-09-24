@@ -82,11 +82,13 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void createErstgesuchForDefaultPeriode() {
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
-		Assert.assertEquals(TestDataUtil.createGesuchsperiode1617().getBasisJahrPlus1(), erstgesuch.getGesuchsperiode().getBasisJahrPlus1());
+		Assert.assertEquals(gesuchsperiode1718, erstgesuch.getGesuchsperiode());
 	}
 
 	@Test
@@ -102,6 +104,8 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void createEmptyMutation() {
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createEmptyMutationVerfuegt(LocalDate.now(),
@@ -117,6 +121,8 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void createMutation() {
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Gesuch mutation = testdataCreationService.createMutation(MutationConfig.createMutationVerfuegt(LocalDate.now(), LocalDateTime.now(),
@@ -132,6 +138,8 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void createAnmeldungTagesschule() {
+		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, LocalDate.now(), LocalDateTime.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		int anzahlBetreuungenBefore = erstgesuch.extractAllBetreuungen().size();

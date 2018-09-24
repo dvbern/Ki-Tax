@@ -29,7 +29,7 @@ import {BerechtigungComponent} from '../berechtigung/berechtigung.component';
 
 import {BenutzerComponent} from './benutzer.component';
 
-describe('AddGemeindeComponent', () => {
+describe('BenutzerComponent', () => {
     let component: BenutzerComponent;
     let fixture: ComponentFixture<BenutzerComponent>;
 

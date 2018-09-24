@@ -18,7 +18,6 @@
  */
 
 import {NgModule} from '@angular/core';
-import {GemeindeListComponent} from '../app/gemeinde/gemeinde-list/gemeinde-list.component';
 import {SharedModule} from '../app/shared/shared.module';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {DebuggingComponent} from './component/debugging/debugging.component';

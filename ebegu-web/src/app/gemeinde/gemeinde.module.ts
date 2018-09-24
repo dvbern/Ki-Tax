@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {NgAdminRoutingModule} from '../../admin/ng-admin-routing.module';
 import {SharedModule} from '../shared/shared.module';

@@ -23,7 +23,6 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSBenutzer from '../../models/TSBenutzer';
-import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -92,7 +91,7 @@ export default class GemeindeRS implements IEntityRS {
             return of([]); // empty list for unknown user
         }
 
-            if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
+        if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
             return of(angular.copy(user.extractCurrentGemeinden()));
         }
 

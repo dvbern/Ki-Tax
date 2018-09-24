@@ -47,7 +47,7 @@ public interface GemeindeService {
 	 * Sucht eine Gemeinde anhand des Namens.
 	 */
 	@Nonnull
-	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name);
+	Optional<Gemeinde> findGemeindeByName(@Nonnull String name);
 
 	/**
 	 * Gibt die erste (und aktuell einzige) Gemeinde aus der DB zurueck
@@ -60,10 +60,5 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Collection<Gemeinde> getAllGemeinden();
-
-	/**
-	 * Ermittelt die nächste freie Gemeindenummer
-	 */
-	public long getNextGemeindeNummer();
 
 }

@@ -469,7 +469,7 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
 		jaxEinstellung.setKey(einstellung.getKey());
 		jaxEinstellung.setValue(einstellung.getValue());
-		jaxEinstellung.setGemeindeId(null==einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
+		jaxEinstellung.setGemeindeId(null == einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
 		jaxEinstellung.setGesuchsperiodeId(einstellung.getGesuchsperiode().getId());
 		// Mandant wird aktuell nicht gemappt
 		return jaxEinstellung;
@@ -484,19 +484,18 @@ public class JaxBConverter {
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
-		if (null != jaxEinstellung.getGemeindeId()) {
+		if (jaxEinstellung.getGemeindeId() != null) {
 			einstellung.setGemeinde(gemeindeService.findGemeinde(jaxEinstellung.getGemeindeId()).orElse(null));
 		}
 		final Optional<Gesuchsperiode> gesuchsperiode =
 			gesuchsperiodeService.findGesuchsperiode(jaxEinstellung.getGesuchsperiodeId());
-		if (gesuchsperiode.isPresent()) {
-			einstellung.setGesuchsperiode(gesuchsperiode.get());
-		} else {
+		if (!gesuchsperiode.isPresent()) {
 			throw new EbeguEntityNotFoundException(
 				"einstellungToEntity",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				jaxEinstellung.getGesuchsperiodeId());
 		}
+		einstellung.setGesuchsperiode(gesuchsperiode.get());
 		// Mandant wird aktuell nicht gemappt
 		return einstellung;
 	}

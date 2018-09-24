@@ -17,7 +17,6 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog} from '@angular/material';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -27,14 +26,10 @@ import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSEinstellung from '../../../models/TSEinstellung';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
-
-const LOG = LogFactory.createLog('AddGemeindeComponent');
 
 @Component({
     selector: 'dv-add-gemeinde',
@@ -58,8 +53,7 @@ export class AddGemeindeComponent implements OnInit {
                 private readonly gemeindeRS: GemeindeRS,
                 private readonly benutzerRS: BenutzerRS,
                 private readonly einstellungRS: EinstellungRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly dialog: MatDialog) {
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS) {
     }
 
     public ngOnInit(): void {
@@ -93,19 +87,19 @@ export class AddGemeindeComponent implements OnInit {
             if (valid) {
                 this.gemeindeRS.findGemeindeByName(this.gemeinde.name).then((result) => {
                     // Fehlerfall; die Gemeinde existiert bereits!
-                    this.errorService.addMesageAsInfo('Die Gemeinde ' + result.name + ' existiert bereits!');
-                }).catch(reason => {
-                    // Normalfall; sie Gemeinde existiert noch nicht.
+                    this.errorService.addMesageAsError('Die Gemeinde ' + result.name + ' existiert bereits!');
+                }).catch(() => {
+                    // Normalfall; die Gemeinde existiert noch nicht.
                     this.benutzerRS.findBenutzerByEmail(this.adminMail).then((result) => {
                         // Der Benutzer existiert bereits.
                         const user = result;
                         // TODO hier kann man was machen, falls der Benutzer bereits exisiert
-                        this.errorService.addMesageAsInfo('Der Benutzer ' + user.vorname + ' ' + user.nachname + ' (' + user.email + ') existiert bereits!');
+                        this.errorService.addMesageAsError('Der Benutzer ' + user.vorname + ' ' + user.nachname + ' (' + user.email + ') existiert bereits!');
                         this.persistGemeinde();
-                    }).catch(reason => {
+                    }).catch(() => {
                         // Der Benutzer existiert noch nicht.
                         // TODO hier kann man was machen, falls der Benutzer noch nicht exisiert
-                        this.errorService.addMesageAsInfo('Für ' + this.adminMail + ' existiert noch kein Benutzer!');
+                        this.errorService.addMesageAsError('Für ' + this.adminMail + ' existiert noch kein Benutzer!');
                         this.persistGemeinde();
                     });
                 });
@@ -116,18 +110,17 @@ export class AddGemeindeComponent implements OnInit {
     private isStartDateValid(): boolean {
         const day = this.beguStartDatum.format('D');
         if ('1' !== day) {
-            this.errorService.addMesageAsInfo('Das Startdatum muss am 1. des jeweiligen Monats beginnen!');
+            this.errorService.addMesageAsError('Das Startdatum muss am 1. des jeweiligen Monats beginnen!');
             return false;
         }
         if (moment() >= this.beguStartDatum) {
-            this.errorService.addMesageAsInfo('Das Startdatum muss in der Zukunft liegen!');
+            this.errorService.addMesageAsError('Das Startdatum muss in der Zukunft liegen!');
             return false;
         }
         return true;
     }
 
     private persistGemeinde(): void {
-        this.errorService.addMesageAsInfo('Die Gemeinde ' + this.gemeinde.name + 'wird eingeladen...');
         this.gemeindeRS.createGemeinde(this.gemeinde).then((neueGemeinde) => {
             this.gemeinde = neueGemeinde;
             this.persistEinstellung();
@@ -140,21 +133,9 @@ export class AddGemeindeComponent implements OnInit {
         einstellung.value = DateUtil.momentToLocalDate(this.beguStartDatum);
         einstellung.gemeindeId = this.gemeinde.id;
         einstellung.gesuchsperiodeId = this.findePassendeGesuchsperiode().id;
-        //einstellung.gueltigkeit = this.calcGueltigkeit();
-        this.einstellungRS.saveEinstellung(einstellung).then((einstllung) => {
+        this.einstellungRS.saveEinstellung(einstellung).then(() => {
             this.navigateBack();
         });
-    }
-
-    private calcGueltigkeit(): TSDateRange {
-        let rangeEnd: moment.Moment;
-        if (this.beguStartDatum.month() < 8) {
-            rangeEnd = moment([this.beguStartDatum.year(), 7, 31 ]);
-        } else {
-            rangeEnd = moment([this.beguStartDatum.year() + 1, 7, 31 ]);
-        }
-        const gueltigkeit: TSDateRange = new TSDateRange(this.beguStartDatum, rangeEnd);
-        return gueltigkeit;
     }
 
     private findePassendeGesuchsperiode(): TSGesuchsperiode {

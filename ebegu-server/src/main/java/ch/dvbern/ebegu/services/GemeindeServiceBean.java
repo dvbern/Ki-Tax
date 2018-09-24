@@ -108,22 +108,23 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return criteriaQueryHelper.getAllOrdered(Gemeinde.class, Gemeinde_.name);
 	}
 
-	@Override
-	public long getNextGemeindeNummer() {
+	private long getNextGemeindeNummer() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Long> query = cb.createQuery(Long.TYPE);
 		Root<Gemeinde> root = query.from(Gemeinde.class);
 		query.select(cb.max(root.get(Gemeinde_.gemeindeNummer)));
 		Long max = persistence.getCriteriaSingleResult(query);
-		if (null == max) max = 0L;
+		if (max == null) {
+			max = 0L;
+		}
 		return max + 1;
 	}
 
 	private Gemeinde initGemeindeNummerAndMandant(Gemeinde gemeinde) {
-		if (null == gemeinde.getMandant()) {
+		if (gemeinde.getMandant() == null && principalBean.getMandant() != null) {
 			gemeinde.setMandant(principalBean.getMandant());
 		}
-		if (0 == gemeinde.getGemeindeNummer()) {
+		if (gemeinde.getGemeindeNummer() == 0) {
 			gemeinde.setGemeindeNummer(getNextGemeindeNummer());
 		}
 		return gemeinde;

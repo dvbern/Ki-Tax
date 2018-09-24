@@ -19,6 +19,8 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {Transition} from '@uirouter/angular';
+import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -34,12 +36,17 @@ describe('AddGemeindeComponent', () => {
     let component: AddGemeindeComponent;
     let fixture: ComponentFixture<AddGemeindeComponent>;
 
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
+        ['getGemeindenForPrincipal$', 'findGemeinde']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
+    const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
+    const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
+        ['getAllGesuchsperioden']);
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+
     beforeEach(async(() => {
-        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-        const benutzerServiceSpy = jasmine.createSpyObj<ErrorService>(BenutzerRS.name, ['findBenutzerByEmail']);
-        const einstellungServiceSpy = jasmine.createSpyObj<ErrorService>(EinstellungRS.name, ['saveEinstellung']);
-        const gesuchsperiodeServiceSpy = jasmine.createSpyObj<ErrorService>(GesuchsperiodeRS.name, ['getAllGesuchsperioden']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -52,21 +59,25 @@ describe('AddGemeindeComponent', () => {
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
+                {provide: Transition, useValue: transitionSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ],
             declarations: [AddGemeindeComponent]
         }).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
+        transitionSpy.params.and.returnValue({});
+        gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
     }));
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         fixture = TestBed.createComponent(AddGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-    });
+    }));
 
-    it('should create', () => {
+    it('should create', async(() => {
         expect(component).toBeTruthy();
-    });
+    }));
 });
