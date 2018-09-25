@@ -381,7 +381,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	@Override
 	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
-		saveEinstellung(BEGU_ANBIETEN_AB, "1.1.1999", gesuchsperiode);
+		saveEinstellung(BEGU_ANBIETEN_AB, "1999-01-01", gesuchsperiode);
 		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, "7", gesuchsperiode);

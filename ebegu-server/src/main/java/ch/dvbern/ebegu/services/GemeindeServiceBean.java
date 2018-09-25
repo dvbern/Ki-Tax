@@ -111,7 +111,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	private Optional<Gemeinde> findGemeindeByBSF(@Nullable Long bsf) {
-		Objects.requireNonNull(bsf, "GemeindeBSFNummer muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
 	}
 
