@@ -65,10 +65,9 @@ public class EbeguConstraintValidationExceptionMapper extends AbstractEbeguExcep
 		// die unwrapped exception sollten wir nur zurueckgeben wenn wir im dev mode sind um keine infos zu leaken
 		if (configuration.getIsDevmode()) {
 			return buildResponse(unwrapException(exception), MediaType.TEXT_PLAIN, Status.INTERNAL_SERVER_ERROR);
-		} else {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error in E-Begu. Timestamp: " +
-				LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)).type("text/plain").build();
 		}
+		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error in E-Begu. Timestamp: " +
+			LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)).type("text/plain").build();
 	}
 }
 

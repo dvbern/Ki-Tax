@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,9 +49,11 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -76,11 +79,14 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(EinstellungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class EinstellungServiceBean extends AbstractBaseService implements EinstellungService {
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
@@ -91,6 +97,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	public Einstellung saveEinstellung(@Nonnull Einstellung einstellung) {
 		Objects.requireNonNull(einstellung);
 		if (einstellung.getGemeinde() != null) {
+			// Mandant bei Gemeindespezifischen Einstellungen setzen
 			einstellung.setMandant(einstellung.getGemeinde().getMandant());
 		}
 		if (einstellung.isNew()) {
@@ -263,5 +270,24 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			Einstellung_.gesuchsperiode);
 		einstellungenOfGP
 			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
+	}
+
+	@Override
+	public Einstellung createBeguBietenAbEinstellung(@Nonnull LocalDate eingangsdatum, @Nullable Gemeinde gemeinde) {
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(eingangsdatum).orElse(
+			gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() ->
+				new EbeguEntityNotFoundException("createBeguBietenAbEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					"no Gesuchsperiode found for date " + eingangsdatum)
+			));
+
+		Einstellung einstellung = new Einstellung();
+		einstellung.setKey(EinstellungKey.BEGU_ANBIETEN_AB);
+		einstellung.setValue(DateUtil.parseDateToSqlString(eingangsdatum));
+		if (gemeinde != null) {
+			einstellung.setGemeinde(gemeinde);
+		}
+		einstellung.setGesuchsperiode(gesuchsperiode);
+
+		return saveEinstellung(einstellung);
 	}
 }

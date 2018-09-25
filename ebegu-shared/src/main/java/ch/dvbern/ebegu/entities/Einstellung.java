@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,8 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
+import ch.dvbern.ebegu.validators.CheckEinstellung;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -41,6 +44,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
+@CheckEinstellung
 public class Einstellung extends AbstractEntity {
 
 	private static final long serialVersionUID = 8704632842261673111L;
@@ -160,6 +164,10 @@ public class Einstellung extends AbstractEntity {
 
 	public Integer getValueAsInteger() {
 		return Integer.valueOf(value);
+	}
+
+	public LocalDate getValueAsDate() {
+		return DateUtil.parseStringToDate(value);
 	}
 
 	@Override

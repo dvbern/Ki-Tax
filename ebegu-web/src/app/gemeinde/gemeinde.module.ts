@@ -18,12 +18,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {SharedModule} from '../app/shared/shared.module';
-import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
-import {DebuggingComponent} from './component/debugging/debugging.component';
-import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
-import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
-import {NgAdminRoutingModule} from './ng-admin-routing.module';
+import {NgAdminRoutingModule} from '../../admin/ng-admin-routing.module';
+import {SharedModule} from '../shared/shared.module';
+import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
+import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 
 @NgModule({
     imports: [
@@ -31,19 +29,15 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         NgAdminRoutingModule,
     ],
     declarations: [
-        TraegerschaftViewComponent,
-        TestdatenViewComponent,
-        BatchjobTriggerViewComponent,
-        DebuggingComponent,
+        GemeindeListComponent,
+        AddGemeindeComponent,
     ],
     entryComponents: [
-        TraegerschaftViewComponent,
-        TestdatenViewComponent,
-        BatchjobTriggerViewComponent,
-        DebuggingComponent,
+        GemeindeListComponent,
+        AddGemeindeComponent,
     ],
     providers: [],
 })
-export class NgAdminModule {
+export class GemeindeModule {
 }
 

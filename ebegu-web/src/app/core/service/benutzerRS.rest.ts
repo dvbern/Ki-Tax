@@ -74,9 +74,17 @@ export default class BenutzerRS implements IEntityRS {
             });
     }
 
-    public inactivateBenutzer(benutzer: TSBenutzer): IPromise<TSBenutzer> {
-        const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
-        return this.$http.put(this.serviceURL + '/inactivate/', benutzerRest, {
+    public findBenutzerByEmail(email: string): IPromise<TSBenutzer> {
+        return this.$http.get(this.serviceURL + '/email/' + encodeURIComponent(email))
+            .then((response: any) => {
+                this.$log.debug('PARSING benutzer REST object ', response.data);
+                return this.ebeguRestUtil.parseUser(new TSBenutzer(), response.data);
+            });
+    }
+
+    public inactivateBenutzer(user: TSBenutzer): IPromise<TSBenutzer> {
+        const userRest = this.ebeguRestUtil.userToRestObject({}, user);
+        return this.$http.put(this.serviceURL + '/inactivate/', userRest, {
             headers: {
                 'Content-Type': 'application/json'
             }

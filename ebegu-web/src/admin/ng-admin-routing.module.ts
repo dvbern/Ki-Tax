@@ -1,16 +1,20 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {NgModule} from '@angular/core';
@@ -18,7 +22,8 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
-import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
+import {AddGemeindeComponent} from '../app/gemeinde/add-gemeinde/add-gemeinde.component';
+import {GemeindeListComponent} from '../app/gemeinde/gemeinde-list/gemeinde-list.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {DebuggingComponent} from './component/debugging/debugging.component';
@@ -41,15 +46,6 @@ export const traegerschaftState: Ng2StateDeclaration = {
     }
 };
 
-export const gemeindenState: Ng2StateDeclaration = {
-    name: 'admin.gemeinden',
-    url: '/gemeinden',
-    component: GemeindeListComponent,
-    data: {
-        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-    }
-};
-
 export const testdatenState: Ng2StateDeclaration = {
     name: 'admin.testdaten',
     url: '/testdaten',
@@ -63,6 +59,24 @@ export const batchjobTriggerState: Ng2StateDeclaration = {
     name: 'admin.batchjobTrigger',
     url: '/batchjobTrigger',
     component: BatchjobTriggerViewComponent,
+};
+
+export const gemeindeListState: Ng2StateDeclaration = {
+    name: 'admin.gemeindelist',
+    url: '/gemeindelist',
+    component: GemeindeListComponent,
+    data: {
+        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
+    }
+};
+
+export const addGemeindenState: Ng2StateDeclaration = {
+    name: 'admin.addgemeinde',
+    url: '/gemeindelist/add/:gemeindeId',
+    component: AddGemeindeComponent,
+    data: {
+        roles: TSRoleUtil.getMandantRoles(),
+    }
 };
 
 export const debuggingState: Ng2StateDeclaration = {
@@ -89,7 +103,8 @@ export const benutzerState: Ng2StateDeclaration = {
                 batchjobTriggerState,
                 debuggingState,
                 benutzerState,
-                gemeindenState
+                gemeindeListState,
+                addGemeindenState,
             ]
         }),
     ],

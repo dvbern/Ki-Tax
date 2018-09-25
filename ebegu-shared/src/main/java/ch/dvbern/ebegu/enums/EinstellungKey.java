@@ -22,6 +22,9 @@ package ch.dvbern.ebegu.enums;
  */
 public enum EinstellungKey {
 
+	// Die Gemeinde bietet Gutscheine ab diesem Datum an
+	BEGU_ANBIETEN_AB,
+
 	// Die Gemeinde kennt eine Kontingentierung der Gutscheine
 	KONTINGENTIERUNG_ENABLED,
 
