@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -49,6 +50,7 @@ export class AddGemeindeComponent implements OnInit {
                 private readonly gemeindeRS: GemeindeRS,
                 private readonly benutzerRS: BenutzerRS,
                 private readonly einstellungRS: EinstellungRS,
+                private readonly translate: TranslateService,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS) {
     }
 
@@ -76,7 +78,7 @@ export class AddGemeindeComponent implements OnInit {
         this.navigateBack();
     }
 
-    gemeindeEinladen(): void {
+    public gemeindeEinladen(): void {
         if (this.form.valid) {
             this.errorService.clearAll();
             if (this.isStartDateValid()) {
@@ -88,13 +90,11 @@ export class AddGemeindeComponent implements OnInit {
     private isStartDateValid(): boolean {
         const day = this.beguStartDatum.format('D');
         if ('1' !== day) {
-            // todo translate this -> move it to a validator????
-            this.errorService.addMesageAsError('Das Startdatum muss am 1. des jeweiligen Monats beginnen!');
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
             return false;
         }
         if (moment() >= this.beguStartDatum) {
-            // todo translate this -> move it to a validator????
-            this.errorService.addMesageAsError('Das Startdatum muss in der Zukunft liegen!');
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FUTURE'));
             return false;
         }
         return true;
