@@ -25,7 +25,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.tets.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;

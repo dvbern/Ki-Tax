@@ -27,7 +27,8 @@ module.exports = function (config) {
             require('karma-junit-reporter'),
             require('karma-mocha-reporter'),
             require('karma-coverage-istanbul-reporter'),
-            require('@angular-devkit/build-angular/plugins/karma')
+            require('@angular-devkit/build-angular/plugins/karma'),
+            require('karma-sonarqube-unit-reporter')
         ],
         // list of files / patterns to load in the browser
         // we are building the test environment in ./spec-bundle.ts
@@ -87,6 +88,22 @@ module.exports = function (config) {
             xmlVersion: 1
         },
 
+        sonarQubeUnitReporter: {
+            sonarQubeVersion: 'LATEST',
+            outputFile: 'build/sonar-report.xml',
+            // overrideTestDescription: true,
+            testPaths: ['./src'],
+            // testFilePattern: '.spec.ts',
+            useBrowserName: false,
+            // filenameFormatter: (nextPath, result) => {
+            //     const testPath = './test'
+            //     const testFilePattern = '.spec.js'
+            //     const filesForDescriptions = fileUtil.getFilesForDescriptions(testPath, testFilePattern)
+            //     const filePath = filesForDescriptions[nextPath]
+            //     return 'ebegu-web/' + filePath
+            // },
+        },
+
         // suppress skipped tests in reporter
         mochaReporter: {
             ignoreSkipped: true
@@ -95,7 +112,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha', 'junit', 'coverage-istanbul'],
+        reporters: ['mocha', 'junit', 'sonarqubeUnit', 'coverage-istanbul'],
 
         // web server port
         port: 9876,

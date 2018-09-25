@@ -28,8 +28,8 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
-import ch.dvbern.ebegu.tets.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.junit.After;
@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.tets.util.JBossLoginContextFactory.createLoginContext;
+import static ch.dvbern.ebegu.test.util.JBossLoginContextFactory.createLoginContext;
 
 /**
  * Diese Klasse loggt vor jeder testmethode als superadmin ein und danach wieder aus.

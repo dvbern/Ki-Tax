@@ -85,7 +85,6 @@ public class GesuchDeletionLog extends AbstractSimpleEntity {
 	@Field(analyze = Analyze.NO) //datumsfelder nicht tokenizen etc
 	private LocalDate geburtsdatum;
 
-
 	public GesuchDeletionLog() {
 	}
 
@@ -93,12 +92,11 @@ public class GesuchDeletionLog extends AbstractSimpleEntity {
 		this.cause = deletionCause;
 		this.fallNummer = gesuch.getFall().getFallNummer();
 		this.gesuchId = gesuch.getId();
-		Gesuchsteller gesuchsteller = gesuch.extractGesuchsteller1();
-		if (gesuchsteller != null) {
+		gesuch.extractGesuchsteller1().ifPresent(gesuchsteller -> {
 			this.vorname = gesuchsteller.getVorname();
 			this.nachname = gesuchsteller.getNachname();
 			this.geburtsdatum = gesuchsteller.getGeburtsdatum();
-		}
+		});
 	}
 
 	public GesuchDeletionCause getCause() {

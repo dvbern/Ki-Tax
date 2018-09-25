@@ -44,6 +44,7 @@ public final class AntragStatusConverterUtil {
 	 * @param status Der AntragStatus vom Entity
 	 * @return Der AntragStatusDTO, der zum Client geschickt wird
 	 */
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	@Nonnull
 	public static AntragStatusDTO convertStatusToDTO(Gesuch antrag, AntragStatus status) {
 		switch (status) {

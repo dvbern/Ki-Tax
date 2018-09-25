@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.dvbern.ebegu.tets.util;
+package ch.dvbern.ebegu.test.util;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -59,10 +59,9 @@ public class EbeguValidationExceptionMapper extends AbstractEbeguExceptionMapper
 			Exception e = resteasyViolationException.getException();
 			if (e != null) {
 				return buildResponse(unwrapException(e), MediaType.TEXT_PLAIN, Status.INTERNAL_SERVER_ERROR);
-			} else {
-				final MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
-				return ViolationReportCreator.buildViolationReportResponse(resteasyViolationException, Status.BAD_REQUEST, acceptMediaType);
 			}
+			final MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
+			return ViolationReportCreator.buildViolationReportResponse(resteasyViolationException, Status.BAD_REQUEST, acceptMediaType);
 		}
 		if (exception instanceof ConstraintViolationException) {
 			ResteasyViolationException resteasyViolationException = new ResteasyViolationException(((ConstraintViolationException) exception).getConstraintViolations());

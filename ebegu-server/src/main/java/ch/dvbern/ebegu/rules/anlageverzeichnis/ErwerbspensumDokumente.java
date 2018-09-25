@@ -16,7 +16,9 @@
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +33,17 @@ import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
+
+import static ch.dvbern.ebegu.enums.DokumentTyp.BESTAETIGUNG_ARZT;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_AUSBILDUNG;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_ERWERBSPENSUM;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_LANG_ARBEITSWEG;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_RAV;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_UNREG_ARBEITSZ;
 
 /**
  * Dokumente für Erwerbspensum:
@@ -50,7 +63,6 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
  * <p>
  * Bestätigung (ärztliche Indikation):
  * Notwendig, wenn Frage nach GS Gesundheitliche Einschränkung mit Ja beantwortet wird (gesundheitliche Einschränkung)
- * <p>
  * <p>
  * Dokumente für Erwerbspensumzuschlag:
  * <p>
@@ -73,7 +85,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
 	@Override
-	public void getAllDokumente(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
+	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
 
 		final LocalDate gueltigAb = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 
@@ -96,91 +108,57 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 
 		final Set<ErwerbspensumContainer> erwerbspensenContainers = gesuchsteller.getErwerbspensenContainers();
 
-		for (ErwerbspensumContainer erwerbspensenContainer : erwerbspensenContainers) {
-			final Erwerbspensum erwerbspensumJA = erwerbspensenContainer.getErwerbspensumJA();
-			if (erwerbspensumJA == null) {
-				continue;
-			}
-			add(getDokument(
-				DokumentTyp.NACHWEIS_ERWERBSPENSUM,
-				erwerbspensumJA,
-				gueltigAb,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_AUSBILDUNG,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_RAV,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.BESTAETIGUNG_ARZT,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-
-			add(getDokument(
-				DokumentTyp.NACHWEIS_UNREG_ARBEITSZ,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_LANG_ARBEITSWEG,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-			add(getDokument(
-				DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN,
-				erwerbspensumJA,
-				erwerbspensumJA.getName(),
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber,
-				DokumentGrundTyp.ERWERBSPENSUM), anlageVerzeichnis);
-		}
+		Consumer<DokumentGrund> adder = dokumentGrund -> add(dokumentGrund, anlageVerzeichnis);
+		erwerbspensenContainers.stream()
+			.map(ErwerbspensumContainer::getErwerbspensumJA)
+			.filter(Objects::nonNull)
+			.forEach(pensumJA -> {
+				adder.accept(getDokument(
+					NACHWEIS_ERWERBSPENSUM,
+					pensumJA,
+					gueltigAb,
+					pensumJA.getName(),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.ERWERBSPENSUM));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SELBSTAENDIGKEIT));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_AUSBILDUNG));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_UNREG_ARBEITSZ));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_LANG_ARBEITSWEG));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SONSTIGEN_ZUSCHLAG));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_FIXE_ARBEITSZEITEN));
+			});
 	}
 
+	@Nullable
+	private DokumentGrund getDokument(
+		@Nonnull Integer gesuchstellerNumber,
+		@Nonnull Erwerbspensum erwerbspensumJA,
+		@Nonnull DokumentTyp dokumentTyp) {
+
+		return getDokument(
+			dokumentTyp,
+			erwerbspensumJA,
+			erwerbspensumJA.getName(),
+			DokumentGrundPersonType.GESUCHSTELLER,
+			gesuchstellerNumber,
+			DokumentGrundTyp.ERWERBSPENSUM);
+	}
+
+	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
-	public boolean isDokumentNeeded(DokumentTyp dokumentTyp, Erwerbspensum erwerbspensum, LocalDate periodenstart) {
+	public boolean isDokumentNeeded(
+		@Nonnull DokumentTyp dokumentTyp,
+		Erwerbspensum erwerbspensum,
+		LocalDate periodenstart) {
+
 		return isDokumentNeeded(dokumentTyp, erwerbspensum);
 	}
 
+	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Erwerbspensum erwerbspensum) {
 		if (erwerbspensum == null) {

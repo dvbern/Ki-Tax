@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -74,7 +74,7 @@ public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(foundDossier.getVerantwortlicherBG());
 		Assert.assertNotEquals(sachbearbeiter.getUsername(), foundDossier.getVerantwortlicherBG().getUsername());
 
-		JaxBenutzer userToSet = converter.benutzerToAuthLoginElement(sachbearbeiter);
+		JaxBenutzer userToSet = converter.benutzerToJaxBenutzer(sachbearbeiter);
 		foundDossier.setVerantwortlicherBG(userToSet);
 		JaxDossier updatedDossier = (JaxDossier) dossierResource.create(foundDossier, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		Assert.assertNotNull(updatedDossier);

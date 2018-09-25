@@ -18,13 +18,12 @@
 
 <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
     <div class="onboarding-gemeinde-container">
-        <label class="onboarding-gemeinde-label" for="gemeinde" translate>
-            ONBOARDING_GEMEINDE_AUSWAHL
-        </label>
-
         <div class="onboarding-gemeinde-input-container">
             <div class="onboarding-gemeinde-search">
-                <div class="onboarding-gemeinde-search-input form-group">
+                <label class="onboarding-gemeinde-label" for="gemeinde" translate>
+                    ONBOARDING_GEMEINDE_AUSWAHL
+                </label>
+                <div class="onboarding-gemeinde-search-input">
                     <div class="dv-select-style">
                         <select [(ngModel)]="gemeinde"
                                 name="gemeinde"
@@ -38,10 +37,12 @@
                         </select>
                     </div>
                 </div>
+
             </div>
 
             <dv-loading-button [buttonClass]="'onboarding-gemeinde-auswaehlen'"
-                               [type]="'submit'" translate>ONBOARDING_GEMEINDE_AUSWAEHLEN
+                               [type]="'submit'">
+                <span translate>ONBOARDING_GEMEINDE_AUSWAEHLEN</span>
             </dv-loading-button>
         </div>
 
