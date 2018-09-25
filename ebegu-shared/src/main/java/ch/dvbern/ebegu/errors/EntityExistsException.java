@@ -33,4 +33,13 @@ public class EntityExistsException extends EbeguRuntimeException {
 
 		super(null, ErrorCodeEnum.ERROR_ENTITY_EXISTS, entityClass.getSimpleName(), constraintName, duplicateValue);
 	}
+
+	public <T extends AbstractEntity> EntityExistsException(
+		@Nonnull Class<T> entityClass,
+		@Nonnull String constraintName,
+		@Nonnull String duplicateValue,
+		@Nonnull ErrorCodeEnum errorCodeEnum) {
+
+		super(null, errorCodeEnum, entityClass.getSimpleName(), constraintName, duplicateValue);
+	}
 }

@@ -21,12 +21,9 @@ import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import TSEinstellung from '../../../models/TSEinstellung';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import DateUtil from '../../../utils/DateUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
@@ -44,7 +41,6 @@ export class AddGemeindeComponent implements OnInit {
     adminMail: string = undefined;
     beguStartDatum: moment.Moment;
     beguStartDatumMin: moment.Moment;
-    isDisabled = false;
     gesuchsperiodeList: Array<TSGesuchsperiode>;
 
     constructor(private readonly $transition$: Transition,
@@ -63,7 +59,7 @@ export class AddGemeindeComponent implements OnInit {
                 this.gemeinde = result;
             });
         } else { // add
-            this.createGemeinde();
+            this.initGemeinde();
         }
         this.adminMail = '';
         const currentDate = moment();
@@ -83,26 +79,8 @@ export class AddGemeindeComponent implements OnInit {
     gemeindeEinladen(): void {
         if (this.form.valid) {
             this.errorService.clearAll();
-            const valid = this.isStartDateValid();
-            if (valid) {
-                this.gemeindeRS.findGemeindeByName(this.gemeinde.name).then((result) => {
-                    // Fehlerfall; die Gemeinde existiert bereits!
-                    this.errorService.addMesageAsError('Die Gemeinde ' + result.name + ' existiert bereits!');
-                }).catch(() => {
-                    // Normalfall; die Gemeinde existiert noch nicht.
-                    this.benutzerRS.findBenutzerByEmail(this.adminMail).then((result) => {
-                        // Der Benutzer existiert bereits.
-                        const user = result;
-                        // TODO hier kann man was machen, falls der Benutzer bereits exisiert
-                        this.errorService.addMesageAsError('Der Benutzer ' + user.vorname + ' ' + user.nachname + ' (' + user.email + ') existiert bereits!');
-                        this.persistGemeinde();
-                    }).catch(() => {
-                        // Der Benutzer existiert noch nicht.
-                        // TODO hier kann man was machen, falls der Benutzer noch nicht exisiert
-                        this.errorService.addMesageAsError('Für ' + this.adminMail + ' existiert noch kein Benutzer!');
-                        this.persistGemeinde();
-                    });
-                });
+            if (this.isStartDateValid()) {
+                this.persistGemeinde();
             }
         }
     }
@@ -110,10 +88,12 @@ export class AddGemeindeComponent implements OnInit {
     private isStartDateValid(): boolean {
         const day = this.beguStartDatum.format('D');
         if ('1' !== day) {
+            // todo translate this -> move it to a validator????
             this.errorService.addMesageAsError('Das Startdatum muss am 1. des jeweiligen Monats beginnen!');
             return false;
         }
         if (moment() >= this.beguStartDatum) {
+            // todo translate this -> move it to a validator????
             this.errorService.addMesageAsError('Das Startdatum muss in der Zukunft liegen!');
             return false;
         }
@@ -121,34 +101,13 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde).then((neueGemeinde) => {
+        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then((neueGemeinde) => {
             this.gemeinde = neueGemeinde;
-            this.persistEinstellung();
-        });
-    }
-
-    private persistEinstellung(): void {
-        const einstellung: TSEinstellung = new TSEinstellung();
-        einstellung.key = TSEinstellungKey.BEGU_ANBIETEN_AB;
-        einstellung.value = DateUtil.momentToLocalDate(this.beguStartDatum);
-        einstellung.gemeindeId = this.gemeinde.id;
-        einstellung.gesuchsperiodeId = this.findePassendeGesuchsperiode().id;
-        this.einstellungRS.saveEinstellung(einstellung).then(() => {
             this.navigateBack();
         });
     }
 
-    private findePassendeGesuchsperiode(): TSGesuchsperiode {
-        for (const gp of this.gesuchsperiodeList) {
-            if (this.beguStartDatum >= gp.gueltigkeit.gueltigAb && this.beguStartDatum <= gp.gueltigkeit.gueltigBis) {
-                return gp;
-            }
-        }
-        // Falls das BEGU Startdatum nicht innerhalb einer erfassten Gesuchsperiode liegt, nehmen wir die neuste GP
-        return this.gesuchsperiodeList[0];
-    }
-
-    private createGemeinde(): void {
+    private initGemeinde(): void {
         this.gemeinde = new TSGemeinde();
         this.gemeinde.status = TSGemeindeStatus.EINGELADEN;
     }

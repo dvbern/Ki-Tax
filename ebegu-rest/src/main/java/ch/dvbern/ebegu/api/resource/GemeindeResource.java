@@ -17,8 +17,8 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,10 +31,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
@@ -44,9 +46,13 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Resource fuer Gemeinde
@@ -60,7 +66,38 @@ public class GemeindeResource {
 	private GemeindeService gemeindeService;
 
 	@Inject
+	private EinstellungService einstellungService;
+
+	@Inject
 	private JaxBConverter converter;
+
+
+	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
+	@Nullable
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeinde createGemeinde(
+		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
+		@Nonnull @NotNull @QueryParam("date") String stringDateBeguBietenAb,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		requireNonNull(gemeindeJAXP);
+		requireNonNull(stringDateBeguBietenAb);
+
+		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
+		LocalDate eingangsdatum = DateUtil.parseStringToDate(stringDateBeguBietenAb);
+
+		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
+
+		einstellungService.createBeguBietenAbEinstellung(eingangsdatum, persistedGemeinde);
+
+		// todo KIBON-211 the given user must be informed
+
+		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
+		return jaxGemeinde;
+	}
 
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
@@ -105,7 +142,7 @@ public class GemeindeResource {
 	public JaxGemeinde findGemeinde(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
-		Objects.requireNonNull(gemeindeJAXPId.getId());
+		requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
 

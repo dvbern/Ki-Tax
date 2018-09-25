@@ -16,13 +16,15 @@
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
-import TSGemeinde from '../../models/TSGemeinde';
 import TSBenutzer from '../../models/TSBenutzer';
+import TSGemeinde from '../../models/TSGemeinde';
+import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -98,24 +100,28 @@ export default class GemeindeRS implements IEntityRS {
         return from(this.getAllGemeinden());
     }
 
-    public createGemeinde(gemeinde: TSGemeinde): IPromise<TSGemeinde> {
-        // Reset Gemeinde cache to make Gemeinde visible upon reload
-        // this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
-        return this.saveGemeinde(gemeinde);
+    /**
+     * It sends all required parameters (new Gemeinde, beguStartDatum and User) to the server so the server can create
+     * all required objects within a single transaction.
+     */
+    public createGemeinde(gemeinde: TSGemeinde, beguStartDatum: moment.Moment): IPromise<TSGemeinde> {
+        const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde);
+
+        return this.$http.post(this.serviceURL, restGemeinde,
+            {
+                headers: {'Content-Type': 'application/json'},
+                params: {date: DateUtil.momentToLocalDate(beguStartDatum)},
+            })
+            .then((response) => {
+                this.resetGemeindeCache();
+                this.$log.debug('PARSING gemeinde REST object ', response.data);
+                return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
+            });
     }
 
-    private saveGemeinde(gemeinde: TSGemeinde) {
-        let restGemeinde = {};
-        restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
-        return this.$http.put(this.serviceURL, restGemeinde, {
-            headers: { 'Content-Type': 'application/json' }
-        }).then((response: any) => {
-            // Reset Gemeinde cache to make Gemeinde visible upon reload
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
-            this.initGemeindenForPrincipal();
-            this.$log.debug('PARSING traegerschaft REST object ', response.data);
-            return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
-        });
+    private resetGemeindeCache() {
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
+        this.initGemeindenForPrincipal();
     }
 
 }

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.tests.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -123,5 +124,12 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 	@Override
 	public void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		// nop
+	}
+
+	@Nullable
+	@Override
+	public Einstellung createBeguBietenAbEinstellung(@Nonnull LocalDate eingangsdatum, @Nullable Gemeinde gemeinde) {
+		// nop
+		return null;
 	}
 }

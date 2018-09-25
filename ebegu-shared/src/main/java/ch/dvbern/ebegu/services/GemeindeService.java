@@ -38,6 +38,12 @@ public interface GemeindeService {
 	Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde);
 
 	/**
+	 * Creates a new Gemeinde. Name and BSFNummer must be unique. If they already exist an Exception will be thrown
+	 */
+	@Nonnull
+	Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde);
+
+	/**
 	 * Gibt die Gemeinde mit der uebergebenen ID zurueck.
 	 */
 	@Nonnull

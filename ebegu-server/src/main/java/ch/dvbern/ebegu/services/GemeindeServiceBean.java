@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -78,6 +80,22 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
+		if (findGemeindeByName(gemeinde.getName()).isPresent()) {
+			throw new EntityExistsException(Gemeinde.class, "name", gemeinde.getName(), ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_NAME);
+		}
+		final Long bfsNummer = gemeinde.getBfsNummer();
+		if (findGemeindeByBSF(bfsNummer).isPresent()) {
+			throw new EntityExistsException(Gemeinde.class, "bsf",
+				bfsNummer != null ? Long.toString(bfsNummer) : "",
+				ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_BSF);
+		}
+		return saveGemeinde(gemeinde);
+	}
+
+	@Nonnull
+	@Override
 	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
@@ -89,6 +107,12 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
 		Objects.requireNonNull(name, "Gemeindename muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
+	}
+
+	@Nonnull
+	private Optional<Gemeinde> findGemeindeByBSF(@Nullable Long bsf) {
+		Objects.requireNonNull(bsf, "GemeindeBSFNummer muss gesetzt sein");
+		return criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
 	}
 
 	@Nonnull

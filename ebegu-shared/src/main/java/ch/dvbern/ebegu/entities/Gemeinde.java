@@ -48,6 +48,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name"),
+		@UniqueConstraint(columnNames = "bfsNummer", name = "UK_gemeinde_bfsnummer"),
 		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
 	}
 )
@@ -65,9 +66,8 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private long gemeindeNummer = 0;
 
-	// todo fragen darf es ueberhaupt null sein?
-	@Nullable
-	@Column(nullable = true)
+	@NotNull
+	@Column(nullable = false)
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private Long bfsNummer;
 

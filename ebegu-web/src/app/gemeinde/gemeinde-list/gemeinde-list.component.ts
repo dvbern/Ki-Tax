@@ -36,9 +36,7 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
 
-const LOG = LogFactory.createLog('GemeindeListComponent');
 
 @Component({
     selector: 'dv-gemeinde-list',

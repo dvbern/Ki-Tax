@@ -95,11 +95,9 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <div *ngIf="!isDisabled">
-                <dv-loading-button [type]="'submit'">
-                    <span translate>EINLADUNG_SENDEN</span>
-                </dv-loading-button>
-            </div>
+            <dv-loading-button [type]="'submit'">
+                <span translate>EINLADUNG_SENDEN</span>
+            </dv-loading-button>
 
             <button type="button" class="dv-btn cancel-button"
                     (click)="cancel()"
