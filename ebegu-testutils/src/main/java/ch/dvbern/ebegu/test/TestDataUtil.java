@@ -373,6 +373,7 @@ public final class TestDataUtil {
 		gemeinde.setName("Bern");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
+		gemeinde.setBfsNummer(351L);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
 	}
@@ -384,6 +385,7 @@ public final class TestDataUtil {
 		gemeinde.setName("Ostermundigen");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
+		gemeinde.setBfsNummer(363L);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
 	}
