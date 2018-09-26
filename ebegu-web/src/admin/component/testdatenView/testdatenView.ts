@@ -78,7 +78,7 @@ export class TestdatenViewComponent implements OnInit {
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
         });
-        this.gemeindeRS.getAllGemeinden().then(response => {
+        this.gemeindeRS.getAktiveGemeinden().then(response => {
             this.gemeindeList = angular.copy(response);
         });
     }

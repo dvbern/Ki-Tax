@@ -91,7 +91,7 @@ export class NavbarComponent implements OnDestroy {
             .pipe(
                 switchMap(principal => {
                     if (principal && principal.hasJustOneGemeinde()) {
-                        return of(principal.extractCurrentGemeinden());
+                        return of(principal.extractCurrentAktiveGemeinden());
                     }
 
                     return this.getListOfGemeinden$()
@@ -113,10 +113,10 @@ export class NavbarComponent implements OnDestroy {
      */
     private getListOfGemeinden$(): Observable<TSGemeinde[]> {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            return fromPromise(this.gemeindeRS.getAllGemeinden());
+            return fromPromise(this.gemeindeRS.getAktiveGemeinden());
         } else {
             return this.authServiceRS.principal$
-                .pipe(map(p => p.extractCurrentGemeinden()));
+                .pipe(map(p => p.extractCurrentAktiveGemeinden()));
         }
     }
 }

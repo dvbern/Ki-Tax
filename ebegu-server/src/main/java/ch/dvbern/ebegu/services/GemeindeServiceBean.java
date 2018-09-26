@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,12 +32,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -153,4 +157,35 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return gemeinde;
 	}
 
+
+	@Nonnull
+	@Override
+	public Collection<Gemeinde> getAktiveGemeinden() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		// Status muss aktiv sein
+		Predicate predicateStatusActive = cb.equal(root.get(Gemeinde_.status), GemeindeStatus.AKTIV);
+		predicates.add(predicateStatusActive);
+
+//		// TODO MANDANTEN when developing kibon for multple mandanten we need to filter the mandanten too. Uncommenting the following code
+//		// and taking the FIXME into account should be enough
+//		// Nur Gemeinden meines Mandanten zurueckgeben
+//		final Principal principal = principalBean.getPrincipal();
+//		if (!"anonymous".equals(principal.getName())) {
+//			// user anonymous can get the list of active Gemeinden, though anonymous user doesn't really exist
+//			// FIXME MANDANTEN this is actually a problem if we work with different Mandanten because in onBoarding there is no user at all
+//			// so we cannot get the mandant out of the user. In this case we need to send the mandant when calling this method
+//			Mandant mandant = principalBean.getMandant();
+//			if (mandant != null) {
+//				Predicate predicateMandant = cb.equal(root.get(Gemeinde_.mandant), mandant);
+//				predicates.add(predicateMandant);
+//			}
+//		}
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		return persistence.getCriteriaResults(query);
+	}
 }

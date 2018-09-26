@@ -57,6 +57,15 @@ export default class GemeindeRS implements IEntityRS {
             });
     }
 
+    public getAktiveGemeinden(): IPromise<TSGemeinde[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
+        return this.$http.get(this.serviceURL + '/active', {cache: cache})
+            .then((response: any) => {
+                this.$log.debug('PARSING gemeinde REST object ', response.data);
+                return this.ebeguRestUtil.parseGemeindeList(response.data);
+            });
+    }
+
     public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubject$.asObservable();
     }
