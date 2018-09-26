@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("MethodParameterNamingConvention")
 public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
-	private final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRule.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRule.class);
 
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse3;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse4;
@@ -71,7 +71,9 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
+		@Nonnull Betreuung betreuung,
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		final List<VerfuegungZeitabschnitt> familienAbzugZeitabschnitt = createInitialenFamilienAbzug(gesuch);

@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -83,9 +84,9 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 	private static final Logger LOG = LoggerFactory.getLogger(AdministrationServiceBean.class);
 
 	private PrintWriter printWriter;
-	private final static String INPUT_FILE = "/institutionen/Institutionen_2017.03.01.xlsx";
-	private final static String OUTPUT_FILE = "insertInstitutionen.sql";
-	private final static int ANZAHL_ZEILEN = 87;
+	private static final String INPUT_FILE = "/institutionen/Institutionen_2017.03.01.xlsx";
+	private static final String OUTPUT_FILE = "insertInstitutionen.sql";
+	private static final int ANZAHL_ZEILEN = 87;
 
 	private final List<String> traegerschaftenMap = new LinkedList<>();
 	private final List<String> institutionenMap = new LinkedList<>();
@@ -393,43 +394,39 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 	private String readString(Row row, int columnIndex) {
 		Cell cell = row.getCell(columnIndex);
 		if (cell != null) {
-			cell.setCellType(Cell.CELL_TYPE_STRING);
+			cell.setCellType(CellType.STRING);
 			return cell.getStringCellValue();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	@Nullable
 	private String readDouble(Row row, int columnIndex) {
 		Cell cell = row.getCell(columnIndex);
 		if (cell != null) {
-			cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			cell.setCellType(CellType.NUMERIC);
 			return Double.toString(cell.getNumericCellValue());
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	private String toStringOrNull(String aStringOrNull) {
 		if (aStringOrNull == null) {
 			return "null";
-		} else {
-			return '\'' + aStringOrNull + '\'';
 		}
+		return '\'' + aStringOrNull + '\'';
 	}
 
 	private String toBigDecimalOrNull(String aStringOrNull) {
 		if (aStringOrNull == null) {
 			return "null";
-		} else {
-			// Mit 2 Nachkommastellen
-			BigDecimal from = MathUtil.DEFAULT.from(new BigDecimal(aStringOrNull));
-			if (from != null) {
-				return from.toString();
-			}
-			return "null";
 		}
+		// Mit 2 Nachkommastellen
+		BigDecimal from = MathUtil.DEFAULT.from(new BigDecimal(aStringOrNull));
+		if (from != null) {
+			return from.toString();
+		}
+		return "null";
 	}
 
 	private PrintWriter getPrintWriter() {

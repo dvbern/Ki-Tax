@@ -356,8 +356,6 @@ public abstract class AbstractEbeguRestTest {
 			.importFrom(serverJarFile)
 			.as(JavaArchive.class);
 		serverJar.delete("/META-INF/persistence.xml");
-//		serverJar.deleteClass(SequenceServiceBean.class);
-//		serverJar.addClass(SequenceServiceMock.class);
 
 		return serverJar;
 	}

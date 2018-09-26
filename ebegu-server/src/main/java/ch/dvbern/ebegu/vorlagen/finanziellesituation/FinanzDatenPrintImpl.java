@@ -27,16 +27,20 @@ import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * DTO fuer die Finazdaten die im Print gebraucht werden, implementiert den FinanzielleSituationPrint
  */
 public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 
 	public static final int DEFAULT_WERT = 123456;
-	protected final FinanzSituationPrintGesuchsteller fsGesuchsteller1;
 
 	@Nullable
-	protected final FinanzSituationPrintGesuchsteller fsGesuchsteller2;
+	private final FinanzSituationPrintGesuchsteller fsGesuchsteller1;
+
+	@Nullable
+	private final FinanzSituationPrintGesuchsteller fsGesuchsteller2;
 
 	/**
 	 * Konstruktor
@@ -44,36 +48,40 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 	 * @param fsGesuchsteller1 {@link AbstractFinanzielleSituation}
 	 * @param fsGesuchsteller2 {@link AbstractFinanzielleSituation}
 	 */
-	public FinanzDatenPrintImpl(FinanzSituationPrintGesuchsteller fsGesuchsteller1, @Nullable FinanzSituationPrintGesuchsteller fsGesuchsteller2) {
+	protected FinanzDatenPrintImpl(
+		@Nullable FinanzSituationPrintGesuchsteller fsGesuchsteller1,
+		@Nullable FinanzSituationPrintGesuchsteller fsGesuchsteller2) {
 
 		this.fsGesuchsteller1 = fsGesuchsteller1;
 		this.fsGesuchsteller2 = fsGesuchsteller2;
 
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getNettolohnG1() {
 
-		return this.getFinanzSituationGS1().getNettolohn();
+		return requireNonNull(this.getFinanzSituationGS1()).getNettolohn();
 
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getNettolohnG2() {
-		return fsGesuchsteller2 != null ? this.getFinanzSituationGS2().getNettolohn() : null;
+		return fsGesuchsteller2 != null ? requireNonNull(this.getFinanzSituationGS2()).getNettolohn() : null;
 
 	}
 
 	@Override
 	public final BigDecimal getFamilienzulagenG1() {
 
-		return this.getFinanzSituationGS1().getFamilienzulage();
+		return requireNonNull(this.getFinanzSituationGS1()).getFamilienzulage();
 
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getFamilienzulagenG2() {
-
 		return this.getFinanzSituationGS2() != null ? this.getFinanzSituationGS2().getFamilienzulage() : null;
 
 	}
@@ -81,44 +89,40 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 	@Override
 	public final BigDecimal getErsatzeinkommenG1() {
 
-		return this.getFinanzSituationGS1().getErsatzeinkommen();
+		return requireNonNull(this.getFinanzSituationGS1()).getErsatzeinkommen();
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getErsatzeinkommenG2() {
-
 		return this.getFinanzSituationGS2() != null ? this.getFinanzSituationGS2().getErsatzeinkommen() : null;
 
 	}
 
 	@Override
 	public final BigDecimal getUnterhaltsbeitraegeG1() {
-
-		return this.getFinanzSituationGS1().getErhalteneAlimente();
-
+		return requireNonNull(this.getFinanzSituationGS1()).getErhalteneAlimente();
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getGeleisteteUnterhaltsbeitraegeG1() {
-
 		return this.getFinanzSituationGS1() != null ? this.getFinanzSituationGS1().getGeleisteteAlimente() : null;
-
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getGeleisteteUnterhaltsbeitraegeG2() {
-
 		return this.getFinanzSituationGS2() != null ? this.getFinanzSituationGS2().getGeleisteteAlimente() : null;
-
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getUnterhaltsbeitraegeG2() {
-
 		return this.getFinanzSituationGS2() != null ? this.getFinanzSituationGS2().getErhalteneAlimente() : null;
-
 	}
 
+	@Nullable
 	@Override
 	public BigDecimal getGeschaeftsgewinnG1() {
 		if (fsGesuchsteller1 != null) {
@@ -127,6 +131,7 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 		return null;
 	}
 
+	@Nullable
 	@Override
 	public BigDecimal getGeschaeftsgewinnG2() {
 		if (fsGesuchsteller2 != null) {
@@ -135,24 +140,30 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 		return null;
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getZwischentotalEinkuenfteG1() {
 
 		BigDecimal nettolohn = getNettolohnG1() != null ? getNettolohnG1() : BigDecimal.ZERO;
 		BigDecimal familienzulagen = getFamilienzulagenG1() != null ? getFamilienzulagenG1() : BigDecimal.ZERO;
 		BigDecimal ersatzeinkommen = getErsatzeinkommenG1() != null ? getErsatzeinkommenG1() : BigDecimal.ZERO;
-		BigDecimal unterhaltsbeitraege = getUnterhaltsbeitraegeG1() != null ? getUnterhaltsbeitraegeG1() : BigDecimal.ZERO;
+		BigDecimal unterhaltsbeitraege = getUnterhaltsbeitraegeG1() != null ?
+			getUnterhaltsbeitraegeG1() :
+			BigDecimal.ZERO;
 		BigDecimal geschaeftsgewinn = getGeschaeftsgewinnG1() != null ? getGeschaeftsgewinnG1() : BigDecimal.ZERO;
 		return MathUtil.EXACT.add(nettolohn, familienzulagen, ersatzeinkommen, unterhaltsbeitraege, geschaeftsgewinn);
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getZwischentotalEinkuenfteG2() {
 
 		BigDecimal nettolohn = getNettolohnG2() != null ? getNettolohnG2() : BigDecimal.ZERO;
 		BigDecimal familienzulagen = getFamilienzulagenG2() != null ? getFamilienzulagenG2() : BigDecimal.ZERO;
 		BigDecimal ersatzeinkommen = getErsatzeinkommenG2() != null ? getErsatzeinkommenG2() : BigDecimal.ZERO;
-		BigDecimal unterhaltsbeitraege = getUnterhaltsbeitraegeG2() != null ? getUnterhaltsbeitraegeG2() : BigDecimal.ZERO;
+		BigDecimal unterhaltsbeitraege = getUnterhaltsbeitraegeG2() != null ?
+			getUnterhaltsbeitraegeG2() :
+			BigDecimal.ZERO;
 		BigDecimal geschaeftsgewinn = getGeschaeftsgewinnG2() != null ? getGeschaeftsgewinnG2() : BigDecimal.ZERO;
 		return MathUtil.EXACT.add(nettolohn, familienzulagen, ersatzeinkommen, unterhaltsbeitraege, geschaeftsgewinn);
 	}
@@ -168,31 +179,26 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 
 	@Override
 	public final BigDecimal getBruttovermoegenG1() {
-
-		return this.getFinanzSituationGS1().getBruttovermoegen();
-
+		return requireNonNull(this.getFinanzSituationGS1()).getBruttovermoegen();
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getBruttovermoegenG2() {
-
 		if (this.getFinanzSituationGS2() != null) {
 			return this.getFinanzSituationGS2().getBruttovermoegen();
 		}
 		return null;
-
 	}
 
 	@Override
 	public final BigDecimal getSchuldenG1() {
-
-		return this.getFinanzSituationGS1().getSchulden();
-
+		return requireNonNull(this.getFinanzSituationGS1()).getSchulden();
 	}
 
+	@Nullable
 	@Override
 	public final BigDecimal getSchuldenG2() {
-
 		if (fsGesuchsteller2 != null && this.getFinanzSituationGS2() != null) {
 			return this.getFinanzSituationGS2().getSchulden();
 		}
@@ -201,15 +207,14 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 
 	@Override
 	public final BigDecimal getZwischentotalNettovermoegenBeiderGesuchsteller1() {
-
 		BigDecimal bruttovermoegen = getBruttovermoegenG1() != null ? getBruttovermoegenG1() : BigDecimal.ZERO;
 		BigDecimal schulden = getSchuldenG1() != null ? getSchuldenG1() : BigDecimal.ZERO;
+
 		return MathUtil.EXACT.subtract(bruttovermoegen, schulden);
 	}
 
 	@Override
 	public final BigDecimal getZwischentotalNettovermoegenBeiderGesuchsteller2() {
-
 		BigDecimal bruttovermoegen = getBruttovermoegenG2() != null ? getBruttovermoegenG2() : BigDecimal.ZERO;
 		BigDecimal schulden = getSchuldenG2() != null ? getSchuldenG2() : BigDecimal.ZERO;
 
@@ -225,21 +230,25 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 			getZwischentotalNettovermoegenBeiderGesuchsteller2() : BigDecimal.ZERO;
 
 		return MathUtil.EXACT.add(nettovermoegenG1, nettovermoegenG2);
-
 	}
 
 	//das ist eigentlich der nettovermoegensabzug
 	@Override
 	@Nonnull
 	public final BigDecimal getNettovermoegen() {
-		return FinanzielleSituationRechner.calcVermoegen5Prozent(this.getFinanzSituationGS1(), this.getFinanzSituationGS2());
+		return FinanzielleSituationRechner.calcVermoegen5Prozent(this.getFinanzSituationGS1(),
+			this.getFinanzSituationGS2());
 	}
 
 	@Override
 	public final BigDecimal getTotalAbzuege() {
 
-		BigDecimal unterhaltGS1 = getGeleisteteUnterhaltsbeitraegeG1() != null ? getGeleisteteUnterhaltsbeitraegeG1() : BigDecimal.ZERO;
-		BigDecimal unterhaltGS2 = getGeleisteteUnterhaltsbeitraegeG2() != null ? getGeleisteteUnterhaltsbeitraegeG2() : BigDecimal.ZERO;
+		BigDecimal unterhaltGS1 = getGeleisteteUnterhaltsbeitraegeG1() != null ?
+			getGeleisteteUnterhaltsbeitraegeG1() :
+			BigDecimal.ZERO;
+		BigDecimal unterhaltGS2 = getGeleisteteUnterhaltsbeitraegeG2() != null ?
+			getGeleisteteUnterhaltsbeitraegeG2() :
+			BigDecimal.ZERO;
 
 		return MathUtil.EXACT.add(unterhaltGS1, unterhaltGS2);
 	}
@@ -247,7 +256,6 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 	@Override
 	public final BigDecimal getZusammenzugTotaleinkuenfte() {
 		return getTotalEinkuenfte();
-
 	}
 
 	@Override
@@ -270,6 +278,7 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 		return MathUtil.EXACT.subtract(totalEinkommen, abzug);
 	}
 
+	@Nullable
 	protected AbstractFinanzielleSituation getFinanzSituationGS1() {
 		if (fsGesuchsteller1 != null) {
 			return this.fsGesuchsteller1.getFinanzielleSituation();
@@ -277,6 +286,7 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 		return null;
 	}
 
+	@Nullable
 	protected AbstractFinanzielleSituation getFinanzSituationGS2() {
 		if (fsGesuchsteller2 != null) {
 			return this.fsGesuchsteller2.getFinanzielleSituation();
@@ -286,11 +296,20 @@ public abstract class FinanzDatenPrintImpl implements FinanzDatenPrint {
 
 	@Override
 	public String getDateCreate() {
-		final String date_pattern = ServerMessageUtil.getMessage("date_pattern");
+		final String datePattern = ServerMessageUtil.getMessage("date_pattern");
 		LocalDate date = LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(date_pattern);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
 
 		return date.format(formatter);
 	}
 
+	@Nullable
+	public FinanzSituationPrintGesuchsteller getFsGesuchsteller1() {
+		return fsGesuchsteller1;
+	}
+
+	@Nullable
+	public FinanzSituationPrintGesuchsteller getFsGesuchsteller2() {
+		return fsGesuchsteller2;
+	}
 }

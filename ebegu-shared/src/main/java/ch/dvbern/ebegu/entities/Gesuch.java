@@ -574,6 +574,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	 * Gibt das Startjahr der Gesuchsperiode (zweistellig) gefolgt von Fall-Nummer als String zurück.
 	 * Achtung, entspricht NICHT der Antragsnummer! (siehe Antrag.laufnummer)
 	 */
+	@Nonnull
 	public String getJahrFallAndGemeindenummer() {
 		if (getGesuchsperiode() == null) {
 			return "-";
