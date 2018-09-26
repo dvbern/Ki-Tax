@@ -18,11 +18,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
-import * as angular from 'angular';
 import {of} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {SharedModuleOverrides} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -35,15 +33,6 @@ describe('OnboardingComponent', () => {
 
     const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
     const applicationPropertyRSSpy = createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
-
-    let $injector: angular.auto.IInjectorService;
-
-    beforeEach(angular.mock.module(EbeguWebCore.name));
-    beforeEach(angular.mock.module(ngServicesMock));
-
-    beforeEach(angular.mock.inject((_$injector_: angular.auto.IInjectorService) => {
-        $injector = _$injector_;
-    }));
 
     beforeEach(async(() => {
         gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
@@ -59,18 +48,9 @@ describe('OnboardingComponent', () => {
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {
-                    provide: '$injector',
-                    useFactory: () => $injector,
-                    deps: []
-                },
-                {
-                    provide: '$scope',
-                    useFactory: () => $injector.get('$rootScope').$new(),
-                    deps: []
-                },
             ]
         })
+            .overrideModule(SharedModule, SharedModuleOverrides)
             .compileComponents();
     }));
 

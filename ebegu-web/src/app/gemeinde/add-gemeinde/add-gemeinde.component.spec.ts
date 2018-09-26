@@ -24,6 +24,7 @@ import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {SharedModuleOverrides} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
@@ -62,8 +63,11 @@ describe('AddGemeindeComponent', () => {
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
             ],
-            declarations: [AddGemeindeComponent]
-        }).compileComponents();
+            declarations: [
+                AddGemeindeComponent,
+            ]
+        }).overrideModule(SharedModule, SharedModuleOverrides
+        ).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
