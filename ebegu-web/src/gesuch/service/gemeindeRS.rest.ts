@@ -103,10 +103,10 @@ export default class GemeindeRS implements IEntityRS {
         }
 
         if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
-            return of(angular.copy(user.extractCurrentAktiveGemeinden()));
+            return of(angular.copy(user.extractCurrentGemeinden()));
         }
 
-        return from(this.getAktiveGemeinden());
+        return from(this.getAllGemeinden());
     }
 
     /**
