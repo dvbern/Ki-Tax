@@ -61,7 +61,6 @@ public class AbstractEntityListener {
 	private KindService kindService;
 	private SequenceService sequenceService;
 	private GesuchDeletionLogService deletionLogService;
-	private MandantService mandantService;
 
 	private BenutzerService benutzerService;
 
@@ -119,15 +118,6 @@ public class AbstractEntityListener {
 			Verfuegung verfuegung = (Verfuegung) entity;
 			if (!verfuegung.getBetreuung().getBetreuungsstatus().isGeschlossenJA()) {
 				throw new IllegalStateException("Verfuegung darf nicht gespeichert werden, wenn die Betreuung nicht verfuegt ist");
-			}
-		} else if (entity instanceof Gemeinde) {
-			// Neue Gemeindenummer setzen
-			Gemeinde gemeinde = (Gemeinde) entity;
-			Optional<Mandant> mandantOptional = getMandantService().findMandant(gemeinde.getMandant().getId());
-			if (mandantOptional.isPresent()) {
-				Mandant mandant = mandantOptional.get();
-				gemeinde.setGemeindeNummer(mandant.getNextNumberGemeinde());
-				mandant.setNextNumberGemeinde(mandant.getNextNumberGemeinde() + 1);
 			}
 		}
 	}
@@ -201,15 +191,6 @@ public class AbstractEntityListener {
 			deletionLogService = CDI.current().select(GesuchDeletionLogService.class).get();
 		}
 		return deletionLogService;
-	}
-
-	private MandantService getMandantService() {
-		if (mandantService == null) {
-			//FIXME: das ist nur ein Ugly Workaround, weil CDI-Injection in Wildfly 10 nicht funktioniert.
-			//noinspection NonThreadSafeLazyInitialization
-			mandantService = CDI.current().select(MandantService.class).get();
-		}
-		return mandantService;
 	}
 
 	private String getPrincipalName() {

@@ -769,7 +769,6 @@ export default class EbeguRestUtil {
         if (mandantFromServer) {
             this.parseAbstractMutableEntity(mandantTS, mandantFromServer);
             mandantTS.name = mandantFromServer.name;
-            mandantTS.nextNumberGemeinde = mandantFromServer.nextNumberGemeinde;
             return mandantTS;
         }
         return undefined;

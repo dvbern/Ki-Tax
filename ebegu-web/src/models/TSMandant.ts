@@ -18,12 +18,10 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 export class TSMandant extends TSAbstractMutableEntity {
 
     private _name: string;
-    private _nextNumberGemeinde: number;
 
-    constructor(name?: string, nextNumberGemeinde?: number) {
+    constructor(name?: string) {
         super();
         this._name = name;
-        this._nextNumberGemeinde = nextNumberGemeinde;
     }
 
     public get name(): string {
@@ -32,13 +30,5 @@ export class TSMandant extends TSAbstractMutableEntity {
 
     public set name(value: string) {
         this._name = value;
-    }
-
-    public get nextNumberGemeinde(): number {
-        return this._nextNumberGemeinde;
-    }
-
-    public set nextNumberGemeinde(value: number) {
-        this._nextNumberGemeinde = value;
     }
 }

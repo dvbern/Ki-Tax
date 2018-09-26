@@ -1384,7 +1384,6 @@ public class JaxBConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
-		jaxMandant.setNextNumberGemeinde(persistedMandant.getNextNumberGemeinde());
 		return jaxMandant;
 	}
 
