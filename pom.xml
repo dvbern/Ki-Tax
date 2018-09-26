@@ -32,7 +32,7 @@
 
     <properties>
         <!-- Wird ggf. im Profil "development-mode' ueberschrieben -->
-        <skip-code-validation>false</skip-code-validation>
+        <skip-code-validation>true</skip-code-validation>
 
         <!-- local database properties -->
         <database.jdbc.driver>org.mariadb.jdbc.Driver</database.jdbc.driver>

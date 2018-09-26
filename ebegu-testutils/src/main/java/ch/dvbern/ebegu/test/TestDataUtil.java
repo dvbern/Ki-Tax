@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -185,6 +186,8 @@ public final class TestDataUtil {
 	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
 	public static final String GEMEINDE_OSTERMUNDIGEN_ID = "4c453263-f992-48af-86b5-dc04cd7e8777";
 
+	public static final AtomicLong SEQUENCE = new AtomicLong();
+
 	private TestDataUtil() {
 	}
 
@@ -338,6 +341,7 @@ public final class TestDataUtil {
 			gemeinde = new Gemeinde();
 			gemeinde.setId(GEMEINDE_BERN_ID);
 			gemeinde.setName("Testgemeinde");
+			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
 			return persistence.persist(gemeinde);

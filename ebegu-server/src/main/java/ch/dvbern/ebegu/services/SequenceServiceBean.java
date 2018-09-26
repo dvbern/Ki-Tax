@@ -77,7 +77,7 @@ public class SequenceServiceBean implements SequenceService {
 		Sequence sequence;
 		if (resultList.isEmpty()) {
 			//wir sind hier mal liberal und initialisieren automatisch wenn noch nicht gemacht
-			sequence = initFallNrSeqMandant(mandant);
+			sequence = initSequence(seq, mandant);
 		} else if (resultList.size() == 1) {
 			sequence = resultList.get(0);
 		} else {
@@ -85,17 +85,16 @@ public class SequenceServiceBean implements SequenceService {
 		}
 		Long number = sequence.incrementAndGet();
 		persistence.merge(sequence);
+
 		return number;
 	}
 
-	@Override
-	public Sequence initFallNrSeqMandant(@Nonnull Mandant mandant) {
-		checkNotNull(mandant);
+	private Sequence initSequence(@Nonnull SequenceType seq, @Nonnull Mandant mandant) {
+		Sequence sequence = new Sequence(seq, 0L);
 
-		Sequence seqFallNr = new Sequence(SequenceType.FALL_NUMMER, 0L);
+		sequence.setMandant(mandant);
+		persistence.persist(sequence);
 
-		seqFallNr.setMandant(mandant);
-		persistence.persist(seqFallNr);
-		return seqFallNr;
+		return sequence;
 	}
 }

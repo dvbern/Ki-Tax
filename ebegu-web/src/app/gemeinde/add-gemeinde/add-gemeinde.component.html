@@ -35,10 +35,9 @@
                 <div class="row">
                     <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="gemeinde_ID">GEMEINDENAME</label>
+                            <label translate for="gemeinde_ID">GEMEINDENAME</label>
                             <input id="gemeinde_ID" type="text" name="gemeinde_name" #name="ngModel"
                                    [(ngModel)]="gemeinde.name"
-                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.gemeinde_name?.errors"
                                                inputId="gemeinde_ID">
@@ -47,10 +46,9 @@
                     </div>
                     <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
+                            <label translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
                             <input id="bfs_nummer_ID" type="number" name="bfs_nummer" #name="ngModel"
                                    [(ngModel)]="gemeinde.bfsNummer"
-                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
                                    [min]="1" [max]="6806" [maxlength]="4" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.bfs_nummer?.errors"
                                                inputId="bfs_nummer_ID">
@@ -64,14 +62,15 @@
                     <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
                             <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
-                            <input id="begu_start_ID" type="text" name="begu_start"
-                                   [(ngModel)]="beguStartDatum" data-date
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="begu_start" id="begu_start_ID"
+                                   [(ngModel)]="beguStartDatum"
                                    [min]="beguStartDatumMin"
                                    [matDatepicker]="begu_start"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                                   class="form-control" required>
-                            <!-- <mat-datepicker-toggle class="testfall-datepicker" matSuffix [for]="begu_start"></mat-datepicker-toggle>
-							<mat-datepicker #begu_start></mat-datepicker> -->
+                                   equired>
+                            <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                            <mat-datepicker #begu_start></mat-datepicker>
                             <dv-error-messages inputid="begu_start_ID"
                                                [errorObject]="form.controls.begu_start?.errors">
                             </dv-error-messages>
@@ -79,10 +78,9 @@
                     </div>
                     <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                            <input id="admin_mail_ID" type="email" name="admin_mail" #admin_mail="ngModel"
-                                   [(ngModel)]="adminMail" email
-                                   ngModel [ngModelOptions]="{updateOn: 'blur'}"
+                            <label translate for="admin_mail_ID">ADMIN_MAIL</label>
+                            <input id="admin_mail_ID" type="email" name="admin_mail"
+                                   [(ngModel)]="adminMail"
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
                                                inputid="admin_mail_ID">

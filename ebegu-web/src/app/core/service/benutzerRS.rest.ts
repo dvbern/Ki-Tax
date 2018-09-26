@@ -74,7 +74,7 @@ export default class BenutzerRS implements IEntityRS {
             });
     }
 
-    public findBenutzerByEmail(email: string): IPromise<TSBenutzer> {
+    public findBenutzerByEmail(email: string): IPromise<TSBenutzer | undefined> {
         return this.$http.get(this.serviceURL + '/email/' + encodeURIComponent(email))
             .then((response: any) => {
                 this.$log.debug('PARSING benutzer REST object ', response.data);

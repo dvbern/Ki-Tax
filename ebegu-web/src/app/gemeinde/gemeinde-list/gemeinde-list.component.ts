@@ -106,11 +106,11 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     setSelectedGemeinde(selected: TSGemeinde): void {
         this.gemeinde = angular.copy(selected);
         // Gemeinde edit is not provided
-        // this.$state.go('admin.addgemeinde', {gemeindeId: this.gemeinde.id});
+        // this.$state.go('gemeinde.add', {gemeindeId: this.gemeinde.id});
     }
 
     public addGemeinde(): void {
-        this.$state.go('admin.addgemeinde', {gemeindeId: null});
+        this.$state.go('gemeinde.add', {gemeindeId: null});
     }
 
 
