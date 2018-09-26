@@ -64,7 +64,7 @@ describe('dossier', () => {
         });
 
         it('should give all gemeinden for a role without gemeinde', done => {
-            $httpBackend.expectGET(gemeindeRS.serviceURL + '/active').respond(allGemeinde);
+            $httpBackend.expectGET(gemeindeRS.serviceURL + '/all').respond(allGemeinde);
             const user = createUser(TSRole.SACHBEARBEITER_INSTITUTION, false);
 
             gemeindeRS.toGemeindenForPrincipal$(user).subscribe(
