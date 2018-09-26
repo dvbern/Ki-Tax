@@ -59,9 +59,6 @@ export class DVNavigation implements IDirective {
     }
 }
 
-/**
- * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
- */
 export class NavigatorController implements IController {
 
     static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];

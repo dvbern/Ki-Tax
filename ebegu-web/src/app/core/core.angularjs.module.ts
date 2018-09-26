@@ -98,7 +98,6 @@ import {DVShowElement} from './directive/dv-show-element/dv-show-element';
 import DVSTPersistAntraege from './directive/dv-st-persist-antraege/dv-st-persist-antraege';
 import DVSTPersistPendenzen from './directive/dv-st-persist-quicksearch/dv-st-persist-quicksearch';
 import DVSTResetSearch from './directive/dv-st-reset-search/dv-st-reset-search';
-import DVSubmitevent from './directive/dv-submitevent/dv-submitevent';
 import DVSupressFormSubmitOnEnter from './directive/dv-suppress-form-submit-on-enter/dv-suppress-form-submit-on-enter';
 import {DVTimepicker} from './directive/dv-timepicker/dv-timepicker';
 import DVTrimEmpty from './directive/dv-trim-empty/dv-trim-empty';
@@ -216,7 +215,6 @@ export const EbeguWebCore: angular.IModule = angular
     .directive('dvVerantwortlicherselect', DvVerantwortlicherselect.factory())
     .directive('dvNavigation', DVNavigation.factory())
     .directive('dvLoading', DVLoading.factory())
-    .directive('dvSubmitevent', DVSubmitevent.factory())
     .directive('dvStPersistAntraege', DVSTPersistAntraege.factory())
     .directive('dvStPersistPendenzen', DVSTPersistPendenzen.factory())
     .directive('dvStResetSearch', DVSTResetSearch.factory())

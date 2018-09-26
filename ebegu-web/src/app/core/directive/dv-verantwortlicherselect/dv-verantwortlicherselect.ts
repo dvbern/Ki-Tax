@@ -25,7 +25,6 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
     restrict = 'E';
-    require = {};
     scope = {};
     controller = VerantwortlicherselectController;
     controllerAs = 'vm';
@@ -33,7 +32,7 @@ export class DvVerantwortlicherselect implements IDirective {
         isSchulamt: '<',
         gemeindeId: '<',
     };
-    template = require('./dv-verantwortlicherselect.html');
+template = require('./dv-verantwortlicherselect.html');
 
     static factory(): IDirectiveFactory {
         const directive = () => new DvVerantwortlicherselect();

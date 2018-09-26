@@ -36,7 +36,6 @@ export class DVValueinput implements IDirective {
         inputName: '@?',
     };
     template = require('./dv-valueinput.html');
-    link: IDirectiveLinkFn;
 
     static factory(): IDirectiveFactory {
         const directive = () => new DVValueinput();

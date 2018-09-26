@@ -20,7 +20,7 @@ import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirective
  * It is a problem because in our case we rely on angular behaving as described in
  * https://docs.angularjs.org/api/ng/directive/form where it specifically says if there are buttons with
  * type=submit in a form they should be triggered on enter.
- * Since the radio-group component does not do this and triggers a form submitt event instead we have to
+ * Since the radio-group component does not do this and triggers a form submit event instead we have to
  * work-around that prevents this. (Otherwise the unsavedChanges plugin sets the form back to pristine which is wrong since no save
  * was triggered).
  *
