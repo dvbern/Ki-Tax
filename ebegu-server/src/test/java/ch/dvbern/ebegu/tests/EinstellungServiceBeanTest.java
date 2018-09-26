@@ -37,6 +37,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static ch.dvbern.ebegu.test.TestDataUtil.SEQUENCE;
+
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/empty.xml")
 @Transactional(TransactionMode.DISABLED)
@@ -79,6 +81,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		gemeindeOstermundigen.setMandant(kantonBern);
 		gemeindeLuzern = TestDataUtil.createGemeindeBern();
 		gemeindeLuzern.setId("65a0c4a3-80a1-48cd-80af-6bb9fc403f7d");
+		gemeindeLuzern.setBfsNummer(SEQUENCE.incrementAndGet());
 		gemeindeLuzern.setName("Luzern");
 		gemeindeLuzern.setMandant(kantonLuzern);
 		persistence.merge(gemeindeBern);
