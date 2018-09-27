@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {ControlContainer, NgForm} from '@angular/forms';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 @Component({

@@ -64,24 +64,24 @@ public final class FilterFunctions {
 
 		if (role == UserRole.ADMIN_MANDANT) {
 			predicates.add(joinBerechtigung.get(Berechtigung_.role).in(UserRole.getMandantRoles()));
+			return;
+		}
 
-		} else {
-			final RollenAbhaengigkeit abhaengigkeit = role.getRollenAbhaengigkeit();
-			switch (abhaengigkeit) {
-			case GEMEINDE:
-			case INSTITUTION:
-				predicates.add(joinBerechtigung.get(Berechtigung_.role).in(UserRole.getRolesByAbhaengigkeit(abhaengigkeit)));
-				break;
-			case TRAEGERSCHAFT:
-				predicates.add(joinBerechtigung.get(Berechtigung_.role)
-					.in(UserRole.getRolesByAbhaengigkeiten(
-						Arrays.asList(RollenAbhaengigkeit.INSTITUTION, RollenAbhaengigkeit.TRAEGERSCHAFT))
-					));
-				break;
-			case NONE:
-			default:
-				break;
-			}
+		final RollenAbhaengigkeit abhaengigkeit = role.getRollenAbhaengigkeit();
+		switch (abhaengigkeit) {
+		case GEMEINDE:
+		case INSTITUTION:
+			predicates.add(joinBerechtigung.get(Berechtigung_.role)
+				.in(UserRole.getRolesByAbhaengigkeit(abhaengigkeit)));
+			return;
+		case TRAEGERSCHAFT:
+			predicates.add(joinBerechtigung.get(Berechtigung_.role)
+				.in(UserRole.getRolesByAbhaengigkeiten(
+					Arrays.asList(RollenAbhaengigkeit.INSTITUTION, RollenAbhaengigkeit.TRAEGERSCHAFT))
+				));
+			return;
+		default:
+			return;
 		}
 	}
 
@@ -107,7 +107,8 @@ public final class FilterFunctions {
 		final Traegerschaft userTraegerschaft = currentBenutzer.getCurrentBerechtigung().getTraegerschaft();
 		Objects.requireNonNull(userTraegerschaft);
 
-		Predicate sameTraegerschaft = cb.equal(joinCurrentBerechtigung.get(Berechtigung_.traegerschaft), userTraegerschaft);
+		Predicate sameTraegerschaft =
+			cb.equal(joinCurrentBerechtigung.get(Berechtigung_.traegerschaft), userTraegerschaft);
 		Predicate institutionOfTraegerschaft = cb.equal(
 			joinCurrentBerechtigung.get(Berechtigung_.institution).get(Institution_.traegerschaft), userTraegerschaft);
 

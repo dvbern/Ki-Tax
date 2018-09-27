@@ -190,16 +190,12 @@ export default class AuthServiceRS {
                 return PERMISSIONS[Permission.ROLE_BG];
 
             case TSRole.ADMIN_TS:
-                return PERMISSIONS[Permission.ROLE_GEMEINDE];
-
             case TSRole.ADMIN_GEMEINDE:
-                return PERMISSIONS[Permission.ROLE_GEMEINDE];
-
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
 
             default:
-                return TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
+                throw new Error(`Role visibility not yet implemented for role ${this.getPrincipalRole()}`);
         }
     }
 }

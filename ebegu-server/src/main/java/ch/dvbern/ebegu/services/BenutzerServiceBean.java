@@ -180,7 +180,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
 		}
 
-		Benutzer persisted = persistence.persist(benutzer);
+		Benutzer persisted = saveBenutzer(benutzer);
 
 		try {
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted);
