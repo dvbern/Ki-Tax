@@ -22,7 +22,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 /**
  * Konfiguration fuer die Erstellung einer (Schulamt-) Anmeldung zu einem Gesuch
  */
-public class AnmeldungConfig {
+public final class AnmeldungConfig {
 
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 	private Betreuungsstatus betreuungsstatus;

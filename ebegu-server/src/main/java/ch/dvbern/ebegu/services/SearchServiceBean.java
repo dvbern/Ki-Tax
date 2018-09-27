@@ -97,7 +97,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-import static ch.dvbern.ebegu.services.util.FilterFunctions.getGemeindeFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 
 /**
  * Service zum Suchen.
@@ -187,7 +187,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Predicate inClauseStatus = root.get(Gesuch_.status).in(allowedAntragStatus);
 		predicates.add(inClauseStatus);
 
-		getGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
+		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Special role based predicates
 		switch (role) {

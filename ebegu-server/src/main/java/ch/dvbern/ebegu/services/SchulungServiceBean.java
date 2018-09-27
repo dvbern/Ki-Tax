@@ -41,6 +41,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -52,7 +53,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -526,7 +526,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		Join<Betreuung, InstitutionStammdaten> join = root.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
 
 		query.select(root);
-		Predicate idPred = cb.equal(join.get(InstitutionStammdaten_.id), institutionId);
+		Predicate idPred = cb.equal(join.get(AbstractEntity_.id), institutionId);
 		query.where(idPred);
 		List<Betreuung> criteriaResults = persistence.getCriteriaResults(query);
 		for (Betreuung betreuung : criteriaResults) {
