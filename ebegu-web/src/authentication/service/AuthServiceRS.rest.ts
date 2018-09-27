@@ -15,6 +15,8 @@
 
 import * as angular from 'angular';
 import {Observable, ReplaySubject} from 'rxjs';
+import {Permission} from '../../app/authorisation/Permission';
+import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import BenutzerRS from '../../app/core/service/benutzerRS.rest';
@@ -22,6 +24,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpBuffer from './HttpBuffer';
 import ICookiesService = angular.cookies.ICookiesService;
@@ -166,5 +169,33 @@ export default class AuthServiceRS {
             return this.principal.hasOneOfRoles(roles);
         }
         return false;
+    }
+
+    public getVisibleRolesForPrincipal(): TSRole[] {
+        switch (this.getPrincipalRole()) {
+            case TSRole.SUPER_ADMIN:
+                return TSRoleUtil.getAllRoles();
+
+            case TSRole.ADMIN_INSTITUTION:
+                return PERMISSIONS[Permission.ROLE_INSTITUTION];
+
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+                return PERMISSIONS[Permission.ROLE_INSTITUTION]
+                    .concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
+
+            case TSRole.ADMIN_MANDANT:
+                return PERMISSIONS[Permission.ROLE_MANDANT];
+
+            case TSRole.ADMIN_BG:
+                return PERMISSIONS[Permission.ROLE_BG];
+
+            case TSRole.ADMIN_TS:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.REVISOR:
+                return PERMISSIONS[Permission.ROLE_GEMEINDE];
+
+            default:
+                throw new Error(`Role visibility not yet implemented for role ${this.getPrincipalRole()}`);
+        }
     }
 }

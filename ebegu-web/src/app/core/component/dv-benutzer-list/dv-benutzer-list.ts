@@ -98,7 +98,7 @@ export class DVBenutzerListController implements IOnInit {
     }
 
     private updateInstitutionenList(): void {
-        this.institutionRS.getAllInstitutionen().then((response: any) => {
+        this.institutionRS.getInstitutionenForCurrentBenutzer().then((response: any) => {
             this.institutionenList = angular.copy(response);
         });
     }
@@ -146,15 +146,7 @@ export class DVBenutzerListController implements IOnInit {
     };
 
     public getRollen(): TSRole[] {
-        if (EbeguUtil.isTagesschulangebotEnabled()) {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButAnonymous()
-                : TSRoleUtil.getAllRolesButSuperAdminAndAnonymous();
-        } else {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
-                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
-        }
+        return this.authServiceRS.getVisibleRolesForPrincipal();
     }
 
     /**

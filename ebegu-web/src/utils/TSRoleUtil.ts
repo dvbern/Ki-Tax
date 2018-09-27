@@ -28,16 +28,6 @@ export class TSRoleUtil {
         );
     }
 
-    public static getAllRolesButSchulamt(): Array<TSRole> {
-        return TSRoleUtil.getAllRoles()
-            .filter(role => !TSRoleUtil.getSchulamtOnlyRoles().includes(role));
-    }
-
-    public static getAllRolesButSchulamtAndAnonymous(): Array<TSRole> {
-        return this.getAllRolesButSchulamt()
-            .filter(role => role !== TSRole.SUPER_ADMIN && role !== TSRole.ANONYMOUS);
-    }
-
     public static getAllRolesButSchulamtAndSuperAdmin(): Array<TSRole> {
         return getTSRoleValuesWithoutSuperAdmin()
             .filter(role => !TSRoleUtil.getSchulamtOnlyRoles().includes(role));
@@ -46,11 +36,6 @@ export class TSRoleUtil {
     public static getAllRolesButSchulamtAndSuperAdminAndAnonymous(): Array<TSRole> {
         return this.getAllRolesButSchulamtAndSuperAdmin()
             .filter(role => role !== TSRole.ANONYMOUS);
-    }
-
-    public static getAllRolesButSuperAdminAndAnonymous(): Array<TSRole> {
-        return getTSRoleValuesWithoutSuperAdmin()
-            .filter(role => role !== TSRole.SUPER_ADMIN && role !== TSRole.ANONYMOUS);
     }
 
     public static getAllRolesForMenuAlleVerfuegungen(): Array<TSRole> {
@@ -117,9 +102,8 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS, TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE];
     }
 
-    public static getTraegerschaftInstitutionOnlyRoles(): Array<TSRole> {
-        return [TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
+    public static getTraegerschaftRoles(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
     }
 
     public static getTraegerschaftInstitutionSteueramtOnlyRoles(): Array<TSRole> {
@@ -164,10 +148,9 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT, TSRole.ADMIN_INSTITUTION, TSRole.ADMIN_TRAEGERSCHAFT];
     }
 
-    public static getJugendamtRole(): Array<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG, TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE, TSRole.JURIST, TSRole.REVISOR,
-            TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+    public static getAllAdminRoles(): Array<TSRole> {
+        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.ADMIN_TS,
+            TSRole.ADMIN_MANDANT, TSRole.ADMIN_INSTITUTION, TSRole.ADMIN_TRAEGERSCHAFT];
     }
 
     public static getGesuchstellerJugendamtSchulamtOtherAmtRoles(): Array<TSRole> {
@@ -279,14 +262,6 @@ export class TSRoleUtil {
         return [TSRole.STEUERAMT];
     }
 
-    public static getJuristOnlyRoles(): Array<TSRole> {
-        return [TSRole.JURIST];
-    }
-
-    public static getRevisorOnlyRoles(): Array<TSRole> {
-        return [TSRole.REVISOR];
-    }
-
     public static getSteueramtRoles(): Array<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.STEUERAMT];
     }
@@ -300,6 +275,14 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE, TSRole.STEUERAMT,
             TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS, TSRole.JURIST, TSRole.REVISOR, TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT];
+    }
+
+    public static getGemeindeRoles(): TSRole[] {
+        return PERMISSIONS[Permission.ROLE_GEMEINDE].concat(TSRole.SUPER_ADMIN);
+    }
+
+    public static getTraegerschaftInstitutionOnlyRoles(): TSRole[] {
+        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
     }
 
     public static isGemeindeRole(role: TSRole): boolean {
