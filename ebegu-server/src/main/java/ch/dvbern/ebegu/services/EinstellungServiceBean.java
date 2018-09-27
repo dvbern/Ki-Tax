@@ -274,8 +274,8 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	public Einstellung createBeguBietenAbEinstellung(@Nonnull LocalDate eingangsdatum, @Nullable Gemeinde gemeinde) {
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(eingangsdatum).orElse(
-			gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() ->
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(eingangsdatum)
+			.orElseGet(() -> gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() ->
 				new EbeguEntityNotFoundException("createBeguBietenAbEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					"no Gesuchsperiode found for date " + eingangsdatum)
 			));

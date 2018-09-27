@@ -52,8 +52,6 @@ import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Resource fuer Gemeinde
  */
@@ -71,7 +69,6 @@ public class GemeindeResource {
 	@Inject
 	private JaxBConverter converter;
 
-
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@POST
@@ -82,9 +79,6 @@ public class GemeindeResource {
 		@Nonnull @NotNull @QueryParam("date") String stringDateBeguBietenAb,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
-
-		requireNonNull(gemeindeJAXP);
-		requireNonNull(stringDateBeguBietenAb);
 
 		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
 		LocalDate eingangsdatum = DateUtil.parseStringToDate(stringDateBeguBietenAb);
@@ -99,7 +93,6 @@ public class GemeindeResource {
 		return jaxGemeinde;
 	}
 
-
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@PUT
@@ -110,14 +103,14 @@ public class GemeindeResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Gemeinde gemeinde = new Gemeinde();
-		if (gemeindeJAXP.getId() != null) {
-			Optional<Gemeinde> optional = gemeindeService.findGemeinde(gemeindeJAXP.getId());
-			gemeinde = optional.orElse(new Gemeinde());
-		}
+		Gemeinde gemeinde = Optional.ofNullable(gemeindeJAXP.getId())
+			.flatMap(id -> gemeindeService.findGemeinde(id))
+			.orElseGet(Gemeinde::new);
+
 		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, gemeinde);
 		Gemeinde persistedGemeinde = this.gemeindeService.saveGemeinde(convertedGemeinde);
 		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
+
 		return jaxGemeinde;
 	}
 
@@ -133,7 +126,9 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV", responseContainer = "Collection", response = JaxGemeinde.class)
+	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
 	@Nullable
 	@GET
 	@Path("/active")
@@ -154,11 +149,11 @@ public class GemeindeResource {
 	public JaxGemeinde findGemeinde(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
-		requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
 
-		return gemeindeOptional.map(gemeinde -> converter.gemeindeToJAX(gemeinde)).orElse(null);
+		return gemeindeService.findGemeinde(gemeindeId)
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.orElse(null);
 	}
 
 	@ApiOperation(value = "Returns the Gemeinde with the given name.", response = JaxGemeinde.class)
@@ -169,8 +164,10 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGemeinde findGemeindeByName(
 		@Nonnull @NotNull @PathParam("gemeindeName") String name) {
-		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeindeByName(name);
-		return gemeindeOptional.map(gemeinde -> converter.gemeindeToJAX(gemeinde)).orElse(null);
+
+		return gemeindeService.findGemeindeByName(name)
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.orElse(null);
 	}
 
 }

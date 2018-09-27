@@ -231,7 +231,6 @@ public class BenutzerResource {
 	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
