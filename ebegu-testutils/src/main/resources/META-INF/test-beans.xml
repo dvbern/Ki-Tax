@@ -24,5 +24,6 @@
 		<!--Fuer Tests koennten wir wenn gewuenscht die alternativen services benutzten, aktuell nicht der Fall-->
 		<!--<class>ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean</class>-->
 		<class>ch.dvbern.ebegu.config.EbeguConfigurationDummyImpl</class>
+		<class>ch.dvbern.ebegu.config.SequenceServiceMock</class>
 	</alternatives>
 </beans>

@@ -33,7 +33,11 @@ import AuthServiceRS from '../service/AuthServiceRS.rest';
 })
 export class LocalLoginComponent {
 
+    private static readonly BFS_BERN = 351;
+    private static readonly BFS_OSTERMUNDIGEN = 363;
+
     @Input() public returnTo: TargetState;
+
 
     // Allgemeine User
     public superadmin: TSBenutzer;
@@ -135,6 +139,7 @@ export class LocalLoginComponent {
         bern.name = 'Bern';
         bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         bern.gemeindeNummer = 1;
+        bern.bfsNummer = LocalLoginComponent.BFS_BERN;
         bern.status = TSGemeindeStatus.AKTIV;
         return bern;
     }
@@ -148,6 +153,7 @@ export class LocalLoginComponent {
         ostermundigen.name = 'Ostermundigen';
         ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         ostermundigen.gemeindeNummer = 2;
+        ostermundigen.bfsNummer = LocalLoginComponent.BFS_OSTERMUNDIGEN;
         ostermundigen.status = TSGemeindeStatus.AKTIV;
         return ostermundigen;
     }

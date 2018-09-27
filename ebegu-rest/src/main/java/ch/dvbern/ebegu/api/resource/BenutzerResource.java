@@ -200,6 +200,26 @@ public class BenutzerResource {
 		return resultDTO;
 	}
 
+	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen  E-Mail in der Datenbank.",
+		response = JaxBenutzer.class)
+	@Nullable
+	@GET
+	@Path("/email/{email}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxBenutzer findBenutzerByEmail(
+		@Nonnull @NotNull @PathParam("email") String email) {
+
+		requireNonNull(email);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerByEmail(email);
+		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
+
+		return benutzerOptional
+			.map(benutzer -> converter.benutzerToJaxBenutzer(benutzer))
+			.orElse(null);
+	}
+
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
 		response = JaxBenutzer.class)
 	@Nullable
@@ -211,7 +231,6 @@ public class BenutzerResource {
 	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 

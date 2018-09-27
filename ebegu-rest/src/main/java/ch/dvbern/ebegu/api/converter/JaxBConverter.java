@@ -469,8 +469,9 @@ public class JaxBConverter {
 		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
 		jaxEinstellung.setKey(einstellung.getKey());
 		jaxEinstellung.setValue(einstellung.getValue());
-		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
-
+		jaxEinstellung.setGemeindeId(null == einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
+		jaxEinstellung.setGesuchsperiodeId(einstellung.getGesuchsperiode().getId());
+		// Mandant wird aktuell nicht gemappt
 		return jaxEinstellung;
 	}
 
@@ -478,14 +479,24 @@ public class JaxBConverter {
 	public Einstellung einstellungToEntity(
 		final JaxEinstellung jaxEinstellung,
 		@Nonnull final Einstellung einstellung) {
-
 		Objects.requireNonNull(einstellung);
 		Objects.requireNonNull(jaxEinstellung);
 		convertAbstractFieldsToEntity(jaxEinstellung, einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
-		// Felder Gesuchsperiode, Mandant und Gemeinde werden aktuell nicht gemappt
-
+		if (jaxEinstellung.getGemeindeId() != null) {
+			einstellung.setGemeinde(gemeindeService.findGemeinde(jaxEinstellung.getGemeindeId()).orElse(null));
+		}
+		final Optional<Gesuchsperiode> gesuchsperiode =
+			gesuchsperiodeService.findGesuchsperiode(jaxEinstellung.getGesuchsperiodeId());
+		if (!gesuchsperiode.isPresent()) {
+			throw new EbeguEntityNotFoundException(
+				"einstellungToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jaxEinstellung.getGesuchsperiodeId());
+		}
+		einstellung.setGesuchsperiode(gesuchsperiode.get());
+		// Mandant wird aktuell nicht gemappt
 		return einstellung;
 	}
 
@@ -977,6 +988,7 @@ public class JaxBConverter {
 		gemeinde.setName(gemeindeJax.getName());
 		gemeinde.setStatus(gemeindeJax.getStatus());
 		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
+		gemeinde.setBfsNummer(gemeindeJax.getBfsNummer());
 		return gemeinde;
 	}
 
@@ -986,6 +998,7 @@ public class JaxBConverter {
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
+		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
 		return jaxGemeinde;
 	}
 
@@ -1371,7 +1384,6 @@ public class JaxBConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
-		jaxMandant.setNextNumberGemeinde(persistedMandant.getNextNumberGemeinde());
 		return jaxMandant;
 	}
 

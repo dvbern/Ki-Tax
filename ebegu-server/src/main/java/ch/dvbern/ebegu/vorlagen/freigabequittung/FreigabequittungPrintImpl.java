@@ -32,13 +32,13 @@ import ch.dvbern.ebegu.vorlagen.AufzaehlungPrint;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrintImpl;
 import ch.dvbern.ebegu.vorlagen.BriefPrintImpl;
 import ch.dvbern.ebegu.vorlagen.PrintUtil;
+import ch.dvbern.lib.doctemplate.common.Image;
 import ch.dvbern.lib.doctemplate.docx.DocxImage;
 import org.krysalis.barcode4j.impl.datamatrix.DataMatrixBean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 
 public class FreigabequittungPrintImpl extends BriefPrintImpl implements FreigabequittungPrint {
 
-	private final Gesuch gesuch;
 	private final List<DokumentGrund> dokumentGrunds;
 	private final List<AufzaehlungPrint> unterlagen;
 
@@ -47,7 +47,6 @@ public class FreigabequittungPrintImpl extends BriefPrintImpl implements Freigab
 		super(gesuch);
 
 		this.dokumentGrunds = dokumentGrunds;
-		this.gesuch = gesuch;
 		this.unterlagen = buildUnterlagen();
 
 	}
@@ -78,32 +77,32 @@ public class FreigabequittungPrintImpl extends BriefPrintImpl implements Freigab
 		BitmapCanvasProvider canvas = new BitmapCanvasProvider(
 			bytesOut, "image/x-png", 175, BufferedImage.TYPE_BYTE_BINARY, false, 0);
 
-		dataMatrixBean.generateBarcode(canvas, "§FREIGABE|OPEN|" + gesuch.getId() + "§");
+		dataMatrixBean.generateBarcode(canvas, "§FREIGABE|OPEN|" + getGesuch().getId() + '§');
 
 		canvas.finish();
 
 		BufferedImage bufferedImage = canvas.getBufferedImage();
 
-		return new DocxImage(bytesOut.toByteArray(), bufferedImage.getWidth(), bufferedImage.getHeight(), DocxImage.Format.PNG);
+		return new DocxImage(bytesOut.toByteArray(), bufferedImage.getWidth(), bufferedImage.getHeight(), Image.Format.PNG);
 
 	}
 
 	@Override
 	public String getAdresseGS1() {
 
-		return PrintUtil.getNameAdresseFormatiert(gesuch, gesuch.getGesuchsteller1());
+		return PrintUtil.getNameAdresseFormatiert(getGesuch(), getGesuch().getGesuchsteller1());
 
 	}
 
 	@Override
 	public boolean isAddresseGS2() {
-		return gesuch.getGesuchsteller2() != null;
+		return getGesuch().getGesuchsteller2() != null;
 	}
 
 	@Override
 	public String getAdresseGS2() {
 
-		return PrintUtil.getNameAdresseFormatiert(gesuch, gesuch.getGesuchsteller2());
+		return PrintUtil.getNameAdresseFormatiert(getGesuch(), getGesuch().getGesuchsteller2());
 
 	}
 
@@ -112,7 +111,7 @@ public class FreigabequittungPrintImpl extends BriefPrintImpl implements Freigab
 
 		Set<Betreuung> betreuungen = new TreeSet<>();
 
-		for (KindContainer kindContainer : gesuch.getKindContainers()) {
+		for (KindContainer kindContainer : getGesuch().getKindContainers()) {
 			betreuungen.addAll(kindContainer.getBetreuungen());
 		}
 

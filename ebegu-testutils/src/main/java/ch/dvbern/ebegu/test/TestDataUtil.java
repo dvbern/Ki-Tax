@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -132,6 +133,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.BEGU_ANBIETEN_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
@@ -183,6 +185,8 @@ public final class TestDataUtil {
 
 	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
 	public static final String GEMEINDE_OSTERMUNDIGEN_ID = "4c453263-f992-48af-86b5-dc04cd7e8777";
+
+	public static final AtomicLong SEQUENCE = new AtomicLong();
 
 	private TestDataUtil() {
 	}
@@ -324,7 +328,6 @@ public final class TestDataUtil {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
 			mandant = new Mandant();
-			mandant.setNextNumberGemeinde(1);
 			mandant.setName("Kanton Bern");
 			return persistence.persist(mandant);
 		}
@@ -337,6 +340,7 @@ public final class TestDataUtil {
 			gemeinde = new Gemeinde();
 			gemeinde.setId(GEMEINDE_BERN_ID);
 			gemeinde.setName("Testgemeinde");
+			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
 			return persistence.persist(gemeinde);
@@ -372,6 +376,7 @@ public final class TestDataUtil {
 		gemeinde.setName("Bern");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
+		gemeinde.setBfsNummer(351L);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
 	}
@@ -383,6 +388,7 @@ public final class TestDataUtil {
 		gemeinde.setName("Ostermundigen");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
+		gemeinde.setBfsNummer(363L);
 		gemeinde.setMandant(createDefaultMandant());
 		return gemeinde;
 	}
@@ -1101,6 +1107,7 @@ public final class TestDataUtil {
 	}
 
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
+		saveEinstellung(BEGU_ANBIETEN_AB, "1999-01-01", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, "7", gesuchsperiode, persistence);

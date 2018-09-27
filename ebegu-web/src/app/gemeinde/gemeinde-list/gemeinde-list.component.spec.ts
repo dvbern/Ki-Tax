@@ -17,24 +17,26 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
-import ErrorService from '../core/errors/service/ErrorService';
-import {SharedModule} from '../shared/shared.module';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import ErrorService from '../../core/errors/service/ErrorService';
+import {SharedModule} from '../../shared/shared.module';
 import {GemeindeListComponent} from './gemeinde-list.component';
 
-
-describe('gemeindenView', () => {
+describe('GemeindeListComponent', () => {
 
     let component: GemeindeListComponent;
     let fixture: ComponentFixture<GemeindeListComponent>;
 
     beforeEach(async(() => {
+        const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+            ['isRole', 'isOneOfRoles']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -44,11 +46,12 @@ describe('gemeindenView', () => {
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [GemeindeListComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
+
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
     }));

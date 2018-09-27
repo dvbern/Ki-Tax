@@ -217,10 +217,10 @@ export class FallToolbarComponent implements OnInit, OnChanges {
             .pipe(
                 switchMap(principal => {
                     if (principal && TSRoleUtil.isGemeindeRole(principal.getCurrentRole())) {
-                        return of(principal.extractCurrentGemeinden());
+                        return of(principal.extractCurrentAktiveGemeinden());
                     }
 
-                    return from(this.gemeindeRS.getAllGemeinden());
+                    return from(this.gemeindeRS.getAktiveGemeinden());
                 }),
                 map(gemeinden => this.toGemeindenWithoutDossier(gemeinden))
             )
