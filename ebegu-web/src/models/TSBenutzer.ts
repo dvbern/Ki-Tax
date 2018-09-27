@@ -188,7 +188,7 @@ export default class TSBenutzer {
      */
     public extractCurrentGemeindeId(): string | undefined {
         if (this.hasJustOneGemeinde()) {
-            return this.currentBerechtigung.gemeindeList[0].id;
+            return this.extractCurrentAktiveGemeinden()[0].id;
         }
         return undefined;
     }

@@ -85,10 +85,10 @@ export class GesuchGenerator {
      * or a complete new Fall will be created instead.
      */
     private initDossier(eingangsart: TSEingangsart,
-                             gemeindeId: string,
-                             creationAction: TSCreationAction,
-                             currentFall: TSFall,
-                             currentDossier: TSDossier): IPromise<TSGesuch> {
+                        gemeindeId: string,
+                        creationAction: TSCreationAction,
+                        currentFall: TSFall,
+                        currentDossier: TSDossier): IPromise<TSGesuch> {
 
         return this.initGesuch(eingangsart, creationAction, undefined, currentFall, currentDossier)
             .then(gesuch => {

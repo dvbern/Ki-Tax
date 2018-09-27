@@ -91,7 +91,7 @@ export class NavbarComponent implements OnDestroy {
             .pipe(
                 switchMap(principal => {
                     if (principal && principal.hasJustOneGemeinde()) {
-                        return of(principal.extractCurrentAktiveGemeinden());
+                        return of(principal.extractCurrentGemeindeId());
                     }
 
                     return this.getListOfGemeinden$()
