@@ -46,6 +46,8 @@ import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
 import {gesuchRun} from './gesuch.route';
+import {BetreuungInputComponent} from './component/betreuungInput/betreuung-input.component';
+import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 
 export const EbeguWebGesuch =
     angular.module('ebeguWeb.gesuch', [EbeguWebCore.name])
@@ -80,5 +82,7 @@ export const EbeguWebGesuch =
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
+        .directive('dvBetreuungInput', downgradeComponent({component: BetreuungInputComponent}))
+        .directive('dvSwitchComponent', downgradeComponent({component: DvSwitchComponent}))
 ;
 

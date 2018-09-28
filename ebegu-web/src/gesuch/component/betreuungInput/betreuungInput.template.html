@@ -1,0 +1,54 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2018 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--<label class="md-no-float" data-translate="BETREUUNGSPENSUM"-->
+<!--data-translate-value-betreuungspensumnumber="{{$index + 1}}"-->
+<!--for="betreuungspensum-{{$index}}"></label>-->
+<!--<input aria-describedby="betreuungspensum-{{$index}}-error"-->
+<!--id="betreuungspensum-{{$index}}" type="number"-->
+<!--name="betreuungspensum-{{$index}}"-->
+<!--ng-model=".betreuungspensumJA.pensum"-->
+<!--dv-max-length class="form-control"-->
+<!--ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"-->
+<!--ng-required="true"-->
+<!--ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">-->
+<!--<dv-error-messages input-id="betreuungspensum-{{$index}}"-->
+<!--for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>-->
+
+
+<!--<input aria-describedby="betreuungspensum-{{$index}}-error"-->
+<!--id="betreuungspensum-{{$index}}" type="number"-->
+<!--name="betreuungspensum-{{$index}}"-->
+<!--ng-model=".betreuungspensumJA.pensum"-->
+<!--dv-max-length class="form-control"-->
+<!--ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"-->
+<!--ng-required="true"-->
+<!--ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">-->
+
+<div class="betreuung-input-container">
+    <input type="number"
+           [id]="id"
+           [name]="id"
+           [(ngModel)]="pensum.betreuungspensumJA.pensum"
+           [required]="true"
+           [attr.aria-describedby]="id + '-error'"
+           step="0.25" class="dv-betreuung-input"
+           (input)="updateLabel()">
+    <dv-switch (switchChange)="toggle($event)" [switchOptions]="switchOptions"
+               class="betreuung-input-switch" [switchValue]="doNotUsePercentage"></dv-switch>
+    <div class="dv-betreuung-input-info-label">
+        {{label}}
+    </div>
+</div>

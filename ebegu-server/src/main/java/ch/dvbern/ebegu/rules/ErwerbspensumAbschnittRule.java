@@ -98,18 +98,20 @@ public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 				// 2GS to 1GS
 				gueltigkeit.setGueltigBis(gesuch.extractFamiliensituation().getAenderungPer().minusDays(1));
 			}
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum().intValue()
+				, erwerbspensum.getZuschlagsprozent());
 			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);  //fuer statistik
 			return zeitabschnitt;
 		}
 		if (gs2 && !gesuch.isMutation()) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum().intValue()
+				, erwerbspensum.getZuschlagsprozent());
 			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);
 			return zeitabschnitt;
 		}
 		if (!gs2) {
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS1(erwerbspensum.getPensum());
+			zeitabschnitt.setErwerbspensumGS1(erwerbspensum.getPensum().intValue());
 			zeitabschnitt.setZuschlagErwerbspensumGS1(erwerbspensum.getZuschlagsprozent());
 			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);
 			return zeitabschnitt;

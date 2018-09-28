@@ -81,6 +81,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     moduleBackup: TSModulTagesschule[] = undefined;
     aktuellGueltig: boolean = true;
     isDuplicated: boolean = false;
+    angebot: TSBetreuungsangebotTyp;
 
     constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, private readonly ebeguUtil: EbeguUtil, private readonly CONSTANTS: any,
                 $scope: IScope, berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
@@ -133,7 +134,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.findExistingBetreuungsmitteilung();
-
+        this.angebot = this.getBetreuungModel().getAngebotTyp();
         if (this.getBetreuungModel().anmeldungMutationZustand) {
             if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
                 this.aktuellGueltig = false;
@@ -201,6 +202,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public changedAngebot() {
+        this.angebot = this.getBetreuungModel().getAngebotTyp();
         if (this.getBetreuungModel()) {
             if (this.isSchulamt()) {
                 if (this.isTagesschule()) {
@@ -491,6 +493,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public platzBestaetigen(): void {
         if (this.isGesuchValid()) {
             this.getBetreuungModel().datumBestaetigung = DateUtil.today();
+            this.getBetreuungModel().betreuungspensumContainers.forEach(val => {
+                if (val.betreuungspensumJA.doNotUsePercentage) {
+                    switch (this.angebot) {
+                        case TSBetreuungsangebotTyp.KITA:
+                            val.betreuungspensumJA.pensum = Math.ceil((val.betreuungspensumJA.pensum * 5) * 100) / 100;
+                            break;
+                        case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                            val.betreuungspensumJA.pensum = Math.ceil((val.betreuungspensumJA.pensum / 2.2) * 100) / 100;
+                            break;
+                        default:
+                            console.log('whoops');
+                            break;
+                    }
+                }
+            });
+
             this.save(TSBetreuungsstatus.BESTAETIGT, 'pendenzenBetreuungen.list-view', undefined);
         }
     }

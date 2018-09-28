@@ -237,23 +237,18 @@
                             <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                 <!--Betreuungspensum-->
                                 <div class="row">
-                                    <div class="col-sm-12 dv-input-container-small">
+                                    <div class="col-sm-12 dv-input-betreuung-container">
+                                        {{vm.angebot}}
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
-                                                   data-translate-value-betreuungspensumnumber="{{$index + 1}}"
-                                                   for="betreuungspensum-{{$index}}"></label>
-                                            <input aria-describedby="betreuungspensum-{{$index}}-error"
-                                                   id="betreuungspensum-{{$index}}" type="number"
-                                                   name="betreuungspensum-{{$index}}"
-                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.pensum"
-                                                   dv-max-length class="form-control"
-                                                   ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
-                                                   ng-required="true"
-                                                   ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
+                                            data-translate-value-betreuungspensumnumber="{{$index + 1}}"
+                                            for="betreuungspensum-{{$index}}"></label>
+                                        <dv-betreuung-input [pensum]="vm.getBetreuungspensum($index)"
+                                                            [id]="betreuungspensum-{{$index}}"
+                                                            [betreuungsangebottyp]="vm.angebot"
+                                        ></dv-betreuung-input>
                                             <dv-error-messages input-id="betreuungspensum-{{$index}}"
-                                                               for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>
-
-
+                                            for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>
                                         </dv-input-container>
                                     </div>
                                 </div>

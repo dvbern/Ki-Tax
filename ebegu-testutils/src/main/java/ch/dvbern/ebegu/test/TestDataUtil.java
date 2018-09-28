@@ -560,7 +560,7 @@ public final class TestDataUtil {
 
 	public static PensumFachstelle createDefaultPensumFachstelle() {
 		PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setPensum(50);
+		pensumFachstelle.setPensum(50l);
 		pensumFachstelle.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		pensumFachstelle.setFachstelle(createDefaultFachstelle());
 		return pensumFachstelle;
@@ -597,7 +597,7 @@ public final class TestDataUtil {
 		return epCont;
 	}
 
-	public static ErwerbspensumContainer createErwerbspensum(LocalDate von, LocalDate bis, int pensum, int zuschlag) {
+	public static ErwerbspensumContainer createErwerbspensum(LocalDate von, LocalDate bis, long pensum, int zuschlag) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 		Erwerbspensum erwerbspensum = new Erwerbspensum();
 		erwerbspensum.setPensum(pensum);
@@ -610,7 +610,7 @@ public final class TestDataUtil {
 	public static Erwerbspensum createErwerbspensumData() {
 		Erwerbspensum ep = new Erwerbspensum();
 		ep.setTaetigkeit(Taetigkeit.ANGESTELLT);
-		ep.setPensum(50);
+		ep.setPensum(50l);
 		ep.setZuschlagZuErwerbspensum(true);
 		ep.setZuschlagsgrund(Zuschlagsgrund.LANGER_ARBWEITSWEG);
 		ep.setZuschlagsprozent(10);
@@ -654,7 +654,7 @@ public final class TestDataUtil {
 
 	private static Betreuungspensum createBetreuungspensum() {
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
-		betreuungspensum.setPensum(80);
+		betreuungspensum.setPensum(80l);
 		return betreuungspensum;
 	}
 
@@ -1308,7 +1308,7 @@ public final class TestDataUtil {
 		BetreuungsmitteilungPensum pensum = new BetreuungsmitteilungPensum();
 		pensum.setBetreuungsmitteilung(mitteilung);
 		pensum.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-		pensum.setPensum(30);
+		pensum.setPensum(30l);
 
 		betPensen.add(pensum);
 		mitteilung.setBetreuungspensen(betPensen);

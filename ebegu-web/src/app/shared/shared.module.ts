@@ -38,6 +38,8 @@ import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {MaterialModule} from './material.module';
 import {UIRouterModule} from '@uirouter/angular';
 import {UiViewComponent} from './ui-view/ui-view.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
@@ -49,6 +51,8 @@ export function createTranslateLoader(http: HttpClient) {
         HttpClientModule,
         FormsModule,
         UIRouterModule,
+        BrowserModule,
+        BrowserAnimationsModule,
 
         MaterialModule,
         TranslateModule.forRoot({

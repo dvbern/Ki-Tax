@@ -265,7 +265,7 @@ public abstract class AbstractTestfall {
 		return wohnadresse;
 	}
 
-	protected ErwerbspensumContainer createErwerbspensum(int prozent, int zuschlagsprozent) {
+	protected ErwerbspensumContainer createErwerbspensum(long prozent, int zuschlagsprozent) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 		Erwerbspensum erwerbspensum = new Erwerbspensum();
 		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
@@ -324,7 +324,7 @@ public abstract class AbstractTestfall {
 		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden: " + institutionsId);
 	}
 
-	protected BetreuungspensumContainer createBetreuungspensum(int pensum) {
+	protected BetreuungspensumContainer createBetreuungspensum(long pensum) {
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
@@ -333,7 +333,7 @@ public abstract class AbstractTestfall {
 		return betreuungspensumContainer;
 	}
 
-	protected BetreuungspensumContainer createBetreuungspensum(int pensum, LocalDate datumVon, LocalDate datumBis) {
+	protected BetreuungspensumContainer createBetreuungspensum(long pensum, LocalDate datumVon, LocalDate datumBis) {
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);

@@ -255,11 +255,11 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     }
 
     public isAngebotKITA(): boolean {
-       return this.isAngebot(TSBetreuungsangebotTyp.KITA);
+        return this.isAngebot(TSBetreuungsangebotTyp.KITA);
     }
 
     public isAngebotTagesschule(): boolean {
-       return this.isAngebot(TSBetreuungsangebotTyp.TAGESSCHULE);
+        return this.isAngebot(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
 
     public isAngebotFerieninsel(): boolean {
@@ -268,6 +268,14 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public isAngebotSchulamt(): boolean {
         return this.isAngebotFerieninsel() || this.isAngebotTagesschule();
+    }
+
+    public getAngebotTyp(): TSBetreuungsangebotTyp {
+        if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
+            return this.institutionStammdaten.betreuungsangebotTyp;
+        } else {
+            return TSBetreuungsangebotTyp.KITA;
+        }
     }
 
     private isAngebot(typ: TSBetreuungsangebotTyp) {
@@ -280,7 +288,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     public isEnabled(): boolean {
         return (!this.hasVorgaenger() || this.isAngebotSchulamt())
             && (this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND)
-            || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST));
+                || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST));
     }
 
     public isBetreuungsstatus(status: TSBetreuungsstatus): boolean {

@@ -12,28 +12,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+@import "../../../style/variables.less";
 
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../app/shared/shared.module';
-import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
-import {BetreuungInputComponent} from './component/betreuungInput/betreuung-input.component';
-import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+md-input-container:not(.md-input-has-value) input:not(:focus),
+.dv-betreuung-input {
+    color: @contrast-darkest !important;
+}
 
-@NgModule({
-    imports: [
-        SharedModule,
-    ],
-    declarations: [
-        FallToolbarComponent,
-        BetreuungInputComponent,
-        DvSwitchComponent,
-    ],
-    entryComponents: [
-        FallToolbarComponent,
-        BetreuungInputComponent,
-        DvSwitchComponent,
-    ],
-})
+.betreuung-input-container {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    background: @contrast-lightest
+}
 
-export class NgGesuchModule {
+.betreuung-input-switch {
+    width: 60%;
+}
+.dv-betreuung-input-info-label {
+    margin-left: 2px;
+    width: 95%;
+    background: @contrast-light;
+    line-height: 4rem;
+    padding-left: 0.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

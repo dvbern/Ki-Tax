@@ -802,7 +802,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Erwerbspensum createErwerbspensumData() {
 		Erwerbspensum ep = new Erwerbspensum();
 		ep.setTaetigkeit(Taetigkeit.ANGESTELLT);
-		ep.setPensum(80);
+		ep.setPensum(80l);
 		ep.setZuschlagZuErwerbspensum(true);
 		ep.setZuschlagsgrund(Zuschlagsgrund.LANGER_ARBWEITSWEG);
 		ep.setZuschlagsprozent(10);

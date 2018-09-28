@@ -42,6 +42,10 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
 
+//	@NotNull
+//	@Column(nullable = false)
+//	private Boolean doNotUsePercentage = false;
+
 	public Betreuungspensum() {
 	}
 
