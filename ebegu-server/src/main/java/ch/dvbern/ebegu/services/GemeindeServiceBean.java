@@ -173,7 +173,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 //		// and taking the FIXME into account should be enough
 //		// Nur Gemeinden meines Mandanten zurueckgeben
 //		final Principal principal = principalBean.getPrincipal();
-//		if (!"anonymous".equals(principal.getName())) {
+//		if (!Constants.ANONYMOUS_USER_USERNAME.equals(principal.getName())) {
 //			// user anonymous can get the list of active Gemeinden, though anonymous user doesn't really exist
 //			// FIXME MANDANTEN this is actually a problem if we work with different Mandanten because in onBoarding there is no user at all
 //			// so we cannot get the mandant out of the user. In this case we need to send the mandant when calling this method

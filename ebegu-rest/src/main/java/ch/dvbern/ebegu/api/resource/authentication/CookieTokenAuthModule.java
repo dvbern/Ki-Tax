@@ -41,6 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+
+import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 import static javax.security.auth.message.AuthStatus.SEND_FAILURE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.omnifaces.security.cdi.Beans.getReferenceOrNull;
@@ -247,7 +249,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			//note: no actual container login is performed currently
 			List<String> roles = new ArrayList<>();
 			roles.add(UserRoleName.SUPER_ADMIN);
-			return httpMsgContext.notifyContainerAboutLogin("LoginConnector", roles);
+			return httpMsgContext.notifyContainerAboutLogin(LOGINCONNECTOR_USER_USERNAME, roles);
 		}
 
 		LOG.error("Call to connector api with invalid BasicAuth header credentials");

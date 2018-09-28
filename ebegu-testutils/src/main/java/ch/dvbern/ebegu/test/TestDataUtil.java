@@ -1161,8 +1161,8 @@ public final class TestDataUtil {
 			@Nonnull  Mandant mandant) {
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
-		benutzer.setNachname("anonymous");
-		benutzer.setVorname("anonymous");
+		benutzer.setNachname(Constants.ANONYMOUS_USER_USERNAME);
+		benutzer.setVorname(Constants.ANONYMOUS_USER_USERNAME);
 		benutzer.setEmail("e@e");
 		Berechtigung berechtigung = new Berechtigung();
 		berechtigung.setTraegerschaft(traegerschaft);

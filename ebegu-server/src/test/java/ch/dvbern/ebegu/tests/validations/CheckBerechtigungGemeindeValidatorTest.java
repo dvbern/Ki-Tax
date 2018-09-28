@@ -20,6 +20,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeindeValidator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -79,7 +80,7 @@ public class CheckBerechtigungGemeindeValidatorTest {
 	}
 
 	private Benutzer createBenutzer(UserRole role, boolean addGemeinde) {
-		Benutzer benutzer = TestDataUtil.createBenutzer(role, "anonymous", null, null, mandant);
+		Benutzer benutzer = TestDataUtil.createBenutzer(role, Constants.ANONYMOUS_USER_USERNAME, null, null, mandant);
 		if (addGemeinde) {
 			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(gemeinde);
 		}

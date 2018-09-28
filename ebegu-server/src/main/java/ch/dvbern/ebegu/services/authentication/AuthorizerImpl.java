@@ -86,6 +86,8 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.UserRole.getAllAdminRoles;
+import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
+import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 
 /**
  * Authorizer Implementation
@@ -428,7 +430,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isWriteAuthorized(@Nonnull Benutzer benutzer) {
-		if ("anonymous".equals(principalBean.getPrincipal().getName())) {
+		if (ANONYMOUS_USER_USERNAME.equals(principalBean.getPrincipal().getName())
+			|| LOGINCONNECTOR_USER_USERNAME.equals(principalBean.getPrincipal().getName())) {
 			// when a user logs in, it is created by anonymous. So we must allow that
 			return true;
 		}

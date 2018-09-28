@@ -321,7 +321,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			username = principal.getName();
 		}
 		if (StringUtils.isNotEmpty(username)) {
-			if ("anonymous".equals(username) && principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
+			if (Constants.ANONYMOUS_USER_USERNAME.equals(username) && principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
 				return loadSuperAdmin();
 			}
 			return findBenutzer(username);
