@@ -23,7 +23,7 @@ import {EbeguWebPendenzenBetreuungen} from './pendenzenBetreuungen/pendenzenBetr
 import {EbeguWebPendenzenSteueramt} from '../pendenzenSteueramt/pendenzenSteueramt.module';
 import {EbeguWebPosteingang} from '../posteingang/posteingang.module';
 import {EbeguWebStatistik} from '../statistik/statistik.module';
-import {EbeguWebVerlauf} from '../verlauf/verlauf.module';
+import {EbeguWebVerlauf} from './verlauf/verlauf.module';
 import {EbeguWebZahlung} from '../zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
 import {EbeguWebAlleVerfuegungen} from './alleVerfuegungen/alleVerfuegungen.module';

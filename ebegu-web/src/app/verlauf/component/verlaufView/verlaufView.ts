@@ -16,15 +16,16 @@
 import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import {StateService} from '@uirouter/core';
-import AntragStatusHistoryRS from '../../../app/core/service/antragStatusHistoryRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
-import TSDossier from '../../../models/TSDossier';
-import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {IController} from 'angular';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
+import TSAntragStatusHistory from '../../../../models/TSAntragStatusHistory';
+import TSDossier from '../../../../models/TSDossier';
+import TSGesuch from '../../../../models/TSGesuch';
+import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.rest';
 import {IVerlaufStateParams} from '../../verlauf.route';
 
 export class VerlaufViewComponentConfig implements IComponentOptions {
@@ -34,9 +35,10 @@ export class VerlaufViewComponentConfig implements IComponentOptions {
     controllerAs = 'vm';
 }
 
-export class VerlaufViewController {
+export class VerlaufViewController implements IController {
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS', 'EbeguUtil'];
+    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS',
+        'EbeguUtil'];
 
     form: IFormController;
     dossier: TSDossier;
@@ -61,12 +63,17 @@ export class VerlaufViewController {
                 if (this.dossier === undefined) {
                     this.cancel();
                 }
-                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode).then((response: TSAntragStatusHistory[]) => {
-                    this.verlauf = response;
-                });
+                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode)
+                    .then((response: TSAntragStatusHistory[]) => {
+                        this.verlauf = response;
+                    });
                 this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
                     response.forEach((item) => {
-                        this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(item.antragTyp, item.eingangsdatum, item.laufnummer);
+                        this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
+                            item.antragTyp,
+                            item.eingangsdatum,
+                            item.laufnummer
+                        );
                     });
                 });
             });
