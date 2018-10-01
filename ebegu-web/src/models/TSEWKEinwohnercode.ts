@@ -26,7 +26,7 @@ export default class TSEWKEinwohnercode extends TSAbstractMutableEntity {
     private _gueltigVon: moment.Moment;
     private _gueltigBis: moment.Moment;
 
-    constructor(code?: string, codeTxt?: string, gueltigVon?: moment.Moment, gueltigBis?: moment.Moment) {
+    public constructor(code?: string, codeTxt?: string, gueltigVon?: moment.Moment, gueltigBis?: moment.Moment) {
         super();
         this._code = code;
         this._codeTxt = codeTxt;
@@ -34,35 +34,35 @@ export default class TSEWKEinwohnercode extends TSAbstractMutableEntity {
         this._gueltigBis = gueltigBis;
     }
 
-    get code(): string {
+    public get code(): string {
         return this._code;
     }
 
-    set code(value: string) {
+    public set code(value: string) {
         this._code = value;
     }
 
-    get codeTxt(): string {
+    public get codeTxt(): string {
         return this._codeTxt;
     }
 
-    set codeTxt(value: string) {
+    public set codeTxt(value: string) {
         this._codeTxt = value;
     }
 
-    get gueltigVon(): moment.Moment {
+    public get gueltigVon(): moment.Moment {
         return this._gueltigVon;
     }
 
-    set gueltigVon(value: moment.Moment) {
+    public set gueltigVon(value: moment.Moment) {
         this._gueltigVon = value;
     }
 
-    get gueltigBis(): moment.Moment {
+    public get gueltigBis(): moment.Moment {
         return this._gueltigBis;
     }
 
-    set gueltigBis(value: moment.Moment) {
+    public set gueltigBis(value: moment.Moment) {
         this._gueltigBis = value;
     }
 }

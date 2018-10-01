@@ -33,8 +33,8 @@ export default class TSErwerbspensum extends TSAbstractPensumEntity {
 
     private _bezeichnung: string;
 
-    constructor(pensum?: number, gueltigkeit?: TSDateRange, taetigkeit?: TSTaetigkeit, zuschlagZuErwerbspensum?: boolean,
-                zuschlagsgrund?: TSZuschlagsgrund, zuschlagsprozent?: number) {
+    public constructor(pensum?: number, gueltigkeit?: TSDateRange, taetigkeit?: TSTaetigkeit, zuschlagZuErwerbspensum?: boolean,
+                       zuschlagsgrund?: TSZuschlagsgrund, zuschlagsprozent?: number) {
         super(pensum, gueltigkeit);
         this._taetigkeit = taetigkeit;
         this._zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;
@@ -42,43 +42,43 @@ export default class TSErwerbspensum extends TSAbstractPensumEntity {
         this._zuschlagsprozent = zuschlagsprozent;
     }
 
-    get taetigkeit(): TSTaetigkeit {
+    public get taetigkeit(): TSTaetigkeit {
         return this._taetigkeit;
     }
 
-    set taetigkeit(value: TSTaetigkeit) {
+    public set taetigkeit(value: TSTaetigkeit) {
         this._taetigkeit = value;
     }
 
-    get zuschlagZuErwerbspensum(): boolean {
+    public get zuschlagZuErwerbspensum(): boolean {
         return this._zuschlagZuErwerbspensum;
     }
 
-    set zuschlagZuErwerbspensum(value: boolean) {
+    public set zuschlagZuErwerbspensum(value: boolean) {
         this._zuschlagZuErwerbspensum = value;
     }
 
-    get zuschlagsgrund(): TSZuschlagsgrund {
+    public get zuschlagsgrund(): TSZuschlagsgrund {
         return this._zuschlagsgrund;
     }
 
-    set zuschlagsgrund(value: TSZuschlagsgrund) {
+    public set zuschlagsgrund(value: TSZuschlagsgrund) {
         this._zuschlagsgrund = value;
     }
 
-    get zuschlagsprozent(): number {
+    public get zuschlagsprozent(): number {
         return this._zuschlagsprozent;
     }
 
-    set zuschlagsprozent(value: number) {
+    public set zuschlagsprozent(value: number) {
         this._zuschlagsprozent = value;
     }
 
-    get bezeichnung(): string {
+    public get bezeichnung(): string {
         return this._bezeichnung;
     }
 
-    set bezeichnung(value: string) {
+    public set bezeichnung(value: string) {
         this._bezeichnung = value;
     }
 }

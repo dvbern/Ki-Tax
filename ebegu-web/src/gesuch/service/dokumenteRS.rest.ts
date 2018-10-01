@@ -23,13 +23,12 @@ import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
 import ICacheObject = angular.ICacheObject;
 
-
 export default class DokumenteRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService) {
+    public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService) {
         this.serviceURL = REST_API + 'dokumente';
     }
 
@@ -41,10 +40,9 @@ export default class DokumenteRS {
             });
     }
 
-
     public getDokumenteByTypeCached(gesuch: TSGesuch, dokumentGrundTyp: TSDokumentGrundTyp, cache: ICacheObject): IPromise<TSDokumenteDTO> {
         return this.http.get(this.serviceURL + '/byTyp/' + encodeURIComponent(gesuch.id) + '/'
-            + encodeURIComponent(TSDokumentGrundTyp[dokumentGrundTyp]), {cache: cache})
+            + encodeURIComponent(TSDokumentGrundTyp[dokumentGrundTyp]), {cache})
             .then((response: any) => {
                 this.log.debug('PARSING cached dokumentDTO REST object ', response.data);
                 return this.ebeguRestUtil.parseDokumenteDTO(new TSDokumenteDTO(), response.data);

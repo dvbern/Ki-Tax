@@ -29,7 +29,7 @@ import WizardStepRS from './WizardStepRS.rest';
 
 export default class WizardStepManager {
 
-    static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
+    public static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
 
     private allowedSteps: Array<TSWizardStepName> = [];
     private readonly hiddenSteps: Array<TSWizardStepName> = []; // alle Steps die obwohl allowed, ausgeblendet werden muessen
@@ -38,10 +38,10 @@ export default class WizardStepManager {
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly wizardStepRS: WizardStepRS,
-                private readonly $q: IQService,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(private readonly authServiceRS: AuthServiceRS,
+                       private readonly wizardStepRS: WizardStepRS,
+                       private readonly $q: IQService,
+                       private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
@@ -154,7 +154,7 @@ export default class WizardStepManager {
      * @returns {any}
      */
     public updateWizardStepStatus(stepName: TSWizardStepName, newStepStatus: TSWizardStepStatus): IPromise<void> {
-        const step: TSWizardStep = this.getStepByName(stepName);
+        const step = this.getStepByName(stepName);
         step.verfuegbar = true;
         if (this.needNewStatusSave(step.wizardStepStatus, newStepStatus)) { // nur wenn der Status sich geaendert hat updaten und steps laden
             step.wizardStepStatus = newStepStatus;
@@ -242,7 +242,7 @@ export default class WizardStepManager {
 
     public getNextStep(gesuch: TSGesuch): TSWizardStepName {
         const allVisibleStepNames = this.getVisibleSteps();
-        const currentPosition: number = allVisibleStepNames.indexOf(this.getCurrentStepName()) + 1;
+        const currentPosition = allVisibleStepNames.indexOf(this.getCurrentStepName()) + 1;
         for (let i = currentPosition; i < allVisibleStepNames.length; i++) {
             if (this.isStepAvailableViaBtn(allVisibleStepNames[i], gesuch)) {
                 return allVisibleStepNames[i];
@@ -256,7 +256,7 @@ export default class WizardStepManager {
      */
     public getPreviousStep(gesuch: TSGesuch): TSWizardStepName {
         const allVisibleStepNames = this.getVisibleSteps();
-        const currentPosition: number = allVisibleStepNames.indexOf(this.getCurrentStepName()) - 1;
+        const currentPosition = allVisibleStepNames.indexOf(this.getCurrentStepName()) - 1;
         for (let i = currentPosition; i >= 0; i--) {
             if (this.isStepAvailableViaBtn(allVisibleStepNames[i], gesuch)) {
                 return allVisibleStepNames[i];
@@ -270,7 +270,7 @@ export default class WizardStepManager {
      */
     private isStepAvailableViaBtn(stepName: TSWizardStepName, gesuch: TSGesuch): boolean {
         if (gesuch) {
-            const step: TSWizardStep = this.getStepByName(stepName);
+            const step = this.getStepByName(stepName);
 
             if (step !== undefined) {
                 return (this.isStepClickableForCurrentRole(step, gesuch)
@@ -290,7 +290,7 @@ export default class WizardStepManager {
     public isStepClickableForCurrentRole(step: TSWizardStep, gesuch: TSGesuch) {
         if (gesuch) {
             if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
-                //verfuegen fuer admin und jugendamt  immer sichtbar
+                // verfuegen fuer admin und jugendamt  immer sichtbar
                 if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
                         return isAtLeastFreigegeben(gesuch.status);
@@ -303,7 +303,7 @@ export default class WizardStepManager {
                 }
                 return this.areAllStepsOK(gesuch);
             }
-            return step.verfuegbar === true;  //wenn keine Sonderbedingung gehen wir davon aus dass der step nicht disabled ist
+            return step.verfuegbar;  // wenn keine Sonderbedingung gehen wir davon aus dass der step nicht disabled ist
         }
         return false;
     }
@@ -408,21 +408,21 @@ export default class WizardStepManager {
      */
     public setHiddenSteps(gesuch: TSGesuch): void {
         if (gesuch) {
-            //Freigabe
+            // Freigabe
             if (gesuch.isOnlineGesuch()) {
                 this.unhideStep(TSWizardStepName.FREIGABE);
             } else {
                 this.hideStep(TSWizardStepName.FREIGABE);
             }
 
-            //Abwesenheit
+            // Abwesenheit
             if (gesuch.isMutation()) {
                 this.unhideStep(TSWizardStepName.ABWESENHEIT);
             } else {
                 this.hideStep(TSWizardStepName.ABWESENHEIT);
             }
 
-            //Umzug
+            // Umzug
             if (!gesuch.isMutation() && !gesuch.isThereAnyUmzug()) {
                 this.hideStep(TSWizardStepName.UMZUG);
             } else {

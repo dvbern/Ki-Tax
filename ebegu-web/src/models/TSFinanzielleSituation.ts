@@ -21,10 +21,10 @@ export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituati
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
-    constructor(steuerveranlagungErhalten?: boolean, steuererklaerungAusgefuellt?: boolean, nettolohn?: number,
-                familienzulage?: number, ersatzeinkommen?: number, erhalteneAlimente?: number, bruttovermoegen?: number,
-                schulden?: number, geschaeftsgewinnBasisjahrMinus2?: number, geschaeftsgewinnBasisjahrMinus1?: number,
-                geschaeftsgewinnBasisjahr?: number, geleisteteAlimente?: number) {
+    public constructor(steuerveranlagungErhalten?: boolean, steuererklaerungAusgefuellt?: boolean, nettolohn?: number,
+                       familienzulage?: number, ersatzeinkommen?: number, erhalteneAlimente?: number, bruttovermoegen?: number,
+                       schulden?: number, geschaeftsgewinnBasisjahrMinus2?: number, geschaeftsgewinnBasisjahrMinus1?: number,
+                       geschaeftsgewinnBasisjahr?: number, geleisteteAlimente?: number) {
         super(steuerveranlagungErhalten, steuererklaerungAusgefuellt,
             familienzulage, ersatzeinkommen, erhalteneAlimente, bruttovermoegen,
             schulden, geschaeftsgewinnBasisjahr, geleisteteAlimente);
@@ -33,27 +33,27 @@ export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituati
         this._geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
     }
 
-    get nettolohn(): number {
+    public get nettolohn(): number {
         return this._nettolohn;
     }
 
-    set nettolohn(value: number) {
+    public set nettolohn(value: number) {
         this._nettolohn = value;
     }
 
-    get geschaeftsgewinnBasisjahrMinus2(): number {
+    public get geschaeftsgewinnBasisjahrMinus2(): number {
         return this._geschaeftsgewinnBasisjahrMinus2;
     }
 
-    set geschaeftsgewinnBasisjahrMinus2(value: number) {
+    public set geschaeftsgewinnBasisjahrMinus2(value: number) {
         this._geschaeftsgewinnBasisjahrMinus2 = value;
     }
 
-    get geschaeftsgewinnBasisjahrMinus1(): number {
+    public get geschaeftsgewinnBasisjahrMinus1(): number {
         return this._geschaeftsgewinnBasisjahrMinus1;
     }
 
-    set geschaeftsgewinnBasisjahrMinus1(value: number) {
+    public set geschaeftsgewinnBasisjahrMinus1(value: number) {
         this._geschaeftsgewinnBasisjahrMinus1 = value;
     }
 

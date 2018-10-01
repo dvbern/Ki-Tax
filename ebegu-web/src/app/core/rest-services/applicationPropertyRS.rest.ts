@@ -19,17 +19,17 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class ApplicationPropertyRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'application-properties';
     }
 
-    getAllowedMimetypes(): IPromise<TSApplicationProperty> {
+    public getAllowedMimetypes(): IPromise<TSApplicationProperty> {
         return this.http.get(this.serviceURL + '/public/' + encodeURIComponent('UPLOAD_FILETYPES_WHITELIST'),
             {cache: true})
             .then((response: IHttpResponse<TSApplicationProperty>) => {
@@ -37,7 +37,7 @@ export class ApplicationPropertyRS {
             });
     }
 
-    getByName(name: string): IPromise<TSApplicationProperty> {
+    public getByName(name: string): IPromise<TSApplicationProperty> {
         return this.http.get(this.serviceURL + '/key/' + encodeURIComponent(name)).then(
             (response: any) => {
                 return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
@@ -45,25 +45,25 @@ export class ApplicationPropertyRS {
         );
     }
 
-    isDevMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/devmode', {cache: true}).then((response) => {
+    public isDevMode(): IPromise<boolean> {
+        return this.http.get(this.serviceURL + '/public/devmode', {cache: true}).then(response => {
             return response.data as boolean;
         });
     }
 
-    isDummyMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/dummy').then((response) => {
+    public isDummyMode(): IPromise<boolean> {
+        return this.http.get(this.serviceURL + '/public/dummy').then(response => {
             return response.data as boolean;
         });
     }
 
-    getBackgroundColor(): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/public/background').then((response) => {
+    public getBackgroundColor(): IPromise<TSApplicationProperty> {
+        return this.http.get(this.serviceURL + '/public/background').then(response => {
             return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty, response.data);
         });
     }
 
-    create(name: string, value: string): IHttpPromise<any> {
+    public create(name: string, value: string): IHttpPromise<any> {
         return this.http.post(this.serviceURL + '/' + encodeURIComponent(name), value, {
             headers: {
                 'Content-Type': 'text/plain'
@@ -71,7 +71,7 @@ export class ApplicationPropertyRS {
         });
     }
 
-    update(name: string, value: string): IHttpPromise<any> {
+    public update(name: string, value: string): IHttpPromise<any> {
         return this.http.post(this.serviceURL + '/' + encodeURIComponent(name), value, {
             headers: {
                 'Content-Type': 'text/plain'
@@ -79,20 +79,19 @@ export class ApplicationPropertyRS {
         });
     }
 
-    remove(name: string): IHttpPromise<any> {
+    public remove(name: string): IHttpPromise<any> {
         return this.http.delete(this.serviceURL + '/' + encodeURIComponent(name));
     }
 
-    getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
+    public getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
         return this.http.get(this.serviceURL + '/').then(
             (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data)
         );
     }
 
-    isZahlungenTestMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/zahlungentestmode', {cache: true}).then((response) => {
+    public isZahlungenTestMode(): IPromise<boolean> {
+        return this.http.get(this.serviceURL + '/public/zahlungentestmode', {cache: true}).then(response => {
             return response.data as boolean;
         });
     }
 }
-

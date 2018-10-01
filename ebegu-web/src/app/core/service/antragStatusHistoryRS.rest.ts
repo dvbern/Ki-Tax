@@ -23,21 +23,21 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class AntragStatusHistoryRS {
 
-    get lastChange(): TSAntragStatusHistory {
+    public get lastChange(): TSAntragStatusHistory {
         return this._lastChange;
     }
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
     private _lastChange: TSAntragStatusHistory;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public log: ILogService,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public log: ILogService,
+                       private readonly authServiceRS: AuthServiceRS) {
         this.serviceURL = REST_API + 'antragStatusHistory';
     }
 

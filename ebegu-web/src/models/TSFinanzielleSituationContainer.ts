@@ -22,35 +22,35 @@ export default class TSFinanzielleSituationContainer extends TSAbstractMutableEn
     private _finanzielleSituationGS: TSFinanzielleSituation;
     private _finanzielleSituationJA: TSFinanzielleSituation;
 
-    constructor(jahr?: number, finanzielleSituationGS?: TSFinanzielleSituation,
-                finanzielleSituationJA?: TSFinanzielleSituation) {
+    public constructor(jahr?: number, finanzielleSituationGS?: TSFinanzielleSituation,
+                       finanzielleSituationJA?: TSFinanzielleSituation) {
         super();
         this._jahr = jahr;
         this._finanzielleSituationGS = finanzielleSituationGS;
         this._finanzielleSituationJA = finanzielleSituationJA;
     }
 
-    get jahr(): number {
+    public get jahr(): number {
         return this._jahr;
     }
 
-    set jahr(value: number) {
+    public set jahr(value: number) {
         this._jahr = value;
     }
 
-    get finanzielleSituationGS(): TSFinanzielleSituation {
+    public get finanzielleSituationGS(): TSFinanzielleSituation {
         return this._finanzielleSituationGS;
     }
 
-    set finanzielleSituationGS(value: TSFinanzielleSituation) {
+    public set finanzielleSituationGS(value: TSFinanzielleSituation) {
         this._finanzielleSituationGS = value;
     }
 
-    get finanzielleSituationJA(): TSFinanzielleSituation {
+    public get finanzielleSituationJA(): TSFinanzielleSituation {
         return this._finanzielleSituationJA;
     }
 
-    set finanzielleSituationJA(value: TSFinanzielleSituation) {
+    public set finanzielleSituationJA(value: TSFinanzielleSituation) {
         this._finanzielleSituationJA = value;
     }
 }

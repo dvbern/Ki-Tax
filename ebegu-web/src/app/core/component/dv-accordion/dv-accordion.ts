@@ -16,11 +16,11 @@
 import {IComponentOptions, IOnChanges} from 'angular';
 
 export class DvAccordionComponentConfig implements IComponentOptions {
-    transclude = true;
-    template = require('./dv-accordion.html');
-    controller = DvAccordionController;
-    controllerAs = 'vm';
-    bindings = {
+    public transclude = true;
+    public template = require('./dv-accordion.html');
+    public controller = DvAccordionController;
+    public controllerAs = 'vm';
+    public bindings = {
         allowMultipleSections: '<',
         selectedTabId: '<'
     };
@@ -28,13 +28,13 @@ export class DvAccordionComponentConfig implements IComponentOptions {
 
 export class DvAccordionController implements IOnChanges {
 
-    static $inject: ReadonlyArray<string> = [];
+    public static $inject: ReadonlyArray<string> = [];
 
-    accordion: string[] = [];
-    allowMultipleSections: boolean;
-    selectedTabId: string;
+    public accordion: string[] = [];
+    public allowMultipleSections: boolean;
+    public selectedTabId: string;
 
-    $onChanges() {
+    public $onChanges() {
         // erlaubt dass man von Anfang an, ein Tab oeffnet, wenn man eine bestimmte Mitteilung oeffnen will
         if (this.selectedTabId) {
             this.toggleTab(this.selectedTabId);

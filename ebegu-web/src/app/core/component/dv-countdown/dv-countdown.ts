@@ -29,30 +29,30 @@ import IRootScopeService = angular.IRootScopeService;
 const dialogTemplate = require('../../../../gesuch/dialog/okDialogTemplate.html');
 
 export class DvCountdownComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-countdown.html');
-    controller = DvCountdownController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-countdown.html');
+    public controller = DvCountdownController;
+    public controllerAs = 'vm';
 }
 
 export class DvCountdownController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
+    public static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
 
-    TSRoleUtil = TSRoleUtil;
-    timer: moment.Duration;
-    timerInterval: IPromise<any>;
+    public TSRoleUtil = TSRoleUtil;
+    public timer: moment.Duration;
+    public timerInterval: IPromise<any>;
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly $state: StateService,
-                private readonly $interval: IIntervalService,
-                private readonly $rootScope: IRootScopeService,
-                private readonly DvDialog: DvDialog,
-                private readonly gesuchModelManager: GesuchModelManager) {
+    public constructor(private readonly authServiceRS: AuthServiceRS,
+                       private readonly $state: StateService,
+                       private readonly $interval: IIntervalService,
+                       private readonly $rootScope: IRootScopeService,
+                       private readonly DvDialog: DvDialog,
+                       private readonly gesuchModelManager: GesuchModelManager) {
     }
 
-    $onInit() {
+    public $onInit() {
         this.$rootScope.$on(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], () => {
             if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && this.isGesuchAvailableAndWritable() && this.isOnGesuchView()) {
                 if (this.timerInterval === undefined) {
@@ -85,7 +85,7 @@ export class DvCountdownController implements IController {
         }
     }
 
-    //Fuer Testzwecke hier auf 5 setzen, ab dann erscheint der Countdown
+    // Fuer Testzwecke hier auf 5 setzen, ab dann erscheint der Countdown
     public resetTimer(): void {
         this.timer = moment.duration(10, 'minutes');
     }
@@ -107,7 +107,7 @@ export class DvCountdownController implements IController {
 
     public startTimer(): void {
         this.resetTimer();
-        //Fuer Testzwecke hier auf 10 oder 100 setzen
+        // Fuer Testzwecke hier auf 10 oder 100 setzen
         this.timerInterval = this.$interval(this.decrease.bind(this), 1000);
     }
 

@@ -44,11 +44,11 @@ export default class TSEWKPerson extends TSAbstractMutableEntity {
     private _adressen: Array<TSEWKAdresse>;
     private _beziehungen: Array<TSEWKBeziehung>;
 
-    constructor(personID?: string, einwohnercodes?: Array<TSEWKEinwohnercode>, nachname?: string, ledigname?: string,
-                vorname?: string, rufname?: string, geburtsdatum?: moment.Moment, zuzugsdatum?: moment.Moment,
-                nationalitaet?: string, zivilstand?: string, zivilstandTxt?: string, zivilstandsdatum?: moment.Moment,
-                geschlecht?: TSGeschlecht, bewilligungsart?: string, bewilligungsartTxt?: string, bewilligungBis?: moment.Moment,
-                adressen?: Array<TSEWKAdresse>, beziehungen?: Array<TSEWKBeziehung>) {
+    public constructor(personID?: string, einwohnercodes?: Array<TSEWKEinwohnercode>, nachname?: string, ledigname?: string,
+                       vorname?: string, rufname?: string, geburtsdatum?: moment.Moment, zuzugsdatum?: moment.Moment,
+                       nationalitaet?: string, zivilstand?: string, zivilstandTxt?: string, zivilstandsdatum?: moment.Moment,
+                       geschlecht?: TSGeschlecht, bewilligungsart?: string, bewilligungsartTxt?: string, bewilligungBis?: moment.Moment,
+                       adressen?: Array<TSEWKAdresse>, beziehungen?: Array<TSEWKBeziehung>) {
         super();
         this._personID = personID;
         this._einwohnercodes = einwohnercodes;
@@ -70,147 +70,147 @@ export default class TSEWKPerson extends TSAbstractMutableEntity {
         this._beziehungen = beziehungen;
     }
 
-    get personID(): string {
+    public get personID(): string {
         return this._personID;
     }
 
-    set personID(value: string) {
+    public set personID(value: string) {
         this._personID = value;
     }
 
-    get einwohnercodes(): Array<TSEWKEinwohnercode> {
+    public get einwohnercodes(): Array<TSEWKEinwohnercode> {
         return this._einwohnercodes;
     }
 
-    set einwohnercodes(value: Array<TSEWKEinwohnercode>) {
+    public set einwohnercodes(value: Array<TSEWKEinwohnercode>) {
         this._einwohnercodes = value;
     }
 
-    get nachname(): string {
+    public get nachname(): string {
         return this._nachname;
     }
 
-    set nachname(value: string) {
+    public set nachname(value: string) {
         this._nachname = value;
     }
 
-    get ledigname(): string {
+    public get ledigname(): string {
         return this._ledigname;
     }
 
-    set ledigname(value: string) {
+    public set ledigname(value: string) {
         this._ledigname = value;
     }
 
-    get vorname(): string {
+    public get vorname(): string {
         return this._vorname;
     }
 
-    set vorname(value: string) {
+    public set vorname(value: string) {
         this._vorname = value;
     }
 
-    get rufname(): string {
+    public get rufname(): string {
         return this._rufname;
     }
 
-    set rufname(value: string) {
+    public set rufname(value: string) {
         this._rufname = value;
     }
 
-    get geburtsdatum(): moment.Moment {
+    public get geburtsdatum(): moment.Moment {
         return this._geburtsdatum;
     }
 
-    set geburtsdatum(value: moment.Moment) {
+    public set geburtsdatum(value: moment.Moment) {
         this._geburtsdatum = value;
     }
 
-    get zuzugsdatum(): moment.Moment {
+    public get zuzugsdatum(): moment.Moment {
         return this._zuzugsdatum;
     }
 
-    set zuzugsdatum(value: moment.Moment) {
+    public set zuzugsdatum(value: moment.Moment) {
         this._zuzugsdatum = value;
     }
 
-    get nationalitaet(): string {
+    public get nationalitaet(): string {
         return this._nationalitaet;
     }
 
-    set nationalitaet(value: string) {
+    public set nationalitaet(value: string) {
         this._nationalitaet = value;
     }
 
-    get zivilstand(): string {
+    public get zivilstand(): string {
         return this._zivilstand;
     }
 
-    set zivilstand(value: string) {
+    public set zivilstand(value: string) {
         this._zivilstand = value;
     }
 
-    get zivilstandTxt(): string {
+    public get zivilstandTxt(): string {
         return this._zivilstandTxt;
     }
 
-    set zivilstandTxt(value: string) {
+    public set zivilstandTxt(value: string) {
         this._zivilstandTxt = value;
     }
 
-    get zivilstandsdatum(): moment.Moment {
+    public get zivilstandsdatum(): moment.Moment {
         return this._zivilstandsdatum;
     }
 
-    set zivilstandsdatum(value: moment.Moment) {
+    public set zivilstandsdatum(value: moment.Moment) {
         this._zivilstandsdatum = value;
     }
 
-    get geschlecht(): TSGeschlecht {
+    public get geschlecht(): TSGeschlecht {
         return this._geschlecht;
     }
 
-    set geschlecht(value: TSGeschlecht) {
+    public set geschlecht(value: TSGeschlecht) {
         this._geschlecht = value;
     }
 
-    get bewilligungsart(): string {
+    public get bewilligungsart(): string {
         return this._bewilligungsart;
     }
 
-    set bewilligungsart(value: string) {
+    public set bewilligungsart(value: string) {
         this._bewilligungsart = value;
     }
 
-    get bewilligungsartTxt(): string {
+    public get bewilligungsartTxt(): string {
         return this._bewilligungsartTxt;
     }
 
-    set bewilligungsartTxt(value: string) {
+    public set bewilligungsartTxt(value: string) {
         this._bewilligungsartTxt = value;
     }
 
-    get bewilligungBis(): moment.Moment {
+    public get bewilligungBis(): moment.Moment {
         return this._bewilligungBis;
     }
 
-    set bewilligungBis(value: moment.Moment) {
+    public set bewilligungBis(value: moment.Moment) {
         this._bewilligungBis = value;
     }
 
-    get adressen(): Array<TSEWKAdresse> {
+    public get adressen(): Array<TSEWKAdresse> {
         return this._adressen;
     }
 
-    set adressen(value: Array<TSEWKAdresse>) {
+    public set adressen(value: Array<TSEWKAdresse>) {
         this._adressen = value;
     }
 
-    get beziehungen(): Array<TSEWKBeziehung> {
+    public get beziehungen(): Array<TSEWKBeziehung> {
         return this._beziehungen;
     }
 
-    set beziehungen(value: Array<TSEWKBeziehung>) {
+    public set beziehungen(value: Array<TSEWKBeziehung>) {
         this._beziehungen = value;
     }
 

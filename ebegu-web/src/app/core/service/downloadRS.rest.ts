@@ -22,16 +22,16 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 
 export class DownloadRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public log: ILogService,
-                private readonly $window: IWindowService,
-                private readonly $interval: IIntervalService) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public log: ILogService,
+                       private readonly $window: IWindowService,
+                       private readonly $interval: IIntervalService) {
         this.serviceURL = REST_API + 'blobs/temp';
     }
 
@@ -143,7 +143,6 @@ export class DownloadRS {
             });
     }
 
-
     public getServiceName(): string {
         return 'DownloadRS';
     }
@@ -158,36 +157,36 @@ export class DownloadRS {
      */
     public startDownload(accessToken: string, dokumentName: string, attachment: boolean, myWindow: Window) {
         if (myWindow) {
-            let href: string = this.serviceURL + '/blobdata/' + accessToken;
+            let href = this.serviceURL + '/blobdata/' + accessToken;
             if (attachment) {
                 // add MatrixParam for to download file instead of opening it inline
                 href += ';attachment=true;';
             } else {
                 myWindow.focus();
             }
-            //as soon as the window is ready send it to the download
+            // as soon as the window is ready send it to the download
             this.addCloseButtonHandler(myWindow);
             this.redirectWindowToDownloadWhenReady(myWindow, href, accessToken);
 
-            //This would be the way to open file in new window (for now it's better to open in new tab)
-            //this.$window.open(href, name, 'toolbar=0,location=0,menubar=0');
+            // This would be the way to open file in new window (for now it's better to open in new tab)
+            // this.$window.open(href, name, 'toolbar=0,location=0,menubar=0');
         } else {
             this.log.error('Download popup window was not initialized');
         }
     }
 
-    prepareDownloadWindow(): Window {
+    public prepareDownloadWindow(): Window {
         return this.$window.open('assets/downloadWindow/downloadWindow.html', EbeguUtil.generateRandomName(5));
     }
 
     private redirectWindowToDownloadWhenReady(win: Window, href: string, name: string) {
-        //wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
-        const readyTimer: IPromise<any> = this.$interval(() => {
+        // wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
+        const readyTimer = this.$interval(() => {
             if (win.document.readyState !== 'complete') {
                 return;
             }
             this.$interval.cancel(readyTimer);
-            //do stuff
+            // do stuff
             this.hideSpinner(win);
             win.open(href, win.name);
         }, 100, 300);

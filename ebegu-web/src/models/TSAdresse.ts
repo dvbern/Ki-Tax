@@ -14,8 +14,8 @@
  */
 
 import {TSAdressetyp} from './enums/TSAdressetyp';
-import {TSDateRange} from './types/TSDateRange';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSDateRange} from './types/TSDateRange';
 
 export default class TSAdresse extends TSAbstractDateRangedEntity {
 
@@ -30,8 +30,17 @@ export default class TSAdresse extends TSAbstractDateRangedEntity {
     private _nichtInGemeinde: boolean;
     private _organisation: string;
 
-    constructor(strasse?: string, hausnummer?: string, zusatzzeile?: string, plz?: string, ort?: string,
-                land?: string, gemeinde?: string, gueltigkeit?: TSDateRange, adresseTyp?: TSAdressetyp, nichtInGemeinde?: boolean, organisation?: string) {
+    public constructor(strasse?: string,
+                       hausnummer?: string,
+                       zusatzzeile?: string,
+                       plz?: string,
+                       ort?: string,
+                       land?: string,
+                       gemeinde?: string,
+                       gueltigkeit?: TSDateRange,
+                       adresseTyp?: TSAdressetyp,
+                       nichtInGemeinde?: boolean,
+                       organisation?: string) {
         super(gueltigkeit);
         this._strasse = strasse;
         this._hausnummer = hausnummer;
@@ -138,11 +147,11 @@ export default class TSAdresse extends TSAbstractDateRangedEntity {
         this._gemeinde = value;
     }
 
-    get adresseTyp(): TSAdressetyp {
+    public get adresseTyp(): TSAdressetyp {
         return this._adresseTyp;
     }
 
-    set adresseTyp(value: TSAdressetyp) {
+    public set adresseTyp(value: TSAdressetyp) {
         this._adresseTyp = value;
     }
 
@@ -154,11 +163,11 @@ export default class TSAdresse extends TSAbstractDateRangedEntity {
         this._nichtInGemeinde = value;
     }
 
-    get organisation(): string {
+    public get organisation(): string {
         return this._organisation;
     }
 
-    set organisation(value: string) {
+    public set organisation(value: string) {
         this._organisation = value;
     }
 }

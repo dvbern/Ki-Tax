@@ -36,7 +36,7 @@ const ng1States: Ng1StateDeclaration[] = [
         component: 'dvLogin',
         url: '/login?type',
         resolve: {
-            returnTo: returnTo
+            returnTo
         },
         data: {
             roles: getTSRoleValues()
@@ -55,7 +55,7 @@ const ng1States: Ng1StateDeclaration[] = [
 ];
 
 export class IAuthenticationStateParams {
-    type: string;
+    public type: string;
 }
 
 /**

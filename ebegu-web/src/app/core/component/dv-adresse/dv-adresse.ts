@@ -26,8 +26,8 @@ import ListResourceRS from '../../service/listResourceRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class AdresseComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         adresse: '<',
         gemeinde: '<?',
         prefix: '@',
@@ -35,30 +35,30 @@ export class AdresseComponentConfig implements IComponentOptions {
         showNichtInGemeinde: '<',
         showIfBisherNone: '<'
     };
-    template = require('./dv-adresse.html');
-    controller = DvAdresseController;
-    controllerAs = 'vm';
-    require: any = {parentForm: '?^form'};
+    public template = require('./dv-adresse.html');
+    public controller = DvAdresseController;
+    public controllerAs = 'vm';
+    public require: any = {parentForm: '?^form'};
 }
 
 export class DvAdresseController {
-    static $inject = ['AdresseRS', 'ListResourceRS', 'GesuchModelManager', '$translate', 'AuthServiceRS'];
+    public static $inject = ['AdresseRS', 'ListResourceRS', 'GesuchModelManager', '$translate', 'AuthServiceRS'];
 
-    adresse: TSAdresseContainer;
-    gemeinde: TSGemeinde;
-    prefix: string;
-    parentForm: IFormController;
-    laenderList: TSLand[];
-    organisation: boolean;
-    TSRoleUtil = TSRoleUtil;
-    showNichtInGemeinde: boolean;
-    bisherLand: string;
+    public adresse: TSAdresseContainer;
+    public gemeinde: TSGemeinde;
+    public prefix: string;
+    public parentForm: IFormController;
+    public laenderList: TSLand[];
+    public organisation: boolean;
+    public TSRoleUtil = TSRoleUtil;
+    public showNichtInGemeinde: boolean;
+    public bisherLand: string;
 
-    constructor(public readonly adresseRS: AdresseRS,
-                listResourceRS: ListResourceRS,
-                public readonly gesuchModelManager: GesuchModelManager,
-                public readonly $translate: ITranslateService,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(public readonly adresseRS: AdresseRS,
+                       listResourceRS: ListResourceRS,
+                       public readonly gesuchModelManager: GesuchModelManager,
+                       public readonly $translate: ITranslateService,
+                       private readonly authServiceRS: AuthServiceRS) {
         this.TSRoleUtil = TSRoleUtil;
         this.bisherLand = this.getBisherLand();
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
@@ -66,7 +66,7 @@ export class DvAdresseController {
         });
     }
 
-    submit() {
+    public submit() {
         this.adresseRS.create(this.adresse)
             .then((response: any) => {
                 if (response.status === 201) {
@@ -75,7 +75,7 @@ export class DvAdresseController {
             });
     }
 
-    resetForm() {
+    public resetForm() {
         this.adresse = undefined;
     }
 
@@ -104,4 +104,3 @@ export class DvAdresseController {
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 }
-

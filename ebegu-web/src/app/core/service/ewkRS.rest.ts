@@ -17,23 +17,22 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import TSEWKResultat from '../../../models/TSEWKResultat';
-import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import DateUtil from '../../../utils/DateUtil';
 import IHttpParamSerializer = angular.IHttpParamSerializer;
 
 export default class EwkRS {
 
-    static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
+    public static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
 
-    serviceURL: string;
-    gesuchsteller1: TSGesuchstellerContainer;
-    gesuchsteller2: TSGesuchstellerContainer;
+    public serviceURL: string;
+    public gesuchsteller1: TSGesuchstellerContainer;
+    public gesuchsteller2: TSGesuchstellerContainer;
 
-    constructor(public readonly http: IHttpService,
-                public readonly httpParamSerializer: IHttpParamSerializer,
-                REST_API: string,
-                public readonly ebeguRestUtil: EbeguRestUtil,
-                public readonly log: ILogService) {
+    public constructor(public readonly http: IHttpService,
+                       public readonly httpParamSerializer: IHttpParamSerializer,
+                       REST_API: string,
+                       public readonly ebeguRestUtil: EbeguRestUtil,
+                       public readonly log: ILogService) {
         this.serviceURL = REST_API + 'gesuchsteller';
     }
 
@@ -68,14 +67,14 @@ export default class EwkRS {
     }
 
     private suchePersonInEwk(gesuchstellerContainer: TSGesuchstellerContainer): IPromise<TSEWKResultat> {
-        const gs: TSGesuchsteller = gesuchstellerContainer.gesuchstellerJA;
+        const gs = gesuchstellerContainer.gesuchstellerJA;
         if (gs.ewkPersonId) {
             return this.http.get(this.serviceURL + '/ewk/search/id/' + gs.ewkPersonId)
                 .then((response: any) => {
                     return this.handlePersonSucheResult(response);
                 });
         } else {
-            const reportParams: string = this.httpParamSerializer({
+            const reportParams = this.httpParamSerializer({
                 nachname: gs.nachname,
                 vorname: gs.vorname,
                 geburtsdatum: DateUtil.momentToLocalDate(gs.geburtsdatum),
@@ -94,7 +93,7 @@ export default class EwkRS {
     }
 
     public selectPerson(n: number, ewkPersonID: string): void {
-        const gs: TSGesuchstellerContainer = this.getGesuchsteller(n);
+        const gs = this.getGesuchsteller(n);
         gs.gesuchstellerJA.ewkPersonId = ewkPersonID;
         gs.gesuchstellerJA.ewkAbfrageDatum = DateUtil.now();
     }

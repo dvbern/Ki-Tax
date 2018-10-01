@@ -22,35 +22,35 @@ export default class TSFamiliensituationContainer extends TSAbstractMutableEntit
     private _familiensituationGS: TSFamiliensituation;
     private _familiensituationErstgesuch: TSFamiliensituation;
 
-    constructor(familiensituationJA?: TSFamiliensituation, familiensituationGS?: TSFamiliensituation,
-                familiensituationErstgesuch?: TSFamiliensituation) {
+    public constructor(familiensituationJA?: TSFamiliensituation, familiensituationGS?: TSFamiliensituation,
+                       familiensituationErstgesuch?: TSFamiliensituation) {
         super();
         this._familiensituationJA = familiensituationJA;
         this._familiensituationGS = familiensituationGS;
         this._familiensituationErstgesuch = familiensituationErstgesuch;
     }
 
-    get familiensituationJA(): TSFamiliensituation {
+    public get familiensituationJA(): TSFamiliensituation {
         return this._familiensituationJA;
     }
 
-    set familiensituationJA(value: TSFamiliensituation) {
+    public set familiensituationJA(value: TSFamiliensituation) {
         this._familiensituationJA = value;
     }
 
-    get familiensituationGS(): TSFamiliensituation {
+    public get familiensituationGS(): TSFamiliensituation {
         return this._familiensituationGS;
     }
 
-    set familiensituationGS(value: TSFamiliensituation) {
+    public set familiensituationGS(value: TSFamiliensituation) {
         this._familiensituationGS = value;
     }
 
-    get familiensituationErstgesuch(): TSFamiliensituation {
+    public get familiensituationErstgesuch(): TSFamiliensituation {
         return this._familiensituationErstgesuch;
     }
 
-    set familiensituationErstgesuch(value: TSFamiliensituation) {
+    public set familiensituationErstgesuch(value: TSFamiliensituation) {
         this._familiensituationErstgesuch = value;
     }
 }

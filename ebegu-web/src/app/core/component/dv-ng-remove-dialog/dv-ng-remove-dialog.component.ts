@@ -25,10 +25,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 })
 export class DvNgRemoveDialogComponent {
 
-    title: string = '';
-    text: string = '';
+    public title: string = '';
+    public text: string = '';
 
-    constructor(
+    public constructor(
         private readonly dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
@@ -38,11 +38,11 @@ export class DvNgRemoveDialogComponent {
         }
     }
 
-    ok() {
+    public ok() {
         this.dialogRef.close(true);
     }
 
-    cancel() {
+    public cancel() {
         this.dialogRef.close();
     }
 }

@@ -21,20 +21,19 @@ import TSAntragDTO from '../../models/TSAntragDTO';
 
 export default class SearchRS implements IEntityRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'search';
     }
 
     public getServiceName(): string {
         return 'SearchRS';
     }
-
 
     public searchAntraege(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
         return this.$http.post(this.serviceURL + '/search/', antragSearch, {

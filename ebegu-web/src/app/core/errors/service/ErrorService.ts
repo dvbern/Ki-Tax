@@ -21,23 +21,21 @@ import {TSErrorType} from '../../../../models/enums/TSErrorType';
 
 export default class ErrorService {
 
+    public static $inject = ['$rootScope'];
 
-    static $inject = ['$rootScope'];
+    public errors: Array<TSExceptionReport> = [];
 
-    errors: Array<TSExceptionReport> = [];
-
-    constructor(private readonly $rootScope: IRootScopeService) {
+    public constructor(private readonly $rootScope: IRootScopeService) {
     }
 
-
-    getErrors(): Array<TSExceptionReport> {
+    public getErrors(): Array<TSExceptionReport> {
         return angular.copy(this.errors);
     }
 
     /**
      * Clears all stored errors
      */
-    clearAll() {
+    public clearAll() {
         this.errors = [];
         this.$rootScope.$broadcast(TSMessageEvent[TSMessageEvent.CLEAR]);
     }
@@ -45,7 +43,7 @@ export default class ErrorService {
     /** clear specific error
      * @param {string} msgKey
      */
-    clearError(msgKey: string) {
+    public clearError(msgKey: string) {
         // noinspection SuspiciousTypeOfGuard
         if (typeof msgKey !== 'string') {
             return;
@@ -64,20 +62,20 @@ export default class ErrorService {
      * @param {string} msgKey translation key
      * @param {Object} [args] message parameters
      */
-    addValidationError(msgKey: string, args?: any) {
-        const err: TSExceptionReport = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
+    public addValidationError(msgKey: string, args?: any) {
+        const err = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
         this.addDvbError(err);
     }
 
-    containsError(dvbError: TSExceptionReport) {
+    public containsError(dvbError: TSExceptionReport) {
         return this.errors.filter(e => e.msgKey === dvbError.msgKey).length > 0;
     }
 
-    addDvbError(dvbError: TSExceptionReport) {
+    public addDvbError(dvbError: TSExceptionReport) {
         if (dvbError && dvbError.isValid()) {
             if (!this.containsError(dvbError)) {
                 this.errors.push(dvbError);
-                const udateEvent: TSMessageEvent = (dvbError.severity === TSErrorLevel.INFO ) ? TSMessageEvent.INFO_UPDATE : TSMessageEvent.ERROR_UPDATE;
+                const udateEvent = (dvbError.severity === TSErrorLevel.INFO ) ? TSMessageEvent.INFO_UPDATE : TSMessageEvent.ERROR_UPDATE;
                 this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
             }
         } else {
@@ -85,14 +83,14 @@ export default class ErrorService {
         }
     }
 
-    addMesageAsError(msg: string) {
-        const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
+    public addMesageAsError(msg: string) {
+        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
         this.addDvbError(error);
 
     }
 
-    addMesageAsInfo(msg: string) {
-        const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
+    public addMesageAsInfo(msg: string) {
+        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
         this.addDvbError(error);
     }
 
@@ -101,7 +99,7 @@ export default class ErrorService {
      * @param {string} msgKey
      * @param {Object} [args]
      */
-    handleValidationError(isValid: boolean, msgKey: string, args?: any) {
+    public handleValidationError(isValid: boolean, msgKey: string, args?: any) {
         // noinspection PointlessBooleanExpressionJS
         if (!!isValid) {
             this.clearError(msgKey);
@@ -113,14 +111,14 @@ export default class ErrorService {
     /**
      * adds a DvbError to the errors
      */
-    handleError(dvbError: TSExceptionReport) {
+    public handleError(dvbError: TSExceptionReport) {
         this.addDvbError(dvbError);
     }
 
     /**
      * adds all Errors to the errors service
      */
-    handleErrors(dvbErrors: Array<TSExceptionReport>) {
+    public handleErrors(dvbErrors: Array<TSExceptionReport>) {
         if (dvbErrors) {
             for (const err of dvbErrors) {
                 this.addDvbError(err);

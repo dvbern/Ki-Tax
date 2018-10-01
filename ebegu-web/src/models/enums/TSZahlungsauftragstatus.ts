@@ -19,7 +19,6 @@ export enum TSZahlungsauftragsstatus {
     BESTAETIGT = 'BESTAETIGT'
 }
 
-
 export function getTSZahlungsauftragsstatusValues(): Array<TSZahlungsauftragsstatus> {
     return [
         TSZahlungsauftragsstatus.ENTWURF,

@@ -19,13 +19,13 @@ import TSWizardStep from '../../models/TSWizardStep';
 
 export default class WizardStepRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'wizard-steps';
     }
 
@@ -56,7 +56,7 @@ export default class WizardStepRS {
 
     public setWizardStepMutiert(wizardStepId: string): IPromise<TSWizardStep> {
         return this.$http.post(this.serviceURL + '/setWizardStepMutiert/' + encodeURIComponent(wizardStepId), null)
-            .then((response) => {
+            .then(response => {
             return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
         });
     }

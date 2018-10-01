@@ -36,18 +36,18 @@ export default class TSFinanzModel {
     private readonly gesuchsteller2Required: boolean;
     private readonly gesuchstellerNumber: number;
 
-    constructor(basisjahr: number, gesuchsteller2Required: boolean, gesuchstellerNumber: number, basisjahrPlus?: number) {
+    public constructor(basisjahr: number, gesuchsteller2Required: boolean, gesuchstellerNumber: number, basisjahrPlus?: number) {
         this.basisjahr = basisjahr;
         this.basisjahrPlus = basisjahrPlus;
         this.gesuchsteller2Required = gesuchsteller2Required;
         this.gesuchstellerNumber = gesuchstellerNumber;
     }
 
-    get gemeinsameSteuererklaerung(): boolean {
+    public get gemeinsameSteuererklaerung(): boolean {
         return this._gemeinsameSteuererklaerung;
     }
 
-    set gemeinsameSteuererklaerung(value: boolean) {
+    public set gemeinsameSteuererklaerung(value: boolean) {
         this._gemeinsameSteuererklaerung = value;
     }
 
@@ -67,19 +67,19 @@ export default class TSFinanzModel {
         this._verguenstigungGewuenscht = value;
     }
 
-    get finanzielleSituationContainerGS1(): TSFinanzielleSituationContainer {
+    public get finanzielleSituationContainerGS1(): TSFinanzielleSituationContainer {
         return this._finanzielleSituationContainerGS1;
     }
 
-    set finanzielleSituationContainerGS1(value: TSFinanzielleSituationContainer) {
+    public set finanzielleSituationContainerGS1(value: TSFinanzielleSituationContainer) {
         this._finanzielleSituationContainerGS1 = value;
     }
 
-    get finanzielleSituationContainerGS2(): TSFinanzielleSituationContainer {
+    public get finanzielleSituationContainerGS2(): TSFinanzielleSituationContainer {
         return this._finanzielleSituationContainerGS2;
     }
 
-    set finanzielleSituationContainerGS2(value: TSFinanzielleSituationContainer) {
+    public set finanzielleSituationContainerGS2(value: TSFinanzielleSituationContainer) {
         this._finanzielleSituationContainerGS2 = value;
     }
 
@@ -104,20 +104,20 @@ export default class TSFinanzModel {
     }
 
     private getCopiedValueOrUndefined(value: boolean): boolean {
-        if (value === true || value === false) {
+        if (value || !value) {
             return angular.copy(value);
         } else {
             return undefined;
         }
     }
 
-    copyEkvDataFromGesuch(gesuch: TSGesuch) {
+    public copyEkvDataFromGesuch(gesuch: TSGesuch) {
         if (gesuch.einkommensverschlechterungInfoContainer) {
             this.einkommensverschlechterungInfoContainer = angular.copy(gesuch.einkommensverschlechterungInfoContainer);
         } else {
             this.einkommensverschlechterungInfoContainer = new TSEinkommensverschlechterungInfoContainer;
         }
-        //geesuchstelelr1 nullsave?
+        // geesuchstelelr1 nullsave?
         this.einkommensverschlechterungContainerGS1 = angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
         if (gesuch.gesuchsteller2) {
             this.einkommensverschlechterungContainerGS2 = angular.copy(gesuch.gesuchsteller2.einkommensverschlechterungContainer);
@@ -139,7 +139,7 @@ export default class TSFinanzModel {
         }
     }
 
-    copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
+    public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
         gesuch.extractFamiliensituation().gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
         gesuch.extractFamiliensituation().sozialhilfeBezueger = this.sozialhilfeBezueger;
         gesuch.extractFamiliensituation().verguenstigungGewuenscht = this.verguenstigungGewuenscht;
@@ -148,7 +148,7 @@ export default class TSFinanzModel {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
         } else {
             if (this.finanzielleSituationContainerGS2) {
-                //wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
+                // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
                 console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
             }
         }
@@ -161,22 +161,22 @@ export default class TSFinanzModel {
      * as well, then we need to set steuerveranlagungErhalten to true for the GS2 too, if it exists.
      */
     private resetSteuerveranlagungErhalten(gesuch: TSGesuch) {
-        if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung === true
+        if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung
             && gesuch.gesuchsteller1 && gesuch.gesuchsteller2
-            && gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten === true) {
+            && gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten) {
 
             gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten = true;
         }
     }
 
-    copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
+    public copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
         gesuch.einkommensverschlechterungInfoContainer = this.einkommensverschlechterungInfoContainer;
         gesuch.gesuchsteller1.einkommensverschlechterungContainer = this.einkommensverschlechterungContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.einkommensverschlechterungContainer = this.einkommensverschlechterungContainerGS2;
         } else {
             if (this.einkommensverschlechterungContainerGS2) {
-                //wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
+                // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
                 console.log('illegal state: einkommensverschlechterungContainerGS2 exists but no gs2 is available');
             }
         }
@@ -239,27 +239,27 @@ export default class TSFinanzModel {
         return this.gesuchsteller2Required;
     }
 
-    get einkommensverschlechterungContainerGS1(): TSEinkommensverschlechterungContainer {
+    public get einkommensverschlechterungContainerGS1(): TSEinkommensverschlechterungContainer {
         return this._einkommensverschlechterungContainerGS1;
     }
 
-    set einkommensverschlechterungContainerGS1(value: TSEinkommensverschlechterungContainer) {
+    public set einkommensverschlechterungContainerGS1(value: TSEinkommensverschlechterungContainer) {
         this._einkommensverschlechterungContainerGS1 = value;
     }
 
-    get einkommensverschlechterungContainerGS2(): TSEinkommensverschlechterungContainer {
+    public get einkommensverschlechterungContainerGS2(): TSEinkommensverschlechterungContainer {
         return this._einkommensverschlechterungContainerGS2;
     }
 
-    set einkommensverschlechterungContainerGS2(value: TSEinkommensverschlechterungContainer) {
+    public set einkommensverschlechterungContainerGS2(value: TSEinkommensverschlechterungContainer) {
         this._einkommensverschlechterungContainerGS2 = value;
     }
 
-    get einkommensverschlechterungInfoContainer(): TSEinkommensverschlechterungInfoContainer {
+    public get einkommensverschlechterungInfoContainer(): TSEinkommensverschlechterungInfoContainer {
         return this._einkommensverschlechterungInfoContainer;
     }
 
-    set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
+    public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
         this._einkommensverschlechterungInfoContainer = value;
     }
 
@@ -320,7 +320,7 @@ export default class TSFinanzModel {
         }
     }
 
-    getBasisJahrPlus() {
+    public getBasisJahrPlus() {
         return this.basisjahrPlus;
     }
 

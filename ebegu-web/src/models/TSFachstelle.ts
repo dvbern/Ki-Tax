@@ -21,34 +21,34 @@ export class TSFachstelle extends TSAbstractMutableEntity {
     private _beschreibung: string;
     private _behinderungsbestaetigung: boolean;
 
-    constructor(name?: string, beschreibung?: string, behinderungsbestaetigung?: boolean) {
+    public constructor(name?: string, beschreibung?: string, behinderungsbestaetigung?: boolean) {
         super();
         this._name = name;
         this._beschreibung = beschreibung;
         this._behinderungsbestaetigung = behinderungsbestaetigung;
     }
 
-    get name(): string {
+    public get name(): string {
         return this._name;
     }
 
-    set name(value: string) {
+    public set name(value: string) {
         this._name = value;
     }
 
-    get beschreibung(): string {
+    public get beschreibung(): string {
         return this._beschreibung;
     }
 
-    set beschreibung(value: string) {
+    public set beschreibung(value: string) {
         this._beschreibung = value;
     }
 
-    get behinderungsbestaetigung(): boolean {
+    public get behinderungsbestaetigung(): boolean {
         return this._behinderungsbestaetigung;
     }
 
-    set behinderungsbestaetigung(value: boolean) {
+    public set behinderungsbestaetigung(value: boolean) {
         this._behinderungsbestaetigung = value;
     }
 }

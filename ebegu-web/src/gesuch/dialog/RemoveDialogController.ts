@@ -22,14 +22,14 @@ import ILogService = angular.ILogService;
 
 export class RemoveDialogController {
 
-    static $inject = ['$mdDialog', '$translate', '$q', '$log', 'title', 'deleteText', 'parentController', 'elementID', 'form'];
+    public static $inject = ['$mdDialog', '$translate', '$q', '$log', 'title', 'deleteText', 'parentController', 'elementID', 'form'];
 
-    deleteText: string;
-    title: string;
+    public deleteText: string;
+    public title: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, private readonly $q: IQService, private readonly $log: ILogService, title: string,
-                deleteText: string,
-                private readonly parentController: IDVFocusableController, private readonly elementID: string, private readonly form: any) {
+    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, private readonly $q: IQService, private readonly $log: ILogService, title: string,
+                       deleteText: string,
+                       private readonly parentController: IDVFocusableController, private readonly elementID: string, private readonly form: any) {
         if (deleteText !== undefined && deleteText !== null) {
             this.deleteText = $translate.instant(deleteText);
         } else {

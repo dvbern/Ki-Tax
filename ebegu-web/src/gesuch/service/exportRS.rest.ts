@@ -18,13 +18,13 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class ExportRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'export';
     }
 
@@ -37,7 +37,7 @@ export default class ExportRS {
 
     public getJsonSchemaString(): IPromise<any> {
         return this.$http.get(this.serviceURL + '/meta/jsonschema').then((response: any) => {
-            return JSON.stringify(response.data, undefined, 2);  //prettyprint
+            return JSON.stringify(response.data, undefined, 2);  // prettyprint
         });
     }
 

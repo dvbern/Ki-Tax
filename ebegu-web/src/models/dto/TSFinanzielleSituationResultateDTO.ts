@@ -23,7 +23,7 @@ export default class TSFinanzielleSituationResultateDTO {
     private _abzuegeBeiderGesuchsteller: number;
     private _massgebendesEinkVorAbzFamGr: number;
 
-    constructor(
+    public constructor(
             geschaeftsgewinnDurchschnittGesuchsteller1?: number, geschaeftsgewinnDurchschnittGesuchsteller2?: number,
             einkommenBeiderGesuchsteller?: number, nettovermoegenFuenfProzent?: number, anrechenbaresEinkommen?: number,
             abzuegeBeiderGesuchsteller?: number, massgebendesEinkVorAbzFamGr?: number) {
@@ -36,62 +36,60 @@ export default class TSFinanzielleSituationResultateDTO {
         this._massgebendesEinkVorAbzFamGr = massgebendesEinkVorAbzFamGr;
     }
 
-
-    get geschaeftsgewinnDurchschnittGesuchsteller1(): number {
+    public get geschaeftsgewinnDurchschnittGesuchsteller1(): number {
         return this._geschaeftsgewinnDurchschnittGesuchsteller1;
     }
 
-    set geschaeftsgewinnDurchschnittGesuchsteller1(value: number) {
+    public set geschaeftsgewinnDurchschnittGesuchsteller1(value: number) {
         this._geschaeftsgewinnDurchschnittGesuchsteller1 = value;
     }
 
-    get geschaeftsgewinnDurchschnittGesuchsteller2(): number {
+    public get geschaeftsgewinnDurchschnittGesuchsteller2(): number {
         return this._geschaeftsgewinnDurchschnittGesuchsteller2;
     }
 
-    set geschaeftsgewinnDurchschnittGesuchsteller2(value: number) {
+    public set geschaeftsgewinnDurchschnittGesuchsteller2(value: number) {
         this._geschaeftsgewinnDurchschnittGesuchsteller2 = value;
     }
 
-    get einkommenBeiderGesuchsteller(): number {
+    public get einkommenBeiderGesuchsteller(): number {
         return this._einkommenBeiderGesuchsteller;
     }
 
-    set einkommenBeiderGesuchsteller(value: number) {
+    public set einkommenBeiderGesuchsteller(value: number) {
         this._einkommenBeiderGesuchsteller = value;
     }
 
-    get nettovermoegenFuenfProzent(): number {
+    public get nettovermoegenFuenfProzent(): number {
         return this._nettovermoegenFuenfProzent;
     }
 
-    set nettovermoegenFuenfProzent(value: number) {
+    public set nettovermoegenFuenfProzent(value: number) {
         this._nettovermoegenFuenfProzent = value;
     }
 
-    get anrechenbaresEinkommen(): number {
+    public get anrechenbaresEinkommen(): number {
         return this._anrechenbaresEinkommen;
     }
 
-    set anrechenbaresEinkommen(value: number) {
+    public set anrechenbaresEinkommen(value: number) {
         this._anrechenbaresEinkommen = value;
     }
 
-    get abzuegeBeiderGesuchsteller(): number {
+    public get abzuegeBeiderGesuchsteller(): number {
         return this._abzuegeBeiderGesuchsteller;
     }
 
-    set abzuegeBeiderGesuchsteller(value: number) {
+    public set abzuegeBeiderGesuchsteller(value: number) {
         this._abzuegeBeiderGesuchsteller = value;
     }
 
-    get massgebendesEinkVorAbzFamGr(): number {
+    public get massgebendesEinkVorAbzFamGr(): number {
         return this._massgebendesEinkVorAbzFamGr;
     }
 
-    set massgebendesEinkVorAbzFamGr(value: number) {
+    public set massgebendesEinkVorAbzFamGr(value: number) {
         this._massgebendesEinkVorAbzFamGr = value;
     }
-
 
 }

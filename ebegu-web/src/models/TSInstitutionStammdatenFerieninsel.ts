@@ -24,39 +24,39 @@ export default class TSInstitutionStammdatenFerieninsel extends TSAbstractMutabl
     private _ausweichstandortSportferien: string;
     private _ausweichstandortFruehlingsferien: string;
 
-    constructor() {
+    public constructor() {
         super();
     }
 
-    get ausweichstandortSommerferien(): string {
+    public get ausweichstandortSommerferien(): string {
         return this._ausweichstandortSommerferien;
     }
 
-    set ausweichstandortSommerferien(value: string) {
+    public set ausweichstandortSommerferien(value: string) {
         this._ausweichstandortSommerferien = value;
     }
 
-    get ausweichstandortHerbstferien(): string {
+    public get ausweichstandortHerbstferien(): string {
         return this._ausweichstandortHerbstferien;
     }
 
-    set ausweichstandortHerbstferien(value: string) {
+    public set ausweichstandortHerbstferien(value: string) {
         this._ausweichstandortHerbstferien = value;
     }
 
-    get ausweichstandortSportferien(): string {
+    public get ausweichstandortSportferien(): string {
         return this._ausweichstandortSportferien;
     }
 
-    set ausweichstandortSportferien(value: string) {
+    public set ausweichstandortSportferien(value: string) {
         this._ausweichstandortSportferien = value;
     }
 
-    get ausweichstandortFruehlingsferien(): string {
+    public get ausweichstandortFruehlingsferien(): string {
         return this._ausweichstandortFruehlingsferien;
     }
 
-    set ausweichstandortFruehlingsferien(value: string) {
+    public set ausweichstandortFruehlingsferien(value: string) {
         this._ausweichstandortFruehlingsferien = value;
     }
 

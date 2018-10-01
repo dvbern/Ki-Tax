@@ -20,21 +20,21 @@ export default class TSEinkommensverschlechterungInfoContainer extends TSAbstrac
 
     private _einkommensverschlechterungInfoGS: TSEinkommensverschlechterungInfo;
 
-    private _einkommensverschlechterungInfoJA: TSEinkommensverschlechterungInfo = new TSEinkommensverschlechterungInfo;
+    private _einkommensverschlechterungInfoJA: TSEinkommensverschlechterungInfo = new TSEinkommensverschlechterungInfo();
 
-    get einkommensverschlechterungInfoGS(): TSEinkommensverschlechterungInfo {
+    public get einkommensverschlechterungInfoGS(): TSEinkommensverschlechterungInfo {
         return this._einkommensverschlechterungInfoGS;
     }
 
-    set einkommensverschlechterungInfoGS(value: TSEinkommensverschlechterungInfo) {
+    public set einkommensverschlechterungInfoGS(value: TSEinkommensverschlechterungInfo) {
         this._einkommensverschlechterungInfoGS = value;
     }
 
-    get einkommensverschlechterungInfoJA(): TSEinkommensverschlechterungInfo {
+    public get einkommensverschlechterungInfoJA(): TSEinkommensverschlechterungInfo {
         return this._einkommensverschlechterungInfoJA;
     }
 
-    set einkommensverschlechterungInfoJA(value: TSEinkommensverschlechterungInfo) {
+    public set einkommensverschlechterungInfoJA(value: TSEinkommensverschlechterungInfo) {
         this._einkommensverschlechterungInfoJA = value;
     }
 

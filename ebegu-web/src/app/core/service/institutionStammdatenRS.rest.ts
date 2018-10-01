@@ -24,14 +24,14 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class InstitutionStammdatenRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public $log: ILogService, private readonly globalCacheService: GlobalCacheService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public $log: ILogService, private readonly globalCacheService: GlobalCacheService) {
         this.serviceURL = REST_API + 'institutionstammdaten';
     }
 
@@ -87,7 +87,7 @@ export class InstitutionStammdatenRS {
 
     public getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSInstitutionStammdaten[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN);
-        return this.$http.get(this.serviceURL + '/gesuchsperiode/active', {params: {gesuchsperiodeId: gesuchsperiodeId}, cache: cache})
+        return this.$http.get(this.serviceURL + '/gesuchsperiode/active', {params: {gesuchsperiodeId}, cache})
             .then((response: any) => {
                 this.$log.debug('PARSING institutionStammdaten REST array object', response.data);
                 return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);

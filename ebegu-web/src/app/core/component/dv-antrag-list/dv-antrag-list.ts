@@ -17,7 +17,6 @@ import * as angular from 'angular';
 import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {
@@ -42,9 +41,9 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
 const LOG = LogFactory.createLog('DVAntragListController');
 
 export class DVAntragListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         onRemove: '&',
         onAdd: '&',
         onEdit: '&',
@@ -57,67 +56,67 @@ export class DVAntragListConfig implements IComponentOptions {
         addButtonText: '@',
         pendenz: '='
     };
-    template = require('./dv-antrag-list.html');
-    controller = DVAntragListController;
-    controllerAs = 'vm';
+    public template = require('./dv-antrag-list.html');
+    public controller = DVAntragListController;
+    public controllerAs = 'vm';
 }
 
 export class DVAntragListController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
+    public static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
         'CONSTANTS', 'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
 
-    totalResultCount: number;
-    displayedCollection: Array<TSAntragDTO> = []; //Liste die im Gui angezeigt wird
-    pagination: any;
-    gesuchsperiodenList: Array<string>;
-    institutionenList: Array<TSInstitution>;
-    gemeindenList: Array<TSGemeinde>;
+    public totalResultCount: number;
+    public displayedCollection: Array<TSAntragDTO> = []; // Liste die im Gui angezeigt wird
+    public pagination: any;
+    public gesuchsperiodenList: Array<string>;
+    public institutionenList: Array<TSInstitution>;
+    public gemeindenList: Array<TSGemeinde>;
 
-    selectedBetreuungsangebotTyp: string;
-    selectedAntragTyp: string;
-    selectedAntragStatus: string;
-    selectedInstitution: TSInstitution;
-    selectedGesuchsperiode: string;
-    selectedFallNummer: string;
-    selectedGemeinde: TSGemeinde;
-    selectedFamilienName: string;
-    selectedKinder: string;
-    selectedAenderungsdatum: string;
-    selectedEingangsdatum: string;
-    selectedEingangsdatumSTV: string;
-    selectedVerantwortlicherBG: TSBenutzer;
-    selectedVerantwortlicherTS: TSBenutzer;
-    selectedDokumenteHochgeladen: string;
-    pendenz: boolean;
+    public selectedBetreuungsangebotTyp: string;
+    public selectedAntragTyp: string;
+    public selectedAntragStatus: string;
+    public selectedInstitution: TSInstitution;
+    public selectedGesuchsperiode: string;
+    public selectedFallNummer: string;
+    public selectedGemeinde: TSGemeinde;
+    public selectedFamilienName: string;
+    public selectedKinder: string;
+    public selectedAenderungsdatum: string;
+    public selectedEingangsdatum: string;
+    public selectedEingangsdatumSTV: string;
+    public selectedVerantwortlicherBG: TSBenutzer;
+    public selectedVerantwortlicherTS: TSBenutzer;
+    public selectedDokumenteHochgeladen: string;
+    public pendenz: boolean;
 
-    tableId: string;
-    tableTitle: string;
-    actionVisible: string;
+    public tableId: string;
+    public tableTitle: string;
+    public actionVisible: string;
 
-    addButtonText: string;
-    addButtonVisible: string = 'false';
-    onRemove: (pensumToRemove: any) => void;
-    onFilterChange: (changedTableState: any) => IPromise<any>;
-    onEdit: (pensumToEdit: any) => void;
-    onAdd: () => void;
-    TSRoleUtil = TSRoleUtil;
+    public addButtonText: string;
+    public addButtonVisible: string = 'false';
+    public onRemove: (pensumToRemove: any) => void;
+    public onFilterChange: (changedTableState: any) => IPromise<any>;
+    public onEdit: (pensumToEdit: any) => void;
+    public onAdd: () => void;
+    public TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(private readonly ebeguUtil: EbeguUtil,
-                private readonly $filter: IFilterService,
-                private readonly institutionRS: InstitutionRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly CONSTANTS: any,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $window: IWindowService,
-                private readonly gemeindeRS: GemeindeRS,
+    public constructor(private readonly ebeguUtil: EbeguUtil,
+                       private readonly $filter: IFilterService,
+                       private readonly institutionRS: InstitutionRS,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly CONSTANTS: any,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $window: IWindowService,
+                       private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
     public $onInit(): void {
-        //statt diese Listen zu laden koenne man sie auch von aussen setzen
+        // statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
@@ -163,15 +162,15 @@ export class DVAntragListController implements IController {
             );
     }
 
-    removeClicked(antragToRemove: TSAbstractAntragEntity) {
+    public removeClicked(antragToRemove: TSAbstractAntragEntity) {
         this.onRemove({antrag: antragToRemove});
     }
 
-    editClicked(antragToEdit: any, event: any) {
-        this.onEdit({antrag: antragToEdit, event: event});
+    public editClicked(antragToEdit: any, event: any) {
+        this.onEdit({antrag: antragToEdit, event});
     }
 
-    addClicked() {
+    public addClicked() {
         this.onAdd();
     }
 
@@ -226,9 +225,9 @@ export class DVAntragListController implements IController {
     }
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
-        let result: string = '';
+        let result = '';
         if (betreuungsangebotTypList) {
-            let prefix: string = '';
+            let prefix = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
                 // tslint:disable-next-line:prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
@@ -259,6 +258,3 @@ export class DVAntragListController implements IController {
         return element.childElementCount;
     }
 }
-
-
-

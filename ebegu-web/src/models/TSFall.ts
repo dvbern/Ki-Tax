@@ -22,34 +22,34 @@ export default class TSFall extends TSAbstractMutableEntity {
     private _nextNumberKind: number;
     private _besitzer: TSBenutzer;
 
-    constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSBenutzer) {
+    public constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSBenutzer) {
         super();
         this._fallNummer = fallNummer;
         this._nextNumberKind = nextNumberKind;
         this._besitzer = besitzer;
     }
 
-    get fallNummer(): number {
+    public get fallNummer(): number {
         return this._fallNummer;
     }
 
-    set fallNummer(value: number) {
+    public set fallNummer(value: number) {
         this._fallNummer = value;
     }
 
-    get nextNumberKind(): number {
+    public get nextNumberKind(): number {
         return this._nextNumberKind;
     }
 
-    set nextNumberKind(value: number) {
+    public set nextNumberKind(value: number) {
         this._nextNumberKind = value;
     }
 
-    get besitzer(): TSBenutzer {
+    public get besitzer(): TSBenutzer {
         return this._besitzer;
     }
 
-    set besitzer(value: TSBenutzer) {
+    public set besitzer(value: TSBenutzer) {
         this._besitzer = value;
     }
 }

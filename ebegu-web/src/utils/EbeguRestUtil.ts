@@ -105,9 +105,9 @@ import DateUtil from './DateUtil';
 import EbeguUtil from './EbeguUtil';
 
 export default class EbeguRestUtil {
-    static $inject = ['EbeguUtil'];
+    public static $inject = ['EbeguUtil'];
 
-    constructor(private readonly ebeguUtil: EbeguUtil) {
+    public constructor(private readonly ebeguUtil: EbeguUtil) {
     }
 
     /**
@@ -1514,7 +1514,7 @@ export default class EbeguRestUtil {
 
     public parseQuickSearchResult(dataFromServer: any): TSQuickSearchResult {
         if (dataFromServer) {
-            const resultEntries: Array<TSSearchResultEntry> = this.parseSearchResultEntries(dataFromServer.resultEntities);
+            const resultEntries = this.parseSearchResultEntries(dataFromServer.resultEntities);
             return new TSQuickSearchResult(resultEntries, dataFromServer.numberOfResults);
         }
         return undefined;
@@ -1535,7 +1535,7 @@ export default class EbeguRestUtil {
         entry.entity = dataFromServer.entity;
         entry.dossierId = dataFromServer.dossierId;
         if (dataFromServer.antragDTO) {
-            //dataFromServer.antragDTO.typ === TSAntragDTO
+            // dataFromServer.antragDTO.typ === TSAntragDTO
             if (this.isFallAntragDTO(dataFromServer.antragDTO)) {
                 entry.antragDTO = this.parseFallAntragDTO(new TSFallAntragDTO(), dataFromServer.antragDTO);
             } else {
@@ -1692,7 +1692,7 @@ export default class EbeguRestUtil {
             :  [this.parseBerechtigungHistory(new TSBerechtigungHistory(), data)];
     }
 
-    parseDokumenteDTO(dokumenteDTO: TSDokumenteDTO, dokumenteFromServer: any): TSDokumenteDTO {
+    public parseDokumenteDTO(dokumenteDTO: TSDokumenteDTO, dokumenteFromServer: any): TSDokumenteDTO {
         if (dokumenteFromServer) {
             dokumenteDTO.dokumentGruende = this.parseDokumentGruende(dokumenteFromServer.dokumentGruende);
             return dokumenteDTO;
@@ -1706,7 +1706,7 @@ export default class EbeguRestUtil {
             :  [this.parseDokumentGrund(new TSDokumentGrund(), data)];
     }
 
-    parseDokumentGrund(dokumentGrund: TSDokumentGrund, dokumentGrundFromServer: any): TSDokumentGrund {
+    public parseDokumentGrund(dokumentGrund: TSDokumentGrund, dokumentGrundFromServer: any): TSDokumentGrund {
         if (dokumentGrundFromServer) {
             this.parseAbstractMutableEntity(dokumentGrund, dokumentGrundFromServer);
             dokumentGrund.dokumentGrundTyp = dokumentGrundFromServer.dokumentGrundTyp;
@@ -1974,7 +1974,7 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    finanzModelToRestObject(restFinSitModel: any, finSitModel: TSFinanzModel) {
+    public finanzModelToRestObject(restFinSitModel: any, finSitModel: TSFinanzModel) {
         if (finSitModel) {
             if (finSitModel.finanzielleSituationContainerGS1) {
                 restFinSitModel.finanzielleSituationContainerGS1 = this.finanzielleSituationContainerToRestObject({}, finSitModel.finanzielleSituationContainerGS1);
@@ -2416,13 +2416,13 @@ export default class EbeguRestUtil {
             ferieninselStammdatenTS.anmeldeschluss = DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
             ferieninselStammdatenTS.gesuchsperiode = this.parseGesuchsperiode(new TSGesuchsperiode(), receivedFerieninselStammdaten.gesuchsperiode);
             if (receivedFerieninselStammdaten.zeitraumList[0]) {
-                const firstZeitraum: TSFerieninselZeitraum = new TSFerieninselZeitraum();
+                const firstZeitraum = new TSFerieninselZeitraum();
                 this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
                 ferieninselStammdatenTS.zeitraum = firstZeitraum;
             }
             ferieninselStammdatenTS.zeitraumList = [];
             for (let i = 1; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
-                const zeitraum: TSFerieninselZeitraum = new TSFerieninselZeitraum();
+                const zeitraum = new TSFerieninselZeitraum();
                 this.parseDateRangeEntity(zeitraum, receivedFerieninselStammdaten.zeitraumList[i]);
                 ferieninselStammdatenTS.zeitraumList.push(zeitraum);
             }

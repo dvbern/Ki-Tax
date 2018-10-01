@@ -27,16 +27,16 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 
 export default class BerechnungsManager {
 
-    static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
+    public static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
 
-    finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
-    einkommensverschlechterungResultateBjP1: TSFinanzielleSituationResultateDTO;
-    einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;
-    dokumente: TSDokumenteDTO;
+    public finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
+    public einkommensverschlechterungResultateBjP1: TSFinanzielleSituationResultateDTO;
+    public einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;
+    public dokumente: TSDokumenteDTO;
 
-    constructor(private readonly finanzielleSituationRS: FinanzielleSituationRS, private readonly ebeguRestUtil: EbeguRestUtil,
-                private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
-                private readonly dokumenteRS: DokumenteRS, private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(private readonly finanzielleSituationRS: FinanzielleSituationRS, private readonly ebeguRestUtil: EbeguRestUtil,
+                       private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
+                       private readonly dokumenteRS: DokumenteRS, private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.initValues();
 
@@ -95,7 +95,7 @@ export default class BerechnungsManager {
             });
     }
 
-    getEinkommensverschlechterungResultate(basisJahrPlus: number): TSFinanzielleSituationResultateDTO {
+    public getEinkommensverschlechterungResultate(basisJahrPlus: number): TSFinanzielleSituationResultateDTO {
         if (basisJahrPlus === 2) {
             return this.einkommensverschlechterungResultateBjP2;
         }

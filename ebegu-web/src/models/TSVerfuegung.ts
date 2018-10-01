@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSVerfuegungZeitabschnitt from './TSVerfuegungZeitabschnitt';
-import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 
 export default class TSVerfuegung extends TSAbstractMutableEntity {
 
@@ -28,9 +28,14 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
     private _kategorieZuschlagZumErwerbspensum: boolean;
     private _kategorieNichtEintreten: boolean;
 
-    constructor(generatedBemerkungen?: string, manuelleBemerkungen?: string, zeitabschnitte?: Array<TSVerfuegungZeitabschnitt>,
-                kategorieNormal?: boolean, kategorieMaxEinkommen?: boolean, kategorieKeinPensum?: boolean, kategorieZuschlagZumErwerbspensum?: boolean,
-                kategorieNichtEintreten?: boolean) {
+    public constructor(generatedBemerkungen?: string,
+                       manuelleBemerkungen?: string,
+                       zeitabschnitte?: Array<TSVerfuegungZeitabschnitt>,
+                       kategorieNormal?: boolean,
+                       kategorieMaxEinkommen?: boolean,
+                       kategorieKeinPensum?: boolean,
+                       kategorieZuschlagZumErwerbspensum?: boolean,
+                       kategorieNichtEintreten?: boolean) {
         super();
         this._generatedBemerkungen = generatedBemerkungen;
         this._manuelleBemerkungen = manuelleBemerkungen;
@@ -42,67 +47,67 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
         this._kategorieNichtEintreten = kategorieNichtEintreten;
     }
 
-    get generatedBemerkungen(): string {
+    public get generatedBemerkungen(): string {
         return this._generatedBemerkungen;
     }
 
-    set generatedBemerkungen(value: string) {
+    public set generatedBemerkungen(value: string) {
         this._generatedBemerkungen = value;
     }
 
-    get manuelleBemerkungen(): string {
+    public get manuelleBemerkungen(): string {
         return this._manuelleBemerkungen;
     }
 
-    set manuelleBemerkungen(value: string) {
+    public set manuelleBemerkungen(value: string) {
         this._manuelleBemerkungen = value;
     }
 
-    get zeitabschnitte(): Array<TSVerfuegungZeitabschnitt> {
+    public get zeitabschnitte(): Array<TSVerfuegungZeitabschnitt> {
         return this._zeitabschnitte;
     }
 
-    set zeitabschnitte(value: Array<TSVerfuegungZeitabschnitt>) {
+    public set zeitabschnitte(value: Array<TSVerfuegungZeitabschnitt>) {
         this._zeitabschnitte = value;
     }
 
-    get kategorieNormal(): boolean {
+    public get kategorieNormal(): boolean {
         return this._kategorieNormal;
     }
 
-    set kategorieNormal(value: boolean) {
+    public set kategorieNormal(value: boolean) {
         this._kategorieNormal = value;
     }
 
-    get kategorieMaxEinkommen(): boolean {
+    public get kategorieMaxEinkommen(): boolean {
         return this._kategorieMaxEinkommen;
     }
 
-    set kategorieMaxEinkommen(value: boolean) {
+    public set kategorieMaxEinkommen(value: boolean) {
         this._kategorieMaxEinkommen = value;
     }
 
-    get kategorieKeinPensum(): boolean {
+    public get kategorieKeinPensum(): boolean {
         return this._kategorieKeinPensum;
     }
 
-    set kategorieKeinPensum(value: boolean) {
+    public set kategorieKeinPensum(value: boolean) {
         this._kategorieKeinPensum = value;
     }
 
-    get kategorieZuschlagZumErwerbspensum(): boolean {
+    public get kategorieZuschlagZumErwerbspensum(): boolean {
         return this._kategorieZuschlagZumErwerbspensum;
     }
 
-    set kategorieZuschlagZumErwerbspensum(value: boolean) {
+    public set kategorieZuschlagZumErwerbspensum(value: boolean) {
         this._kategorieZuschlagZumErwerbspensum = value;
     }
 
-    get kategorieNichtEintreten(): boolean {
+    public get kategorieNichtEintreten(): boolean {
         return this._kategorieNichtEintreten;
     }
 
-    set kategorieNichtEintreten(value: boolean) {
+    public set kategorieNichtEintreten(value: boolean) {
         this._kategorieNichtEintreten = value;
     }
 
@@ -120,7 +125,7 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
     public isSameVerrechneteVerguenstigung(): boolean {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
-            if (this._zeitabschnitte[i].sameVerguenstigung !== true
+            if (!this._zeitabschnitte[i].sameVerguenstigung
                 && (this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET
                     || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT
                     || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT

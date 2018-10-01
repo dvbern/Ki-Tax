@@ -29,14 +29,14 @@ import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
 
 export default class GesuchRS implements IEntityRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', '$rootScope'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager', '$rootScope'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService,
-                private readonly wizardStepManager: WizardStepManager, private readonly $rootScope: IRootScopeService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService,
+                       private readonly wizardStepManager: WizardStepManager, private readonly $rootScope: IRootScopeService) {
         this.serviceURL = REST_API + 'gesuche';
     }
 
@@ -49,7 +49,7 @@ export default class GesuchRS implements IEntityRS {
             }
         }).then((response: any) => {
             this.$log.debug('PARSING gesuch REST object ', response.data);
-            const convertedGesuch: TSGesuch = this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+            const convertedGesuch = this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
             return this.wizardStepManager.updateFirstWizardStep(convertedGesuch.id).then(() => {
                 return convertedGesuch;
             });
@@ -63,7 +63,7 @@ export default class GesuchRS implements IEntityRS {
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }).then(response => {
             return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
                 this.$log.debug('PARSING gesuch REST object ', response.data);
                 return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
@@ -86,7 +86,6 @@ export default class GesuchRS implements IEntityRS {
                 return this.ebeguRestUtil.parseAntragDTO(new TSAntragDTO(), response.data);
             });
     }
-
 
     public findGesuchForInstitution(gesuchID: string): IPromise<TSGesuch> {
         return this.$http.get(this.serviceURL + '/institution/' + encodeURIComponent(gesuchID))
@@ -124,14 +123,14 @@ export default class GesuchRS implements IEntityRS {
 
     public antragMutieren(antragId: string, dateParam: moment.Moment): IPromise<TSGesuch> {
         return this.$http.post(this.serviceURL + '/mutieren/' + encodeURIComponent(antragId), null,
-            {params: {date: DateUtil.momentToLocalDate(dateParam)}}).then((response) => {
+            {params: {date: DateUtil.momentToLocalDate(dateParam)}}).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public antragErneuern(gesuchsperiodeId: string, antragId: string, dateParam: moment.Moment): IPromise<TSGesuch> {
         return this.$http.post(this.serviceURL + '/erneuern/' + encodeURIComponent(gesuchsperiodeId) + '/' + encodeURIComponent(antragId), null,
-            {params: {date: DateUtil.momentToLocalDate(dateParam)}}).then((response) => {
+            {params: {date: DateUtil.momentToLocalDate(dateParam)}}).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
@@ -142,43 +141,43 @@ export default class GesuchRS implements IEntityRS {
             headers: {
                 'Content-Type': 'text/plain'
             }
-        }).then((response) => {
+        }).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public setBeschwerdeHaengig(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/setBeschwerde/' + encodeURIComponent(antragId), null).then((response) => {
+        return this.$http.post(this.serviceURL + '/setBeschwerde/' + encodeURIComponent(antragId), null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public setAbschliessen(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/setAbschliessen/' + encodeURIComponent(antragId), null).then((response) => {
+        return this.$http.post(this.serviceURL + '/setAbschliessen/' + encodeURIComponent(antragId), null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public sendGesuchToSTV(antragId: string, bemerkungen: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/sendToSTV/' + encodeURIComponent(antragId), bemerkungen, null).then((response) => {
+        return this.$http.post(this.serviceURL + '/sendToSTV/' + encodeURIComponent(antragId), bemerkungen, null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public gesuchBySTVFreigeben(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/freigebenSTV/' + encodeURIComponent(antragId), null).then((response) => {
+        return this.$http.post(this.serviceURL + '/freigebenSTV/' + encodeURIComponent(antragId), null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public stvPruefungAbschliessen(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/stvPruefungAbschliessen/' + encodeURIComponent(antragId), null).then((response) => {
+        return this.$http.post(this.serviceURL + '/stvPruefungAbschliessen/' + encodeURIComponent(antragId), null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public removeBeschwerdeHaengig(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/removeBeschwerde/' + encodeURIComponent(antragId), null).then((response) => {
+        return this.$http.post(this.serviceURL + '/removeBeschwerde/' + encodeURIComponent(antragId), null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
@@ -215,13 +214,13 @@ export default class GesuchRS implements IEntityRS {
     }
 
     public closeWithoutAngebot(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/closeWithoutAngebot/' + encodeURIComponent(antragId), null).then((response) => {
+        return this.$http.post(this.serviceURL + '/closeWithoutAngebot/' + encodeURIComponent(antragId), null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 
     public verfuegenStarten(antragId: string, hasFSDocument: boolean): IPromise<TSGesuch> {
-        return this.$http.post(this.serviceURL + '/verfuegenStarten/' + encodeURIComponent(antragId) + '/' + hasFSDocument, null).then((response) => {
+        return this.$http.post(this.serviceURL + '/verfuegenStarten/' + encodeURIComponent(antragId) + '/' + hasFSDocument, null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }

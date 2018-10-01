@@ -40,19 +40,19 @@ export default class TSBenutzer {
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
 
-    constructor(vorname?: string,
-                nachname?: string,
-                username?: string,
-                password?: string,
-                email?: string,
-                mandant?: TSMandant,
-                role?: TSRole,
-                traegerschaft?: TSTraegerschaft,
-                institution?: TSInstitution,
-                gemeinde?: TSGemeinde[],
-                amt?: TSAmt,
-                status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
-                externalUUID?: string) {
+    public constructor(vorname?: string,
+                       nachname?: string,
+                       username?: string,
+                       password?: string,
+                       email?: string,
+                       mandant?: TSMandant,
+                       role?: TSRole,
+                       traegerschaft?: TSTraegerschaft,
+                       institution?: TSInstitution,
+                       gemeinde?: TSGemeinde[],
+                       amt?: TSAmt,
+                       status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
+                       externalUUID?: string) {
         this._vorname = vorname;
         this._nachname = nachname;
         this._username = username;
@@ -73,27 +73,27 @@ export default class TSBenutzer {
         this._berechtigungen.push(this._currentBerechtigung);
     }
 
-    get nachname(): string {
+    public get nachname(): string {
         return this._nachname;
     }
 
-    set nachname(value: string) {
+    public set nachname(value: string) {
         this._nachname = value;
     }
 
-    get vorname(): string {
+    public get vorname(): string {
         return this._vorname;
     }
 
-    set vorname(value: string) {
+    public set vorname(value: string) {
         this._vorname = value;
     }
 
-    get username(): string {
+    public get username(): string {
         return this._username;
     }
 
-    set username(value: string) {
+    public set username(value: string) {
         this._username = value;
     }
 
@@ -105,66 +105,66 @@ export default class TSBenutzer {
         this._externalUUID = value;
     }
 
-    get password(): string {
+    public get password(): string {
         return this._password;
     }
 
-    set password(value: string) {
+    public set password(value: string) {
         this._password = value;
     }
 
-    get email(): string {
+    public get email(): string {
         return this._email;
     }
 
-    set email(value: string) {
+    public set email(value: string) {
         this._email = value;
     }
 
-    get mandant(): TSMandant {
+    public get mandant(): TSMandant {
         return this._mandant;
     }
 
-    set mandant(value: TSMandant) {
+    public set mandant(value: TSMandant) {
         this._mandant = value;
     }
 
-    get amt(): TSAmt {
+    public get amt(): TSAmt {
         if (!this._amt) {
             this._amt = this._currentBerechtigung.analyseAmt();
         }
         return this._amt;
     }
 
-    set amt(value: TSAmt) {
+    public set amt(value: TSAmt) {
         this._amt = value;
     }
 
-    get status(): TSBenutzerStatus {
+    public get status(): TSBenutzerStatus {
         return this._status;
     }
 
-    set status(value: TSBenutzerStatus) {
+    public set status(value: TSBenutzerStatus) {
         this._status = value;
     }
 
-    get berechtigungen(): Array<TSBerechtigung> {
+    public get berechtigungen(): Array<TSBerechtigung> {
         return this._berechtigungen;
     }
 
-    set berechtigungen(value: Array<TSBerechtigung>) {
+    public set berechtigungen(value: Array<TSBerechtigung>) {
         this._berechtigungen = value;
     }
 
-    isActive(): boolean {
+    public isActive(): boolean {
         return this._status === TSBenutzerStatus.AKTIV;
     }
 
-    isGesperrt(): boolean {
+    public isGesperrt(): boolean {
         return this._status === TSBenutzerStatus.GESPERRT;
     }
 
-    get currentBerechtigung(): TSBerechtigung {
+    public get currentBerechtigung(): TSBerechtigung {
         if (EbeguUtil.isNullOrUndefined(this._currentBerechtigung)) {
             for (const obj of this.berechtigungen) {
                 if (obj.gueltigkeit.isInDateRange(DateUtil.now())) {
@@ -178,7 +178,7 @@ export default class TSBenutzer {
         return this._currentBerechtigung;
     }
 
-    set currentBerechtigung(value: TSBerechtigung) {
+    public set currentBerechtigung(value: TSBerechtigung) {
         this._currentBerechtigung = value;
     }
 
@@ -201,11 +201,11 @@ export default class TSBenutzer {
         return this.currentBerechtigung.gemeindeList.filter(gmde => gmde.status === TSGemeindeStatus.AKTIV);
     }
 
-    getFullName(): string {
+    public getFullName(): string {
         return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
     }
 
-    getRoleKey(): string {
+    public getRoleKey(): string {
         return rolePrefix() + this.currentBerechtigung.role;
     }
 

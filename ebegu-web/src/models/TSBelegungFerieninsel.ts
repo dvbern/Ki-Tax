@@ -22,8 +22,7 @@ export default class TSBelegungFerieninsel extends TSAbstractMutableEntity {
     private _ferienname: TSFerienname;
     private _tage: Array<TSBelegungFerieninselTag> = [];
 
-
-    constructor(ferienname?: TSFerienname, tage?: Array<TSBelegungFerieninselTag>) {
+    public constructor(ferienname?: TSFerienname, tage?: Array<TSBelegungFerieninselTag>) {
         super();
         this._ferienname = ferienname;
         this._tage = tage;

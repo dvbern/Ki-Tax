@@ -20,16 +20,16 @@ export class TSAbstractDateRangedEntity extends TSAbstractMutableEntity {
 
     private _gueltigkeit: TSDateRange;
 
-    constructor(gueltigkeit?: TSDateRange) {
+    public constructor(gueltigkeit?: TSDateRange) {
         super();
         this._gueltigkeit = gueltigkeit;
     }
 
-    get gueltigkeit(): TSDateRange {
+    public get gueltigkeit(): TSDateRange {
         return this._gueltigkeit;
     }
 
-    set gueltigkeit(value: TSDateRange) {
+    public set gueltigkeit(value: TSDateRange) {
         this._gueltigkeit = value;
     }
 }

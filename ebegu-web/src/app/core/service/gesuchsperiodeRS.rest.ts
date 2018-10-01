@@ -19,13 +19,13 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 
 export default class GesuchsperiodeRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q'];
+    public serviceURL: string;
 
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private readonly $q: IQService) {
+    public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private readonly $q: IQService) {
         this.serviceURL = REST_API + 'gesuchsperioden';
     }
 
@@ -68,7 +68,7 @@ export default class GesuchsperiodeRS {
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
         return this.http.get(this.serviceURL + '/active').then((response: any) => {
-            const gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.activeGesuchsperiodenList;
         });
@@ -91,7 +91,7 @@ export default class GesuchsperiodeRS {
 
     public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
         return this.http.get(this.serviceURL + '/unclosed').then((response: any) => {
-            const gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.nichtAbgeschlosseneGesuchsperiodenList;
         });

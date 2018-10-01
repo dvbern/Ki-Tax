@@ -22,27 +22,25 @@ export default class TSDokument extends TSFile {
     private _timestampUpload: moment.Moment;
     private _userUploaded: TSBenutzer;
 
-    constructor(timestampUpload?: moment.Moment, userUploaded?: TSBenutzer) {
+    public constructor(timestampUpload?: moment.Moment, userUploaded?: TSBenutzer) {
         super();
         this._timestampUpload = timestampUpload;
         this._userUploaded = userUploaded;
     }
 
-    get timestampUpload(): moment.Moment {
+    public get timestampUpload(): moment.Moment {
         return this._timestampUpload;
     }
 
-    set timestampUpload(value: moment.Moment) {
+    public set timestampUpload(value: moment.Moment) {
         this._timestampUpload = value;
     }
 
-    get userUploaded(): TSBenutzer {
+    public get userUploaded(): TSBenutzer {
         return this._userUploaded;
     }
 
-    set userUploaded(value: TSBenutzer) {
+    public set userUploaded(value: TSBenutzer) {
         this._userUploaded = value;
     }
 }
-
-

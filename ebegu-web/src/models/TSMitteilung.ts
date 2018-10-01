@@ -35,9 +35,9 @@ export default class TSMitteilung extends TSAbstractMutableEntity {
     private _mitteilungStatus: TSMitteilungStatus;
     private _sentDatum: moment.Moment;
 
-    constructor(dossier?: TSDossier, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSBenutzer,
-                empfaenger?: TSBenutzer, subject?: string, message?: string, mitteilungStatus?: TSMitteilungStatus,
-                sentDatum?: moment.Moment) {
+    public constructor(dossier?: TSDossier, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSBenutzer,
+                       empfaenger?: TSBenutzer, subject?: string, message?: string, mitteilungStatus?: TSMitteilungStatus,
+                       sentDatum?: moment.Moment) {
         super();
         this._dossier = dossier;
         this._betreuung = betreuung;
@@ -51,94 +51,94 @@ export default class TSMitteilung extends TSAbstractMutableEntity {
         this._sentDatum = sentDatum;
     }
 
-    get dossier(): TSDossier {
+    public get dossier(): TSDossier {
         return this._dossier;
     }
 
-    set dossier(value: TSDossier) {
+    public set dossier(value: TSDossier) {
         this._dossier = value;
     }
 
-    get betreuung(): TSBetreuung {
+    public get betreuung(): TSBetreuung {
         return this._betreuung;
     }
 
-    set betreuung(value: TSBetreuung) {
+    public set betreuung(value: TSBetreuung) {
         this._betreuung = value;
     }
 
-    get senderTyp(): TSMitteilungTeilnehmerTyp {
+    public get senderTyp(): TSMitteilungTeilnehmerTyp {
         return this._senderTyp;
     }
 
-    set senderTyp(value: TSMitteilungTeilnehmerTyp) {
+    public set senderTyp(value: TSMitteilungTeilnehmerTyp) {
         this._senderTyp = value;
     }
 
-    get empfaengerTyp(): TSMitteilungTeilnehmerTyp {
+    public get empfaengerTyp(): TSMitteilungTeilnehmerTyp {
         return this._empfaengerTyp;
     }
 
-    set empfaengerTyp(value: TSMitteilungTeilnehmerTyp) {
+    public set empfaengerTyp(value: TSMitteilungTeilnehmerTyp) {
         this._empfaengerTyp = value;
     }
 
-    get sender(): TSBenutzer {
+    public get sender(): TSBenutzer {
         return this._sender;
     }
 
-    set sender(value: TSBenutzer) {
+    public set sender(value: TSBenutzer) {
         this._sender = value;
     }
 
-    get empfaenger(): TSBenutzer {
+    public get empfaenger(): TSBenutzer {
         return this._empfaenger;
     }
 
-    set empfaenger(value: TSBenutzer) {
+    public set empfaenger(value: TSBenutzer) {
         this._empfaenger = value;
     }
 
-    get subject(): string {
+    public get subject(): string {
         return this._subject;
     }
 
-    set subject(value: string) {
+    public set subject(value: string) {
         this._subject = value;
     }
 
-    get message(): string {
+    public get message(): string {
         return this._message;
     }
 
-    set message(value: string) {
+    public set message(value: string) {
         this._message = value;
     }
 
-    get mitteilungStatus(): TSMitteilungStatus {
+    public get mitteilungStatus(): TSMitteilungStatus {
         return this._mitteilungStatus;
     }
 
-    set mitteilungStatus(value: TSMitteilungStatus) {
+    public set mitteilungStatus(value: TSMitteilungStatus) {
         this._mitteilungStatus = value;
     }
 
-    get sentDatum(): moment.Moment {
+    public get sentDatum(): moment.Moment {
         return this._sentDatum;
     }
 
-    set sentDatum(value: moment.Moment) {
+    public set sentDatum(value: moment.Moment) {
         this._sentDatum = value;
     }
 
-    get verantwortlicher(): string {
+    public get verantwortlicher(): string {
         if (this.dossier.getHauptverantwortlicher()) {
             return this.dossier.getHauptverantwortlicher().getFullName();
         }
         return '';
     }
 
-    get senderAsString(): string {
+    public get senderAsString(): string {
         let senderAsString: string;
         if (this.sender.currentBerechtigung.institution) {
             senderAsString = this.sender.currentBerechtigung.institution.name + ', ';

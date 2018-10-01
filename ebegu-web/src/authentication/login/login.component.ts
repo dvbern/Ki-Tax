@@ -31,7 +31,7 @@ export const LoginComponentConfig: IComponentOptions = {
 
 export class LoginComponentController implements IController {
 
-    static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location'];
+    public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location'];
 
     private redirectionHref: string;
     private logoutHref: string;
@@ -40,17 +40,17 @@ export class LoginComponentController implements IController {
 
     public returnTo: TargetState;
 
-    constructor(private readonly $state: StateService,
-                private readonly $stateParams: IAuthenticationStateParams,
-                private readonly $window: IWindowService,
-                private readonly $timeout: ITimeoutService,
-                private readonly authService: AuthServiceRS,
-                private readonly $location: ILocationService,
+    public constructor(private readonly $state: StateService,
+                       private readonly $stateParams: IAuthenticationStateParams,
+                       private readonly $window: IWindowService,
+                       private readonly $timeout: ITimeoutService,
+                       private readonly authService: AuthServiceRS,
+                       private readonly $location: ILocationService,
     ) {
     }
 
     public $onInit(): void {
-        //wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
+        // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
 
         this.authService.initSSOLogin(relayUrl)
@@ -69,7 +69,7 @@ export class LoginComponentController implements IController {
     }
 
     public getBaseURL(): string {
-        //let port = (this.$location.port() === 80 || this.$location.port() === 443) ? '' : ':' + this.$location.port();
+        // let port = (this.$location.port() === 80 || this.$location.port() === 443) ? '' : ':' + this.$location.port();
         const absURL = this.$location.absUrl();
         const index = absURL.indexOf(this.$location.url());
         let result = absURL;
@@ -116,7 +116,7 @@ export class LoginComponentController implements IController {
      */
     private doLogout() {
         if (this.authService.getPrincipal()) {  // wenn logged in
-            this.authService.initSingleLogout(this.getBaseURL()).then((responseLogut) => {
+            this.authService.initSingleLogout(this.getBaseURL()).then(responseLogut => {
                 this.logoutHref = responseLogut;
                 this.singlelogout();
             });

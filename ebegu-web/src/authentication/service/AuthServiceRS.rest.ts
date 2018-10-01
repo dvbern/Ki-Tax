@@ -38,7 +38,7 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 
 export default class AuthServiceRS {
 
-    static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
+    public static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
         'BenutzerRS'];
 
     private principal?: TSBenutzer;
@@ -50,23 +50,23 @@ export default class AuthServiceRS {
 
     private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
 
-    constructor(private readonly $http: IHttpService,
-                private readonly $q: IQService,
-                private readonly $timeout: ITimeoutService,
-                private readonly $cookies: ICookiesService,
-                private readonly ebeguRestUtil: EbeguRestUtil,
-                private readonly httpBuffer: HttpBuffer,
-                private readonly authLifeCycleService: AuthLifeCycleService,
-                private readonly benutzerRS: BenutzerRS) {
+    public constructor(private readonly $http: IHttpService,
+                       private readonly $q: IQService,
+                       private readonly $timeout: ITimeoutService,
+                       private readonly $cookies: ICookiesService,
+                       private readonly ebeguRestUtil: EbeguRestUtil,
+                       private readonly httpBuffer: HttpBuffer,
+                       private readonly authLifeCycleService: AuthLifeCycleService,
+                       private readonly benutzerRS: BenutzerRS) {
     }
 
     // Use the observable, when the state must be updated automatically, when the principal changes.
     // e.g. printing the name of the current user
-    get principal$(): Observable<TSBenutzer | null> {
+    public get principal$(): Observable<TSBenutzer | null> {
         return this._principal$;
     }
 
-    set principal$(value$: Observable<TSBenutzer | null>) {
+    public set principal$(value$: Observable<TSBenutzer | null>) {
         this._principal$ = value$;
     }
 
@@ -91,7 +91,7 @@ export default class AuthServiceRS {
             .then(() => {
                 // try to reload buffered requests
                 this.httpBuffer.retryAll((config: IRequestConfig) => config);
-                //ensure that there is ALWAYS a logout-event before the login-event by throwing it right before
+                // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before
                 // login
                 this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
                 // Response cookies are not immediately accessible, so lets wait for a bit

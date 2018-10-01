@@ -34,11 +34,11 @@ import ITranslateService = angular.translate.ITranslateService;
  */
 export default class EbeguUtil {
 
-    static $inject = ['$filter', '$translate', '$log'];
+    public static $inject = ['$filter', '$translate', '$log'];
 
-    constructor(private readonly $filter: IFilterService,
-                private readonly $translate: ITranslateService,
-                private readonly $log: ILogService) {
+    public constructor(private readonly $filter: IFilterService,
+                       private readonly $translate: ITranslateService,
+                       private readonly $log: ILogService) {
     }
 
     public static compareByName<T extends Displayable>(a: T, b: T): number {
@@ -218,7 +218,7 @@ export default class EbeguUtil {
      */
     public translateStringList(translationList: Array<any>): Array<any> {
         const listResult: Array<any> = [];
-        translationList.forEach((item) => {
+        translationList.forEach(item => {
             listResult.push({key: item, value: this.translateString(item)});
         });
         return listResult;
@@ -234,7 +234,7 @@ export default class EbeguUtil {
                                  gemeinde: TSGemeinde,
                                  kindContainerNumber: number,
                                  betreuungNumber: number): string {
-        let betreuungsId: string = '';
+        let betreuungsId = '';
         if (gesuchsperiode && fall) {
             betreuungsId =
                 gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
@@ -248,7 +248,7 @@ export default class EbeguUtil {
 
     /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
     public calculateBetreuungsIdFromBetreuung(fall: TSFall, gemeinde: TSGemeinde, betreuung: TSBetreuung): string {
-        let betreuungsId: string = '';
+        let betreuungsId = '';
         if (betreuung && fall) {
             betreuungsId =
                 betreuung.gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
@@ -266,7 +266,7 @@ export default class EbeguUtil {
      * @param betreuungsnummer im format JJ.Fallnr.GemeindeNr.kindnr.betrnr
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
-        const parts: Array<string> = betreuungsnummer.split('.');
+        const parts = betreuungsnummer.split('.');
         if (!parts || parts.length !== CONSTANTS.PARTS_OF_BETREUUNGSNUMMER) {
             this.$log.error('A Betreuungsnummer must always have ' + CONSTANTS.PARTS_OF_BETREUUNGSNUMMER + ' parts. The given one had ' + parts.length);
             return undefined;

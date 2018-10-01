@@ -19,11 +19,11 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class OkHtmlDialogController {
 
-    static $inject = ['$mdDialog', '$translate', 'title'];
+    public static $inject = ['$mdDialog', '$translate', 'title'];
 
-    title: string;
+    public title: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, okText: string) {
+    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, okText: string) {
 
         if (title !== undefined && title !== null) {
             this.title = $translate.instant(title);

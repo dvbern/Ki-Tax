@@ -24,34 +24,34 @@ export default class TSEbeguVorlage extends TSAbstractDateRangedEntity {
     private _vorlage: TSVorlage;
     private _proGesuchsperiode: boolean;
 
-    constructor(name?: TSEbeguVorlageKey, vorlage?: TSVorlage, gueltigkeit?: TSDateRange, proGesuchsperiode?: boolean) {
+    public constructor(name?: TSEbeguVorlageKey, vorlage?: TSVorlage, gueltigkeit?: TSDateRange, proGesuchsperiode?: boolean) {
         super(gueltigkeit);
         this._name = name;
         this._vorlage = vorlage;
         this._proGesuchsperiode = proGesuchsperiode;
     }
 
-    get name(): TSEbeguVorlageKey {
+    public get name(): TSEbeguVorlageKey {
         return this._name;
     }
 
-    set name(value: TSEbeguVorlageKey) {
+    public set name(value: TSEbeguVorlageKey) {
         this._name = value;
     }
 
-    get vorlage(): TSVorlage {
+    public get vorlage(): TSVorlage {
         return this._vorlage;
     }
 
-    set vorlage(value: TSVorlage) {
+    public set vorlage(value: TSVorlage) {
         this._vorlage = value;
     }
 
-    get proGesuchsperiode(): boolean {
+    public get proGesuchsperiode(): boolean {
         return this._proGesuchsperiode;
     }
 
-    set proGesuchsperiode(value: boolean) {
+    public set proGesuchsperiode(value: boolean) {
         this._proGesuchsperiode = value;
     }
 }

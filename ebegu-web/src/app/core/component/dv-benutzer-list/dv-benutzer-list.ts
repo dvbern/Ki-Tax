@@ -24,7 +24,6 @@ import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import {InstitutionRS} from '../../service/institutionRS.rest';
@@ -34,64 +33,64 @@ import ITranslateService = angular.translate.ITranslateService;
 const LOG = LogFactory.createLog('DVBenutzerListController');
 
 export class DVBenutzerListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         onEdit: '&',
         onFilterChange: '&',
         totalResultCount: '<',
         tableId: '@',
         tableTitle: '@',
     };
-    template = require('./dv-benutzer-list.html');
-    controller = DVBenutzerListController;
-    controllerAs = 'vm';
+    public template = require('./dv-benutzer-list.html');
+    public controller = DVBenutzerListController;
+    public controllerAs = 'vm';
 }
 
 export class DVBenutzerListController implements IOnInit {
 
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window',
+    public static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window',
         '$translate', 'GemeindeRS'];
 
-    totalResultCount: number;
-    displayedCollection: Array<TSBenutzer> = []; //Liste die im Gui angezeigt wird
-    pagination: any;
+    public totalResultCount: number;
+    public displayedCollection: Array<TSBenutzer> = []; // Liste die im Gui angezeigt wird
+    public pagination: any;
 
-    institutionenList: Array<TSInstitution>;
-    traegerschaftenList: Array<TSTraegerschaft>;
-    gemeindeList: Array<TSGemeinde>;
+    public institutionenList: Array<TSInstitution>;
+    public traegerschaftenList: Array<TSTraegerschaft>;
+    public gemeindeList: Array<TSGemeinde>;
 
-    selectedUsername: string;
-    selectedVorname: string;
-    selectedNachname: string;
-    selectedEmail: string;
-    selectedRole: TSRole;
-    selectedGemeinde: TSGemeinde;
-    selectedInstitution: TSInstitution;
-    selectedTraegerschaft: TSTraegerschaft;
-    selectedBenutzerStatus: TSBenutzerStatus;
+    public selectedUsername: string;
+    public selectedVorname: string;
+    public selectedNachname: string;
+    public selectedEmail: string;
+    public selectedRole: TSRole;
+    public selectedGemeinde: TSGemeinde;
+    public selectedInstitution: TSInstitution;
+    public selectedTraegerschaft: TSTraegerschaft;
+    public selectedBenutzerStatus: TSBenutzerStatus;
 
-    tableId: string;
-    tableTitle: string;
+    public tableId: string;
+    public tableTitle: string;
 
-    onFilterChange: (changedTableState: any) => IPromise<any>;
-    onEdit: (user: any) => void;
-    TSRoleUtil: TSRoleUtil;
+    public onFilterChange: (changedTableState: any) => IPromise<any>;
+    public onEdit: (user: any) => void;
+    public TSRoleUtil: TSRoleUtil;
     public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
 
-    constructor(private readonly $log: ILogService,
-                private readonly institutionRS: InstitutionRS,
-                private readonly traegerschaftenRS: TraegerschaftRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $window: IWindowService,
-                private readonly $translate: ITranslateService,
-                private readonly gemeindeRS: GemeindeRS) {
+    public constructor(private readonly $log: ILogService,
+                       private readonly institutionRS: InstitutionRS,
+                       private readonly traegerschaftenRS: TraegerschaftRS,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $window: IWindowService,
+                       private readonly $translate: ITranslateService,
+                       private readonly gemeindeRS: GemeindeRS) {
 
         this.TSRoleUtil = TSRoleUtil;
     }
 
-    $onInit() {
-        //statt diese Listen zu laden koenne man sie auch von aussen setzen
+    public $onInit() {
+        // statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
         this.updateGemeindeList();
@@ -124,8 +123,8 @@ export class DVBenutzerListController implements IOnInit {
             );
     }
 
-    editClicked(user: any, event: any) {
-        this.onEdit({user: user, event: event});
+    public editClicked(user: any, event: any) {
+        this.onEdit({user, event});
     }
 
     public readonly callServer = (tableFilterState: any) => {
@@ -159,6 +158,3 @@ export class DVBenutzerListController implements IOnInit {
         return element.childElementCount;
     }
 }
-
-
-

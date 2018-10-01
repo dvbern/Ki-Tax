@@ -20,15 +20,15 @@ import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 
 export default class ErwerbspensumRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public readonly http: IHttpService,
-                REST_API: string,
-                public readonly ebeguRestUtil: EbeguRestUtil,
-                public readonly log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
+    public constructor(public readonly http: IHttpService,
+                       REST_API: string,
+                       public readonly ebeguRestUtil: EbeguRestUtil,
+                       public readonly log: ILogService,
+                       private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'erwerbspensen';
     }
 
@@ -61,7 +61,7 @@ export default class ErwerbspensumRS {
 
     public removeErwerbspensum(erwerbspensumContID: string, gesuchId: string): IPromise<any> {
         return this.http.delete(this.serviceURL + '/gesuchId/' + encodeURIComponent(gesuchId) + '/erwPenId/' + encodeURIComponent(erwerbspensumContID))
-            .then((response) => {
+            .then(response => {
                 this.wizardStepManager.findStepsFromGesuch(gesuchId);
                 return response;
             });

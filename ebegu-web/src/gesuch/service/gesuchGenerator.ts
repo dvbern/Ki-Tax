@@ -47,7 +47,7 @@ export class GesuchGenerator {
 
     private readonly LOG: Log = LogFactory.createLog(GesuchGenerator.name);
 
-    constructor(
+    public constructor(
         private readonly gesuchRS: GesuchRS,
         private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -57,7 +57,6 @@ export class GesuchGenerator {
         private readonly authServiceRS: AuthServiceRS,
         private readonly fallRS: FallRS
     ) {}
-
 
     /**
      * Erstellt ein neues Gesuch mit der angegebenen Eingangsart und Gesuchsperiode. Damit dies im resolve des
@@ -110,7 +109,7 @@ export class GesuchGenerator {
                       currentFall: TSFall,
                       currentDossier: TSDossier): IPromise<TSGesuch> {
 
-        const gesuch: TSGesuch = this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, creationAction, currentFall, currentDossier);
+        const gesuch = this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, creationAction, currentFall, currentDossier);
         gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
 
         if (gesuchsperiodeId) {
@@ -170,13 +169,13 @@ export class GesuchGenerator {
                              currentFall: TSFall,
                              currentDossier: TSDossier): IPromise<TSGesuch> {
 
-        const gesuch: TSGesuch = this.initAntrag(antragTyp, eingangsart, creationAction, currentFall, currentDossier);
+        const gesuch = this.initAntrag(antragTyp, eingangsart, creationAction, currentFall, currentDossier);
 
         return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
             gesuch.gesuchsperiode = periode;
             return this.dossierRS.findDossier(dossierId).then(foundDossier => {
                 gesuch.dossier = foundDossier;
-                gesuch.id = gesuchID; //setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
+                gesuch.id = gesuchID; // setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
                 gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
                 gesuch.emptyCopy = true;
                 return gesuch;

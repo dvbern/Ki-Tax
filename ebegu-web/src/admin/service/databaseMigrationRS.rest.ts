@@ -16,15 +16,14 @@
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService} from 'angular';
 
-
 export class DatabaseMigrationRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'dbmigration';
     }
 

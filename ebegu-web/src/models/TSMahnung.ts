@@ -27,8 +27,8 @@ export default class TSMahnung extends TSAbstractMutableEntity {
     private _timestampAbgeschlossen: moment.Moment;
     private _abgelaufen: boolean;
 
-    constructor(gesuch?: TSGesuch, mahnungTyp?: TSMahnungTyp, datumFristablauf?: moment.Moment, bemerkungen?: string,
-                timestampAbgeschlossen?: moment.Moment, abgelaufen?: boolean) {
+    public constructor(gesuch?: TSGesuch, mahnungTyp?: TSMahnungTyp, datumFristablauf?: moment.Moment, bemerkungen?: string,
+                       timestampAbgeschlossen?: moment.Moment, abgelaufen?: boolean) {
         super();
         this._gesuch = gesuch;
         this._mahnungTyp = mahnungTyp;
@@ -38,51 +38,51 @@ export default class TSMahnung extends TSAbstractMutableEntity {
         this._abgelaufen = abgelaufen;
     }
 
-    get gesuch(): TSGesuch {
+    public get gesuch(): TSGesuch {
         return this._gesuch;
     }
 
-    set gesuch(value: TSGesuch) {
+    public set gesuch(value: TSGesuch) {
         this._gesuch = value;
     }
 
-    get mahnungTyp(): TSMahnungTyp {
+    public get mahnungTyp(): TSMahnungTyp {
         return this._mahnungTyp;
     }
 
-    set mahnungTyp(value: TSMahnungTyp) {
+    public set mahnungTyp(value: TSMahnungTyp) {
         this._mahnungTyp = value;
     }
 
-    get datumFristablauf(): moment.Moment {
+    public get datumFristablauf(): moment.Moment {
         return this._datumFristablauf;
     }
 
-    set datumFristablauf(value: moment.Moment) {
+    public set datumFristablauf(value: moment.Moment) {
         this._datumFristablauf = value;
     }
 
-    get bemerkungen(): string {
+    public get bemerkungen(): string {
         return this._bemerkungen;
     }
 
-    set bemerkungen(value: string) {
+    public set bemerkungen(value: string) {
         this._bemerkungen = value;
     }
 
-    get timestampAbgeschlossen(): moment.Moment {
+    public get timestampAbgeschlossen(): moment.Moment {
         return this._timestampAbgeschlossen;
     }
 
-    set timestampAbgeschlossen(value: moment.Moment) {
+    public set timestampAbgeschlossen(value: moment.Moment) {
         this._timestampAbgeschlossen = value;
     }
 
-    get abgelaufen(): boolean {
+    public get abgelaufen(): boolean {
         return this._abgelaufen;
     }
 
-    set abgelaufen(value: boolean) {
+    public set abgelaufen(value: boolean) {
         this._abgelaufen = value;
     }
 }

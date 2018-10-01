@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import * as moment from 'moment';
 
 export default class TSFamiliensituation extends TSAbstractMutableEntity {
 
@@ -27,9 +27,12 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
 
-    constructor(familienstatus?: TSFamilienstatus, gesuchstellerKardinalitaet?: TSGesuchstellerKardinalitaet,
-                gemeinsameSteuererklaerung?: boolean, aenderungPer?: moment.Moment, sozialhilfeBezueger?: boolean,
-                verguenstigungGewuenscht?: boolean) {
+    public constructor(familienstatus?: TSFamilienstatus,
+                       gesuchstellerKardinalitaet?: TSGesuchstellerKardinalitaet,
+                       gemeinsameSteuererklaerung?: boolean,
+                       aenderungPer?: moment.Moment,
+                       sozialhilfeBezueger?: boolean,
+                       verguenstigungGewuenscht?: boolean) {
         super();
         this._familienstatus = familienstatus;
         this._gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
@@ -55,19 +58,19 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
     }
 
-    get gemeinsameSteuererklaerung(): boolean {
+    public get gemeinsameSteuererklaerung(): boolean {
         return this._gemeinsameSteuererklaerung;
     }
 
-    set gemeinsameSteuererklaerung(value: boolean) {
+    public set gemeinsameSteuererklaerung(value: boolean) {
         this._gemeinsameSteuererklaerung = value;
     }
 
-    get aenderungPer(): moment.Moment {
+    public get aenderungPer(): moment.Moment {
         return this._aenderungPer;
     }
 
-    set aenderungPer(value: moment.Moment) {
+    public set aenderungPer(value: moment.Moment) {
         this._aenderungPer = value;
     }
 
@@ -97,16 +100,16 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
             case TSFamilienstatus.LAENGER_FUENF_JAHRE:
                 return true;
             default:
-                //wir sollten hier nie hinkommen
-                return false;
+                throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }
     }
 
-    public isSameFamiliensituation(other: TSFamiliensituation) {
-        return this.familienstatus === other.familienstatus && this.gesuchstellerKardinalitaet === other.gesuchstellerKardinalitaet;
+    public isSameFamiliensituation(other: TSFamiliensituation): boolean {
+        return this.familienstatus === other.familienstatus
+            && this.gesuchstellerKardinalitaet === other.gesuchstellerKardinalitaet;
     }
 
-    public revertFamiliensituation(other: TSFamiliensituation) {
+    public revertFamiliensituation(other: TSFamiliensituation): void {
         this.familienstatus = other.familienstatus;
         this.gesuchstellerKardinalitaet = other.gesuchstellerKardinalitaet;
     }

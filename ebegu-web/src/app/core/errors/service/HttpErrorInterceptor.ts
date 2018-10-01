@@ -29,12 +29,12 @@ export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
 
 export default class HttpErrorInterceptor implements IHttpInterceptor {
 
-    static $inject = ['$rootScope', '$q', 'ErrorService', '$log'];
+    public static $inject = ['$rootScope', '$q', 'ErrorService', '$log'];
 
-    constructor(private readonly $rootScope: IRootScopeService,
-                private readonly $q: IQService,
-                private readonly errorService: ErrorService,
-                private readonly $log: ILogService) {
+    public constructor(private readonly $rootScope: IRootScopeService,
+                       private readonly $q: IQService,
+                       private readonly errorService: ErrorService,
+                       private readonly $log: ILogService) {
     }
 
     public responseError = (response: any) => {
@@ -42,12 +42,12 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
             this.errorService.addMesageAsError('ERROR_UNAUTHORIZED');
             return this.$q.reject(response);
         }
-        //here we handle all errorcodes except 401 and 403, 401 is handeld in HttpAuthInterceptor
+        // here we handle all errorcodes except 401 and 403, 401 is handeld in HttpAuthInterceptor
         if (response.status !== 401 && !isIgnorableHttpError(response)) {
-            //here we could analyze the http status of the response. But instead we check if the  response has the format
+            // here we could analyze the http status of the response. But instead we check if the  response has the format
             // of a known response such as errortypes such as violationReport or ExceptionReport and transform it
-            //as such. If the response matches know expected format we create an unexpected error.
-            const errors: Array<TSExceptionReport> = this.handleErrorResponse(response);
+            // as such. If the response matches know expected format we create an unexpected error.
+            const errors = this.handleErrorResponse(response);
             this.errorService.handleErrors(errors);
             return this.$q.reject(errors);
         }
@@ -78,7 +78,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
         } else {
             this.$log.error('ErrorStatus: "' + response.status + '" StatusText: "' + response.statusText + '"');
             this.$log.error('ResponseData:' + JSON.stringify(response.data));
-            //the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
+            // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, 'ERROR_UNEXPECTED', response.data));
         }
@@ -102,7 +102,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
                 const message: string = violationEntry.message;
                 const path: string = violationEntry.path;
                 const value: string = violationEntry.value;
-                const report: TSExceptionReport = TSExceptionReport.createFromViolation(constraintType, message, path, value);
+                const report = TSExceptionReport.createFromViolation(constraintType, message, path, value);
                 exceptionReports.push(report);
             }
         }
@@ -111,7 +111,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
     }
 
     private convertEbeguExceptionReport(data: any) {
-        const exceptionReport: TSExceptionReport = TSExceptionReport.createFromExceptionReport(data);
+        const exceptionReport = TSExceptionReport.createFromExceptionReport(data);
         const exceptionReports: Array<TSExceptionReport> = [];
         exceptionReports.push(exceptionReport);
         return exceptionReports;
@@ -125,7 +125,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
      * @returns {boolean} true if fields of violationReport are present
      */
     private isDataViolationResponse(data: any): boolean {
-        //hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport() bekommen
+        // hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport() bekommen
         if (data !== null && data !== undefined) {
             const hasParamViol: boolean = data.hasOwnProperty('parameterViolations');
             const hasClassViol: boolean = data.hasOwnProperty('classViolations');

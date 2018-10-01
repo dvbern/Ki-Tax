@@ -17,23 +17,23 @@ import {IComponentOptions} from 'angular';
 import {DvAccordionController} from '../dv-accordion';
 
 export class DvAccordionTabComponentConfig implements IComponentOptions {
-    transclude: any = {
+    public transclude: any = {
         title: '?tabTitle',
         body: '?tabBody'
     };
-    template = require('./dv-accordion-tab.html');
-    controller = DvAccordionTabController;
-    controllerAs = 'vm';
-    bindings = {
+    public template = require('./dv-accordion-tab.html');
+    public controller = DvAccordionTabController;
+    public controllerAs = 'vm';
+    public bindings = {
         tabid: '@',
     };
-    require: any = {vm: '^dvAccordion'};
+    public require: any = {vm: '^dvAccordion'};
 
 }
 
 export class DvAccordionTabController {
-    static $inject: ReadonlyArray<string> = [];
+    public static $inject: ReadonlyArray<string> = [];
 
-    tabid: string;
-    vm: DvAccordionController;
+    public tabid: string;
+    public vm: DvAccordionController;
 }

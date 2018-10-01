@@ -21,4 +21,3 @@ export enum onErrorPriorities {
     ERROR_GS_REGISTRATION_INCOMPLETE = 3,
     ERROR_AFTER_LOGIN = 10,
 }
-

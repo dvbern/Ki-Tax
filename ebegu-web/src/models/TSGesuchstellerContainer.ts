@@ -32,9 +32,9 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
     private _einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer;
     private _showUmzug: boolean = false;
 
-    constructor(gesuchstellerJA?: TSGesuchsteller, finanzielleSituation?: TSFinanzielleSituationContainer,
-                erwerbspensen?: Array<TSErwerbspensumContainer>,
-                einkommensverschlechterungContainer?: TSEinkommensverschlechterungContainer) {
+    public constructor(gesuchstellerJA?: TSGesuchsteller, finanzielleSituation?: TSFinanzielleSituationContainer,
+                       erwerbspensen?: Array<TSErwerbspensumContainer>,
+                       einkommensverschlechterungContainer?: TSEinkommensverschlechterungContainer) {
         super();
         this._gesuchstellerJA = gesuchstellerJA;
         this._finanzielleSituationContainer = finanzielleSituation;
@@ -42,19 +42,19 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
         this._einkommensverschlechterungContainer = einkommensverschlechterungContainer;
     }
 
-    get gesuchstellerGS(): TSGesuchsteller {
+    public get gesuchstellerGS(): TSGesuchsteller {
         return this._gesuchstellerGS;
     }
 
-    set gesuchstellerGS(value: TSGesuchsteller) {
+    public set gesuchstellerGS(value: TSGesuchsteller) {
         this._gesuchstellerGS = value;
     }
 
-    get gesuchstellerJA(): TSGesuchsteller {
+    public get gesuchstellerJA(): TSGesuchsteller {
         return this._gesuchstellerJA;
     }
 
-    set gesuchstellerJA(value: TSGesuchsteller) {
+    public set gesuchstellerJA(value: TSGesuchsteller) {
         this._gesuchstellerJA = value;
     }
 
@@ -96,27 +96,27 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
         this._finanzielleSituationContainer = value;
     }
 
-    get erwerbspensenContainer(): Array<TSErwerbspensumContainer> {
+    public get erwerbspensenContainer(): Array<TSErwerbspensumContainer> {
         return this._erwerbspensenContainer;
     }
 
-    set erwerbspensenContainer(value: Array<TSErwerbspensumContainer>) {
+    public set erwerbspensenContainer(value: Array<TSErwerbspensumContainer>) {
         this._erwerbspensenContainer = value;
     }
 
-    get einkommensverschlechterungContainer(): TSEinkommensverschlechterungContainer {
+    public get einkommensverschlechterungContainer(): TSEinkommensverschlechterungContainer {
         return this._einkommensverschlechterungContainer;
     }
 
-    set einkommensverschlechterungContainer(value: TSEinkommensverschlechterungContainer) {
+    public set einkommensverschlechterungContainer(value: TSEinkommensverschlechterungContainer) {
         this._einkommensverschlechterungContainer = value;
     }
 
-    get showUmzug(): boolean {
+    public get showUmzug(): boolean {
         return this._showUmzug;
     }
 
-    set showUmzug(value: boolean) {
+    public set showUmzug(value: boolean) {
         this._showUmzug = value;
     }
 
@@ -137,7 +137,7 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
      */
     public getUmzugAdressen(): Array<TSAdresseContainer> {
         if (this.adressen && this.adressen.length > 0) {
-            const adressenCopy: Array<TSAdresseContainer> = angular.copy(this.adressen);
+            const adressenCopy = angular.copy(this.adressen);
             adressenCopy.splice(0, 1);
             return adressenCopy;
         }
@@ -179,4 +179,3 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
         return undefined;
     }
 }
-

@@ -36,36 +36,36 @@ import ITranslateService = angular.translate.ITranslateService;
  *      und nicht unter jedem Feld.
  */
 export class DvBisherComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         gs: '<',
         ja: '<',
         specificBisherText: '<',
         blockExisted: '<',
         showIfBisherNone: '<'
     };
-    template = require('./dv-bisher.html');
-    controller = DvBisher;
-    controllerAs = 'vm';
+    public template = require('./dv-bisher.html');
+    public controller = DvBisher;
+    public controllerAs = 'vm';
 }
 
 export class DvBisher {
 
-    static $inject = ['GesuchModelManager', '$translate'];
+    public static $inject = ['GesuchModelManager', '$translate'];
 
-    gs: any;
-    ja: any;
-    showIfBisherNone: boolean;  // sollen die korrekturen des jugendamts angezeigt werden wenn im GS container kein wert ist
-    specificBisherText: string;
-    bisherText: Array<string>;
-    blockExisted: boolean;
+    public gs: any;
+    public ja: any;
+    public showIfBisherNone: boolean;  // sollen die korrekturen des jugendamts angezeigt werden wenn im GS container kein wert ist
+    public specificBisherText: string;
+    public bisherText: Array<string>;
+    public blockExisted: boolean;
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $translate: ITranslateService) {
+    public constructor(private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly $translate: ITranslateService) {
     }
 
-    $onInit() {
-        if (this.showIfBisherNone === undefined) {//wenn nicht von aussen gesetzt auf true
+    public $onInit() {
+        if (this.showIfBisherNone === undefined) {// wenn nicht von aussen gesetzt auf true
             this.showIfBisherNone = true;
         }
     }
@@ -78,7 +78,7 @@ export class DvBisher {
             if (this.hasBisher()) {
                 return this.bisherText; // neue eingabe als ein einzelner block
             } else {
-                return [this.$translate.instant('LABEL_KEINE_ANGABE')];  //vorher war keine angabe da
+                return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
             }
         } else if (this.gs instanceof moment) {
             return [DateUtil.momentToLocalDateFormat(this.gs, 'DD.MM.YYYY')];
@@ -98,7 +98,7 @@ export class DvBisher {
     }
 
     public showBisher(): boolean {
-        return ((this.showIfBisherNone || this.blockExisted === true) || this.hasBisher()) && this.isKorrekturModusJugendamtOrFreigegeben();
+        return ((this.showIfBisherNone || this.blockExisted) || this.hasBisher()) && this.isKorrekturModusJugendamtOrFreigegeben();
     }
 
     private isKorrekturModusJugendamtOrFreigegeben(): boolean {
@@ -114,7 +114,7 @@ export class DvBisher {
         if (gs instanceof Array) {
             return JSON.stringify(gs) === JSON.stringify(ja);
         }
-        return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); //either they are equal or both are a form of empty
+        return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); // either they are equal or both are a form of empty
     }
 
     private isEmpty(val: any): boolean {

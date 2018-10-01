@@ -14,15 +14,14 @@
  */
 
 import {ILogService, IPromise} from 'angular';
-import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import IDialogService = angular.material.IDialogService;
 import IDialogOptions = angular.material.IDialogOptions;
 
 export class DvDialog {
 
-    static $inject: ReadonlyArray<string> = ['$mdDialog', '$log'];
+    public static $inject: ReadonlyArray<string> = ['$mdDialog', '$log'];
 
-    constructor(private readonly $mdDialog: IDialogService, private readonly $log: ILogService) {
+    public constructor(private readonly $mdDialog: IDialogService, private readonly $log: ILogService) {
     }
 
     /**
@@ -40,8 +39,8 @@ export class DvDialog {
             params.form = undefined;
         }
         const confirm: IDialogOptions = {
-            template: template,
-            controller: controller,
+            template,
+            controller,
             controllerAs: 'vm',
             locals: params
         };
@@ -62,8 +61,8 @@ export class DvDialog {
     public showRemoveDialog(template: string, form: any, controller?: any, params?: any): IPromise<any> {
         params.form = form;
         const confirm: IDialogOptions = {
-            template: template,
-            controller: controller,
+            template,
+            controller,
             controllerAs: 'vm',
             locals: params
         };
@@ -72,8 +71,8 @@ export class DvDialog {
 
     public showDialogFullscreen(template: string, controller?: any, params?: any): IPromise<any> {
         const confirm: IDialogOptions = {
-            template: template,
-            controller: controller,
+            template,
+            controller,
             controllerAs: 'vm',
             fullscreen: true,
             locals: params

@@ -21,15 +21,15 @@ import TSKindDublette from '../../../models/TSKindDublette';
 
 export default class KindRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public $log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public $log: ILogService,
+                       private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'kinder';
     }
 
@@ -62,7 +62,7 @@ export default class KindRS {
 
     public removeKind(kindID: string, gesuchId: string): IPromise<any> {
         return this.$http.delete(this.serviceURL + '/' + encodeURIComponent(kindID))
-            .then((response) => {
+            .then(response => {
                 this.wizardStepManager.findStepsFromGesuch(gesuchId);
                 return response;
             });

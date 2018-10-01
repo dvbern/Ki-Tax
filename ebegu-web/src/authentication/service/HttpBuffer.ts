@@ -22,14 +22,14 @@ import {IDeferred, IHttpService, IRequestConfig} from 'angular';
  */
 export default class HttpBuffer {
 
-    static $inject = ['$injector'];
+    public static $inject = ['$injector'];
 
     /** Holds all the requests, so they can be re-requested in future. */
-    buffer: Array<any> = [];
+    public buffer: Array<any> = [];
 
     /** Service initialized later because of circular dependency problem. */
-    $http: IHttpService;
-    constructor(private readonly $injector: IInjectorService) {
+    public $http: IHttpService;
+    public constructor(private readonly $injector: IInjectorService) {
     }
 
     private retryHttpRequest(config: IRequestConfig, deferred: IDeferred<any>) {
@@ -45,14 +45,13 @@ export default class HttpBuffer {
         this.$http(config).then(successCallback, errorCallback);
     }
 
-
     /**
      * Appends HTTP request configuration object with deferred response attached to buffer.
      */
     public append(config: IRequestConfig, deferred: IDeferred<any>) {
         this.buffer.push({
-            config: config,
-            deferred: deferred
+            config,
+            deferred
         });
     }
 

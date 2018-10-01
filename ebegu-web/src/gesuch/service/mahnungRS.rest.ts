@@ -21,26 +21,24 @@ import TSMahnung from '../../models/TSMahnung';
 
 export default class MahnungRS implements IEntityRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'mahnung';
     }
 
     public saveMahnung(mahnung: TSMahnung): IPromise<TSMahnung> {
         let sentMahnung = {};
         sentMahnung = this.ebeguRestUtil.mahnungToRestObject(sentMahnung, mahnung);
-        return this.$http.post(this.serviceURL, sentMahnung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+
+        return this.$http.post(this.serviceURL, sentMahnung).then((response: any) => {
             this.$log.debug('PARSING gesuch REST object ', response.data);
+
             return this.ebeguRestUtil.parseMahnung(new TSMahnung(), response.data);
         });
     }

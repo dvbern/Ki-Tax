@@ -27,7 +27,7 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
     private _angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
 
-    constructor(wochentag?: TSDayOfWeek, modulTagesschuleName?: TSModulTagesschuleName, zeitVon?: moment.Moment, zeitBis?: moment.Moment) {
+    public constructor(wochentag?: TSDayOfWeek, modulTagesschuleName?: TSModulTagesschuleName, zeitVon?: moment.Moment, zeitBis?: moment.Moment) {
         super();
         this._wochentag = wochentag;
         this._modulTagesschuleName = modulTagesschuleName;

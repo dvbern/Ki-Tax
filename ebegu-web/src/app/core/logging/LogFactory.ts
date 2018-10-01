@@ -63,7 +63,7 @@ type LogFunction = (message: any, params?: any[]) => void;
  * For future use: possibly implement this using (e.g.) Sentry
  */
 class LogFunctions {
-    constructor(
+    public constructor(
         public readonly error: LogFunction,
         public readonly warn: LogFunction,
         public readonly info: LogFunction,
@@ -73,7 +73,7 @@ class LogFunctions {
 }
 
 class DefaultLogFunctions extends LogFunctions {
-    constructor() {
+    public constructor() {
         super(console.error, console.warn, console.info, console.debug);
     }
 }
@@ -158,7 +158,7 @@ type LogHandler = (level: LogLevel, args: any[], moduleName: string, backgroundC
  * The classic logger interface...
  */
 export class Log {
-    constructor(
+    public constructor(
         private readonly logHandler: LogHandler,
         public readonly name: string,
         public readonly backgroundColor: string = randomColor({seed: name, format: 'rgb'})
@@ -191,7 +191,7 @@ export class LogFactory {
     public static logLevel: LogLevel = environment.logLevel;
     public static logModules: LogModules = environment.logModules || {};
     // noinspection PointlessBooleanExpressionJS
-    public static logSupportsColor: boolean = environment.logColorsEnabled !== false;
+    public static logSupportsColor: boolean = environment.logColorsEnabled;
 
     public static logFunctions: LogFunctions = new DefaultLogFunctions();
     public static formattingOptions: FormattingOptions = {
@@ -201,7 +201,6 @@ export class LogFactory {
     public static createLog(name: string): Log {
         return new Log(LogFactory.log, name);
     }
-
 
     /**
      * Erlaubt es, den Log-Level eines Moduls zur Laufzeit zu setzen, nuetzlich fuers Debugging.

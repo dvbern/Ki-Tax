@@ -25,7 +25,6 @@ export default class TSDossier extends TSAbstractMutableEntity {
     private _verantwortlicherBG: TSBenutzer;
     private _verantwortlicherTS: TSBenutzer;
 
-
     public get fall(): TSFall {
         return this._fall;
     }

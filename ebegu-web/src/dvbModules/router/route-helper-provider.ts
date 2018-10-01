@@ -18,13 +18,13 @@ import {Ng1StateDeclaration, StateProvider, UIRouter} from '@uirouter/angularjs'
 import {ILocationProvider, IServiceProvider} from 'angular';
 
 export class RouterHelper {
-    static $inject = ['$stateProvider', '$uiRouterProvider'];
+    public static $inject = ['$stateProvider', '$uiRouterProvider'];
 
-    constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
+    public constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
     }
 
     public configureStates(legacy: Ng1StateDeclaration[] = [], states: Ng2StateDeclaration[] = []): void {
-        legacy.forEach((state) => {
+        legacy.forEach(state => {
             this.stateProvider.state(state);
         });
         states.forEach(state => {
@@ -36,16 +36,16 @@ export class RouterHelper {
 }
 
 export default class RouterHelperProvider implements IServiceProvider {
-    static $inject = ['$locationProvider', '$stateProvider', '$uiRouterProvider'];
+    public static $inject = ['$locationProvider', '$stateProvider', '$uiRouterProvider'];
 
     private readonly routerHelper: RouterHelper;
 
-    constructor($locationProvider: ILocationProvider, $stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
+    public constructor($locationProvider: ILocationProvider, $stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
         $locationProvider.html5Mode(false);
         this.routerHelper = new RouterHelper($stateProvider, $uiRouterProvider);
     }
 
-    $get(): RouterHelper {
+    public $get(): RouterHelper {
         return this.routerHelper;
     }
 }

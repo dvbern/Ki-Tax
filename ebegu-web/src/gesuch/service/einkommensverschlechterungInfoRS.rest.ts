@@ -22,14 +22,14 @@ import ILogService = angular.ILogService;
 
 export default class EinkommensverschlechterungInfoRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public $log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public $log: ILogService,
+                       private readonly wizardStepManager: WizardStepManager) {
         this.serviceURL = REST_API + 'einkommensverschlechterungInfo';
     }
 
