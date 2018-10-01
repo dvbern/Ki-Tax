@@ -27,7 +27,7 @@ import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen/pendenzenBet
 import {EbeguWebPendenzenSteueramt} from '../pendenzenSteueramt/pendenzenSteueramt.module';
 import {EbeguWebPosteingang} from '../posteingang/posteingang.module';
 import {EbeguWebQuicksearch} from './quicksearch/quicksearch.module';
-import {EbeguWebSearch} from '../searchResult/search.module';
+import {EbeguWebSearch} from './searchResult/search.module';
 import {EbeguWebStatistik} from '../statistik/statistik.module';
 import {EbeguWebVerlauf} from '../verlauf/verlauf.module';
 import {EbeguWebZahlung} from '../zahlung/zahlung.module';
