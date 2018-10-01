@@ -1,34 +1,37 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
-import WizardStepManager from '../../gesuch/service/wizardStepManager';
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
-import TSAntragDTO from '../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
-import TSGesuch from '../../models/TSGesuch';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
+import {StateService} from '@uirouter/core';
+import * as angular from 'angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
+import SearchRS from '../../../gesuch/service/searchRS.rest';
+import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSAntragDTO from '../../../models/TSAntragDTO';
+import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
+import TSGesuch from '../../../models/TSGesuch';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {EbeguWebFaelle} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
-import SearchRS from '../../gesuch/service/searchRS.rest';
-import GesuchRS from '../../gesuch/service/gesuchRS.rest';
-import {StateService} from '@uirouter/core';
 
 describe('faelleListView', () => {
 
@@ -70,7 +73,7 @@ describe('faelleListView', () => {
             it('should return the list with found Faellen', () => {
                 mockRestCalls();
                 faelleListViewController = new FaelleListViewController($filter,
-                    gesuchModelManager,  $state, $log,  authServiceRS, searchRS);
+                    gesuchModelManager, $state, $log, authServiceRS, searchRS);
 
                 faelleListViewController.passFilterToServer({});
                 expect(searchRS.searchAntraege).toHaveBeenCalledTimes(1);
@@ -86,27 +89,41 @@ describe('faelleListView', () => {
             it('should call findGesuch and open the view gesuch.fallcreation with it for normal user', () => {
                 callEditFall();
 
-                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {gesuchId: '66345345', dossierId: '11111111'});
+                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
+                    {gesuchId: '66345345', dossierId: '11111111'});
 
             });
-            it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', () => {
-                spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                callEditFall();
-                expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: '66345345'});
-            });
-            it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt', () => {
-                spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                mockAntrag.status = TSAntragStatus.VERFUEGT;
-                callEditFall();
-                expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {gesuchId: '66345345'});
-            });
+            it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt',
+                () => {
+                    spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+                    callEditFall();
+                    expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: '66345345'});
+                });
+            it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt',
+                () => {
+                    spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+                    mockAntrag.status = TSAntragStatus.VERFUEGT;
+                    callEditFall();
+                    expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {gesuchId: '66345345'});
+                });
         });
     });
 
     function mockGetPendenzenList(): TSAntragDTO {
-        const mockPendenz: TSAntragDTO = new TSAntragDTO('66345345', 123, 'name', TSAntragTyp.ERSTGESUCH,
-            undefined, undefined, undefined, [TSBetreuungsangebotTyp.KITA], ['Inst1, Inst2'], 'Juan Arbolado', 'Juan Arbolado',
-            undefined, undefined, undefined);
+        const mockPendenz: TSAntragDTO = new TSAntragDTO('66345345',
+            123,
+            'name',
+            TSAntragTyp.ERSTGESUCH,
+            undefined,
+            undefined,
+            undefined,
+            [TSBetreuungsangebotTyp.KITA],
+            ['Inst1, Inst2'],
+            'Juan Arbolado',
+            'Juan Arbolado',
+            undefined,
+            undefined,
+            undefined);
         mockPendenz.dossierId = '11111111';
         const dtoList: Array<TSAntragDTO> = [mockPendenz];
         const totalSize: number = 1;
