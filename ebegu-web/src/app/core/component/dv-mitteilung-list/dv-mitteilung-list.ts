@@ -19,7 +19,7 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import DossierRS from '../../../../gesuch/service/dossierRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import {IMitteilungenStateParams} from '../../../../mitteilungen/mitteilungen.route';
+import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {TSAmt} from '../../../../models/enums/TSAmt';
 import {TSMitteilungEvent} from '../../../../models/enums/TSMitteilungEvent';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';

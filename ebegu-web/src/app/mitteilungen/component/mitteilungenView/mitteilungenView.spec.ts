@@ -13,20 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {DVMitteilungListController} from '../../../app/core/component/dv-mitteilung-list/dv-mitteilung-list';
-import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
-import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
-import DossierRS from '../../../gesuch/service/dossierRS.rest';
-import FallRS from '../../../gesuch/service/fallRS.rest';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
-import TSMitteilung from '../../../models/TSMitteilung';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import * as angular from 'angular';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import DossierRS from '../../../../gesuch/service/dossierRS.rest';
+import FallRS from '../../../../gesuch/service/fallRS.rest';
+import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
+import {TSRole} from '../../../../models/enums/TSRole';
+import TSBenutzer from '../../../../models/TSBenutzer';
+import TSDossier from '../../../../models/TSDossier';
+import TSFall from '../../../../models/TSFall';
+import TSMitteilung from '../../../../models/TSMitteilung';
+import TestDataUtil from '../../../../utils/TestDataUtil.spec';
+import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
+import BetreuungRS from '../../../core/service/betreuungRS.rest';
+import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import {EbeguWebMitteilungen} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import ITimeoutService = angular.ITimeoutService;

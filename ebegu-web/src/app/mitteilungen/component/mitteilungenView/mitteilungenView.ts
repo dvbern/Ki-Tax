@@ -17,9 +17,9 @@ import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 
 export class MitteilungenViewComponentConfig implements IComponentOptions {
