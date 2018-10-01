@@ -13,3 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
+
+pendenzRun.$inject = ['RouterHelper'];
+
+export function pendenzRun(routerHelper: RouterHelper) {
+    routerHelper.configureStates(ng1States, []);
+}
+
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'pendenzen',
+        data: {
+            roles: TSRoleUtil.getAdministratorOrAmtRole(),
+        },
+    },
+    {
+        name: 'pendenzen.list-view',
+        template: '<pendenzen-list-view flex="auto" class="overflow-scroll">',
+        url: '/pendenzen',
+    }
+];

@@ -15,12 +15,12 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import SearchRS from '../../../gesuch/service/searchRS.rest';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import SearchRS from '../../../../gesuch/service/searchRS.rest';
+import TSAntragDTO from '../../../../models/TSAntragDTO';
+import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
@@ -37,8 +37,11 @@ export class PendenzenListViewController {
 
     totalResultCount: string = '0';
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $state: StateService, private readonly $log: ILogService,
-                private readonly searchRS: SearchRS, private readonly authServiceRS: AuthServiceRS) {
+    constructor(private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $state: StateService,
+                private readonly $log: ILogService,
+                private readonly searchRS: SearchRS,
+                private readonly authServiceRS: AuthServiceRS) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {

@@ -18,7 +18,7 @@ import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
 import EbeguWebAdmin from '../admin/admin.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
-import {EbeguWebPendenzen} from '../pendenzen/pendenzen.module';
+import {EbeguWebPendenzen} from './pendenzen/pendenzen.module';
 import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen/pendenzenBetreuungen.module';
 import {EbeguWebPendenzenSteueramt} from '../pendenzenSteueramt/pendenzenSteueramt.module';
 import {EbeguWebPosteingang} from '../posteingang/posteingang.module';
