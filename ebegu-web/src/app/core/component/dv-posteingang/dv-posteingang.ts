@@ -19,7 +19,7 @@ import {switchMap, takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
-import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {Log, LogFactory} from '../../logging/LogFactory';
 import MitteilungRS from '../../service/mitteilungRS.rest';

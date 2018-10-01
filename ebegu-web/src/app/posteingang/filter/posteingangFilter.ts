@@ -13,14 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../../utils/EbeguUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 
-// Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu implementieren.
-PosteingangFilter.$inject = ['$filter', 'EbeguUtil', 'CONSTANTS'];
+// Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu
+// implementieren.
+PosteingangFilter.$inject = ['$filter'];
 
-// Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden Comparator aufgerufen.
-// Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach implementiert wird.
-export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS: any) {
+// Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden
+// Comparator aufgerufen. Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach
+// implementiert wird.
+export function PosteingangFilter($filter: any) {
     const filterFilter = $filter('filter');
     const dateFilter = $filter('date');
 
@@ -57,10 +59,11 @@ export function PosteingangFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
             }
             return standardComparator(actual, expected);
         }
+
         return filterFilter(array, expression, customComparator);
     };
 
-    function compareDates (actual: any, expected: any): boolean {
+    function compareDates(actual: any, expected: any): boolean {
         const datum = dateFilter(new Date(actual), 'dd.MM.yyyy');
         return datum === expected;
     }

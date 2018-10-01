@@ -53,7 +53,7 @@ import MahnungRS from '../../gesuch/service/mahnungRS.rest';
 import SearchRS from '../../gesuch/service/searchRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import WizardStepRS from '../../gesuch/service/WizardStepRS.rest';
-import {PosteingangService} from '../../posteingang/service/posteingang.service';
+import {PosteingangService} from '../posteingang/service/posteingang.service';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';

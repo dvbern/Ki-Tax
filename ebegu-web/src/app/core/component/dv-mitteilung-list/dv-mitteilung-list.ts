@@ -30,7 +30,7 @@ import TSBetreuungsmitteilung from '../../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../../models/TSDossier';
 import TSMitteilung from '../../../../models/TSMitteilung';
 import TSBenutzer from '../../../../models/TSBenutzer';
-import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';

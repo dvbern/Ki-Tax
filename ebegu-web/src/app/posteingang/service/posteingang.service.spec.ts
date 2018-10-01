@@ -14,7 +14,7 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {TSPostEingangEvent} from '../../models/enums/TSPostEingangEvent';
+import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from './posteingang.service';
 
 describe('posteingangService', () => {

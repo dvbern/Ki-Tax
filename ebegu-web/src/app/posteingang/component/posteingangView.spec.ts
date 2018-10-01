@@ -13,26 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {of} from 'rxjs';
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import MitteilungRS from '../../app/core/service/mitteilungRS.rest';
-import BerechnungsManager from '../../gesuch/service/berechnungsManager';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
-import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
-import GesuchRS from '../../gesuch/service/gesuchRS.rest';
-import WizardStepManager from '../../gesuch/service/wizardStepManager';
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {TSMitteilungStatus} from '../../models/enums/TSMitteilungStatus';
-import {TSMitteilungTeilnehmerTyp} from '../../models/enums/TSMitteilungTeilnehmerTyp';
-import {TSRole} from '../../models/enums/TSRole';
-import TSDossier from '../../models/TSDossier';
-import TSFall from '../../models/TSFall';
-import TSMitteilung from '../../models/TSMitteilung';
-import TSBenutzer from '../../models/TSBenutzer';
 import {StateService} from '@uirouter/core';
-
-import TestDataUtil from '../../utils/TestDataUtil.spec';
+import * as angular from 'angular';
+import {of} from 'rxjs';
+import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
+import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
+import TSDossier from '../../../models/TSDossier';
+import TSFall from '../../../models/TSFall';
+import TSMitteilung from '../../../models/TSMitteilung';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import MitteilungRS from '../../core/service/mitteilungRS.rest';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
 
@@ -84,7 +84,12 @@ describe('posteingangView', () => {
             it('should return the list of Mitteilungen', () => {
                 mockRestCalls();
                 spyOn(gemeindeRS, 'getGemeindenForPrincipal$').and.returnValue(of([]));
-                posteingangViewController = new PosteingangViewController(mitteilungRS, undefined, CONSTANTS, undefined, authServiceRS, gemeindeRS);
+                posteingangViewController = new PosteingangViewController(mitteilungRS,
+                    undefined,
+                    CONSTANTS,
+                    undefined,
+                    authServiceRS,
+                    gemeindeRS);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(result => {
@@ -105,8 +110,16 @@ describe('posteingangView', () => {
         mockDossier.fall = mockFall;
         const gesuchsteller: TSBenutzer = new TSBenutzer();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
-        const mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier, undefined, TSMitteilungTeilnehmerTyp.GESUCHSTELLER, TSMitteilungTeilnehmerTyp.JUGENDAMT,
-            gesuchsteller, undefined, 'Frage', 'Warum ist die Banane krumm?', TSMitteilungStatus.NEU, undefined);
+        const mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier,
+            undefined,
+            TSMitteilungTeilnehmerTyp.GESUCHSTELLER,
+            TSMitteilungTeilnehmerTyp.JUGENDAMT,
+            gesuchsteller,
+            undefined,
+            'Frage',
+            'Warum ist die Banane krumm?',
+            TSMitteilungStatus.NEU,
+            undefined);
         const dtoList: Array<TSMitteilung> = [mockMitteilung];
         const totalSize: number = 1;
         spyOn(mitteilungRS, 'searchMitteilungen').and.returnValue($q.when(dtoList));

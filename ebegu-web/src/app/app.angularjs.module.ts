@@ -18,8 +18,6 @@ import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
 import EbeguWebAdmin from '../admin/admin.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
-import {EbeguWebPosteingang} from '../posteingang/posteingang.module';
-import {EbeguWebStatistik} from './statistik/statistik.module';
 import {EbeguWebZahlung} from '../zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
 import {EbeguWebAlleVerfuegungen} from './alleVerfuegungen/alleVerfuegungen.module';
@@ -29,11 +27,13 @@ import {EbeguWebDossier} from './dossier/dossier.angularjs.module';
 import {EbeguWebFaelle} from './faelle/faelle.module';
 import {EbeguWebGesuchstellerDashboard} from './gesuchstellerDashboard/gesuchstellerDashboard.module';
 import {EbeguWebMitteilungen} from './mitteilungen/mitteilungen.module';
-import {EbeguWebPendenzen} from './pendenzen/default/pendenzen.module';
 import {EbeguWebPendenzenBetreuungen} from './pendenzen/betreuungen/pendenzenBetreuungen.module';
+import {EbeguWebPendenzen} from './pendenzen/default/pendenzen.module';
 import {EbeguWebPendenzenSteueramt} from './pendenzen/steueramt/pendenzenSteueramt.module';
+import {EbeguWebPosteingang} from './posteingang/posteingang.module';
 import {EbeguWebQuicksearch} from './quicksearch/quicksearch.module';
 import {EbeguWebSearch} from './searchResult/search.module';
+import {EbeguWebStatistik} from './statistik/statistik.module';
 import {EbeguWebVerlauf} from './verlauf/verlauf.module';
 
 export const appModuleAngularJS = angular.module('ebeguWeb', [

@@ -20,13 +20,13 @@ import {UpgradeModule} from '@angular/upgrade/static';
 import {NgAdminModule} from '../admin/ng-admin.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
-import {NgPosteingangModule} from '../posteingang/ng-posteingang.module';
 import {AppRoutingModule} from './app-routing.module';
 import {appModuleAngularJS} from './app.angularjs.module';
 import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
+import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 
 @NgModule({
