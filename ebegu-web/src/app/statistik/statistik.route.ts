@@ -13,11 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../app/core/core.angularjs.module';
-import {StatistikViewComponentConfig} from './component/statistikView/statistikView';
-import {statistikRun} from './statistik.route';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
-export const EbeguWebStatistik =
-    angular.module('ebeguWeb.statistik', [EbeguWebCore.name])
-        .run(statistikRun)
-        .component('statistikView', new StatistikViewComponentConfig());
+statistikRun.$inject = ['RouterHelper'];
+
+export function statistikRun(routerHelper: RouterHelper) {
+    routerHelper.configureStates(ng1States, []);
+}
+
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'statistik',
+        data: {
+            roles: TSRoleUtil.getAllRolesForStatistik(),
+        },
+    },
+    {
+        name: 'statistik.view',
+        template: '<statistik-view flex="auto" class="overflow-scroll">',
+        url: '/statistik',
+    },
+];

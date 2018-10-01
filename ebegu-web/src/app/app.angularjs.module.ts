@@ -19,7 +19,7 @@ import * as angular from 'angular';
 import EbeguWebAdmin from '../admin/admin.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
 import {EbeguWebPosteingang} from '../posteingang/posteingang.module';
-import {EbeguWebStatistik} from '../statistik/statistik.module';
+import {EbeguWebStatistik} from './statistik/statistik.module';
 import {EbeguWebZahlung} from '../zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from '../zahlungsauftrag/zahlungsauftrag.module';
 import {EbeguWebAlleVerfuegungen} from './alleVerfuegungen/alleVerfuegungen.module';
