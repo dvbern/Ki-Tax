@@ -86,11 +86,11 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
     private searchDokumente(alleDokumente: TSDokumenteDTO, dokumenteForType: TSDokumentGrund[], dokumentGrundTyp: TSDokumentGrundTyp) {
 
-        const dokumentGruende: Array<TSDokumentGrund> = alleDokumente.dokumentGruende;
-        const found = dokumentGruende.find(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp);
-        if (found) {
-            dokumenteForType.push(found);
-        }
+        const dokumentGruende: TSDokumentGrund[] = alleDokumente.dokumentGruende;
+        dokumentGruende
+            .filter(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp)
+            .forEach(tsDokument => dokumenteForType.push(tsDokument));
+
         dokumenteForType.sort((n1: TSDokumentGrund, n2: TSDokumentGrund) => {
             let result: number = 0;
 
