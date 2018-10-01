@@ -13,28 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {EbeguWebCore} from '../core/core.angularjs.module';
+import {PendenzenSteueramtListViewComponentConfig} from './component/pendenzenSteueramtListView/pendenzenSteueramtListView';
+import {pendenzRun} from './pendenzenSteueramt.route';
 
-pendenzRun.$inject = ['RouterHelper'];
-
-export function pendenzRun(routerHelper: RouterHelper) {
-    routerHelper.configureStates(ng1States, []);
-}
-
-const ng1States: Ng1StateDeclaration[] = [
-    {
-        parent: 'app',
-        abstract: true,
-        name: 'pendenzenSteueramt',
-        data: {
-            roles: TSRoleUtil.getSteueramtRoles(),
-        },
-    },
-    {
-        name: 'pendenzenSteueramt.list-view',
-        template: '<pendenzen-steueramt-list-view flex="auto" class="overflow-scroll">',
-        url: '/pendenzenSteueramt',
-    },
-];
+export const EbeguWebPendenzenSteueramt =
+    angular.module('ebeguWeb.pendenzenSteueramt', [EbeguWebCore.name])
+        .run(pendenzRun)
+        .component('pendenzenSteueramtListView', new PendenzenSteueramtListViewComponentConfig());

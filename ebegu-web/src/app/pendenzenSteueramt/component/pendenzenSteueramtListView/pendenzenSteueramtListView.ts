@@ -14,15 +14,14 @@
  */
 
 import IComponentOptions = angular.IComponentOptions;
-import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
+import IPromise = angular.IPromise;
 import {StateService} from '@uirouter/core';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import SearchRS from '../../../gesuch/service/searchRS.rest';
-
+import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import SearchRS from '../../../../gesuch/service/searchRS.rest';
+import TSAntragDTO from '../../../../models/TSAntragDTO';
+import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
     transclude = false;
@@ -33,19 +32,19 @@ export class PendenzenSteueramtListViewComponentConfig implements IComponentOpti
 
 export class PendenzenSteueramtListViewController {
 
-
     static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
     totalResultCount: string = '0';
     TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager, private readonly $state: StateService, private readonly $log: ILogService,
+    constructor(private readonly gesuchModelManager: GesuchModelManager,
+                private readonly $state: StateService,
+                private readonly $log: ILogService,
                 private readonly searchRS: SearchRS) {
     }
 
     $onInit() {
     }
-
 
     public editpendenzSteueramt(pendenz: TSAntragDTO, event: any): void {
         if (pendenz) {
