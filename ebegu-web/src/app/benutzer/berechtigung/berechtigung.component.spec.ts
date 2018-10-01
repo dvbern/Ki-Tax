@@ -35,15 +35,15 @@ describe('EditBerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForCurrentBenutzer']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getVisibleRolesForPrincipal']);
+        ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+    authServiceSpy.principal$ = of(TestDataUtil.createSuperadmin()) as any;
 
     beforeEach(async(() => {
-        const superadmin = TestDataUtil.createSuperadmin();
-        authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
