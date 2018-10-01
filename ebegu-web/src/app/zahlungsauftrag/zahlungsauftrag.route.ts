@@ -13,11 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../app/core/core.angularjs.module';
-import {zahlungsauftragRun} from './zahlungsauftrag.route';
-import {ZahlungsauftragViewComponentConfig} from './component/zahlungsauftragView';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
-export const EbeguWebZahlungsauftrag =
-    angular.module('ebeguWeb.zahlungsauftrag', [EbeguWebCore.name])
-        .run(zahlungsauftragRun)
-        .component('zahlungsauftragView', new ZahlungsauftragViewComponentConfig());
+zahlungsauftragRun.$inject = ['RouterHelper'];
+
+export function zahlungsauftragRun(routerHelper: RouterHelper) {
+    routerHelper.configureStates(ng1States, []);
+}
+
+const ng1States: Ng1StateDeclaration[] = [
+    {
+        parent: 'app',
+        abstract: true,
+        name: 'zahlungsauftrag',
+        data: {
+            roles: TSRoleUtil.getAllRolesForZahlungen(),
+        },
+    },
+    {
+        name: 'zahlungsauftrag.view',
+        template: '<zahlungsauftrag-view flex="auto" class="overflow-scroll">',
+        url: '/zahlungsauftrag',
+    }
+];
