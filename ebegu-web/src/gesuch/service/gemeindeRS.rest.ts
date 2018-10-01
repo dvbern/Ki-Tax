@@ -113,13 +113,16 @@ export default class GemeindeRS implements IEntityRS {
      * It sends all required parameters (new Gemeinde, beguStartDatum and User) to the server so the server can create
      * all required objects within a single transaction.
      */
-    public createGemeinde(gemeinde: TSGemeinde, beguStartDatum: moment.Moment): IPromise<TSGemeinde> {
+    public createGemeinde(gemeinde: TSGemeinde, beguStartDatum: moment.Moment, email: string): IPromise<TSGemeinde> {
         const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde);
 
         return this.$http.post(this.serviceURL, restGemeinde,
             {
                 headers: {'Content-Type': 'application/json'},
-                params: {date: DateUtil.momentToLocalDate(beguStartDatum)},
+                params: {
+                    date: DateUtil.momentToLocalDate(beguStartDatum),
+                    adminMail: email,
+                },
             })
             .then((response) => {
                 this.resetGemeindeCache();

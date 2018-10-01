@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -367,8 +368,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Override
 	public void sendBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener) throws MailException {
+		@Nonnull Benutzer eingeladener,
+		@Nonnull EinladungTyp einladungTyp) throws MailException {
 
+		// todo chose template and set link
 		String message = mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener);
 		sendMessageWithTemplate(message, eingeladener.getEmail());
 	}

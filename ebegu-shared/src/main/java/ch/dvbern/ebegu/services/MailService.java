@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.errors.MailException;
 
 /**
@@ -125,8 +126,12 @@ public interface MailService {
 		@Nullable DownloadFile attachement,
 		@Nonnull String downloadurl) throws MailException;
 
+	/**
+	 * Sends an Einladungsemail to the given user according to the type of the Einladung
+	 */
 	void sendBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener)
+		@Nonnull Benutzer eingeladener,
+		@Nonnull EinladungTyp einladungTyp)
 		throws MailException;
 }

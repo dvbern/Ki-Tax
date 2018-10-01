@@ -87,6 +87,7 @@ public final class Constants {
 	public static final String SYSTEM_USER_USERNAME = "System";
 	public static final String ANONYMOUS_USER_USERNAME = "anonymous";
 	public static final String LOGINCONNECTOR_USER_USERNAME = "LoginConnector";
+	public static final String UNKNOWN = "UNKNOWN";
 
 	private Constants() {
 		//this prevents even the native class from

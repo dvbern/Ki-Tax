@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
@@ -68,6 +69,7 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -77,6 +79,7 @@ import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -97,6 +100,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
@@ -163,6 +167,40 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@RolesAllowed({
 		SUPER_ADMIN,
+		ADMIN_MANDANT,
+		SACHBEARBEITER_MANDANT,
+	})
+	public Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde persistedGemeinde) {
+		requireNonNull(adminMail);
+		requireNonNull(persistedGemeinde);
+		requireNonNull(principalBean.getMandant());
+
+		final Benutzer adminGemeinde = new Benutzer();
+		adminGemeinde.setEmail(adminMail);
+		adminGemeinde.setNachname(Constants.UNKNOWN);
+		adminGemeinde.setVorname(Constants.UNKNOWN);
+		adminGemeinde.setUsername(adminMail);
+		adminGemeinde.setStatus(BenutzerStatus.EINGELADEN);
+		adminGemeinde.setMandant(principalBean.getMandant());
+
+		final Berechtigung berechtigung = new Berechtigung();
+		berechtigung.setRole(UserRole.ADMIN_GEMEINDE);
+		berechtigung.setBenutzer(adminGemeinde);
+		berechtigung.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
+		// empty gemeindeList. The Gemeinde will be added later
+		berechtigung.setGemeindeList(new TreeSet<>());
+		adminGemeinde.setBerechtigungen(
+			new TreeSet<>(Collections.singletonList(berechtigung))
+		);
+
+		return saveBenutzer(adminGemeinde);
+
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({
+		SUPER_ADMIN,
 		ADMIN_BG,
 		ADMIN_GEMEINDE,
 		ADMIN_TS,
@@ -170,20 +208,17 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ADMIN_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT,
 	})
-	public Benutzer einladen(@Nonnull Benutzer benutzer) {
+	public Benutzer einladen(@Nonnull Benutzer benutzer, @Nonnull EinladungTyp einladungTyp) {
 		requireNonNull(benutzer);
-		checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
-		checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
+		requireNonNull(einladungTyp);
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
-
-		if (findBenutzer(benutzer.getUsername()).isPresent()) {
-			throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
-		}
+		checkEinladung(benutzer, einladungTyp);
 
 		Benutzer persisted = saveBenutzer(benutzer);
 
 		try {
-			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted, einladungTyp);
+
 		} catch (MailException e) {
 			String message =
 				String.format("Es konnte keine Email Einladung an %s geschickt werden", benutzer.getEmail());
@@ -191,6 +226,23 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 
 		return persisted;
+	}
+
+	/**
+	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
+	 */
+	private void checkEinladung(@Nonnull Benutzer benutzer, @Nonnull EinladungTyp einladungTyp) {
+		if (einladungTyp == EinladungTyp.MITARBEITER) {
+			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+			checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
+			if (findBenutzer(benutzer.getUsername()).isPresent()) {
+				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist already
+				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
+			}
+
+		} else if (benutzer.isNew()) {
+			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		}
 	}
 
 	@Nonnull

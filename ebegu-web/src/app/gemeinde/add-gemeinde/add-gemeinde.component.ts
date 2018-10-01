@@ -101,7 +101,7 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then((neueGemeinde) => {
+        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum, this.adminMail).then((neueGemeinde) => {
             this.gemeinde = neueGemeinde;
             this.navigateBack();
         });

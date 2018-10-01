@@ -45,7 +45,10 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -67,6 +70,9 @@ public class GemeindeResource {
 	private EinstellungService einstellungService;
 
 	@Inject
+	private BenutzerService benutzerService;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
@@ -76,7 +82,8 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
-		@Nonnull @NotNull @QueryParam("date") String stringDateBeguBietenAb,
+		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
+		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguBietenAb,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -87,7 +94,12 @@ public class GemeindeResource {
 
 		einstellungService.createBeguBietenAbEinstellung(eingangsdatum, persistedGemeinde);
 
-		// todo KIBON-211 the given user must be informed
+		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail).orElseGet(() ->
+			benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde)
+		);
+
+		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
+		benutzerService.einladen(benutzer, EinladungTyp.GEMEINDE);
 
 		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
 		return jaxGemeinde;
