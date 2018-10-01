@@ -15,21 +15,21 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import SearchRS from '../../../gesuch/service/searchRS.rest';
-import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {TSCreationAction} from '../../../models/enums/TSCreationAction';
-import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import {TSGesuchBetreuungenStatus} from '../../../models/enums/TSGesuchBetreuungenStatus';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSDossier from '../../../models/TSDossier';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import ErrorService from '../../../core/errors/service/ErrorService';
+import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
+import SearchRS from '../../../../gesuch/service/searchRS.rest';
+import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
+import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSGesuchBetreuungenStatus} from '../../../../models/enums/TSGesuchBetreuungenStatus';
+import TSAntragDTO from '../../../../models/TSAntragDTO';
+import TSDossier from '../../../../models/TSDossier';
+import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
 import ITranslateService = angular.translate.ITranslateService;
 

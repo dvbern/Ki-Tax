@@ -14,10 +14,10 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import GesuchModelManager from '../gesuch/service/gesuchModelManager';
-import {TSRole} from '../models/enums/TSRole';
-import TSGesuch from '../models/TSGesuch';
+import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
+import {TSRole} from '../../models/enums/TSRole';
+import TSGesuch from '../../models/TSGesuch';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;

@@ -1,4 +1,3 @@
-import {StateService} from '@uirouter/core';
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland
@@ -13,20 +12,21 @@ import {StateService} from '@uirouter/core';
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
-import TSBelegungFerieninsel from '../../../models/TSBelegungFerieninsel';
-import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import TSKindContainer from '../../../models/TSKindContainer';
-import DateUtil from '../../../utils/DateUtil';
+import BetreuungRS from '../../../core/service/betreuungRS.rest';
+import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
+import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../../models/enums/TSEinschulungTyp';
+import TSAnmeldungDTO from '../../../../models/TSAnmeldungDTO';
+import TSBelegungFerieninsel from '../../../../models/TSBelegungFerieninsel';
+import TSBelegungTagesschule from '../../../../models/TSBelegungTagesschule';
+import TSBetreuung from '../../../../models/TSBetreuung';
+import TSInstitutionStammdaten from '../../../../models/TSInstitutionStammdaten';
+import TSKindContainer from '../../../../models/TSKindContainer';
+import DateUtil from '../../../../utils/DateUtil';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
