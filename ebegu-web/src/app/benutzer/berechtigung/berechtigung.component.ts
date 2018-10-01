@@ -52,7 +52,7 @@ export class BerechtigungComponent {
 
     public readonly compareById = EbeguUtil.compareById;
 
-    constructor(
+    public constructor(
         public readonly form: NgForm,
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftenRS: TraegerschaftRS,

@@ -29,7 +29,6 @@ import TSBetreuung from '../../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../../models/TSDossier';
 import TSMitteilung from '../../../../models/TSMitteilung';
-import TSBenutzer from '../../../../models/TSBenutzer';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -46,62 +45,62 @@ import IWindowService = angular.IWindowService;
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DVMitteilungListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         dossier: '<',
         betreuung: '<',
         form: '<',
     };
 
-    template = require('./dv-mitteilung-list.html');
-    controller = DVMitteilungListController;
-    controllerAs = 'vm';
+    public template = require('./dv-mitteilung-list.html');
+    public controller = DVMitteilungListController;
+    public controllerAs = 'vm';
 }
 
 export class DVMitteilungListController implements IOnInit {
 
-    static $inject: ReadonlyArray<string> = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
+    public static $inject: ReadonlyArray<string> = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
         '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
         'DossierRS', 'PosteingangService'];
 
-    dossier: TSDossier;
-    betreuung: TSBetreuung;
-    form: IFormController;
+    public dossier: TSDossier;
+    public betreuung: TSBetreuung;
+    public form: IFormController;
 
-    paramSelectedMitteilungId: string;
-    currentMitteilung: TSMitteilung;
-    allMitteilungen: Array<TSMitteilung>;
-    TSRole = TSRole;
-    TSRoleUtil = TSRoleUtil;
+    public paramSelectedMitteilungId: string;
+    public currentMitteilung: TSMitteilung;
+    public allMitteilungen: Array<TSMitteilung>;
+    public TSRole = TSRole;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $stateParams: IMitteilungenStateParams,
-                private readonly mitteilungRS: MitteilungRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly betreuungRS: BetreuungRS,
-                private readonly $q: IQService,
-                private readonly $window: IWindowService,
-                private readonly $rootScope: IRootScopeService,
-                private readonly $state: StateService,
-                public ebeguUtil: EbeguUtil,
-                private readonly DvDialog: DvDialog,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $scope: IScope,
-                private readonly $timeout: ITimeoutService,
-                private readonly dossierRS: DossierRS,
-                private readonly posteingangService: PosteingangService) {
+    public constructor(private readonly $stateParams: IMitteilungenStateParams,
+                       private readonly mitteilungRS: MitteilungRS,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly betreuungRS: BetreuungRS,
+                       private readonly $q: IQService,
+                       private readonly $window: IWindowService,
+                       private readonly $rootScope: IRootScopeService,
+                       private readonly $state: StateService,
+                       public ebeguUtil: EbeguUtil,
+                       private readonly DvDialog: DvDialog,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly $scope: IScope,
+                       private readonly $timeout: ITimeoutService,
+                       private readonly dossierRS: DossierRS,
+                       private readonly posteingangService: PosteingangService) {
     }
 
-    $onInit() {
+    public $onInit() {
         if (this.$stateParams.mitteilungId) {
             // wenn man eine bestimmte Mitteilung oeffnen will, kann man ihr ID als parameter geben
             this.paramSelectedMitteilungId = this.$stateParams.mitteilungId;
         }
         if (this.$stateParams.dossierId) {
-            this.dossierRS.findDossier(this.$stateParams.dossierId).then((response) => {
+            this.dossierRS.findDossier(this.$stateParams.dossierId).then(response => {
                 this.dossier = response;
                 if (this.$stateParams.betreuungId) {
-                    this.betreuungRS.findBetreuung(this.$stateParams.betreuungId).then((response) => {
+                    this.betreuungRS.findBetreuung(this.$stateParams.betreuungId).then(response => {
                         this.betreuung = response;
                         this.loadEntwurf();
                         this.loadAllMitteilungen();
@@ -138,9 +137,9 @@ export class DVMitteilungListController implements IOnInit {
     private loadEntwurf() {
         // Wenn der Fall keinen Besitzer hat, darf auch keine Nachricht geschrieben werden
         // Ausser wir sind Institutionsbenutzer
-        const isGesuchsteller: boolean = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        const isJugendamtOrSchulamtAndFallHasBesitzer: boolean = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
-        const isInstitutionsUser: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+        const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+        const isJugendamtOrSchulamtAndFallHasBesitzer = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+        const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
         if (isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser) {
             if (this.betreuung) {
                 this.mitteilungRS.getEntwurfForCurrentRolleForBetreuung(this.betreuung.id).then((entwurf: TSMitteilung) => {
@@ -163,8 +162,8 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private initMitteilungForCurrentBenutzer() {
-        const currentUser: TSBenutzer = this.authServiceRS.getPrincipal();
-        //common attributes
+        const currentUser = this.authServiceRS.getPrincipal();
+        // common attributes
         this.currentMitteilung = new TSMitteilung();
         this.currentMitteilung.dossier = this.dossier;
         if (this.betreuung) {
@@ -187,7 +186,7 @@ export class DVMitteilungListController implements IOnInit {
             return undefined;
         }
         if (!this.isMitteilungEmpty()) {
-            return this.mitteilungRS.sendMitteilung(this.getCurrentMitteilung()).then((response) => {
+            return this.mitteilungRS.sendMitteilung(this.getCurrentMitteilung()).then(response => {
                 this.loadEntwurf();
                 this.loadAllMitteilungen();
                 return this.currentMitteilung;
@@ -206,7 +205,7 @@ export class DVMitteilungListController implements IOnInit {
      */
     public saveEntwurf(): IPromise<TSMitteilung> {
         if (((this.form.$dirty && !this.isMitteilungEmpty()))) {
-            return this.mitteilungRS.saveEntwurf(this.getCurrentMitteilung()).then((response) => {
+            return this.mitteilungRS.saveEntwurf(this.getCurrentMitteilung()).then(response => {
                 this.loadEntwurf();
                 this.loadAllMitteilungen();
                 return this.currentMitteilung;
@@ -216,7 +215,7 @@ export class DVMitteilungListController implements IOnInit {
             });
 
         } else if (this.isMitteilungEmpty() && !this.currentMitteilung.isNew() && this.currentMitteilung.id) {
-            return this.mitteilungRS.removeEntwurf(this.getCurrentMitteilung()).then((response) => {
+            return this.mitteilungRS.removeEntwurf(this.getCurrentMitteilung()).then(response => {
                 this.initMitteilungForCurrentBenutzer();
                 return this.currentMitteilung;
             });
@@ -232,11 +231,11 @@ export class DVMitteilungListController implements IOnInit {
 
     private loadAllMitteilungen(): void {
         if (this.betreuung) {
-            this.mitteilungRS.getMitteilungenForCurrentRolleForBetreuung(this.betreuung.id).then((response) => {
+            this.mitteilungRS.getMitteilungenForCurrentRolleForBetreuung(this.betreuung.id).then(response => {
                 this.allMitteilungen = response;
             });
         } else {
-            this.mitteilungRS.getMitteilungenOfDossierForCurrentRolle(this.dossier.id).then((response) => {
+            this.mitteilungRS.getMitteilungenOfDossierForCurrentRolle(this.dossier.id).then(response => {
                 this.allMitteilungen = response;
             });
         }
@@ -318,7 +317,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public getBgNummer(): string {
-        let bgNummer: string = '';
+        let bgNummer = '';
         if (this.betreuung) {
             bgNummer = this.ebeguUtil.calculateBetreuungsId(this.betreuung.gesuchsperiode, this.dossier.fall, this.dossier.gemeinde,
                 this.betreuung.kindNummer, this.betreuung.betreuungNummer);
@@ -329,7 +328,7 @@ export class DVMitteilungListController implements IOnInit {
     public betreuungAsString(mitteilung: TSMitteilung): string {
         let betreuungAsString: string;
         if (mitteilung.betreuung) {
-            const bgNummer: string = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall,
+            const bgNummer = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode, mitteilung.dossier.fall,
                 mitteilung.dossier.gemeinde, mitteilung.betreuung.kindNummer, mitteilung.betreuung.betreuungNummer);
             betreuungAsString = mitteilung.betreuung.kindFullname + ', ' + bgNummer;
         }
@@ -345,11 +344,11 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public isBetreuungsmitteilungApplied(mitteilung: TSMitteilung): boolean {
-        return this.isBetreuungsmitteilung(mitteilung) && (<TSBetreuungsmitteilung>mitteilung).applied === true;
+        return this.isBetreuungsmitteilung(mitteilung) && (mitteilung as TSBetreuungsmitteilung).applied;
     }
 
     public isBetreuungsmitteilungNotApplied(mitteilung: TSMitteilung): boolean {
-        return this.isBetreuungsmitteilung(mitteilung) && (<TSBetreuungsmitteilung>mitteilung).applied !== true;
+        return this.isBetreuungsmitteilung(mitteilung) && !(mitteilung as TSBetreuungsmitteilung).applied;
     }
 
     public canApplyBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
@@ -360,7 +359,7 @@ export class DVMitteilungListController implements IOnInit {
         return this.canApplyBetreuungsmitteilung(mitteilung) && this.isBetreuungsmitteilungNotApplied(mitteilung);
     }
 
-    $postLink() {
+    public $postLink() {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 200);
@@ -373,8 +372,8 @@ export class DVMitteilungListController implements IOnInit {
                 deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
                 parentController: this,
                 elementID: 'Intro'
-            }).then(() => {   //User confirmed message
-                const betreuungsmitteilung: TSBetreuungsmitteilung = <TSBetreuungsmitteilung>mitteilung;
+            }).then(() => {   // User confirmed message
+                const betreuungsmitteilung = mitteilung as TSBetreuungsmitteilung;
                 this.mitteilungRS.applyBetreuungsmitteilung(betreuungsmitteilung.id).then((response: any) => { // JaxID kommt als response
                     this.loadAllMitteilungen();
                     if (response.id === this.gesuchModelManager.getGesuch().id) {
@@ -420,8 +419,8 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private isUserAndEmpfaengerSameAmt(mitteilung: TSMitteilung, amt: TSAmt): boolean {
-        const userInAmt: boolean = this.authServiceRS.getPrincipal().amt === amt;
-        const empfaengerInAmt: boolean = mitteilung.getEmpfaengerAmt() === amt;
+        const userInAmt = this.authServiceRS.getPrincipal().amt === amt;
+        const empfaengerInAmt = mitteilung.getEmpfaengerAmt() === amt;
         return userInAmt && empfaengerInAmt;
     }
 

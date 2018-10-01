@@ -24,22 +24,22 @@ import {IDVFocusableController} from '../IDVFocusableController';
 const showKontaktTemplate = require('../../../../gesuch/dialog/showKontaktTemplate.html');
 
 export class DvSkiplinksComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-skiplinks.html');
-    controller = DvSkiplinksController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-skiplinks.html');
+    public controller = DvSkiplinksController;
+    public controllerAs = 'vm';
 }
 
 export class DvSkiplinksController implements IDVFocusableController {
 
-    static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
 
-    TSRoleUtil = TSRoleUtil;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $state: StateService,
-                private readonly DvDialog: DvDialog,
-                private readonly ebeguUtil: EbeguUtil) {
+    public constructor(private readonly $state: StateService,
+                       private readonly DvDialog: DvDialog,
+                       private readonly ebeguUtil: EbeguUtil) {
     }
 
     public goBackHome(): void {

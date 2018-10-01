@@ -28,20 +28,20 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
 export class FaelleListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./faelleListView.html');
-    controller = FaelleListViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./faelleListView.html');
+    public controller = FaelleListViewController;
+    public controllerAs = 'vm';
 }
 
 export class FaelleListViewController {
 
-    static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
+    public static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
     private antragList: Array<TSAntragDTO>;
-    totalResultCount: string = '0';
+    public totalResultCount: string = '0';
 
-    constructor(private readonly $filter: IFilterService, private readonly gesuchModelManager: GesuchModelManager,
+    public constructor(private readonly $filter: IFilterService, private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $state: StateService, private readonly $log: ILogService,
                 private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS) {
     }

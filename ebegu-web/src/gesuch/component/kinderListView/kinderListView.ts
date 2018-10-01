@@ -34,25 +34,25 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class KinderListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         kinderDubletten: '<'
     };
-    template = require('./kinderListView.html');
-    controller = KinderListViewController;
-    controllerAs = 'vm';
+    public template = require('./kinderListView.html');
+    public controller = KinderListViewController;
+    public controllerAs = 'vm';
 }
 
 export class KinderListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$translate', 'DvDialog',
+    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$translate', 'DvDialog',
         'WizardStepManager', '$scope', 'CONSTANTS', '$timeout'];
 
-    kinderDubletten: TSKindDublette[] = [];
+    public kinderDubletten: TSKindDublette[] = [];
 
-    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog,
-                wizardStepManager: WizardStepManager, $scope: IScope, private readonly CONSTANTS: any, $timeout: ITimeoutService) {
+    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                       private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog,
+                       wizardStepManager: WizardStepManager, $scope: IScope, private readonly CONSTANTS: any, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         this.initViewModel();
     }
@@ -67,22 +67,22 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
         }
     }
 
-    getKinderList(): Array<TSKindContainer> {
+    public getKinderList(): Array<TSKindContainer> {
         return this.gesuchModelManager.getKinderList();
     }
 
-    createKind(): void {
-        this.openKindView(undefined); //neues kind hat noch keinen index
+    public createKind(): void {
+        this.openKindView(undefined); // neues kind hat noch keinen index
     }
 
-    editKind(kind: any): void {
-        if (kind) {         //check entfernt
+    public editKind(kind: any): void {
+        if (kind) {         // check entfernt
             kind.isSelected = false; // damit die row in der Tabelle nicht mehr als "selected" markiert ist
             this.openKindView(kind.kindNummer);
         }
     }
 
-    getDubletten(kindContainer: TSKindContainer): TSKindDublette[] {
+    public getDubletten(kindContainer: TSKindContainer): TSKindDublette[] {
         if (this.kinderDubletten) {
             return this.kinderDubletten.filter(kd => kd.kindNummerOriginal === kindContainer.kindNummer);
         }
@@ -95,14 +95,14 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     private openKindView(kindNumber: number): void {
-        this.$state.go('gesuch.kind', {kindNumber: kindNumber, gesuchId: this.getGesuchId()});
+        this.$state.go('gesuch.kind', {kindNumber, gesuchId: this.getGesuchId()});
     }
 
     public getFallNummer(dublette: TSKindDublette): string {
         return EbeguUtil.addZerosToFallNummer(dublette.fallNummer);
     }
 
-    removeKind(kind: any, index: any): void {
+    public removeKind(kind: any, index: any): void {
         const remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
         this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: remTitleText,
@@ -110,8 +110,8 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
             parentController: this,
             elementID: 'removeKindButton_' + index
         })
-            .then(() => {   //User confirmed removal
-                const kindIndex: number = this.gesuchModelManager.findKind(kind);
+            .then(() => {   // User confirmed removal
+                const kindIndex = this.gesuchModelManager.findKind(kind);
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
                     this.gesuchModelManager.removeKind();

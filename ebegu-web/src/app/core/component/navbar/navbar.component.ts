@@ -43,11 +43,11 @@ export class NavbarComponent implements OnDestroy {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly changeDetectorRef: ChangeDetectorRef,
-                private readonly dialog: MatDialog,
-                private readonly $state: StateService,
-                private readonly gemeindeRS: GemeindeRS) {
+    public constructor(private readonly authServiceRS: AuthServiceRS,
+                       private readonly changeDetectorRef: ChangeDetectorRef,
+                       private readonly dialog: MatDialog,
+                       private readonly $state: StateService,
+                       private readonly gemeindeRS: GemeindeRS) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
         authServiceRS.principal$
@@ -71,7 +71,7 @@ export class NavbarComponent implements OnDestroy {
                         creationAction: TSCreationAction.CREATE_NEW_FALL,
                         gesuchId: null,
                         dossierId: null,
-                        gemeindeId: gemeindeId,
+                        gemeindeId,
                         eingangsart: TSEingangsart.PAPIER,
                     };
                     this.$state.go('gesuch.fallcreation', params);

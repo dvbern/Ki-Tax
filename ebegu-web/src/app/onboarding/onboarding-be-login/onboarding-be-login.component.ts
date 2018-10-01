@@ -27,7 +27,7 @@ export class OnboardingBeLoginComponent {
 
     private readonly gemeindeId: string;
 
-    constructor(private readonly transition: Transition,
+    public constructor(private readonly transition: Transition,
     ) {
         this.gemeindeId = this.transition.params().gemeindeId;
     }

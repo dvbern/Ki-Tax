@@ -32,14 +32,14 @@ const LOG = LogFactory.createLog('ErrorMessagesComponent');
 })
 export class ErrorMessagesComponent implements OnChanges, OnDestroy {
 
-    @Input() errorObject: ValidationErrors | null;
-    @Input() inputId: string;
+    @Input() public errorObject: ValidationErrors | null;
+    @Input() public inputId: string;
 
     public error: string = '';
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(
+    public constructor(
         public readonly form: NgForm,
         public readonly changeDetectorRef: ChangeDetectorRef,
     ) {

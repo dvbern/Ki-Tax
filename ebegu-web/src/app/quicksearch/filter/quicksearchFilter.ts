@@ -52,7 +52,7 @@ export function QuicksearchFilter($filter: any, ebeguUtil: EbeguUtil, CONSTANTS:
         return filterFilter(array, expression, customComparator);
     };
 
-    function compareDates (actual: any, expected: any): boolean {
+    function compareDates(actual: any, expected: any): boolean {
         const gesuchsperiodeGueltigAb = dateFilter(new Date(actual), 'dd.MM.yyyy');
         return gesuchsperiodeGueltigAb === expected;
     }

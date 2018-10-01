@@ -26,7 +26,7 @@ ngServicesMock.$inject = ['$provide'];
 
 export function ngServicesMock($provide: angular.auto.IProvideService) {
     $provide.service('AuthLifeCycleService', function () {
-        this.get$ = (event: TSAuthEvent) => of(event);
+        this.get$ = of;
         this.changeAuthStatus = (status: TSAuthEvent, message?: string) => {
         };
     });

@@ -38,21 +38,21 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class UmzugViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./umzugView.html');
-    controller = UmzugViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./umzugView.html');
+    public controller = UmzugViewController;
+    public controllerAs = 'vm';
 }
 
 export class UmzugViewController extends AbstractGesuchViewController<Array<TSUmzugAdresse>> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'ErrorService', '$translate',
+    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'ErrorService', '$translate',
         'DvDialog', '$q', '$scope', '$timeout'];
 
-    dirty = false;
+    public dirty = false;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 wizardStepManager: WizardStepManager, private readonly errorService: ErrorService,
                 private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog, private readonly $q: IQService,
                 $scope: IScope, $timeout: ITimeoutService) {
@@ -82,7 +82,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
             this.errorService.clearAll();
             this.saveAdresseInGS();
             this.gesuchModelManager.setGesuchstellerNumber(1);
-            return this.gesuchModelManager.updateGesuchsteller(true).then((response) => {
+            return this.gesuchModelManager.updateGesuchsteller(true).then(response => {
                 if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
                     this.gesuchModelManager.setGesuchstellerNumber(2);
                     return this.gesuchModelManager.updateGesuchsteller(true);
@@ -151,7 +151,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2) {
             this.gesuchModelManager.getGesuch().gesuchsteller2.getUmzugAdressen().forEach(umzugAdresse => {
                 umzugAdresse.showDatumVon = true; // wird benoetigt weil es vom Server nicht kommt
-                let foundPosition: number = -1;
+                let foundPosition = -1;
                 for (let i = 0; i < this.model.length; i++) {
                     if (this.model[i].adresse.isSameWohnAdresse(umzugAdresse)) {
                         foundPosition = i;
@@ -176,7 +176,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
             deleteText: '',
             parentController: undefined,
             elementID: undefined
-        }).then(() => {   //User confirmed removal
+        }).then(() => {   // User confirmed removal
             this.dirty = true;
             const indexOf = this.model.lastIndexOf(adresse);
             if (indexOf >= 0) {
@@ -191,17 +191,17 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
      */
     public createUmzugAdresse(): void {
         const adresseContainer = this.createAdressContainer();
-        const umzugAdresse: TSUmzugAdresse = new TSUmzugAdresse(undefined, adresseContainer);
+        const umzugAdresse = new TSUmzugAdresse(undefined, adresseContainer);
 
         this.model.push(umzugAdresse);
         this.dirty = true;
         this.$postLink();
-        //todo focus on specific id, so the newly added umzug will be selected not the first in the DOM
+        // todo focus on specific id, so the newly added umzug will be selected not the first in the DOM
     }
 
     private createAdressContainer() {
-        const adresseContainer: TSAdresseContainer = new TSAdresseContainer();
-        const adresse: TSAdresse = new TSAdresse();
+        const adresseContainer = new TSAdresseContainer();
+        const adresse = new TSAdresse();
         adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
         adresseContainer.showDatumVon = true;
         adresseContainer.adresseJA = adresse;
@@ -247,7 +247,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
             if (gesuchsteller.adressen.indexOf(adresse) < 0) {
                 gesuchsteller.addAdresse(adresse);
             } else {
-                //update old adresse
+                // update old adresse
             }
         }
     }

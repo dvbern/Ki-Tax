@@ -49,28 +49,28 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
 
 export class VerfuegenListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         // Bereits vorhandene Mahnungen
         mahnungList: '<'
     };
-    template = require('./verfuegenListView.html');
-    controller = VerfuegenListViewController;
-    controllerAs = 'vm';
+    public template = require('./verfuegenListView.html');
+    public controller = VerfuegenListViewController;
+    public controllerAs = 'vm';
 }
 
 export class VerfuegenListViewController extends AbstractGesuchViewController<any> {
 
-    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', 'WizardStepManager',
+    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', 'WizardStepManager',
         'DvDialog', 'DownloadRS', 'MahnungRS', '$log', 'AuthServiceRS', '$scope', 'GesuchRS', '$timeout'];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
-    mahnungList: TSMahnung[];
+    public mahnungList: TSMahnung[];
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
-    finSitStatus: Array<string>;
+    public finSitStatus: Array<string>;
 
-    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
                 private readonly downloadRS: DownloadRS, private readonly mahnungRS: MahnungRS, private readonly $log: ILogService,
                 private readonly authServiceRs: AuthServiceRS, $scope: IScope, private readonly gesuchRS: GesuchRS,
@@ -97,21 +97,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.WARTEN);
 
-        //Berechnung aller finanziellen Daten
+        // Berechnung aller finanziellen Daten
         if (!this.berechnungsManager.finanzielleSituationResultate) {
-            this.berechnungsManager.calculateFinanzielleSituation(this.gesuchModelManager.getGesuch()); //.then(() => {});
+            this.berechnungsManager.calculateFinanzielleSituation(this.gesuchModelManager.getGesuch()); // .then(() => {});
         }
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
             && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
             && !this.berechnungsManager.einkommensverschlechterungResultateBjP1) {
 
-            this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); //.then(() => {});
+            this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); // .then(() => {});
         }
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
             && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
             && !this.berechnungsManager.einkommensverschlechterungResultateBjP2) {
 
-            this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); //.then(() => {});
+            this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); // .then(() => {});
         }
         this.refreshKinderListe();
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
@@ -140,7 +140,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public openVerfuegung(kind: TSKindContainer, betreuung: TSBetreuung): void {
         if (this.kannVerfuegungOeffnen(betreuung)) {
             if (kind && betreuung) {
-                const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
+                const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
                     this.$state.go('gesuch.verfuegenView', {
@@ -158,8 +158,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private isDetailAvailableForGesuchstatus(): boolean {
-        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        //gesuchsteller hat sicher mal nur Zugriff auf verfuegungsdetail wenn das gesuch mindestens freiggeben ist
+        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        // gesuchsteller hat sicher mal nur Zugriff auf verfuegungsdetail wenn das gesuch mindestens freiggeben ist
         if (isGesuchsteller) {
             return isAtLeastFreigegeben(this.getAntragStatus());
         } else {
@@ -168,9 +168,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
-        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         const allowedBetstatus: Array<TSBetreuungsstatus> = [TSBetreuungsstatus.VERFUEGT, TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT];
-        //Annahme: alle ausser Gesuchsteller duerfen bestaetigte betreuungen sehen wenn sie uberhaupt auf die Seite kommen
+        // Annahme: alle ausser Gesuchsteller duerfen bestaetigte betreuungen sehen wenn sie uberhaupt auf die Seite kommen
         if (!isGesuchsteller) {
             allowedBetstatus.push(TSBetreuungsstatus.BESTAETIGT);
         }
@@ -185,7 +185,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         if (!this.gesuchModelManager.isFinanzielleSituationEnabled() || !this.gesuchModelManager.isFinanzielleSituationDesired()) {
             return false;
         }
-        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         if (isGesuchsteller) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus()) && this.getGesuch().hasFSDokument && !this.isFinSitAbglehnt();
         }
@@ -198,7 +198,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isBegleitschreibenVisible(): boolean {
-        const isGesuchsteller: boolean = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         if (isGesuchsteller) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus()) && !this.gesuchModelManager.areThereOnlySchulamtAngebote() && !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung();
         }
@@ -211,7 +211,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private getAntragStatus(): TSAntragStatus {
-        const status: TSAntragStatus = this.getGesuch() ? this.getGesuch().status : TSAntragStatus.IN_BEARBEITUNG_GS;
+        const status = this.getGesuch() ? this.getGesuch().status : TSAntragStatus.IN_BEARBEITUNG_GS;
         return status;
     }
 
@@ -255,7 +255,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined
 
         }).then(() => {
-            return this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then((response) => {  // muss gespeichert werden um hasfsdokument zu aktualisieren
+            return this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {  // muss gespeichert werden um hasfsdokument zu aktualisieren
                 this.gesuchModelManager.setGesuch(response);
                 this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
                 return this.refreshKinderListe().then(() => {
@@ -266,7 +266,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setGesuchStatusVerfuegen(): IPromise<TSGesuch> {
-        const deleteTextValue: string = 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN';
+        const deleteTextValue = 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN';
         return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
             deleteText: deleteTextValue,
@@ -275,7 +275,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }).then(() => {
 
             return this.gesuchRS.verfuegenStarten(
-                this.gesuchModelManager.getGesuch().id, this.gesuchModelManager.getGesuch().hasFSDokument).then((response) => {  // muss gespeichert werden um hasfsdokument zu aktualisieren
+                this.gesuchModelManager.getGesuch().id, this.gesuchModelManager.getGesuch().hasFSDokument).then(response => {  // muss gespeichert werden um hasfsdokument zu aktualisieren
                 if (response.status === TSAntragStatus.NUR_SCHULAMT) {
                     // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even to see this gesuch any more
                     // For this reason we have to navigate directly out of the gesuch once it has been saved. We navigate to the
@@ -317,7 +317,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showSendToSteuerverwaltung(): boolean {
-        //hier wird extra nur "VERFUEGT" gestestet statt alle verfuegten status weil das Schulamt das Gesuch nicht pruefen lassen darf
+        // hier wird extra nur "VERFUEGT" gestestet statt alle verfuegten status weil das Schulamt das Gesuch nicht pruefen lassen darf
         return (this.gesuchModelManager.isGesuchStatus(TSAntragStatus.VERFUEGT) || this.gesuchModelManager.isGesuchStatus(TSAntragStatus.NUR_SCHULAMT))
             && !this.getGesuch().gesperrtWegenBeschwerde;
     }
@@ -480,46 +480,46 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openFinanzielleSituationPDF(): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
     }
 
     public openBegleitschreibenPDF(): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
     }
 
     public openKompletteKorrespondenzPDF(): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.', ex);
             });
     }
 
     public openMahnungPDF(mahnung: TSMahnung): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         if (mahnung == null) {
             mahnung = this.mahnung;
         }
@@ -528,7 +528,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
@@ -544,7 +544,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showAbschliessen(): boolean {
-        const status: TSAntragStatus = this.getAntragStatus();
+        const status = this.getAntragStatus();
         return (TSAntragStatus.IN_BEARBEITUNG_JA === status || TSAntragStatus.GEPRUEFT === status)
             && this.gesuchModelManager.areThereOnlySchulamtAngebote() && this.gesuchModelManager.getGesuch().isThereAnyBetreuung();
     }
@@ -634,7 +634,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
     }
 
-    $postLink() {
+    public $postLink() {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 500);

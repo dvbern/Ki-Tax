@@ -138,7 +138,7 @@ import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
 
-const dependencies: string[] = [
+const dependencies = [
     /* Angular modules */
     'ngAnimate',
     'ngSanitize',
@@ -161,7 +161,7 @@ const dependencies: string[] = [
     'unsavedChanges',
 ];
 
-export const EbeguWebCore: angular.IModule = angular
+export const EbeguWebCore = angular
     .module('ebeguWeb.core', dependencies)
     .run(appRun)
     .config(configure)
@@ -268,4 +268,3 @@ export const EbeguWebCore: angular.IModule = angular
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .filter('arrayToString', () => arrayToString)
     .filter('gemeindenToString', () => gemeindenToString);
-

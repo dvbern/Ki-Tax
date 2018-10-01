@@ -35,26 +35,26 @@ import ITimeoutService = angular.ITimeoutService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FinanzielleSituationStartViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./finanzielleSituationStartView.html');
-    controller = FinanzielleSituationStartViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./finanzielleSituationStartView.html');
+    public controller = FinanzielleSituationStartViewController;
+    public controllerAs = 'vm';
 }
 
 export class FinanzielleSituationStartViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$q', '$scope', '$timeout', 'DvDialog'];
 
-    finanzielleSituationRequired: boolean;
-    areThereOnlySchulamtangebote: boolean;
-    areThereOnlyFerieninsel: boolean;
-    allowedRoles: Array<TSRoleUtil>;
+    public finanzielleSituationRequired: boolean;
+    public areThereOnlySchulamtangebote: boolean;
+    public areThereOnlyFerieninsel: boolean;
+    public allowedRoles: Array<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService,
-                private readonly dvDialog: DvDialog) {
+    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService,
+                       private readonly dvDialog: DvDialog) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
 
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null);
@@ -67,12 +67,12 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         this.areThereOnlyFerieninsel = this.gesuchModelManager.areThereOnlyFerieninsel(); // so we load it just once
     }
 
-    showSteuerveranlagung(): boolean {
-        return this.model.gemeinsameSteuererklaerung === true;
+    public showSteuerveranlagung(): boolean {
+        return this.model.gemeinsameSteuererklaerung;
     }
 
-    showSteuererklaerung(): boolean {
-        return this.getFinanzielleSituationGS1().steuerveranlagungErhalten === false;
+    public showSteuererklaerung(): boolean {
+        return !this.getFinanzielleSituationGS1().steuerveranlagungErhalten;
     }
 
     private save(): IPromise<TSGesuch> {
@@ -108,7 +108,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
                     parentController: undefined,
                     elementID: undefined,
                     form: this.form
-                }).then(() => {   //User confirmed changes
+                }).then(() => {   // User confirmed changes
                     return this.save();
                 });
             } else {
@@ -147,11 +147,11 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public gemeinsameStekClicked(): void {
-        if (this.model.gemeinsameSteuererklaerung === false && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
+        if (!this.model.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man sicher noch weiter muss!
             this.initSteuerFragen();
             this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.NOK);
-        } else if (this.model.gemeinsameSteuererklaerung === false) {
+        } else if (!this.model.gemeinsameSteuererklaerung) {
             // Wenn neu NEIN -> Fragen loeschen wenn noch nichts eingegeben worden ist
             this.model.finanzielleSituationContainerGS1 = undefined;
             this.model.finanzielleSituationContainerGS2 = undefined;
@@ -181,16 +181,16 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
-        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten === true) {
+        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
-            if (this.model.gemeinsameSteuererklaerung === true) {
+            if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
             }
-        } else if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten === false) {
+        } else if (!this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
             // Steuerveranlagung neu NEIN -> Fragen loeschen
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
-            if (this.model.gemeinsameSteuererklaerung === true) {
+            if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
             }
@@ -198,7 +198,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public steuererklaerungClicked() {
-        if (this.model.gemeinsameSteuererklaerung === true) {
+        if (this.model.gemeinsameSteuererklaerung) {
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
                 this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt;
         }

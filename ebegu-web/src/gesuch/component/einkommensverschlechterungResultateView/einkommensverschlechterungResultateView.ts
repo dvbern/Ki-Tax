@@ -33,10 +33,10 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 export class EinkommensverschlechterungResultateViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./einkommensverschlechterungResultateView.html');
-    controller = EinkommensverschlechterungResultateViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./einkommensverschlechterungResultateView.html');
+    public controller = EinkommensverschlechterungResultateViewController;
+    public controllerAs = 'vm';
 }
 
 /**
@@ -44,16 +44,16 @@ export class EinkommensverschlechterungResultateViewComponentConfig implements I
  */
 export class EinkommensverschlechterungResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$q', '$scope', 'AuthServiceRS', '$timeout'];
 
-    resultatBasisjahr: TSFinanzielleSituationResultateDTO;
-    resultatProzent: string;
+    public resultatBasisjahr: TSFinanzielleSituationResultateDTO;
+    public resultatProzent: string;
 
-    constructor($stateParams: IEinkommensverschlechterungResultateStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
-                $timeout: ITimeoutService) {
+    public constructor($stateParams: IEinkommensverschlechterungResultateStateParams, gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
+                       $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
         const parsedBasisJahrPlusNum = parseInt($stateParams.basisjahrPlus, 10);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null, parsedBasisJahrPlusNum);
@@ -65,15 +65,15 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
         this.calculateResultateVorjahr();
     }
 
-    showGS2(): boolean {
+    public showGS2(): boolean {
         return this.model.isGesuchsteller2Required();
     }
 
-    showResult(): boolean {
+    public showResult(): boolean {
         if (this.model.getBasisJahrPlus() === 1) {
             const ekvFuerBasisJahrPlus1 = this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1
                 && this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 === true;
-            return ekvFuerBasisJahrPlus1 === true;
+            return ekvFuerBasisJahrPlus1;
 
         } else {
             return true;
@@ -124,11 +124,11 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
                 return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
             }
         }
-        return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith()); //wenn nichts gespeichert einfach den aktuellen GS zurueckgeben
+        return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith()); // wenn nichts gespeichert einfach den aktuellen GS zurueckgeben
 
     }
 
-    calculate() {
+    public calculate() {
         if (this.model && this.model.getBasisJahrPlus()) {
             this.berechnungsManager
                 .calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus())
@@ -190,7 +190,7 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
 
     public calculateResultateVorjahr() {
 
-        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then((resultatVorjahr) => {
+        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(resultatVorjahr => {
             this.resultatBasisjahr = resultatVorjahr;
             this.resultatProzent = this.calculateVeraenderung();
         });
@@ -208,7 +208,7 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
             if (massgebendesEinkVorAbzFamGr && massgebendesEinkVorAbzFamGrBJ) {
 
                 // we divide it by 10000 because we need a result with two decimals
-                let promil: number = 10000 - (massgebendesEinkVorAbzFamGr * 10000 / massgebendesEinkVorAbzFamGrBJ);
+                let promil = 10000 - (massgebendesEinkVorAbzFamGr * 10000 / massgebendesEinkVorAbzFamGrBJ);
                 let sign: string;
                 promil = Math.round(promil);
                 if (promil > 0) {

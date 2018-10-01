@@ -23,7 +23,7 @@ export class UploadRS {
     public serviceURL: string;
 
     public constructor(public http: IHttpService, REST_API: string, public log: ILogService, private readonly upload: any, public ebeguRestUtil: EbeguRestUtil,
-                public q: IQService) {
+                       public q: IQService) {
         this.serviceURL = REST_API + 'upload';
     }
 

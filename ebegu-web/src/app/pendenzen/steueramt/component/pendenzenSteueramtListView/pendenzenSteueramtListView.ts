@@ -24,26 +24,26 @@ import TSAntragSearchresultDTO from '../../../../../models/TSAntragSearchresultD
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./pendenzenSteueramtListView.html');
-    controller = PendenzenSteueramtListViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./pendenzenSteueramtListView.html');
+    public controller = PendenzenSteueramtListViewController;
+    public controllerAs = 'vm';
 }
 
 export class PendenzenSteueramtListViewController {
 
-    static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
+    public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
-    totalResultCount: string = '0';
-    TSRoleUtil = TSRoleUtil;
+    public totalResultCount: string = '0';
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager,
+    public constructor(private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $state: StateService,
                 private readonly $log: ILogService,
                 private readonly searchRS: SearchRS) {
     }
 
-    $onInit() {
+    public $onInit() {
     }
 
     public editpendenzSteueramt(pendenz: TSAntragDTO, event: any): void {

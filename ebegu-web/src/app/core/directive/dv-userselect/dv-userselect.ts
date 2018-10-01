@@ -24,12 +24,12 @@ import BenutzerRS from '../../service/benutzerRS.rest';
 const LOG = LogFactory.createLog('UserselectController');
 
 export class DVUserselect implements IDirective {
-    restrict = 'E';
-    require: any = {smartTable: '?^stTable'};
-    scope = {};
-    controller = UserselectController;
-    controllerAs = 'vm';
-    bindToController = {
+    public restrict = 'E';
+    public require: any = {smartTable: '?^stTable'};
+    public scope = {};
+    public controller = UserselectController;
+    public controllerAs = 'vm';
+    public bindToController = {
         ngModel: '=',
         inputId: '@',
         dvUsersearch: '@',
@@ -39,11 +39,11 @@ export class DVUserselect implements IDirective {
         onUserChanged: '&',
         selectedUser: '=?',
         schulamt: '<'
-        //initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
+        // initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
     };
-    template = require('./dv-userselect.html');
+    public template = require('./dv-userselect.html');
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVUserselect();
         directive.$inject = [];
         return directive;
@@ -55,27 +55,27 @@ export class DVUserselect implements IDirective {
  */
 export class UserselectController implements IController {
 
-    static $inject: string[] = ['BenutzerRS', 'AuthServiceRS'];
+    public static $inject: string[] = ['BenutzerRS', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
-    selectedUser?: TSBenutzer;
-    smartTable: any;
-    userList: TSBenutzer[];
-    dvUsersearch: string;
-    initialAll: boolean;
-    showSelectionAll: boolean;
-    valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
-    onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
-    schulamt: string;
+    public selectedUser?: TSBenutzer;
+    public smartTable: any;
+    public userList: TSBenutzer[];
+    public dvUsersearch: string;
+    public initialAll: boolean;
+    public showSelectionAll: boolean;
+    public valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
+    public onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
+    public schulamt: string;
 
-    constructor(private readonly benutzerRS: BenutzerRS,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(private readonly benutzerRS: BenutzerRS,
+                       private readonly authServiceRS: AuthServiceRS) {
 
     }
 
     public $onInit(): void {
         this.updateUserList();
-        if (!this.initialAll) { //tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
+        if (!this.initialAll) { // tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
             this.authServiceRS.principal$
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe(
@@ -85,7 +85,7 @@ export class UserselectController implements IController {
                     err => LOG.error(err)
                 );
         }
-        //initial nach aktuell eingeloggtem filtern
+        // initial nach aktuell eingeloggtem filtern
         if (this.smartTable && !this.initialAll && this.selectedUser) {
             this.smartTable.search(this.selectedUser.getFullName(), this.dvUsersearch);
         }

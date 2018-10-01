@@ -20,7 +20,7 @@ import {TSRoleUtil} from './TSRoleUtil';
 export class NavigationUtil {
 
     public static navigateToStartsiteOfGesuchForRole(role: TSRole, state: StateService, gesuchID: string): void {
-        if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role) === true) {
+        if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role)) {
             state.go('gesuch.betreuungen', {
                 gesuchId: gesuchID
             });

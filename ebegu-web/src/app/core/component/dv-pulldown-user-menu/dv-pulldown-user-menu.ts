@@ -23,16 +23,16 @@ import TSBenutzer from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-pulldown-user-menu.html');
-    controller = DvPulldownUserMenuController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-pulldown-user-menu.html');
+    public controller = DvPulldownUserMenuController;
+    public controllerAs = 'vm';
 }
 
 export class DvPulldownUserMenuController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
@@ -41,11 +41,11 @@ export class DvPulldownUserMenuController implements IController {
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
 
-    constructor(private readonly $state: StateService,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(private readonly $state: StateService,
+                       private readonly authServiceRS: AuthServiceRS) {
     }
 
-    $onInit(): void {
+    public $onInit(): void {
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(principal => {
@@ -53,7 +53,7 @@ export class DvPulldownUserMenuController implements IController {
             });
     }
 
-    $onDestroy(): void {
+    public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }

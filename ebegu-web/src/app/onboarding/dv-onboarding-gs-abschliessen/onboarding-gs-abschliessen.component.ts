@@ -39,7 +39,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     private readonly gemeindeId: string; // Parameter aus URL
 
-    constructor(
+    public constructor(
         private readonly transition: Transition,
         public readonly authServiceRS: AuthServiceRS,
         public readonly gemeindeRS: GemeindeRS,
@@ -49,7 +49,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         this.gemeindeId = this.transition.params().gemeindeId;
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
         this.user$ = this.authServiceRS.principal$;
     }

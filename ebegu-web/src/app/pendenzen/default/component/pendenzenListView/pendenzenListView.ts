@@ -27,19 +27,19 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
 export class PendenzenListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./pendenzenListView.html');
-    controller = PendenzenListViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./pendenzenListView.html');
+    public controller = PendenzenListViewController;
+    public controllerAs = 'vm';
 }
 
 export class PendenzenListViewController {
 
-    static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS', 'AuthServiceRS'];
+    public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS', 'AuthServiceRS'];
 
-    totalResultCount: string = '0';
+    public totalResultCount: string = '0';
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager,
+    public constructor(private readonly gesuchModelManager: GesuchModelManager,
                 private readonly $state: StateService,
                 private readonly $log: ILogService,
                 private readonly searchRS: SearchRS,

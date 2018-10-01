@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
@@ -25,22 +25,22 @@ import BenutzerRS from '../../service/benutzerRS.rest';
  * The information will be stored in an angular-service, whi
  */
 export default class DVSTPersistQuicksearch implements IDirective {
-    static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
+    public static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
 
-    restrict = 'A';
-    require = ['^stTable', '^dvQuicksearchList'];
-    link: IDirectiveLinkFn;
+    public restrict = 'A';
+    public require = ['^stTable', '^dvQuicksearchList'];
+    public link: IDirectiveLinkFn;
 
-    constructor(private readonly benutzerRS: BenutzerRS,
-                private readonly institutionRS: InstitutionRS,
-                private readonly dVsTPersistService: DVsTPersistService,
-                private readonly gemeindeRS: GemeindeRS) {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrlArray: any) => {
+    public constructor(private readonly benutzerRS: BenutzerRS,
+                       private readonly institutionRS: InstitutionRS,
+                       private readonly dVsTPersistService: DVsTPersistService,
+                       private readonly gemeindeRS: GemeindeRS) {
+        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             const nameSpace: string = attrs.dvStPersistQuicksearch;
-            const stTableCtrl: any = ctrlArray[0];
+            const stTableCtrl = ctrlArray[0];
             const quicksearchListController: DVQuicksearchListController = ctrlArray[1];
 
-            //save the table state every time it changes
+            // save the table state every time it changes
             scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
                 if (newValue !== oldValue) {
                     // sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
@@ -51,10 +51,10 @@ export default class DVSTPersistQuicksearch implements IDirective {
             // if (sessionStorage.getItem(nameSpace)) {
             // let savedState = JSON.parse(sessionStorage.getItem(nameSpace));
 
-            //fetch the table state when the directive is loaded
+            // fetch the table state when the directive is loaded
             const savedState = dVsTPersistService.loadData(nameSpace);
             if (savedState) {
-                if (savedState.search && savedState.search.predicateObject) { //update all objects of the model for the filters
+                if (savedState.search && savedState.search.predicateObject) { // update all objects of the model for the filters
                     quicksearchListController.selectedAntragTyp = savedState.search.predicateObject.antragTyp;
                     quicksearchListController.selectedGesuchsperiode =
                         savedState.search.predicateObject.gesuchsperiodeString;
@@ -83,7 +83,7 @@ export default class DVSTPersistQuicksearch implements IDirective {
         };
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = (benutzerRS: any,
                            institutionRS: any,
                            dVsTPersistService: any,
@@ -147,4 +147,3 @@ export default class DVSTPersistQuicksearch implements IDirective {
         }
     }
 }
-

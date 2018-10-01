@@ -32,33 +32,33 @@ import MitteilungRS from '../../core/service/mitteilungRS.rest';
 const LOG = LogFactory.createLog('PosteingangViewController');
 
 export class PosteingangViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./posteingangView.html');
-    controller = PosteingangViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./posteingangView.html');
+    public controller = PosteingangViewController;
+    public controllerAs = 'vm';
 }
 
 export class PosteingangViewController implements IController {
 
-    static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS'];
+    public static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
 
     // Liste die im Gui angezeigt wird
-    displayedCollection: Array<TSMitteilung> = [];
-    pagination: any = {};
-    totalResultCount: string = '0';
+    public displayedCollection: Array<TSMitteilung> = [];
+    public pagination: any = {};
+    public totalResultCount: string = '0';
     // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
-    myTableFilterState: any;
+    public myTableFilterState: any;
 
-    itemsByPage: number = 20;
-    numberOfPages: number = 1;
-    selectedAmt: string;
-    selectedMitteilungsstatus: TSMitteilungStatus;
-    includeClosed: boolean = false;
-    gemeindenList: Array<TSGemeinde> = [];
+    public itemsByPage: number = 20;
+    public numberOfPages: number = 1;
+    public selectedAmt: string;
+    public selectedMitteilungsstatus: TSMitteilungStatus;
+    public includeClosed: boolean = false;
+    public gemeindenList: Array<TSGemeinde> = [];
 
-    constructor(private readonly mitteilungRS: MitteilungRS,
+    public constructor(private readonly mitteilungRS: MitteilungRS,
                 private readonly ebeguUtil: EbeguUtil,
                 private readonly CONSTANTS: any,
                 private readonly $state: StateService,
@@ -84,7 +84,7 @@ export class PosteingangViewController implements IController {
         });
     }
 
-    isCurrentUserSchulamt(): boolean {
+    public isCurrentUserSchulamt(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles());
     }
 
@@ -99,11 +99,11 @@ export class PosteingangViewController implements IController {
             );
     }
 
-    getAemter(): Array<TSAmt> {
+    public getAemter(): Array<TSAmt> {
         return getAemterForFilter();
     }
 
-    getMitteilungsStatus(): Array<TSMitteilungStatus> {
+    public getMitteilungsStatus(): Array<TSMitteilungStatus> {
         return getTSMitteilungsStatusForFilter();
     }
 

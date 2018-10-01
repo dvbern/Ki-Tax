@@ -31,31 +31,31 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class FallCreationViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./fallCreationView.html');
-    controller = FallCreationViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./fallCreationView.html');
+    public controller = FallCreationViewController;
+    public controllerAs = 'vm';
 }
 
 export class FallCreationViewController extends AbstractGesuchViewController<any> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', '$stateParams',
+    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', '$stateParams',
         'WizardStepManager', '$translate', '$q', '$scope', 'AuthServiceRS', 'GesuchsperiodeRS', '$timeout'];
     private gesuchsperiodeId: string;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt wird
     // sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
-    showError: boolean = false;
+    public showError: boolean = false;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly errorService: ErrorService, private readonly $stateParams: INewFallStateParams, wizardStepManager: WizardStepManager,
-                private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS, $timeout: ITimeoutService) {
+    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                       private readonly errorService: ErrorService, private readonly $stateParams: INewFallStateParams, wizardStepManager: WizardStepManager,
+                       private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCH_ERSTELLEN, $timeout);
     }
 
-    $onInit() {
+    public $onInit() {
         this.readStateParams();
         this.initViewModel();
     }
@@ -71,7 +71,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     private initViewModel(): void {
-        //gesuch should already have been initialized in resolve function
+        // gesuch should already have been initialized in resolve function
         if (this.gesuchsperiodeId === null || this.gesuchsperiodeId === undefined || this.gesuchsperiodeId === '') {
             if (this.gesuchModelManager.getGesuchsperiode()) {
                 this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
@@ -82,7 +82,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         });
     }
 
-    save(): IPromise<TSGesuch> {
+    public save(): IPromise<TSGesuch> {
         this.showError = true;
         if (this.isGesuchValid()) {
             if (!this.form.$dirty && !this.gesuchModelManager.getGesuch().isNew()) {

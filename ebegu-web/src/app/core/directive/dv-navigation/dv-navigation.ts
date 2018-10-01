@@ -35,11 +35,11 @@ import ITranslateService = angular.translate.ITranslateService;
  * -- dvCancel: function        Die callback Methode, um alles zurueckzusetzen (nicht gleichzeitig mit dvPrevious benutzen)
  */
 export class DVNavigation implements IDirective {
-    restrict = 'E';
-    scope = {};
-    controller = NavigatorController;
-    controllerAs = 'vm';
-    bindToController = {
+    public restrict = 'E';
+    public scope = {};
+    public controller = NavigatorController;
+    public controllerAs = 'vm';
+    public bindToController = {
         dvPrevious: '&?',
         dvNext: '&?',
         dvCancel: '&?',
@@ -50,9 +50,9 @@ export class DVNavigation implements IDirective {
         dvTranslateNext: '@',
         dvTranslatePrevious: '@'
     };
-    template = require('./dv-navigation.html');
+    public template = require('./dv-navigation.html');
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVNavigation();
         directive.$inject = [];
         return directive;
@@ -64,33 +64,33 @@ export class DVNavigation implements IDirective {
  */
 export class NavigatorController implements IController {
 
-    static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
+    public static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate', 'ErrorService', '$q', '$timeout'];
 
-    dvPrevious: () => any;
-    dvNext: () => any;
-    dvSave: () => any;
-    dvCancel: () => any;
-    dvNextDisabled: () => any;
-    dvSavingPossible: boolean;
-    dvSubStep: number;
-    dvTranslateNext: string;
-    dvTranslatePrevious: string;
-    isRequestInProgress: boolean = false; // this semaphore will prevent a navigation button to be called again until the prozess is not finished
+    public dvPrevious: () => any;
+    public dvNext: () => any;
+    public dvSave: () => any;
+    public dvCancel: () => any;
+    public dvNextDisabled: () => any;
+    public dvSavingPossible: boolean;
+    public dvSubStep: number;
+    public dvTranslateNext: string;
+    public dvTranslatePrevious: string;
+    public isRequestInProgress: boolean = false; // this semaphore will prevent a navigation button to be called again until the prozess is not finished
 
-    performSave: boolean;
+    public performSave: boolean;
 
-    constructor(private readonly wizardStepManager: WizardStepManager,
-                private readonly state: StateService,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $translate: ITranslateService,
-                private readonly errorService: ErrorService,
-                private readonly $q: IQService,
-                private readonly $timeout: ITimeoutService) {
+    public constructor(private readonly wizardStepManager: WizardStepManager,
+                       private readonly state: StateService,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly $translate: ITranslateService,
+                       private readonly errorService: ErrorService,
+                       private readonly $q: IQService,
+                       private readonly $timeout: ITimeoutService) {
     }
 
-    //wird von angular aufgerufen
-    $onInit() {
-        //initial nach aktuell eingeloggtem filtern
+    // wird von angular aufgerufen
+    public $onInit() {
+        // initial nach aktuell eingeloggtem filtern
         this.dvSavingPossible = this.dvSavingPossible || false;
 
     }
@@ -145,14 +145,14 @@ export class NavigatorController implements IController {
      * wird dann direkt zum naechsten Step geleitet.
      */
     public nextStep(): void {
-        if (!this.isRequestInProgress) { //do nothing if we are already saving
+        if (!this.isRequestInProgress) { // do nothing if we are already saving
             this.isRequestInProgress = true;
             if (this.isSavingEnabled() && this.dvSave) {
-                const returnValue: any = this.dvSave();  //callback ausfuehren, could return promise
+                const returnValue = this.dvSave();  // callback ausfuehren, could return promise
                 if (returnValue !== undefined) {
                     this.$q.when(returnValue).then(() => {
                         this.$timeout(() => {
-                            this.navigateToNextStep(); //wait till digest is finished (EBEGU-1595)
+                            this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
                         });
 
                     }).finally(() => {
@@ -166,7 +166,7 @@ export class NavigatorController implements IController {
                 this.navigateToNextStep();
             }
         } else {
-            console.log('doubleclick suppressed'); //for testing
+            console.log('doubleclick suppressed'); // for testing
         }
     }
 
@@ -184,13 +184,13 @@ export class NavigatorController implements IController {
      * wird dann direkt zum vorherigen Step geleitet.
      */
     public previousStep(): void {
-        if (!this.isRequestInProgress) { //do nothing if we are already saving
+        if (!this.isRequestInProgress) { // do nothing if we are already saving
             if (this.isSavingEnabled() && this.dvSave) {
-                const returnValue: any = this.dvSave();  //callback ausfuehren, could return promise
+                const returnValue = this.dvSave();  // callback ausfuehren, could return promise
                 if (returnValue !== undefined) {
                     this.$q.when(returnValue).then(() => {
                         this.$timeout(() => {
-                            this.navigateToPreviousStep(); //wait till digest is finished (EBEGU-1595)
+                            this.navigateToPreviousStep(); // wait till digest is finished (EBEGU-1595)
                         });
                     }).finally(() => {
                         this.isRequestInProgress = false;
@@ -303,7 +303,7 @@ export class NavigatorController implements IController {
                 this.navigateNextEVSubStep4();
             }
 
-        } else { //by default navigieren wir zum naechsten erlaubten Step
+        } else { // by default navigieren wir zum naechsten erlaubten Step
             this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
         }
     }
@@ -380,7 +380,7 @@ export class NavigatorController implements IController {
         if (stepName === TSWizardStepName.GESUCH_ERSTELLEN) {
             this.state.go('gesuch.fallcreation', {
                 eingangsart: this.gesuchModelManager.getGesuch().eingangsart,
-                gesuchId: gesuchId,
+                gesuchId,
                 gesuchsperiodeId: this.gesuchModelManager.getGesuch().gesuchsperiode.id,
                 dossierId: this.gesuchModelManager.getDossier().id,
                 gemeindeId: this.gesuchModelManager.getDossier().gemeinde.id,
@@ -388,38 +388,38 @@ export class NavigatorController implements IController {
 
         } else if (stepName === TSWizardStepName.FAMILIENSITUATION) {
             this.state.go('gesuch.familiensituation', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.GESUCHSTELLER) {
             this.state.go('gesuch.stammdaten', {
                 gesuchstellerNumber: gsNumber ? gsNumber : '1',
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.UMZUG) {
             this.state.go('gesuch.umzug', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.KINDER) {
             this.state.go('gesuch.kinder', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.BETREUUNG) {
             this.state.go('gesuch.betreuungen', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.ABWESENHEIT) {
             this.state.go('gesuch.abwesenheit', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.ERWERBSPENSUM) {
             this.state.go('gesuch.erwerbsPensen', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.FINANZIELLE_SITUATION) {
@@ -443,17 +443,17 @@ export class NavigatorController implements IController {
 
         } else if (stepName === TSWizardStepName.DOKUMENTE) {
             this.state.go('gesuch.dokumente', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.FREIGABE) {
             this.state.go('gesuch.freigabe', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         } else if (stepName === TSWizardStepName.VERFUEGEN) {
             this.state.go('gesuch.verfuegen', {
-                gesuchId: gesuchId
+                gesuchId
             });
 
         }
@@ -505,7 +505,7 @@ export class NavigatorController implements IController {
      * @returns {boolean}
      */
     public isNextButtonDisabled(): boolean {
-        //if step is disabled in manager we can stop here
+        // if step is disabled in manager we can stop here
         if (!this.wizardStepManager.isNextStepEnabled(this.gesuchModelManager.getGesuch())) {
             return true;
         }
@@ -660,7 +660,7 @@ export class NavigatorController implements IController {
 
     private navigateNextEVSubStep4(): void {
         if (this.gesuchModelManager.getBasisJahrPlusNumber() === 1
-            && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2 === true) {
+            && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2) {
             this.navigateToStepEinkommensverschlechterungResultate('2');
         } else {
             this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => {

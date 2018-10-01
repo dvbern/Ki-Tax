@@ -36,15 +36,15 @@ import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 })
 export class AddGemeindeComponent implements OnInit {
 
-    @ViewChild(NgForm) form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
 
-    gemeinde: TSGemeinde = undefined;
-    adminMail: string = undefined;
-    beguStartDatum: moment.Moment;
-    beguStartDatumMin: moment.Moment;
-    gesuchsperiodeList: Array<TSGesuchsperiode>;
+    public gemeinde: TSGemeinde = undefined;
+    public adminMail: string = undefined;
+    public beguStartDatum: moment.Moment;
+    public beguStartDatumMin: moment.Moment;
+    public gesuchsperiodeList: Array<TSGesuchsperiode>;
 
-    constructor(private readonly $transition$: Transition,
+    public constructor(private readonly $transition$: Transition,
                 private readonly $state: StateService,
                 private readonly errorService: ErrorService,
                 private readonly gemeindeRS: GemeindeRS,
@@ -57,7 +57,7 @@ export class AddGemeindeComponent implements OnInit {
     public ngOnInit(): void {
         const gemeindeId: string = this.$transition$.params().gemeindeId;
         if (gemeindeId) { // edit
-            this.gemeindeRS.findGemeinde(gemeindeId).then((result) => {
+            this.gemeindeRS.findGemeinde(gemeindeId).then(result => {
                 this.gemeinde = result;
             });
         } else { // add
@@ -101,7 +101,7 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then((neueGemeinde) => {
+        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then(neueGemeinde => {
             this.gemeinde = neueGemeinde;
             this.navigateBack();
         });

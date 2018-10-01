@@ -46,30 +46,30 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     private readonly LOG: Log = LogFactory.createLog(FallToolbarComponent.name);
 
-    TSRoleUtil: any = TSRoleUtil;
+    public TSRoleUtil: any = TSRoleUtil;
 
-    @Input() fallId: string;
-    @Input() dossierId: string;
-    @Input() currentDossier: TSDossier;
-    @Input() mobileMode?: boolean = false;
+    @Input() public fallId: string;
+    @Input() public dossierId: string;
+    @Input() public currentDossier: TSDossier;
+    @Input() public mobileMode?: boolean = false;
 
     public dossierList: TSDossier[] = [];
     public dossierListWithoutSelected: TSDossier[] = [];
-    selectedDossier?: TSDossier;
-    fallNummer: string;
+    public selectedDossier?: TSDossier;
+    public fallNummer: string;
     private availableGemeindeList: TSGemeinde[] = [];
-    gemeindeText: string;
-    showdropdown: boolean = false;
+    public gemeindeText: string;
+    public showdropdown: boolean = false;
 
-    constructor(private readonly dossierRS: DossierRS,
-                private readonly dialog: MatDialog,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly $state: StateService,
-                private readonly gesuchRS: GesuchRS,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(private readonly dossierRS: DossierRS,
+                       private readonly dialog: MatDialog,
+                       private readonly gemeindeRS: GemeindeRS,
+                       private readonly $state: StateService,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly authServiceRS: AuthServiceRS) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 
@@ -98,8 +98,8 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         }
     }
 
-    ngOnChanges(changes: any) {
-        if (changes['fallId'] || changes['dossierId'] || changes['currentDossier']) {
+    public ngOnChanges(changes: any) {
+        if (changes.fallId || changes.dossierId || changes.currentDossier) {
             this.loadObjects();
         }
     }

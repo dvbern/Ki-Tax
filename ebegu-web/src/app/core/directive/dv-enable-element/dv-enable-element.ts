@@ -30,22 +30,22 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  * ACHTUNG! Diese Direktive darf nicht mit disable zusammen benutzt werden
  */
 export class DVEnableElement implements IDirective {
-    restrict = 'A';
-    controller = DVRoleElementController;
+    public restrict = 'A';
+    public controller = DVRoleElementController;
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVEnableElement();
         directive.$inject = [];
         return directive;
     }
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
-    link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController) => {
+    public link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController) => {
         // attributes.$observe funktioniert nicht. Siehe dv-show-element.ts
-        scope.$watch(attributes['dvEnableAllowedRoles'], (newValue: any, oldValue: any, scope: any) => {
+        scope.$watch(attributes.dvEnableAllowedRoles, (newValue: any, oldValue: any, scope: any) => {
             controller.dvAllowedRoles = newValue;
             this.enableElement(controller, attributes);
         }, true);
-        scope.$watch(attributes['dvEnableExpression'], (newValue: any, oldValue: any) => {
+        scope.$watch(attributes.dvEnableExpression, (newValue: any, oldValue: any) => {
             controller.dvExpression = newValue;
             this.enableElement(controller, attributes);
         }, true);

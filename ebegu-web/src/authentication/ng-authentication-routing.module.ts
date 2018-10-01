@@ -46,4 +46,3 @@ export const localLoginState: Ng2StateDeclaration = {
 })
 export class NgAuthenticationRoutingModule {
 }
-

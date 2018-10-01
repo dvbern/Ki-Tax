@@ -18,12 +18,12 @@ import {TSRole} from '../../../models/enums/TSRole';
 
 export class DVRoleElementController {
 
-    static $inject: ReadonlyArray<string> = ['AuthServiceRS'];
+    public static $inject: ReadonlyArray<string> = ['AuthServiceRS'];
 
-    dvAllowedRoles: Array<TSRole>;
-    dvExpression: boolean;
+    public dvAllowedRoles: Array<TSRole>;
+    public dvExpression: boolean;
 
-    constructor(private readonly authServiceRS: AuthServiceRS) {
+    public constructor(private readonly authServiceRS: AuthServiceRS) {
     }
 
     /**
@@ -56,6 +56,6 @@ export class DVRoleElementController {
         if (this.dvExpression === undefined || this.dvExpression === null) {
             return true;
         }
-        return (this.dvExpression === true);
+        return (this.dvExpression);
     }
 }

@@ -19,9 +19,9 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import INgModelController = angular.INgModelController;
 
 export class DvRadioContainerComponentConfig implements IComponentOptions {
-    transclude = false;
-    require = {ngModelCtrl: 'ngModel'}; //ng-model controller der vom user des elements gesetzt werden muss
-    bindings = {
+    public transclude = false;
+    public require = {ngModelCtrl: 'ngModel'}; // ng-model controller der vom user des elements gesetzt werden muss
+    public bindings = {
         ngModel: '<',
         ngRequired: '<',
         items: '<',
@@ -30,39 +30,39 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
         ariaDescribedBy: '@',
         ariaLabel: '@'
     };
-    template = require('./dv-radio-container.html');
-    controller = DvRadioContainerController;
-    controllerAs = 'vm';
+    public template = require('./dv-radio-container.html');
+    public controller = DvRadioContainerController;
+    public controllerAs = 'vm';
 
 }
 
 export class DvRadioContainerController implements IController {
 
-    static $inject: ReadonlyArray<string> = [];
+    public static $inject: ReadonlyArray<string> = [];
 
-    ngModelCtrl: INgModelController;
-    modelToPassOn: any;
+    public ngModelCtrl: INgModelController;
+    public modelToPassOn: any;
     // Die Direktiven duerfen nicht dynamisch gesetzt werden. https://github.com/angular/angular.js/issues/14575
     // D.h. dv-enable-element muss in diesem Fall immer gesetzt sein. Aus diesem Grund spielen wir
     // immer mit den Werten von dv-enable-allowed-roles und dv-enable-expression. Wenn die Direktive nicht gesetzt werden muss, bekommen diese attributen
     // die Werte by default allRoles und true, sodass es immer angezeigt wird.
-    allRoles: Array<TSRole>;
+    public allRoles: Array<TSRole>;
 
-    $onInit() {
+    public $onInit() {
         this.modelToPassOn = this.ngModelCtrl.$viewValue;
-        //wenn im model etwas aendert muss unsere view das mitkriegen
+        // wenn im model etwas aendert muss unsere view das mitkriegen
         this.ngModelCtrl.$render = () => {
             this.modelToPassOn = this.ngModelCtrl.$viewValue;
         };
         this.allRoles = TSRoleUtil.getAllRoles();
     }
 
-    onBlur() {
-        //parent model touched setzten on blur vom Kind damit fehlerhandlich richtig funktioniert
+    public onBlur() {
+        // parent model touched setzten on blur vom Kind damit fehlerhandlich richtig funktioniert
         this.ngModelCtrl.$setTouched();
     }
 
-    onChange() {
+    public onChange() {
         this.ngModelCtrl.$setViewValue(this.modelToPassOn);
     }
 }

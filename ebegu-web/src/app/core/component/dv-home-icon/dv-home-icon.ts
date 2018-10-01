@@ -18,20 +18,20 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {StateService} from '@uirouter/core';
 
 export class DvHomeIconComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-home-icon.html');
-    controller = DvHomeIconController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-home-icon.html');
+    public controller = DvHomeIconController;
+    public controllerAs = 'vm';
 }
 
 export class DvHomeIconController {
 
-    static $inject: ReadonlyArray<string> = ['$state'];
+    public static $inject: ReadonlyArray<string> = ['$state'];
 
-    TSRoleUtil = TSRoleUtil;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $state: StateService) {
+    public constructor(private readonly $state: StateService) {
     }
 
     public goBackHome(): void {

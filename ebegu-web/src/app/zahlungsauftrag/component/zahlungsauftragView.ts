@@ -40,29 +40,29 @@ const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplat
 const LOG = LogFactory.createLog('ZahlungsauftragViewController');
 
 export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./zahlungsauftragView.html');
-    controller = ZahlungsauftragViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./zahlungsauftragView.html');
+    public controller = ZahlungsauftragViewController;
+    public controllerAs = 'vm';
 }
 
 export class ZahlungsauftragViewController implements IController {
 
-    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
+    public static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
         'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
 
-    form: IFormController;
+    public form: IFormController;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
     public zahlungsAuftraege: TSZahlungsauftrag[] = [];
 
-    beschrieb: string;
-    faelligkeitsdatum: moment.Moment;
-    datumGeneriert: moment.Moment;
-    itemsByPage: number = 12;
-    testMode: boolean = false;
-    minDateForTestlauf: moment.Moment;
+    public beschrieb: string;
+    public faelligkeitsdatum: moment.Moment;
+    public datumGeneriert: moment.Moment;
+    public itemsByPage: number = 12;
+    public testMode: boolean = false;
+    public minDateForTestlauf: moment.Moment;
 
-    constructor(private readonly zahlungRS: ZahlungRS,
+    public constructor(private readonly zahlungRS: ZahlungRS,
                 private readonly CONSTANTS: any,
                 private readonly $state: StateService,
                 private readonly downloadRS: DownloadRS,
@@ -115,7 +115,7 @@ export class ZahlungsauftragViewController implements IController {
                 deleteText: this.$translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
                 parentController: undefined,
                 elementID: undefined
-            }).then(() => {   //User confirmed removal
+            }).then(() => {   // User confirmed removal
                 this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
                     .then((response: TSZahlungsauftrag) => {
                         this.zahlungsAuftraege.push(response);
@@ -127,23 +127,23 @@ export class ZahlungsauftragViewController implements IController {
     }
 
     public downloadPain(zahlungsauftrag: TSZahlungsauftrag) {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
             });
     }
 
     public downloadAllDetails(zahlungsauftrag: TSZahlungsauftrag) {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungsauftragReportExcel(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
             });
     }
@@ -154,7 +154,7 @@ export class ZahlungsauftragViewController implements IController {
             deleteText: this.$translate.instant('ZAHLUNG_AUSLOESEN_INFO'),
             parentController: undefined,
             elementID: undefined
-        }).then(() => {   //User confirmed removal
+        }).then(() => {   // User confirmed removal
             this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
                 const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
                 if (index > -1) {

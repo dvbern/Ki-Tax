@@ -48,9 +48,9 @@ export class GemeindeMultiselectComponent implements OnInit {
     public allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
     public inputId = `gemeinde-select-${nextId++}`;
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly gemeindeRS: GemeindeRS,
-                public readonly form: NgForm,
+    public constructor(private readonly authServiceRS: AuthServiceRS,
+                       private readonly gemeindeRS: GemeindeRS,
+                       public readonly form: NgForm,
     ) {
     }
 

@@ -52,11 +52,11 @@ import {SharedModule} from './shared/shared.module';
 
 export class AppModule {
 
-    constructor(private readonly upgrade: UpgradeModule) {
+    public constructor(private readonly upgrade: UpgradeModule) {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    ngDoBootstrap() {
+    public ngDoBootstrap() {
         // noinspection XHTMLIncompatabilitiesJS
         this.upgrade.bootstrap(document.body, [appModuleAngularJS.name], {strictDi: true});
     }

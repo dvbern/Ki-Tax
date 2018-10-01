@@ -22,11 +22,11 @@ import ITranslateService = angular.translate.ITranslateService;
 const showTooltipTemplate = require('../../../../gesuch/dialog/showTooltipTemplate.html');
 
 export class DvTooltipComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./dv-tooltip.html');
-    controller = DvTooltipController;
-    controllerAs = 'vm';
-    bindings = {
+    public transclude = false;
+    public template = require('./dv-tooltip.html');
+    public controller = DvTooltipController;
+    public controllerAs = 'vm';
+    public bindings = {
         text: '<',
         inputId: '@'
     };
@@ -34,15 +34,15 @@ export class DvTooltipComponentConfig implements IComponentOptions {
 
 export class DvTooltipController implements IDVFocusableController {
 
-    static $inject: ReadonlyArray<string> = ['$translate', 'DvDialog'];
+    public static $inject: ReadonlyArray<string> = ['$translate', 'DvDialog'];
 
     private readonly inputId: string;
 
-    constructor(private readonly $translate: ITranslateService,
-                private readonly DvDialog: DvDialog) {
+    public constructor(private readonly $translate: ITranslateService,
+                       private readonly DvDialog: DvDialog) {
     }
 
-    showTooltip(info: any): void {
+    public showTooltip(info: any): void {
         this.DvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
             title: '',
             text: info,
@@ -57,4 +57,3 @@ export class DvTooltipController implements IDVFocusableController {
         angular.element('#' + this.inputId + '.fa.fa-info-circle').first().focus();
     }
 }
-

@@ -32,15 +32,15 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 })
 export class OnboardingComponent {
 
-    @Input() nextState: string = 'onboarding.be-login';
-    @Input() showLogin: boolean = true;
+    @Input() public nextState: string = 'onboarding.be-login';
+    @Input() public showLogin: boolean = true;
 
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
 
     public isDummyMode$: Observable<boolean>;
 
-    constructor(private readonly gemeindeRS: GemeindeRS,
+    public constructor(private readonly gemeindeRS: GemeindeRS,
                 private readonly applicationPropertyRS: ApplicationPropertyRS,
                 private readonly stateService: StateService,
     ) {

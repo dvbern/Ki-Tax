@@ -29,10 +29,10 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./finanzielleSituationResultateView.html');
-    controller = FinanzielleSituationResultateViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./finanzielleSituationResultateView.html');
+    public controller = FinanzielleSituationResultateViewController;
+    public controllerAs = 'vm';
 }
 
 /**
@@ -40,14 +40,14 @@ export class FinanzielleSituationResultateViewComponentConfig implements ICompon
  */
 export class FinanzielleSituationResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$scope', '$timeout'];
 
     private readonly initialModel: TSFinanzModel;
 
-    constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, $scope: IScope, $timeout: ITimeoutService) {
+    public constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager, $scope: IScope, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
 
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null);
@@ -57,7 +57,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         this.calculate();
     }
 
-    showGS2(): boolean {
+    public showGS2(): boolean {
         return this.model.isGesuchsteller2Required();
     }
 
@@ -103,11 +103,11 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         }
     }
 
-    calculate() {
+    public calculate() {
         this.berechnungsManager.calculateFinanzielleSituationTemp(this.model);
     }
 
-    //init weg
+    // init weg
 
     public getFinanzielleSituationGS1(): TSFinanzielleSituationContainer {
         return this.model.finanzielleSituationContainerGS1;

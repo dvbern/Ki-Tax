@@ -16,18 +16,17 @@
 import IDirective = angular.IDirective;
 import IDirectiveLinkFn = angular.IDirectiveLinkFn;
 import IScope = angular.IScope;
-import IAttributes = angular.IAttributes;
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {IAugmentedJQuery, IDirectiveFactory} from 'angular';
 
 export default class DVSTResetSearch implements IDirective {
 
-    restrict = 'A';
-    require = '^stTable';
-    link: IDirectiveLinkFn;
+    public restrict = 'A';
+    public require = '^stTable';
+    public link: IDirectiveLinkFn;
 
-    constructor(private readonly dVsTPersistService: DVsTPersistService) {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {
+    public constructor(private readonly dVsTPersistService: DVsTPersistService) {
+        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrl: any) => {
             const nameSpace: string = attrs.dvStPersistAntraege;
             return element.on('click', () => scope.$apply(() => {
                 const tableState = ctrl.tableState();
@@ -40,10 +39,9 @@ export default class DVSTResetSearch implements IDirective {
         };
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = (dVsTPersistService: any) => new DVSTResetSearch(dVsTPersistService);
         directive.$inject = ['DVsTPersistService'];
         return directive;
     }
 }
-

@@ -115,7 +115,7 @@ export function createTranslateLoader(http: HttpClient) {
 })
 export class SharedModule {
 
-    constructor(translate: TranslateService) {
+    public constructor(translate: TranslateService) {
         SharedModule.initTranslateService(translate);
     }
 

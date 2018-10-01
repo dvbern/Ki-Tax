@@ -44,29 +44,29 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class StammdatenViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./stammdatenView.html');
-    controller = StammdatenViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./stammdatenView.html');
+    public controller = StammdatenViewController;
+    public controllerAs = 'vm';
 }
 
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
 
-    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', 'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
 
-    geschlechter: Array<string>;
-    showKorrespondadr: boolean;
-    showKorrespondadrGS: boolean;
-    showRechnungsadr: boolean;
-    showRechnungsadrGS: boolean;
-    allowedRoles: Array<TSRole>;
-    gesuchstellerNumber: number;
+    public geschlechter: Array<string>;
+    public showKorrespondadr: boolean;
+    public showKorrespondadrGS: boolean;
+    public showRechnungsadr: boolean;
+    public showRechnungsadrGS: boolean;
+    public allowedRoles: Array<TSRole>;
+    public gesuchstellerNumber: number;
     private initialModel: TSGesuchstellerContainer;
     private isLastVerfuegtesGesuch: boolean = false;
 
-    constructor($stateParams: IStammdatenStateParams,
+    public constructor($stateParams: IStammdatenStateParams,
                 public readonly ebeguRestUtil: EbeguRestUtil,
                 gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager,
@@ -84,7 +84,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
     }
 
-    $onInit() {
+    public $onInit() {
         this.initViewmodel();
     }
 
@@ -111,7 +111,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         });
     }
 
-    korrespondenzAdrClicked() {
+    public korrespondenzAdrClicked() {
         if (this.showKorrespondadr) {
             if (!this.model.korrespondenzAdresse) {
                 this.model.korrespondenzAdresse = this.initAdresse(TSAdressetyp.KORRESPONDENZADRESSE);
@@ -121,7 +121,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
     }
 
-    rechnungsAdrClicked() {
+    public rechnungsAdrClicked() {
         if (this.showRechnungsadr) {
             if (!this.model.rechnungsAdresse) {
                 this.model.rechnungsAdresse = this.initAdresse(TSAdressetyp.RECHNUNGSADRESSE);
@@ -204,22 +204,22 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     private maybeResetKorrespondadr(): void {
         if (!this.showKorrespondadr && !this.showKorrespondadrGS) {
-            this.getModel().korrespondenzAdresse = undefined; //keine korrAdr weder von GS noch von JA -> entfernen
+            this.getModel().korrespondenzAdresse = undefined; // keine korrAdr weder von GS noch von JA -> entfernen
         } else if (!this.showKorrespondadr) {
-            this.getModel().korrespondenzAdresse.adresseJA = undefined; //nur adresse JA wird zurueckgesetzt die GS kann bleiben
+            this.getModel().korrespondenzAdresse.adresseJA = undefined; // nur adresse JA wird zurueckgesetzt die GS kann bleiben
         }
     }
 
     private maybeResetRechnungsadr(): void {
         if (!this.showRechnungsadr && !this.showRechnungsadrGS) {
-            this.getModel().rechnungsAdresse = undefined; //keine rechnungsAdresse weder von GS noch von JA -> entfernen
+            this.getModel().rechnungsAdresse = undefined; // keine rechnungsAdresse weder von GS noch von JA -> entfernen
         } else if (!this.showRechnungsadr) {
-            this.getModel().rechnungsAdresse.adresseJA = undefined; //nur adresse JA wird zurueckgesetzt die GS kann bleiben
+            this.getModel().rechnungsAdresse.adresseJA = undefined; // nur adresse JA wird zurueckgesetzt die GS kann bleiben
         }
     }
 
     private initAdresse(adresstyp: TSAdressetyp) {
-        const adresseContanier: TSAdresseContainer = new TSAdresseContainer();
+        const adresseContanier = new TSAdresseContainer();
         const adresse = new TSAdresse();
         adresse.adresseTyp = adresstyp;
         adresseContanier.showDatumVon = false;
@@ -243,22 +243,22 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public getTextAddrKorrekturJA(adresseContainer: TSAdresseContainer): string {
         if (adresseContainer && adresseContainer.adresseGS) {
-            const adr: TSAdresse = adresseContainer.adresseGS;
-            const organisation: string = adr.organisation ? adr.organisation : '-';
-            const strasse: string = adr.strasse ? adr.strasse : '-';
-            const hausnummer: string = adr.hausnummer ? adr.hausnummer : '-';
-            const zusatzzeile: string = adr.zusatzzeile ? adr.zusatzzeile : '-';
-            const plz: string = adr.plz ? adr.plz : '-';
-            const ort: string = adr.ort ? adr.ort : '-';
-            const land: string = this.$translate.instant('Land_' + adr.land);
+            const adr = adresseContainer.adresseGS;
+            const organisation = adr.organisation ? adr.organisation : '-';
+            const strasse = adr.strasse ? adr.strasse : '-';
+            const hausnummer = adr.hausnummer ? adr.hausnummer : '-';
+            const zusatzzeile = adr.zusatzzeile ? adr.zusatzzeile : '-';
+            const plz = adr.plz ? adr.plz : '-';
+            const ort = adr.ort ? adr.ort : '-';
+            const land = this.$translate.instant('Land_' + adr.land);
             return this.$translate.instant('JA_KORREKTUR_ADDR', {
-                organisation: organisation,
-                strasse: strasse,
-                hausnummer: hausnummer,
-                zusatzzeile: zusatzzeile,
-                plz: plz,
-                ort: ort,
-                land: land,
+                organisation,
+                strasse,
+                hausnummer,
+                zusatzzeile,
+                plz,
+                ort,
+                land,
             });
         } else {
             return this.$translate.instant('LABEL_KEINE_ANGABE');

@@ -41,7 +41,7 @@ export class BenutzerRolleComponent implements OnInit {
 
     private _benutzerRolle: TSRole;
 
-    constructor(
+    public constructor(
         private readonly authServiceRS: AuthServiceRS,
         public readonly form: NgForm,
     ) {

@@ -36,7 +36,6 @@ import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
 import TSExceptionReport from '../../../models/TSExceptionReport';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
@@ -117,7 +116,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
-        const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
 
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
@@ -178,7 +177,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Thus the kindnumber must be set before this method is called.
      */
     public initEmptyBetreuung(): TSBetreuung {
-        const tsBetreuung: TSBetreuung = new TSBetreuung();
+        const tsBetreuung = new TSBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
         return tsBetreuung;
@@ -265,7 +264,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public setErsterSchultag(): void {
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-        const ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+        const ersterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
         if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(
             ersterSchultag)) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
@@ -274,7 +273,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private save(newStatus: TSBetreuungsstatus, nextStep: string, params: any): void {
         this.isSavingData = true;
-        const oldStatus: TSBetreuungsstatus = this.model.betreuungsstatus;
+        const oldStatus = this.model.betreuungsstatus;
         if (this.getBetreuungModel() && this.isSchulamt()) {
             // fuer Tagesschule werden keine Betreuungspensum benoetigt, deswegen löschen wir sie vor dem Speichern
             this.getBetreuungModel().betreuungspensumContainers = [];
@@ -320,7 +319,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.moduleBackup === undefined
             && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
             this.moduleBackup = betreuungModel.belegungTagesschule.moduleTagesschule
-                .filter(modul => modul.angemeldet === true);
+                .filter(modul => modul.angemeldet);
             betreuungModel.belegungTagesschule.moduleTagesschule = this.moduleBackup;
         } else if (this.moduleBackup !== undefined
             && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
@@ -328,7 +327,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             betreuungModel.belegungTagesschule.moduleTagesschule =
                 betreuungModel.belegungTagesschule.moduleTagesschule
-                    .filter(modul => modul.angemeldet === true);
+                    .filter(modul => modul.angemeldet);
         }
     }
 
@@ -344,7 +343,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         const tagesschule = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
-        const angemeldeteModule: TSModulTagesschule[] = angular.copy(tagesschule);
+        const angemeldeteModule = angular.copy(tagesschule);
         this.getBetreuungModel().belegungTagesschule.moduleTagesschule =
             angular.copy(stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
 
@@ -458,7 +457,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private copyBGNumberLToClipboard(): void {
-        const bgNumber: string = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
+        const bgNumber = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
             this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());
         const $temp = $('<input>');
         $('body').append($temp);
@@ -539,7 +538,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
-        const position: number = this.getBetreuungspensen().indexOf(betreuungspensumToDelete);
+        const position = this.getBetreuungspensen().indexOf(betreuungspensumToDelete);
         if (position > -1) {
             this.getBetreuungspensen().splice(position, 1);
         }
@@ -554,10 +553,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public platzAnfordern(): void {
-        if (this.isGesuchValid() && this.getBetreuungModel().vertrag === true) {
+        if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
             this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-        } else if (this.getBetreuungModel().vertrag !== true) {
+        } else if (!this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = true;
         }
     }
@@ -707,7 +706,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            || this.getBetreuungModel().erweiterteBeduerfnisse === true;
+            || this.getBetreuungModel().erweiterteBeduerfnisse;
     }
 
     public showFalscheAngaben(): boolean {
@@ -761,7 +760,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && this.getBetreuungModel().betreuungsstatus !== TSBetreuungsstatus.WARTEN
             && this.gesuchModelManager.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV
             && this.isNewestGesuch
-            && this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde !== true;
+            && !this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
     }
 
     public mutationsmeldungSenden(): void {
@@ -796,7 +795,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showExistingBetreuungsmitteilungInfoBox(): boolean {
         return this.existingMutationsMeldung !== undefined && this.existingMutationsMeldung !== null
             && this.existingMutationsMeldung.sentDatum !== undefined && this.existingMutationsMeldung.sentDatum !== null
-            && this.existingMutationsMeldung.applied !== true && !this.existingMutationsMeldung.isErledigt();
+            && !this.existingMutationsMeldung.applied && !this.existingMutationsMeldung.isErledigt();
     }
 
     public getDatumLastBetreuungsmitteilung(): string {
@@ -842,7 +841,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public tageschuleSaveDisabled(): boolean {
         if (this.getBetreuungModel().isNew()) {
-            const gp: TSGesuchsperiode = this.gesuchModelManager.getGesuch().gesuchsperiode;
+            const gp = this.gesuchModelManager.getGesuch().gesuchsperiode;
 
             return (this.isTagesschule() && gp.hasTagesschulenAnmeldung() && !gp.isTageschulenAnmeldungAktiv()
                 || this.isFerieninsel() && !this.getBetreuungModel().isEnabled());

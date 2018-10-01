@@ -32,23 +32,23 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
 export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./alleVerfuegungenView.html');
-    controller = AlleVerfuegungenViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./alleVerfuegungenView.html');
+    public controller = AlleVerfuegungenViewController;
+    public controllerAs = 'vm';
 }
 
 export class AlleVerfuegungenViewController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
+    public static $inject: ReadonlyArray<string> = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
         'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
 
-    dossier: TSDossier;
-    alleVerfuegungen: Array<any> = [];
-    itemsByPage: number = 20;
-    TSRoleUtil = TSRoleUtil;
+    public dossier: TSDossier;
+    public alleVerfuegungen: Array<any> = [];
+    public itemsByPage: number = 20;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $state: StateService,
+    public constructor(private readonly $state: StateService,
                 private readonly $stateParams: IAlleVerfuegungenStateParams,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly betreuungRS: BetreuungRS,
@@ -59,15 +59,15 @@ export class AlleVerfuegungenViewController implements IController {
                 private readonly ebeguUtil: EbeguUtil) {
     }
 
-    $onInit() {
+    public $onInit() {
         if (this.$stateParams.dossierId) {
             this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
                 this.dossier = response;
                 if (this.dossier === undefined) {
                     this.cancel();
                 }
-                this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then((response) => {
-                    response.forEach((item) => {
+                this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then(response => {
+                    response.forEach(item => {
                         this.alleVerfuegungen.push(item);
                     });
                     this.alleVerfuegungen = response;
@@ -94,7 +94,7 @@ export class AlleVerfuegungenViewController implements IController {
             this.$state.go('gesuch.verfuegenView', {
                 betreuungNumber: betreuungNummer,
                 kindNumber: kindNummer,
-                gesuchId: gesuchId
+                gesuchId
             });
         }
     }
@@ -112,7 +112,7 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(betreuung.gesuchId,
             betreuung.id, false, '')
             .then((downloadFile: TSDownloadFile) => {
@@ -126,7 +126,7 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public openNichteintretenPDF(betreuung: TSBetreuung): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(betreuung.id, false)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
@@ -143,7 +143,7 @@ export class AlleVerfuegungenViewController implements IController {
             betreuung.kindNummer, betreuung.betreuungNummer);
     }
 
-    $postLink() {
+    public $postLink() {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 500); // this is the only way because it needs a little until everything is loaded

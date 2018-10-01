@@ -28,27 +28,27 @@ import {FerieninselStammdatenRS} from '../../service/ferieninselStammdatenRS.res
 import ITimeoutService = angular.ITimeoutService;
 
 export class FerieninselViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./ferieninselView.html');
-    controller = FerieninselViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./ferieninselView.html');
+    public controller = FerieninselViewController;
+    public controllerAs = 'vm';
 }
 
 export class FerieninselViewController extends AbstractAdminViewController {
-    static $inject = ['GesuchsperiodeRS', 'FerieninselStammdatenRS', '$timeout', 'AuthServiceRS'];
+    public static $inject = ['GesuchsperiodeRS', 'FerieninselStammdatenRS', '$timeout', 'AuthServiceRS'];
 
-    form: IFormController;
+    public form: IFormController;
 
-    gesuchsperiodenList: Array<TSGesuchsperiode> = [];
-    gesuchsperiode: TSGesuchsperiode;
+    public gesuchsperiodenList: Array<TSGesuchsperiode> = [];
+    public gesuchsperiode: TSGesuchsperiode;
 
-    ferieninselStammdatenMap: { [key: string]: TSFerieninselStammdaten; } = {};
+    public ferieninselStammdatenMap: { [key: string]: TSFerieninselStammdaten; } = {};
 
-    TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
-                private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+    public constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
+                       private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.$timeout(() => {
             this.readGesuchsperioden();
@@ -61,7 +61,7 @@ export class FerieninselViewController extends AbstractAdminViewController {
         });
     }
 
-    public gesuchsperiodeClicked(gesuchsperiode: any) {
+    public gesuchsperiodeClicked(gesuchsperiode: any): void {
         if (gesuchsperiode.isSelected) {
             this.gesuchsperiode = gesuchsperiode;
             this.readFerieninselStammdatenByGesuchsperiode();
@@ -72,13 +72,14 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     private readFerieninselStammdatenByGesuchsperiode(): void {
         this.ferieninselStammdatenMap = {};
-        this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiode(this.gesuchsperiode.id).then((response: TSFerieninselStammdaten[]) => {
-            const ferieninselStammdatenList: TSFerieninselStammdaten[] = response;
-            for (const obj of ferieninselStammdatenList) {
-                this.ferieninselStammdatenMap[obj.ferienname] = obj;
-            }
-            this.resetErrors();
-        });
+        this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiode(this.gesuchsperiode.id)
+            .then((response: TSFerieninselStammdaten[]) => {
+                const ferieninselStammdatenList = response;
+                for (const obj of ferieninselStammdatenList) {
+                    this.ferieninselStammdatenMap[obj.ferienname] = obj;
+                }
+                this.resetErrors();
+            });
     }
 
     public getFeriennamen(): TSFerienname[] {
@@ -86,7 +87,7 @@ export class FerieninselViewController extends AbstractAdminViewController {
     }
 
     public getFerieninselStammdaten(ferienname: TSFerienname): TSFerieninselStammdaten {
-        let stammdaten: TSFerieninselStammdaten = this.ferieninselStammdatenMap[ferienname];
+        let stammdaten = this.ferieninselStammdatenMap[ferienname];
         if (!stammdaten) {
             stammdaten = new TSFerieninselStammdaten();
             stammdaten.ferienname = ferienname;
@@ -95,15 +96,19 @@ export class FerieninselViewController extends AbstractAdminViewController {
             stammdaten.zeitraum.gueltigkeit = new TSDateRange();
             this.ferieninselStammdatenMap[ferienname] = stammdaten;
         }
+
         return stammdaten;
     }
 
     public saveFerieninselStammdaten(ferieninselStammdaten: TSFerieninselStammdaten): void {
-        if (this.form.$valid && this.isFerieninselStammdatenValid(ferieninselStammdaten)) {
-            this.ferieninselStammdatenRS.saveFerieninselStammdaten(ferieninselStammdaten).then((response: TSFerieninselStammdaten) => {
+        if (!(this.form.$valid && this.isFerieninselStammdatenValid(ferieninselStammdaten))) {
+            return;
+        }
+
+        this.ferieninselStammdatenRS.saveFerieninselStammdaten(ferieninselStammdaten)
+            .then((response: TSFerieninselStammdaten) => {
                 this.ferieninselStammdatenMap[response.ferienname] = response;
             });
-        }
     }
 
     public addFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten): void {
@@ -113,13 +118,14 @@ export class FerieninselViewController extends AbstractAdminViewController {
         ferieninselStammdaten.zeitraumList.push(new TSFerieninselZeitraum());
     }
 
-    public removeFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten, ferieninselZeitraum: TSFerieninselZeitraum): void {
-        const index: number = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
+    public removeFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten,
+                                     ferieninselZeitraum: TSFerieninselZeitraum): void {
+        const index = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
         ferieninselStammdaten.zeitraumList.splice(index, 1);
     }
 
     public isFerieninselStammdatenValid(ferieninselStammdaten: TSFerieninselStammdaten): boolean {
-        const fiValid: boolean = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
+        const fiValid = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigAb)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigBis));
 
@@ -139,14 +145,16 @@ export class FerieninselViewController extends AbstractAdminViewController {
             || EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigBis);
     }
 
-    public isDatumAbRequired(ferieninselZeitraum: TSFerieninselZeitraum, ferieninselStammdaten: TSFerieninselStammdaten) {
+    public isDatumAbRequired(ferieninselZeitraum: TSFerieninselZeitraum,
+                             ferieninselStammdaten: TSFerieninselStammdaten): boolean {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum bis
         return EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || (EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit)
                 && EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit.gueltigBis));
     }
 
-    public isDatumBisRequired(ferieninselZeitraum: TSFerieninselZeitraum, ferieninselStammdaten: TSFerieninselStammdaten) {
+    public isDatumBisRequired(ferieninselZeitraum: TSFerieninselZeitraum,
+                              ferieninselStammdaten: TSFerieninselStammdaten): boolean {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum ab
         return EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || (EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit)
@@ -154,24 +162,24 @@ export class FerieninselViewController extends AbstractAdminViewController {
     }
 
     /**
-     * Alle errors werden zurueckgesetzt. Dies ist notwendig, weil beim Wechseln zwischen Gesuchsperiode, das Form nicht neugemacht wird.
-     * Deswegen werden alle alten Daten bzw. Errors beibehalten und deshalb falsche Failures gegeben. Ausserdem wird das Form als Pristine gesetzt
-     * damit keine Reste aus den alten Daten uebernommen werden.
+     * Alle errors werden zurueckgesetzt. Dies ist notwendig, weil beim Wechseln zwischen Gesuchsperiode, das Form
+     * nicht neugemacht wird. Deswegen werden alle alten Daten bzw. Errors beibehalten und deshalb falsche Failures
+     * gegeben. Ausserdem wird das Form als Pristine gesetzt damit keine Reste aus den alten Daten uebernommen werden.
      */
-    private resetErrors() {
+    private resetErrors(): void {
         this.form.$setPristine();
         this.form.$setUntouched();
 
         // iterate over all from properties
         angular.forEach(this.form, (ctrl, name) => {
             // ignore angular fields and functions
-            if (name.indexOf('$') !== 0) {
-                // iterate over all $errors for each field
-                angular.forEach(ctrl.$error, (value, name) => {
-                    // reset validity
-                    ctrl.$setValidity(name, null);
-                });
+            if (name.indexOf('$') === 0) {
+                return;
             }
+            angular.forEach(ctrl.$error, (_value, n) => {
+                // reset validity
+                ctrl.$setValidity(n, null);
+            });
         });
     }
 }

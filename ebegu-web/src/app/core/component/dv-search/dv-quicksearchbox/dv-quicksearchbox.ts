@@ -28,42 +28,42 @@ import IInjectorService = angular.auto.IInjectorService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvQuicksearchboxComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./dv-quicksearchbox.html');
-    controller = DvQuicksearchboxController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./dv-quicksearchbox.html');
+    public controller = DvQuicksearchboxController;
+    public controllerAs = 'vm';
 }
 
 export class DvQuicksearchboxController {
 
-    static $inject: ReadonlyArray<string> = ['EbeguUtil', '$timeout', '$log', '$q', 'SearchIndexRS', 'CONSTANTS', '$filter', '$translate',
+    public static $inject: ReadonlyArray<string> = ['EbeguUtil', '$timeout', '$log', '$q', 'SearchIndexRS', 'CONSTANTS', '$filter', '$translate',
         '$state', 'AuthServiceRS', '$injector'];
 
-    noCache: boolean = true;
-    delay: number = 250;
+    public noCache: boolean = true;
+    public delay: number = 250;
 
-    selectedItem: TSSearchResultEntry;
-    searchQuery: string;
-    searchString: string;
-    TSRoleUtil: TSRoleUtil;
-    gesuchModelManager: GesuchModelManager;
+    public selectedItem: TSSearchResultEntry;
+    public searchQuery: string;
+    public searchString: string;
+    public TSRoleUtil: TSRoleUtil;
+    public gesuchModelManager: GesuchModelManager;
 
-    constructor(private readonly ebeguUtil: EbeguUtil,
-                private readonly $timeout: IFilterService,
-                private readonly $log: ILogService,
-                private readonly $q: IQService,
-                private readonly searchIndexRS: SearchIndexRS,
-                private readonly CONSTANTS: any,
-                private readonly $filter: IFilterService,
-                private readonly $translate: ITranslateService,
-                private readonly $state: StateService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $injector: IInjectorService) {
+    public constructor(private readonly ebeguUtil: EbeguUtil,
+                       private readonly $timeout: IFilterService,
+                       private readonly $log: ILogService,
+                       private readonly $q: IQService,
+                       private readonly searchIndexRS: SearchIndexRS,
+                       private readonly CONSTANTS: any,
+                       private readonly $filter: IFilterService,
+                       private readonly $translate: ITranslateService,
+                       private readonly $state: StateService,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $injector: IInjectorService) {
         this.TSRoleUtil = TSRoleUtil;
     }
 
-    //wird von angular aufgerufen
-    $onInit() {
+    // wird von angular aufgerufen
+    public $onInit() {
         this.selectedItem = undefined;
     }
 
@@ -73,7 +73,7 @@ export class DvQuicksearchboxController {
         this.searchIndexRS.quickSearch(query).then((quickSearchResult: TSQuickSearchResult) => {
             this.limitResultsize(quickSearchResult);
             deferred.resolve(quickSearchResult.resultEntities);
-        }).catch((ee) => {
+        }).catch(ee => {
             deferred.resolve([]);
             this.$log.warn('error during quicksearch', ee);
         });
@@ -91,7 +91,7 @@ export class DvQuicksearchboxController {
 
     private addFakeTotalResultEntry(quickSearchResult: TSQuickSearchResult, limitedResults: TSSearchResultEntry[]) {
         if (angular.isArray(limitedResults) && limitedResults.length > 0) {
-            const totalResEntry: TSSearchResultEntry = new TSSearchResultEntry();
+            const totalResEntry = new TSSearchResultEntry();
             const alleFaelleEntry = new TSAntragDTO();
             alleFaelleEntry.familienName = this.$translate.instant('QUICKSEARCH_ALL_RESULTS', {totalNum: quickSearchResult.totalResultSize});
             totalResEntry.entity = 'ALL';
@@ -126,7 +126,7 @@ export class DvQuicksearchboxController {
                     this.openGesuch(this.selectedItem.antragDTO, 'gesuch.fallcreation');
                 }
             } else if (this.selectedItem.entity === 'DOSSIER') {
-                //open mitteilung
+                // open mitteilung
                 this.$state.go('mitteilungen.view', {
                     dossierId: this.selectedItem.dossierId,
                     fallId: this.selectedItem.fallID,

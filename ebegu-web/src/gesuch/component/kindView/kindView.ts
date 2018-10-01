@@ -38,38 +38,38 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class KindViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./kindView.html');
-    controller = KindViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./kindView.html');
+    public controller = KindViewController;
+    public controllerAs = 'vm';
 }
 
 export class KindViewController extends AbstractGesuchViewController<TSKindContainer> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'CONSTANTS', '$scope',
+    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'CONSTANTS', '$scope',
         'ErrorService', 'WizardStepManager', '$q', '$translate', '$timeout'];
-    geschlechter: Array<string>;
-    kinderabzugValues: Array<TSKinderabzug>;
-    einschulungTypValues: Array<TSEinschulungTyp>;
-    showFachstelle: boolean;
-    showFachstelleGS: boolean;
-    fachstelleId: string; //der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
-    allowedRoles: Array<TSRole>;
+    public geschlechter: Array<string>;
+    public kinderabzugValues: Array<TSKinderabzug>;
+    public einschulungTypValues: Array<TSEinschulungTyp>;
+    public showFachstelle: boolean;
+    public showFachstelleGS: boolean;
+    public fachstelleId: string; // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
+    public allowedRoles: Array<TSRole>;
 
-    constructor($stateParams: IKindStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private readonly $q: IQService, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
+    public constructor($stateParams: IKindStateParams, gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager, private readonly $q: IQService, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
-            const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber));
+            const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber));
             if (kindIndex >= 0) {
                 this.model = angular.copy(this.gesuchModelManager.getGesuch().kindContainers[kindIndex]);
                 this.gesuchModelManager.setKindIndex(kindIndex);
             }
         } else {
-            //wenn kind nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
+            // wenn kind nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
             this.model = this.initEmptyKind(undefined);
-            const kindIndex: number = this.gesuchModelManager.getGesuch().kindContainers ? this.gesuchModelManager.getGesuch().kindContainers.length : 0;
+            const kindIndex = this.gesuchModelManager.getGesuch().kindContainers ? this.gesuchModelManager.getGesuch().kindContainers.length : 0;
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
         this.initViewModel();
@@ -91,7 +91,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         }
     }
 
-    save(): IPromise<TSKindContainer> {
+    public save(): IPromise<TSKindContainer> {
         if (this.isGesuchValid()) {
             if (!this.form.$dirty) {
                 // If there are no changes in form we don't need anything to update on Server and we could return the
@@ -105,18 +105,18 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return undefined;
     }
 
-    cancel() {
+    public cancel() {
         this.reset();
         this.form.$setPristine();
     }
 
-    reset() {
+    public reset() {
         this.removeKindFromList();
     }
 
     private removeKindFromList() {
         if (!this.model.timestampErstellt) {
-            //wenn das Kind noch nicht erstellt wurde, löschen wir das Kind vom Array
+            // wenn das Kind noch nicht erstellt wurde, löschen wir das Kind vom Array
             this.gesuchModelManager.removeKindFromList();
         }
     }
@@ -184,7 +184,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public getTextFachstelleKorrekturJA(): string {
         if (this.getContainer().kindGS && this.getContainer().kindGS.pensumFachstelle) {
-            const fachstelle: TSPensumFachstelle = this.getContainer().kindGS.pensumFachstelle;
+            const fachstelle = this.getContainer().kindGS.pensumFachstelle;
             const vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
             const bisText = fachstelle.gueltigkeit.gueltigBis ? DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') : '31.12.9999';
             return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
@@ -211,4 +211,3 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.model.betreuungen && this.model.betreuungen.length > 0;
     }
 }
-

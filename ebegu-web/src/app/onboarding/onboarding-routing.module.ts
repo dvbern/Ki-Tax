@@ -16,7 +16,6 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import DossierRS from '../../gesuch/service/dossierRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';

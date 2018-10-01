@@ -16,7 +16,7 @@ export class LoadingButtonDirective extends UpgradeComponent {
 
     @Output() public buttonClick: EventEmitter<void>;
 
-    constructor(elementRef: ElementRef, injector: Injector) {
+    public constructor(elementRef: ElementRef, injector: Injector) {
         super('dvLoadingButton', elementRef, injector);
     }
 

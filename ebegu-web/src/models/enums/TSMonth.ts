@@ -63,5 +63,3 @@ export function getTSMonthWithVorjahrValues(): Array<TSMonth> {
         TSMonth.DECEMBER
     ];
 }
-
-

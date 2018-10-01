@@ -36,4 +36,3 @@ import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module'
 
 export class NgAuthenticationModule {
 }
-

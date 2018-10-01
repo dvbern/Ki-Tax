@@ -19,10 +19,10 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class SearchIndexRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'search/';
     }
 
@@ -31,7 +31,7 @@ export class SearchIndexRS {
      * @param query searchstring
      * @returns {IPromise<TSQuickSearchResult>}
      */
-    quickSearch(query: string): IPromise<TSQuickSearchResult> {
+    public quickSearch(query: string): IPromise<TSQuickSearchResult> {
         return this.http.get(this.serviceURL + 'quicksearch' + '/' + query).then((response: IHttpResponse<TSQuickSearchResult>) => {
             return this.ebeguRestUtil.parseQuickSearchResult(response.data);
         });
@@ -42,10 +42,9 @@ export class SearchIndexRS {
      * @param query searchstring
      * @returns {IPromise<TSQuickSearchResult>}
      */
-    globalSearch(query: string): IPromise<TSQuickSearchResult> {
+    public globalSearch(query: string): IPromise<TSQuickSearchResult> {
         return this.http.get(this.serviceURL + 'globalsearch' + '/' + query).then((response: IHttpResponse<TSQuickSearchResult>) => {
             return this.ebeguRestUtil.parseQuickSearchResult(response.data);
         });
     }
 }
-

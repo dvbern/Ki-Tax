@@ -41,5 +41,5 @@ const ng1States: Ng1StateDeclaration[] = [
 
 // TODO hefa implizite state param definition
 export class IVerlaufStateParams {
-    gesuchId: string;
+    public gesuchId: string;
 }

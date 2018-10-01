@@ -41,5 +41,5 @@ const ng1States: Ng1StateDeclaration[] = [
 
 // TODO hefa implizite Parameter definition
 export class ISearchResultateStateParams {
-    searchString: string;
+    public searchString: string;
 }

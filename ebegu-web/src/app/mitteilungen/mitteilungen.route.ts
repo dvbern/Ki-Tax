@@ -44,8 +44,8 @@ const ng1States: Ng1StateDeclaration[] = [
 
 // TODO hefa nicht alle Params wurden bei der StateDefinition deklariert!
 export class IMitteilungenStateParams {
-    fallId: string;
-    dossierId: string;
-    betreuungId: string;
-    mitteilungId: string;
+    public fallId: string;
+    public dossierId: string;
+    public betreuungId: string;
+    public mitteilungId: string;
 }

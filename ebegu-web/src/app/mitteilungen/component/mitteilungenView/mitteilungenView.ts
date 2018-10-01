@@ -23,26 +23,26 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 
 export class MitteilungenViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./mitteilungenView.html');
-    controller = MitteilungenViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./mitteilungenView.html');
+    public controller = MitteilungenViewController;
+    public controllerAs = 'vm';
 }
 
 export class MitteilungenViewController {
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
+    public static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
 
-    form: IFormController;
-    dossierId: string;
-    fallId: string;
-    TSRoleUtil = TSRoleUtil;
+    public form: IFormController;
+    public dossierId: string;
+    public fallId: string;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
+    public constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
                 private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
     }
 
-    $onInit() {
+    public $onInit() {
         if (this.$stateParams.dossierId) {
             this.dossierId = this.$stateParams.dossierId;
         }
@@ -59,7 +59,7 @@ export class MitteilungenViewController {
         }
     }
 
-    $postLink() {
+    public $postLink() {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 500); // this is the only way because it needs a little until everything is loaded

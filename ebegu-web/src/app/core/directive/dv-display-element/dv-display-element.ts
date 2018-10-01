@@ -31,38 +31,38 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  */
 export class DVDisplayElement implements IDirective {
 
-    static $inject: ReadonlyArray<string> = ['ngShowDirective'];
-    restrict = 'A';
-    controller = DVRoleElementController;
+    public static $inject: ReadonlyArray<string> = ['ngShowDirective'];
+    public restrict = 'A';
+    public controller = DVRoleElementController;
     // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
 
-    multiElement: any;
-    ngShow: any;
+    public multiElement: any;
+    public ngShow: any;
 
-    constructor(private readonly ngShowDirective: any) {
+    public constructor(private readonly ngShowDirective: any) {
         this.ngShow = ngShowDirective[0];
         this.multiElement = this.ngShow.multiElement;
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = (ngShowDirective: any) => new DVDisplayElement(ngShowDirective);
         directive.$inject = ['ngShowDirective'];
         return directive;
     }
 
-    link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
+    public link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
         // Consider using a standard function expression.
-        const arguments2: Array<any> = [scope, element, attributes, controller, $transclude];
+        const arguments2 = [scope, element, attributes, controller, $transclude];
         this.callNgShowThrough(attributes, controller, arguments2);
 
         // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen der Variable, den wir
         // danach evaluieren muessen. Da dieser String sich nie aendert (sondern eher seine evaluation), wird das observe nie aufgerufen. Mit scope.$watch
         // funktioniert es weil die Variable immer transcluded wird und somit der Wert aendert sich.
-        scope.$watch(attributes['dvDisplayAllowedRoles'], (newValue: any, oldValue: any, scope: any) => {
+        scope.$watch(attributes.dvDisplayAllowedRoles, (newValue: any, oldValue: any, scope: any) => {
             controller.dvAllowedRoles = newValue;
         }, true);
-        scope.$watch(attributes['dvDisplayExpression'], (newValue: any, oldValue: any) => {
+        scope.$watch(attributes.dvDisplayExpression, (newValue: any, oldValue: any) => {
             controller.dvExpression = newValue;
         }, true);
     };

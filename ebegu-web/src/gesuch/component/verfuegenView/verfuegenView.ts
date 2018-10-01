@@ -41,25 +41,25 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const threeButtonsDialogTempl = require('../../dialog/threeButtonsDialog.html');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./verfuegenView.html');
-    controller = VerfuegenViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./verfuegenView.html');
+    public controller = VerfuegenViewController;
+    public controllerAs = 'vm';
 }
 
 export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
-    static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', '$scope', 'WizardStepManager',
+    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', '$scope', 'WizardStepManager',
         'DvDialog', 'DownloadRS', '$log', '$stateParams', '$window', 'ExportRS', 'ApplicationPropertyRS', '$timeout'];
 
-    //this is the model...
+    // this is the model...
     public bemerkungen: string;
 
     private showSchemas: boolean;
     private sameVerfuegungsdaten: boolean;
     private sameVerrechneteVerguenstigung: boolean;
 
-    constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly ebeguUtil: EbeguUtil, $scope: IScope, wizardStepManager: WizardStepManager,
                 private readonly DvDialog: DvDialog, private readonly downloadRS: DownloadRS, private readonly $log: ILogService, $stateParams: IBetreuungStateParams,
                 private readonly $window: ng.IWindowService, private readonly exportRS: ExportRS, private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -67,12 +67,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
 
-        const kindIndex: number = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber, 10));
+        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(parseInt($stateParams.kindNumber, 10));
         if (kindIndex === -1) {
             this.$log.error('Kind konnte nicht gefunden werden');
         }
         this.gesuchModelManager.setKindIndex(kindIndex);
-        const betreuungIndex: number = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(parseInt($stateParams.betreuungNumber, 10));
+        const betreuungIndex = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(parseInt($stateParams.betreuungNumber, 10));
         if (betreuungIndex === -1) {
             this.$log.error('Betreuung konnte nicht gefunden werden');
         }
@@ -106,7 +106,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 });
             }
 
-            //if finanzielleSituationResultate is undefined/empty (this may happen if user presses reloads this page) then we recalculate it
+            // if finanzielleSituationResultate is undefined/empty (this may happen if user presses reloads this page) then we recalculate it
             if (!this.berechnungsManager.finanzielleSituationResultate || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
                 this.berechnungsManager.calculateFinanzielleSituation(this.gesuchModelManager.getGesuch());
             }
@@ -114,13 +114,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
                 && (!this.berechnungsManager.einkommensverschlechterungResultateBjP1 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP1, {}))) {
 
-                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); //.then(() => {});
+                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); // .then(() => {});
             }
             if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
                 && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
                 && (!this.berechnungsManager.einkommensverschlechterungResultateBjP2 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP2, {}))) {
 
-                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); //.then(() => {});
+                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); // .then(() => {});
             }
             this.initDevModeParameter();
 
@@ -323,7 +323,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             cancelText: 'LABEL_NEIN',
             firstOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_UEBERNEHMEN',
             secondOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_IGNORIEREN'
-        }).then((response) => {
+        }).then(response => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             return this.gesuchModelManager.saveVerfuegung(response === 2);
         });
@@ -380,34 +380,34 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public openVerfuegungPDF(): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
             this.getBetreuung().id, false, this.bemerkungen)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.', ex);
             });
     }
 
     public openExport(): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getDokumentAccessTokenVerfuegungExport(this.getBetreuung().id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken for export: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.', ex);
             });
     }
 
     public openNichteintretenPDF(): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(this.getBetreuung().id, false)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
@@ -432,15 +432,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public exportJsonSchema() {
-        const win: Window = this.$window.open('', EbeguUtil.generateRandomName(5));
-        this.exportRS.getJsonSchemaString().then((result) => {
+        const win = this.$window.open('', EbeguUtil.generateRandomName(5));
+        this.exportRS.getJsonSchemaString().then(result => {
             win.document.write('<body><pre>' + result + '</pre></body>');
         });
     }
 
     public exportXmlSchema() {
         // ACHTUNG popup blocker muss deaktiviert sein
-        this.exportRS.getXmlSchemaString().then((result) => {
+        this.exportRS.getXmlSchemaString().then(result => {
             this.$window.open('data:application/octet-streem;charset=utf-8,' + result, '', '');
         });
     }

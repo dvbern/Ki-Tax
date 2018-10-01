@@ -32,30 +32,30 @@ import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
 
 export class CreateAngebotListViewConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./createAngebotView.html');
-    controller = CreateAngebotListViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./createAngebotView.html');
+    public controller = CreateAngebotListViewController;
+    public controllerAs = 'vm';
 }
 
 export class CreateAngebotListViewController {
 
-    static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
+    public static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
 
-    form: IFormController;
-    einschulungTypValues: Array<TSEinschulungTyp>;
+    public form: IFormController;
+    public einschulungTypValues: Array<TSEinschulungTyp>;
     private ts: boolean;
     private fi: boolean;
     private readonly kindContainer: TSKindContainer;
     private readonly institution: TSInstitutionStammdaten;
     private anmeldungDTO: TSAnmeldungDTO = new TSAnmeldungDTO;
 
-    constructor(private readonly $state: StateService, private readonly $log: ILogService,
+    public constructor(private readonly $state: StateService, private readonly $log: ILogService,
                 private readonly gesuchModelManager: GesuchModelManager, private readonly $stateParams: IAngebotStateParams,
                 private readonly betreuungRS: BetreuungRS) {
     }
 
-    $onInit() {
+    public $onInit() {
         this.anmeldungDTO = new TSAnmeldungDTO();
         this.einschulungTypValues = getTSEinschulungTypValues();
         if (this.$stateParams.type === 'TS') {
@@ -122,7 +122,7 @@ export class CreateAngebotListViewController {
                 if (!this.anmeldungDTO.betreuung.belegungTagesschule) {
                     this.anmeldungDTO.betreuung.belegungTagesschule = new TSBelegungTagesschule();
                     // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-                    const ersterSchultag: moment.Moment = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+                    const ersterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
                     if (DateUtil.today().isBefore(ersterSchultag)) {
                         this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum = ersterSchultag;
                     }
@@ -162,7 +162,7 @@ export class CreateAngebotListViewController {
             this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
 
             this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule = this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule
-                .filter(modul => modul.angemeldet === true);
+                .filter(modul => modul.angemeldet);
 
             this.betreuungRS.createAngebot(this.anmeldungDTO).then((response: any) => {
                 this.backToHome('TAGESSCHULE_ANMELDUNG_GESPEICHERT');
@@ -184,7 +184,7 @@ export class CreateAngebotListViewController {
     public backToHome(infoMessage: string | undefined = undefined) {
         this.form.$setPristine();
         this.$state.go('gesuchsteller.dashboard', {
-            gesuchstellerDashboardStateParams: {infoMessage: infoMessage}
+            gesuchstellerDashboardStateParams: {infoMessage}
         });
     }
 

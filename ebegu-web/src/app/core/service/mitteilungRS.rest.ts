@@ -31,17 +31,17 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export default class MitteilungRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager',
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager',
         'AuthServiceRS', '$translate'];
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService,
-                private readonly wizardStepManager: WizardStepManager,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $translate: ITranslateService) {
+    public constructor(public $http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService,
+                       private readonly wizardStepManager: WizardStepManager,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $translate: ITranslateService) {
         this.serviceURL = REST_API + 'mitteilungen';
     }
 
@@ -133,7 +133,7 @@ export default class MitteilungRS {
 
     public removeEntwurf(mitteilung: TSMitteilung): IPromise<any> {
         return this.$http.delete(this.serviceURL + '/' + encodeURIComponent(mitteilung.id))
-            .then((response) => {
+            .then(response => {
                 return response;
             });
     }
@@ -152,8 +152,8 @@ export default class MitteilungRS {
     }
 
     public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
-        const mutationsmeldung: TSBetreuungsmitteilung = this.createBetreuungsmitteilung(dossier, betreuung);
-        const restMitteilung: any = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung);
+        const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         return this.$http.put(this.serviceURL + '/sendbetreuungsmitteilung', restMitteilung, {
             headers: {
                 'Content-Type': 'application/json'
@@ -205,7 +205,7 @@ export default class MitteilungRS {
     }
 
     private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): TSBetreuungsmitteilung {
-        const mutationsmeldung: TSBetreuungsmitteilung = new TSBetreuungsmitteilung();
+        const mutationsmeldung = new TSBetreuungsmitteilung();
         mutationsmeldung.dossier = dossier;
         mutationsmeldung.betreuung = betreuung;
         mutationsmeldung.senderTyp = TSMitteilungTeilnehmerTyp.INSTITUTION;
@@ -223,9 +223,9 @@ export default class MitteilungRS {
      * Erzeugt eine Nachricht mit einem Text mit allen Betreuungspensen der Betreuung.
      */
     private createNachrichtForMutationsmeldung(betreuung: TSBetreuung): string {
-        let message: string = '';
-        let i: number = 1;
-        const betreuungspensumContainers: Array<TSBetreuungspensumContainer> = angular.copy(betreuung.betreuungspensumContainers); // to avoid changing something
+        let message = '';
+        let i = 1;
+        const betreuungspensumContainers = angular.copy(betreuung.betreuungspensumContainers); // to avoid changing something
         betreuungspensumContainers
             .sort(
                 (a: TSBetreuungspensumContainer, b: TSBetreuungspensumContainer) => {
@@ -237,8 +237,8 @@ export default class MitteilungRS {
                 if (i > 1) {
                     message += '\n';
                 }
-                const datumAb: string = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
-                let datumBis: string = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigBis, 'DD.MM.YYYY');
+                const datumAb = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+                let datumBis = DateUtil.momentToLocalDateFormat(betpenContainer.betreuungspensumJA.gueltigkeit.gueltigBis, 'DD.MM.YYYY');
                 datumBis = datumBis ? datumBis : DateUtil.momentToLocalDateFormat(betreuung.gesuchsperiode.gueltigkeit.gueltigBis, 'DD.MM.YYYY'); // by default Ende der Periode
                 message += this.$translate.instant('MUTATIONSMELDUNG_PENSUM') + i
                     + this.$translate.instant('MUTATIONSMELDUNG_VON') + datumAb

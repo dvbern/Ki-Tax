@@ -20,13 +20,13 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class ShowTooltipController {
 
-    static $inject = ['$mdDialog', '$translate', 'title', 'text', 'parentController'];
+    public static $inject = ['$mdDialog', '$translate', 'title', 'text', 'parentController'];
 
-    title: string;
-    text: string;
+    public title: string;
+    public text: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, text: string,
-                private readonly parentController: IDVFocusableController) {
+    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, text: string,
+                       private readonly parentController: IDVFocusableController) {
         if (text !== undefined && text !== null) {
             this.text = $translate.instant(text);
         } else {

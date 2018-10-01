@@ -18,10 +18,7 @@ import {IQProvider} from 'angular';
 import 'angular-hotkeys';
 import 'angular-translate';
 import 'angular-unsavedchanges';
-import HttpAuthInterceptor from '../../authentication/service/HttpAuthInterceptor';
 import {environment} from '../../environments/environment';
-import HttpErrorInterceptor from './errors/service/HttpErrorInterceptor';
-import HttpResponseInterceptor from './service/HttpResponseInterceptor';
 import IInjectorService = angular.auto.IInjectorService;
 import IHttpProvider = angular.IHttpProvider;
 import ILocationProvider = angular.ILocationProvider;
@@ -34,7 +31,7 @@ configure.$inject = ['$translateProvider', '$injector', '$httpProvider', '$mdThe
 export function configure($translateProvider: ITranslateProvider, $injector: IInjectorService, $httpProvider: IHttpProvider,
                           $mdThemingProvider: IThemingProvider, hotkeysProvider: any, $logProvider: ILogProvider,
                           $locationProvider: ILocationProvider, $qProvider: IQProvider) {
-    //Translation Provider configuration
+    // Translation Provider configuration
     const translProp = require('../../assets/translations/translations_de.json');
 
     // In case you have issues with double-escaped parameters, check out this issue: https://github.com/angular-translate/angular-translate/issues/1101
@@ -45,24 +42,24 @@ export function configure($translateProvider: ITranslateProvider, $injector: IIn
         .fallbackLanguage('de')
         .preferredLanguage('de');
 
-    //Dirty Check configuration (nur wenn plugin vorhanden)
+    // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
-        const unsavedWarningsConfigProvider: any = $injector.get('unsavedWarningsConfigProvider');
+        const unsavedWarningsConfigProvider = $injector.get('unsavedWarningsConfigProvider');
         unsavedWarningsConfigProvider.useTranslateService = true;
         unsavedWarningsConfigProvider.logEnabled = false;
         unsavedWarningsConfigProvider.navigateMessage = 'UNSAVED_WARNING';
         unsavedWarningsConfigProvider.reloadMessage = 'UNSAVED_WARNING_RELOAD';
     }
-    //Config Angular Module Theme
+    // Config Angular Module Theme
     $mdThemingProvider.theme('default')
     // .primaryPalette('red')
         .accentPalette('red');
 
-    //Config hotkey provider: https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys-
+    // Config hotkey provider: https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys-
     hotkeysProvider.useNgRoute = false;
     hotkeysProvider.includeCheatSheet = false;
 
-    //Configuration of $http service
+    // Configuration of $http service
     $httpProvider.interceptors.push('HttpErrorInterceptor');
     $httpProvider.interceptors.push('HttpAuthInterceptor');
     $httpProvider.interceptors.push('HttpResponseInterceptor');

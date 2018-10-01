@@ -13,14 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import {Subscription} from 'rxjs';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../../models/enums/TSRole';
-import TSBerechtigung from '../../../../models/TSBerechtigung';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
@@ -33,22 +32,22 @@ import BenutzerRS from '../../service/benutzerRS.rest';
  */
 export default class DVSTPersistAntraege implements IDirective {
 
-    static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
+    public static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
         'AuthLifeCycleService'];
 
-    restrict = 'A';
-    require = ['^stTable', '^dvAntragList'];
-    link: IDirectiveLinkFn;
-    obss: Subscription;
+    public restrict = 'A';
+    public require = ['^stTable', '^dvAntragList'];
+    public link: IDirectiveLinkFn;
+    public obss: Subscription;
 
-    constructor(private readonly benutzerRS: BenutzerRS,
-                private readonly institutionRS: InstitutionRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly dVsTPersistService: DVsTPersistService,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(private readonly benutzerRS: BenutzerRS,
+                       private readonly institutionRS: InstitutionRS,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly dVsTPersistService: DVsTPersistService,
+                       private readonly gemeindeRS: GemeindeRS,
+                       private readonly authLifeCycleService: AuthLifeCycleService) {
 
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrlArray: any) => {
+        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             this.obss = this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
                 .subscribe(() => this.loadData(attrs, ctrlArray, scope, dVsTPersistService));
 
@@ -58,7 +57,7 @@ export default class DVSTPersistAntraege implements IDirective {
         };
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = (benutzerRS: any,
                            institutionRS: any,
                            authServiceRS: any,
@@ -86,10 +85,10 @@ export default class DVSTPersistAntraege implements IDirective {
     private loadData(attrs: angular.IAttributes, ctrlArray: any, scope: angular.IScope, dVsTPersistService: DVsTPersistService) {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) { // just to be sure that the user has the required role
             const nameSpace: string = attrs.dvStPersistAntraege;
-            const stTableCtrl: any = ctrlArray[0];
+            const stTableCtrl = ctrlArray[0];
             const antragListController: DVAntragListController = ctrlArray[1];
 
-            //save the table state every time it changes
+            // save the table state every time it changes
             scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
                 if (newValue !== oldValue) {
                     // sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
@@ -100,11 +99,11 @@ export default class DVSTPersistAntraege implements IDirective {
             // if (sessionStorage.getItem(nameSpace)) {
             // let savedState = JSON.parse(sessionStorage.getItem(nameSpace));
 
-            //fetch the table state when the directive is loaded
+            // fetch the table state when the directive is loaded
             let savedState = dVsTPersistService.loadData(nameSpace);
             savedState = this.setCurrentUserAsVerantwortlicher(antragListController, savedState);
             if (savedState) {
-                if (savedState.search && savedState.search.predicateObject) { //update all objects of the model for the filters
+                if (savedState.search && savedState.search.predicateObject) { // update all objects of the model for the filters
                     antragListController.selectedAntragTyp = savedState.search.predicateObject.antragTyp;
                     antragListController.selectedGesuchsperiode =
                         savedState.search.predicateObject.gesuchsperiodeString;
@@ -195,7 +194,7 @@ export default class DVSTPersistAntraege implements IDirective {
      * - es noch nicht gesetzt wurde, d.h. nichts war ausgewaehlt
      */
     private setCurrentUserAsVerantwortlicher(antragListController: DVAntragListController, savedState: any): any {
-        let savedStateToReturn: any = angular.copy(savedState);
+        let savedStateToReturn = angular.copy(savedState);
         if (antragListController.pendenz) {
             if (!savedStateToReturn) {
                 savedStateToReturn = {search: {predicateObject: this.extractVerantwortlicherFullName()}};
@@ -206,11 +205,11 @@ export default class DVSTPersistAntraege implements IDirective {
             if (!savedStateToReturn.search.predicateObject.verantwortlicher) {
                 const principal = this.authServiceRS.getPrincipal();
 
-                const berechtigung: TSBerechtigung = principal.currentBerechtigung;
+                const berechtigung = principal.currentBerechtigung;
                 if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
                     savedStateToReturn.search.predicateObject.verantwortlicherTS =
                         principal.getFullName();
-                } else { //JA
+                } else { // JA
                     savedStateToReturn.search.predicateObject.verantwortlicherBG =
                         principal.getFullName();
                 }
@@ -223,10 +222,10 @@ export default class DVSTPersistAntraege implements IDirective {
         const principal = this.authServiceRS.getPrincipal();
 
         if (principal) {
-            const berechtigung: TSBerechtigung = principal.currentBerechtigung;
+            const berechtigung = principal.currentBerechtigung;
             if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
                 return {verantwortlicherTS: principal.getFullName()};
-            } else { //JA
+            } else { // JA
                 return {verantwortlicherBG: principal.getFullName()};
             }
         }

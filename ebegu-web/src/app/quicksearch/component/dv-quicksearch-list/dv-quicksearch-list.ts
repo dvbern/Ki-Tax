@@ -37,9 +37,9 @@ import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 const LOG = LogFactory.createLog('DVQuicksearchListController');
 
 export class DVQuicksearchListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         antraege: '<',
         itemsByPage: '<',
         initialAll: '=',
@@ -50,53 +50,53 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         tableTitle: '<'
     };
 
-    template = require('./dv-quicksearch-list.html');
-    controller = DVQuicksearchListController;
-    controllerAs = 'vm';
+    public template = require('./dv-quicksearch-list.html');
+    public controller = DVQuicksearchListController;
+    public controllerAs = 'vm';
 }
 
 export class DVQuicksearchListController implements IController {
 
-    static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
+    public static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
         '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
 
-    antraege: Array<TSAntragDTO> = []; //muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
+    public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
 
-    itemsByPage: number;
-    initialAll: boolean;
-    showSelectionAll: boolean;
-    tableId: string;
-    tableTitle: string;
+    public itemsByPage: number;
+    public initialAll: boolean;
+    public showSelectionAll: boolean;
+    public tableId: string;
+    public tableTitle: string;
 
-    selectedVerantwortlicherBG: TSBenutzer;
-    selectedVerantwortlicherTS: TSBenutzer;
-    selectedEingangsdatum: string;
-    selectedKinder: string;
-    selectedFallNummer: string;
-    selectedFamilienName: string;
-    selectedBetreuungsangebotTyp: string;
-    selectedAntragTyp: string;
-    selectedAntragStatus: string;
-    selectedInstitution: TSInstitution;
-    selectedGesuchsperiode: string;
-    selectedGemeinde: TSGemeinde;
-    selectedDokumenteHochgeladen: string;
+    public selectedVerantwortlicherBG: TSBenutzer;
+    public selectedVerantwortlicherTS: TSBenutzer;
+    public selectedEingangsdatum: string;
+    public selectedKinder: string;
+    public selectedFallNummer: string;
+    public selectedFamilienName: string;
+    public selectedBetreuungsangebotTyp: string;
+    public selectedAntragTyp: string;
+    public selectedAntragStatus: string;
+    public selectedInstitution: TSInstitution;
+    public selectedGesuchsperiode: string;
+    public selectedGemeinde: TSGemeinde;
+    public selectedDokumenteHochgeladen: string;
 
-    institutionenList: Array<TSInstitution>;
-    gesuchsperiodenList: Array<string>;
-    gemeindenList: Array<TSGemeinde>;
-    onUserChanged: (user: any) => void;
+    public institutionenList: Array<TSInstitution>;
+    public gesuchsperiodenList: Array<string>;
+    public gemeindenList: Array<TSGemeinde>;
+    public onUserChanged: (user: any) => void;
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(private readonly ebeguUtil: EbeguUtil,
-                private readonly $filter: IFilterService,
-                private readonly institutionRS: InstitutionRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $state: StateService,
-                private readonly CONSTANTS: any,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly gemeindeRS: GemeindeRS,
+    public constructor(private readonly ebeguUtil: EbeguUtil,
+                       private readonly $filter: IFilterService,
+                       private readonly institutionRS: InstitutionRS,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly $state: StateService,
+                       private readonly CONSTANTS: any,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -166,9 +166,9 @@ export class DVQuicksearchListController implements IController {
     }
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
-        let result: string = '';
+        let result = '';
         if (betreuungsangebotTypList) {
-            let prefix: string = '';
+            let prefix = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
                 // tslint:disable-next-line:prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
@@ -227,6 +227,3 @@ export class DVQuicksearchListController implements IController {
         return row instanceof TSAntragDTO && !row.hasBesitzer();
     }
 }
-
-
-

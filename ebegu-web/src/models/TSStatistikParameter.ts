@@ -22,7 +22,7 @@ export default class TSStatistikParameter extends TSAbstractMutableEntity {
     private _von: moment.Moment;
     private _bis: moment.Moment;
 
-    constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
+    public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                 von?: moment.Moment, bis?: moment.Moment) {
         super();
         this._gesuchsperiode = gesuchsperiode;
@@ -31,35 +31,35 @@ export default class TSStatistikParameter extends TSAbstractMutableEntity {
         this._bis = bis;
     }
 
-    get gesuchsperiode(): string {
+    public get gesuchsperiode(): string {
         return this._gesuchsperiode;
     }
 
-    set gesuchsperiode(value: string) {
+    public set gesuchsperiode(value: string) {
         this._gesuchsperiode = value;
     }
 
-    get stichtag(): moment.Moment {
+    public get stichtag(): moment.Moment {
         return this._stichtag;
     }
 
-    set stichtag(value: moment.Moment) {
+    public set stichtag(value: moment.Moment) {
         this._stichtag = value;
     }
 
-    get von(): moment.Moment {
+    public get von(): moment.Moment {
         return this._von;
     }
 
-    set von(value: moment.Moment) {
+    public set von(value: moment.Moment) {
         this._von = value;
     }
 
-    get bis(): moment.Moment {
+    public get bis(): moment.Moment {
         return this._bis;
     }
 
-    set bis(value: moment.Moment) {
+    public set bis(value: moment.Moment) {
         this._bis = value;
     }
 

@@ -33,10 +33,10 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 export class DokumenteViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./dokumenteView.html');
-    controller = DokumenteViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./dokumenteView.html');
+    public controller = DokumenteViewController;
+    public controllerAs = 'vm';
 }
 
 /**
@@ -44,28 +44,28 @@ export class DokumenteViewComponentConfig implements IComponentOptions {
  */
 export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
+    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
         'DokumenteRS', '$log', 'WizardStepManager', 'EbeguUtil', 'GlobalCacheService', '$scope', '$timeout'];
-    parsedNum: number;
-    dokumenteEkv: TSDokumentGrund[] = [];
-    dokumenteFinSit: TSDokumentGrund[] = [];
-    dokumenteFamSit: TSDokumentGrund[] = [];
-    dokumenteErwp: TSDokumentGrund[] = [];
-    dokumenteKinder: TSDokumentGrund[] = [];
-    dokumenteSonst: TSDokumentGrund[] = [];
-    dokumentePapiergesuch: TSDokumentGrund[] = [];
-    dokumenteFreigabequittung: TSDokumentGrund[] = [];
+    public parsedNum: number;
+    public dokumenteEkv: TSDokumentGrund[] = [];
+    public dokumenteFinSit: TSDokumentGrund[] = [];
+    public dokumenteFamSit: TSDokumentGrund[] = [];
+    public dokumenteErwp: TSDokumentGrund[] = [];
+    public dokumenteKinder: TSDokumentGrund[] = [];
+    public dokumenteSonst: TSDokumentGrund[] = [];
+    public dokumentePapiergesuch: TSDokumentGrund[] = [];
+    public dokumenteFreigabequittung: TSDokumentGrund[] = [];
 
-    constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly dokumenteRS: DokumenteRS, private readonly $log: ILogService, wizardStepManager: WizardStepManager,
-                private readonly ebeguUtil: EbeguUtil, private readonly globalCacheService: GlobalCacheService, $scope: IScope, $timeout: ITimeoutService) {
+    public constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                       private readonly dokumenteRS: DokumenteRS, private readonly $log: ILogService, wizardStepManager: WizardStepManager,
+                       private readonly ebeguUtil: EbeguUtil, private readonly globalCacheService: GlobalCacheService, $scope: IScope, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.calculate();
     }
 
-    calculate() {
+    public calculate() {
         if (this.gesuchModelManager.getGesuch()) {
             this.berechnungsManager
                 .getDokumente(this.gesuchModelManager.getGesuch())
@@ -86,13 +86,13 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
     private searchDokumente(alleDokumente: TSDokumenteDTO, dokumenteForType: TSDokumentGrund[], dokumentGrundTyp: TSDokumentGrundTyp) {
 
-        const dokumentGruende: Array<TSDokumentGrund> = alleDokumente.dokumentGruende;
+        const dokumentGruende = alleDokumente.dokumentGruende;
         const found = dokumentGruende.find(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp);
         if (found) {
             dokumenteForType.push(found);
         }
         dokumenteForType.sort((n1: TSDokumentGrund, n2: TSDokumentGrund) => {
-            let result: number = 0;
+            let result = 0;
 
             if (n1 && n2) {
                 if (n1.tag && n2.tag) {
@@ -108,7 +108,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         });
     }
 
-    addUploadedDokuments(dokumentGrund: any, dokumente: TSDokumentGrund[]): void {
+    public addUploadedDokuments(dokumentGrund: any, dokumente: TSDokumentGrund[]): void {
         this.$log.debug('addUploadedDokuments called');
         const index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
 
@@ -124,7 +124,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         EbeguUtil.handleSmarttablesUpdateBug(dokumente);
     }
 
-    removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]) {
+    public removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]) {
 
         const index = EbeguUtil.getIndexOfElementwithID(dokument, dokumentGrund.dokumente);
 
@@ -133,9 +133,9 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             dokumentGrund.dokumente.splice(index, 1);
         }
 
-        this.dokumenteRS.updateDokumentGrund(dokumentGrund).then((response) => {
+        this.dokumenteRS.updateDokumentGrund(dokumentGrund).then(response => {
 
-            const returnedDG: TSDokumentGrund = angular.copy(response);
+            const returnedDG = angular.copy(response);
 
             if (returnedDG) {
                 // replace existing object in table with returned if returned not null

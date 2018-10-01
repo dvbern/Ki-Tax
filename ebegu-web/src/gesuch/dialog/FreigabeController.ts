@@ -30,7 +30,7 @@ import ITranslateService = angular.translate.ITranslateService;
  */
 export class FreigabeController {
 
-    static $inject: string[] = ['docID', '$mdDialog', 'GesuchRS', 'BenutzerRS', 'AuthServiceRS',
+    public static $inject: string[] = ['docID', '$mdDialog', 'GesuchRS', 'BenutzerRS', 'AuthServiceRS',
         'EbeguUtil', 'CONSTANTS', '$translate', 'ApplicationPropertyRS'];
 
     private gesuch: TSAntragDTO;
@@ -41,17 +41,17 @@ export class FreigabeController {
     private fallNummer: string;
     private familie: string;
     private errorMessage: string;
-    TSRoleUtil = TSRoleUtil;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly docID: string,
-                private readonly $mdDialog: IDialogService,
-                private readonly gesuchRS: GesuchRS,
-                private readonly benutzerRS: BenutzerRS,
-                private readonly authService: AuthServiceRS,
-                private readonly ebeguUtil: EbeguUtil,
-                CONSTANTS: any,
-                private readonly $translate: ITranslateService,
-                private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    public constructor(private readonly docID: string,
+                       private readonly $mdDialog: IDialogService,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly benutzerRS: BenutzerRS,
+                       private readonly authService: AuthServiceRS,
+                       private readonly ebeguUtil: EbeguUtil,
+                       CONSTANTS: any,
+                       private readonly $translate: ITranslateService,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value

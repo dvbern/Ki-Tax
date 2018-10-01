@@ -13,19 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 
 export default class DVMaxLength implements IDirective {
-    static $inject = ['CONSTANTS'];
+    public static $inject = ['CONSTANTS'];
 
-    restrict = 'A';
-    require = 'ngModel';
-    length: number;
-    link: IDirectiveLinkFn;
+    public restrict = 'A';
+    public require = 'ngModel';
+    public length: number;
+    public link: IDirectiveLinkFn;
 
-    constructor(CONSTANTS: any) {
+    public constructor(CONSTANTS: any) {
         this.length = CONSTANTS.MAX_LENGTH;
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {
+        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrl: any) => {
             if (!ctrl) {
                 return;
             }
@@ -36,10 +36,9 @@ export default class DVMaxLength implements IDirective {
         };
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = (CONSTANTS: any) => new DVMaxLength(CONSTANTS);
         directive.$inject = ['CONSTANTS'];
         return directive;
     }
 }
-

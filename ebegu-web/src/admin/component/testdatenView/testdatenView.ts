@@ -40,32 +40,32 @@ import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 })
 export class TestdatenViewComponent implements OnInit {
 
-    dossierid: string;
-    verfuegenGesuchid: string;
-    eingangsdatum: moment.Moment;
-    ereignisdatum: moment.Moment;
+    public dossierid: string;
+    public verfuegenGesuchid: string;
+    public eingangsdatum: moment.Moment;
+    public ereignisdatum: moment.Moment;
 
-    creationType: string = 'verfuegt';
-    selectedBesitzer: TSBenutzer;
-    gesuchstellerList: Array<TSBenutzer>;
+    public creationType: string = 'verfuegt';
+    public selectedBesitzer: TSBenutzer;
+    public gesuchstellerList: Array<TSBenutzer>;
 
-    selectedGesuchsperiode: TSGesuchsperiode;
-    gesuchsperiodeList: Array<TSGesuchsperiode>;
+    public selectedGesuchsperiode: TSGesuchsperiode;
+    public gesuchsperiodeList: Array<TSGesuchsperiode>;
 
-    selectedGemeinde: TSGemeinde;
-    gemeindeList: Array<TSGemeinde>;
+    public selectedGemeinde: TSGemeinde;
+    public gemeindeList: Array<TSGemeinde>;
 
-    devMode: boolean;
+    public devMode: boolean;
 
-    constructor(public readonly testFaelleRS: TestFaelleRS,
-                private readonly benutzerRS: BenutzerRS,
-                private readonly errorService: ErrorService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly zahlungRS: ZahlungRS,
-                private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly gesuchRS: GesuchRS,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly dialog: MatDialog) {
+    public constructor(public readonly testFaelleRS: TestFaelleRS,
+                       private readonly benutzerRS: BenutzerRS,
+                       private readonly errorService: ErrorService,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly zahlungRS: ZahlungRS,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly gemeindeRS: GemeindeRS,
+                       private readonly dialog: MatDialog) {
     }
 
     public ngOnInit(): void {
@@ -84,8 +84,8 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public createTestFallType(testFall: string): void {
-        let bestaetigt: boolean = false;
-        let verfuegen: boolean = false;
+        let bestaetigt = false;
+        let verfuegen = false;
         if (this.creationType === 'warten') {
             bestaetigt = false;
             verfuegen = false;
@@ -106,13 +106,13 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     private createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): void {
-        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then((response) => {
+        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then(response => {
             this.createLinkDialog(response);
         });
     }
 
     private createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean, username: string): void {
-        this.testFaelleRS.createTestFallGS(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen, username).then((response) => {
+        this.testFaelleRS.createTestFallGS(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen, username).then(response => {
             this.createLinkDialog(response);
         });
     }
@@ -131,26 +131,26 @@ export class TestdatenViewComponent implements OnInit {
 
     public mutiereFallHeirat(): IPromise<any> {
         return this.testFaelleRS.mutiereFallHeirat(this.dossierid, this.selectedGesuchsperiode.id, this.eingangsdatum, this.ereignisdatum)
-            .then((response) => {
+            .then(response => {
                 this.createAndOpenOkDialog(response.data);
             });
     }
 
     public mutiereFallScheidung(): IPromise<any> {
         return this.testFaelleRS.mutiereFallScheidung(this.dossierid, this.selectedGesuchsperiode.id, this.eingangsdatum, this.ereignisdatum)
-            .then((response) => {
+            .then(response => {
                 this.createAndOpenOkDialog(response.data);
             });
     }
 
     public resetSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.resetSchulungsdaten().then((response) => {
+        return this.testFaelleRS.resetSchulungsdaten().then(response => {
             this.createAndOpenOkDialog(response.data);
         });
     }
 
     public deleteSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.deleteSchulungsdaten().then((response) => {
+        return this.testFaelleRS.deleteSchulungsdaten().then(response => {
             this.createAndOpenOkDialog(response.data);
         });
     }
@@ -161,7 +161,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public deleteAllZahlungsauftraege(): void {
         this.createAndOpenRemoveDialog$('ZAHLUNG_LOESCHEN_DIALOG_TITLE', 'ZAHLUNG_LOESCHEN_DIALOG_TEXT')
-            .subscribe((acceptedByUser) => {
+            .subscribe(acceptedByUser => {
                 if (acceptedByUser) {
                     this.zahlungRS.deleteAllZahlungsauftraege();
                 }
@@ -170,7 +170,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public gesuchVerfuegen(): void {
         this.createAndOpenRemoveDialog$('GESUCH_VERFUEGEN_DIALOG_TITLE', 'GESUCH_VERFUEGEN_DIALOG_TEXT')
-            .subscribe((acceptedByUser) => {
+            .subscribe(acceptedByUser => {
                 if (acceptedByUser) {
                     this.gesuchRS.gesuchVerfuegen(this.verfuegenGesuchid);
                 }
@@ -192,19 +192,19 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     private createLinkDialog(response: any) {
-        //einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
+        // einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
         const uuidPartOfString = response.data ? response.data.slice(-36) : '';
         this.createAndOpenLinkDialog$(
             response.data,
-            '#/gesuch/fall////' + uuidPartOfString + '//', //nicht alle Parameter werden benoetigt, deswegen sind sie leer
+            '#/gesuch/fall////' + uuidPartOfString + '//', // nicht alle Parameter werden benoetigt, deswegen sind sie leer
         );
     }
 
     private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: title,
-            link: link,
+            title,
+            link,
         };
 
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();

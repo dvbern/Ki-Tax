@@ -36,7 +36,7 @@ export class DvPosteingangComponent implements OnDestroy {
     private readonly unsubscribe$ = new Subject<void>();
     public mitteilungenCount$: Observable<number>;
 
-    constructor(private readonly mitteilungRS: MitteilungRS,
+    public constructor(private readonly mitteilungRS: MitteilungRS,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly authLifeCycleService: AuthLifeCycleService,
                 private readonly posteingangService: PosteingangService) {
@@ -76,7 +76,7 @@ export class DvPosteingangComponent implements OnDestroy {
         return from(this.mitteilungRS.getAmountMitteilungenForCurrentBenutzer()
             .then(response => !response || isNaN(response) ? 0 : response)
             .catch(() => {
-                //Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
+                // Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
                 // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
                 this.log.debug('received error message while reading posteingang. Ignoring ...');
                 return 0;

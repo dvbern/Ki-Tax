@@ -16,19 +16,19 @@
 import {IDirective, IDirectiveFactory, IHttpService, IPromise, ITimeoutService} from 'angular';
 
 export class DVLoading implements IDirective {
-    restrict = 'A';
-    controller = DVLoadingController;
-    controllerAs = 'vm';
+    public restrict = 'A';
+    public controller = DVLoadingController;
+    public controllerAs = 'vm';
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVLoading();
         directive.$inject = [];
         return directive;
     }
 
-    link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, controller: DVLoadingController) => {
+    public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, controller: DVLoadingController) => {
         let promise: IPromise<any>;
-        scope.$watch(controller.isLoading, (v) => {
+        scope.$watch(controller.isLoading, v => {
 
             if (v) {
                 controller.$timeout.cancel(promise);
@@ -48,11 +48,11 @@ export class DVLoading implements IDirective {
  */
 export class DVLoadingController {
 
-    static $inject: string[] = ['$http', '$timeout'];
+    public static $inject: string[] = ['$http', '$timeout'];
 
-    isLoading: () => {};
+    public isLoading: () => {};
 
-    constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService) {
+    public constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService) {
         this.isLoading = (): boolean => {
             return this.$http.pendingRequests.length > 0;
         };

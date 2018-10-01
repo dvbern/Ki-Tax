@@ -35,23 +35,23 @@ import ILogService = angular.ILogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class StatistikViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./statistikView.html');
-    controller = StatistikViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./statistikView.html');
+    public controller = StatistikViewController;
+    public controllerAs = 'vm';
 }
 
 export class StatistikViewController implements IController {
 
-    get statistikParameter(): TSStatistikParameter {
+    public get statistikParameter(): TSStatistikParameter {
         return this._statistikParameter;
     }
 
-    get gesuchsperioden(): Array<TSGesuchsperiode> {
+    public get gesuchsperioden(): Array<TSGesuchsperiode> {
         return this._gesuchsperioden;
     }
 
-    static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS', 'BatchJobRS',
+    public static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS', 'BatchJobRS',
         'ErrorService', '$translate', '$interval'];
 
     public readonly TSStatistikParameterType = TSStatistikParameterType;
@@ -59,8 +59,8 @@ export class StatistikViewController implements IController {
     private polling: IPromise<any>;
     private _statistikParameter: TSStatistikParameter;
     private _gesuchsperioden: Array<TSGesuchsperiode>;
-    TSRole = TSRole;
-    TSRoleUtil = TSRoleUtil;
+    public TSRole = TSRole;
+    public TSRoleUtil = TSRoleUtil;
     private readonly DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
     private maxDate: moment.Moment;
@@ -68,7 +68,7 @@ export class StatistikViewController implements IController {
     private userjobs: Array<TSWorkJob>;
     private allJobs: Array<TSBatchJobInformation>;
 
-    constructor(private readonly $state: StateService,
+    public constructor(private readonly $state: StateService,
                 private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                 private readonly $log: ILogService,
                 private readonly reportAsyncRS: ReportAsyncRS,
@@ -79,7 +79,7 @@ export class StatistikViewController implements IController {
                 private readonly $interval: IIntervalService) {
     }
 
-    $onInit() {
+    public $onInit() {
         this._statistikParameter = new TSStatistikParameter();
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: any) => {
             this._gesuchsperioden = response;
@@ -93,7 +93,7 @@ export class StatistikViewController implements IController {
         this.initBatchJobPolling();
     }
 
-    $onDestroy() {
+    public $onDestroy() {
         if (this.polling) {
             this.$interval.cancel(this.polling);
             this.$log.debug('canceld job polling');
@@ -101,7 +101,7 @@ export class StatistikViewController implements IController {
     }
 
     private initBatchJobPolling() {
-        //check all 8 seconds for the state
+        // check all 8 seconds for the state
         this.polling = this.$interval(() => this.refreshUserJobs(), 12000);
 
     }
@@ -241,7 +241,7 @@ export class StatistikViewController implements IController {
     public rowClicked(row: TSWorkJob) {
         if (EbeguUtil.isNotNullOrUndefined(row) && EbeguUtil.isNotNullOrUndefined(row.execution)) {
             if (EbeguUtil.isNotNullOrUndefined(row.execution.batchStatus) && row.execution.batchStatus === 'COMPLETED') {
-                const win: Window = this.downloadRS.prepareDownloadWindow();
+                const win = this.downloadRS.prepareDownloadWindow();
                 this.$log.debug('accessToken: ' + row.resultData);
                 this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
             } else {
@@ -256,7 +256,7 @@ export class StatistikViewController implements IController {
     public showAllJobs() {
         this.bachJobRS.getAllJobs().then((result: TSWorkJob[]) => {
             let res: TSBatchJobInformation[] = [];
-            res = res.concat(result.map((value) => {
+            res = res.concat(result.map(value => {
                 return value.execution || undefined;
             }));
             this.allJobs = res;

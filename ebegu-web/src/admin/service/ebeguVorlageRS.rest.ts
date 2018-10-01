@@ -19,18 +19,17 @@ import TSEbeguVorlage from '../../models/TSEbeguVorlage';
 import IQService = angular.IQService;
 import IHttpPromise = angular.IHttpPromise;
 
-
 export class EbeguVorlageRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly upload: any,
-                private readonly $q: IQService) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly upload: any,
+                       private readonly $q: IQService) {
         this.serviceURL = REST_API + 'ebeguVorlage';
     }
 
@@ -57,7 +56,7 @@ export class EbeguVorlageRS {
                 'x-progesuchsperiode': proGesuchsperiode,
             },
             data: {
-                file: file,
+                file,
             }
         }).then((response: any) => {
             return this.ebeguRestUtil.parseEbeguVorlage(new TSEbeguVorlage(), response.data);
@@ -67,7 +66,7 @@ export class EbeguVorlageRS {
         }, (evt: any) => {
             const loaded: number = evt.loaded;
             const total: number = evt.total;
-            const progressPercentage: number = 100.0 * loaded / total;
+            const progressPercentage = 100.0 * loaded / total;
             console.log('progress: ' + progressPercentage + '% ');
             return this.$q.defer().notify();
         });

@@ -27,37 +27,37 @@ import IScope = angular.IScope;
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DVVorlageListConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         ebeguVorlageList: '<',
         isReadonly: '&',
         gesuchsperiode: '<',
         proGesuchsperiode: '<'
     };
-    template = require('./dv-vorlage-list.html');
-    controller = DVVorlageListController;
-    controllerAs = 'vm';
+    public template = require('./dv-vorlage-list.html');
+    public controller = DVVorlageListController;
+    public controllerAs = 'vm';
 }
 
 export class DVVorlageListController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
+    public static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
         'EbeguUtil', '$scope'];
 
-    ebeguVorlageList: TSEbeguVorlage[];
-    isReadonly: () => void;
-    gesuchsperiode: TSGesuchsperiode;
-    proGesuchsperiode: boolean;
+    public ebeguVorlageList: TSEbeguVorlage[];
+    public isReadonly: () => void;
+    public gesuchsperiode: TSGesuchsperiode;
+    public proGesuchsperiode: boolean;
 
-    constructor(private readonly downloadRS: DownloadRS,
-                private readonly $log: ILogService,
-                private readonly ebeguVorlageRS: EbeguVorlageRS,
-                private readonly dvDialog: DvDialog,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly $scope: IScope) {
+    public constructor(private readonly downloadRS: DownloadRS,
+                       private readonly $log: ILogService,
+                       private readonly ebeguVorlageRS: EbeguVorlageRS,
+                       private readonly dvDialog: DvDialog,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly $scope: IScope) {
     }
 
-    $onInit() {
+    public $onInit() {
         this.updateVorlageList();
         if (this.proGesuchsperiode) {
             this.$scope.$watch(() => {
@@ -85,50 +85,50 @@ export class DVVorlageListController implements IController {
         }
     }
 
-    hasVorlage(selectVorlage: TSEbeguVorlage): boolean {
+    public hasVorlage(selectVorlage: TSEbeguVorlage): boolean {
         if (selectVorlage.vorlage) {
             return true;
         }
         return false;
     }
 
-    isListReadonly(): void {
+    public isListReadonly(): void {
         this.isReadonly();
     }
 
-    download(ebeguVorlage: TSEbeguVorlage, attachment: boolean) {
+    public download(ebeguVorlage: TSEbeguVorlage, attachment: boolean) {
         this.$log.debug('download vorlage ' + ebeguVorlage.vorlage.filename);
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
 
         this.downloadRS.getAccessTokenVorlage(ebeguVorlage.vorlage.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
             })
-            .catch((ex) => {
+            .catch(ex => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
     }
 
-    uploadAnhaenge(files: any[], selectEbeguVorlage: TSEbeguVorlage) {
+    public uploadAnhaenge(files: any[], selectEbeguVorlage: TSEbeguVorlage) {
         this.$log.debug('Uploading files ');
 
-        let gesuchsperiodeID = undefined;
+        let gesuchsperiodeID;
         if (this.proGesuchsperiode && this.gesuchsperiode) {
             gesuchsperiodeID = this.gesuchsperiode.id;
         }
-        this.ebeguVorlageRS.uploadVorlage(files[0], selectEbeguVorlage, gesuchsperiodeID, this.proGesuchsperiode).then((response) => {
+        this.ebeguVorlageRS.uploadVorlage(files[0], selectEbeguVorlage, gesuchsperiodeID, this.proGesuchsperiode).then(response => {
             this.addResponseToCurrentList(response);
         });
     }
 
     private addResponseToCurrentList(response: TSEbeguVorlage) {
-        const returnedDG: TSEbeguVorlage = angular.copy(response);
+        const returnedDG = angular.copy(response);
         const index = this.getIndexOfElement(returnedDG, this.ebeguVorlageList);
 
         if (index > -1) {
-            //this.$log.debug('add dokument to dokumentList');
+            // this.$log.debug('add dokument to dokumentList');
             this.ebeguVorlageList[index] = returnedDG;
         }
         EbeguUtil.handleSmarttablesUpdateBug(this.ebeguVorlageList);
@@ -152,9 +152,9 @@ export class DVVorlageListController implements IController {
             parentController: undefined,
             elementID: undefined
         })
-            .then(() => {   //User confirmed removal
+            .then(() => {   // User confirmed removal
 
-                this.ebeguVorlageRS.deleteEbeguVorlage(ebeguVorlage.id).then((response) => {
+                this.ebeguVorlageRS.deleteEbeguVorlage(ebeguVorlage.id).then(response => {
 
                     const index = EbeguUtil.getIndexOfElementwithID(ebeguVorlage, this.ebeguVorlageList);
                     if (index > -1) {

@@ -32,7 +32,6 @@ import TSEWKPerson from '../models/TSEWKPerson';
 import TSEWKResultat from '../models/TSEWKResultat';
 import TSFall from '../models/TSFall';
 import TSGesuch from '../models/TSGesuch';
-import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import DateUtil from '../utils/DateUtil';
 import EbeguUtil from '../utils/EbeguUtil';
@@ -47,37 +46,37 @@ const LOG = LogFactory.createLog('GesuchRouteController');
 
 export class GesuchRouteController implements IController {
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil',
+    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'EbeguUtil',
         'ErrorService',
         'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS',
         '$rootScope'];
 
-    TSRole = TSRole;
-    TSRoleUtil = TSRoleUtil;
-    openEwkSidenav: boolean;
+    public TSRole = TSRole;
+    public TSRoleUtil = TSRoleUtil;
+    public openEwkSidenav: boolean;
 
     public userFullName = '';
 
-    constructor(private readonly gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager,
-                private readonly wizardStepManager: WizardStepManager,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly errorService: ErrorService,
-                private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
-                private readonly $translate: ITranslateService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $mdSidenav: ISidenavService,
-                private readonly CONSTANTS: any,
-                private readonly gesuchstellerRS: GesuchstellerRS,
-                private readonly ewkRS: EwkRS,
-                private readonly $rootScope: IRootScopeService) {
-        //super(gesuchModelManager, berechnungsManager, wizardStepManager);
+    public constructor(private readonly gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly wizardStepManager: WizardStepManager,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly errorService: ErrorService,
+                       private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+                       private readonly $translate: ITranslateService,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $mdSidenav: ISidenavService,
+                       private readonly CONSTANTS: any,
+                       private readonly gesuchstellerRS: GesuchstellerRS,
+                       private readonly ewkRS: EwkRS,
+                       private readonly $rootScope: IRootScopeService) {
+        // super(gesuchModelManager, berechnungsManager, wizardStepManager);
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
 
         this.userFullName = this.antragStatusHistoryRS.getUserFullname();
     }
 
-    showFinanzielleSituationStart(): boolean {
+    public showFinanzielleSituationStart(): boolean {
         return this.gesuchModelManager.showFinanzielleSituationStart();
     }
 
@@ -166,13 +165,13 @@ export class GesuchRouteController implements IController {
      * @returns {string}
      */
     public getGesuchStatusTranslation(): string {
-        let toTranslate: TSAntragStatus = TSAntragStatus.IN_BEARBEITUNG_JA;
+        let toTranslate = TSAntragStatus.IN_BEARBEITUNG_JA;
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
             toTranslate = this.gesuchModelManager.calculateNewStatus(this.gesuchModelManager.getGesuch().status);
         }
-        const isUserGesuchsteller: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
-        const isUserAmt: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
-        const isUserSTV: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
+        const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        const isUserAmt = this.authServiceRS.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
+        const isUserSTV = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
 
         if (toTranslate === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
             if (TSGesuchBetreuungenStatus.ABGEWIESEN === this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus) {
@@ -270,9 +269,9 @@ export class GesuchRouteController implements IController {
     }
 
     public getGesuchstellerTitle(gsnumber: number): string {
-        const gs: TSGesuchsteller = this.ewkRS.getGesuchsteller(gsnumber).gesuchstellerJA;
+        const gs = this.ewkRS.getGesuchsteller(gsnumber).gesuchstellerJA;
         if (gs) {
-            const title: string = gs.getFullName();
+            const title = gs.getFullName();
             if (gs.ewkPersonId) {
                 return title + ' (' + gs.ewkPersonId + ')';
             }
@@ -358,7 +357,7 @@ export class GesuchRouteController implements IController {
                 default:
                     break;
             }
-        }).catch((exception) => {
+        }).catch(exception => {
             const bussinesExceptionMitFehlercode = this.errorService.getErrors()
                 .some(e => e.errorCodeEnum === 'ERROR_PERSONENSUCHE_BUSINESS' && e.argumentList[0]);
 
@@ -389,7 +388,7 @@ export class GesuchRouteController implements IController {
 
     public isGesuchGesperrt(): boolean {
         if (this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde === true;
+            return this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
         }
         return false;
     }

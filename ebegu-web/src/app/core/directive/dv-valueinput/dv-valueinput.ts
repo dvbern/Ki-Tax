@@ -19,12 +19,12 @@ declare let require: any;
 declare let angular: any;
 
 export class DVValueinput implements IDirective {
-    restrict = 'E';
-    require = {ngModelCtrl: 'ngModel', dvValueInputCtrl: 'dvValueinput'};
-    scope = {};
-    controller = ValueinputController;
-    controllerAs = 'vm';
-    bindToController = {
+    public restrict = 'E';
+    public require = {ngModelCtrl: 'ngModel', dvValueInputCtrl: 'dvValueinput'};
+    public scope = {};
+    public controller = ValueinputController;
+    public controllerAs = 'vm';
+    public bindToController = {
         ngModel: '=',
         inputId: '@',
         ngRequired: '<',
@@ -35,10 +35,10 @@ export class DVValueinput implements IDirective {
         dvOnBlur: '&?',
         inputName: '@?',
     };
-    template = require('./dv-valueinput.html');
-    link: IDirectiveLinkFn;
+    public template = require('./dv-valueinput.html');
+    public link: IDirectiveLinkFn;
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVValueinput();
         directive.$inject = [];
         return directive;
@@ -46,18 +46,18 @@ export class DVValueinput implements IDirective {
 }
 export class ValueinputController {
 
-    static $inject: string[] = ['$timeout'];
+    public static $inject: string[] = ['$timeout'];
 
-    valueinput: string;
-    ngModelCtrl: INgModelController;
-    valueRequired: boolean;
-    ngRequired: boolean;
-    allowNegative: boolean;
-    float: boolean;
-    fixedDecimals: number;
-    dvOnBlur: () => void;
+    public valueinput: string;
+    public ngModelCtrl: INgModelController;
+    public valueRequired: boolean;
+    public ngRequired: boolean;
+    public allowNegative: boolean;
+    public float: boolean;
+    public fixedDecimals: number;
+    public dvOnBlur: () => void;
 
-    constructor(private readonly $timeout: ITimeoutService) {
+    public constructor(private readonly $timeout: ITimeoutService) {
     }
 
     private static numberToString(num: number): string {
@@ -77,25 +77,25 @@ export class ValueinputController {
     private static formatToNumberString(valueString: string): string {
         if (valueString !== null && valueString !== undefined) {
             const parts = valueString.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\'');
             return parts.join('.');
         }
         return valueString;
     }
 
     private static formatFromNumberString(numberString: string): string {
-        return numberString.split("'").join('').split(',').join('');
+        return numberString.split('\'').join('').split(',').join('');
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
-    $onChanges(changes: any) {
+    public $onChanges(changes: any) {
         if (changes.ngRequired && !changes.ngRequired.isFirstChange()) {
             this.valueRequired = changes.ngRequired.currentValue;
         }
     }
 
-    //wird von angular aufgerufen
-    $onInit() {
+    // wird von angular aufgerufen
+    public $onInit() {
         if (!this.ngModelCtrl) {
             return;
         }
@@ -118,7 +118,7 @@ export class ValueinputController {
         this.ngModelCtrl.$formatters.unshift(ValueinputController.numberToString);
         this.ngModelCtrl.$parsers.push(ValueinputController.stringToNumber);
 
-        this.ngModelCtrl.$validators['valueinput'] = (modelValue: any, viewValue: any) => {
+        this.ngModelCtrl.$validators.valueinput = (modelValue, viewValue) => {
             // if not required and view value empty, it's ok...
             if (!this.valueRequired && !viewValue) {
                 return true;
@@ -146,7 +146,7 @@ export class ValueinputController {
 
         this.valueinput = this.sanitizeInputString();
         if (event) {
-            const angEle: IAugmentedJQuery = angular.element(event.target); //read raw html element
+            const angEle: IAugmentedJQuery = angular.element(event.target); // read raw html element
 
             const element: any = angEle[0];
             this.$timeout(() => {
@@ -164,11 +164,11 @@ export class ValueinputController {
 
     }
 
-    updateModelValue() {
-        //set the number as formatted string to the model
+    public updateModelValue() {
+        // set the number as formatted string to the model
         if (this.valueinput) {
-            //if a number of fixed decimals are requested make the transformation on blur
-            if (this.float === true && !isNaN(this.fixedDecimals)) {
+            // if a number of fixed decimals are requested make the transformation on blur
+            if (this.float && !isNaN(this.fixedDecimals)) {
                 this.valueinput = parseFloat(this.valueinput).toFixed(this.fixedDecimals);
             }
             this.valueinput = ValueinputController.formatToNumberString(ValueinputController.formatFromNumberString(this.valueinput));
@@ -184,9 +184,9 @@ export class ValueinputController {
     public removeNotDigits(): void {
         const transformedInput = this.sanitizeInputString();
 
-        //neuen wert ins model schreiben
+        // neuen wert ins model schreiben
         if (transformedInput && transformedInput !== this.ngModelCtrl.$viewValue) {
-            //setting the new raw number into the invisible parentmodel
+            // setting the new raw number into the invisible parentmodel
             this.ngModelCtrl.$setViewValue(ValueinputController.formatToNumberString(transformedInput));
             this.ngModelCtrl.$render();
         }
@@ -198,8 +198,8 @@ export class ValueinputController {
     private sanitizeInputString() {
         let transformedInput = this.valueinput;
         if (transformedInput) {
-            let sign: string = '';
-            if (this.allowNegative === true && this.valueinput && this.valueinput.indexOf('-') === 0) { // if negative allowed, get sign
+            let sign = '';
+            if (this.allowNegative && this.valueinput && this.valueinput.indexOf('-') === 0) { // if negative allowed, get sign
                 sign = '-';
                 transformedInput.substr(1); // get just the number part
             }
@@ -217,7 +217,7 @@ export class ValueinputController {
         transformedInput = transformedInput.replace(/([^0-9|\.])+/g, '');
         if (transformedInput) {
             const pointIndex = transformedInput.indexOf('.');
-            //only parse if there is either no floating point or the floating point is not at the end. Also dont parse
+            // only parse if there is either no floating point or the floating point is not at the end. Also dont parse
             // if 0 at end
             if (pointIndex === -1 || (pointIndex !== (transformedInput.length - 1) && transformedInput.lastIndexOf('0') !== (transformedInput.length - 1) )) {
                 // parse to float to remove unwanted  digits like leading zeros and then back to string

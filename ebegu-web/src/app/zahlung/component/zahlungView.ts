@@ -31,22 +31,22 @@ import {IZahlungsauftragStateParams} from '../zahlung.route';
 const LOG = LogFactory.createLog('ZahlungViewController');
 
 export class ZahlungViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./zahlungView.html');
-    controller = ZahlungViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./zahlungView.html');
+    public controller = ZahlungViewController;
+    public controllerAs = 'vm';
 }
 
 export class ZahlungViewController implements IController {
 
-    static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
+    public static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
         'AuthServiceRS'];
 
     private zahlungen: TSZahlung[] = [];
 
-    itemsByPage: number = 20;
+    public itemsByPage: number = 20;
 
-    constructor(private readonly zahlungRS: ZahlungRS,
+    public constructor(private readonly zahlungRS: ZahlungRS,
                 private readonly CONSTANTS: any,
                 private readonly $stateParams: IZahlungsauftragStateParams,
                 private readonly $state: StateService,
@@ -85,7 +85,7 @@ export class ZahlungViewController implements IController {
     }
 
     public downloadDetails(zahlung: TSZahlung) {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungReportExcel(zahlung.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);

@@ -33,28 +33,28 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./finanzielleSituationView.html');
-    controller = FinanzielleSituationViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./finanzielleSituationView.html');
+    public controller = FinanzielleSituationViewController;
+    public controllerAs = 'vm';
 }
 
 export class FinanzielleSituationViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
-    allowedRoles: Array<TSRole>;
+    public allowedRoles: Array<TSRole>;
 
     private readonly initialModel: TSFinanzModel;
 
-    constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
+    public constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
-        let parsedNum: number = parseInt($stateParams.gesuchstellerNumber, 10);
+        let parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         if (!parsedNum) {
             parsedNum = 1;
         }
@@ -89,29 +89,29 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         }
     }
 
-    showSteuerveranlagung(): boolean {
+    public showSteuerveranlagung(): boolean {
         return !this.model.gemeinsameSteuererklaerung;
     }
 
-    showSteuererklaerung(): boolean {
-        return this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten === false;
+    public showSteuererklaerung(): boolean {
+        return !this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten;
     }
 
-    //hier neu init
+    // hier neu init
     public steuerveranlagungClicked(): void {
         // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
-        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten === true) {
+        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
-            if (this.model.gemeinsameSteuererklaerung === true) {
+            if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
             }
-        } else if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten === false) {
+        } else if (!this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
             // Steuerveranlagung neu NEIN -> Fragen loeschen
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
-            if (this.model.gemeinsameSteuererklaerung === true) {
+            if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
             }
@@ -132,11 +132,11 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return undefined;
     }
 
-    calculate() {
+    public calculate() {
         this.berechnungsManager.calculateFinanzielleSituationTemp(this.model);
     }
 
-    resetForm() {
+    public resetForm() {
         this.initViewModel();
     }
 
@@ -157,7 +157,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             const gew3 = finSitGS.geschaeftsgewinnBasisjahrMinus2;
             const basisjahr = this.gesuchModelManager.getBasisjahr();
             return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG',
-                {basisjahr: basisjahr, gewinn1: gew1, gewinn2: gew2, gewinn3: gew3});
+                {basisjahr, gewinn1: gew1, gewinn2: gew2, gewinn3: gew3});
 
             // return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
             //     name: fachstelle.fachstelle.name,

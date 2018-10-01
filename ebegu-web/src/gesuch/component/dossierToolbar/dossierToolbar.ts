@@ -49,8 +49,8 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 // TODO hefa multiple components in 1 file!?
 
 export class DossierToolbarComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         gesuchid: '@',
         dossierId: '@',
         isDashboardScreen: '@',
@@ -58,14 +58,14 @@ export class DossierToolbarComponentConfig implements IComponentOptions {
         forceLoadingFromFall: '@'
     };
 
-    template = require('./dossierToolbar.html');
-    controller = DossierToolbarController;
-    controllerAs = 'vmx';
+    public template = require('./dossierToolbar.html');
+    public controller = DossierToolbarController;
+    public controllerAs = 'vmx';
 }
 
 export class DossierToolbarGesuchstellerComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         gesuchid: '@',
         dossierId: '@',
         fallId: '@',
@@ -73,57 +73,57 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
     };
-    template = require('./dossierToolbarGesuchsteller.html');
-    controller = DossierToolbarController;
+    public template = require('./dossierToolbarGesuchsteller.html');
+    public controller = DossierToolbarController;
     // Darf, wie es scheint nicht 'vm' heissen, sonst werden im dossierToolBarGesuchsteller.html keine Funktionen
     // gefunden. Bug?!
-    controllerAs = 'vmgs';
+    public controllerAs = 'vmgs';
 }
 
 export class DossierToolbarController implements IDVFocusableController {
 
-    static $inject = ['EbeguUtil', 'GesuchRS', '$state',
+    public static $inject = ['EbeguUtil', 'GesuchRS', '$state',
         '$scope', 'GesuchModelManager', 'AuthServiceRS', '$mdSidenav', '$log', 'GesuchsperiodeRS',
         'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS'];
 
-    antragList: Array<TSAntragDTO>;
-    gesuchid: string;
-    isDashboardScreen: boolean;
-    hideActionButtons: boolean;
-    TSRoleUtil = TSRoleUtil;
-    forceLoadingFromFall: boolean;
+    public antragList: Array<TSAntragDTO>;
+    public gesuchid: string;
+    public isDashboardScreen: boolean;
+    public hideActionButtons: boolean;
+    public TSRoleUtil = TSRoleUtil;
+    public forceLoadingFromFall: boolean;
     public dossierId: string;
     public fallId: string; // todo ramon -> dossierToolbar sollte den Fall nicht direkt kennen
     public dossier: TSDossier;
 
-    gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
-    gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den
+    public gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
+    public gesuchNavigationList: { [key: string]: Array<string> } = {};   // mapped z.B. '2006 / 2007' auf ein array mit den
                                                                    // Namen der Antraege
-    antragTypList: { [key: string]: TSAntragDTO } = {};
-    gemeindeId: string;
-    mutierenPossibleForCurrentAntrag: boolean = false;
-    erneuernPossibleForCurrentAntrag: boolean = false;
-    neuesteGesuchsperiode: TSGesuchsperiode;
-    amountNewMitteilungenGS: number = 0;
+    public antragTypList: { [key: string]: TSAntragDTO } = {};
+    public gemeindeId: string;
+    public mutierenPossibleForCurrentAntrag: boolean = false;
+    public erneuernPossibleForCurrentAntrag: boolean = false;
+    public neuesteGesuchsperiode: TSGesuchsperiode;
+    public amountNewMitteilungenGS: number = 0;
 
-    constructor(private readonly ebeguUtil: EbeguUtil,
-                private readonly gesuchRS: GesuchRS,
-                private readonly $state: StateService, private readonly $scope: IScope,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $mdSidenav: ng.material.ISidenavService,
-                private readonly $log: ILogService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly dvDialog: DvDialog,
-                private readonly unsavedWarningSharedService: any,
-                private readonly mitteilungRS: MitteilungRS,
-                private readonly dossierRS: DossierRS) {
+    public constructor(private readonly ebeguUtil: EbeguUtil,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly $state: StateService, private readonly $scope: IScope,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $mdSidenav: ng.material.ISidenavService,
+                       private readonly $log: ILogService,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly dvDialog: DvDialog,
+                       private readonly unsavedWarningSharedService: any,
+                       private readonly mitteilungRS: MitteilungRS,
+                       private readonly dossierRS: DossierRS) {
 
     }
 
-    $onInit() {
+    public $onInit() {
         this.updateAntragDTOList();
-        //add watchers
+        // add watchers
         this.addWatchers(this.$scope);
         this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             // Die neueste ist zuoberst
@@ -156,7 +156,7 @@ export class DossierToolbarController implements IDVFocusableController {
     private addWatchers($scope: angular.IScope) {
         // needed because of test is not able to inject $scope!
         if ($scope) {
-            //watcher fuer gesuch id change
+            // watcher fuer gesuch id change
             $scope.$watch(() => {
                 return this.gesuchid;
             }, (newValue, oldValue) => {
@@ -169,12 +169,12 @@ export class DossierToolbarController implements IDVFocusableController {
                         this.gesuchNavigationList = {};
                         this.gesuchsperiodeList = {};
                         this.antragList = [];
-                        this.antragMutierenPossible(); //neu berechnen ob mutieren moeglich ist
+                        this.antragMutierenPossible(); // neu berechnen ob mutieren moeglich ist
                         this.antragErneuernPossible();
                     }
                 }
             });
-            //watcher fuer status change
+            // watcher fuer status change
             if (this.gesuchModelManager && this.getGesuch()) {
                 $scope.$watch(() => {
                     if (this.getGesuch()) {
@@ -187,7 +187,7 @@ export class DossierToolbarController implements IDVFocusableController {
                     }
                 });
             }
-            //watcher fuer dossier id change
+            // watcher fuer dossier id change
             $scope.$watch(() => {
                 return this.dossierId;
             }, (newValue, oldValue) => {
@@ -202,7 +202,7 @@ export class DossierToolbarController implements IDVFocusableController {
                         this.gesuchNavigationList = {};
                         this.gesuchsperiodeList = {};
                         this.antragList = [];
-                        this.antragMutierenPossible(); //neu berechnen ob mutieren moeglich ist
+                        this.antragMutierenPossible(); // neu berechnen ob mutieren moeglich ist
                         this.antragErneuernPossible();
                     }
                 }
@@ -242,7 +242,7 @@ export class DossierToolbarController implements IDVFocusableController {
                     this.dossier = response;
                     this.gemeindeId = this.dossier.gemeinde.id;
                     if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-                        this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then((response) => {
+                        this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then(response => {
                             this.antragList = angular.copy(response);
                             this.updateGesuchperiodeList();
                             this.updateGesuchNavigationList();
@@ -251,11 +251,11 @@ export class DossierToolbarController implements IDVFocusableController {
                             this.antragErneuernPossible();
                         });
                     } else if (this.dossier) {
-                        this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
+                        this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(response => {
                             this.antragList = angular.copy(response);
                             if (response && response.length > 0) {
                                 const newest = this.getNewest(this.antragList);
-                                this.gesuchRS.findGesuch(newest.antragId).then((response) => {
+                                this.gesuchRS.findGesuch(newest.antragId).then(response => {
                                     if (!response) {
                                         this.$log.warn('Could not find gesuch for id ' + newest.antragId);
                                     }
@@ -314,7 +314,7 @@ export class DossierToolbarController implements IDVFocusableController {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const gs = this.antragList[i].gesuchsperiodeString;
-            const antrag: TSAntragDTO = this.antragList[i];
+            const antrag = this.antragList[i];
 
             if (!this.gesuchNavigationList[gs]) {
                 this.gesuchNavigationList[gs] = [];
@@ -325,10 +325,10 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private updateAntragTypList() {
-        this.antragTypList = {};  //clear
+        this.antragTypList = {};  // clear
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
-            const antrag: TSAntragDTO = this.antragList[i];
+            const antrag = this.antragList[i];
             if (this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
                 const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp,
                     antrag.eingangsdatum,
@@ -340,7 +340,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
     }
 
-    getKeys(map: { [key: string]: Array<TSAntragDTO> }): Array<String> {
+    public getKeys(map: { [key: string]: Array<TSAntragDTO> }): Array<String> {
         const keys: Array<String> = [];
         for (const key in map) {
             if (map.hasOwnProperty(key)) {
@@ -378,13 +378,13 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public setGesuchsperiode(gesuchsperiodeKey: string) {
         const selectedGesuche = this.gesuchsperiodeList[gesuchsperiodeKey];
-        const selectedGesuch: TSAntragDTO = this.getNewest(selectedGesuche);
+        const selectedGesuch = this.getNewest(selectedGesuche);
 
         this.goToOpenGesuch(selectedGesuch.antragId);
     }
 
     private getNewest(arrayTSAntragDTO: Array<TSAntragDTO>): TSAntragDTO {
-        let newest: TSAntragDTO = arrayTSAntragDTO[0];
+        let newest = arrayTSAntragDTO[0];
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < arrayTSAntragDTO.length; i++) {
             // Wenn eines noch gar kein Eingangsdatum hat ist es sicher das neueste
@@ -420,7 +420,7 @@ export class DossierToolbarController implements IDVFocusableController {
         const tmpAntragList: { [key: string]: TSAntragDTO } = {};
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
-            const antrag: TSAntragDTO = this.antragList[i];
+            const antrag = this.antragList[i];
             if (this.gesuchsperiodeList[gesuchperiodeKey][0].gesuchsperiodeGueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
                 const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp,
                     antrag.eingangsdatum,
@@ -453,12 +453,12 @@ export class DossierToolbarController implements IDVFocusableController {
             let mutierenGesperrt = false;
             // tslint:disable-next-line:prefer-for-of
             for (let i = 0; i < this.antragList.length; i++) {
-                const antragItem: TSAntragDTO = this.antragList[i];
+                const antragItem = this.antragList[i];
                 // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
                 if (antragItem.gesuchsperiodeString === this.getCurrentGesuchsperiode()) {
                     // Falls wir ein Gesuch finden das nicht verfuegt ist oder eine Beschwerde hängig ist, darf nicht
                     // mutiert werden
-                    if (antragItem.verfuegt === false || antragItem.beschwerdeHaengig === true) {
+                    if (!antragItem.verfuegt || antragItem.beschwerdeHaengig) {
                         mutierenGesperrt = true;
                         break;
                     }
@@ -480,7 +480,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
         this.$state.go('gesuch.mutation', {
             creationAction: TSCreationAction.CREATE_NEW_MUTATION,
-            eingangsart: eingangsart,
+            eingangsart,
             gesuchsperiodeId: this.getGesuch().gesuchsperiode.id,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
             dossierId: this.getGesuch().dossier.id,
@@ -492,7 +492,7 @@ export class DossierToolbarController implements IDVFocusableController {
             let erneuernGesperrt = false;
             // tslint:disable-next-line:prefer-for-of
             for (let i = 0; i < this.antragList.length; i++) {
-                const antragItem: TSAntragDTO = this.antragList[i];
+                const antragItem = this.antragList[i];
                 // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
                 if (antragItem.gesuchsperiodeString === this.getGesuchsperiodeAsString(this.neuesteGesuchsperiode)) {
                     // Es gibt schon (mindestens 1) Gesuch für die neueste Periode
@@ -525,7 +525,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
         this.$state.go('gesuch.erneuerung', {
             creationAction: TSCreationAction.CREATE_NEW_FOLGEGESUCH,
-            eingangsart: eingangsart,
+            eingangsart,
             gesuchsperiodeId: this.neuesteGesuchsperiode.id,
             dossierId: this.dossier.id,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
@@ -615,7 +615,7 @@ export class DossierToolbarController implements IDVFocusableController {
         const forms: [IFormController] = this.unsavedWarningSharedService.allForms();
         // tslint:disable-next-line:prefer-for-of
         for (let index = 0; index < forms.length; index++) {
-            const form: IFormController = forms[index];
+            const form = forms[index];
             form.$setPristine();
             form.$setUntouched();
         }
@@ -636,7 +636,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
         this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
-            text: text,
+            text,
             parentController: this
         });
     }

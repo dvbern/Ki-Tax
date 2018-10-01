@@ -24,11 +24,11 @@ import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
  */
 export class DVsTPersistService {
 
-    static $inject: any = ['AuthLifeCycleService'];
+    public static $inject: any = ['AuthLifeCycleService'];
 
-    persistedData: TSSTPersistObject[];
+    public persistedData: TSSTPersistObject[];
 
-    constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
         this.clearAll();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
@@ -40,7 +40,7 @@ export class DVsTPersistService {
     }
 
     public saveData(namespace: string, data: any): void {
-        const existingData: TSSTPersistObject = this.findNamespace(namespace);
+        const existingData = this.findNamespace(namespace);
         if (existingData) {
             existingData.data = JSON.stringify(data);
         } else {
@@ -49,7 +49,7 @@ export class DVsTPersistService {
     }
 
     public loadData(namespace: string): any {
-        const existingData: TSSTPersistObject = this.findNamespace(namespace);
+        const existingData = this.findNamespace(namespace);
         if (existingData) {
             return JSON.parse(existingData.data);
         }

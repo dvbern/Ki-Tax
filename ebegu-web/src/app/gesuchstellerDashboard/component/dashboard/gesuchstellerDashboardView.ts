@@ -34,29 +34,29 @@ import ILogService = angular.ILogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./gesuchstellerDashboardView.html');
-    controller = GesuchstellerDashboardViewController;
-    controllerAs = 'vm';
-    bindings = {
+    public transclude = false;
+    public template = require('./gesuchstellerDashboardView.html');
+    public controller = GesuchstellerDashboardViewController;
+    public controllerAs = 'vm';
+    public bindings = {
         dossier: '<'
     };
 }
 
 export class GesuchstellerDashboardViewController {
 
-    static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
+    public static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
         '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
 
     private antragList: Array<TSAntragDTO> = [];
     private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
-    dossier: TSDossier;
-    totalResultCount: string = '-';
-    amountNewMitteilungen: number;
+    public dossier: TSDossier;
+    public totalResultCount: string = '-';
+    public amountNewMitteilungen: number;
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
-    mapOfNewestAntraege: { [key: string]: string } = {};
+    public mapOfNewestAntraege: { [key: string]: string } = {};
 
-    constructor(private readonly $state: StateService,
+    public constructor(private readonly $state: StateService,
                 private readonly $log: ILogService,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly searchRS: SearchRS,
@@ -68,7 +68,7 @@ export class GesuchstellerDashboardViewController {
                 private readonly errorService: ErrorService) {
     }
 
-    $onInit() {
+    public $onInit() {
         const params = this.$state.params.gesuchstellerDashboardStateParams;
         if (params && params.infoMessage) {
             this.errorService.addMesageAsInfo(this.$translate.instant(params.infoMessage));
@@ -122,7 +122,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public displayAnsehenButton(periode: TSGesuchsperiode): boolean {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
         if (!antrag) {
             return false;
         }
@@ -135,7 +135,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public openAntrag(periode: TSGesuchsperiode, ansehen: boolean): void {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
@@ -179,7 +179,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public createTagesschule(periode: TSGesuchsperiode): void {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
             this.$state.go('gesuchsteller.createAngebot', {type: 'TS', gesuchId: antrag.antragId});
@@ -189,7 +189,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public createFerieninsel(periode: TSGesuchsperiode): void {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
             this.$state.go('gesuchsteller.createAngebot', {type: 'FI', gesuchId: antrag.antragId});
@@ -199,8 +199,8 @@ export class GesuchstellerDashboardViewController {
     }
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
-        const isSchulamtAngeboteEnabled: boolean = EbeguUtil.isTagesschulangebotEnabled();
+        const antrag = this.getAntragForGesuchsperiode(periode);
+        const isSchulamtAngeboteEnabled = EbeguUtil.isTagesschulangebotEnabled();
         return isSchulamtAngeboteEnabled && periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
@@ -208,7 +208,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     public getButtonText(periode: TSGesuchsperiode): string {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status) {
                 // Noch nicht freigegeben -> Text BEARBEITEN
@@ -255,8 +255,8 @@ export class GesuchstellerDashboardViewController {
      * "Bearbeitung Gesuchsteller"
      */
     public translateStatus(antrag: TSAntragDTO) {
-        const status: TSAntragStatus = antrag.status;
-        const isUserGesuchsteller: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        const status = antrag.status;
+        const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         if (status === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
             if (TSGesuchBetreuungenStatus.ABGEWIESEN === antrag.gesuchBetreuungenStatus) {
                 return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]);
@@ -284,7 +284,7 @@ export class GesuchstellerDashboardViewController {
             if (antrag.verantwortlicherTS) {
                 return antrag.verantwortlicherTS;
             }
-            if (antrag.status === TSAntragStatus.NUR_SCHULAMT) { //legacy for old Faelle where verantwortlicherTS didn't exist
+            if (antrag.status === TSAntragStatus.NUR_SCHULAMT) { // legacy for old Faelle where verantwortlicherTS didn't exist
                 return this.ebeguUtil.translateString('NUR_SCHULAMT');
             }
         }
@@ -292,12 +292,12 @@ export class GesuchstellerDashboardViewController {
     }
 
     public gesperrtWegenMutation(periode: TSGesuchsperiode) {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
         return !!antrag && !this.isNeuestAntragOfGesuchsperiode(periode, antrag);
     }
 
     public hasOnlyFerieninsel(periode: TSGesuchsperiode) {
-        const antrag: TSAntragDTO = this.getAntragForGesuchsperiode(periode);
+        const antrag = this.getAntragForGesuchsperiode(periode);
         return !!antrag && antrag.hasOnlyFerieninsel();
     }
 

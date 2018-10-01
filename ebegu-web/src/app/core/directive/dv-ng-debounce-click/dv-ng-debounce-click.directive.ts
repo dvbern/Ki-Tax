@@ -17,7 +17,6 @@ import {Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnI
 import {debounceTime, throttleTime} from 'rxjs/operators';
 import {Subject, Subscription, merge} from 'rxjs';
 
-
 /**
  * This directive solves the problem of double-click: the user clicks more than once and the action gets executed several times, which is not wanted.
  * There are two alternatives when working with the button as an Observable:
@@ -34,16 +33,16 @@ import {Subject, Subscription, merge} from 'rxjs';
 })
 export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
 
-    @Input() delay = 1000;
-    @Output() debounceClick = new EventEmitter();
+    @Input() public delay = 1000;
+    @Output() public debounceClick = new EventEmitter();
 
     private readonly clicks$ = new Subject();
     private subscription: Subscription;
 
-    constructor(private readonly domElement: ElementRef) {
+    public constructor(private readonly domElement: ElementRef) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         // we throttle and debounce the click. With throttle we get the first click at the beginning of the delay and with debounce the last one
         // at the end of the delay. this way we are able to disable the button and execute the action at the beginning and to enable the button
         // wihtout executing the action at the end of delay
@@ -62,8 +61,7 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
                     this.debounceClick.emit(e);
                 }
                 this.handleDomElement();
-            },
-            (err) => {
+            },err => {
                 console.log('Error. dv-debounce-button-click', err);
             }
         );
@@ -82,13 +80,13 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
         return !this.domElement.nativeElement.disabled;
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.subscription.unsubscribe();
         this.clicks$.complete();
     }
 
     @HostListener('click', ['$event'])
-    clickEvent(event: Event) {
+    public clickEvent(event: Event) {
         event.preventDefault();
         event.stopPropagation();
         this.clicks$.next(event);

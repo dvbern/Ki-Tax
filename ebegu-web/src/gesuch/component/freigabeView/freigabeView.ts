@@ -36,27 +36,27 @@ import ITimeoutService = angular.ITimeoutService;
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FreigabeViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./freigabeView.html');
-    controller = FreigabeViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./freigabeView.html');
+    public controller = FreigabeViewController;
+    public controllerAs = 'vm';
 }
 
 export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager',
+    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager',
         'DvDialog', 'DownloadRS', '$scope', 'ApplicationPropertyRS', 'AuthServiceRS', '$timeout'];
 
-    bestaetigungFreigabequittung: boolean = false;
-    isFreigebenClicked: boolean = false;
+    public bestaetigungFreigabequittung: boolean = false;
+    public isFreigebenClicked: boolean = false;
     private showGesuchFreigebenSimulationButton: boolean = false;
-    TSRoleUtil = TSRoleUtil;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
-                private readonly downloadRS: DownloadRS, $scope: IScope, private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
+    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                       wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
+                       private readonly downloadRS: DownloadRS, $scope: IScope, private readonly applicationPropertyRS: ApplicationPropertyRS,
+                       private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
         this.initViewModel();
@@ -69,7 +69,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public gesuchEinreichen(): IPromise<void> {
         this.isFreigebenClicked = true;
-        if (this.isGesuchValid() && this.bestaetigungFreigabequittung === true) {
+        if (this.isGesuchValid() && this.bestaetigungFreigabequittung) {
             this.form.$setPristine();
             return this.DvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
                 parentController: this
@@ -82,7 +82,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         if (this.gesuchModelManager.isGesuch()) {
             this.openFreigabequittungPDF(true);
         } else {
-            this.gesuchFreigeben(); //wenn keine freigabequittung noetig direkt freigeben
+            this.gesuchFreigeben(); // wenn keine freigabequittung noetig direkt freigeben
         }
     }
 
@@ -94,7 +94,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     private initDevModeParameter() {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             // Simulation nur fuer SuperAdmin freischalten
-            const isSuperadmin: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
+            const isSuperadmin = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
             // Die Simulation ist nur im Dev-Mode moeglich und nur, wenn das Gesuch im Status FREIGABEQUITTUNG ist
             this.showGesuchFreigebenSimulationButton = (response && this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) && isSuperadmin);
         });
@@ -116,7 +116,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public openFreigabequittungPDF(forceCreation: boolean): IPromise<void> {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id, forceCreation)
             .then((downloadFile: TSDownloadFile) => {
                 // wir laden das Gesuch neu, da die Erstellung des Dokumentes auch Aenderungen im Gesuch verursacht
@@ -124,7 +124,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
                     .then(() => {
                         this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
                     })
-                    .catch((ex) => {
+                    .catch(ex => {
                         win.close();
                     });
             });
@@ -174,7 +174,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return this.gesuchModelManager.isGesuch();
     }
 
-    $postLink() {
+    public $postLink() {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 100);

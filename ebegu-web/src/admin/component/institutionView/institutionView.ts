@@ -36,42 +36,42 @@ import IFormController = angular.IFormController;
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class InstitutionViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         traegerschaften: '<',
         mandant: '<'
     };
-    template = require('./institutionView.html');
-    controller = InstitutionViewController;
-    controllerAs = 'vm';
+    public template = require('./institutionView.html');
+    public controller = InstitutionViewController;
+    public controllerAs = 'vm';
 }
 
 export class InstitutionViewController extends AbstractAdminViewController {
 
-    static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
+    public static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
 
-    form: IFormController;
+    public form: IFormController;
 
-    traegerschaften: TSTraegerschaft[];
-    mandant: TSMandant;
-    instStammdatenList: TSInstitutionStammdaten[] = [];
-    selectedInstitution: TSInstitution = undefined;
-    selectedInstitutionStammdaten: TSInstitutionStammdaten = undefined;
-    betreuungsangebotValues: Array<any>;
-    errormessage: string = undefined;
+    public traegerschaften: TSTraegerschaft[];
+    public mandant: TSMandant;
+    public instStammdatenList: TSInstitutionStammdaten[] = [];
+    public selectedInstitution: TSInstitution = undefined;
+    public selectedInstitutionStammdaten: TSInstitutionStammdaten = undefined;
+    public betreuungsangebotValues: Array<any>;
+    public errormessage: string = undefined;
 
-    constructor(private readonly institutionRS: InstitutionRS,
-                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                private readonly errorService: ErrorService,
-                private readonly dvDialog: DvDialog,
-                private readonly ebeguUtil: EbeguUtil,
-                authServiceRS: AuthServiceRS,
-                private readonly $stateParams: IInstitutionStateParams,
-                private readonly $state: StateService) {
+    public constructor(private readonly institutionRS: InstitutionRS,
+                       private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                       private readonly errorService: ErrorService,
+                       private readonly dvDialog: DvDialog,
+                       private readonly ebeguUtil: EbeguUtil,
+                       authServiceRS: AuthServiceRS,
+                       private readonly $stateParams: IInstitutionStateParams,
+                       private readonly $state: StateService) {
         super(authServiceRS);
     }
 
-    $onInit() {
+    public $onInit() {
         this.setBetreuungsangebotTypValues();
         if (this.$stateParams.institutionId) {
             this.institutionRS.findInstitution(this.$stateParams.institutionId).then((found: TSInstitution) => {
@@ -82,36 +82,36 @@ export class InstitutionViewController extends AbstractAdminViewController {
         }
     }
 
-    getTreagerschaftList(): Array<TSTraegerschaft> {
+    public getTreagerschaftList(): Array<TSTraegerschaft> {
         return this.traegerschaften;
     }
 
-    createInstitution(): void {
+    public createInstitution(): void {
         this.selectedInstitution = new TSInstitution();
         this.selectedInstitution.mandant = this.mandant;
         this.selectedInstitutionStammdaten = undefined;
     }
 
-    setSelectedInstitution(institution: TSInstitution): void {
+    public setSelectedInstitution(institution: TSInstitution): void {
         this.selectedInstitution = institution;
         this.selectedInstitutionStammdaten = undefined;
         if (!this.isCreateInstitutionsMode()) {
-            this.institutionStammdatenRS.getAllInstitutionStammdatenByInstitution(this.selectedInstitution.id).then((loadedInstStammdaten) => {
+            this.institutionStammdatenRS.getAllInstitutionStammdatenByInstitution(this.selectedInstitution.id).then(loadedInstStammdaten => {
                 this.instStammdatenList = loadedInstStammdaten;
             });
         }
         this.errormessage = undefined;
     }
 
-    isCreateInstitutionsMode(): boolean {
+    public isCreateInstitutionsMode(): boolean {
         return this.selectedInstitution && this.selectedInstitution.isNew();
     }
 
-    getSelectedInstitution(): TSInstitution {
+    public getSelectedInstitution(): TSInstitution {
         return this.selectedInstitution;
     }
 
-    saveInstitution(form: IFormController): void {
+    public saveInstitution(form: IFormController): void {
         if (form.$valid) {
             this.errorService.clearAll();
             if (this.isCreateInstitutionsMode()) {
@@ -129,29 +129,29 @@ export class InstitutionViewController extends AbstractAdminViewController {
         this.$state.go('admin.institutionen');
     }
 
-    getInstitutionStammdatenList(): TSInstitutionStammdaten[] {
+    public getInstitutionStammdatenList(): TSInstitutionStammdaten[] {
         return this.instStammdatenList;
     }
 
-    removeInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): void {
+    public removeInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): void {
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             deleteText: '',
             title: 'LOESCHEN_DIALOG_TITLE',
             parentController: undefined,
             elementID: undefined,
-        }).then(() => {   //User confirmed removal
-            this.institutionStammdatenRS.removeInstitutionStammdaten(institutionStammdaten.id).then((result) => {
+        }).then(() => {   // User confirmed removal
+            this.institutionStammdatenRS.removeInstitutionStammdaten(institutionStammdaten.id).then(result => {
                 const index = EbeguUtil.getIndexOfElementwithID(institutionStammdaten, this.instStammdatenList);
                 if (index > -1) {
                     this.instStammdatenList.splice(index, 1);
                 }
-            }).catch((ex) => {
+            }).catch(ex => {
                 this.errormessage = 'INSTITUTION_STAMMDATEN_DELETE_FAILED';
             });
         });
     }
 
-    getDateString(dateRange: TSDateRange, format: string): string {
+    public getDateString(dateRange: TSDateRange, format: string): string {
         if (dateRange.gueltigAb) {
             if (!dateRange.gueltigBis) {
                 return dateRange.gueltigAb.format(format);
@@ -162,7 +162,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
         return '';
     }
 
-    getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp) {
+    public getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp) {
         return $.grep(this.betreuungsangebotValues, (value: any) => {
             return value.key === betreuungsangebotTyp;
         })[0];
@@ -172,14 +172,14 @@ export class InstitutionViewController extends AbstractAdminViewController {
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(getTSBetreuungsangebotTypValues());
     }
 
-    editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten) {
+    public editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten) {
         this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: institutionstammdaten.id
         });
     }
 
-    createInstitutionStammdaten(): void {
+    public createInstitutionStammdaten(): void {
         this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: undefined

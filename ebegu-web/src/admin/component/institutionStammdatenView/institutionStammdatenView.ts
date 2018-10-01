@@ -35,88 +35,87 @@ import {IInstitutionStammdatenStateParams} from '../../admin.route';
 import IFormController = angular.IFormController;
 
 export class InstitutionStammdatenViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./institutionStammdatenView.html');
-    controller = InstitutionStammdatenViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./institutionStammdatenView.html');
+    public controller = InstitutionStammdatenViewController;
+    public controllerAs = 'vm';
 }
 
 export class InstitutionStammdatenViewController extends AbstractAdminViewController {
 
-    static $inject = ['InstitutionRS', 'EbeguUtil', 'InstitutionStammdatenRS', '$state', 'ListResourceRS', 'AuthServiceRS', '$stateParams'];
+    public static $inject = ['InstitutionRS', 'EbeguUtil', 'InstitutionStammdatenRS', '$state', 'ListResourceRS',
+        'AuthServiceRS', '$stateParams'];
 
-    form: IFormController;
+    public form: IFormController;
 
-    selectedInstitution: TSInstitution;
-    selectedInstitutionStammdaten: TSInstitutionStammdaten;
-    betreuungsangebotValues: Array<any>;
-    selectedInstitutionStammdatenBetreuungsangebot: any;
-    laenderList: TSLand[];
-    errormessage: string = undefined;
-    hasDifferentZahlungsadresse: boolean = false;
-    modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
+    public selectedInstitution: TSInstitution;
+    public selectedInstitutionStammdaten: TSInstitutionStammdaten;
+    public betreuungsangebotValues: Array<any>;
+    public selectedInstitutionStammdatenBetreuungsangebot: any;
+    public laenderList: TSLand[];
+    public errormessage: string = undefined;
+    public hasDifferentZahlungsadresse: boolean = false;
+    public modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
 
-    constructor(private readonly institutionRS: InstitutionRS,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                private readonly $state: StateService,
-                private readonly listResourceRS: ListResourceRS,
-                authServiceRS: AuthServiceRS,
-                private readonly $stateParams: IInstitutionStammdatenStateParams) {
+    public constructor(private readonly institutionRS: InstitutionRS,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                       private readonly $state: StateService,
+                       private readonly listResourceRS: ListResourceRS,
+                       authServiceRS: AuthServiceRS,
+                       private readonly $stateParams: IInstitutionStammdatenStateParams) {
         super(authServiceRS);
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.setBetreuungsangebotTypValues();
         this.listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
         });
-        if (!this.$stateParams.institutionStammdatenId) {
-            this.institutionRS.findInstitution(this.$stateParams.institutionId).then((institution) => {
+        if (this.$stateParams.institutionStammdatenId) {
+            this.institutionStammdatenRS.findInstitutionStammdaten(this.$stateParams.institutionStammdatenId).then(
+                institutionStammdaten => {
+                    this.setSelectedInstitutionStammdaten(institutionStammdaten);
+                    this.loadModuleTagesschule();
+                    this.initStammdatenFerieninsel();
+                });
+        } else {
+            this.institutionRS.findInstitution(this.$stateParams.institutionId).then(institution => {
                 this.selectedInstitution = institution;
                 this.createInstitutionStammdaten();
                 this.loadModuleTagesschule();
                 this.initStammdatenFerieninsel();
             });
-        } else {
-            this.institutionStammdatenRS.findInstitutionStammdaten(this.$stateParams.institutionStammdatenId).then((institutionStammdaten) => {
-                this.setSelectedInstitutionStammdaten(institutionStammdaten);
-                this.loadModuleTagesschule();
-                this.initStammdatenFerieninsel();
-            });
         }
     }
 
-    isCreateStammdatenModel(): boolean {
+    public isCreateStammdatenModel(): boolean {
         return this.selectedInstitutionStammdaten && this.selectedInstitutionStammdaten.isNew();
     }
 
-    setSelectedInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): void {
+    public setSelectedInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): void {
         this.selectedInstitutionStammdaten = institutionStammdaten;
         this.selectedInstitution = institutionStammdaten.institution;
-        this.selectedInstitutionStammdatenBetreuungsangebot = this.getBetreuungsangebotFromInstitutionList(institutionStammdaten.betreuungsangebotTyp);
+        const typ = institutionStammdaten.betreuungsangebotTyp;
+        this.selectedInstitutionStammdatenBetreuungsangebot = this.getBetreuungsangebotFromInstitutionList(typ);
         this.hasDifferentZahlungsadresse = !!this.selectedInstitutionStammdaten.adresseKontoinhaber;
     }
 
-    getSelectedInstitutionStammdaten(): TSInstitutionStammdaten {
+    public getSelectedInstitutionStammdaten(): TSInstitutionStammdaten {
         return this.selectedInstitutionStammdaten;
     }
 
-    createInstitutionStammdaten(): void {
+    public createInstitutionStammdaten(): void {
         this.selectedInstitutionStammdaten = new TSInstitutionStammdaten();
         this.selectedInstitutionStammdaten.adresse = new TSAdresse();
         this.selectedInstitutionStammdaten.institution = this.selectedInstitution;
     }
 
-    differentZahlungsadresseClicked(): void {
-        if (this.hasDifferentZahlungsadresse) {
-            this.selectedInstitutionStammdaten.adresseKontoinhaber = new TSAdresse();
-        } else {
-            this.selectedInstitutionStammdaten.adresseKontoinhaber = undefined;
-        }
+    public differentZahlungsadresseClicked(): void {
+        this.selectedInstitutionStammdaten.adresseKontoinhaber = this.hasDifferentZahlungsadresse ? new TSAdresse() : undefined;
     }
 
-    saveInstitutionStammdaten(form: IFormController): void {
+    public saveInstitutionStammdaten(form: IFormController): void {
         if (form.$valid) {
             this.selectedInstitutionStammdaten.betreuungsangebotTyp = this.selectedInstitutionStammdatenBetreuungsangebot.key;
             this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
@@ -140,23 +139,23 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
         });
     }
 
-    getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp) {
+    public getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp) {
         return $.grep(this.betreuungsangebotValues, (value: any) => {
             return value.key === betreuungsangebotTyp;
         })[0];
     }
 
-    isKita(): boolean {
+    public isKita(): boolean {
         return this.selectedInstitutionStammdatenBetreuungsangebot
             && this.selectedInstitutionStammdatenBetreuungsangebot.key === TSBetreuungsangebotTyp.KITA;
     }
 
-    isTagesschule(): boolean {
+    public isTagesschule(): boolean {
         return this.selectedInstitutionStammdatenBetreuungsangebot
             && this.selectedInstitutionStammdatenBetreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE;
     }
 
-    isFerieninsel(): boolean {
+    public isFerieninsel(): boolean {
         return this.selectedInstitutionStammdatenBetreuungsangebot
             && this.selectedInstitutionStammdatenBetreuungsangebot.key === TSBetreuungsangebotTyp.FERIENINSEL;
     }
@@ -170,7 +169,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     }
 
     public getModulTagesschule(modulname: TSModulTagesschuleName): TSModulTagesschule {
-        let modul: TSModulTagesschule = this.modulTageschuleMap[modulname];
+        let modul = this.modulTageschuleMap[modulname];
         if (!modul) {
             modul = new TSModulTagesschule();
             modul.wochentag = TSDayOfWeek.MONDAY; // als Vertreter der ganzen Woche
@@ -193,7 +192,8 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
 
     private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]) {
         getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
-            const foundmodul = modulListFromServer.filter(modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
+            const foundmodul = modulListFromServer.filter(
+                modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
             if (foundmodul) {
                 this.modulTageschuleMap[modulname] = foundmodul;
             } else {
@@ -206,7 +206,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
         if (this.isTagesschule()) {
             const definedModulTagesschule = [];
             for (const modulname in this.modulTageschuleMap) {
-                const tempModul: TSModulTagesschule = this.modulTageschuleMap[modulname];
+                const tempModul = this.modulTageschuleMap[modulname];
                 if (tempModul.zeitVon && tempModul.zeitBis) {
                     definedModulTagesschule.push(tempModul);
                 }

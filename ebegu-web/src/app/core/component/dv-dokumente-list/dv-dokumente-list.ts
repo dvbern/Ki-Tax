@@ -26,7 +26,6 @@ import TSApplicationProperty from '../../../../models/TSApplicationProperty';
 import TSDokument from '../../../../models/TSDokument';
 import TSDokumentGrund from '../../../../models/TSDokumentGrund';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
-import TSKindContainer from '../../../../models/TSKindContainer';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
@@ -73,16 +72,16 @@ export class DVDokumenteListController {
     public allowedMimetypes: string = '';
 
     public constructor(private readonly uploadRS: UploadRS,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly downloadRS: DownloadRS,
-                private readonly dvDialog: DvDialog,
-                private readonly wizardStepManager: WizardStepManager,
-                private readonly $log: ILogService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $translate: ITranslateService,
-                private readonly $window: IWindowService,
-                private readonly applicationPropertyRS: ApplicationPropertyRS) {
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly dvDialog: DvDialog,
+                       private readonly wizardStepManager: WizardStepManager,
+                       private readonly $log: ILogService,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly $translate: ITranslateService,
+                       private readonly $window: IWindowService,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS) {
 
     }
 

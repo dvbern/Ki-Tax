@@ -158,6 +158,13 @@
                 ],
                 "format": "UPPER_CASE"
             },
+            {
+                "type": "property",
+                "modifiers": [
+                    "const"
+                ],
+                "format": ["camelCase","UPPER_CASE", "PascalCase"]
+            },
             // enforce PascalCase for classes, interfaces, enums, etc. Remember, there are still no underscores allowed.
             {
                 "type": "type",

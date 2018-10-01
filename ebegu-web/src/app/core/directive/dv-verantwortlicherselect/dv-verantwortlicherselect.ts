@@ -24,18 +24,18 @@ import BenutzerRS from '../../service/benutzerRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
-    restrict = 'E';
-    require = {};
-    scope = {};
-    controller = VerantwortlicherselectController;
-    controllerAs = 'vm';
-    bindToController = {
+    public restrict = 'E';
+    public require = {};
+    public scope = {};
+    public controller = VerantwortlicherselectController;
+    public controllerAs = 'vm';
+    public bindToController = {
         isSchulamt: '<',
         gemeindeId: '<',
     };
-    template = require('./dv-verantwortlicherselect.html');
+    public template = require('./dv-verantwortlicherselect.html');
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DvVerantwortlicherselect();
         directive.$inject = [];
         return directive;
@@ -44,18 +44,18 @@ export class DvVerantwortlicherselect implements IDirective {
 
 export class VerantwortlicherselectController implements IController {
 
-    static $inject: string[] = ['BenutzerRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
+    public static $inject: string[] = ['BenutzerRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
 
-    TSRoleUtil = TSRoleUtil;
-    isSchulamt: boolean;
-    gemeindeId: string;
+    public TSRoleUtil = TSRoleUtil;
+    public isSchulamt: boolean;
+    public gemeindeId: string;
 
-    userList: Array<TSBenutzer>;
+    public userList: Array<TSBenutzer>;
 
-    constructor(private readonly benutzerRS: BenutzerRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $translate: ITranslateService) {
+    public constructor(private readonly benutzerRS: BenutzerRS,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly $translate: ITranslateService) {
     }
 
     public $onChanges(changes: any) {
@@ -135,7 +135,7 @@ export class VerantwortlicherselectController implements IController {
             return;
         }
 
-        this.isSchulamt === true
+        this.isSchulamt
             ? this.updateSchulamtUserList()
             : this.updateJugendAmtUserList();
     }

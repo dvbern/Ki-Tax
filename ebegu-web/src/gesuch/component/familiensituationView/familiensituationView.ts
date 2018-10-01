@@ -37,27 +37,27 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FamiliensituationViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./familiensituationView.html');
-    controller = FamiliensituationViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./familiensituationView.html');
+    public controller = FamiliensituationViewController;
+    public controllerAs = 'vm';
 }
 
 export class FamiliensituationViewController extends AbstractGesuchViewController<TSFamiliensituationContainer> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
+    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
         'DvDialog', '$translate', '$q', '$scope', 'FamiliensituationRS', '$timeout'];
-    familienstatusValues: Array<TSFamilienstatus>;
-    gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
-    allowedRoles: Array<TSRole>;
-    initialFamiliensituation: TSFamiliensituation;
-    savedClicked: boolean = false;
+    public familienstatusValues: Array<TSFamilienstatus>;
+    public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
+    public allowedRoles: Array<TSRole>;
+    public initialFamiliensituation: TSFamiliensituation;
+    public savedClicked: boolean = false;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly errorService: ErrorService, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
-                private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope,
-                private readonly familiensituationRS: FamiliensituationRS, $timeout: ITimeoutService) {
+    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                       private readonly errorService: ErrorService, wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
+                       private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope,
+                       private readonly familiensituationRS: FamiliensituationRS, $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FAMILIENSITUATION, $timeout);
         this.gesuchModelManager.initFamiliensituation();
@@ -97,7 +97,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                     parentController: undefined,
                     elementID: undefined,
                     form: this.form
-                }).then(() => {   //User confirmed changes
+                }).then(() => {   // User confirmed changes
                     return this.save();
                 });
             } else {
@@ -120,7 +120,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         });
     }
 
-    showGesuchstellerKardinalitaet(): boolean {
+    public showGesuchstellerKardinalitaet(): boolean {
         if (this.getFamiliensituation()) {
             return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
                 || this.getFamiliensituation().familienstatus === TSFamilienstatus.WENIGER_FUENF_JAHRE;

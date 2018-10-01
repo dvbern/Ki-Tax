@@ -23,15 +23,14 @@ import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import ICacheObject = angular.ICacheObject;
 
-
 export class EinstellungRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public serviceURL: string;
 
-    constructor(public readonly http: IHttpService,
-                REST_API: string,
-                public readonly ebeguRestUtil: EbeguRestUtil) {
+    public constructor(public readonly http: IHttpService,
+                       REST_API: string,
+                       public readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'einstellung';
     }
 
@@ -63,7 +62,7 @@ export class EinstellungRS {
     }
 
     public getAllEinstellungenBySystemCached(gesuchsperiodeId: string, cache: ICacheObject): IPromise<TSEinstellung[]> {
-        return this.http.get(this.serviceURL + '/gesuchsperiode/' + gesuchsperiodeId, {cache: cache})
+        return this.http.get(this.serviceURL + '/gesuchsperiode/' + gesuchsperiodeId, {cache})
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });

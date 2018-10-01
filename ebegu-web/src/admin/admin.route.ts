@@ -28,20 +28,20 @@ export function adminRun(routerHelper: RouterHelper) {
 }
 
 export class IGesuchsperiodeStateParams {
-    gesuchsperiodeId: string;
+    public gesuchsperiodeId: string;
 }
 
 export class IInstitutionStateParams {
-    institutionId: string;
+    public institutionId: string;
 }
 
 export class IInstitutionStammdatenStateParams {
-    institutionStammdatenId: string;
-    institutionId: string;
+    public institutionStammdatenId: string;
+    public institutionId: string;
 }
 
 export class IBenutzerStateParams {
-    benutzerId: string;
+    public benutzerId: string;
 }
 
 const applicationPropertiesResolver = ['ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {

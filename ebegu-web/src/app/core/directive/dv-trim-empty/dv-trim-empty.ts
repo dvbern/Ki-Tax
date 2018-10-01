@@ -13,19 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, INgModelController, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, INgModelController, IScope} from 'angular';
 
 /**
  * this directive can be added to an element that has an ngModel to trim the empty string to null
  */
 export default class DVTrimEmpty implements IDirective {
 
-    restrict = 'A';
-    require = '?ngModel';
-    link: IDirectiveLinkFn;
+    public restrict = 'A';
+    public require = '?ngModel';
+    public link: IDirectiveLinkFn;
 
-    constructor() {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ngModel: INgModelController) => {
+    public constructor() {
+        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ngModel: INgModelController) => {
             if (ngModel) {
                   const emptyTrimFunc = (value: any) => value === '' ? null : value;
                   ngModel.$parsers.push(emptyTrimFunc);
@@ -33,9 +33,8 @@ export default class DVTrimEmpty implements IDirective {
         };
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVTrimEmpty();
         return directive;
     }
 }
-

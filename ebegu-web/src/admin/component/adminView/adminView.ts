@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IHttpPromise} from 'angular';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSApplicationProperty from '../../../models/TSApplicationProperty';
@@ -22,33 +22,35 @@ import AbstractAdminViewController from '../../abstractAdminView';
 import {ReindexRS} from '../../service/reindexRS.rest';
 
 export class AdminViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         applicationProperties: '<'
     };
-    template = require('./adminView.html');
-    controller = AdminViewController;
-    controllerAs = 'vm';
+    public template = require('./adminView.html');
+    public controller = AdminViewController;
+    public controllerAs = 'vm';
 }
 
 export class AdminViewController extends AbstractAdminViewController {
-    static $inject = ['ApplicationPropertyRS', 'EbeguRestUtil', 'ReindexRS', 'AuthServiceRS'];
+    public static $inject = ['ApplicationPropertyRS', 'EbeguRestUtil', 'ReindexRS', 'AuthServiceRS'];
 
-    applicationProperty: TSApplicationProperty;
-    applicationPropertyRS: ApplicationPropertyRS;
-    applicationProperties: TSApplicationProperty[];
-    ebeguRestUtil: EbeguRestUtil;
+    public applicationProperty: TSApplicationProperty;
+    public applicationPropertyRS: ApplicationPropertyRS;
+    public applicationProperties: TSApplicationProperty[];
+    public ebeguRestUtil: EbeguRestUtil;
 
-    constructor(applicationPropertyRS: ApplicationPropertyRS, ebeguRestUtil: EbeguRestUtil,
-                private readonly reindexRS: ReindexRS, authServiceRS: AuthServiceRS) {
+    public constructor(applicationPropertyRS: ApplicationPropertyRS,
+                       ebeguRestUtil: EbeguRestUtil,
+                       private readonly reindexRS: ReindexRS,
+                       authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         this.applicationProperty = undefined;
         this.applicationPropertyRS = applicationPropertyRS;
         this.ebeguRestUtil = ebeguRestUtil;
     }
 
-    submit(): void {
-        //testen ob aktuelles property schon gespeichert ist
+    public submit(): void {
+        // testen ob aktuelles property schon gespeichert ist
         if (this.applicationProperty.isNew()) {
             this.applicationPropertyRS.update(this.applicationProperty.name, this.applicationProperty.value);
 
@@ -58,32 +60,33 @@ export class AdminViewController extends AbstractAdminViewController {
         this.applicationProperty = undefined;
     }
 
-    createItem(): void {
+    public createItem(): void {
         this.applicationProperty = new TSApplicationProperty('', '');
     }
 
-    editRow(row: TSApplicationProperty): void {
+    public editRow(row: TSApplicationProperty): void {
         this.applicationProperty = row;
     }
 
-    resetForm(): void {
+    public resetForm(): void {
         this.applicationProperty = undefined;
         this.applicationPropertyRS.getAllApplicationProperties().then(response => {
             this.applicationProperties = response;
         });
     }
 
-    private getIndexOfElementwithID(prop: TSApplicationProperty) {
+    private getIndexOfElementwithID(prop: TSApplicationProperty): number {
         const idToSearch = prop.id;
         for (let i = 0; i < this.applicationProperties.length; i++) {
             if (this.applicationProperties[i].id === idToSearch) {
                 return i;
             }
         }
+
         return -1;
     }
 
-    public startReindex() {
+    public startReindex(): IHttpPromise<any> {
         return this.reindexRS.reindex();
     }
 }

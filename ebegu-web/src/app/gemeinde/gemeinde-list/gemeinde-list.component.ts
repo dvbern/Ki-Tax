@@ -37,7 +37,6 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 
-
 @Component({
     selector: 'dv-gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
@@ -46,15 +45,15 @@ import ErrorService from '../../core/errors/service/ErrorService';
 
 export class GemeindeListComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
 
-    displayedColumns: string[] = ['name', 'status'];
-    gemeinde: TSGemeinde = undefined;
-    dataSource: MatTableDataSource<TSGemeinde>;
+    public displayedColumns: string[] = ['name', 'status'];
+    public gemeinde: TSGemeinde = undefined;
+    public dataSource: MatTableDataSource<TSGemeinde>;
     private readonly unsubscribe$ = new Subject<void>();
 
-    @ViewChild(NgForm) form: NgForm;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(MatSort) public sort: MatSort;
 
-    constructor(private readonly gemeindeRS: GemeindeRS,
+    public constructor(private readonly gemeindeRS: GemeindeRS,
                 private readonly $state: StateService,
                 private readonly errorService: ErrorService,
                 private readonly dialog: MatDialog,
@@ -96,14 +95,14 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
      * It sorts the table by default using the variable sort.
      */
     private sortTable() {
-        this.sort.sort(<MatSortable>{
+        this.sort.sort({
                 id: 'name',
                 start: 'asc'
-            }
+            } as MatSortable
         );
     }
 
-    setSelectedGemeinde(selected: TSGemeinde): void {
+    public setSelectedGemeinde(selected: TSGemeinde): void {
         this.gemeinde = angular.copy(selected);
         // Gemeinde edit is not provided
         // this.$state.go('gemeinde.add', {gemeindeId: this.gemeinde.id});
@@ -113,8 +112,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         this.$state.go('gemeinde.add', {gemeindeId: null});
     }
 
-
-    isAccessible(): boolean {
+    public isAccessible(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 

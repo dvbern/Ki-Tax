@@ -29,25 +29,25 @@ import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.r
 import {IVerlaufStateParams} from '../../verlauf.route';
 
 export class VerlaufViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./verlaufView.html');
-    controller = VerlaufViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./verlaufView.html');
+    public controller = VerlaufViewController;
+    public controllerAs = 'vm';
 }
 
 export class VerlaufViewController implements IController {
 
-    static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS',
+    public static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS',
         'EbeguUtil'];
 
-    form: IFormController;
-    dossier: TSDossier;
-    gesuche: { [gesuchId: string]: string } = {};
-    itemsByPage: number = 20;
-    TSRoleUtil = TSRoleUtil;
-    verlauf: Array<TSAntragStatusHistory>;
+    public form: IFormController;
+    public dossier: TSDossier;
+    public gesuche: { [gesuchId: string]: string } = {};
+    public itemsByPage: number = 20;
+    public TSRoleUtil = TSRoleUtil;
+    public verlauf: Array<TSAntragStatusHistory>;
 
-    constructor(private readonly $state: StateService,
+    public constructor(private readonly $state: StateService,
                 private readonly $stateParams: IVerlaufStateParams,
                 private readonly authServiceRS: AuthServiceRS,
                 private readonly gesuchRS: GesuchRS,
@@ -55,11 +55,11 @@ export class VerlaufViewController implements IController {
                 private readonly ebeguUtil: EbeguUtil) {
     }
 
-    $onInit() {
+    public $onInit() {
         if (this.$stateParams.gesuchId) {
             this.gesuchRS.findGesuch(this.$stateParams.gesuchId).then((gesuchResponse: TSGesuch) => {
                 this.dossier = gesuchResponse.dossier;
-                const gesuchsperiode: TSGesuchsperiode = gesuchResponse.gesuchsperiode;
+                const gesuchsperiode = gesuchResponse.gesuchsperiode;
                 if (this.dossier === undefined) {
                     this.cancel();
                 }
@@ -67,8 +67,8 @@ export class VerlaufViewController implements IController {
                     .then((response: TSAntragStatusHistory[]) => {
                         this.verlauf = response;
                     });
-                this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then((response) => {
-                    response.forEach((item) => {
+                this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(response => {
+                    response.forEach(item => {
                         this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
                             item.antragTyp,
                             item.eingangsdatum,
@@ -98,7 +98,7 @@ export class VerlaufViewController implements IController {
     }
 
     public getGesuch(gesuchid: string): TSGesuch {
-        this.gesuchRS.findGesuch(gesuchid).then((response) => {
+        this.gesuchRS.findGesuch(gesuchid).then(response => {
             return response;
         });
         return undefined;

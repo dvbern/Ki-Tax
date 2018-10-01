@@ -43,37 +43,37 @@ import ITimeoutService = angular.ITimeoutService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./einkommensverschlechterungInfoView.html');
-    controller = EinkommensverschlechterungInfoViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./einkommensverschlechterungInfoView.html');
+    public controller = EinkommensverschlechterungInfoViewController;
+    public controllerAs = 'vm';
 }
 
 export class EinkommensverschlechterungInfoViewController extends AbstractGesuchViewController<TSEinkommensverschlechterungInfoContainer> {
 
-    static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
+    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
         , 'WizardStepManager', 'DvDialog', '$q', 'EinkommensverschlechterungInfoRS', '$scope', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', '$timeout'];
 
-    monthsStichtage: Array<TSMonth>;
-    monthsStichtageWithVorjahr: Array<TSMonth>;
-    selectedStichtagBjP1: TSMonth = undefined;
-    selectedStichtagBjP2: TSMonth = undefined;
-    selectedStichtagBjP1_GS: TSMonth = undefined;
-    selectedStichtagBjP2_GS: TSMonth = undefined;
-    initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
-    allowedRoles: Array<TSRole>;
-    basisJahrUndPeriode = {
+    public monthsStichtage: Array<TSMonth>;
+    public monthsStichtageWithVorjahr: Array<TSMonth>;
+    public selectedStichtagBjP1: TSMonth = undefined;
+    public selectedStichtagBjP2: TSMonth = undefined;
+    public selectedStichtagBjP1_GS: TSMonth = undefined;
+    public selectedStichtagBjP2_GS: TSMonth = undefined;
+    public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
+    public allowedRoles: Array<TSRole>;
+    public basisJahrUndPeriode = {
         jahr1periode: this.gesuchModelManager.getBasisjahrPlus(1),
         jahr2periode: this.gesuchModelManager.getBasisjahrPlus(2),
         basisjahr: this.gesuchModelManager.getBasisjahr()
     };
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly errorService: ErrorService, private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
-                private readonly DvDialog: DvDialog, private readonly $q: IQService, private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
-                $scope: IScope, private readonly authServiceRS: AuthServiceRS, private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
-                $timeout: ITimeoutService) {
+    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
+                       private readonly errorService: ErrorService, private readonly ebeguUtil: EbeguUtil, wizardStepManager: WizardStepManager,
+                       private readonly DvDialog: DvDialog, private readonly $q: IQService, private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
+                       $scope: IScope, private readonly authServiceRS: AuthServiceRS, private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
+                       $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
         this.initialEinkVersInfo = angular.copy(this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer);
         this.model = angular.copy(this.initialEinkVersInfo);
@@ -101,30 +101,30 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
         }
     }
 
-    getEinkommensverschlechterungsInfoContainer(): TSEinkommensverschlechterungInfoContainer {
+    public getEinkommensverschlechterungsInfoContainer(): TSEinkommensverschlechterungInfoContainer {
         if (!this.model) {
             this.initEinkommensverschlechterungInfo();
         }
         return this.model;
     }
 
-    getEinkommensverschlechterungsInfo(): TSEinkommensverschlechterungInfo {
+    public getEinkommensverschlechterungsInfo(): TSEinkommensverschlechterungInfo {
         return this.getEinkommensverschlechterungsInfoContainer().einkommensverschlechterungInfoJA;
     }
 
-    getEinkommensverschlechterungsInfoGS(): TSEinkommensverschlechterungInfo {
+    public getEinkommensverschlechterungsInfoGS(): TSEinkommensverschlechterungInfo {
         return this.getEinkommensverschlechterungsInfoContainer().einkommensverschlechterungInfoGS;
     }
 
-    showEkvi(): boolean {
+    public showEkvi(): boolean {
         return this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
     }
 
-    showJahrPlus1(): boolean {
+    public showJahrPlus1(): boolean {
         return this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1;
     }
 
-    showJahrPlus2(): boolean {
+    public showJahrPlus2(): boolean {
         return this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
     }
 
@@ -140,7 +140,7 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
      */
     private getStichtagFromMonat(monat: TSMonth, basisJahrPlus: number): moment.Moment {
         if (monat) {
-            const jahr: number = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
+            const jahr = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
             if (monat === TSMonth.VORJAHR) {
                 return moment([jahr - 1, 11]); // 1. Dezember des Vorjahres
             }
@@ -182,7 +182,7 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
                     parentController: undefined,
                     elementID: undefined,
                     form: this.form
-                }).then(() => {   //User confirmed changes
+                }).then(() => {   // User confirmed changes
                     return this.save();
                 });
             } else {
@@ -226,7 +226,7 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
 
                 this.initializeEKVContainers();
             } else {
-                //wenn keine EV eingetragen wird, setzen wir alles auf undefined, da keine Daten gespeichert werden sollen
+                // wenn keine EV eingetragen wird, setzen wir alles auf undefined, da keine Daten gespeichert werden sollen
                 this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 = false;
                 this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
                 this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP1 = undefined;
@@ -355,4 +355,3 @@ export class EinkommensverschlechterungInfoViewController extends AbstractGesuch
         return this.gesuchModelManager.isFinanzielleSituationEnabled() && this.gesuchModelManager.isFinanzielleSituationDesired();
     }
 }
-

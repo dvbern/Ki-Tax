@@ -21,13 +21,13 @@ import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 
 export default class AbstractAdminViewController {
 
-    TSRole = TSRole;
-    TSRoleUtil = TSRoleUtil;
+    public TSRole = TSRole;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(public authServiceRS: AuthServiceRS) {
+    public constructor(public authServiceRS: AuthServiceRS) {
     }
 
-    $onInit() {
+    public $onInit() {
     }
 
     public isReadonly(): boolean {

@@ -21,18 +21,17 @@ import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
 
-
 export class DVVersionComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-version.html');
-    controller = DVVersionController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-version.html');
+    public controller = DVVersionController;
+    public controllerAs = 'vm';
 }
 
 export class DVVersionController implements IController {
 
-    static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
+    public static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
 
     private backendVersion: string;
     private readonly frontendVersion: string = VERSION;
@@ -40,14 +39,14 @@ export class DVVersionController implements IController {
     private showSingleVersion: boolean = true;
     private currentYear: number;
 
-    constructor(private readonly $rootScope: IRootScopeService,
-                private readonly httpVersionInterceptor: HttpVersionInterceptor,
-                private readonly $q: IQService,
-                private readonly $window: IWindowService) {
+    public constructor(private readonly $rootScope: IRootScopeService,
+                       private readonly httpVersionInterceptor: HttpVersionInterceptor,
+                       private readonly $q: IQService,
+                       private readonly $window: IWindowService) {
 
     }
 
-    $onInit() {
+    public $onInit() {
 
         this.backendVersion = this.httpVersionInterceptor.backendVersion;
         this.currentYear = DateUtil.currentYear();

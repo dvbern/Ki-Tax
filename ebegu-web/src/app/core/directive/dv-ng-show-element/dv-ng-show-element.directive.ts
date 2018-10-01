@@ -42,7 +42,7 @@ export class DvNgShowElementDirective implements OnInit {
     private _roles: TSRole[];
     private _condition: boolean;
 
-    constructor(private readonly templateRef: TemplateRef<any>,
+    public constructor(private readonly templateRef: TemplateRef<any>,
                 private readonly viewContainer: ViewContainerRef,
                 private readonly authServiceRS: AuthServiceRS) {
     }
@@ -54,7 +54,7 @@ export class DvNgShowElementDirective implements OnInit {
     /**
      * Using a setter to respond to dynamic changes of input value
      */
-    @Input('dvNgShowElementRoles') set roles(roles: TSRole[]) {
+    @Input('dvNgShowElementRoles') public set roles(roles: TSRole[]) {
         this._roles = roles;
         this.handleElement();
     }
@@ -62,13 +62,13 @@ export class DvNgShowElementDirective implements OnInit {
     /**
      * Using a setter to respond to dynamic changes of input value
      */
-    @Input('dvNgShowElement') set condition(condition: boolean) {
+    @Input('dvNgShowElement') public set condition(condition: boolean) {
         this._condition = condition;
         this.handleElement();
     }
 
     private handleElement() {
-        const result: boolean = this.evaluateCondition();
+        const result = this.evaluateCondition();
 
         if (result && !this.hasView) {
             this.viewContainer.createEmbeddedView(this.templateRef);

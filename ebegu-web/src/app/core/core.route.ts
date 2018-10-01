@@ -84,7 +84,7 @@ export function appRun(angularMomentConfig: any,
 
     function onNotAuthenticated() {
         authServiceRS.clearPrincipal();
-        const currentPath: string = angular.copy($location.absUrl());
+        const currentPath = angular.copy($location.absUrl());
 
         const loginConnectorPaths = [
             'fedletSSOInit',
@@ -101,12 +101,12 @@ export function appRun(angularMomentConfig: any,
 
     function onLoginSuccess() {
         if (!environment.test) {
-            listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
+            listResourceRS.getLaenderList();  // initial aufruefen damit cache populiert wird
             mandantRS.getFirst();
         }
         globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
-        //since we will need these lists anyway we already load on login
-        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
+        // since we will need these lists anyway we already load on login
+        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then(gesuchsperioden => {
             if (gesuchsperioden.length > 0) {
                 const newestGP = gesuchsperioden[0];
                 institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
@@ -121,13 +121,13 @@ export function appRun(angularMomentConfig: any,
 
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
-            () => onLoginSuccess(),
+            onLoginSuccess,
             err => LOG.error(err)
         );
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
         .subscribe(
-            () => onNotAuthenticated(),
+            onNotAuthenticated,
             err => LOG.error(err)
         );
 
@@ -139,7 +139,7 @@ export function appRun(angularMomentConfig: any,
     });
 
     if (!environment.test) {
-        //Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
+        // Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
         const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
         applicationPropertyRS.getBackgroundColor().then((prop: TSApplicationProperty) => {
             if (prop && prop.value !== '#FFFFFF') {

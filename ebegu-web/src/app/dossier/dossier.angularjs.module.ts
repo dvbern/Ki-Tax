@@ -39,7 +39,7 @@ function conf($stateProvider: StateProvider): void {
             abstract: true,
             url: '/dossier/:dossierId',
             resolve: {
-                dossier: dossier
+                dossier
             },
             data: {
                 roles: TSRoleUtil.getAllRolesButAnonymous()

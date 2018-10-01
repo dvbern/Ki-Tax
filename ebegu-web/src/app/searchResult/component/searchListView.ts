@@ -22,22 +22,22 @@ import {ISearchResultateStateParams} from '../search.route';
 import ILogService = angular.ILogService;
 
 export class SearchListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./searchListView.html');
-    controller = SearchListViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./searchListView.html');
+    public controller = SearchListViewController;
+    public controllerAs = 'vm';
 }
 
 export class SearchListViewController {
 
-    static $inject: string[] = ['$log', '$stateParams', 'SearchIndexRS', 'EbeguUtil'];
+    public static $inject: string[] = ['$log', '$stateParams', 'SearchIndexRS', 'EbeguUtil'];
 
     private antragList: Array<TSAbstractAntragDTO>;
-    totalResultCount: string = '-';
-    private readonly ignoreRequest: boolean = true; //we want to ignore the first filter request because the default sort triggers always a second one
-    searchString: string;
+    public totalResultCount: string = '-';
+    private readonly ignoreRequest: boolean = true; // we want to ignore the first filter request because the default sort triggers always a second one
+    public searchString: string;
 
-    constructor(private readonly $log: ILogService,
+    public constructor(private readonly $log: ILogService,
                 $stateParams: ISearchResultateStateParams,
                 private readonly searchIndexRS: SearchIndexRS,
                 private readonly ebeguUtil: EbeguUtil) {

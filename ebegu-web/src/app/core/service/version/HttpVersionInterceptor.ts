@@ -22,14 +22,14 @@ import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
  */
 export default class HttpVersionInterceptor implements IHttpInterceptor {
 
-    static $inject = ['$rootScope', '$q', 'CONSTANTS', '$log'];
+    public static $inject = ['$rootScope', '$q', 'CONSTANTS', '$log'];
 
     public backendVersion: string;
 
-    constructor(private readonly $rootScope: IRootScopeService,
-                private readonly $q: IQService,
-                private readonly CONSTANTS: any,
-                private readonly $log: ILogService) {
+    public constructor(private readonly $rootScope: IRootScopeService,
+                       private readonly $q: IQService,
+                       private readonly CONSTANTS: any,
+                       private readonly $log: ILogService) {
     }
 
     private static hasVersionCompatibility(frontendVersion: string, backendVersion: string): boolean {
@@ -37,7 +37,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
         return frontendVersion === backendVersion;
     }
 
-    //interceptor methode
+    // interceptor methode
     public response = (response: any) => {
         if (response.headers && response.config && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0 && !response.config.cache) {
             this.updateBackendVersion(response.headers('x-ebegu-version'));
@@ -53,7 +53,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
         if (newVersion !== this.backendVersion) {
             this.backendVersion = newVersion;
             if (HttpVersionInterceptor.hasVersionCompatibility(VERSION, this.backendVersion)) {
-                //could throw match event here but currently there is no action we want to perform when it matches
+                // could throw match event here but currently there is no action we want to perform when it matches
             } else {
                 this.$log.warn('Versions of Frontend and Backend do not match');
                 this.$rootScope.$broadcast(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH]);

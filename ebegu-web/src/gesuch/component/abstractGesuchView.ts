@@ -31,19 +31,19 @@ import ITimeoutService = angular.ITimeoutService;
 
 export default class AbstractGesuchViewController<T> {
 
-    $scope: IScope;
-    gesuchModelManager: GesuchModelManager;
-    berechnungsManager: BerechnungsManager;
-    wizardStepManager: WizardStepManager;
-    TSRole = TSRole;
-    TSRoleUtil = TSRoleUtil;
+    public $scope: IScope;
+    public gesuchModelManager: GesuchModelManager;
+    public berechnungsManager: BerechnungsManager;
+    public wizardStepManager: WizardStepManager;
+    public TSRole = TSRole;
+    public TSRoleUtil = TSRoleUtil;
     private _model: T;
-    form: IFormController;
-    $timeout: ITimeoutService;
+    public form: IFormController;
+    public $timeout: ITimeoutService;
 
-    constructor($gesuchModelManager: GesuchModelManager, $berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, $scope: IScope, stepName: TSWizardStepName,
-                $timeout: ITimeoutService) {
+    public constructor($gesuchModelManager: GesuchModelManager, $berechnungsManager: BerechnungsManager,
+                       wizardStepManager: WizardStepManager, $scope: IScope, stepName: TSWizardStepName,
+                       $timeout: ITimeoutService) {
         this.gesuchModelManager = $gesuchModelManager;
         this.berechnungsManager = $berechnungsManager;
         this.wizardStepManager = wizardStepManager;
@@ -52,7 +52,7 @@ export default class AbstractGesuchViewController<T> {
         this.wizardStepManager.setCurrentStep(stepName);
     }
 
-    $onInit() {
+    public $onInit() {
         /**
          * Grund fuer diesen Code ist:
          * Wenn der Server einen Validation-Fehler zurueckgibt, wird der DirtyPlugin nicht informiert und setzt das Form
@@ -118,11 +118,11 @@ export default class AbstractGesuchViewController<T> {
         return this.gesuchModelManager.isKorrekturModusJugendamt();
     }
 
-    get model(): T {
+    public get model(): T {
         return this._model;
     }
 
-    set model(value: T) {
+    public set model(value: T) {
         this._model = value;
     }
 
@@ -140,7 +140,7 @@ export default class AbstractGesuchViewController<T> {
         return '';
     }
 
-    $postLink() {
+    public $postLink() {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 200);

@@ -21,13 +21,13 @@ import TSWorkJob from '../../../models/TSWorkJob';
  * liest information ueber batch jobs aus
  */
 export default class BatchJobRS {
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                private readonly ebeguRestUtil: EbeguRestUtil) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       private readonly ebeguRestUtil: EbeguRestUtil) {
         this.serviceURL = REST_API + 'admin/batch';
     }
 

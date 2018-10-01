@@ -23,26 +23,26 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class ParameterViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./parameterView.html');
-    controller = ParameterViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./parameterView.html');
+    public controller = ParameterViewController;
+    public controllerAs = 'vm';
 }
 
 export class ParameterViewController extends AbstractAdminViewController {
-    static $inject = ['GesuchsperiodeRS', '$translate',
+    public static $inject = ['GesuchsperiodeRS', '$translate',
         '$log', '$state', '$timeout', 'AuthServiceRS'];
 
-    form: IFormController;
-    gesuchsperiodenList: Array<TSGesuchsperiode> = [];
-    jahr: number;
+    public form: IFormController;
+    public gesuchsperiodenList: Array<TSGesuchsperiode> = [];
+    public jahr: number;
 
-    constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $translate: ITranslateService,
-                private readonly $log: ILogService,
-                private readonly $state: StateService,
-                private readonly $timeout: ITimeoutService,
-                authServiceRS: AuthServiceRS) {
+    public constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly $translate: ITranslateService,
+                       private readonly $log: ILogService,
+                       private readonly $state: StateService,
+                       private readonly $timeout: ITimeoutService,
+                       authServiceRS: AuthServiceRS) {
         super(authServiceRS);
         $timeout(() => {
             this.readGesuchsperioden();
@@ -51,11 +51,11 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     private readGesuchsperioden(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: Array<TSGesuchsperiode>) => {
-            this.gesuchsperiodenList = response; //angular.copy(response);
+            this.gesuchsperiodenList = response; // angular.copy(response);
         });
     }
 
-    gesuchsperiodeClicked(gesuchsperiode: any) {
+    public gesuchsperiodeClicked(gesuchsperiode: any) {
         if (gesuchsperiode.isSelected) {
             this.$state.go('admin.gesuchsperiode', {
                 gesuchsperiodeId: gesuchsperiode.id
@@ -63,13 +63,13 @@ export class ParameterViewController extends AbstractAdminViewController {
         }
     }
 
-    createGesuchsperiode(): void {
+    public createGesuchsperiode(): void {
         this.$state.go('admin.gesuchsperiode', {
             gesuchsperiodeId: undefined
         });
     }
 
-    getStatusTagesschulenFreischaltung(gp: TSGesuchsperiode): string {
+    public getStatusTagesschulenFreischaltung(gp: TSGesuchsperiode): string {
         if (gp.hasTagesschulenAnmeldung()) {
             if (gp.isTagesschulenAnmeldungKonfiguriert()) {
                 return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_KONFIGURIERT');

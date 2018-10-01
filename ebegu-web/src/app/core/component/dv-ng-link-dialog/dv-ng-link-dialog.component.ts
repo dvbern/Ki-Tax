@@ -25,10 +25,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 })
 export class DvNgLinkDialogComponent {
 
-    title: string = '';
-    link: string = '';
+    public title: string = '';
+    public link: string = '';
 
-    constructor(
+    public constructor(
         private readonly dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any) {
 
@@ -38,7 +38,7 @@ export class DvNgLinkDialogComponent {
         }
     }
 
-    close() {
+    public close() {
         this.dialogRef.close();
     }
 }

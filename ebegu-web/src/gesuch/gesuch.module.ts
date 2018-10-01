@@ -81,4 +81,3 @@ export const EbeguWebGesuch =
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
 ;
-

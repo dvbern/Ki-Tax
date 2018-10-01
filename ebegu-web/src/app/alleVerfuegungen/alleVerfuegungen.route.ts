@@ -24,7 +24,7 @@ export function alleVerfuegungenRun(routerHelper: RouterHelper) {
     routerHelper.configureStates(ng1States, ng2States);
 }
 
-//STATES
+// STATES
 
 const ng1States: Ng1StateDeclaration[] = [
     {
@@ -47,5 +47,5 @@ const ng2States: Ng2StateDeclaration[] = [];
 // PARAMS
 
 export class IAlleVerfuegungenStateParams {
-    dossierId: string;
+    public dossierId: string;
 }

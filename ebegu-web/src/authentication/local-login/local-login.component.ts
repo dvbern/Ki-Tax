@@ -38,7 +38,6 @@ export class LocalLoginComponent {
 
     @Input() public returnTo: TargetState;
 
-
     // Allgemeine User
     public superadmin: TSBenutzer;
 
@@ -101,7 +100,7 @@ export class LocalLoginComponent {
     private readonly traegerschaftFamex: TSTraegerschaft;
     private devMode: boolean;
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
+    public constructor(private readonly authServiceRS: AuthServiceRS,
                 private readonly applicationPropertyRS: ApplicationPropertyRS,
                 private readonly stateService: StateService) {
 
@@ -113,7 +112,7 @@ export class LocalLoginComponent {
         this.traegerschaftSGF = LocalLoginComponent.getTraegerschaftSGF();
         this.traegerschaftFamex = LocalLoginComponent.getTraegerschaftFamex();
         this.institution = this.getInsitution();
-        this.applicationPropertyRS.isDevMode().then((response) => {
+        this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
         });
         this.initUsers();

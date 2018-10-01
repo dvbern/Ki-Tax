@@ -45,10 +45,10 @@ const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.h
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 export class KommentarViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./kommentarView.html');
-    controller = KommentarViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./kommentarView.html');
+    public controller = KommentarViewController;
+    public controllerAs = 'vm';
 }
 
 /**
@@ -56,14 +56,14 @@ export class KommentarViewComponentConfig implements IComponentOptions {
  */
 export class KommentarViewController {
 
-    static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q', 'UploadRS',
+    public static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q', 'UploadRS',
         'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope', '$state', '$mdSidenav'];
 
-    form: IFormController;
-    dokumentePapiergesuch: TSDokumentGrund;
-    TSRoleUtil = TSRoleUtil;
+    public form: IFormController;
+    public dokumentePapiergesuch: TSDokumentGrund;
+    public TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
+    public constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
                 private readonly dokumenteRS: DokumenteRS, private readonly downloadRS: DownloadRS, private readonly $q: IQService,
                 private readonly uploadRS: UploadRS, private readonly wizardStepManager: WizardStepManager, private readonly globalCacheService: GlobalCacheService,
                 private readonly dvDialog: DvDialog, private readonly $translate: ITranslateService, private readonly $window: ng.IWindowService, private readonly gesuchstellerRS: GesuchstellerRS,
@@ -89,7 +89,7 @@ export class KommentarViewController {
             });
     }
 
-    getGesuch(): TSGesuch {
+    public getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
     }
 
@@ -117,7 +117,7 @@ export class KommentarViewController {
         }
     }
 
-    hasPapiergesuch(): boolean {
+    public hasPapiergesuch(): boolean {
         if (this.dokumentePapiergesuch) {
             if (this.dokumentePapiergesuch.dokumente && this.dokumentePapiergesuch.dokumente.length !== 0) {
                 if (this.dokumentePapiergesuch.dokumente[0].filename) {
@@ -128,19 +128,19 @@ export class KommentarViewController {
         return false;
     }
 
-    download() {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+    public download() {
+        const win = this.downloadRS.prepareDownloadWindow();
         this.getPapiergesuchFromServer().then((promiseValue: any) => {
             if (!this.hasPapiergesuch()) {
                 this.$log.error('Kein Papiergesuch für Download vorhanden!');
             } else {
-                const newest: TSDokument = this.getNewest(this.dokumentePapiergesuch.dokumente);
+                const newest = this.getNewest(this.dokumentePapiergesuch.dokumente);
                 this.downloadRS.getAccessTokenDokument(newest.id)
-                    .then((response) => {
-                        const tempDokument: TSDownloadFile = angular.copy(response);
+                    .then(response => {
+                        const tempDokument = angular.copy(response);
                         this.downloadRS.startDownload(tempDokument.accessToken, newest.filename, false, win);
                     })
-                    .catch((ex) => {
+                    .catch(ex => {
                         win.close();
                         this.$log.error('An error occurred downloading the document, closing download window.');
                     });
@@ -149,7 +149,7 @@ export class KommentarViewController {
     }
 
     private getNewest(dokumente: Array<TSDokument>): TSDokument {
-        let newest: TSDokument = dokumente[0];
+        let newest = dokumente[0];
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < dokumente.length; i++) {
             if (dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)) {
@@ -160,7 +160,7 @@ export class KommentarViewController {
 
     }
 
-    upload(files: any[]) {
+    public upload(files: any[]) {
         this.getPapiergesuchFromServer().then((promiseValue: any) => {
             if (this.hasPapiergesuch()) {
                 this.$log.error('Papiergesuch schon vorhanden');
@@ -197,7 +197,7 @@ export class KommentarViewController {
                 }
 
                 if (filesOk.length > 0) {
-                    this.uploadRS.uploadFile(filesOk, this.dokumentePapiergesuch, gesuchID).then((response) => {
+                    this.uploadRS.uploadFile(filesOk, this.dokumentePapiergesuch, gesuchID).then(response => {
                         this.dokumentePapiergesuch = angular.copy(response);
                         this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
                     });
@@ -206,7 +206,7 @@ export class KommentarViewController {
         });
     }
 
-    isGesuchUnsaved(): boolean {
+    public isGesuchUnsaved(): boolean {
         return this.getGesuch().isNew();
     }
 
@@ -237,7 +237,7 @@ export class KommentarViewController {
     }
 
     public showBemerkungenPruefungSTV(): boolean {
-        return this.getGesuch().geprueftSTV === true || this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
+        return this.getGesuch().geprueftSTV || this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
             || this.getGesuch().status === TSAntragStatus.GEPRUEFT_STV;
     }
 

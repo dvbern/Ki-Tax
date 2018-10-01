@@ -36,32 +36,32 @@ import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 const LOG = LogFactory.createLog('PendenzenBetreuungenListViewController');
 
 export class PendenzenBetreuungenListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./pendenzenBetreuungenListView.html');
-    controller = PendenzenBetreuungenListViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./pendenzenBetreuungenListView.html');
+    public controller = PendenzenBetreuungenListViewController;
+    public controllerAs = 'vm';
 }
 
 export class PendenzenBetreuungenListViewController implements IController {
 
-    static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
+    public static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
         'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
 
     private pendenzenList: Array<TSPendenzBetreuung>;
-    selectedBetreuungsangebotTyp: string;
-    selectedInstitution: string;
-    selectedGesuchsperiode: string;
-    selectedGemeinde: TSGemeinde;
-    institutionenList: Array<TSInstitution>;
-    betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>;
-    activeGesuchsperiodenList: Array<string> = [];
-    gemeindenList: Array<TSGemeinde>;
-    itemsByPage: number = 20;
-    numberOfPages: number = 1;
+    public selectedBetreuungsangebotTyp: string;
+    public selectedInstitution: string;
+    public selectedGesuchsperiode: string;
+    public selectedGemeinde: TSGemeinde;
+    public institutionenList: Array<TSInstitution>;
+    public betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>;
+    public activeGesuchsperiodenList: Array<string> = [];
+    public gemeindenList: Array<TSGemeinde>;
+    public itemsByPage: number = 20;
+    public numberOfPages: number = 1;
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
+    public constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
                 private readonly ebeguUtil: EbeguUtil,
                 private readonly institutionRS: InstitutionRS,
                 private readonly institutionStammdatenRS: InstitutionStammdatenRS,
@@ -146,10 +146,10 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     private openBetreuung(pendenz: TSPendenzBetreuung, isCtrlKeyPressed: boolean): void {
-        const numberParts: TSBetreuungsnummerParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
+        const numberParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
         if (numberParts && pendenz) {
-            const kindNumber: number = parseInt(numberParts.kindnummer);
-            const betreuungNumber: number = parseInt(numberParts.betreuungsnummer);
+            const kindNumber = parseInt(numberParts.kindnummer);
+            const betreuungNumber = parseInt(numberParts.betreuungsnummer);
             if (betreuungNumber > 0) {
                 this.berechnungsManager.clear(); // nur um sicher zu gehen, dass alle alte Werte geloescht sind
 
@@ -157,8 +157,8 @@ export class PendenzenBetreuungenListViewController implements IController {
                 // last time
                 this.gesuchModelManager.clearGesuch();
                 const navObj: any = {
-                    betreuungNumber: betreuungNumber,
-                    kindNumber: kindNumber,
+                    betreuungNumber,
+                    kindNumber,
                     gesuchId: pendenz.gesuchId
                 };
                 if (isCtrlKeyPressed) {

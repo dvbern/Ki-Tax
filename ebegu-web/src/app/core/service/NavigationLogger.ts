@@ -20,11 +20,11 @@ import {ILogService, IRootScopeService} from 'angular';
  */
 export class NavigationLogger {
 
-    static $inject = ['$rootScope', '$log'];
+    public static $inject = ['$rootScope', '$log'];
 
-    active: boolean = false;
+    public active: boolean = false;
 
-    constructor($rootScope: IRootScopeService, private readonly $log: ILogService) {
+    public constructor($rootScope: IRootScopeService, private readonly $log: ILogService) {
 
         $rootScope.$on('$stateChangeStart',  (event, toState, toParams, fromState, fromParams)  => {
             if (this.active) {
@@ -50,7 +50,7 @@ export class NavigationLogger {
                 $log.debug(event, viewConfig);
             }
         });
-        $rootScope.$on('$viewContentLoaded',  (event) => {
+        $rootScope.$on('$viewContentLoaded', event => {
             if (this.active) {
                 $log.debug('$viewContentLoaded --- event');
                 $log.debug(event);

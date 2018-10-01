@@ -25,13 +25,13 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class ZahlungRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       private readonly $log: ILogService) {
         this.serviceURL = REST_API + 'zahlungen';
     }
 
@@ -95,7 +95,7 @@ export default class ZahlungRS {
             {
                 params: {
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-                    beschrieb: beschrieb,
+                    beschrieb,
                     datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert)
                 }
             }).then((httpresponse: any) => {
@@ -119,9 +119,9 @@ export default class ZahlungRS {
         return this.http.get(this.serviceURL + '/update',
             {
                 params: {
-                    beschrieb: beschrieb,
+                    beschrieb,
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-                    id: id
+                    id
                 }
             }).then((httpresponse: any) => {
             this.$log.debug('PARSING Zahlungsauftrag REST object ', httpresponse.data);

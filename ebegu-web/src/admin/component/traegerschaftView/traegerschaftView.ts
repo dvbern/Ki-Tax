@@ -32,20 +32,19 @@ import AbstractAdminViewController from '../../abstractAdminView';
 })
 export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
-    @Input() traegerschaften: TSTraegerschaft[];
+    @Input() public traegerschaften: TSTraegerschaft[];
 
-    displayedColumns: string[] = ['name', 'remove'];
-    traegerschaft: TSTraegerschaft = undefined;
-    dataSource: MatTableDataSource<TSTraegerschaft>;
+    public displayedColumns: string[] = ['name', 'remove'];
+    public traegerschaft: TSTraegerschaft = undefined;
+    public dataSource: MatTableDataSource<TSTraegerschaft>;
 
-    @ViewChild(NgForm) form: NgForm;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(MatSort) public sort: MatSort;
 
-
-    constructor(private readonly traegerschaftRS: TraegerschaftRS,
-                private readonly errorService: ErrorService,
-                private readonly dialog: MatDialog,
-                authServiceRS: AuthServiceRS) {
+    public constructor(private readonly traegerschaftRS: TraegerschaftRS,
+                       private readonly errorService: ErrorService,
+                       private readonly dialog: MatDialog,
+                       authServiceRS: AuthServiceRS) {
 
         super(authServiceRS);
     }
@@ -59,10 +58,10 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
      * It sorts the table by default using the variable sort.
      */
     private sortTable() {
-        this.sort.sort(<MatSortable>{
+        this.sort.sort({
                 id: 'name',
                 start: 'asc'
-            }
+            } as MatSortable
         );
     }
 
@@ -70,14 +69,14 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
         this.dataSource.sort = this.sort;
     }
 
-    removeTraegerschaft(traegerschaft: any): void {
+    public removeTraegerschaft(traegerschaft: any): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE',
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe((userAccepted) => {   //User confirmed removal
+            .subscribe(userAccepted => {   // User confirmed removal
                 if (userAccepted) {
                     this.traegerschaft = undefined;
                     this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
@@ -91,15 +90,15 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
             });
     }
 
-    createTraegerschaft(): void {
+    public createTraegerschaft(): void {
         this.traegerschaft = new TSTraegerschaft();
         this.traegerschaft.active = true;
     }
 
-    saveTraegerschaft(): void {
+    public saveTraegerschaft(): void {
         if (this.form.valid) {
             this.errorService.clearAll();
-            const newTraegerschaft: boolean = this.traegerschaft.isNew();
+            const newTraegerschaft = this.traegerschaft.isNew();
             this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
                 if (newTraegerschaft) {
                     this.traegerschaften.push(traegerschaft);
@@ -123,11 +122,11 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
         this.dataSource.data = this.traegerschaften;
     }
 
-    cancelTraegerschaft(): void {
+    public cancelTraegerschaft(): void {
         this.traegerschaft = undefined;
     }
 
-    setSelectedTraegerschaft(selected: TSTraegerschaft): void {
+    public setSelectedTraegerschaft(selected: TSTraegerschaft): void {
         this.traegerschaft = angular.copy(selected);
     }
 

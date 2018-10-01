@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, ILogService, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, ILogService, IScope} from 'angular';
 
 /**
  * This directive is a hack to suppress the enter handler that is defined by angular-material on the md-radio-group.
@@ -30,23 +30,23 @@ import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirective
  */
 export default class DVSuppressFormSubmitOnEnter implements IDirective {
 
-    restrict = 'A';
-    link: IDirectiveLinkFn;
-    controller = DVSuppressFormSubmitOnEnterController;
-    require: any = {mdRadioGroupCtrl: 'mdRadioGroup', myCtrl: 'dvSuppressFormSubmitOnEnter'};
+    public restrict = 'A';
+    public link: IDirectiveLinkFn;
+    public controller = DVSuppressFormSubmitOnEnterController;
+    public require: any = {mdRadioGroupCtrl: 'mdRadioGroup', myCtrl: 'dvSuppressFormSubmitOnEnter'};
 
-    constructor() {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, controllers: any) => {
-            controllers['myCtrl'].mdRadioGroupCtrl = controllers.mdRadioGroupCtrl;
-            element.off('keydown'); //alle keydown listener auf dem element abhaengen
-            element.bind('keydown', (event) => { //unseren eigenen listener definieren
+    public constructor() {
+        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, controllers: any) => {
+            controllers.myCtrl.mdRadioGroupCtrl = controllers.mdRadioGroupCtrl;
+            element.off('keydown'); // alle keydown listener auf dem element abhaengen
+            element.bind('keydown', event => { // unseren eigenen listener definieren
                 controllers.myCtrl.keydownListener(event, element);
 
             });
         };
     }
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVSuppressFormSubmitOnEnter();
         return directive;
     }
@@ -57,17 +57,17 @@ export default class DVSuppressFormSubmitOnEnter implements IDirective {
  */
 export class DVSuppressFormSubmitOnEnterController {
 
-    static $inject: string[] = ['$mdConstant', '$mdUtil', '$log'];
+    public static $inject: string[] = ['$mdConstant', '$mdUtil', '$log'];
 
-    mdRadioGroupCtrl: any; //see radioButton.js of angular material: mdRadioGroup
+    public mdRadioGroupCtrl: any; // see radioButton.js of angular material: mdRadioGroup
 
-    constructor(private readonly $mdConstant: any,
-                private readonly $mdUtil: any,
-                private readonly $log: ILogService) {
+    public constructor(private readonly $mdConstant: any,
+                       private readonly $mdUtil: any,
+                       private readonly $log: ILogService) {
 
     }
 
-    keydownListener(ev: any, element: IAugmentedJQuery) {
+    public keydownListener(ev: any, element: IAugmentedJQuery) {
         const keyCode = ev.which || ev.keyCode;
 
         // Only listen to events that we originated ourselves
@@ -123,4 +123,3 @@ export class DVSuppressFormSubmitOnEnterController {
 
     }
 }
-

@@ -41,6 +41,6 @@ const ng1States: Ng1StateDeclaration[] = [
 ];
 
 export class IZahlungsauftragStateParams {
-    zahlungsauftrag: TSZahlungsauftrag;
-    zahlungsauftragId: string;
+    public zahlungsauftrag: TSZahlungsauftrag;
+    public zahlungsauftragId: string;
 }

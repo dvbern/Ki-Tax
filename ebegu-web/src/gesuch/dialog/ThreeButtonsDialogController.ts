@@ -19,15 +19,15 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class ThreeButtonsDialogController {
 
-    static $inject = ['$mdDialog', '$translate', 'title', 'confirmationText', 'cancelText', 'firstOkText', 'secondOkText'];
+    public static $inject = ['$mdDialog', '$translate', 'title', 'confirmationText', 'cancelText', 'firstOkText', 'secondOkText'];
 
-    confirmationText: string;
-    title: string;
-    cancelText: string;
-    firstOkText: string;
-    secondOkText: string;
+    public confirmationText: string;
+    public title: string;
+    public cancelText: string;
+    public firstOkText: string;
+    public secondOkText: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, confirmationText: string, cancelText: string,
+    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, confirmationText: string, cancelText: string,
                 firstOkText: string, secondOkText: string) {
         this.title = $translate.instant(title);
         this.confirmationText = $translate.instant(confirmationText);

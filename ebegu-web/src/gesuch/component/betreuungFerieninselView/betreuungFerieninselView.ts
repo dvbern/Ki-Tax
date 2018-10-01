@@ -44,8 +44,8 @@ import ITranslateService = angular.translate.ITranslateService;
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungFerieninselViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         betreuung: '=',
         onSave: '&',
         anmeldungSchulamtUebernehmen: '&',
@@ -54,36 +54,36 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
         cancel: '&',
         form: '='
     };
-    template = require('./betreuungFerieninselView.html');
-    controller = BetreuungFerieninselViewController;
-    controllerAs = 'vm';
+    public template = require('./betreuungFerieninselView.html');
+    public controller = BetreuungFerieninselViewController;
+    public controllerAs = 'vm';
 }
 
 export class BetreuungFerieninselViewController extends BetreuungViewController {
 
-    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
+    public static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
         'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate', 'FerieninselStammdatenRS'];
 
-    betreuung: TSBetreuung;
-    onSave: () => void;
-    form: IFormController;
-    showErrorMessage: boolean;
+    public betreuung: TSBetreuung;
+    public onSave: () => void;
+    public form: IFormController;
+    public showErrorMessage: boolean;
 
-    ferieninselStammdaten: TSFerieninselStammdaten;
-    showNochNichtFreigegeben: boolean = false;
-    showMutiert: boolean = false;
-    aktuellGueltig: boolean = true;
+    public ferieninselStammdaten: TSFerieninselStammdaten;
+    public showNochNichtFreigegeben: boolean = false;
+    public showMutiert: boolean = false;
+    public aktuellGueltig: boolean = true;
 
-    constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
-                $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
-                authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,
-                mitteilungRS: MitteilungRS, dvDialog: DvDialog, $log: ILogService,
-                $timeout: ITimeoutService, $translate: ITranslateService, private readonly ferieninselStammdatenRS: FerieninselStammdatenRS) {
+    public constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
+                       $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
+                       authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,
+                       mitteilungRS: MitteilungRS, dvDialog: DvDialog, $log: ILogService,
+                       $timeout: ITimeoutService, $translate: ITranslateService, private readonly ferieninselStammdatenRS: FerieninselStammdatenRS) {
         super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS, wizardStepManager, $stateParams,
             mitteilungRS, dvDialog, $log, $timeout, $translate);
     }
 
-    $onInit() {
+    public $onInit() {
         this.initFerieninselViewModel();
         if (this.getBetreuungModel().anmeldungMutationZustand) {
             if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
@@ -96,7 +96,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         }
     }
 
-    getFeriennamen(): Array<TSFerienname> {
+    public getFeriennamen(): Array<TSFerienname> {
         return getTSFeriennameValues();
     }
 

@@ -29,12 +29,12 @@ export function gesuchstellerDashboardRun(routerHelper: RouterHelper) {
 }
 
 export class IAngebotStateParams {
-    gesuchId: string;
-    type: string;
+    public gesuchId: string;
+    public type: string;
 }
 
 export class IGesuchstellerDashboardStateParams {
-    infoMessage: string;
+    public infoMessage: string;
 }
 
 const ng1States: Ng1StateDeclaration[] = [
@@ -101,4 +101,3 @@ export function resetGesuchModelManager(gesuchModelManager: GesuchModelManager):
     }
     return Promise.resolve(gesuchModelManager.getGesuch());
 }
-

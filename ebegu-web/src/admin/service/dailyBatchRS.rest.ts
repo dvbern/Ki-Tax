@@ -17,11 +17,11 @@ import {IHttpService, IPromise} from 'angular';
 
 export class DailyBatchRS {
 
-    static $inject = ['$http', 'REST_API'];
+    public static $inject = ['$http', 'REST_API'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string) {
+    public constructor(public http: IHttpService, REST_API: string) {
         this.serviceURL = REST_API + 'dailybatch';
     }
 
