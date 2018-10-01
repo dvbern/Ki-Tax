@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
-import TSPendenzBetreuung from '../../models/TSPendenzBetreuung';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from './PendenzBetreuungenRS.rest';
 
@@ -39,15 +39,23 @@ describe('pendenzBetreuungenRS', () => {
     }));
 
     beforeEach(() => {
-        mockPendenzBetreuungen = new TSPendenzBetreuung('123.12.12', '123', '123', '123', 'Kind', 'Kilian', undefined, 'Platzbestaetigung', undefined,
-            undefined, undefined, TSBetreuungsangebotTyp.KITA, undefined);
+        mockPendenzBetreuungen = new TSPendenzBetreuung('123.12.12',
+            '123',
+            '123',
+            '123',
+            'Kind',
+            'Kilian',
+            undefined,
+            'Platzbestaetigung',
+            undefined,
+            undefined,
+            undefined,
+            TSBetreuungsangebotTyp.KITA,
+            undefined);
         mockPendenzBetreuungenRest = ebeguRestUtil.pendenzBetreuungenToRestObject({}, mockPendenzBetreuungen);
     });
 
     describe('Public API', () => {
-        it('check Service name', () => {
-            expect(pendenzBetreuungenRS.getServiceName()).toBe('PendenzBetreuungenRS');
-        });
         it('should include a getPendenzenBetreuungenList() function', () => {
             expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toBeDefined();
         });

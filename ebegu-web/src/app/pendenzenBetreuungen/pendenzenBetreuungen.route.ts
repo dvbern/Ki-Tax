@@ -14,8 +14,8 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../dvbModules/router/route-helper-provider';
-import {TSRole} from '../models/enums/TSRole';
+import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
+import {TSRole} from '../../models/enums/TSRole';
 
 pendenzRun.$inject = ['RouterHelper'];
 

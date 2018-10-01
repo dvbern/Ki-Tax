@@ -14,10 +14,10 @@
  */
 
 import * as angular from 'angular';
-import {EbeguWebCore} from '../app/core/core.angularjs.module';
+import {EbeguWebCore} from '../core/core.angularjs.module';
 import {PendenzenBetreuungenListViewComponentConfig} from './component/pendenzenBetreuungenListView/pendenzenBetreuungenListView';
-import {pendenzRun} from './pendenzenBetreuungen.route';
 import {PendenzBetreuungenFilter} from './filter/pendenzBetreuungenFilter';
+import {pendenzRun} from './pendenzenBetreuungen.route';
 import PendenzBetreuungenRS from './service/PendenzBetreuungenRS.rest';
 
 export const EbeguWebPendenzenBetreuungen =

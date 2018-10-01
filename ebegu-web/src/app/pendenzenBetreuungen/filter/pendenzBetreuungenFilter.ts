@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu implementieren.
-import EbeguUtil from '../../utils/EbeguUtil';
-PendenzBetreuungenFilter.$inject = ['$filter', 'EbeguUtil'];
+// Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu
+// implementieren.
+PendenzBetreuungenFilter.$inject = ['$filter'];
 
-// Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden Comparator aufgerufen.
-// Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach implementiert wird.
-export function PendenzBetreuungenFilter($filter: any, ebeguUtil: EbeguUtil) {
+// Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden
+// Comparator aufgerufen. Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach
+// implementiert wird.
+export function PendenzBetreuungenFilter($filter: any) {
 
     const filterFilter = $filter('filter');
     const dateFilter = $filter('date');
@@ -47,6 +48,7 @@ export function PendenzBetreuungenFilter($filter: any, ebeguUtil: EbeguUtil) {
             }
             return standardComparator(actual, expected);
         }
+
         return filterFilter(array, expression, customComparator);
     };
 }

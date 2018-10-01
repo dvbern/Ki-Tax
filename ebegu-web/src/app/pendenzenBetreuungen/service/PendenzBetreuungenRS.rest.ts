@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSPendenzBetreuung from '../../models/TSPendenzBetreuung';
+import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class PendenzBetreuungenRS {
 
@@ -27,10 +27,6 @@ export default class PendenzBetreuungenRS {
                 public ebeguRestUtil: EbeguRestUtil,
                 public $log: ILogService) {
         this.serviceURL = REST_API + 'search/pendenzenBetreuungen';
-    }
-
-    public getServiceName(): string {
-        return 'PendenzBetreuungenRS';
     }
 
     public getPendenzenBetreuungenList(): IPromise<Array<TSPendenzBetreuung>> {
