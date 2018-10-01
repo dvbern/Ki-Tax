@@ -98,7 +98,6 @@ public class GemeindeResource {
 			benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde)
 		);
 
-		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 		benutzerService.einladen(benutzer, EinladungTyp.GEMEINDE);
 
 		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);

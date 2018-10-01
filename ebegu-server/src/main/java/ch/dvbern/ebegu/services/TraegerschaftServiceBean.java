@@ -46,6 +46,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -67,7 +68,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Traegerschaft saveTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
 		Objects.requireNonNull(traegerschaft);
 		return persistence.merge(traegerschaft);
@@ -97,7 +98,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeTraegerschaft(@Nonnull String traegerschaftId) {
 		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftToRemove = findTraegerschaft(traegerschaftId);
@@ -115,7 +116,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void setInactive(@Nonnull String traegerschaftId) {
 		Objects.requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);

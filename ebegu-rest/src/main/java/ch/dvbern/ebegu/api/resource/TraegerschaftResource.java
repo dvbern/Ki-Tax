@@ -43,8 +43,11 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
@@ -63,6 +66,9 @@ public class TraegerschaftResource {
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -85,6 +91,14 @@ public class TraegerschaftResource {
 		}
 		Traegerschaft convertedTraegerschaft = converter.traegerschaftToEntity(traegerschaftJAXP, traegerschaft);
 		Traegerschaft persistedTraegerschaft = this.traegerschaftService.saveTraegerschaft(convertedTraegerschaft);
+
+		if (convertedTraegerschaft.isNew()) {
+			final Benutzer benutzer = benutzerService.findBenutzerByEmail(traegerschaftJAXP.getMail()).orElseGet(() ->
+				benutzerService.createAdminTraegerschaftByEmail(traegerschaftJAXP.getMail(), persistedTraegerschaft)
+			);
+			benutzerService.einladen(benutzer, EinladungTyp.TRAEGERSCHAFT);
+		}
+
 		JaxTraegerschaft jaxTraegerschaft = converter.traegerschaftToJAX(persistedTraegerschaft);
 		return jaxTraegerschaft;
 	}

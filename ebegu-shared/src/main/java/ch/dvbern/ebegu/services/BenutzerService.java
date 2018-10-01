@@ -27,6 +27,8 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -59,7 +61,19 @@ public interface BenutzerService {
 	 * Gemeinde in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
 	 */
 	@Nonnull
-	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde persistedGemeinde);
+	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde);
+
+	/**
+	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given Institution as the only
+	 * Institution in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution);
+
+	/**
+	 * Creates a new user of Role ADMIN_TRAEGERSCHAFT with the given adminMail as email and as username and the given Traegerschaft as the only
+	 * Traegerschaft in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft);
 
 	/**
 	 * Saves the given Benutzer and sends him an Einladungsemail

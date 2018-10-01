@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -165,36 +166,70 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	@RolesAllowed({
-		SUPER_ADMIN,
-		ADMIN_MANDANT,
-		SACHBEARBEITER_MANDANT,
-	})
-	public Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde persistedGemeinde) {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde) {
+		requireNonNull(gemeinde);
+
+		return createBenutzerFromEmail(adminMail, UserRole.ADMIN_GEMEINDE, gemeinde, null, null);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
+		requireNonNull(institution);
+
+		return createBenutzerFromEmail(adminMail, UserRole.ADMIN_INSTITUTION, null, institution, null);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
+		requireNonNull(traegerschaft);
+
+		return createBenutzerFromEmail(adminMail, UserRole.ADMIN_TRAEGERSCHAFT, null, null, traegerschaft);
+	}
+
+	@Nonnull
+	private Benutzer createBenutzerFromEmail(
+		@Nonnull String adminMail,
+		@Nonnull UserRole role,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
 		requireNonNull(adminMail);
-		requireNonNull(persistedGemeinde);
 		requireNonNull(principalBean.getMandant());
 
-		final Benutzer adminGemeinde = new Benutzer();
-		adminGemeinde.setEmail(adminMail);
-		adminGemeinde.setNachname(Constants.UNKNOWN);
-		adminGemeinde.setVorname(Constants.UNKNOWN);
-		adminGemeinde.setUsername(adminMail);
-		adminGemeinde.setStatus(BenutzerStatus.EINGELADEN);
-		adminGemeinde.setMandant(principalBean.getMandant());
+		final Benutzer benutzer = new Benutzer();
+		benutzer.setEmail(adminMail);
+		benutzer.setNachname(Constants.UNKNOWN);
+		benutzer.setVorname(Constants.UNKNOWN);
+		benutzer.setUsername(adminMail);
+		benutzer.setStatus(BenutzerStatus.EINGELADEN);
+		benutzer.setMandant(principalBean.getMandant());
 
 		final Berechtigung berechtigung = new Berechtigung();
-		berechtigung.setRole(UserRole.ADMIN_GEMEINDE);
-		berechtigung.setBenutzer(adminGemeinde);
+		berechtigung.setRole(role);
+		berechtigung.setBenutzer(benutzer);
 		berechtigung.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
-		// empty gemeindeList. The Gemeinde will be added later
-		berechtigung.setGemeindeList(new TreeSet<>());
-		adminGemeinde.setBerechtigungen(
+		benutzer.setBerechtigungen(
 			new TreeSet<>(Collections.singletonList(berechtigung))
 		);
 
-		return saveBenutzer(adminGemeinde);
+		if (gemeinde != null && role == UserRole.ADMIN_GEMEINDE) {
+			benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeinde);
+		}
+		if (institution != null && role == UserRole.ADMIN_INSTITUTION) {
+			benutzer.getCurrentBerechtigung().setInstitution(institution);
+		}
+		if (traegerschaft != null && role == UserRole.ADMIN_TRAEGERSCHAFT) {
+			benutzer.getCurrentBerechtigung().setTraegerschaft(traegerschaft);
+		}
 
+
+		return saveBenutzer(benutzer);
 	}
 
 	@Nonnull
