@@ -18,17 +18,17 @@ import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
-import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import DossierRS from '../../../gesuch/service/dossierRS.rest';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSDossier from '../../../models/TSDossier';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import BetreuungRS from '../../../core/service/betreuungRS.rest';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import DossierRS from '../../../../gesuch/service/dossierRS.rest';
+import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
+import TSAntragStatusHistory from '../../../../models/TSAntragStatusHistory';
+import TSBetreuung from '../../../../models/TSBetreuung';
+import TSDossier from '../../../../models/TSDossier';
+import TSDownloadFile from '../../../../models/TSDownloadFile';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
 export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {

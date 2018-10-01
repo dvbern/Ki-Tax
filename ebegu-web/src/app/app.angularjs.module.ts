@@ -17,7 +17,7 @@ import {upgradeModule} from '@uirouter/angular-hybrid';
 import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
 import EbeguWebAdmin from '../admin/admin.module';
-import {EbeguWebAlleVerfuegungen} from '../alleVerfuegungen/alleVerfuegungen.module';
+import {EbeguWebAlleVerfuegungen} from './alleVerfuegungen/alleVerfuegungen.module';
 import {EbeguWebFaelle} from './faelle/faelle.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
 import {EbeguWebGesuchstellerDashboard} from '../gesuchstellerDashboard/gesuchstellerDashboard.module';
