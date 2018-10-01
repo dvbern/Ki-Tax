@@ -14,21 +14,22 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import SearchRS from '../../../gesuch/service/searchRS.rest';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import * as angular from 'angular';
+import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
+import SearchRS from '../../../../gesuch/service/searchRS.rest';
+import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
+import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
+import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import TSAntragDTO from '../../../../models/TSAntragDTO';
+import TSGesuch from '../../../../models/TSGesuch';
+import TestDataUtil from '../../../../utils/TestDataUtil.spec';
+import {EbeguWebCore} from '../../../core/core.angularjs.module';
+import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
 
 describe('DVQuicksearchList', () => {
@@ -76,7 +77,8 @@ describe('DVQuicksearchList', () => {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
                 quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
                     institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
-                const list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
+                const list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA,
+                    TSBetreuungsangebotTyp.TAGESFAMILIEN];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
                     .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
@@ -113,9 +115,20 @@ describe('DVQuicksearchList', () => {
     });
 
     function mockGetAntragList(): TSAntragDTO {
-        const mockAntrag: TSAntragDTO = new TSAntragDTO('66345345', 123, 'name', TSAntragTyp.ERSTGESUCH,
-            undefined, undefined, undefined, [TSBetreuungsangebotTyp.KITA], ['Inst1, Inst2'], 'Juan Arbolado', 'Juan Arbolado',
-            undefined, undefined, undefined);
+        const mockAntrag: TSAntragDTO = new TSAntragDTO('66345345',
+            123,
+            'name',
+            TSAntragTyp.ERSTGESUCH,
+            undefined,
+            undefined,
+            undefined,
+            [TSBetreuungsangebotTyp.KITA],
+            ['Inst1, Inst2'],
+            'Juan Arbolado',
+            'Juan Arbolado',
+            undefined,
+            undefined,
+            undefined);
         const result: Array<TSAntragDTO> = [mockAntrag];
         spyOn(searchRS, 'getPendenzenList').and.returnValue($q.when(result));
         return mockAntrag;

@@ -17,22 +17,22 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IFilterService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSFallAntragDTO from '../../../models/TSFallAntragDTO';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSInstitution from '../../../models/TSInstitution';
-import TSBenutzer from '../../../models/TSBenutzer';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
+import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import TSAbstractAntragDTO from '../../../../models/TSAbstractAntragDTO';
+import TSAntragDTO from '../../../../models/TSAntragDTO';
+import TSBenutzer from '../../../../models/TSBenutzer';
+import TSFallAntragDTO from '../../../../models/TSFallAntragDTO';
+import TSGemeinde from '../../../../models/TSGemeinde';
+import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
+import TSInstitution from '../../../../models/TSInstitution';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {LogFactory} from '../../../core/logging/LogFactory';
+import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVQuicksearchListController');
 
@@ -146,8 +146,8 @@ export class DVQuicksearchListController implements IController {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(gemeinden => {
-                this.gemeindenList = gemeinden;
-            },
+                    this.gemeindenList = gemeinden;
+                },
                 err => LOG.error(err)
             );
     }

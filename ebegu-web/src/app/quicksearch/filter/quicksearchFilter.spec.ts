@@ -13,16 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
-import TSAntragDTO from '../../models/TSAntragDTO';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
-import {TSDateRange} from '../../models/types/TSDateRange';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import TSAntragDTO from '../../../models/TSAntragDTO';
+import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import * as moment from 'moment';
-import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
-import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
-import EbeguUtil from '../../utils/EbeguUtil';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {QuicksearchFilter} from './quicksearchFilter';
 
 describe('quicksearchFilter', () => {

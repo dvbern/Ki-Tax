@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../../utils/EbeguUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 
 // Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu implementieren.
 QuicksearchFilter.$inject = ['$filter', 'EbeguUtil', 'CONSTANTS'];

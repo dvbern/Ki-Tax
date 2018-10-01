@@ -15,7 +15,7 @@
 
 import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {DVQuicksearchListController} from '../../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
+import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import BenutzerRS from '../../service/benutzerRS.rest';
