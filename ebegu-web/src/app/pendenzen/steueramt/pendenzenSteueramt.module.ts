@@ -13,14 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.ellipsis {
-    width: 5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-}
+import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {PendenzenSteueramtListViewComponentConfig} from './component/pendenzenSteueramtListView/pendenzenSteueramtListView';
+import {pendenzRun} from './pendenzenSteueramt.route';
 
-.pendenzenListView {
-    padding: 3rem;
-}
+export const EbeguWebPendenzenSteueramt =
+    angular.module('ebeguWeb.pendenzenSteueramt', [EbeguWebCore.name])
+        .run(pendenzRun)
+        .component('pendenzenSteueramtListView', new PendenzenSteueramtListViewComponentConfig());

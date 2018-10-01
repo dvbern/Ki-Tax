@@ -14,8 +14,8 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TSPendenzBetreuung from '../../../../models/TSPendenzBetreuung';
+import EbeguRestUtil from '../../../../utils/EbeguRestUtil';
 
 export default class PendenzBetreuungenRS {
 

@@ -13,13 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
-import {PendenzenListViewComponentConfig} from './component/pendenzenListView/pendenzenListView';
-import EllipsisTooltip from './directive/ellipsisTooltip';
-import {pendenzRun} from './pendenzen.route';
+import * as angular from 'angular';
+import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {PendenzenBetreuungenListViewComponentConfig} from './component/pendenzenBetreuungenListView/pendenzenBetreuungenListView';
+import {PendenzBetreuungenFilter} from './filter/pendenzBetreuungenFilter';
+import {pendenzRun} from './pendenzenBetreuungen.route';
+import PendenzBetreuungenRS from './service/PendenzBetreuungenRS.rest';
 
-export const EbeguWebPendenzen =
-    angular.module('ebeguWeb.pendenzen', [EbeguWebCore.name])
+export const EbeguWebPendenzenBetreuungen =
+    angular.module('ebeguWeb.pendenzenBetreuungen', [EbeguWebCore.name])
         .run(pendenzRun)
-        .directive('ellipsisTooltip', EllipsisTooltip.factory())
-        .component('pendenzenListView', new PendenzenListViewComponentConfig());
+        .service('PendenzBetreuungenRS', PendenzBetreuungenRS)
+        .filter('pendenzBetreuungenFilter', PendenzBetreuungenFilter)
+        .component('pendenzenBetreuungenListView', new PendenzenBetreuungenListViewComponentConfig());

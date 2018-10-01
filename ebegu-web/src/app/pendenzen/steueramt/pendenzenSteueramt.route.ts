@@ -14,8 +14,8 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
-import {TSRole} from '../../models/enums/TSRole';
+import {RouterHelper} from '../../../dvbModules/router/route-helper-provider';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 pendenzRun.$inject = ['RouterHelper'];
 
@@ -27,18 +27,14 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         parent: 'app',
         abstract: true,
-        name: 'pendenzenBetreuungen',
+        name: 'pendenzenSteueramt',
         data: {
-            roles: [TSRole.SUPER_ADMIN,
-                TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS,
-                TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE,
-                TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION,
-                TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT]
-        }
+            roles: TSRoleUtil.getSteueramtRoles(),
+        },
     },
     {
-        name: 'pendenzenBetreuungen.list-view',
-        template: '<pendenzen-betreuungen-list-view flex="auto" class="overflow-scroll">',
-        url: '/pendenzenBetreuungen',
-    }
+        name: 'pendenzenSteueramt.list-view',
+        template: '<pendenzen-steueramt-list-view flex="auto" class="overflow-scroll">',
+        url: '/pendenzenSteueramt',
+    },
 ];

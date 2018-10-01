@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSPendenzBetreuung from '../../../models/TSPendenzBetreuung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import TSPendenzBetreuung from '../../../../models/TSPendenzBetreuung';
+import EbeguRestUtil from '../../../../utils/EbeguRestUtil';
 import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from './PendenzBetreuungenRS.rest';
 
