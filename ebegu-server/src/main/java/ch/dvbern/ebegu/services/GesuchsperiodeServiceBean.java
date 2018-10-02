@@ -261,18 +261,20 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@PermitAll
 	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nullable String dossierId) {
 		Dossier dossier = persistence.find(Dossier.class, dossierId);
+
 		if (dossier == null) {
 			throw new EbeguEntityNotFoundException("getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden",
 				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, dossierId);
 		}
-		final Collection<Gesuchsperiode> gesuchsperiodenImStatus = getAllNichtAbgeschlosseneGesuchsperioden();
-		if (!gesuchsperiodenImStatus.isEmpty()) {
+
+		final Collection<Gesuchsperiode> nichtAbgeschlossenePerioden = getAllNichtAbgeschlosseneGesuchsperioden();
+		if (!nichtAbgeschlossenePerioden.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 			Root<Gesuch> root = query.from(Gesuch.class);
 			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
-			Predicate gesuchsperiodePredicate = root.get(Gesuch_.gesuchsperiode).in(gesuchsperiodenImStatus);
+			Predicate gesuchsperiodePredicate = root.get(Gesuch_.gesuchsperiode).in(nichtAbgeschlossenePerioden);
 			// Es interessieren nur die Gesuche, die entweder Papier oder Online und freigegeben sind, also keine, die in Bearbeitung GS sind.
 
 			Predicate gesuchStatus = root.get(Gesuch_.status).in(AntragStatus.getInBearbeitungGSStates()).not();
@@ -281,10 +283,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			List<Gesuch> criteriaResults = persistence.getCriteriaResults(query);
 			// Die Gesuchsperioden, die jetzt in der Liste sind, sind sicher besetzt (eventuell noch weitere, sprich Online-Gesuche)
 			for (Gesuch criteriaResult : criteriaResults) {
-				gesuchsperiodenImStatus.remove(criteriaResult.getGesuchsperiode());
+				nichtAbgeschlossenePerioden.remove(criteriaResult.getGesuchsperiode());
 			}
 		}
-		return gesuchsperiodenImStatus;
+		return nichtAbgeschlossenePerioden;
 	}
 
 	private Collection<Gesuchsperiode> getGesuchsperiodenImStatus(GesuchsperiodeStatus... status) {

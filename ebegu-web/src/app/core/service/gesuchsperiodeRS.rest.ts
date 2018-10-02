@@ -67,7 +67,7 @@ export default class GesuchsperiodeRS {
     }
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(this.serviceURL + '/active').then((response: any) => {
+        return this.http.get(this.serviceURL + '/active').then(response => {
             const gesuchsperioden: TSGesuchsperiode[] = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.activeGesuchsperiodenList;
