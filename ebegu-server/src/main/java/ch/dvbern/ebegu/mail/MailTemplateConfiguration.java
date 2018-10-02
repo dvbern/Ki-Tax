@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,6 +42,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
@@ -275,7 +278,7 @@ public class MailTemplateConfiguration {
 				"EinladungEmail_" + einladungTyp.toString(),
 				einladender.getFullName(),
 				ServerMessageUtil.translateEnumValue(eingeladener.getRole()),
-				getRollenZusatz(einladungTyp, gemeinde, institution, traegerschaft)
+				getRollenZusatz(einladungTyp, eingeladener, gemeinde, institution, traegerschaft)
 			)
 		);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
@@ -286,10 +289,15 @@ public class MailTemplateConfiguration {
 	@Nonnull
 	private String getRollenZusatz(
 		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Benutzer eingeladener,
 		@Nullable Gemeinde gemeinde,
 		@Nullable Institution institution,
 		@Nullable Traegerschaft traegerschaft
 	) {
+		if (einladungTyp == EinladungTyp.MITARBEITER) {
+			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
+			return getRollenZusatzForMitarbeiter(eingeladener);
+		}
 		if (einladungTyp == EinladungTyp.GEMEINDE) {
 			requireNonNull(gemeinde, "For an Einladung of the type Gemeinde a Gemeinde must be set");
 			return '(' + gemeinde.getName() + ')';
@@ -301,6 +309,25 @@ public class MailTemplateConfiguration {
 		if (einladungTyp == EinladungTyp.INSTITUTION) {
 			requireNonNull(institution, "For an Einladung of the type Institution an Institution must be set");
 			return '(' + institution.getName() + ')';
+		}
+		return "";
+	}
+
+	private String getRollenZusatzForMitarbeiter(@Nonnull Benutzer eingeladener) {
+		if (eingeladener.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.GEMEINDE) {
+			final Set<Gemeinde> gemeindeList = eingeladener.getCurrentBerechtigung().getGemeindeList();
+			requireNonNull(gemeindeList);
+			return gemeindeList.stream()
+				.map(Gemeinde::getName)
+				.collect(Collectors.joining(", "));
+		}
+		if (eingeladener.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.TRAEGERSCHAFT) {
+			requireNonNull(eingeladener.getTraegerschaft());
+			return eingeladener.getTraegerschaft().getName();
+		}
+		if (eingeladener.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.INSTITUTION) {
+			requireNonNull(eingeladener.getInstitution());
+			return eingeladener.getInstitution().getName();
 		}
 		return "";
 	}

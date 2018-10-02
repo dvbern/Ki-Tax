@@ -22,6 +22,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 @Component({
@@ -33,6 +34,7 @@ export class BenutzerEinladenComponent {
 
     public readonly benutzer = new TSBenutzer();
     public readonly excludedRoles: ReadonlyArray<TSRole> = [TSRole.GESUCHSTELLER];
+    public readonly CONSTANTS = CONSTANTS;
 
     constructor(
         private readonly benutzerRS: BenutzerRS,
