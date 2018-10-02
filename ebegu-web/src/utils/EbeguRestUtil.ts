@@ -675,7 +675,8 @@ export default class EbeguRestUtil {
             restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             restGemeinde.bfsNummer = gemeinde.bfsNummer;
-            restGemeinde.BEGUab = DateUtil.momentToLocalDate(gemeinde.BEGUab);
+            restGemeinde.betreuungsgutscheineStartdatum = DateUtil
+                .momentToLocalDate(gemeinde.betreuungsgutscheineStartdatum);
             return restGemeinde;
         }
         return undefined;
@@ -694,7 +695,8 @@ export default class EbeguRestUtil {
             gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
             gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
-            gemeindeTS.BEGUab = DateUtil.localDateToMoment(gemeindeFromServer.BEGUab);
+            gemeindeTS.betreuungsgutscheineStartdatum = DateUtil
+                .localDateToMoment(gemeindeFromServer.betreuungsgutscheineStartdatum);
             return gemeindeTS;
         }
         return undefined;

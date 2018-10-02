@@ -25,7 +25,7 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
     private _gemeindeNummer: number;
     private _bfsNummer: number;
     private _status: TSGemeindeStatus;
-    private _BEGUab: moment.Moment;
+    private _betreuungsgutscheineStartdatum: moment.Moment;
 
     public get name(): string {
         return this._name;
@@ -59,11 +59,11 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
         this._bfsNummer = value;
     }
 
-    get BEGUab(): moment.Moment {
-        return this._BEGUab;
+    get betreuungsgutscheineStartdatum(): moment.Moment {
+        return this._betreuungsgutscheineStartdatum;
     }
 
-    set BEGUab(value: moment.Moment) {
-        this._BEGUab = value;
+    set betreuungsgutscheineStartdatum(value: moment.Moment) {
+        this._betreuungsgutscheineStartdatum = value;
     }
 }

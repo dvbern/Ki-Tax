@@ -52,7 +52,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	@Nonnull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	private LocalDate BEGUab;
+	private LocalDate betreuungsgutscheineStartdatum;
 
 
 	@Nonnull
@@ -91,12 +91,12 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public LocalDate getBEGUab() {
-		return BEGUab;
+	public LocalDate getBetreuungsgutscheineStartdatum() {
+		return betreuungsgutscheineStartdatum;
 	}
 
-	public void setBEGUab(@Nonnull LocalDate BEGUab) {
-		this.BEGUab = BEGUab;
+	public void setBetreuungsgutscheineStartdatum(@Nonnull LocalDate betreuungsgutscheineStartdatum) {
+		this.betreuungsgutscheineStartdatum = betreuungsgutscheineStartdatum;
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 			builder.append(this.getName(), parsedEntity.getName());
 			builder.append(this.getGemeindeNummer(), parsedEntity.getGemeindeNummer());
 			builder.append(this.getStatus(), parsedEntity.getStatus());
-			builder.append(this.getBEGUab(), parsedEntity.getBEGUab());
+			builder.append(this.getBetreuungsgutscheineStartdatum(), parsedEntity.getBetreuungsgutscheineStartdatum());
 			return builder.toComparison();
 		}
 		return builder.toComparison();
