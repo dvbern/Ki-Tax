@@ -25,6 +25,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {appModuleAngularJS} from './app.angularjs.module';
 import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
+import {GemeindeModule} from './gemeinde/gemeinde.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {SharedModule} from './shared/shared.module';
 
@@ -40,6 +41,7 @@ import {SharedModule} from './shared/shared.module';
 
         AppRoutingModule,
         NgAdminModule,
+        GemeindeModule,
         NgAuthenticationModule,
         NgGesuchModule,
         NgPosteingangModule,

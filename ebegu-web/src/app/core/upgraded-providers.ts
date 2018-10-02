@@ -14,6 +14,7 @@
  */
 
 import {Provider} from '@angular/core';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import FallRS from '../../gesuch/service/fallRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
@@ -28,7 +29,7 @@ import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
-import UserRS from './service/userRS.rest';
+import BenutzerRS from './service/benutzerRS.rest';
 import ZahlungRS from './service/zahlungRS.rest';
 import DossierRS from '../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
@@ -90,13 +91,13 @@ export const testFaelleRSProvider = {
 };
 
 // UserRS
-export function userRSProviderServiceFactory(i: any) {
-    return i.get('UserRS');
+export function benutzerRSProviderServiceFactory(i: any) {
+    return i.get('BenutzerRS');
 }
 
-export const userRSProvider = {
-    provide: UserRS,
-    useFactory: userRSProviderServiceFactory,
+export const benutzerRSProvider = {
+    provide: BenutzerRS,
+    useFactory: benutzerRSProviderServiceFactory,
     deps: ['$injector']
 };
 
@@ -232,6 +233,7 @@ export const fallRSProvider = {
     deps: ['$injector']
 };
 
+// InstitutionRS
 export function institutionRSFactory(i: any) {
     return i.get('InstitutionRS');
 }
@@ -242,13 +244,24 @@ export const institutionRSProvider = {
     deps: ['$injector'],
 };
 
+// EinstellungRS
+export function einstellungRSServiceFactory(i: any) {
+    return i.get('EinstellungRS');
+}
+
+export const einstellungRSProvider = {
+    provide: EinstellungRS,
+    useFactory: einstellungRSServiceFactory,
+    deps: ['$injector']
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
     traegerschaftRSProvider,
     errorServiceProvider,
     testFaelleRSProvider,
-    userRSProvider,
+    benutzerRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
     zahlungRSProvider,
@@ -262,4 +275,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     wizardStepManagerProvider,
     fallRSProvider,
     institutionRSProvider,
+    einstellungRSProvider,
 ];

@@ -14,10 +14,10 @@
  */
 
 export enum TSGesuchsperiodeStatus {
-    ENTWURF = <any> 'ENTWURF',
-    AKTIV = <any> 'AKTIV',
-    INAKTIV = <any> 'INAKTIV',
-    GESCHLOSSEN = <any> 'GESCHLOSSEN'
+    ENTWURF = 'ENTWURF',
+    AKTIV = 'AKTIV',
+    INAKTIV = 'INAKTIV',
+    GESCHLOSSEN = 'GESCHLOSSEN'
 }
 
 export function getTSGesuchsperiodeStatusValues(): Array<TSGesuchsperiodeStatus> {

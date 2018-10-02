@@ -15,9 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,11 +37,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
@@ -66,14 +63,15 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer Benutzer  (Auf client userRS.rest.ts also eigentlich die UserResources)
@@ -92,50 +90,72 @@ public class BenutzerResource {
 	@Inject
 	private Authorizer authorizer;
 
-	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
+	@ApiOperation("Erstellt einen Benutzer mit Status EINGELADEN und sendet ihm eine E-Mail")
+	@POST
+	@Path("/einladen")
+	@RolesAllowed({
+		SUPER_ADMIN,
+		ADMIN_BG,
+		ADMIN_GEMEINDE,
+		ADMIN_TS,
+		ADMIN_MANDANT,
+		ADMIN_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT,
+	})
+	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
+		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
+
+		return converter.benutzerToJaxBenutzer(benutzerService.einladen(benutzer));
+	}
+
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, "
+		+ "SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
 	@Path("/JAorAdmin")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxAuthLoginElement> getBenutzerJAorAdmin() {
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS,
+		ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxBenutzer> getBenutzerJAorAdmin() {
 		return benutzerService.getBenutzerBGorAdmin().stream()
-			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck",
 		responseContainer = "List",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
 	@Path("/SCHorAdmin")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
 		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxAuthLoginElement> getBenutzerSCHorAdminSCH() {
+	public List<JaxBenutzer> getBenutzerSCHorAdminSCH() {
 		return benutzerService.getBenutzerSCHorAdminSCH().stream()
-			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle Gesuchsteller zurueck",
 		responseContainer = "List",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
 	@Path("/gesuchsteller")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxAuthLoginElement> getGesuchsteller() {
+	public List<JaxBenutzer> getGesuchsteller() {
 		return benutzerService.getGesuchsteller().stream()
-			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
+			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
@@ -147,9 +167,9 @@ public class BenutzerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_MANDANT, REVISOR})
-	public Response searchBenutzer(
-		@Nonnull @NotNull BenutzerTableFilterDTO benutzerSearch,
+		ADMIN_MANDANT, REVISOR })
+	public JaxBenutzerSearchresultDTO searchBenutzer(
+		@Nonnull @NotNull @Valid BenutzerTableFilterDTO benutzerSearch,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -157,113 +177,141 @@ public class BenutzerResource {
 			Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(benutzerSearch);
 			List<Benutzer> foundBenutzer = searchResultPair.getRight();
 
-			List<JaxAuthLoginElement> benutzerDTOList = new ArrayList<>();
-			foundBenutzer.forEach(benutzer -> {
-				JaxAuthLoginElement benutzerDTO = converter.benutzerToAuthLoginElement(benutzer);
-				benutzerDTOList.add(benutzerDTO);
-			});
+			List<JaxBenutzer> benutzerDTOList = foundBenutzer.stream()
+				.map(converter::benutzerToJaxBenutzer)
+				.collect(Collectors.toList());
 
-			JaxBenutzerSearchresultDTO resultDTO = buildResultDTO(benutzerSearch, searchResultPair, benutzerDTOList);
-			return Response.ok(resultDTO).build();
+			return buildResultDTO(benutzerSearch, searchResultPair, benutzerDTOList);
 		});
 	}
 
 	@Nonnull
 	private JaxBenutzerSearchresultDTO buildResultDTO(
-		@Nonnull @NotNull BenutzerTableFilterDTO benutzerSearch, Pair<Long, List<Benutzer>> searchResultPair,
-		List<JaxAuthLoginElement> benutzerDTOList) {
+		@Nonnull BenutzerTableFilterDTO benutzerSearch,
+		Pair<Long, List<Benutzer>> searchResultPair,
+		List<JaxBenutzer> benutzerDTOList) {
 
 		JaxBenutzerSearchresultDTO resultDTO = new JaxBenutzerSearchresultDTO();
 		resultDTO.setBenutzerDTOs(benutzerDTOList);
 		PaginationDTO pagination = benutzerSearch.getPagination();
-		pagination.setTotalItemCount(searchResultPair.getLeft());
+		requireNonNull(pagination).setTotalItemCount(searchResultPair.getLeft());
 		resultDTO.setPaginationDTO(pagination);
+
 		return resultDTO;
 	}
 
+	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen  E-Mail in der Datenbank.",
+		response = JaxBenutzer.class)
+	@Nullable
+	@GET
+	@Path("/email/{email}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxBenutzer findBenutzerByEmail(
+		@Nonnull @NotNull @PathParam("email") String email) {
+
+		requireNonNull(email);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerByEmail(email);
+		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
+
+		return benutzerOptional
+			.map(benutzer -> converter.benutzerToJaxBenutzer(benutzer))
+			.orElse(null);
+	}
+
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
-		response = JaxAuthLoginElement.class)
+		response = JaxBenutzer.class)
 	@Nullable
 	@GET
 	@Path("/username/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public JaxAuthLoginElement findBenutzer(
+	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		Objects.requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
-		return benutzerOptional
-			.map(benutzer -> converter.benutzerToAuthLoginElement(benutzer))
+		return benutzerOptional.map(converter::benutzerToJaxBenutzer)
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Inactivates a Benutzer in the database", response = JaxAuthLoginElement.class)
+	@ApiOperation(value = "Inactivates a Benutzer in the database", response = JaxBenutzer.class)
 	@Nullable
 	@PUT
 	@Path("/inactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
-	public JaxAuthLoginElement inactivateBenutzer(
-		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_MANDANT })
+	public JaxBenutzer inactivateBenutzer(
+		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
 		Benutzer benutzer = benutzerService.sperren(benutzerJax.getUsername());
-		return converter.benutzerToAuthLoginElement(benutzer);
+		return converter.benutzerToJaxBenutzer(benutzer);
 	}
 
-	@ApiOperation(value = "Reactivates a Benutzer in the database", response = JaxAuthLoginElement.class)
+	@ApiOperation(value = "Reactivates a Benutzer in the database", response = JaxBenutzer.class)
 	@Nullable
 	@PUT
 	@Path("/reactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
-	public JaxAuthLoginElement reactivateBenutzer(
-		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_MANDANT })
+	public JaxBenutzer reactivateBenutzer(
+		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
 		Benutzer benutzer = benutzerService.reaktivieren(benutzerJax.getUsername());
-		return converter.benutzerToAuthLoginElement(benutzer);
+		return converter.benutzerToJaxBenutzer(benutzer);
 	}
 
-	@ApiOperation(value = "Updates a Benutzer in the database", response = JaxAuthLoginElement.class)
+	@ApiOperation(value = "Updates a Benutzer in the database", response = JaxBenutzer.class)
 	@Nullable
 	@PUT
 	@Path("/saveBenutzerBerechtigungen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT })
-	public JaxAuthLoginElement saveBenutzerBerechtigungen(
-		@Nonnull @NotNull @Valid JaxAuthLoginElement benutzerJax,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_MANDANT })
+	public JaxBenutzer saveBenutzerBerechtigungen(
+		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
 		String username = benutzerJax.getUsername();
 		Benutzer benutzer = benutzerService.findBenutzer(username)
-		.orElseThrow(() -> new EbeguEntityNotFoundException("saveBenutzerBerechtigungen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, username));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveBenutzerBerechtigungen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				username));
 
-			boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
-			Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(converter.authLoginElementToBenutzer(benutzerJax, benutzer), currentBerechtigungChanged);
+		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
+		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
+			converter.jaxBenutzerToBenutzer(benutzerJax, benutzer),
+			currentBerechtigungChanged);
 
-		return converter.benutzerToAuthLoginElement(mergedBenutzer);
+		return converter.benutzerToJaxBenutzer(mergedBenutzer);
 	}
 
-	private boolean hasCurrentBerechtigungChanged(@Nonnull JaxAuthLoginElement jaxBenutzerNew, @Nonnull Benutzer benutzerOld) {
-		JaxAuthLoginElement jaxBenutzerOld = converter.benutzerToAuthLoginElement(benutzerOld);
+	private boolean hasCurrentBerechtigungChanged(
+		@Nonnull JaxBenutzer jaxBenutzerNew,
+		@Nonnull Benutzer benutzerOld) {
+
+		JaxBenutzer jaxBenutzerOld = converter.benutzerToJaxBenutzer(benutzerOld);
 		jaxBenutzerOld.evaluateCurrentBerechtigung();
 		jaxBenutzerNew.evaluateCurrentBerechtigung();
-		Objects.requireNonNull(jaxBenutzerOld.getCurrentBerechtigung());
-		Objects.requireNonNull(jaxBenutzerNew.getCurrentBerechtigung());
+		requireNonNull(jaxBenutzerOld.getCurrentBerechtigung());
+		requireNonNull(jaxBenutzerNew.getCurrentBerechtigung());
+
 		return !jaxBenutzerOld.getCurrentBerechtigung().isSame(jaxBenutzerNew.getCurrentBerechtigung());
 	}
-
 
 	@ApiOperation(value = "Gibt alle BerechtigungHistory Einträge des übergebenen Benutzers zurück",
 		responseContainer = "List", response = JaxBerechtigungHistory.class)
@@ -273,14 +321,16 @@ public class BenutzerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		ADMIN_MANDANT, REVISOR})
+		ADMIN_MANDANT, REVISOR })
 	public List<JaxBerechtigungHistory> getBerechtigungHistoriesForBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
-		Benutzer benutzer = benutzerService.findBenutzer(username).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"getBerechtigungHistoriesForBenutzer",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"username invalid: " + username));
+
+		Benutzer benutzer = benutzerService.findBenutzer(username)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getBerechtigungHistoriesForBenutzer",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"username invalid: " + username));
+
 		return benutzerService.getBerechtigungHistoriesForBenutzer(benutzer).stream()
 			.map(history -> converter.berechtigungHistoryToJax(history))
 			.collect(Collectors.toList());

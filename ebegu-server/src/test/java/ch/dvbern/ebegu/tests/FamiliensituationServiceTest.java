@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;

@@ -1,0 +1,54 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-full-height-container>
+    <div class="dv-content">
+        <div class="viewTitle marginTop10">
+            <h2 translate>DEBUGGING_UI_ROUTER</h2>
+        </div>
+
+        <form #traceForm="ngForm">
+
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="routerTraceCategories">
+                        {{'DEBUGGING_TRACE_TRANSITIONS' | translate}}
+                    </label>
+                    <select [(ngModel)]="routerTraceCategories"
+                            multiple
+                            [size]="TRACE_CATEGORY_KEYS.length"
+                            name="routerTraceCategories"
+                            class="form-control"
+                            id="routerTraceCategories">
+                        <option *ngFor="let key of TRACE_CATEGORY_KEYS"
+                                [ngValue]="TRACE_CATEGORY[key]">
+                            {{key}}
+                            <ng-container *ngIf="routerTraceCategories.includes(TRACE_CATEGORY[key])">{{"&#xf00c;"}}
+                            </ng-container>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 dv-input-container-question">
+                    <button (click)="onActivateVisualizer()" class="dv-btn" translate [disabled]="hasVisualizer">
+                        DEBUGGING_UI_ROUTER_VISUALIZER
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</dv-full-height-container>

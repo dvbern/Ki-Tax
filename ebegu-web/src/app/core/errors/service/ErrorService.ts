@@ -46,6 +46,7 @@ export default class ErrorService {
      * @param {string} msgKey
      */
     clearError(msgKey: string) {
+        // noinspection SuspiciousTypeOfGuard
         if (typeof msgKey !== 'string') {
             return;
         }

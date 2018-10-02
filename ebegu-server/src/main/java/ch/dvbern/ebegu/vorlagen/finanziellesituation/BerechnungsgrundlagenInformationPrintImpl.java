@@ -37,7 +37,6 @@ public class BerechnungsgrundlagenInformationPrintImpl extends BriefPrintImpl im
 	private final FinanzielleSituationPrint finanz;
 	private EinkommensverschlechterungPrint ev1;
 	private EinkommensverschlechterungPrint ev2;
-	private final Gesuch gesuch;
 	private final Verfuegung famGroessenVerfuegung;
 
 	/**
@@ -47,7 +46,6 @@ public class BerechnungsgrundlagenInformationPrintImpl extends BriefPrintImpl im
 
 		super(gesuch);
 
-		this.gesuch = gesuch;
 		this.famGroessenVerfuegung = famGroessenVerfuegung;
 		// Finanzdaten abfuellen
 		FinanzSituationPrintGesuchsteller fG1 = FinanzSituationPrintGesuchstellerHelper.getFinanzSituationGesuchsteller1(gesuch);
@@ -93,20 +91,20 @@ public class BerechnungsgrundlagenInformationPrintImpl extends BriefPrintImpl im
 	@Override
 	public String getGesuchsteller1Name() {
 
-		return gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractFullName() : null;
+		return getGesuch().getGesuchsteller1() != null ? getGesuch().getGesuchsteller1().extractFullName() : null;
 	}
 
 	@Override
 	public String getGesuchsteller2Name() {
 
 		//noinspection ConstantConditions
-		return isExistGesuchsteller2() ? gesuch.getGesuchsteller2().extractFullName() : null;
+		return isExistGesuchsteller2() ? getGesuch().getGesuchsteller2().extractFullName() : null;
 	}
 
 	@Override
 	public boolean isExistGesuchsteller2() {
 
-		return gesuch.getGesuchsteller2() != null;
+		return getGesuch().getGesuchsteller2() != null;
 	}
 
 	@Override

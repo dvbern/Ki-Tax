@@ -68,6 +68,7 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
     bindings = {
         gesuchid: '@',
         dossierId: '@',
+        fallId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
         forceLoadingFromFall: '@'
@@ -91,8 +92,9 @@ export class DossierToolbarController implements IDVFocusableController {
     hideActionButtons: boolean;
     TSRoleUtil = TSRoleUtil;
     forceLoadingFromFall: boolean;
-    dossierId: string;
-    dossier: TSDossier;
+    public dossierId: string;
+    public fallId: string; // todo ramon -> dossierToolbar sollte den Fall nicht direkt kennen
+    public dossier: TSDossier;
 
     gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
     gesuchNavigationList: { [key: string]: Array<string> } = {};   //mapped z.B. '2006 / 2007' auf ein array mit den
@@ -644,5 +646,9 @@ export class DossierToolbarController implements IDVFocusableController {
      */
     public setFocusBack(elementID: string): void {
         angular.element('#kontaktButton').first().focus();
+    }
+
+    public getGesuchName(): string {
+        return this.gesuchModelManager.getGesuchName();
     }
 }

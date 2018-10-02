@@ -14,8 +14,8 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class TraegerschaftRS {
 
@@ -67,7 +67,7 @@ export class TraegerschaftRS {
     }
 
     public getAllActiveTraegerschaften(): IPromise<TSTraegerschaft[]> {
-        return this.http.get(this.serviceURL + '/' + 'active').then((response: any) => {
+        return this.http.get(this.serviceURL + '/active').then((response: any) => {
             this.log.debug('PARSING traegerschaften REST array object', response.data);
             return this.ebeguRestUtil.parseTraegerschaften(response.data);
         });

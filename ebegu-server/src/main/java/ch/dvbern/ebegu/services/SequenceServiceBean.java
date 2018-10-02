@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -73,29 +71,11 @@ public class SequenceServiceBean implements SequenceService {
 			.setParameter(typeParam, seq)
 			.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
-		List<Sequence> resultList = q.getResultList();
-		Sequence sequence;
-		if (resultList.isEmpty()) {
-			//wir sind hier mal liberal und initialisieren automatisch wenn noch nicht gemacht
-			sequence = initFallNrSeqMandant(mandant);
-		} else if (resultList.size() == 1) {
-			sequence = resultList.get(0);
-		} else {
-			throw new IllegalStateException("TooMany Results for sequence query");
-		}
+		Sequence sequence = q.getSingleResult();
+
 		Long number = sequence.incrementAndGet();
 		persistence.merge(sequence);
+
 		return number;
-	}
-
-	@Override
-	public Sequence initFallNrSeqMandant(@Nonnull Mandant mandant) {
-		checkNotNull(mandant);
-
-		Sequence seqFallNr = new Sequence(SequenceType.FALL_NUMMER, 0L);
-
-		seqFallNr.setMandant(mandant);
-		persistence.persist(seqFallNr);
-		return seqFallNr;
 	}
 }

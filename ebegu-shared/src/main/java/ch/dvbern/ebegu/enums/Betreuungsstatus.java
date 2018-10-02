@@ -80,7 +80,7 @@ public enum Betreuungsstatus {
 		return STORNIERT == this;
 	}
 
-	@SuppressWarnings("Duplicates")
+	@SuppressWarnings({"Duplicates", "checkstyle:CyclomaticComplexity"})
 	public static Set<Betreuungsstatus> allowedRoles(UserRole userRole) {
 		switch (userRole) {
 		case SUPER_ADMIN:

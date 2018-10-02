@@ -23,25 +23,32 @@
     }
 
     &-label {
-        width: 28rem;
+        width: 26.3rem;
         margin-bottom: 1.7rem;
     }
 
     &-input-container {
         display: flex;
         flex-flow: row wrap;
+        align-items: flex-end;
         justify-content: space-between;
     }
 
     &-search {
-        margin-bottom: 1.7rem;
+        margin-bottom: 0;
 
         &-input {
-            border: 0.5rem solid @primary;
+            height: 4rem;
+            background: @primary;
+            width: 26.3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .dv-select-style {
             border: 1px solid @anthracite;
+            background: @contrast-lightest;
 
             select {
                 width: calc(25.2rem - 1px);
@@ -62,12 +69,17 @@
         width: 26.3rem;
         text-transform: uppercase;
         // wenn der button fokusiert ist braucht er 2px für den Outline
-        margin: 0 2px;
     }
 }
 
+
 .input-error {
     height: 4rem;
+    width: 26.3rem;
+}
+
+form:not(.ng-submitted) .input-error /deep/ .error {
+    display: none
 }
 
 .onboarding-login {

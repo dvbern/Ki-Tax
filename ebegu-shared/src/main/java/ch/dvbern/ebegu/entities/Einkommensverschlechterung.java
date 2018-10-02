@@ -260,7 +260,7 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		return target;
 	}
 
-	@SuppressWarnings("OverlyComplexMethod")
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

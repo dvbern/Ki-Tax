@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -92,7 +92,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 		verantwortlicher = persistence.persist(verantwortlicher);
 
 		JaxGesuch testJaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
-		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToAuthLoginElement(verantwortlicher));
+		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToJaxBenutzer(verantwortlicher));
 		testJaxGesuch.getDossier().setGemeinde(converter.gemeindeToJAX(persistedGemeinde));
 
 		JaxFall returnedFall = fallResource.saveFall(testJaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);

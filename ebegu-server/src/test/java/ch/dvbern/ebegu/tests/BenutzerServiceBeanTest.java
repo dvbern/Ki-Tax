@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;

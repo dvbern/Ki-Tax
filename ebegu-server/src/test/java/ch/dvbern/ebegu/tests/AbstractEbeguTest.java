@@ -35,9 +35,9 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import ch.dvbern.ebegu.tets.TestDataUtil;
-import ch.dvbern.ebegu.tets.util.JBossLoginContextFactory;
-import ch.dvbern.ebegu.tets.util.LoginmoduleAndCacheSetupTask;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.test.util.LoginmoduleAndCacheSetupTask;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
@@ -147,6 +147,7 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("mail/templates/WarnungGesuchNichtFreigegeben.ftl", "mail/templates/WarnungGesuchNichtFreigegeben.ftl")
 			.addAsResource("mail/templates/WarnungFreigabequittungFehlt.ftl", "mail/templates/WarnungFreigabequittungFehlt.ftl")
 			.addAsResource("mail/templates/InfoGesuchGeloescht.ftl", "mail/templates/InfoGesuchGeloescht.ftl")
+			.addAsResource("mail/templates/BenutzerEinladung.ftl", "mail/templates/BenutzerEinladung.ftl")
 			.addAsResource("font/sRGB.profile", "font/sRGB.profile")
 			.addAsWebInfResource("META-INF/test-beans.xml", "beans.xml")
 			.addAsResource("META-INF/test-orm.xml", "META-INF/orm.xml")

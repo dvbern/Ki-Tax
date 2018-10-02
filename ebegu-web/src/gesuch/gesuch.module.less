@@ -14,7 +14,6 @@
  */
 @import (reference) '../style/variables.less';
 @import (reference) '../style/mixins.less';
-@import '../style/organisms/sidenav.less';
 
 #ewk {
     display: flex;
@@ -395,6 +394,10 @@ dv-accordion.ewksubsub {
     padding: 5rem 3rem 10rem;
     &.betreuungView {
         padding: 5rem 3rem 14rem;
+        .well {
+                margin-left: -3rem;
+                margin-right: -3rem;
+            }
     }
     position: relative;
 

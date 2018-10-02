@@ -24,7 +24,7 @@ import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.services.FerieninselStammdatenService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;

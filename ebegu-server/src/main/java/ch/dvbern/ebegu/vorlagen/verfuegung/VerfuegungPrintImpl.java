@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrint;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrintImpl;
 import ch.dvbern.ebegu.vorlagen.BriefPrintImpl;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Transferobjekt
@@ -47,12 +46,11 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	//formatiert
 	private final String letzteVerfuegungDatum;
 
-	/**
-	 * @param betreuung
-	 */
 	public VerfuegungPrintImpl(Betreuung betreuung, @Nullable LocalDate letzteVerfuegungDatum) {
 		super(betreuung.extractGesuch());
-		this.letzteVerfuegungDatum = letzteVerfuegungDatum != null ? Constants.DATE_FORMATTER.format(letzteVerfuegungDatum) : null;
+		this.letzteVerfuegungDatum = letzteVerfuegungDatum != null ?
+			Constants.DATE_FORMATTER.format(letzteVerfuegungDatum) :
+			null;
 		this.betreuung = betreuung;
 	}
 
@@ -174,13 +172,10 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 */
 	@Override
 	public List<AufzaehlungPrint> getManuelleBemerkungen() {
-
-		List<AufzaehlungPrint> bemerkungen = new ArrayList<>();
-		Optional<Verfuegung> verfuegung = extractVerfuegung();
-		if (verfuegung.isPresent() && StringUtils.isNotEmpty(verfuegung.get().getManuelleBemerkungen())) {
-			bemerkungen.addAll(splitBemerkungen(verfuegung.get().getManuelleBemerkungen()));
-		}
-		return bemerkungen;
+		return extractVerfuegung()
+			.map(Verfuegung::getManuelleBemerkungen)
+			.map(this::splitBemerkungen)
+			.orElseGet(Collections::emptyList);
 	}
 
 	/**
@@ -188,11 +183,12 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 *
 	 * @return List mit Bemerkungen
 	 */
-	private List<AufzaehlungPrint> splitBemerkungen(String bemerkungen) {
+	@Nonnull
+	private List<AufzaehlungPrint> splitBemerkungen(@Nonnull String bemerkungen) {
 
 		List<AufzaehlungPrint> list = new ArrayList<>();
 		// Leere Zeile werden mit diese Annotation [\\r\\n]+ entfernt
-		String[] splitBemerkungenNewLine = bemerkungen.split("[" + System.getProperty("line.separator") + "]+");
+		String[] splitBemerkungenNewLine = bemerkungen.split('[' + System.getProperty("line.separator") + "]+");
 		for (String bemerkung : splitBemerkungenNewLine) {
 			list.add(new AufzaehlungPrintImpl(bemerkung));
 		}

@@ -18,20 +18,20 @@ import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
-import UserRS from '../../service/userRS.rest';
+import BenutzerRS from '../../service/benutzerRS.rest';
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
  * The information will be stored in an angular-service, whi
  */
 export default class DVSTPersistQuicksearch implements IDirective {
-    static $inject: string[] = ['UserRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
+    static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
 
     restrict = 'A';
     require = ['^stTable', '^dvQuicksearchList'];
     link: IDirectiveLinkFn;
 
-    constructor(private readonly userRS: UserRS,
+    constructor(private readonly benutzerRS: BenutzerRS,
                 private readonly institutionRS: InstitutionRS,
                 private readonly dVsTPersistService: DVsTPersistService,
                 private readonly gemeindeRS: GemeindeRS) {
@@ -84,14 +84,14 @@ export default class DVSTPersistQuicksearch implements IDirective {
     }
 
     static factory(): IDirectiveFactory {
-        const directive = (userRS: any,
+        const directive = (benutzerRS: any,
                            institutionRS: any,
                            dVsTPersistService: any,
-                           gemeindeRS: any) => new DVSTPersistQuicksearch(userRS,
+                           gemeindeRS: any) => new DVSTPersistQuicksearch(benutzerRS,
             institutionRS,
             dVsTPersistService,
             gemeindeRS);
-        directive.$inject = ['UserRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
+        directive.$inject = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
         return directive;
     }
 
@@ -103,7 +103,7 @@ export default class DVSTPersistQuicksearch implements IDirective {
     private setVerantwortlicherBGFromName(quicksearchListController: DVQuicksearchListController,
                                           verantwortlicherBGFullname: string): void {
         if (verantwortlicherBGFullname && quicksearchListController) {
-            this.userRS.getBenutzerJAorAdmin().then(userList => {
+            this.benutzerRS.getBenutzerJAorAdmin().then(userList => {
                 const verantwortlicher = userList.find(user => user.getFullName() === verantwortlicherBGFullname);
                 quicksearchListController.selectedVerantwortlicherBG = verantwortlicher;
                 quicksearchListController.userChanged(verantwortlicher);
@@ -119,7 +119,7 @@ export default class DVSTPersistQuicksearch implements IDirective {
     private setVerantwortlicherTSFromName(quicksearchListController: DVQuicksearchListController,
                                           verantwortlicherTSFullname: string): void {
         if (verantwortlicherTSFullname && quicksearchListController) {
-            this.userRS.getBenutzerSCHorAdminSCH().then(userList => {
+            this.benutzerRS.getBenutzerSCHorAdminSCH().then(userList => {
                 const verantwortlicher = userList.find(user => user.getFullName() === verantwortlicherTSFullname);
                 quicksearchListController.selectedVerantwortlicherTS = verantwortlicher;
                 quicksearchListController.userChanged(verantwortlicher);

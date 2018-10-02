@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -37,7 +38,7 @@ import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -305,20 +306,22 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Admin benutzer
 		assertTrue(reportDataBenutzer.stream().anyMatch(benutzerDataRow -> benutzerDataRow.getUsername().equals("blku")));
-		reportDataBenutzer.stream().filter(benutzerDataRow -> benutzerDataRow.getUsername().equals("blku"))
+		reportDataBenutzer.stream()
+			.filter(benutzerDataRow -> benutzerDataRow.getUsername().equals("blku"))
 			.forEach(row -> {
 				assertEquals("Administrator BG", row.getRole());
-				assertFalse(row.isGesperrt());
+				assertEquals(BenutzerStatus.AKTIV, row.getStatus());
 				assertNull(row.getTraegerschaft());
 				assertNull(row.getInstitution());
 			});
 
 		// Institution benutzer
 		assertTrue(reportDataBenutzer.stream().anyMatch(benutzerDataRow -> benutzerDataRow.getUsername().equals("inst1")));
-		reportDataBenutzer.stream().filter(benutzerDataRow -> benutzerDataRow.getUsername().equals("inst1"))
+		reportDataBenutzer.stream()
+			.filter(benutzerDataRow -> benutzerDataRow.getUsername().equals("inst1"))
 			.forEach(row -> {
 				assertEquals("Sachbearbeiter Institution", row.getRole());
-				assertFalse(row.isGesperrt());
+				assertEquals(BenutzerStatus.AKTIV, row.getStatus());
 				assertNotNull(row.getTraegerschaft());
 				assertNotNull(row.getInstitution());
 				assertTrue(row.isKita());

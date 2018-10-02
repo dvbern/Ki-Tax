@@ -14,7 +14,6 @@
  */
 
 export enum TSGemeindeStatus {
-    AKTIV = <any> 'AKTIV',
-    GESPERRT = <any> 'GESPERRT',
-    REGISTRIERT = <any> 'REGISTRIERT'
+    AKTIV = 'AKTIV',
+    EINGELADEN = 'EINGELADEN'
 }

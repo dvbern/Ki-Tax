@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AuthService;
@@ -148,7 +149,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		jaxExternalBenutzer.setVorname(storedUser.getVorname());
 		jaxExternalBenutzer.setRole(storedUser.getRole().name());
 		jaxExternalBenutzer.setMandantId(storedUser.getMandant().getId());
-		jaxExternalBenutzer.setGesperrt(storedUser.getGesperrt());
+		jaxExternalBenutzer.setGesperrt(storedUser.getStatus() != BenutzerStatus.AKTIV);
 		if (storedUser.getInstitution() != null) {
 			jaxExternalBenutzer.setInstitutionId(storedUser.getInstitution().getId());
 		}

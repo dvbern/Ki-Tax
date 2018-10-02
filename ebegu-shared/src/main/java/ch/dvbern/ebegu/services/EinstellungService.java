@@ -17,11 +17,13 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -87,4 +89,9 @@ public interface EinstellungService {
 	 * Löscht alle Einstellungen der uebergebenen Gesuchsperiode
 	 */
 	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
+	 * Creates the Einstellung BEGU_BIETEN_AB for the given Gemeinde with the given date
+	 */
+	Einstellung createBeguBietenAbEinstellung(@Nonnull LocalDate eingangsdatum, @Nullable Gemeinde gemeinde);
 }

@@ -45,7 +45,7 @@ import javax.ws.rs.core.Response;
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAuthAccessElementCookieData;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.authentication.AuthLoginElement;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -139,7 +139,7 @@ public class AuthResource {
 	@POST
 	@Path("/login")
 	@PermitAll
-	public Response login(@Nonnull JaxAuthLoginElement loginElement) {
+	public Response login(@Nonnull JaxBenutzer loginElement) {
 		if (configuration.isDummyLoginEnabled()) {
 
 			// zuerst im Container einloggen, sonst schlaegt in den Entities die Mandanten-Validierung fehl
@@ -170,7 +170,7 @@ public class AuthResource {
 			}
 			// Achtung: Damit wird der bereits vorhandene Benutzer wieder mit den Daten aus dem LocalLogin überschrieben!
 			// Dies ist aber gewünschtes Verhalten: Wenn wir uns mit dem Admin-Link einloggen, wollen wir immer Admin sein.
-			benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(loginElement, benutzer));
+			benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(loginElement, benutzer));
 
 			Optional<AuthAccessElement> accessElement = authService.login(login);
 			if (!accessElement.isPresent()) {

@@ -13,18 +13,20 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.fallId" [dossier-id]="vm.dossierId">
+<dv-fall-toolbar [fall-id]="vm.fallId" [dossier-id]="vm.dossierId" hide-xs hide-sm>
 </dv-fall-toolbar>
 
 <dossier-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
                  hide-action-buttons="{{true}}"
                  force-loading-from-fall="{{true}}"
-                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+                 dv-show-element
+                 dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
 </dossier-toolbar>
 
 <dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossierId}}"
                                hide-action-buttons="{{true}}"
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+                               dv-show-element
+                               dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
 </dossier-toolbar-gesuchsteller>
 
 <div class="mitteilungenView overflow-auto" flex="auto">

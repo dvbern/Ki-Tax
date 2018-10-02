@@ -23,7 +23,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSUser from '../../../models/TSUser';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import DossierRS from '../../service/dossierRS.rest';
 import {StateService} from '@uirouter/core';
@@ -45,7 +45,7 @@ describe('fallToolbar', () => {
     let gemeinde1: TSGemeinde;
     let gemeinde2: TSGemeinde;
     let gemeinde3: TSGemeinde;
-    const user: TSUser = new TSUser();
+    const user: TSBenutzer = new TSBenutzer();
 
 
     beforeEach(async(() => {
@@ -53,7 +53,7 @@ describe('fallToolbar', () => {
         initObjects();
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2]),
+            'getAktiveGemeinden': Promise.resolve([gemeinde1, gemeinde2]),
         });
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
             'getPrincipalRole': Promise.resolve(TSRole.SUPER_ADMIN),
@@ -169,7 +169,7 @@ describe('fallToolbar', () => {
         beforeEach(async(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
-                'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                'getAktiveGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             initTestBed();
@@ -192,7 +192,7 @@ describe('fallToolbar', () => {
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
                 'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
-            dossier1.fall.besitzer = new TSUser(); // it  is now an onlineGesuch
+            dossier1.fall.besitzer = new TSBenutzer(); // it  is now an onlineGesuch
             const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
                 'findDossiersByFall': Promise.resolve([dossier1, dossier2])
             });

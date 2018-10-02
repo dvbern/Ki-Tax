@@ -16,6 +16,7 @@
 import {TSGemeindeStatus} from '../models/enums/TSGemeindeStatus';
 import {TSRole} from '../models/enums/TSRole';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
+import TSBenutzer from '../models/TSBenutzer';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSDossier from '../models/TSDossier';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
@@ -192,6 +193,7 @@ export default class TestDataUtil {
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         gemeinde.name = 'Ostermundigen';
         gemeinde.gemeindeNummer = 2;
+        gemeinde.bfsNummer = 363;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         return gemeinde;
     }
@@ -202,6 +204,7 @@ export default class TestDataUtil {
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
         gemeinde.gemeindeNummer = 1;
+        gemeinde.bfsNummer = 351;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         return gemeinde;
     }
@@ -237,5 +240,14 @@ export default class TestDataUtil {
         dossier.id = id;
         dossier.fall = fall;
         return dossier;
+    }
+
+    public static createSuperadmin(): TSBenutzer {
+        const user = new TSBenutzer();
+        user.nachname = 'system';
+        user.vorname = 'system';
+        user.currentBerechtigung = new TSBerechtigung();
+        user.currentBerechtigung.role = TSRole.SUPER_ADMIN;
+        return user;
     }
 }

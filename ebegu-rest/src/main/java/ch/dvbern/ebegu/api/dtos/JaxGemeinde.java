@@ -38,6 +38,8 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	private long gemeindeNummer;
 
+	private Long bfsNummer;
+
 	private GemeindeStatus status;
 
 
@@ -64,6 +66,14 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setStatus(GemeindeStatus status) {
 		this.status = status;
+	}
+
+	public Long getBfsNummer() {
+		return bfsNummer;
+	}
+
+	public void setBfsNummer(Long bfsNummer) {
+		this.bfsNummer = bfsNummer;
 	}
 
 

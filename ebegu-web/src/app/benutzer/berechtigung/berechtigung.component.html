@@ -1,0 +1,88 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="row">
+    <!-- Rolle -->
+    <div class="col-sm-12 dv-input-container-medium">
+        <div class="form-group">
+            <dv-benutzer-rolle [inputId]="rolleId"
+                               [name]="rolleId"
+                               [required]="true"
+                               [disabled]="disabled"
+                               [excludedRoles]="excludedRoles"
+                               [(benutzerRolle)]="berechtigung.role">
+            </dv-benutzer-rolle>
+        </div>
+    </div>
+
+    <!-- Gemeinde(n) -->
+    <div class="col-sm-12 dv-input-container-medium" *ngIf="berechtigung.hasGemeindeRole()">
+        <dv-gemeinde-multiselect [selected]="berechtigung.gemeindeList"
+                                 [disabled]="disabled"
+                                 [required]="true">
+        </dv-gemeinde-multiselect>
+    </div>
+
+    <!-- Institution -->
+    <div class="col-sm-12 dv-input-container-medium" *ngIf="berechtigung.hasInstitutionRole()">
+        <div class="form-group">
+            <label translate [for]="institutionId">INSTITUTION</label>
+            <div class="dv-select-style">
+                <select [attr.aria-describedby]="institutionId + '-error'"
+                        [name]="institutionId"
+                        [id]="institutionId"
+                        class="form-control"
+                        [disabled]="disabled"
+                        [required]="true"
+                        [(ngModel)]="berechtigung.institution"
+                        [compareWith]="compareById">
+                    <option *ngFor="let institution of institutionen$ | async" [ngValue]="institution">
+                        {{institution.name}}
+                    </option>
+                </select>
+                <dv-error-messages [inputId]="institutionId"
+                                   [errorObject]="form.controls[institutionId]?.errors">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+
+    <!-- Traegerschaft -->
+    <div class="col-sm-12 dv-input-container-medium" *ngIf="berechtigung.hasTraegerschaftRole()">
+        <div class="form-group">
+            <label translate [for]="traegerschaftId">TRAEGERSCHAFT</label>
+            <div class="dv-select-style">
+                <select [attr.aria-describedby]="traegerschaftId + '-error'"
+                        [name]="traegerschaftId"
+                        [id]="traegerschaftId"
+                        class="form-control"
+                        [disabled]="disabled"
+                        [required]="true"
+                        [(ngModel)]="berechtigung.traegerschaft"
+                        [compareWith]="compareById">
+                    <option *ngFor="let traegerschaft of traegerschaften$ | async"
+                            [ngValue]="traegerschaft">
+                        {{traegerschaft.name}}
+                    </option>
+                </select>
+                <dv-error-messages [inputId]="traegerschaftId"
+                                   [errorObject]="form.controls[traegerschaftId]?.errors">
+                </dv-error-messages>
+            </div>
+        </div>
+    </div>
+</div>

@@ -15,14 +15,14 @@
 
 import TSFile from './TSFile';
 import * as moment from 'moment';
-import TSUser from './TSUser';
+import TSBenutzer from './TSBenutzer';
 
 export default class TSDokument extends TSFile {
 
     private _timestampUpload: moment.Moment;
-    private _userUploaded: TSUser;
+    private _userUploaded: TSBenutzer;
 
-    constructor(timestampUpload?: moment.Moment, userUploaded?: TSUser) {
+    constructor(timestampUpload?: moment.Moment, userUploaded?: TSBenutzer) {
         super();
         this._timestampUpload = timestampUpload;
         this._userUploaded = userUploaded;
@@ -36,11 +36,11 @@ export default class TSDokument extends TSFile {
         this._timestampUpload = value;
     }
 
-    get userUploaded(): TSUser {
+    get userUploaded(): TSBenutzer {
         return this._userUploaded;
     }
 
-    set userUploaded(value: TSUser) {
+    set userUploaded(value: TSBenutzer) {
         this._userUploaded = value;
     }
 }

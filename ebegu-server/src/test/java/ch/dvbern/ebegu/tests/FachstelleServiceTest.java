@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.services.FachstelleService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;

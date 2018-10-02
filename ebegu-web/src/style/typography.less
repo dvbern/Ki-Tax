@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 @import (reference) 'variables.less';
 @import (reference) 'mixins.less';
 
@@ -79,6 +78,26 @@ md-input-container label:not(.md-container-ignore).md-required {
     }
 }
 
+.mat-datepicker-toggle {
+    background: @contrast-light;
+    display: block;
+    width: 4rem;
+    float: right;
+    height: 4rem;
+    .mat-icon-button {
+        height: 4rem;
+        width: 4rem;
+        line-height: 2.0rem;
+        font-size: 1rem;
+    }
+}
+
 .form-group {
     margin: 0;
+
+    & > :last-child:not(dv-error-messages) {
+        // When there is no dv-error-messages component (e.g. always disabled inputs), then add a similar
+        // margin as the dv-error-messages component would use
+        margin-bottom: 3rem;
+    }
 }

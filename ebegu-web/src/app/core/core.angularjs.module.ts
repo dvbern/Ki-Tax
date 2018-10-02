@@ -133,7 +133,7 @@ import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
-import UserRS from './service/userRS.rest';
+import BenutzerRS from './service/benutzerRS.rest';
 import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
@@ -192,7 +192,7 @@ export const EbeguWebCore: angular.IModule = angular
     .service('BatchJobRS', BatchJobRS)
     .service('BetreuungRS', BetreuungRS)
     .service('GesuchsperiodeRS', GesuchsperiodeRS)
-    .service('UserRS', UserRS)
+    .service('BenutzerRS', BenutzerRS)
     .service('VerfuegungRS', VerfuegungRS)
     .service('DokumenteRS', DokumenteRS)
     .service('UploadRS', UploadRS)

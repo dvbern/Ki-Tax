@@ -31,11 +31,15 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  */
 abstract class AbstractDokumente<T1, T2> {
 
-	public abstract void getAllDokumente(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis);
+	public abstract void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis);
 
-	public abstract boolean isDokumentNeeded(DokumentTyp dokumentTyp, T1 dataForDocument);
+	public abstract boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable T1 dataForDocument);
 
-	public boolean isDokumentNeeded(DokumentTyp dokumentTyp, T1 dataForDocument1, T2 dataForDocument2) {
+	public boolean isDokumentNeeded(
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nullable T1 dataForDocument1,
+		@Nullable T2 dataForDocument2) {
+
 		return isDokumentNeeded(dokumentTyp, dataForDocument1);
 	}
 
@@ -47,12 +51,12 @@ abstract class AbstractDokumente<T1, T2> {
 
 	@Nullable
 	DokumentGrund getDokument(
-		DokumentTyp dokumentTyp,
-		T1 dataForDocument,
-		String tag,
-		DokumentGrundPersonType personType,
-		Integer personNumber,
-		DokumentGrundTyp dokumentGrundTyp) {
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nullable T1 dataForDocument,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		@Nonnull DokumentGrundTyp dokumentGrundTyp) {
 
 		if (isDokumentNeeded(dokumentTyp, dataForDocument)) {
 			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
@@ -61,8 +65,15 @@ abstract class AbstractDokumente<T1, T2> {
 	}
 
 	@Nullable
-	DokumentGrund getDokument(DokumentTyp dokumentTyp, T1 dataForDocument1, T2 dataForDocument2, String tag,
-		DokumentGrundPersonType personType, Integer personNumber, DokumentGrundTyp dokumentGrundTyp) {
+	DokumentGrund getDokument(
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nonnull T1 dataForDocument1,
+		@Nullable T2 dataForDocument2,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		@Nonnull DokumentGrundTyp dokumentGrundTyp) {
+
 		if (isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2)) {
 			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
 		}

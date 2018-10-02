@@ -1,4 +1,4 @@
-# Installation Ki-Tax GUI
+# Installation kiBon GUI
 
 ## nvm installieren
 NVM dient der Verwaltung der benutzten node (npm) Version
@@ -6,7 +6,7 @@ NVM dient der Verwaltung der benutzten node (npm) Version
 - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
 
 ## Node installieren
-Ki-Tax benoetigt ca Version 4.4 von Node. Kann mit nvm install v4.4.3 installiert werden
+kiBon benoetigt ca Version 4.4 von Node. Kann mit nvm install v4.4.3 installiert werden
  - nvm install v4.4.3
  - sicherstellen, dass npm -v grösser als v3.8.1 ist
  

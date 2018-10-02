@@ -77,7 +77,7 @@ public class EinstellungResource {
 	@Inject
 	private JaxBConverter converter;
 
-	@ApiOperation(value = "Create a new or update an existing Ki-Tax parameter with the given key and value",
+	@ApiOperation(value = "Create a new or update an existing kiBon parameter with the given key and value",
 		response = JaxEinstellung.class,
 		consumes = MediaType.APPLICATION_JSON)
 	@Nullable
@@ -106,7 +106,7 @@ public class EinstellungResource {
 		return Response.created(uri).entity(converter.einstellungToJAX(persistedEinstellung)).build();
 	}
 
-	@ApiOperation(value = "Get a specific Ki-Tax parameter by key and date", response = JaxEinstellung.class)
+	@ApiOperation(value = "Get a specific kiBon parameter by key and date", response = JaxEinstellung.class)
 	@Nullable
 	@GET
 	@Path("/key/{key}/gemeinde/{gemeindeId}/gp/{gesuchsperiodeId}")
@@ -126,7 +126,7 @@ public class EinstellungResource {
 		return converter.einstellungToJAX(einstellungService.findEinstellung(einstellungKey, gemeinde, gp));
 	}
 
-	@ApiOperation(value = "Get all Ki-Tax parameter for a specific Gesuchsperiode. The id of the gesuchsperiode is " +
+	@ApiOperation(value = "Get all kiBon parameter for a specific Gesuchsperiode. The id of the gesuchsperiode is " +
 		"passed  as a pathParam", responseContainer = "List", response = JaxEinstellung.class)
 	@Nonnull
 	@GET

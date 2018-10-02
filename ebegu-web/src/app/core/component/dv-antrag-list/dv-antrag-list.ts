@@ -32,7 +32,7 @@ import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
-import TSUser from '../../../../models/TSUser';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
@@ -86,8 +86,8 @@ export class DVAntragListController implements IController {
     selectedAenderungsdatum: string;
     selectedEingangsdatum: string;
     selectedEingangsdatumSTV: string;
-    selectedVerantwortlicherBG: TSUser;
-    selectedVerantwortlicherTS: TSUser;
+    selectedVerantwortlicherBG: TSBenutzer;
+    selectedVerantwortlicherTS: TSBenutzer;
     selectedDokumenteHochgeladen: string;
     pendenz: boolean;
 

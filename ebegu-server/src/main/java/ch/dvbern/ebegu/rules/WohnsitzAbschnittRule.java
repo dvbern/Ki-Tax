@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
-	private final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class);
 
 	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod) {
 		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod);

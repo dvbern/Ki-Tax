@@ -15,7 +15,7 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form (ngSubmit)="onSubmit(form)" #form="ngForm">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
 
     <div class="onboarding-subtitle">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}</div>
 
@@ -38,18 +38,18 @@
                 <span>{{'ONBOARDING_GS_ANGABEN_TITLE' | translate}}</span>
             </div>
             <div class="onboarding-gs-angaben-content">
-                <table class="onboarding-gs-angaben-content-table">
+                <table class="onboarding-gs-angaben-table">
                     <tr>
                         <td class="onboarding-gs-angaben-table-label">Vorname</td>
-                        <td>{{(user$ | async).vorname}}</td>
+                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).vorname}}</td>
                     </tr>
                     <tr>
                         <td class="onboarding-gs-angaben-table-label">Name</td>
-                        <td>{{(user$ | async).nachname}}</td>
+                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).nachname}}</td>
                     </tr>
                     <tr>
                         <td class="onboarding-gs-angaben-table-label">E-Mail</td>
-                        <td>{{(user$ | async).email}}</td>
+                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).email}}</td>
                     </tr>
                 </table>
             </div>

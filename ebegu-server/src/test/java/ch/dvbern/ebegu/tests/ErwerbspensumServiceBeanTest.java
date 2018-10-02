@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
 import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;

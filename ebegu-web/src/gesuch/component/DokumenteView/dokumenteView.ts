@@ -54,6 +54,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     dokumenteKinder: TSDokumentGrund[] = [];
     dokumenteSonst: TSDokumentGrund[] = [];
     dokumentePapiergesuch: TSDokumentGrund[] = [];
+    dokumenteFreigabequittung: TSDokumentGrund[] = [];
 
     constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                 private readonly dokumenteRS: DokumenteRS, private readonly $log: ILogService, wizardStepManager: WizardStepManager,
@@ -68,14 +69,15 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         if (this.gesuchModelManager.getGesuch()) {
             this.berechnungsManager
                 .getDokumente(this.gesuchModelManager.getGesuch())
-                .then((promiseValue: TSDokumenteDTO) => {
-                    this.searchDokumente(promiseValue, this.dokumenteEkv, TSDokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-                    this.searchDokumente(promiseValue, this.dokumenteFinSit, TSDokumentGrundTyp.FINANZIELLESITUATION);
-                    this.searchDokumente(promiseValue, this.dokumenteFamSit, TSDokumentGrundTyp.FAMILIENSITUATION);
-                    this.searchDokumente(promiseValue, this.dokumenteErwp, TSDokumentGrundTyp.ERWERBSPENSUM);
-                    this.searchDokumente(promiseValue, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
-                    this.searchDokumente(promiseValue, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
-                    this.searchDokumente(promiseValue, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
+                .then((alleDokumente: TSDokumenteDTO) => {
+                    this.searchDokumente(alleDokumente, this.dokumenteEkv, TSDokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
+                    this.searchDokumente(alleDokumente, this.dokumenteFinSit, TSDokumentGrundTyp.FINANZIELLESITUATION);
+                    this.searchDokumente(alleDokumente, this.dokumenteFamSit, TSDokumentGrundTyp.FAMILIENSITUATION);
+                    this.searchDokumente(alleDokumente, this.dokumenteErwp, TSDokumentGrundTyp.ERWERBSPENSUM);
+                    this.searchDokumente(alleDokumente, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
+                    this.searchDokumente(alleDokumente, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
+                    this.searchDokumente(alleDokumente, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
+                    this.searchDokumente(alleDokumente, this.dokumenteFreigabequittung, TSDokumentGrundTyp.FREIGABEQUITTUNG);
                 });
         } else {
             this.$log.debug('No gesuch für dokumente');

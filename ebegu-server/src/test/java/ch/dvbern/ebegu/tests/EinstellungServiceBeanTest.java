@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -36,6 +36,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static ch.dvbern.ebegu.test.TestDataUtil.SEQUENCE;
 
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/empty.xml")
@@ -79,6 +81,7 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		gemeindeOstermundigen.setMandant(kantonBern);
 		gemeindeLuzern = TestDataUtil.createGemeindeBern();
 		gemeindeLuzern.setId("65a0c4a3-80a1-48cd-80af-6bb9fc403f7d");
+		gemeindeLuzern.setBfsNummer(SEQUENCE.incrementAndGet());
 		gemeindeLuzern.setName("Luzern");
 		gemeindeLuzern.setMandant(kantonLuzern);
 		persistence.merge(gemeindeBern);

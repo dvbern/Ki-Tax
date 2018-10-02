@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 
 /**
@@ -46,7 +47,8 @@ public class JaxBerechtigungHistory extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private String gemeinden;
 
-	private boolean gesperrt;
+	@Nonnull
+	private BenutzerStatus status;
 
 	private boolean geloescht;
 
@@ -105,12 +107,13 @@ public class JaxBerechtigungHistory extends JaxAbstractDateRangedDTO {
 		this.gemeinden = gemeinden;
 	}
 
-	public boolean isGesperrt() {
-		return gesperrt;
+	@Nonnull
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
-	public void setGesperrt(boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public void setStatus(@Nonnull BenutzerStatus status) {
+		this.status = status;
 	}
 
 	public boolean isGeloescht() {

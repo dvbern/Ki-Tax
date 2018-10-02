@@ -17,7 +17,7 @@ package ch.dvbern.ebegu.tests.validations;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnungValidator;
 import org.junit.Assert;
 import org.junit.Before;
