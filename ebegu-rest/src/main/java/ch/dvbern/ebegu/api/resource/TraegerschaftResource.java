@@ -96,7 +96,7 @@ public class TraegerschaftResource {
 			final Benutzer benutzer = benutzerService.findBenutzerByEmail(traegerschaftJAXP.getMail()).orElseGet(() ->
 				benutzerService.createAdminTraegerschaftByEmail(traegerschaftJAXP.getMail(), persistedTraegerschaft)
 			);
-			benutzerService.einladen(benutzer, EinladungTyp.TRAEGERSCHAFT);
+			benutzerService.einladen(benutzer, EinladungTyp.TRAEGERSCHAFT, null, null, traegerschaft);
 		}
 
 		JaxTraegerschaft jaxTraegerschaft = converter.traegerschaftToJAX(persistedTraegerschaft);

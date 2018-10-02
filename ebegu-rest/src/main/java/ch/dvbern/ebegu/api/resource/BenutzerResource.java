@@ -106,7 +106,7 @@ public class BenutzerResource {
 	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
 
-		return converter.benutzerToJaxBenutzer(benutzerService.einladen(benutzer, EinladungTyp.MITARBEITER));
+		return converter.benutzerToJaxBenutzer(benutzerService.einladen(benutzer, EinladungTyp.MITARBEITER, null, null, null));
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, "

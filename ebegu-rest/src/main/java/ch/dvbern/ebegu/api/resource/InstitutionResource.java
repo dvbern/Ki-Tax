@@ -90,7 +90,7 @@ public class InstitutionResource {
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(institutionJAXP.getMail()).orElseGet(() ->
 			benutzerService.createAdminInstitutionByEmail(institutionJAXP.getMail(), persistedInstitution)
 		);
-		benutzerService.einladen(benutzer, EinladungTyp.INSTITUTION);
+		benutzerService.einladen(benutzer, EinladungTyp.INSTITUTION, null, persistedInstitution, null);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(InstitutionResource.class)

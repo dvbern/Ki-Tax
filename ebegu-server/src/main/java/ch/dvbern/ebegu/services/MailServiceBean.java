@@ -37,12 +37,14 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -369,10 +371,12 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	public void sendBenutzerEinladung(
 		@Nonnull Benutzer einladender,
 		@Nonnull Benutzer eingeladener,
-		@Nonnull EinladungTyp einladungTyp) throws MailException {
-
-		// todo chose template and set link
-		String message = mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener);
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) throws MailException {
+		String message = mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener, einladungTyp, gemeinde, institution, traegerschaft);
 		sendMessageWithTemplate(message, eingeladener.getEmail());
 	}
 

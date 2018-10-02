@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -79,7 +80,13 @@ public interface BenutzerService {
 	 * Saves the given Benutzer and sends him an Einladungsemail
 	 */
 	@Nonnull
-	Benutzer einladen(@Nonnull Benutzer benutzer, EinladungTyp einladungTyp);
+	Benutzer einladen(
+		@Nonnull Benutzer benutzer,
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	);
 
 	/**
 	 * @param username PK (id) des Benutzers

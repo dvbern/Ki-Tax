@@ -243,7 +243,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ADMIN_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT,
 	})
-	public Benutzer einladen(@Nonnull Benutzer benutzer, @Nonnull EinladungTyp einladungTyp) {
+	public Benutzer einladen(
+		@Nonnull Benutzer benutzer,
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
 		requireNonNull(benutzer);
 		requireNonNull(einladungTyp);
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
@@ -252,7 +258,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Benutzer persisted = saveBenutzer(benutzer);
 
 		try {
-			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted, einladungTyp);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted, einladungTyp, gemeinde, institution, traegerschaft);
 
 		} catch (MailException e) {
 			String message =

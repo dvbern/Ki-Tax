@@ -21,9 +21,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -31,19 +31,24 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Configuration For Freemarker Templates
@@ -252,24 +257,66 @@ public class MailTemplateConfiguration {
 	}
 
 	@Nonnull
-	public String getBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Benutzer eingeladener) {
+	public String getBenutzerEinladung(
+		@Nonnull Benutzer einladender,
+		@Nonnull Benutzer eingeladener,
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
-		paramMap.put("acceptLink", "https://www.dvbern.ch"); // TODO
-		paramMap.put("rolle", ServerMessageUtil.translateEnumValue(eingeladener.getRole()));
-
-		RollenAbhaengigkeit rollenAbhaengigkeit = eingeladener.getRole().getRollenAbhaengigkeit();
-		Optional<String> rollenZusatz = eingeladener.extractRollenAbhaengigkeitAsString();
-		paramMap.put("hasRollenZusatz", rollenZusatz.isPresent());
-		rollenZusatz.ifPresent(zusatz -> {
-			paramMap.put("rollenZusatzTitel", ServerMessageUtil.translateEnumValue(rollenAbhaengigkeit));
-			paramMap.put("rollenZusatz", zusatz);
-		});
-		paramMap.put("einladender", einladender);
+		paramMap.put("acceptLink", createLink(eingeladener));
 		paramMap.put("eingeladener", eingeladener);
+		paramMap.put("content",
+			ServerMessageUtil.getMessage(
+				"EinladungEmail_" + einladungTyp.toString(),
+				einladender.getFullName(),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole()),
+				getRollenZusatz(einladungTyp, gemeinde, institution, traegerschaft)
+			)
+		);
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
 
 		return doProcessTemplate("BenutzerEinladung.ftl", paramMap);
+	}
+
+	@Nonnull
+	private String getRollenZusatz(
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
+		if (einladungTyp == EinladungTyp.GEMEINDE) {
+			requireNonNull(gemeinde, "For an Einladung of the type Gemeinde a Gemeinde must be set");
+			return '(' + gemeinde.getName() + ')';
+		}
+		if (einladungTyp == EinladungTyp.TRAEGERSCHAFT) {
+			requireNonNull(traegerschaft, "For an Einladung of the type Traegerschaft a Traegerschaft must be set");
+			return '(' + traegerschaft.getName() + ')';
+		}
+		if (einladungTyp == EinladungTyp.INSTITUTION) {
+			requireNonNull(institution, "For an Einladung of the type Institution an Institution must be set");
+			return '(' + institution.getName() + ')';
+		}
+		return "";
+	}
+
+	private String createLink(@Nonnull Benutzer eingeladener) {
+		if (eingeladener.getRole() == UserRole.ADMIN_GEMEINDE) {
+			//todo it should also be allowed ADMIN_BG and TS --> better use EinladungTyp
+			return "http://ffffff/user=?/gemeinde=?";
+		}
+		if (eingeladener.getRole() == UserRole.ADMIN_INSTITUTION) {
+			return "http://ffffff/user=?/institution=?";
+		}
+		if (eingeladener.getRole() == UserRole.ADMIN_TRAEGERSCHAFT) {
+			return "http://ffffff/user=?/traegerschaft=?";
+		}
+		return "";
 	}
 
 	private String processTemplateGesuch(

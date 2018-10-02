@@ -24,9 +24,12 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.errors.MailException;
 
@@ -132,6 +135,9 @@ public interface MailService {
 	void sendBenutzerEinladung(
 		@Nonnull Benutzer einladender,
 		@Nonnull Benutzer eingeladener,
-		@Nonnull EinladungTyp einladungTyp)
-		throws MailException;
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) throws MailException;
 }
