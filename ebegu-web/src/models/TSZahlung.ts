@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSZahlungsstatus} from './enums/TSZahlungsstatus';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSZahlung extends TSAbstractMutableEntity {
 

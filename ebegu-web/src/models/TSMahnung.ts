@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSMahnungTyp} from './enums/TSMahnungTyp';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSGesuch from './TSGesuch';
-import {TSMahnungTyp} from './enums/TSMahnungTyp';
-import * as moment from 'moment';
 
 export default class TSMahnung extends TSAbstractMutableEntity {
 
@@ -27,8 +27,12 @@ export default class TSMahnung extends TSAbstractMutableEntity {
     private _timestampAbgeschlossen: moment.Moment;
     private _abgelaufen: boolean;
 
-    public constructor(gesuch?: TSGesuch, mahnungTyp?: TSMahnungTyp, datumFristablauf?: moment.Moment, bemerkungen?: string,
-                       timestampAbgeschlossen?: moment.Moment, abgelaufen?: boolean) {
+    public constructor(gesuch?: TSGesuch,
+                       mahnungTyp?: TSMahnungTyp,
+                       datumFristablauf?: moment.Moment,
+                       bemerkungen?: string,
+                       timestampAbgeschlossen?: moment.Moment,
+                       abgelaufen?: boolean) {
         super();
         this._gesuch = gesuch;
         this._mahnungTyp = mahnungTyp;

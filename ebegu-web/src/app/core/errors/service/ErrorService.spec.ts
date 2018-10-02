@@ -13,22 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IRootScopeService} from 'angular';
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import TSExceptionReport from '../../../../models/TSExceptionReport';
 import ErrorService from './ErrorService';
-import HttpErrorInterceptor from './HttpErrorInterceptor';
 
 describe('errorService', () => {
 
-    let httpErrorInterceptor: HttpErrorInterceptor, errorService: ErrorService;
-    let $rootScope: angular.IRootScopeService;
+    let errorService: ErrorService;
+    let $rootScope: IRootScopeService;
 
     beforeEach(angular.mock.module('dvbAngular.errors'));
 
     beforeEach(angular.mock.inject($injector => {
-        httpErrorInterceptor = $injector.get('HttpErrorInterceptor');
         $rootScope = $injector.get('$rootScope');
         errorService = $injector.get('ErrorService');
     }));
@@ -100,7 +99,8 @@ describe('errorService', () => {
 
             it('should broadcast an UPDATE event', () => {
                 errorService.addValidationError('TEST');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
             });
         });
 
@@ -111,13 +111,15 @@ describe('errorService', () => {
 
             it('should add a validation error on FALSE', () => {
                 expect(errorService.getErrors()[0].msgKey).toBe('TEST');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
             });
 
             it('should remove a validation error on TRUE', () => {
                 errorService.handleValidationError(false, 'TEST');
                 expect(errorService.getErrors().length === 0);
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
             });
         });
 
@@ -136,34 +138,18 @@ describe('errorService', () => {
         describe('clearError()', () => {
             it('should remove the specified error', () => {
                 errorService.addValidationError('KEEP');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
                 errorService.addValidationError('REMOVE');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
                 errorService.clearError('REMOVE');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
                 const errors = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
                 expect(errors[0].msgKey).toBe('KEEP');
             });
         });
-
-        /*        describe('handleError', function () {
-         var length;
-         beforeEach(function () {
-         length = errorService.getErrors().length;
-         });
-
-         it('should add a DvbError to the errors', function () {
-         errorService.handleError(new DvbError(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, 'ERR_INTERNAL'));
-         expect(errorService.getErrors().length).toBe(length + 1);
-         expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.UPDATE, errorService.getErrors());
-         });
-
-         it('should ignore invalid DvbErrors', function () {
-         errorService.handleError(new DvbError());
-         expect(errorService.getErrors().length).toBe(length);
-         expect($rootScope.$broadcast).not.toHaveBeenCalledWith(TSMessageEvent.UPDATE, errorService.getErrors());
-         });
-         });*/
     });
 });

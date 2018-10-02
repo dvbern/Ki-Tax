@@ -13,13 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, TransitionService} from '@uirouter/core';
+import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
-import {IWindowService} from 'angular';
 import * as moment from 'moment';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
 import {environment} from '../../environments/environment';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
@@ -41,7 +39,6 @@ const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = [
     'angularMomentConfig',
-    'RouterHelper',
     'ListResourceRS',
     'MandantRS',
     '$injector',
@@ -51,18 +48,15 @@ appRun.$inject = [
     'AuthServiceRS',
     '$state',
     '$location',
-    '$window',
     'GesuchModelManager',
     'GesuchsperiodeRS',
     'InstitutionStammdatenRS',
     'GlobalCacheService',
-    '$transitions',
     'GemeindeRS',
     'LOCALE_ID',
 ];
 
 export function appRun(angularMomentConfig: any,
-                       routerHelper: RouterHelper,
                        listResourceRS: ListResourceRS,
                        mandantRS: MandantRS,
                        $injector: IInjectorService,
@@ -72,17 +66,15 @@ export function appRun(angularMomentConfig: any,
                        authServiceRS: AuthServiceRS,
                        $state: StateService,
                        $location: ILocationService,
-                       $window: IWindowService,
                        gesuchModelManager: GesuchModelManager,
                        gesuchsperiodeRS: GesuchsperiodeRS,
                        institutionsStammdatenRS: InstitutionStammdatenRS,
                        globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService,
                        gemeindeRS: GemeindeRS,
                        LOCALE_ID: string,
-) {
+): void {
 
-    function onNotAuthenticated() {
+    function onNotAuthenticated(): void {
         authServiceRS.clearPrincipal();
         const currentPath = angular.copy($location.absUrl());
 
@@ -99,7 +91,7 @@ export function appRun(angularMomentConfig: any,
         }
     }
 
-    function onLoginSuccess() {
+    function onLoginSuccess(): void {
         if (!environment.test) {
             listResourceRS.getLaenderList();  // initial aufruefen damit cache populiert wird
             mandantRS.getFirst();

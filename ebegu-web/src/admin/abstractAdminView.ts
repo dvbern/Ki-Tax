@@ -13,21 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IController} from 'angular';
 import {TSRole} from '../models/enums/TSRole';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 
-export default class AbstractAdminViewController {
+export default class AbstractAdminViewController implements IController {
 
-    public TSRole = TSRole;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRole = TSRole;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(public authServiceRS: AuthServiceRS) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
     }
 
     public isReadonly(): boolean {
@@ -43,11 +44,11 @@ export default class AbstractAdminViewController {
             // Fuer SuperAdmin immer auch editierbar, wenn AKTIV oder INAKTIV, sonst nur ENTWURF
             if (TSGesuchsperiodeStatus.GESCHLOSSEN === gesuchsperiode.status) {
                 return false;
-            } else if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
-                return true;
-            } else {
-                return TSGesuchsperiodeStatus.ENTWURF === gesuchsperiode.status;
             }
+            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
+                return true;
+            }
+            return TSGesuchsperiodeStatus.ENTWURF === gesuchsperiode.status;
         }
         return false;
     }

@@ -20,7 +20,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
-export function alleVerfuegungenRun(routerHelper: RouterHelper) {
+export function alleVerfuegungenRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, ng2States);
 }
 

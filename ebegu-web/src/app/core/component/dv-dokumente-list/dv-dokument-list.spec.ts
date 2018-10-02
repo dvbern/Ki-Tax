@@ -21,15 +21,16 @@ import TSGesuch from '../../../../models/TSGesuch';
 import TSGesuchstellerContainer from '../../../../models/TSGesuchstellerContainer';
 import TSKind from '../../../../models/TSKind';
 import TSKindContainer from '../../../../models/TSKindContainer';
-import {EbeguWebCore} from '../../core.angularjs.module';
+import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {DVDokumenteListController} from './dv-dokumente-list';
 
+// tslint:disable:no-duplicate-string no-identical-functions
 describe('dvDokumenteList', () => {
 
     let controller: DVDokumenteListController;
     let gesuchModelManager: GesuchModelManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -84,7 +85,7 @@ describe('dvDokumenteList', () => {
         });
     });
 
-    function mockGesuch() {
+    function mockGesuch(): void {
         const gesuch: TSGesuch = new TSGesuch();
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         spyOn(gesuch.gesuchsteller1, 'extractFullName').and.returnValue('Leonardo Primero');

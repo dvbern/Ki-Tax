@@ -159,7 +159,6 @@ export class DVQuicksearchListController implements IController {
     /**
      * Fallnummer muss 6-stellig dargestellt werden. Deshalb muessen so viele 0s am Anfang hinzugefuegt werden
      * bis die Fallnummer ein 6-stelliges String ist
-     * @param fallnummer
      */
     public addZerosToFallnummer(fallnummer: number): string {
         return EbeguUtil.addZerosToFallNummer(fallnummer);
@@ -182,17 +181,19 @@ export class DVQuicksearchListController implements IController {
     }
 
     public editAntrag(abstractAntrag: TSAbstractAntragDTO, event: any): void {
-        if (abstractAntrag) {
-            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
-            if (abstractAntrag instanceof TSAntragDTO) {
-                this.navigateToGesuch(abstractAntrag, isCtrlKeyPressed);
-            } else if (abstractAntrag instanceof TSFallAntragDTO) {
-                this.navigateToMitteilungen(isCtrlKeyPressed, abstractAntrag);
-            }
+        if (!abstractAntrag) {
+            return;
+        }
+
+        const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+        if (abstractAntrag instanceof TSAntragDTO) {
+            this.navigateToGesuch(abstractAntrag, isCtrlKeyPressed);
+        } else if (abstractAntrag instanceof TSFallAntragDTO) {
+            this.navigateToMitteilungen(isCtrlKeyPressed, abstractAntrag);
         }
     }
 
-    private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO) {
+    private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO): void {
         if (isCtrlKeyPressed) {
             const url = this.$state.href('mitteilungen.view', {dossierId: fallAntrag.dossierId});
             window.open(url, '_blank');
@@ -204,18 +205,19 @@ export class DVQuicksearchListController implements IController {
         }
     }
 
-    private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean) {
-        if (antragDTO.antragId) {
-            const navObj: any = {
-                gesuchId: antragDTO.antragId,
-                dossierId: antragDTO.dossierId
-            };
-            if (isCtrlKeyPressed) {
-                const url = this.$state.href('gesuch.fallcreation', navObj);
-                window.open(url, '_blank');
-            } else {
-                this.$state.go('gesuch.fallcreation', navObj);
-            }
+    private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean): void {
+        if (!antragDTO.antragId) {
+            return;
+        }
+        const navObj: any = {
+            gesuchId: antragDTO.antragId,
+            dossierId: antragDTO.dossierId
+        };
+        if (isCtrlKeyPressed) {
+            const url = this.$state.href('gesuch.fallcreation', navObj);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go('gesuch.fallcreation', navObj);
         }
     }
 

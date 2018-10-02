@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSStatistikParameter extends TSAbstractMutableEntity {
     private _gesuchsperiode: string;
@@ -23,7 +23,7 @@ export default class TSStatistikParameter extends TSAbstractMutableEntity {
     private _bis: moment.Moment;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
-                von?: moment.Moment, bis?: moment.Moment) {
+                       von?: moment.Moment, bis?: moment.Moment) {
         super();
         this._gesuchsperiode = gesuchsperiode;
         this._stichtag = stichtag;

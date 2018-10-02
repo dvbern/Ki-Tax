@@ -38,11 +38,11 @@ export class DvNgRemoveDialogComponent {
         }
     }
 
-    public ok() {
+    public ok(): void {
         this.dialogRef.close(true);
     }
 
-    public cancel() {
+    public cancel(): void {
         this.dialogRef.close();
     }
 }

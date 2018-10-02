@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IComponentControllerService, IRootScopeService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {ErwerbspensumListViewComponentConfig} from './erwerbspensumListView';
 
@@ -23,11 +24,11 @@ describe('erwerbspensumListView', () => {
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: ErwerbspensumListViewComponentConfig;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject((_$componentController_: angular.IComponentControllerService,
-                                    $rootScope: angular.IRootScopeService) => {
+    beforeEach(angular.mock.inject((_$componentController_: IComponentControllerService,
+                                    $rootScope: IRootScopeService) => {
         $componentController = _$componentController_;
         scope = $rootScope.$new();
     }));

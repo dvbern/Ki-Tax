@@ -13,28 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import ErwerbspensumRS from './erwerbspensumRS.rest';
 
 describe('ErwerbspensumRS', () => {
 
     let erwerbspensumRS: ErwerbspensumRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockErwerbspensum: TSErwerbspensumContainer;
     let mockErwerbspensumRS: any;
     let gesuchId: string;
     let gesuchstellerId: string;
-    let $q: angular.IQService;
+    let $q: IQService;
     let wizardStepManager: WizardStepManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -75,10 +76,11 @@ describe('ErwerbspensumRS', () => {
     describe('API Usage', () => {
         describe('findErwerbspensumContainer', () => {
             it('should return the Erwerbspensumcontainer by id', () => {
-                $httpBackend.expectGET(erwerbspensumRS.serviceURL + '/' + mockErwerbspensum.id).respond(mockErwerbspensumRS);
+                const url = `${erwerbspensumRS.serviceURL}/${mockErwerbspensum.id}`;
+                $httpBackend.expectGET(url).respond(mockErwerbspensumRS);
 
                 let ewpContainer: TSErwerbspensumContainer;
-                erwerbspensumRS.findErwerbspensum(mockErwerbspensum.id).then((result) => {
+                erwerbspensumRS.findErwerbspensum(mockErwerbspensum.id).then(result => {
                     ewpContainer = result;
                 });
                 $httpBackend.flush();
@@ -90,10 +92,11 @@ describe('ErwerbspensumRS', () => {
     describe('createErwerbspensumContainer', () => {
         it('should create a ErwerbspensumContainer', () => {
             let createdEWPContainer: TSErwerbspensumContainer;
-            $httpBackend.expectPUT(erwerbspensumRS.serviceURL + '/' + gesuchstellerId + '/' + gesuchId, mockErwerbspensumRS).respond(mockErwerbspensumRS);
+            const url = `${erwerbspensumRS.serviceURL}/${gesuchstellerId}/${gesuchId}`;
+            $httpBackend.expectPUT(url, mockErwerbspensumRS).respond(mockErwerbspensumRS);
 
             erwerbspensumRS.saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
-                .then((result) => {
+                .then(result => {
                     createdEWPContainer = result;
                 });
             $httpBackend.flush();
@@ -105,15 +108,17 @@ describe('ErwerbspensumRS', () => {
     describe('updateErwerbspensumContainer', () => {
         it('should update an ErwerbspensumContainer', () => {
             const changedEwp: TSErwerbspensum = TestDataUtil.createErwerbspensum();
-            changedEwp.pensum = 40;
+            const pensum = 40;
+            changedEwp.pensum = pensum;
             changedEwp.zuschlagsprozent = 10;
             mockErwerbspensum.erwerbspensumJA = changedEwp;
             mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
             let updatedErwerbspensumContainerContainer: TSErwerbspensumContainer;
-            $httpBackend.expectPUT(erwerbspensumRS.serviceURL + '/' + gesuchstellerId + '/' + gesuchId, mockErwerbspensumRS).respond(mockErwerbspensumRS);
+            $httpBackend.expectPUT(`${erwerbspensumRS.serviceURL}/${gesuchstellerId}/${gesuchId}`,
+                mockErwerbspensumRS).respond(mockErwerbspensumRS);
 
             erwerbspensumRS.saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
-                .then((result) => {
+                .then(result => {
                     updatedErwerbspensumContainerContainer = result;
                 });
             $httpBackend.flush();
@@ -124,22 +129,24 @@ describe('ErwerbspensumRS', () => {
 
     describe('removeErwerbspensumContainer', () => {
         it('should remove a ErwerbspensumContainer', () => {
-            $httpBackend.expectDELETE(erwerbspensumRS.serviceURL + '/gesuchId/' + gesuchId + '/erwPenId/' + encodeURIComponent(mockErwerbspensum.id))
-                .respond(200);
+            const httpOk = 200;
+            $httpBackend.expectDELETE(`${erwerbspensumRS.serviceURL}/gesuchId/${gesuchId}/erwPenId/${encodeURIComponent(
+                mockErwerbspensum.id)}`)
+                .respond(httpOk);
 
             let deleteResult: any;
             erwerbspensumRS.removeErwerbspensum(mockErwerbspensum.id, gesuchId)
-                .then((result) => {
+                .then(result => {
                     deleteResult = result;
                 });
             $httpBackend.flush();
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             expect(deleteResult).toBeDefined();
-            expect(deleteResult.status).toEqual(200);
+            expect(deleteResult.status).toEqual(httpOk);
         });
     });
 
-    function checkFieldValues(foundEWPCont: TSErwerbspensumContainer) {
+    function checkFieldValues(foundEWPCont: TSErwerbspensumContainer): void {
         expect(foundEWPCont).toBeDefined();
         expect(foundEWPCont.erwerbspensumJA).toBeDefined();
         TestDataUtil.checkGueltigkeitAndSetIfSame(foundEWPCont.erwerbspensumJA, mockErwerbspensum.erwerbspensumJA);

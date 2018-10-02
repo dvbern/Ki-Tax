@@ -19,8 +19,8 @@ import {switchMap, takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
-import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {Log, LogFactory} from '../../logging/LogFactory';
 import MitteilungRS from '../../service/mitteilungRS.rest';
 
@@ -37,9 +37,9 @@ export class DvPosteingangComponent implements OnDestroy {
     public mitteilungenCount$: Observable<number>;
 
     public constructor(private readonly mitteilungRS: MitteilungRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly authLifeCycleService: AuthLifeCycleService,
-                private readonly posteingangService: PosteingangService) {
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly authLifeCycleService: AuthLifeCycleService,
+                       private readonly posteingangService: PosteingangService) {
 
         const posteingangeChanged$ = this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
             .pipe(switchMap(() => this.getMitteilungenCount$()));
@@ -58,7 +58,8 @@ export class DvPosteingangComponent implements OnDestroy {
 
                     // not for GS
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-                        return timer(0, 300000)
+                        const fiveMin = 300000;
+                        return timer(0, fiveMin)
                             .pipe(takeUntil(this.unsubscribe$))
                             .pipe(switchMap(() => this.getMitteilungenCount$()));
                     }

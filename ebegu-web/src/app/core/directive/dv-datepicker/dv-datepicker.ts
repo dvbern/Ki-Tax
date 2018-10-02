@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory} from 'angular';
+import {IController, IDirective, IDirectiveFactory} from 'angular';
 import * as moment from 'moment';
 import DateUtil from '../../../../utils/DateUtil';
 import IAttributes = angular.IAttributes;
@@ -47,7 +47,7 @@ export class DVDatepicker implements IDirective {
     }
 }
 
-export class DatepickerController {
+export class DatepickerController implements IController {
     public static $inject: string[] = ['$log', '$attrs'];
     public static allowedFormats: string[] = ['D.M.YYYY', 'DD.MM.YYYY'];
     public static defaultFormat: string = 'DD.MM.YYYY';
@@ -79,15 +79,15 @@ export class DatepickerController {
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
-    public $onChanges(changes: any) {
+    public $onChanges(changes: any): void {
         if (changes.ngRequired && !changes.ngRequired.isFirstChange()) {
             this.dateRequired = changes.ngRequired.currentValue;
         }
 
     }
 
-    // wird von angular aufgerufen
-    public $onInit() {
+    // tslint:disable-next-line:cognitive-complexity
+    public $onInit(): void {
 
         if (!this.ngModelCtrl) {
             return;
@@ -175,14 +175,14 @@ export class DatepickerController {
         return inputdate;
     }
 
-    public onBlur() {
+    public onBlur(): void {
         if (this.dvOnBlur) { // userdefined onBlur event
             this.dvOnBlur();
         }
         this.ngModelCtrl.$setTouched();
     }
 
-    public updateModelValue() {
+    public updateModelValue(): void {
         this.ngModelCtrl.$setViewValue(this.date);
     }
 }

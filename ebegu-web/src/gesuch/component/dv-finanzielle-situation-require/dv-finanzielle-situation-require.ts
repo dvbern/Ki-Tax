@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -31,7 +31,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class DVFinanzielleSituationRequireController {
+export class DVFinanzielleSituationRequireController implements IController {
 
     public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
@@ -47,10 +47,12 @@ export class DVFinanzielleSituationRequireController {
         private readonly gesuchModelManager: GesuchModelManager) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
-        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, this.gesuchModelManager.getDossier().gemeinde, this.gesuchModelManager.getGesuchsperiode())
+        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+            this.gesuchModelManager.getDossier().gemeinde,
+            this.gesuchModelManager.getGesuchsperiode())
             .then(response => {
                 this.maxMassgebendesEinkommen = response.value;
             });
@@ -64,7 +66,8 @@ export class DVFinanzielleSituationRequireController {
     }
 
     /**
-     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde.
+     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
+     * nein beantwortet wurde.
      */
     public showVerguenstigungGewuenscht(): boolean {
         return this.showSozialhilfeBezueger() && !this.sozialhilfeBezueger;

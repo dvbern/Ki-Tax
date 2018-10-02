@@ -23,7 +23,7 @@ const LOG = LogFactory.createLog('errorLoggerHookRunBlock');
 
 errorLoggerHookRunBlock.$inject = ['$transitions'];
 
-export function errorLoggerHookRunBlock($transitions: TransitionService) {
+export function errorLoggerHookRunBlock($transitions: TransitionService): void {
     $transitions.onError({}, onError, {priority: onErrorPriorities.ERROR_LOGGER});
 }
 

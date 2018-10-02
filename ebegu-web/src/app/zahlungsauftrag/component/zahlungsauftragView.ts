@@ -48,7 +48,8 @@ export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
 
 export class ZahlungsauftragViewController implements IController {
 
-    public static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS', 'ReportRS',
+    public static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS',
+        'ReportRS',
         'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
 
     public form: IFormController;
@@ -63,18 +64,18 @@ export class ZahlungsauftragViewController implements IController {
     public minDateForTestlauf: moment.Moment;
 
     public constructor(private readonly zahlungRS: ZahlungRS,
-                private readonly CONSTANTS: any,
-                private readonly $state: StateService,
-                private readonly downloadRS: DownloadRS,
-                private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly reportRS: ReportRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly dvDialog: DvDialog,
-                private readonly $translate: ITranslateService) {
+                       private readonly CONSTANTS: any,
+                       private readonly $state: StateService,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS,
+                       private readonly reportRS: ReportRS,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly dvDialog: DvDialog,
+                       private readonly $translate: ITranslateService) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         // Testlauf darf auch nur in die Zukunft gemacht werden!
         this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
         this.updateZahlungsauftrag();
@@ -83,7 +84,7 @@ export class ZahlungsauftragViewController implements IController {
         });
     }
 
-    private updateZahlungsauftrag() {
+    private updateZahlungsauftrag(): void {
         this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
@@ -102,53 +103,55 @@ export class ZahlungsauftragViewController implements IController {
             );
     }
 
-    public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag) {
+    public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag): void {
         this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id
         });
     }
 
-    public createZahlungsauftrag() {
-        if (this.form.$valid) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: this.$translate.instant('ZAHLUNG_ERSTELLEN_CONFIRM'),
-                deleteText: this.$translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
-                parentController: undefined,
-                elementID: undefined
-            }).then(() => {   // User confirmed removal
-                this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
-                    .then((response: TSZahlungsauftrag) => {
-                        this.zahlungsAuftraege.push(response);
-                        this.resetEditZahlungsauftrag();
-                        this.resetForm();
-                    });
-            });
+    public createZahlungsauftrag(): void {
+        if (!this.form.$valid) {
+            return;
         }
+
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: this.$translate.instant('ZAHLUNG_ERSTELLEN_CONFIRM'),
+            deleteText: this.$translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
+            parentController: undefined,
+            elementID: undefined
+        }).then(() => {   // User confirmed removal
+            this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
+                .then((response: TSZahlungsauftrag) => {
+                    this.zahlungsAuftraege.push(response);
+                    this.resetEditZahlungsauftrag();
+                    this.resetForm();
+                });
+        });
     }
 
-    public downloadPain(zahlungsauftrag: TSZahlungsauftrag) {
+    public downloadPain(zahlungsauftrag: TSZahlungsauftrag): angular.IPromise<void | never> {
         const win = this.downloadRS.prepareDownloadWindow();
         return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch(ex => {
+            .catch(() => {
                 win.close();
             });
     }
 
-    public downloadAllDetails(zahlungsauftrag: TSZahlungsauftrag) {
+    public downloadAllDetails(zahlungsauftrag: TSZahlungsauftrag): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungsauftragReportExcel(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch(ex => {
+            .catch(() => {
                 win.close();
             });
     }
 
-    public ausloesen(zahlungsauftragId: string) {
+    public ausloesen(zahlungsauftragId: string): void {
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: this.$translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),
             deleteText: this.$translate.instant('ZAHLUNG_AUSLOESEN_INFO'),
@@ -165,28 +168,29 @@ export class ZahlungsauftragViewController implements IController {
         });
     }
 
-    public edit(zahlungsauftrag: TSZahlungsauftrag) {
+    public edit(zahlungsauftrag: TSZahlungsauftrag): void {
         this.zahlungsauftragToEdit = zahlungsauftrag;
     }
 
-    public save(zahlungsauftrag: TSZahlungsauftrag) {
-        if (this.isEditValid()) {
-            this.zahlungRS.updateZahlungsauftrag(
-                this.zahlungsauftragToEdit.beschrieb,
-                this.zahlungsauftragToEdit.datumFaellig,
-                this.zahlungsauftragToEdit.id
-            )
-                .then((response: TSZahlungsauftrag) => {
-                    const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
-                    if (index > -1) {
-                        this.zahlungsAuftraege[index] = response;
-                    }
-                    // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-                    this.form.$setPristine();
-                    this.resetEditZahlungsauftrag();
-                });
-
+    public save(_zahlungsauftrag: TSZahlungsauftrag): void {
+        if (!this.isEditValid()) {
+            return;
         }
+
+        this.zahlungRS.updateZahlungsauftrag(
+            this.zahlungsauftragToEdit.beschrieb,
+            this.zahlungsauftragToEdit.datumFaellig,
+            this.zahlungsauftragToEdit.id
+        )
+            .then((response: TSZahlungsauftrag) => {
+                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
+                if (index > -1) {
+                    this.zahlungsAuftraege[index] = response;
+                }
+                // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
+                this.form.$setPristine();
+                this.resetEditZahlungsauftrag();
+            });
     }
 
     public isEditable(status: TSZahlungsauftragsstatus): boolean {
@@ -199,17 +203,19 @@ export class ZahlungsauftragViewController implements IController {
 
     public isEditValid(): boolean {
         if (this.zahlungsauftragToEdit) {
-            return this.zahlungsauftragToEdit.beschrieb && this.zahlungsauftragToEdit.beschrieb.length > 0 &&
-                this.zahlungsauftragToEdit.datumFaellig !== null && this.zahlungsauftragToEdit.datumFaellig !== undefined;
+            return this.zahlungsauftragToEdit.beschrieb
+                && this.zahlungsauftragToEdit.beschrieb.length > 0
+                && this.zahlungsauftragToEdit.datumFaellig !== null
+                && this.zahlungsauftragToEdit.datumFaellig !== undefined;
         }
         return false;
     }
 
-    private resetEditZahlungsauftrag() {
+    private resetEditZahlungsauftrag(): void {
         this.zahlungsauftragToEdit = null;
     }
 
-    public rowClass(zahlungsauftragId: string) {
+    public rowClass(zahlungsauftragId: string): string {
         if (this.isEditMode(zahlungsauftragId) && !this.isEditValid()) {
             return 'errorrow';
         }
@@ -227,11 +233,12 @@ export class ZahlungsauftragViewController implements IController {
         this.form.$setUntouched();
     }
 
-    public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag) {
-        if (zahlungsauftrag.status !== TSZahlungsauftragsstatus.BESTAETIGT && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            if (zahlungsauftrag.zahlungen.every(zahlung => zahlung.status === TSZahlungsstatus.BESTAETIGT)) {
-                return TSZahlungsstatus.BESTAETIGT;
-            }
+    public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag): any {
+        if (zahlungsauftrag.status !== TSZahlungsauftragsstatus.BESTAETIGT
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
+            && zahlungsauftrag.zahlungen.every(zahlung => zahlung.status === TSZahlungsstatus.BESTAETIGT)) {
+
+            return TSZahlungsstatus.BESTAETIGT;
         }
         return zahlungsauftrag.status;
     }

@@ -18,8 +18,6 @@ import ILogService = angular.ILogService;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
-import BetreuungRS from '../../../core/service/betreuungRS.rest';
-import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../../gesuch/service/dossierRS.rest';
 import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
@@ -29,6 +27,8 @@ import TSDossier from '../../../../models/TSDossier';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import BetreuungRS from '../../../core/service/betreuungRS.rest';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
 
 export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
@@ -46,36 +46,37 @@ export class AlleVerfuegungenViewController implements IController {
     public dossier: TSDossier;
     public alleVerfuegungen: Array<any> = [];
     public itemsByPage: number = 20;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly $state: StateService,
-                private readonly $stateParams: IAlleVerfuegungenStateParams,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly betreuungRS: BetreuungRS,
-                private readonly downloadRS: DownloadRS,
-                private readonly $log: ILogService,
-                private readonly $timeout: ITimeoutService,
-                private readonly dossierRS: DossierRS,
-                private readonly ebeguUtil: EbeguUtil) {
+                       private readonly $stateParams: IAlleVerfuegungenStateParams,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly betreuungRS: BetreuungRS,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly $log: ILogService,
+                       private readonly $timeout: ITimeoutService,
+                       private readonly dossierRS: DossierRS,
+                       private readonly ebeguUtil: EbeguUtil) {
     }
 
-    public $onInit() {
-        if (this.$stateParams.dossierId) {
-            this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
-                this.dossier = response;
-                if (this.dossier === undefined) {
-                    this.cancel();
-                }
-                this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then(response => {
-                    response.forEach(item => {
-                        this.alleVerfuegungen.push(item);
-                    });
-                    this.alleVerfuegungen = response;
-                });
-            });
-        } else {
+    public $onInit(): void {
+        if (!this.$stateParams.dossierId) {
             this.cancel();
+            return;
         }
+
+        this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
+            this.dossier = response;
+            if (this.dossier === undefined) {
+                this.cancel();
+            }
+            this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then(r => {
+                r.forEach(item => {
+                    this.alleVerfuegungen.push(item);
+                });
+                this.alleVerfuegungen = r;
+            });
+        });
     }
 
     public getFallId(): string {
@@ -90,13 +91,15 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public openVerfuegung(betreuungNummer: string, kindNummer: number, gesuchId: string): void {
-        if (betreuungNummer && kindNummer && gesuchId) {
-            this.$state.go('gesuch.verfuegenView', {
-                betreuungNumber: betreuungNummer,
-                kindNumber: kindNummer,
-                gesuchId
-            });
+        if (!betreuungNummer || !kindNummer || !gesuchId) {
+            return;
         }
+
+        this.$state.go('gesuch.verfuegenView', {
+            betreuungNumber: betreuungNummer,
+            kindNumber: kindNummer,
+            gesuchId
+        });
     }
 
     public cancel(): void {
@@ -108,7 +111,7 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public showVerfuegungPdfLink(betreuung: TSBetreuung): boolean {
-        return !(TSBetreuungsstatus.NICHT_EINGETRETEN === betreuung.betreuungsstatus);
+        return TSBetreuungsstatus.NICHT_EINGETRETEN !== betreuung.betreuungsstatus;
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
@@ -143,9 +146,10 @@ export class AlleVerfuegungenViewController implements IController {
             betreuung.kindNummer, betreuung.betreuungNummer);
     }
 
-    public $postLink() {
+    public $postLink(): void {
+        const delay = 500;
         this.$timeout(() => {
             EbeguUtil.selectFirst();
-        }, 500); // this is the only way because it needs a little until everything is loaded
+        }, delay); // this is the only way because it needs a little until everything is loaded
     }
 }

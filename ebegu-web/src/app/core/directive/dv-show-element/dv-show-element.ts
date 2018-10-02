@@ -20,12 +20,11 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  * Attribute Directive um Elementen aus- und einblenden. Erweitert ng-if
  * Die Direktive muss folgendermasse benutzt werden:
  *     dv-show-element - diese Attribute muss in jedem Element gesetzt werden, das die Direktive braucht
- *     dv-show-allowed-roles="[vm.TSRole.X, vm.TSRole.Y, ...]" - Array mit allen Rollen, für die das Element eingeblendet werden muss. Um diese Syntax
- *                                                          zu verwenden, muss der Kontroller eine Subklasse von AbstractGesuchViewController sein.
- *                                                          Diese Attribute ist pflicht, darf aber auch auch ein leeres Array sein. Man kann auch eine
- *                                                          Methode oder eine Variable uebergeben
- *     dv-show-expression - optionale Attribute, mit der man einen extra boolean Wert uebergeben kann. Man kann auch eine
- *                          Methode oder eine Variable uebergeben
+ *     dv-show-allowed-roles="[vm.TSRole.X, vm.TSRole.Y, ...]" - Array mit allen Rollen, für die das Element
+ * eingeblendet werden muss. Um diese Syntax zu verwenden, muss der Kontroller eine Subklasse von
+ * AbstractGesuchViewController sein. Diese Attribute ist pflicht, darf aber auch auch ein leeres Array sein. Man kann
+ * auch eine Methode oder eine Variable uebergeben dv-show-expression - optionale Attribute, mit der man einen extra
+ * boolean Wert uebergeben kann. Man kann auch eine Methode oder eine Variable uebergeben
  *
  * ACHTUNG! Diese Direktive darf nicht mit ng-if zusammen benutzt werden
  */
@@ -34,7 +33,8 @@ export class DVShowElement implements IDirective {
     public static $inject: string[] = ['ngIfDirective'];
     public restrict = 'A';
     public controller = DVRoleElementController;
-    // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute Direktiven arbeiten
+    // kind bindToController und kein controllerAs weil sonst wird der scope ueberschrieben, da wir mit attribute
+    // Direktiven arbeiten
 
     public transclude: any;
     public priority: number;
@@ -52,19 +52,24 @@ export class DVShowElement implements IDirective {
         return directive;
     }
 
-    public link = (scope: IScope, element: IAugmentedJQuery, attributes: IAttributes, controller: DVRoleElementController, $transclude: any) => {
-        // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in ES3 and ES5.
-        // Consider using a standard function expression.
+    public link = (scope: IScope,
+                   element: IAugmentedJQuery,
+                   attributes: IAttributes,
+                   controller: DVRoleElementController,
+                   $transclude: any) => {
+        // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in
+        // ES3 and ES5. Consider using a standard function expression.
         const arguments2 = [scope, element, attributes, controller, $transclude];
         this.callNgIfThrough(attributes, controller, arguments2);
 
-        // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen der Variable, den wir
-        // danach evaluieren muessen. Da dieser String sich nie aendert (sondern eher seine evaluation), wird das observe nie aufgerufen. Mit scope.$watch
-        // funktioniert es weil die Variable immer transcluded wird und somit der Wert aendert sich.
-        scope.$watch(attributes.dvShowAllowedRoles, (newValue: any, oldValue: any, scope: any) => {
+        // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen
+        // der Variable, den wir danach evaluieren muessen. Da dieser String sich nie aendert (sondern eher seine
+        // evaluation), wird das observe nie aufgerufen. Mit scope.$watch funktioniert es weil die Variable immer
+        // transcluded wird und somit der Wert aendert sich.
+        scope.$watch(attributes.dvShowAllowedRoles, (newValue: any, _oldValue: any, _scope: any) => {
             controller.dvAllowedRoles = newValue;
         }, true);
-        scope.$watch(attributes.dvShowExpression, (newValue: any, oldValue: any) => {
+        scope.$watch(attributes.dvShowExpression, (newValue: any, _oldValue: any) => {
             controller.dvExpression = newValue;
         }, true);
     };
@@ -72,11 +77,8 @@ export class DVShowElement implements IDirective {
     /**
      * Diese Methode darf nur einmal aufgerufen werden.
      * VORSICHT. Sollte diese Methode X-Mal aufgerufen werden, wird das Element dann X-Mall angezeigt
-     * @param attributes
-     * @param controller
-     * @param arguments2
      */
-    private callNgIfThrough(attributes: any, controller: DVRoleElementController, arguments2: Array<any>) {
+    private callNgIfThrough(attributes: any, controller: DVRoleElementController, arguments2: Array<any>): void {
         attributes.ngIf = () => {
             return (controller.checkValidity());
         };

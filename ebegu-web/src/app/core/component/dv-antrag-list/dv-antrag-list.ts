@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
 import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -29,9 +28,9 @@ import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
-import TSBenutzer from '../../../../models/TSBenutzer';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
@@ -100,7 +99,7 @@ export class DVAntragListController implements IController {
     public onFilterChange: (changedTableState: any) => IPromise<any>;
     public onEdit: (pensumToEdit: any) => void;
     public onAdd: () => void;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -162,15 +161,15 @@ export class DVAntragListController implements IController {
             );
     }
 
-    public removeClicked(antragToRemove: TSAbstractAntragEntity) {
+    public removeClicked(antragToRemove: TSAbstractAntragEntity): void {
         this.onRemove({antrag: antragToRemove});
     }
 
-    public editClicked(antragToEdit: any, event: any) {
+    public editClicked(antragToEdit: any, event: any): void {
         this.onEdit({antrag: antragToEdit, event});
     }
 
-    public addClicked() {
+    public addClicked(): void {
         this.onAdd();
     }
 
@@ -178,20 +177,21 @@ export class DVAntragListController implements IController {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 
-        // this.displaydAntraege = this.antraege;
-
-        if (this.onFilterChange && angular.isFunction(this.onFilterChange)) {
-            this.onFilterChange({tableState: tableFilterState}).then((result: TSAntragSearchresultDTO) => {
-                // this.pagination.totalItemCount = result.totalResultSize;
-                if (result) {
-                    pagination.totalItemCount = result.totalResultSize;
-                    pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
-                    this.displayedCollection = [].concat(result.antragDTOs);
-                }
-            });
-        } else {
+        if (!this.onFilterChange || !angular.isFunction(this.onFilterChange)) {
             LOG.info('no callback function spcified for filtering');
+
+            return;
         }
+
+        this.onFilterChange({tableState: tableFilterState}).then((result: TSAntragSearchresultDTO) => {
+            if (!result) {
+                return;
+            }
+
+            pagination.totalItemCount = result.totalResultSize;
+            pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
+            this.displayedCollection = [].concat(result.antragDTOs);
+        });
     };
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -202,11 +202,9 @@ export class DVAntragListController implements IController {
      * Alle TSAntragStatus fuer das Filterdropdown
      */
     public getAntragStatus(): Array<TSAntragStatus> {
-        if (this.pendenz) {
-            return getTSAntragStatusPendenzValues(this.authServiceRS.getPrincipalRole());
-        } else {
-            return getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
-        }
+        return this.pendenz ?
+            getTSAntragStatusPendenzValues(this.authServiceRS.getPrincipalRole()) :
+            getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
     }
 
     /**
@@ -244,7 +242,7 @@ export class DVAntragListController implements IController {
         return this.addButtonVisible === 'true';
     }
 
-    public isActionsVisible() {
+    public isActionsVisible(): boolean {
         return this.actionVisible === 'true';
     }
 

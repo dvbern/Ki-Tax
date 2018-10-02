@@ -18,9 +18,9 @@ import {TSAmt} from './enums/TSAmt';
 import {TSMitteilungStatus} from './enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSBenutzer from './TSBenutzer';
 import TSBetreuung from './TSBetreuung';
 import TSDossier from './TSDossier';
-import TSBenutzer from './TSBenutzer';
 
 export default class TSMitteilung extends TSAbstractMutableEntity {
 
@@ -35,8 +35,15 @@ export default class TSMitteilung extends TSAbstractMutableEntity {
     private _mitteilungStatus: TSMitteilungStatus;
     private _sentDatum: moment.Moment;
 
-    public constructor(dossier?: TSDossier, betreuung?: TSBetreuung, senderTyp?: TSMitteilungTeilnehmerTyp, empfaengerTyp?: TSMitteilungTeilnehmerTyp, sender?: TSBenutzer,
-                       empfaenger?: TSBenutzer, subject?: string, message?: string, mitteilungStatus?: TSMitteilungStatus,
+    public constructor(dossier?: TSDossier,
+                       betreuung?: TSBetreuung,
+                       senderTyp?: TSMitteilungTeilnehmerTyp,
+                       empfaengerTyp?: TSMitteilungTeilnehmerTyp,
+                       sender?: TSBenutzer,
+                       empfaenger?: TSBenutzer,
+                       subject?: string,
+                       message?: string,
+                       mitteilungStatus?: TSMitteilungStatus,
                        sentDatum?: moment.Moment) {
         super();
         this._dossier = dossier;

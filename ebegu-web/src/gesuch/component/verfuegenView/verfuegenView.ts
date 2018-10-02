@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
+import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -49,7 +49,8 @@ export class VerfuegenViewComponentConfig implements IComponentOptions {
 
 export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', '$scope', 'WizardStepManager',
+    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', '$scope',
+        'WizardStepManager',
         'DvDialog', 'DownloadRS', '$log', '$stateParams', '$window', 'ExportRS', 'ApplicationPropertyRS', '$timeout'];
 
     // this is the model...
@@ -59,11 +60,20 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private sameVerfuegungsdaten: boolean;
     private sameVerrechneteVerguenstigung: boolean;
 
-    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly ebeguUtil: EbeguUtil, $scope: IScope, wizardStepManager: WizardStepManager,
-                private readonly DvDialog: DvDialog, private readonly downloadRS: DownloadRS, private readonly $log: ILogService, $stateParams: IBetreuungStateParams,
-                private readonly $window: ng.IWindowService, private readonly exportRS: ExportRS, private readonly applicationPropertyRS: ApplicationPropertyRS,
-                $timeout: ITimeoutService) {
+    public constructor(private readonly $state: StateService,
+                       gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly ebeguUtil: EbeguUtil,
+                       $scope: IScope,
+                       wizardStepManager: WizardStepManager,
+                       private readonly DvDialog: DvDialog,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly $log: ILogService,
+                       $stateParams: IBetreuungStateParams,
+                       private readonly $window: ng.IWindowService,
+                       private readonly exportRS: ExportRS,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS,
+                       $timeout: ITimeoutService) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
 
@@ -72,7 +82,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             this.$log.error('Kind konnte nicht gefunden werden');
         }
         this.gesuchModelManager.setKindIndex(kindIndex);
-        const betreuungIndex = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(parseInt($stateParams.betreuungNumber, 10));
+        const betreuungNumber = parseInt($stateParams.betreuungNumber, 10);
+        const betreuungIndex = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(betreuungNumber);
         if (betreuungIndex === -1) {
             this.$log.error('Betreuung konnte nicht gefunden werden');
         }
@@ -82,56 +93,62 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.initView();
 
         // EBEGE-741: Bemerkungen sollen automatisch zum Inhalt der Verfügung hinzugefügt werden
-        if ($scope) {
-            $scope.$watch(() => {
-                if (this.gesuchModelManager.getGesuch()) {
-                    return this.gesuchModelManager.getGesuch().bemerkungen;
-                }
-                return '';
-            }, (newValue, oldValue) => {
-                if ((newValue !== oldValue)) {
-                    this.setBemerkungen();
-                }
+        if (!$scope) {
+            return;
+        }
+
+        $scope.$watch(() => {
+            if (this.gesuchModelManager.getGesuch()) {
+                return this.gesuchModelManager.getGesuch().bemerkungen;
+            }
+            return '';
+        }, (newValue, oldValue) => {
+            if ((newValue !== oldValue)) {
+                this.setBemerkungen();
+            }
+        });
+    }
+
+    private initView(): void {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (!gesuch) {
+            return;
+        }
+
+        if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
+            this.setBemerkungen();
+        } else {
+            this.gesuchModelManager.calculateVerfuegungen().then(() => {
+                this.setBemerkungen();
             });
         }
-    }
-
-    private initView() {
-        if (this.gesuchModelManager.getGesuch()) {
-            if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
-                this.setBemerkungen();
-            } else {
-                this.gesuchModelManager.calculateVerfuegungen().then(() => {
-                    this.setBemerkungen();
-                });
-            }
-
-            // if finanzielleSituationResultate is undefined/empty (this may happen if user presses reloads this page) then we recalculate it
-            if (!this.berechnungsManager.finanzielleSituationResultate || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
-                this.berechnungsManager.calculateFinanzielleSituation(this.gesuchModelManager.getGesuch());
-            }
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
-                && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
-                && (!this.berechnungsManager.einkommensverschlechterungResultateBjP1 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP1, {}))) {
-
-                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 1); // .then(() => {});
-            }
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()
-                && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
-                && (!this.berechnungsManager.einkommensverschlechterungResultateBjP2 || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP2, {}))) {
-
-                this.berechnungsManager.calculateEinkommensverschlechterung(this.gesuchModelManager.getGesuch(), 2); // .then(() => {});
-            }
-            this.initDevModeParameter();
-
-            // folgende Methoden werden hier aufgerufen, weil die Daten sich nicht aendern werden, waehrend man auf der Seite ist.
-            // Somit verbessern wir die Performance indem wir diese Daten ganz am Anfang berechnen und in einer Variable speichern
-            this.setSameVerfuegungsdaten();
-            this.setSameVerrechneteVerfuegungdaten();
+        if (!this.berechnungsManager.finanzielleSituationResultate
+            || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
+            this.berechnungsManager.calculateFinanzielleSituation(gesuch);
         }
+        const info = gesuch.extractEinkommensverschlechterungInfo();
+        if (info && info.ekvFuerBasisJahrPlus1
+            && (
+                !this.berechnungsManager.einkommensverschlechterungResultateBjP1
+                || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP1, {})
+            )) {
+
+            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 1);
+        }
+        if (info && info.ekvFuerBasisJahrPlus2
+            && (
+                !this.berechnungsManager.einkommensverschlechterungResultateBjP2
+                || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP2, {})
+            )) {
+
+            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 2);
+        }
+        this.initDevModeParameter();
+        this.setSameVerfuegungsdaten();
+        this.setSameVerrechneteVerfuegungdaten();
     }
 
-    private initDevModeParameter() {
+    private initDevModeParameter(): void {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             // Schemas are only visible in devmode
             this.showSchemas = response;
@@ -169,42 +186,39 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public save(): void {
-        if (this.isGesuchValid()) {
-            // wenn Erstgesuch, not KITA oder die neue Verfuegung dieselben Daten hat, wird sie nur gespeichert
-            if (!this.getBetreuung().isAngebotKITA() || this.isSameVerrechneteVerguenstigung() || !this.isMutation()) {
-                this.saveVerfuegung().then(() => {
-                    this.$state.go('gesuch.verfuegen', {
-                        gesuchId: this.getGesuchId()
-                    });
-                });
-            } else { // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-                this.saveMutierteVerfuegung().then(() => {
-                    this.$state.go('gesuch.verfuegen', {
-                        gesuchId: this.getGesuchId()
-                    });
-                });
-            }
+        if (!this.isGesuchValid()) {
+            return;
         }
+
+        const isAngebotKITA = this.getBetreuung().isAngebotKITA();
+        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation() ?
+            this.saveVerfuegung() :
+            // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
+            this.saveMutierteVerfuegung();
+
+        promise.then(() => this.goToVerfuegen());
     }
 
-    public schliessenOhneVerfuegen() {
-        if (this.isGesuchValid()) {
-            this.verfuegungSchliessenOhenVerfuegen().then(() => {
-                this.$state.go('gesuch.verfuegen', {
-                    gesuchId: this.getGesuchId()
-                });
-            });
-        }
+    private goToVerfuegen(): TransitionPromise {
+        return this.$state.go('gesuch.verfuegen', {
+            gesuchId: this.getGesuchId()
+        });
     }
 
-    public nichtEintreten() {
-        if (this.isGesuchValid()) {
-            this.verfuegungNichtEintreten().then(() => {
-                this.$state.go('gesuch.verfuegen', {
-                    gesuchId: this.getGesuchId()
-                });
-            });
+    public schliessenOhneVerfuegen(): void {
+        if (!this.isGesuchValid()) {
+            return;
         }
+
+        this.verfuegungSchliessenOhenVerfuegen().then(() => this.goToVerfuegen());
+    }
+
+    public nichtEintreten(): void {
+        if (!this.isGesuchValid()) {
+            return;
+        }
+
+        this.verfuegungNichtEintreten().then(() => this.goToVerfuegen());
     }
 
     public getVerfuegenToWorkWith(): TSVerfuegung {
@@ -221,14 +235,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return undefined;
     }
 
-    public getFall() {
+    public getFall(): any {
         if (this.gesuchModelManager) {
             return this.gesuchModelManager.getFall();
         }
         return undefined;
     }
 
-    public getGesuchsperiode() {
+    public getGesuchsperiode(): any {
         if (this.gesuchModelManager && this.gesuchModelManager.getGesuchsperiode()) {
             return this.gesuchModelManager.getGesuchsperiode();
         }
@@ -258,17 +272,22 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public getBetreuungNumber(): string {
         if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getGesuch()
             && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
-            return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(), this.getFall(), this.gesuchModelManager.getDossier().gemeinde,
-                this.gesuchModelManager.getKindToWorkWith().kindNummer, this.getBetreuung().betreuungNummer);
+            return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(),
+                this.getFall(),
+                this.gesuchModelManager.getDossier().gemeinde,
+                this.gesuchModelManager.getKindToWorkWith().kindNummer,
+                this.getBetreuung().betreuungNummer);
         }
         return undefined;
     }
 
     public getBetreuungsstatus(): TSBetreuungsstatus {
-        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getBetreuungToWorkWith()) {
-            return this.getBetreuung().betreuungsstatus;
+        if (!this.gesuchModelManager
+            || !this.gesuchModelManager.getGesuch()
+            || !this.gesuchModelManager.getBetreuungToWorkWith()) {
+            return undefined;
         }
-        return undefined;
+        return this.getBetreuung().betreuungsstatus;
     }
 
     public getAnfangsPeriode(): string {
@@ -279,17 +298,29 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public getAnfangsVerschlechterung1(): string {
-        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()) {
-            return DateUtil.momentToLocalDateFormat(this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().stichtagFuerBasisJahrPlus1, 'DD.MM.YYYY');
+        if (this.hasEinkommensVerschlechterungInfo()) {
+            const gesuch = this.gesuchModelManager.getGesuch();
+            const stichtag = gesuch.extractEinkommensverschlechterungInfo().stichtagFuerBasisJahrPlus1;
+
+            return DateUtil.momentToLocalDateFormat(stichtag, 'DD.MM.YYYY');
         }
         return undefined;
     }
 
     public getAnfangsVerschlechterung2(): string {
-        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo()) {
-            return DateUtil.momentToLocalDateFormat(this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().stichtagFuerBasisJahrPlus2, 'DD.MM.YYYY');
+        if (this.hasEinkommensVerschlechterungInfo()) {
+            const gesuch = this.gesuchModelManager.getGesuch();
+            const stichtag = gesuch.extractEinkommensverschlechterungInfo().stichtagFuerBasisJahrPlus2;
+
+            return DateUtil.momentToLocalDateFormat(stichtag, 'DD.MM.YYYY');
         }
         return undefined;
+    }
+
+    private hasEinkommensVerschlechterungInfo(): boolean {
+        return this.gesuchModelManager
+            && this.gesuchModelManager.getGesuch()
+            && !!this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
     }
 
     /**
@@ -297,11 +328,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      * sind, kann der Benutzer das Angebot verfuegen. Sonst ist dieses nicht erlaubt.
      * STORNIERT ist erlaubt weil die Kita verantwortlicherBG dafuer ist, die Betreuung in diesem Status zu setzen,
      * d.h. die Betreuung hat bereits diesen Status wenn man auf den Step Verfuegung kommt
-     * @returns {boolean}
      */
     public showVerfuegen(): boolean {
         return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.VERFUEGEN)
-            && (TSBetreuungsstatus.BESTAETIGT === this.getBetreuungsstatus() || TSBetreuungsstatus.STORNIERT === this.getBetreuungsstatus());
+            && [TSBetreuungsstatus.BESTAETIGT, TSBetreuungsstatus.STORNIERT].includes(this.getBetreuungsstatus());
     }
 
     public saveVerfuegung(): IPromise<TSVerfuegung> {
@@ -357,18 +387,20 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      * Die Bemerkungen sind immer die generierten, es sei denn das Angebot ist schon verfuegt
      */
     private setBemerkungen(): void {
+        const verfuegungen = this.getVerfuegenToWorkWith();
         if (this.getBetreuung()
             && (this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT ||
                 this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)) {
-            this.bemerkungen = this.getVerfuegenToWorkWith().manuelleBemerkungen;
-        } else {
-            this.bemerkungen = '';
-            if (this.getVerfuegenToWorkWith() && this.getVerfuegenToWorkWith().generatedBemerkungen && this.getVerfuegenToWorkWith().generatedBemerkungen.length > 0) {
-                this.bemerkungen = this.getVerfuegenToWorkWith().generatedBemerkungen + '\n';
-            }
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().bemerkungen) {
-                this.bemerkungen = this.bemerkungen + this.gesuchModelManager.getGesuch().bemerkungen;
-            }
+            this.bemerkungen = verfuegungen.manuelleBemerkungen;
+            return;
+        }
+
+        this.bemerkungen = '';
+        if (verfuegungen && verfuegungen.generatedBemerkungen && verfuegungen.generatedBemerkungen.length > 0) {
+            this.bemerkungen = verfuegungen.generatedBemerkungen + '\n';
+        }
+        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().bemerkungen) {
+            this.bemerkungen += this.gesuchModelManager.getGesuch().bemerkungen;
         }
     }
 
@@ -387,10 +419,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch(ex => {
-                win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.', ex);
-            });
+            .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public openExport(): void {
@@ -400,10 +429,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken for export: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch(ex => {
-                win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.', ex);
-            });
+            .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public openNichteintretenPDF(): void {
@@ -413,10 +439,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            .catch(() => {
-                win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.');
-            });
+            .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public showVerfuegungsDetails(): boolean {
@@ -431,14 +454,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT);
     }
 
-    public exportJsonSchema() {
+    public exportJsonSchema(): void {
         const win = this.$window.open('', EbeguUtil.generateRandomName(5));
         this.exportRS.getJsonSchemaString().then(result => {
-            win.document.write('<body><pre>' + result + '</pre></body>');
+            win.document.write(`<body><pre>${result}</pre></body>`);
         });
     }
 
-    public exportXmlSchema() {
+    public exportXmlSchema(): void {
         // ACHTUNG popup blocker muss deaktiviert sein
         this.exportRS.getXmlSchemaString().then(result => {
             this.$window.open('data:application/octet-streem;charset=utf-8,' + result, '', '');

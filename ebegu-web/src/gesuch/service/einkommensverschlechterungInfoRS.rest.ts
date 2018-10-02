@@ -14,11 +14,11 @@
  */
 
 import {IHttpService} from 'angular';
+import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import WizardStepManager from './wizardStepManager';
-import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
-import IPromise = angular.IPromise;
 import ILogService = angular.ILogService;
+import IPromise = angular.IPromise;
 
 export default class EinkommensverschlechterungInfoRS {
 
@@ -30,22 +30,27 @@ export default class EinkommensverschlechterungInfoRS {
                        public ebeguRestUtil: EbeguRestUtil,
                        public $log: ILogService,
                        private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'einkommensverschlechterungInfo';
+        this.serviceURL = `${REST_API}einkommensverschlechterungInfo`;
     }
 
-    public saveEinkommensverschlechterungInfo(einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer,
-                                              gesuchId: string): IPromise<TSEinkommensverschlechterungInfoContainer> {
+    public saveEinkommensverschlechterungInfo(
+        einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer,
+        gesuchId: string,
+    ): IPromise<TSEinkommensverschlechterungInfoContainer> {
+
         let returnedEinkommensverschlechterungInfo = {};
         returnedEinkommensverschlechterungInfo =
-            this.ebeguRestUtil.einkommensverschlechterungInfoContainerToRestObject(returnedEinkommensverschlechterungInfo, einkommensverschlechterungInfoContainer);
-        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), returnedEinkommensverschlechterungInfo, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((httpresponse: any) => {
+            this.ebeguRestUtil.einkommensverschlechterungInfoContainerToRestObject(
+                returnedEinkommensverschlechterungInfo,
+                einkommensverschlechterungInfoContainer);
+        const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}`;
+
+        return this.$http.put(url, returnedEinkommensverschlechterungInfo).then((httpresponse: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.$log.debug('PARSING EinkommensverschlechterungInfo REST object ', httpresponse.data);
-                return this.ebeguRestUtil.parseEinkommensverschlechterungInfoContainer(new TSEinkommensverschlechterungInfoContainer(), httpresponse.data);
+                const container = new TSEinkommensverschlechterungInfoContainer();
+
+                return this.ebeguRestUtil.parseEinkommensverschlechterungInfoContainer(container, httpresponse.data);
             });
         });
     }

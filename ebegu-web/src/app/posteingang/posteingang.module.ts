@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {posteingangRun} from './posteingang.route';
 import {PosteingangViewComponentConfig} from './component/posteingangView';
 import {PosteingangFilter} from './filter/posteingangFilter';
 
 export const EbeguWebPosteingang =
-    angular.module('ebeguWeb.posteingang', [EbeguWebCore.name])
+    angular.module('ebeguWeb.posteingang', [CORE_JS_MODULE.name])
         .run(posteingangRun)
         .filter('posteingangFilter', PosteingangFilter)
         .component('posteingangView', new PosteingangViewComponentConfig());

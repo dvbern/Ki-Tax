@@ -14,29 +14,32 @@
  */
 
 import {Provider} from '@angular/core';
-import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
-import FallRS from '../../gesuch/service/fallRS.rest';
-import WizardStepManager from '../../gesuch/service/wizardStepManager';
-import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import DossierRS from '../../gesuch/service/dossierRS.rest';
+import FallRS from '../../gesuch/service/fallRS.rest';
+import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
+import GesuchRS from '../../gesuch/service/gesuchRS.rest';
+import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import ErrorService from './errors/service/ErrorService';
+import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
+import BenutzerRS from './service/benutzerRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
-import BenutzerRS from './service/benutzerRS.rest';
 import ZahlungRS from './service/zahlungRS.rest';
-import DossierRS from '../../gesuch/service/dossierRS.rest';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
-import GesuchRS from '../../gesuch/service/gesuchRS.rest';
+import IInjectorService = angular.auto.IInjectorService;
+
+// tslint:disable:naming-convention
 
 // AuthServiceRS
-export function authServiceRSServiceFactory(i: any) {
+export function authServiceRSServiceFactory(i: IInjectorService): AuthServiceRS {
     return i.get('AuthServiceRS');
 }
 
@@ -47,7 +50,7 @@ export const authServiceRSProvider = {
 };
 
 // ApplicationPropertyRS
-export function applicationPropertyRSServiceFactory(i: any) {
+export function applicationPropertyRSServiceFactory(i: IInjectorService): ApplicationPropertyRS {
     return i.get('ApplicationPropertyRS');
 }
 
@@ -58,7 +61,7 @@ export const applicationPropertyRSProvider = {
 };
 
 // TraegerschaftRS
-export function traegerschaftRSProviderServiceFactory(i: any) {
+export function traegerschaftRSProviderServiceFactory(i: IInjectorService): TraegerschaftRS {
     return i.get('TraegerschaftRS');
 }
 
@@ -69,7 +72,7 @@ export const traegerschaftRSProvider = {
 };
 
 // ErrorService
-export function errorServiceProviderServiceFactory(i: any) {
+export function errorServiceProviderServiceFactory(i: IInjectorService): ErrorService {
     return i.get('ErrorService');
 }
 
@@ -80,7 +83,7 @@ export const errorServiceProvider = {
 };
 
 // TestFaelleRS
-export function testFaelleRSProviderServiceFactory(i: any) {
+export function testFaelleRSProviderServiceFactory(i: IInjectorService): TestFaelleRS {
     return i.get('TestFaelleRS');
 }
 
@@ -91,7 +94,7 @@ export const testFaelleRSProvider = {
 };
 
 // UserRS
-export function benutzerRSProviderServiceFactory(i: any) {
+export function benutzerRSProviderServiceFactory(i: IInjectorService): BenutzerRS {
     return i.get('BenutzerRS');
 }
 
@@ -102,7 +105,7 @@ export const benutzerRSProvider = {
 };
 
 // GesuchsperiodeRS
-export function gesuchsperiodeRSProviderServiceFactory(i: any) {
+export function gesuchsperiodeRSProviderServiceFactory(i: IInjectorService): GesuchsperiodeRS {
     return i.get('GesuchsperiodeRS');
 }
 
@@ -113,7 +116,7 @@ export const gesuchsperiodeRSProvider = {
 };
 
 // DatabaseMigrationRS
-export function databaseMigrationRSProviderServiceFactory(i: any) {
+export function databaseMigrationRSProviderServiceFactory(i: IInjectorService): DatabaseMigrationRS {
     return i.get('DatabaseMigrationRS');
 }
 
@@ -124,7 +127,7 @@ export const databaseMigrationRSProvider = {
 };
 
 // ZahlungRS
-export function zahlungRSProviderServiceFactory(i: any) {
+export function zahlungRSProviderServiceFactory(i: IInjectorService): ZahlungRS {
     return i.get('ZahlungRS');
 }
 
@@ -135,7 +138,7 @@ export const zahlungRSProvider = {
 };
 
 // GesuchRS
-export function gesuchRSProviderServiceFactory(i: any) {
+export function gesuchRSProviderServiceFactory(i: IInjectorService): GesuchRS {
     return i.get('GesuchRS');
 }
 
@@ -146,7 +149,7 @@ export const gesuchRSProvider = {
 };
 
 // DailyBatchRS
-export function dailyBatchRSProviderServiceFactory(i: any) {
+export function dailyBatchRSProviderServiceFactory(i: IInjectorService): DailyBatchRS {
     return i.get('DailyBatchRS');
 }
 
@@ -157,7 +160,7 @@ export const dailyBatchRSProvider = {
 };
 
 // GemeindeRS
-export function gemeindeRSProviderServiceFactory(i: any) {
+export function gemeindeRSProviderServiceFactory(i: IInjectorService): GemeindeRS {
     return i.get('GemeindeRS');
 }
 
@@ -168,7 +171,7 @@ export const gemeindeRSProvider = {
 };
 
 // MitteilungRS
-export function mitteilungRSServiceFactory(i: any) {
+export function mitteilungRSServiceFactory(i: IInjectorService): MitteilungRS {
     return i.get('MitteilungRS');
 }
 
@@ -179,7 +182,7 @@ export const mitteilungRSProvider = {
 };
 
 // DownloadRS
-export function downloadRSServiceFactory(i: any) {
+export function downloadRSServiceFactory(i: IInjectorService): DownloadRS {
     return i.get('DownloadRS');
 }
 
@@ -190,7 +193,7 @@ export const downloadRSProvider = {
 };
 
 // DossierRS
-export function dossierRSServiceFactory(i: any) {
+export function dossierRSServiceFactory(i: IInjectorService): DossierRS {
     return i.get('DossierRS');
 }
 
@@ -201,7 +204,7 @@ export const dossierRSProvider = {
 };
 
 // AntragStatusHistoryRS
-export function antragStatusHistoryRSServiceFactory(i: any) {
+export function antragStatusHistoryRSServiceFactory(i: IInjectorService): AntragStatusHistoryRS {
     return i.get('AntragStatusHistoryRS');
 }
 
@@ -212,7 +215,7 @@ export const antragStatusHistoryRSProvider = {
 };
 
 // WizardStepManager
-export function wizardStepManagerServiceFactory(i: any) {
+export function wizardStepManagerServiceFactory(i: IInjectorService): WizardStepManager {
     return i.get('WizardStepManager');
 }
 
@@ -223,7 +226,7 @@ export const wizardStepManagerProvider = {
 };
 
 // FallRS
-export function fallRSServiceFactory(i: any) {
+export function fallRSServiceFactory(i: IInjectorService): FallRS {
     return i.get('FallRS');
 }
 
@@ -234,7 +237,7 @@ export const fallRSProvider = {
 };
 
 // InstitutionRS
-export function institutionRSFactory(i: any) {
+export function institutionRSFactory(i: IInjectorService): InstitutionRS {
     return i.get('InstitutionRS');
 }
 
@@ -245,7 +248,7 @@ export const institutionRSProvider = {
 };
 
 // EinstellungRS
-export function einstellungRSServiceFactory(i: any) {
+export function einstellungRSServiceFactory(i: IInjectorService): EinstellungRS {
     return i.get('EinstellungRS');
 }
 

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import GesuchRS from './gesuchRS.rest';
@@ -25,7 +25,7 @@ describe('gesuch', () => {
     let ebeguRestUtil: EbeguRestUtil;
     let REST_API: string;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

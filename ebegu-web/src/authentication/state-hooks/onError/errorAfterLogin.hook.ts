@@ -30,8 +30,10 @@ errorAfterLoginHookRunBlock.$inject = ['$transitions'];
 
 const loginStates = ['authentication.login', 'authentication.locallogin'];
 
-export function errorAfterLoginHookRunBlock($transitions: TransitionService) {
-    $transitions.onError({from: state => loginStates.includes(state.name)}, recover, {priority: onErrorPriorities.ERROR_AFTER_LOGIN});
+export function errorAfterLoginHookRunBlock($transitions: TransitionService): void {
+    $transitions.onError({from: state => loginStates.includes(state.name)},
+        recover,
+        {priority: onErrorPriorities.ERROR_AFTER_LOGIN});
 }
 
 const LOG = LogFactory.createLog('errorAfterLoginHookRunBlock');

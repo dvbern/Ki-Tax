@@ -14,11 +14,11 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import {EbeguWebAdmin} from '../../admin.module';
+import {ADMIN_JS_MODULE} from '../../admin.module';
 
 describe('institutionenListView', () => {
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

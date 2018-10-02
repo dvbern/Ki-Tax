@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSMitteilung from './TSMitteilung';
 import TSBetreuungsmitteilungPensum from './TSBetreuungsmitteilungPensum';
+import TSMitteilung from './TSMitteilung';
 
 export default class TSBetreuungsmitteilung extends TSMitteilung {
 

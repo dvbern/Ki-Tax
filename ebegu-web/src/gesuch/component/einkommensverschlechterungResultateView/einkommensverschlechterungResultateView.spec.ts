@@ -27,6 +27,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {EinkommensverschlechterungResultateViewController} from './einkommensverschlechterungResultateView';
 
+// tslint:disable:no-magic-numbers
 describe('einkommensverschlechterungResultateView', () => {
 
     let gesuchModelManager: GesuchModelManager;
@@ -41,7 +42,6 @@ describe('einkommensverschlechterungResultateView', () => {
     let scope: angular.IScope;
     let $componentController: any;
     let stateParams: any;
-    let consta: any;
     let errorservice: any;
     let wizardStepManager: WizardStepManager;
     let $rootScope: angular.IScope;
@@ -55,7 +55,6 @@ describe('einkommensverschlechterungResultateView', () => {
         scope = $rootScope.$new();
         const $q = $injector.get('$q');
         stateParams = $injector.get('$stateParams');
-        consta = $injector.get('CONSTANTS');
         errorservice = $injector.get('ErrorService');
         wizardStepManager = $injector.get('WizardStepManager');
         $timeout = $injector.get('$timeout');
@@ -84,7 +83,11 @@ describe('einkommensverschlechterungResultateView', () => {
         beforeEach(() => {
             ekvrvc = new EinkommensverschlechterungResultateViewController(stateParams, gesuchModelManager,
                 berechnungsManager, errorservice, wizardStepManager, null, $rootScope, null, $timeout);
-            ekvrvc.model = new TSFinanzModel(gesuchModelManager.getBasisjahr(), gesuchModelManager.isGesuchsteller2Required(), null, null);
+            ekvrvc.model = new TSFinanzModel(
+                gesuchModelManager.getBasisjahr(),
+                gesuchModelManager.isGesuchsteller2Required(),
+                null,
+                null);
             ekvrvc.model.copyEkvDataFromGesuch(gesuchModelManager.getGesuch());
             ekvrvc.model.copyFinSitDataFromGesuch(gesuchModelManager.getGesuch());
 
@@ -143,18 +146,15 @@ describe('einkommensverschlechterungResultateView', () => {
             expect(ekvrvc.calculateVeraenderung()).toEqual('+ 100.00 %');
         });
 
-        function setValues(massgebendesEinkommen_vj: number, massgebendesEinkommen_bj: number) {
+        function setValues(massgebendesEinkommenVj: number, massgebendesEinkommenBj: number): void {
             const finsint: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
-            finsint.massgebendesEinkVorAbzFamGr = massgebendesEinkommen_bj;
+            finsint.massgebendesEinkVorAbzFamGr = massgebendesEinkommenBj;
 
             const finsintvj: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
-            finsintvj.massgebendesEinkVorAbzFamGr = massgebendesEinkommen_vj;
+            finsintvj.massgebendesEinkVorAbzFamGr = massgebendesEinkommenVj;
 
             spyOn(ekvrvc, 'getResultate').and.returnValue(finsint);
             ekvrvc.resultatBasisjahr = finsintvj;
         }
-
     });
 });
-
-

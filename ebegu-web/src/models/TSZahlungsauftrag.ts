@@ -14,10 +14,10 @@
  */
 
 import * as moment from 'moment';
-import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSDateRange} from './types/TSDateRange';
-import TSZahlung from './TSZahlung';
 import {TSZahlungsauftragsstatus} from './enums/TSZahlungsauftragstatus';
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSZahlung from './TSZahlung';
+import {TSDateRange} from './types/TSDateRange';
 
 export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
 
@@ -28,8 +28,13 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
     private _betragTotalAuftrag: number;
     private _zahlungen: Array<TSZahlung>;
 
-    public constructor(gueltigkeit?: TSDateRange, datumGeneriert?: moment.Moment, datumFaellig?: moment.Moment,
-                       status?: TSZahlungsauftragsstatus, beschrieb?: string, betragTotalAuftrag?: number, zahlungen?: Array<TSZahlung>) {
+    public constructor(gueltigkeit?: TSDateRange,
+                       datumGeneriert?: moment.Moment,
+                       datumFaellig?: moment.Moment,
+                       status?: TSZahlungsauftragsstatus,
+                       beschrieb?: string,
+                       betragTotalAuftrag?: number,
+                       zahlungen?: Array<TSZahlung>) {
         super(gueltigkeit);
         this._datumGeneriert = datumGeneriert;
         this._datumFaellig = datumFaellig;

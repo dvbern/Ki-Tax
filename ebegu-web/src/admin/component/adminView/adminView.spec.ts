@@ -14,11 +14,11 @@
  */
 
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import EbeguWebAdmin from '../../admin.module';
+import ADMIN_JS_MODULE from '../../admin.module';
 
 describe('adminView', () => {
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

@@ -24,9 +24,9 @@ export default class TSFinanzielleSituationResultateDTO {
     private _massgebendesEinkVorAbzFamGr: number;
 
     public constructor(
-            geschaeftsgewinnDurchschnittGesuchsteller1?: number, geschaeftsgewinnDurchschnittGesuchsteller2?: number,
-            einkommenBeiderGesuchsteller?: number, nettovermoegenFuenfProzent?: number, anrechenbaresEinkommen?: number,
-            abzuegeBeiderGesuchsteller?: number, massgebendesEinkVorAbzFamGr?: number) {
+        geschaeftsgewinnDurchschnittGesuchsteller1?: number, geschaeftsgewinnDurchschnittGesuchsteller2?: number,
+        einkommenBeiderGesuchsteller?: number, nettovermoegenFuenfProzent?: number, anrechenbaresEinkommen?: number,
+        abzuegeBeiderGesuchsteller?: number, massgebendesEinkVorAbzFamGr?: number) {
         this._geschaeftsgewinnDurchschnittGesuchsteller1 = geschaeftsgewinnDurchschnittGesuchsteller1;
         this._geschaeftsgewinnDurchschnittGesuchsteller2 = geschaeftsgewinnDurchschnittGesuchsteller2;
         this._einkommenBeiderGesuchsteller = einkommenBeiderGesuchsteller;

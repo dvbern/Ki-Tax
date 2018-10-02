@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService} from 'angular';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export class DatabaseMigrationRS {
 
@@ -32,6 +32,6 @@ export class DatabaseMigrationRS {
     }
 
     public processScript(scriptNr: string): IHttpPromise<any> {
-        return this.http.get(this.serviceURL + '/' + scriptNr);
+        return this.http.get(`${this.serviceURL}/${scriptNr}`);
     }
 }

@@ -48,7 +48,8 @@ export class DVBarcodeListener implements IDirective {
  */
 export class DVBarcodeController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
+    public static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS',
+        'ErrorService', '$log', 'AuthLifeCycleService'];
 
     private readonly unsubscribe$ = new Subject<void>();
     private barcodeReading: boolean = false;
@@ -64,7 +65,7 @@ export class DVBarcodeController implements IController {
                        private readonly authLifeCycleService: AuthLifeCycleService) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         const keypressEvent = (e: any) => {
             this.barcodeOnKeyPressed(e);
         };
@@ -79,7 +80,7 @@ export class DVBarcodeController implements IController {
 
     }
 
-    public $onDestroy() {
+    public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
@@ -107,48 +108,47 @@ export class DVBarcodeController implements IController {
             }
         }
 
-        if (keyPressChar === '§') {
-            e.preventDefault();
-            if (this.barcodeReading) {
-                this.$log.debug('End Barcode read');
-
-                let barcodeRead = this.barcodeBuffer.join('');
-                this.$log.debug('Barcode read:' + barcodeRead);
-                barcodeRead = barcodeRead.replace('§', '');
-
-                const barcodeParts = barcodeRead.split('|');
-
-                if (barcodeParts.length === 3) {
-                    const barcodeDocType = barcodeParts[0];
-                    const barcodeDocFunction = barcodeParts[1];
-                    const barcodeDocID = barcodeParts[2];
-
-                    this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
-                    this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
-                    this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
-
-                    this.barcodeBuffer = [];
-                    this.$timeout.cancel(this.barcodeReadtimeout);
-
-                    this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                        docID: barcodeDocID
-                    });
-                } else {
-                    this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);
-                }
-            } else {
-                this.$log.debug('Begin Barcode read');
-
-                this.barcodeReadtimeout = this.$timeout(() => {
-                    this.barcodeReading = false;
-                    this.$log.debug('End Barcode read');
-                    this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
-                    this.barcodeBuffer = [];
-                }, 1000);
-            }
-
-            this.barcodeReading = !this.barcodeReading;
-
+        if (keyPressChar !== '§') {
+            return;
         }
+        e.preventDefault();
+        if (this.barcodeReading) {
+            this.$log.debug('End Barcode read');
+
+            let barcodeRead = this.barcodeBuffer.join('');
+            this.$log.debug('Barcode read:' + barcodeRead);
+            barcodeRead = barcodeRead.replace('§', '');
+
+            const barcodeParts = barcodeRead.split('|');
+
+            if (barcodeParts.length === 3) {
+                const barcodeDocType = barcodeParts[0];
+                const barcodeDocFunction = barcodeParts[1];
+                const barcodeDocID = barcodeParts[2];
+
+                this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
+                this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
+                this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
+
+                this.barcodeBuffer = [];
+                this.$timeout.cancel(this.barcodeReadtimeout);
+
+                this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
+                    docID: barcodeDocID
+                });
+            } else {
+                this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);
+            }
+        } else {
+            this.$log.debug('Begin Barcode read');
+
+            this.barcodeReadtimeout = this.$timeout(() => {
+                this.barcodeReading = false;
+                this.$log.debug('End Barcode read');
+                this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
+                this.barcodeBuffer = [];
+            }, 1000);
+        }
+        this.barcodeReading = !this.barcodeReading;
     }
 }

@@ -61,8 +61,10 @@ export class BetreuungTagesschuleViewComponentConfig implements IComponentOption
 
 export class BetreuungTagesschuleViewController extends BetreuungViewController {
 
-    public static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate'];
+    public static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager',
+        'ErrorService',
+        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout',
+        '$translate'];
 
     public onSave: () => void;
     public form: IFormController;
@@ -73,11 +75,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
 
-    public constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
-                       $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
-                       authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,
-                       mitteilungRS: MitteilungRS, dvDialog: DvDialog, $log: ILogService,
-                       $timeout: ITimeoutService, $translate: ITranslateService) {
+    public constructor($state: StateService,
+                       gesuchModelManager: GesuchModelManager,
+                       ebeguUtil: EbeguUtil,
+                       CONSTANTS: any,
+                       $scope: IScope,
+                       berechnungsManager: BerechnungsManager,
+                       errorService: ErrorService,
+                       authServiceRS: AuthServiceRS,
+                       wizardStepManager: WizardStepManager,
+                       $stateParams: IBetreuungStateParams,
+                       mitteilungRS: MitteilungRS,
+                       dvDialog: DvDialog,
+                       $log: ILogService,
+                       $timeout: ITimeoutService,
+                       $translate: ITranslateService) {
 
         super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS,
             wizardStepManager, $stateParams, mitteilungRS, dvDialog, $log, $timeout, $translate);
@@ -92,19 +104,24 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         });
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this.copyModuleToBelegung();
         this.datumErsterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
         this.setErsterSchultag();
-        // todo dupliziert refactoren
-        if (this.getBetreuungModel().anmeldungMutationZustand) {
-            if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
-                this.showMutiert = true;
-                this.aktuellGueltig = false;
-            } else if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-                this.showNochNichtFreigegeben = true;
-                this.aktuellGueltig = false;
-            }
+        if (!this.getBetreuungModel().anmeldungMutationZustand) {
+            return;
+        }
+
+        if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
+            this.showMutiert = true;
+            this.aktuellGueltig = false;
+
+            return;
+        }
+
+        if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+            this.showNochNichtFreigegeben = true;
+            this.aktuellGueltig = false;
         }
     }
 
@@ -116,9 +133,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
                     termin: terminValue
                 });
-            } else {
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
             }
+            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
         }
         return '';
     }
@@ -132,7 +148,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public isTagesschuleAlreadySelected(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel().institutionStammdaten) && !this.getBetreuungModel().keineDetailinformationen;
+        return EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel().institutionStammdaten)
+            && !this.getBetreuungModel().keineDetailinformationen;
     }
 
     public isModulEnabled(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): boolean {
@@ -144,7 +161,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     /**
-     * Gibt true zurueck wenn das gegebene Modul fuer die ausgewaehlte TS definiert wurde und zwar mit zeitBis und zeitVon.
+     * Gibt true zurueck wenn das gegebene Modul fuer die ausgewaehlte TS definiert wurde und zwar mit zeitBis und
+     * zeitVon.
      */
     public isModulDefinedInSelectedTS(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): boolean {
         const modulTS = this.getModul(modulName, weekday);
@@ -152,7 +170,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getModul(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): TSModulTagesschule {
-        if (this.getBetreuungModel().belegungTagesschule && this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
+        if (this.getBetreuungModel().belegungTagesschule
+            && this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
+
             for (const modulTS of this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
                 if (modulTS.modulTagesschuleName === modulName && modulTS.wochentag === weekday) {
                     return modulTS;
@@ -171,8 +191,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
      */
     public anmelden(): IPromise<any> {
         if (this.form.$valid) {
-            // Validieren, dass mindestens 1 Modul ausgewählt war --> ausser der Betreuungsstatus ist (noch) SCHULAMT_FALSCHE_INSTITUTION
-            if (!(this.betreuung.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION) || this.betreuung.keineDetailinformationen) && !this.isThereAnyAnmeldung()) {
+            // Validieren, dass mindestens 1 Modul ausgewählt war --> ausser der Betreuungsstatus ist (noch)
+            // SCHULAMT_FALSCHE_INSTITUTION
+            if (!(
+                this.betreuung.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)
+                || this.betreuung.keineDetailinformationen
+            ) && !this.isThereAnyAnmeldung()) {
                 this.showErrorMessageNoModule = true;
                 return undefined;
             }
@@ -189,9 +213,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 }).then(() => {
                     this.onSave();
                 });
-            } else {
-                this.onSave();
             }
+            this.onSave();
         }
         return undefined;
     }
@@ -209,20 +232,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public getModulTimeAsStringViaName(modulName: TSModulTagesschuleName): string {
         const modul = this.getModul(modulName, TSDayOfWeek.MONDAY);
         if (modul) {
-            return modul.zeitVon.format('HH:mm') + ' - ' + modul.zeitBis.format('HH:mm');
+            return `${modul.zeitVon.format('HH:mm')} - ${modul.zeitBis.format('HH:mm')}`;
         }
         return '';
     }
 
     public getModulTimeAsString(modul: TSModulTagesschule): string {
         if (modul) {
-            return ' (' + modul.zeitVon.format('HH:mm') + ' - ' + modul.zeitBis.format('HH:mm') + ')';
+            return ` (${modul.zeitVon.format('HH:mm')} - ${modul.zeitBis.format('HH:mm')})`;
         }
         return '';
     }
 
     public showButtonsInstitution(): boolean {
-        return this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST && !this.gesuchModelManager.isGesuchReadonlyForRole();
+        return this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+            && !this.gesuchModelManager.isGesuchReadonlyForRole();
     }
 
     /**

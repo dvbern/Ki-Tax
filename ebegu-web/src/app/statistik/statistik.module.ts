@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {StatistikViewComponentConfig} from './component/statistikView/statistikView';
 import {statistikRun} from './statistik.route';
 
 export const EbeguWebStatistik =
-    angular.module('ebeguWeb.statistik', [EbeguWebCore.name])
+    angular.module('ebeguWeb.statistik', [CORE_JS_MODULE.name])
         .run(statistikRun)
         .component('statistikView', new StatistikViewComponentConfig());

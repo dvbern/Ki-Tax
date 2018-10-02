@@ -26,7 +26,10 @@ export class DVLoading implements IDirective {
         return directive;
     }
 
-    public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, controller: DVLoadingController) => {
+    public link = (scope: ng.IScope,
+                   element: ng.IAugmentedJQuery,
+                   _attributes: ng.IAttributes,
+                   controller: DVLoadingController) => {
         let promise: IPromise<any>;
         scope.$watch(controller.isLoading, v => {
 
@@ -34,9 +37,10 @@ export class DVLoading implements IDirective {
                 controller.$timeout.cancel(promise);
                 element.show();
             } else {
+                const delay = 500;
                 promise = controller.$timeout(() => {
                     element.hide();
-                }, 500);
+                }, delay);
 
             }
         });

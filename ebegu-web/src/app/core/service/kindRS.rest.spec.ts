@@ -19,7 +19,7 @@ import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import KindRS from './kindRS.rest';
 
 describe('KindRS', () => {
@@ -33,7 +33,7 @@ describe('KindRS', () => {
     let $q: angular.IQService;
     let wizardStepManager: WizardStepManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

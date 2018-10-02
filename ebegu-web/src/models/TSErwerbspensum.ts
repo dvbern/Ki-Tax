@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
 import {TSTaetigkeit} from './enums/TSTaetigkeit';
 import {TSZuschlagsgrund} from './enums/TSZuschlagsgrund';
+import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
 /**
@@ -33,8 +33,12 @@ export default class TSErwerbspensum extends TSAbstractPensumEntity {
 
     private _bezeichnung: string;
 
-    public constructor(pensum?: number, gueltigkeit?: TSDateRange, taetigkeit?: TSTaetigkeit, zuschlagZuErwerbspensum?: boolean,
-                       zuschlagsgrund?: TSZuschlagsgrund, zuschlagsprozent?: number) {
+    public constructor(pensum?: number,
+                       gueltigkeit?: TSDateRange,
+                       taetigkeit?: TSTaetigkeit,
+                       zuschlagZuErwerbspensum?: boolean,
+                       zuschlagsgrund?: TSZuschlagsgrund,
+                       zuschlagsprozent?: number) {
         super(pensum, gueltigkeit);
         this._taetigkeit = taetigkeit;
         this._zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;

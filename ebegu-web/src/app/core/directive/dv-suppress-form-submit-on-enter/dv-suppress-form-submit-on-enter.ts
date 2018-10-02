@@ -21,8 +21,8 @@ import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, ILogS
  * https://docs.angularjs.org/api/ng/directive/form where it specifically says if there are buttons with
  * type=submit in a form they should be triggered on enter.
  * Since the radio-group component does not do this and triggers a form submitt event instead we have to
- * work-around that prevents this. (Otherwise the unsavedChanges plugin sets the form back to pristine which is wrong since no save
- * was triggered).
+ * work-around that prevents this. (Otherwise the unsavedChanges plugin sets the form back to pristine which is wrong
+ * since no save was triggered).
  *
  * See also https://github.com/angular/material/issues/577
  *
@@ -36,7 +36,7 @@ export default class DVSuppressFormSubmitOnEnter implements IDirective {
     public require: any = {mdRadioGroupCtrl: 'mdRadioGroup', myCtrl: 'dvSuppressFormSubmitOnEnter'};
 
     public constructor() {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, controllers: any) => {
+        this.link = (_scope: IScope, element: IAugmentedJQuery, _attrs, controllers: any) => {
             controllers.myCtrl.mdRadioGroupCtrl = controllers.mdRadioGroupCtrl;
             element.off('keydown'); // alle keydown listener auf dem element abhaengen
             element.bind('keydown', event => { // unseren eigenen listener definieren
@@ -67,7 +67,7 @@ export class DVSuppressFormSubmitOnEnterController {
 
     }
 
-    public keydownListener(ev: any, element: IAugmentedJQuery) {
+    public keydownListener(ev: any, element: IAugmentedJQuery): void {
         const keyCode = ev.which || ev.keyCode;
 
         // Only listen to events that we originated ourselves
@@ -87,38 +87,42 @@ export class DVSuppressFormSubmitOnEnterController {
                 ev.preventDefault();
                 this.mdRadioGroupCtrl.selectPrevious();
                 this.setFocus(element);
-                break;
-
+                return;
             case this.$mdConstant.KEY_CODE.RIGHT_ARROW:
             case this.$mdConstant.KEY_CODE.DOWN_ARROW:
                 ev.preventDefault();
                 this.mdRadioGroupCtrl.selectNext();
                 this.setFocus(element);
-                break;
+                return;
             case this.$mdConstant.KEY_CODE.ENTER:
+                // tslint:disable-next-line:no-commented-code
                 // event.stopPropagation();    //we do not want to submit the form on enter
                 // event.preventDefault();
                 this.triggerNextButton(element);
-                break;
+                return;
+            default:
+                return;
         }
     }
 
-    private setFocus(element: IAugmentedJQuery) {
+    private setFocus(element: IAugmentedJQuery): void {
         if (!element.hasClass('md-focused')) {
             element.addClass('md-focused');
         }
     }
 
-    private triggerNextButton(element: IAugmentedJQuery) {
+    private triggerNextButton(element: IAugmentedJQuery): void {
         let nextButtons: IAugmentedJQuery;
         const formElement: IAugmentedJQuery = angular.element(this.$mdUtil.getClosest(element[0], 'form'));
-        if (formElement) {
-            nextButtons = formElement.children().find('input[type="submit"], button[type="submit"]');
-            if (nextButtons) {
-                nextButtons.first().click();
-            } else {
-                this.$log.debug('no ".next" button found to click on enter');
-            }
+        if (!formElement) {
+            return;
+        }
+
+        nextButtons = formElement.children().find('input[type="submit"], button[type="submit"]');
+        if (nextButtons) {
+            nextButtons.first().click();
+        } else {
+            this.$log.debug('no ".next" button found to click on enter');
         }
 
     }

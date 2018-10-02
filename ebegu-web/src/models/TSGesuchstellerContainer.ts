@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSFinanzielleSituationContainer from './TSFinanzielleSituationContainer';
-import TSErwerbspensumContainer from './TSErwerbspensumContainer';
-import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSGesuchsteller from './TSGesuchsteller';
 import TSAdresseContainer from './TSAdresseContainer';
+import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
+import TSErwerbspensumContainer from './TSErwerbspensumContainer';
+import TSFinanzielleSituationContainer from './TSFinanzielleSituationContainer';
+import TSGesuchsteller from './TSGesuchsteller';
 
 export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
 

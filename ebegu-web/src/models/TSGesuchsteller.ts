@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSSprache} from './enums/TSSprache';
 import TSAbstractPersonEntity from './TSAbstractPersonEntity';
-import {TSGeschlecht} from './enums/TSGeschlecht';
-import * as moment from 'moment';
 
 export default class TSGesuchsteller extends TSAbstractPersonEntity {
 
@@ -29,9 +29,18 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     private _ewkAbfrageDatum: moment.Moment;
     private _korrespondenzSprache: TSSprache;
 
-    public constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht,
-                       email?: string, mobile?: string, telefon?: string, telefonAusland?: string,
-                       diplomatenstatus?: boolean, ewkPersonId?: string, ewkAbfrageDatum?: moment.Moment, korrespondenzSprache?: TSSprache) {
+    public constructor(vorname?: string,
+                       nachname?: string,
+                       geburtsdatum?: moment.Moment,
+                       geschlecht?: TSGeschlecht,
+                       email?: string,
+                       mobile?: string,
+                       telefon?: string,
+                       telefonAusland?: string,
+                       diplomatenstatus?: boolean,
+                       ewkPersonId?: string,
+                       ewkAbfrageDatum?: moment.Moment,
+                       korrespondenzSprache?: TSSprache) {
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._mail = email;
         this._mobile = mobile;
@@ -110,10 +119,10 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     public getPhone(): string {
         if (this.mobile) {
             return this.mobile;
-        } else if (this.telefon) {
-            return this.telefon;
-        } else {
-            return '';
         }
+        if (this.telefon) {
+            return this.telefon;
+        }
+        return '';
     }
 }

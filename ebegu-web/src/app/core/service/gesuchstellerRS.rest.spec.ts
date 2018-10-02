@@ -18,7 +18,7 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import GesuchstellerRS from './gesuchstellerRS.rest';
 
 describe('GesuchstellerRS', () => {
@@ -32,7 +32,7 @@ describe('GesuchstellerRS', () => {
     let $q: angular.IQService;
     let wizardStepManager: WizardStepManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

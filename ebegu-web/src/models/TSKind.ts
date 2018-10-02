@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
-import TSAbstractPersonEntity from './TSAbstractPersonEntity';
-import {TSGeschlecht} from './enums/TSGeschlecht';
-import {TSPensumFachstelle} from './TSPensumFachstelle';
-import {TSKinderabzug} from './enums/TSKinderabzug';
 import * as moment from 'moment';
+import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
+import {TSGeschlecht} from './enums/TSGeschlecht';
+import {TSKinderabzug} from './enums/TSKinderabzug';
+import TSAbstractPersonEntity from './TSAbstractPersonEntity';
+import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export default class TSKind extends TSAbstractPersonEntity {
 

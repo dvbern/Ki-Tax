@@ -43,7 +43,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     public static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
 
     public errors: Array<TSExceptionReport> = [];
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly $scope: IScope,
                        private readonly errorService: ErrorService,
@@ -51,7 +51,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
                        private readonly gesuchRS: GesuchRS) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.INFO_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.CLEAR], () => {
@@ -59,7 +59,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         });
     }
 
-    public displayMessages = (event: any, errors: Array<TSExceptionReport>) => {
+    public displayMessages = (_event: any, errors: Array<TSExceptionReport>) => {
         this.errors = errors;
         this.show();
     };
@@ -69,7 +69,8 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             if (error.action === TSErrorAction.REMOVE_ONLINE_MUTATION && error.argumentList.length > 0) {
                 this.removeOnlineMutation(error.objectId, error.argumentList[0]);
 
-            } else if (error.action === TSErrorAction.REMOVE_ONLINE_ERNEUERUNGSGESUCH && error.argumentList.length > 0) {
+            } else if (error.action === TSErrorAction.REMOVE_ONLINE_ERNEUERUNGSGESUCH
+                && error.argumentList.length > 0) {
                 this.removeOnlineErneuerungsgesuch(error.objectId, error.argumentList[0]);
             }
         }
@@ -102,11 +103,11 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         return error.action !== undefined && error.action !== null;
     }
 
-    public show() {
+    public show(): void {
         angular.element('dvb-error-messages-panel').show();     // besser als $element injection fuer tests
     }
 
-    public clear() {
+    public clear(): void {
         this.errorService.clearAll();
     }
 

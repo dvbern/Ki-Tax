@@ -1332,6 +1332,10 @@ export default class GesuchModelManager {
         return this.gesuch.status === status;
     }
 
+    public isGesuchStatusIn(statuse: TSAntragStatus[]): boolean {
+        return statuse.includes(this.gesuch.status);
+    }
+
     /**
      * Returns true when the Gesuch must be readonly
      */

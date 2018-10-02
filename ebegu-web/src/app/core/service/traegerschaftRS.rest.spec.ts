@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
 describe('institutionStammdatenRS', () => {
@@ -27,7 +27,7 @@ describe('institutionStammdatenRS', () => {
     let mockTraegerschaft: TSTraegerschaft;
     let mockTraegerschaftRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

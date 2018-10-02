@@ -15,7 +15,6 @@
 
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
@@ -27,7 +26,7 @@ import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangeb
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSGesuch from '../../../../models/TSGesuch';
 import TestDataUtil from '../../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../../../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../../core/core.angularjs.module';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
@@ -44,13 +43,12 @@ describe('DVQuicksearchList', () => {
     let $filter: angular.IFilterService;
     let $httpBackend: angular.IHttpBackendService;
     let $state: StateService;
-    let CONSTANTS: any;
+    let CONSTANTS: any; // tslint:disable-line:naming-convention
     let wizardStepManager: WizardStepManager;
-    let authLifeCycleService: AuthLifeCycleService;
     let authServiceRS: AuthServiceRS;
     let gemeindeRS: GemeindeRS;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -66,7 +64,6 @@ describe('DVQuicksearchList', () => {
         $state = $injector.get('$state');
         CONSTANTS = $injector.get('CONSTANTS');
         wizardStepManager = $injector.get('WizardStepManager');
-        authLifeCycleService = $injector.get('AuthLifeCycleService');
         authServiceRS = $injector.get('AuthServiceRS');
         gemeindeRS = $injector.get('GemeindeRS');
     }));
@@ -102,7 +99,7 @@ describe('DVQuicksearchList', () => {
                 const tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
 
-                quicksearchListViewController.editAntrag(mockAntrag, undefined); //antrag wird eidtiert
+                quicksearchListViewController.editAntrag(mockAntrag, undefined); // antrag wird eidtiert
                 $scope.$apply();
 
                 expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {
@@ -115,8 +112,9 @@ describe('DVQuicksearchList', () => {
     });
 
     function mockGetAntragList(): TSAntragDTO {
+        const fallNummer = 123;
         const mockAntrag: TSAntragDTO = new TSAntragDTO('66345345',
-            123,
+            fallNummer,
             'name',
             TSAntragTyp.ERSTGESUCH,
             undefined,

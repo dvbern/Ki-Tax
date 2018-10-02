@@ -27,7 +27,7 @@ export const DISABLE_RECOVERY_ERROR_MESSAGE = 'ignore me. Already handled';
 
 errorRecoveryHookRunBlock.$inject = ['$transitions'];
 
-export function errorRecoveryHookRunBlock($transitions: TransitionService) {
+export function errorRecoveryHookRunBlock($transitions: TransitionService): void {
     $transitions.onError({from: state => !state || !state.name}, onError, {priority: onErrorPriorities.ERROR_RECOVERY});
 }
 

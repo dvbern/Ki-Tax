@@ -22,7 +22,11 @@ export class UploadRS {
     public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService, REST_API: string, public log: ILogService, private readonly upload: any, public ebeguRestUtil: EbeguRestUtil,
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public log: ILogService,
+                       private readonly upload: any,
+                       public ebeguRestUtil: EbeguRestUtil,
                        public q: IQService) {
         this.serviceURL = REST_API + 'upload';
     }
@@ -60,8 +64,8 @@ export class UploadRS {
         }, (evt: any) => {
             const loaded: number = evt.loaded;
             const total: number = evt.total;
-            const progressPercentage = 100.0 * loaded / total;
-            console.log('progress: ' + progressPercentage + '% ');
+            const progressPercentage = 100 * loaded / total;
+            console.log(`progress: ${progressPercentage}% `);
             return this.q.defer().notify();
         });
     }

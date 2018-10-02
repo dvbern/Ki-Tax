@@ -16,8 +16,8 @@
 import DateUtil from '../utils/DateUtil';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
-import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
+import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
 import TSBerechtigung from './TSBerechtigung';
 import TSGemeinde from './TSGemeinde';

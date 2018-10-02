@@ -21,7 +21,7 @@ import {onErrorPriorities} from './onErrorPriorities';
 
 erorGSRegistrationIncompleteHookRunBlock.$inject = ['$transitions'];
 
-export function erorGSRegistrationIncompleteHookRunBlock($transitions: TransitionService) {
+export function erorGSRegistrationIncompleteHookRunBlock($transitions: TransitionService): void {
     const criteria: HookMatchCriteria = {
         to: 'gesuchsteller.dashboard',
         from: state => state.name !== 'onboarding.gesuchsteller.registration-incomplete'

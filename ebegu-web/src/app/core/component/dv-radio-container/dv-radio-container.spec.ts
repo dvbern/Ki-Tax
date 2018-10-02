@@ -15,6 +15,7 @@
 
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {DvRadioContainerComponentConfig} from './dv-radio-container';
+import {IScope, IComponentControllerService, IRootScopeService} from 'angular';
 
 describe('dvRadioContainer', () => {
 
@@ -23,11 +24,11 @@ describe('dvRadioContainer', () => {
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: DvRadioContainerComponentConfig;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject((_$componentController_: angular.IComponentControllerService,
-                                    $rootScope: angular.IRootScopeService) => {
+    beforeEach(angular.mock.inject((_$componentController_: IComponentControllerService,
+                                    $rootScope: IRootScopeService) => {
         $componentController = _$componentController_;
         scope = $rootScope.$new();
     }));

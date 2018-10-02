@@ -16,7 +16,11 @@
 import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
-import {getSchulamtBetreuungsangebotTypValues, isOfAnyBetreuungsangebotTyp, TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {
+    getSchulamtBetreuungsangebotTypValues,
+    isOfAnyBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
+} from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';
@@ -264,7 +268,8 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         }
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.institutionStammdaten && !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp, types)) {
+                if (betreuung.institutionStammdaten && !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp,
+                    types)) {
                     return false;
                 }
             }
@@ -345,7 +350,6 @@ export default class TSGesuch extends TSAbstractAntragEntity {
 
     /**
      * Schaut dass mindestens eine Betreuung erfasst wurde.
-     * @returns {boolean}
      */
     public isThereAnyBetreuung(): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();

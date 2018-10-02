@@ -48,16 +48,9 @@ export class DVLoadingButton implements IComponentOptions {
  * the form is valid first. If not it will not disable itself.
  * By default the button will be disabled till the next REST servicecall returns (not neceserally the one that was
  * triggered by this button) or till 400 ms have expired
- * @example:
- *
- <dv-loading-button type="submit"
- button-click="vm.mySaveFunction()"
- button-class="btn btn-sm btn-success"
- button-disabled="!vm.isButtonDisabled()">
- <i class="glyphicon glyphicon-plus"></i>
- <span data-translate="SAVE"></span>
- </dv-loading-button>
- *
+ * @example: <dv-loading-button type="submit" button-click="vm.mySaveFunction()" button-class="btn btn-sm btn-success"
+ *         button-disabled="!vm.isButtonDisabled()"> <i class="glyphicon glyphicon-plus"></i> <span
+ *         data-translate="SAVE"></span> </dv-loading-button>
  */
 export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
     public static $inject: string[] = ['$http', '$scope', '$timeout'];
@@ -78,7 +71,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
     }
 
     // wird von angular aufgerufen
-    public $onInit() {
+    public $onInit(): void {
         if (!this.type) {
             this.type = 'button'; // wenn kein expliziter type angegeben wurde nehmen wir default button
         }
@@ -97,14 +90,16 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
                 if (this.forceWaitService) {
                     // wir warten auf naechsten service return, egal wie lange es dauert
                     this.isDisabled = true;
+
                     return;
                 }
-                if (this.formCtrl) {  // wenn form-controller existiert
-                    // button wird nur disabled wenn form valid
-                    if (this.formCtrl.$valid) {
-                        this.disableForDelay();
-                    }
-                } else { // wenn kein form einfach mal disablen fuer delay ms
+                if (!this.formCtrl) { // wenn kein form einfach mal disablen fuer delay ms
+                    this.disableForDelay();
+
+                    return;
+                }
+                // button wird nur disabled wenn form valid
+                if (this.formCtrl.$valid) {
                     this.disableForDelay();
                 }
             }, 0);
@@ -118,7 +113,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
-    public $onChanges(changes: SimpleChanges) {
+    public $onChanges(changes: SimpleChanges): void {
         if (changes.buttonDisabled && !changes.buttonDisabled.isFirstChange()) {
             this.buttonDisabled = changes.buttonDisabled.currentValue;
         }
@@ -127,12 +122,13 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
 
     private getDelay(): number {
         if (this.delay) {
-            const parsedNum = parseInt(this.delay);
+            const parsedNum = parseInt(this.delay, 10);
             if (parsedNum !== undefined && parsedNum !== null) {
                 return parsedNum;
             }
         }
-        return 4000;   // default delay = 4000 MS
+        const defaultDelay = 4000;
+        return defaultDelay;   // default delay = 4000 MS
     }
 
     /**

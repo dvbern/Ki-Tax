@@ -20,7 +20,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 zahlungRun.$inject = ['RouterHelper'];
 
-export function zahlungRun(routerHelper: RouterHelper) {
+export function zahlungRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

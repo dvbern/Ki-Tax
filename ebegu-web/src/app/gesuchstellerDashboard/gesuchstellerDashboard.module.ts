@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {GesuchstellerDashboardListViewConfig} from './component/dashboard/gesuchstellerDashboardView';
 import {gesuchstellerDashboardRun} from './gesuchstellerDashboard.route';
 import {CreateAngebotListViewConfig} from './component/angebot/createAngebotView';
 
 export const EbeguWebGesuchstellerDashboard =
-    angular.module('ebeguWeb.gesuchstellerDashboard', [EbeguWebCore.name])
+    angular.module('ebeguWeb.gesuchstellerDashboard', [CORE_JS_MODULE.name])
         .run(gesuchstellerDashboardRun)
         .component('gesuchstellerDashboardView', new GesuchstellerDashboardListViewConfig())
         .component('createAngebotView', new CreateAngebotListViewConfig());

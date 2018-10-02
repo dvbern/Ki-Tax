@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../core/core.angularjs.module';
 import {PendenzenSteueramtListViewComponentConfig} from './component/pendenzenSteueramtListView/pendenzenSteueramtListView';
 import {pendenzRun} from './pendenzenSteueramt.route';
 
 export const EbeguWebPendenzenSteueramt =
-    angular.module('ebeguWeb.pendenzenSteueramt', [EbeguWebCore.name])
+    angular.module('ebeguWeb.pendenzenSteueramt', [CORE_JS_MODULE.name])
         .run(pendenzRun)
         .component('pendenzenSteueramtListView', new PendenzenSteueramtListViewComponentConfig());

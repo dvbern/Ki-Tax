@@ -32,13 +32,4 @@ export class DvSearchResultController implements IController {
     public static $inject: ReadonlyArray<string> = [];
 
     public entry: TSSearchResultEntry;
-
-    public constructor() {
-
-    }
-
-    // wird von angular aufgerufen
-    public $onInit() {
-        // initial nach aktuell eingeloggtem filtern
-    }
 }

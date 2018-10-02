@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSDateRange} from './types/TSDateRange';
 import {TSEbeguVorlageKey} from './enums/TSEbeguVorlageKey';
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSVorlage from './TSVorlage';
+import {TSDateRange} from './types/TSDateRange';
 
 export default class TSEbeguVorlage extends TSAbstractDateRangedEntity {
 
@@ -24,7 +24,10 @@ export default class TSEbeguVorlage extends TSAbstractDateRangedEntity {
     private _vorlage: TSVorlage;
     private _proGesuchsperiode: boolean;
 
-    public constructor(name?: TSEbeguVorlageKey, vorlage?: TSVorlage, gueltigkeit?: TSDateRange, proGesuchsperiode?: boolean) {
+    public constructor(name?: TSEbeguVorlageKey,
+                       vorlage?: TSVorlage,
+                       gueltigkeit?: TSDateRange,
+                       proGesuchsperiode?: boolean) {
         super(gueltigkeit);
         this._name = name;
         this._vorlage = vorlage;

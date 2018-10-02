@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSBenutzer from './TSBenutzer';
 import TSFall from './TSFall';
 import TSGemeinde from './TSGemeinde';
-import TSBenutzer from './TSBenutzer';
 
 export default class TSDossier extends TSAbstractMutableEntity {
 

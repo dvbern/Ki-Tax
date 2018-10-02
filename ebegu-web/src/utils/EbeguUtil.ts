@@ -16,6 +16,7 @@
 import {IFilterService, ILogService} from 'angular';
 import {Moment} from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
+import {LogFactory} from '../app/core/logging/LogFactory';
 import {Displayable} from '../app/shared/interfaces/displayable';
 import TSBetreuungsnummerParts from '../models/dto/TSBetreuungsnummerParts';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
@@ -26,8 +27,11 @@ import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
+import {TSDateRange} from '../models/types/TSDateRange';
 import DateUtil from './DateUtil';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('EbeguUtil');
 
 /**
  * Klasse die allgemeine utils Methoden implementiert
@@ -39,6 +43,11 @@ export default class EbeguUtil {
     public constructor(private readonly $filter: IFilterService,
                        private readonly $translate: ITranslateService,
                        private readonly $log: ILogService) {
+    }
+
+    public static handleDownloadError(win: Window, error: any): void {
+        win.close();
+        LOG.error('An error occurred downloading the document, closing download window.', error);
     }
 
     public static compareByName<T extends Displayable>(a: T, b: T): number {
@@ -65,11 +74,11 @@ export default class EbeguUtil {
      * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als
      * string zurueck
      */
-    public static addZerosToNumber(number: number, length: number): string {
-        if (number != null) {
-            let fallnummerString = '' + number;
+    public static addZerosToNumber(num: number, length: number): string {
+        if (EbeguUtil.isNotNullOrUndefined(num)) {
+            let fallnummerString = `${num}`;
             while (fallnummerString.length < length) {
-                fallnummerString = '0' + fallnummerString;
+                fallnummerString = `0${fallnummerString}`;
             }
             return fallnummerString;
         }
@@ -94,7 +103,7 @@ export default class EbeguUtil {
         return -1;
     }
 
-    public static handleSmarttablesUpdateBug(aList: any[]) {
+    public static handleSmarttablesUpdateBug(aList: any[]): void {
         // Ugly Fix:
         // Because of a bug in smarttables, the table will only be refreshed if the reverence or the first element
         // changes in table. To resolve this bug, we overwrite the first element by a copy of itself.
@@ -103,8 +112,6 @@ export default class EbeguUtil {
 
     /**
      * Erzeugt einen random String mit einer Laenge von numberOfCharacters
-     * @param numberOfCharacters
-     * @returns {string}
      */
     public static generateRandomName(numberOfCharacters: number): string {
         let text = '';
@@ -127,22 +134,25 @@ export default class EbeguUtil {
             + '.dv-btn-row,'
             + '#gesuchContainer button.link-underline:not([disabled="disabled"]),'
             + '.dv-dokumente-list a:not([disabled="disabled"])').first();
-        if (tmp) {
-            let tmpAria = tmp.attr('aria-describedby') === undefined ? '' : tmp.attr('aria-describedby') + ' ';
-            const h2 = angular.element('h2:not(.access-for-all-title)').first();
-            const h2Id = h2.attr('id') === undefined ? 'aria-describe-form-h2' : h2.attr('id');
-            h2.attr('id', h2Id);
-            tmpAria += h2Id;
-            const h3 = angular.element('h3:not(.access-for-all-title)').first();
-            const h3Id = h3.attr('id') === undefined ? 'aria-describe-form-h3' : h3.attr('id');
-            h3.attr('id', h3Id);
-            tmpAria += ' ' + h3Id;
-            tmp.attr('aria-describedby', tmpAria);
-            if (tmp.prop('tagName') === 'MD-RADIO-BUTTON') {
-                tmp = tmp.parent().first();
-            }
-            tmp.focus();
+        if (!tmp) {
+            return;
         }
+
+        const ariaDescribedby = 'aria-describedby';
+        let tmpAria = tmp.attr(ariaDescribedby) === undefined ? '' : `${tmp.attr(ariaDescribedby)} `;
+        const h2 = angular.element('h2:not(.access-for-all-title)').first();
+        const h2Id = h2.attr('id') === undefined ? 'aria-describe-form-h2' : h2.attr('id');
+        h2.attr('id', h2Id);
+        tmpAria += h2Id;
+        const h3 = angular.element('h3:not(.access-for-all-title)').first();
+        const h3Id = h3.attr('id') === undefined ? 'aria-describe-form-h3' : h3.attr('id');
+        h3.attr('id', h3Id);
+        tmpAria += ` ${h3Id}`;
+        tmp.attr(ariaDescribedby, tmpAria);
+        if (tmp.prop('tagName') === 'MD-RADIO-BUTTON') {
+            tmp = tmp.parent().first();
+        }
+        tmp.focus();
     }
 
     public static selectFirstInvalid(): void {
@@ -169,10 +179,24 @@ export default class EbeguUtil {
         return !data;
     }
 
+    private static getYear(gueltigkeit: TSDateRange): string {
+        return gueltigkeit.gueltigAb.year().toString().substring(2);
+    }
+
+    private static toBetreuungsId(gueltigkeit: TSDateRange,
+                                  fall: TSFall,
+                                  gemeinde: TSGemeinde,
+                                  kindNr: number,
+                                  betreuungNumber: number): string {
+        const year = EbeguUtil.getYear(gueltigkeit);
+        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
+        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
+
+        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
-     * @param gesuchsperiode
-     * @returns {string}
      */
     public getFirstDayGesuchsperiodeAsString(gesuchsperiode: TSGesuchsperiode): string {
         if (gesuchsperiode && gesuchsperiode.gueltigkeit && gesuchsperiode.gueltigkeit.gueltigAb) {
@@ -184,12 +208,12 @@ export default class EbeguUtil {
     public getAntragTextDateAsString(tsAntragTyp: TSAntragTyp, eingangsdatum: Moment, laufnummer: number): string {
         if (tsAntragTyp) {
             if (tsAntragTyp === TSAntragTyp.MUTATION && eingangsdatum) {
-                return this.$translate.instant('TOOLBAR_' + TSAntragTyp[tsAntragTyp], {
+                return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}`, {
                     nummer: laufnummer,
                     date: eingangsdatum.format('DD.MM.YYYY')
                 });
             }
-            return this.$translate.instant('TOOLBAR_' + TSAntragTyp[tsAntragTyp] + '_NO_DATE');
+            return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}_NO_DATE`);
         }
         return '';
     }
@@ -211,10 +235,12 @@ export default class EbeguUtil {
         return this.$filter('translate')(toTranslate).toString();
     }
 
+    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
+
     /**
      * Translates the given list using the angular translate filter
      * @param translationList list of words that will be translated
-     * @returns {any} A List of Objects with key and value, where value is the translated word.
+     * @returns A List of Objects with key and value, where value is the translated word.
      */
     public translateStringList(translationList: Array<any>): Array<any> {
         const listResult: Array<any> = [];
@@ -224,40 +250,32 @@ export default class EbeguUtil {
         return listResult;
     }
 
-    public addZerosToNumber(number: number, length: number): string {
-        return EbeguUtil.addZerosToNumber(number, length);
+    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
+
+    public addZerosToNumber(num: number, length: number): string {
+        return EbeguUtil.addZerosToNumber(num, length);
     }
 
-    /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
+    // betreuung from server)
     public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode,
                                  fall: TSFall,
                                  gemeinde: TSGemeinde,
                                  kindContainerNumber: number,
                                  betreuungNumber: number): string {
-        let betreuungsId = '';
-        if (gesuchsperiode && fall) {
-            betreuungsId =
-                gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
-                + '.' + EbeguUtil.addZerosToFallNummer(fall.fallNummer)
-                + '.' + EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer)
-                + '.' + kindContainerNumber
-                + '.' + betreuungNumber;
-        }
-        return betreuungsId;
+        return gesuchsperiode && fall ?
+            EbeguUtil.toBetreuungsId(gesuchsperiode.gueltigkeit, fall, gemeinde, kindContainerNumber, betreuungNumber) :
+            '';
     }
 
-    /* bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load betreuung from server) */
+    // betreuung from server)
     public calculateBetreuungsIdFromBetreuung(fall: TSFall, gemeinde: TSGemeinde, betreuung: TSBetreuung): string {
-        let betreuungsId = '';
-        if (betreuung && fall) {
-            betreuungsId =
-                betreuung.gesuchsperiode.gueltigkeit.gueltigAb.year().toString().substring(2)
-                + '.' + EbeguUtil.addZerosToFallNummer(fall.fallNummer)
-                + '.' + EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer)
-                + '.' + betreuung.kindNummer
-                + '.' + betreuung.betreuungNummer;
-        }
-        return betreuungsId;
+        return betreuung && fall ?
+            EbeguUtil.toBetreuungsId(betreuung.gesuchsperiode.gueltigkeit,
+                fall,
+                gemeinde,
+                betreuung.kindNummer,
+                betreuung.betreuungNummer) :
+            '';
     }
 
     /**
@@ -267,10 +285,13 @@ export default class EbeguUtil {
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
         const parts = betreuungsnummer.split('.');
-        if (!parts || parts.length !== CONSTANTS.PARTS_OF_BETREUUNGSNUMMER) {
-            this.$log.error('A Betreuungsnummer must always have ' + CONSTANTS.PARTS_OF_BETREUUNGSNUMMER + ' parts. The given one had ' + parts.length);
+        const betrNr = CONSTANTS.PARTS_OF_BETREUUNGSNUMMER;
+
+        if (!parts || parts.length !== betrNr) {
+            this.$log.error(`A Betreuungsnummer must always have ${betrNr} parts. The given one had ${parts.length}`);
             return undefined;
         }
+
         return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3], parts[4]);
     }
 
@@ -286,7 +307,7 @@ export default class EbeguUtil {
                 text = EbeguUtil.addZerosToFallNummer(gesuch.dossier.fall.fallNummer);
             }
             if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.extractNachname()) {
-                text = text + ' ' + gesuch.gesuchsteller1.extractNachname();
+                text = `${text} ${gesuch.gesuchsteller1.extractNachname()}`;
             }
         }
         return text;
@@ -302,21 +323,22 @@ export default class EbeguUtil {
         if (dossier && dossier.fall) {
             text = EbeguUtil.addZerosToFallNummer(dossier.fall.fallNummer);
             if (dossier.fall.besitzer && dossier.fall.besitzer.getFullName()) {
-                text = text + ' ' + dossier.fall.besitzer.getFullName();
+                text = `${text} ${dossier.fall.besitzer.getFullName()}`;
             }
         }
         return text;
     }
 
-    public replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[], wasNew: boolean) {
+    public replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[], wasNew: boolean): void {
         if (wasNew) {
             list.push(element);
-        } else {
-            const index = EbeguUtil.getIndexOfElementwithID(element, list);
-            if (index > -1) {
-                list[index] = element;
-                EbeguUtil.handleSmarttablesUpdateBug(list);
-            }
+            return;
+        }
+
+        const index = EbeguUtil.getIndexOfElementwithID(element, list);
+        if (index > -1) {
+            list[index] = element;
+            EbeguUtil.handleSmarttablesUpdateBug(list);
         }
     }
 
@@ -328,6 +350,7 @@ export default class EbeguUtil {
             + '<a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>';
     }
 
+    // tslint:disable-next-line:no-identical-functions
     public getKontaktSchulamt(): string {
         return '<span>Schulamt</span><br>'
             + '<span>Effingerstrasse 21</span><br>'

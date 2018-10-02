@@ -48,8 +48,10 @@ describe('einkommensverschlechterungView', () => {
             gesuchModelManager.initFamiliensituation();
             gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
             gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());
-            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer = new TSEinkommensverschlechterungContainer();
-            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 = new TSEinkommensverschlechterung();
+            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer =
+                new TSEinkommensverschlechterungContainer();
+            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
+                new TSEinkommensverschlechterung();
         });
 
     }));

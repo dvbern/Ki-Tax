@@ -19,10 +19,9 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import TSDossier from '../../../../models/TSDossier';
 import TSGesuch from '../../../../models/TSGesuch';
-import {EbeguWebCore} from '../../core.angularjs.module';
+import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import BenutzerRS from '../../service/benutzerRS.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
-import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
 describe('dvVerantwortlicherSelect', () => {
@@ -32,10 +31,9 @@ describe('dvVerantwortlicherSelect', () => {
     let authServiceRS: AuthServiceRS;
     let benutzerRS: BenutzerRS;
     let benutzer: TSBenutzer;
-    let $mdSidenav: ISidenavService;
     let $translate: ITranslateService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -43,7 +41,6 @@ describe('dvVerantwortlicherSelect', () => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
         benutzerRS = $injector.get('BenutzerRS');
-        $mdSidenav = $injector.get('$mdSidenav');
         benutzer = new TSBenutzer('Emiliano', 'Camacho');
         $translate = $injector.get('$translate');
 
@@ -83,7 +80,7 @@ describe('dvVerantwortlicherSelect', () => {
         });
     });
 
-    function createGesuch() {
+    function createGesuch(): void {
         const gesuch: TSGesuch = new TSGesuch();
         const dossier: TSDossier = new TSDossier();
         dossier.verantwortlicherBG = benutzer;

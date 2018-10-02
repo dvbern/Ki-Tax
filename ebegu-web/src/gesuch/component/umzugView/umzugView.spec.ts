@@ -13,7 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {IHttpBackendService, IQService, IRootScopeService, ITimeoutService} from 'angular';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -26,6 +27,7 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {UmzugViewController} from './umzugView';
+import ITranslateService = angular.translate.ITranslateService;
 
 describe('umzugView', () => {
 
@@ -34,14 +36,14 @@ describe('umzugView', () => {
     let wizardStepManager: WizardStepManager;
     let berechnungsManager: BerechnungsManager;
     let errorService: ErrorService;
-    let $translate: angular.translate.ITranslateService;
+    let $translate: ITranslateService;
     let dialog: DvDialog;
-    let $q: angular.IQService;
-    let $rootScope: angular.IRootScopeService;
-    let $httpBackend: angular.IHttpBackendService;
-    let $timeout: angular.ITimeoutService;
+    let $q: IQService;
+    let $rootScope: IRootScopeService;
+    let $httpBackend: IHttpBackendService;
+    let $timeout: ITimeoutService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -70,9 +72,12 @@ describe('umzugView', () => {
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1)).toEqual(gesuch.gesuchsteller1.extractFullName());
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_2)).toEqual(gesuch.gesuchsteller2.extractFullName());
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual('beide Gesuchstellenden');
+            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1))
+                .toEqual(gesuch.gesuchsteller1.extractFullName());
+            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_2))
+                .toEqual(gesuch.gesuchsteller2.extractFullName());
+            expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual(
+                'beide Gesuchstellenden');
         });
         it('should return empty string for empty data', () => {
             const gesuch: TSGesuch = new TSGesuch();
@@ -80,7 +85,8 @@ describe('umzugView', () => {
 
             expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1)).toEqual('');
             expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_2)).toEqual('');
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual('beide Gesuchstellenden');
+            expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual(
+                'beide Gesuchstellenden');
         });
     });
 
@@ -164,7 +170,8 @@ describe('umzugView', () => {
 
             expect(umzugController.getUmzugAdressenList().length).toBe(1);
             expect(umzugController.getUmzugAdressenList()[0].betroffene).toBe(TSBetroffene.BEIDE_GESUCHSTELLER);
-            TestDataUtil.checkGueltigkeitAndSetIfSame(umzugController.getUmzugAdressenList()[0].adresse.adresseJA, adresse2.adresseJA);
+            TestDataUtil.checkGueltigkeitAndSetIfSame(umzugController.getUmzugAdressenList()[0].adresse.adresseJA,
+                adresse2.adresseJA);
             expect(umzugController.getUmzugAdressenList()[0].adresse).toEqual(adresse2);
         });
     });
@@ -194,7 +201,8 @@ describe('umzugView', () => {
 
             expect(umzugController.getUmzugAdressenList().length).toBe(2);
             expect(umzugController.getUmzugAdressenList()[1].betroffene).toBeUndefined();
-            expect(umzugController.getUmzugAdressenList()[1].adresse.adresseJA.adresseTyp).toBe(TSAdressetyp.WOHNADRESSE);
+            expect(umzugController.getUmzugAdressenList()[1].adresse.adresseJA.adresseTyp)
+                .toBe(TSAdressetyp.WOHNADRESSE);
             expect(umzugController.getUmzugAdressenList()[1].adresse.showDatumVon).toBe(true);
 
             umzugController.removeUmzugAdresse(umzugController.getUmzugAdressenList()[0]);
@@ -202,7 +210,8 @@ describe('umzugView', () => {
 
             expect(umzugController.getUmzugAdressenList().length).toBe(1);
             expect(umzugController.getUmzugAdressenList()[0].betroffene).toBeUndefined();
-            expect(umzugController.getUmzugAdressenList()[0].adresse.adresseJA.adresseTyp).toBe(TSAdressetyp.WOHNADRESSE);
+            expect(umzugController.getUmzugAdressenList()[0].adresse.adresseJA.adresseTyp)
+                .toBe(TSAdressetyp.WOHNADRESSE);
             expect(umzugController.getUmzugAdressenList()[0].adresse.showDatumVon).toBe(true);
         });
     });

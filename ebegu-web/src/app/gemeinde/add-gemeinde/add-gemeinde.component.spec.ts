@@ -19,8 +19,7 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {Transition} from '@uirouter/angular';
-import {StateService} from '@uirouter/core';
+import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';

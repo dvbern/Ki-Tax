@@ -46,7 +46,7 @@ export class DVVersionController implements IController {
 
     }
 
-    public $onInit() {
+    public $onInit(): void {
 
         this.backendVersion = this.httpVersionInterceptor.backendVersion;
         this.currentYear = DateUtil.currentYear();
@@ -54,15 +54,14 @@ export class DVVersionController implements IController {
         this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
             this.backendVersion = this.httpVersionInterceptor.backendVersion;
             this.updateDisplayVersion();
-            const msg = 'Der Client (' + this.frontendVersion + ') hat eine andere Version als der Server('
-                + this.backendVersion + '). Bitte laden sie die Seite komplett neu (F5)';
+            const msg = `Der Client (${this.frontendVersion}) hat eine andere Version als der Server(${this.backendVersion}). Bitte laden sie die Seite komplett neu (F5)`;
             this.$window.alert(msg);
 
         });
 
     }
 
-    private updateDisplayVersion() {
+    private updateDisplayVersion(): void {
         this.showSingleVersion = this.frontendVersion === this.backendVersion || this.backendVersion === null;
     }
 

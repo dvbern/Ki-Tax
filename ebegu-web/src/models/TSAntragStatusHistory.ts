@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSBenutzer from './TSBenutzer';
-import {TSAntragStatus} from './enums/TSAntragStatus';
-import * as moment from 'moment';
 
 export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
 
@@ -26,7 +26,11 @@ export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
     private _timestampBis: moment.Moment;
     private _status: TSAntragStatus;
 
-    public constructor(gesuchId?: string, benutzer?: TSBenutzer, timestampVon?: moment.Moment, timestampBis?: moment.Moment, status?: TSAntragStatus) {
+    public constructor(gesuchId?: string,
+                       benutzer?: TSBenutzer,
+                       timestampVon?: moment.Moment,
+                       timestampBis?: moment.Moment,
+                       status?: TSAntragStatus) {
         super();
         this._gesuchId = gesuchId;
         this._benutzer = benutzer;

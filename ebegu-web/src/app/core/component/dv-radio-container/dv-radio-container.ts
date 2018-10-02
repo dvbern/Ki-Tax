@@ -48,7 +48,7 @@ export class DvRadioContainerController implements IController {
     // die Werte by default allRoles und true, sodass es immer angezeigt wird.
     public allRoles: Array<TSRole>;
 
-    public $onInit() {
+    public $onInit(): void {
         this.modelToPassOn = this.ngModelCtrl.$viewValue;
         // wenn im model etwas aendert muss unsere view das mitkriegen
         this.ngModelCtrl.$render = () => {
@@ -57,12 +57,12 @@ export class DvRadioContainerController implements IController {
         this.allRoles = TSRoleUtil.getAllRoles();
     }
 
-    public onBlur() {
+    public onBlur(): void {
         // parent model touched setzten on blur vom Kind damit fehlerhandlich richtig funktioniert
         this.ngModelCtrl.$setTouched();
     }
 
-    public onChange() {
+    public onChange(): void {
         this.ngModelCtrl.$setViewValue(this.modelToPassOn);
     }
 }

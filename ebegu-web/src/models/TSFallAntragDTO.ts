@@ -25,7 +25,7 @@ export default class TSFallAntragDTO extends TSAbstractAntragDTO {
         this._fallID = fallID;
     }
 
-    public static readonly serverClassName = 'JaxFallAntragDTO';
+    public static readonly SERVER_CLASS_NAME = 'JaxFallAntragDTO';
 
     private _fallID: string;
 

@@ -14,7 +14,7 @@
  */
 
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {EbeguWebAdmin} from '../admin.module';
+import {ADMIN_JS_MODULE} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
 describe('TestFaelleRS', () => {
@@ -22,7 +22,7 @@ describe('TestFaelleRS', () => {
     let testFaelleRS: TestFaelleRS;
     let $httpBackend: angular.IHttpBackendService;
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

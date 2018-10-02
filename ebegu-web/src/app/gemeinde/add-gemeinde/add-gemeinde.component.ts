@@ -45,13 +45,13 @@ export class AddGemeindeComponent implements OnInit {
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
 
     public constructor(private readonly $transition$: Transition,
-                private readonly $state: StateService,
-                private readonly errorService: ErrorService,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly benutzerRS: BenutzerRS,
-                private readonly einstellungRS: EinstellungRS,
-                private readonly translate: TranslateService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS) {
+                       private readonly $state: StateService,
+                       private readonly errorService: ErrorService,
+                       private readonly gemeindeRS: GemeindeRS,
+                       private readonly benutzerRS: BenutzerRS,
+                       private readonly einstellungRS: EinstellungRS,
+                       private readonly translate: TranslateService,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS) {
     }
 
     public ngOnInit(): void {
@@ -79,11 +79,13 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     public gemeindeEinladen(): void {
-        if (this.form.valid) {
-            this.errorService.clearAll();
-            if (this.isStartDateValid()) {
-                this.persistGemeinde();
-            }
+        if (!this.form.valid) {
+            return;
+        }
+
+        this.errorService.clearAll();
+        if (this.isStartDateValid()) {
+            this.persistGemeinde();
         }
     }
 
@@ -112,7 +114,7 @@ export class AddGemeindeComponent implements OnInit {
         this.gemeinde.status = TSGemeindeStatus.EINGELADEN;
     }
 
-    private navigateBack() {
+    private navigateBack(): void {
         this.$state.go('gemeinde.list');
     }
 }

@@ -14,8 +14,8 @@
  */
 
 import {ILogService, IPromise} from 'angular';
-import IDialogService = angular.material.IDialogService;
 import IDialogOptions = angular.material.IDialogOptions;
+import IDialogService = angular.material.IDialogService;
 
 export class DvDialog {
 
@@ -28,14 +28,15 @@ export class DvDialog {
      * Erstellt einen neuen confim Dialog mit den uebergegebenen Parametern
      * @param template Man kann ein belibiges Template eingeben in dem man das Layout des ganzen Dialogs gestaltet.
      * @param controller Hier implementiert man die verschiedenen Funktionen, die benoetigt sind
-     * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller injected
-     * @returns {angular.IPromise<any>}
+     * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller
+     *         injected
      */
     public showDialog(template: string, controller?: any, params?: any): IPromise<any> {
         // form parameter is required for injection for RemoveDialogController, so set missing parameter here.
         // Im IE11 ist controller.name undefined!
         if (controller.name === 'RemoveDialogController' && !params.form) {
-            this.$log.error('You should not use showDialog() for a RemoveDialogController. Use showRemoveDialog() instead!');
+            this.$log.error(
+                'You should not use showDialog() for a RemoveDialogController. Use showRemoveDialog() instead!');
             params.form = undefined;
         }
         const confirm: IDialogOptions = {
@@ -53,10 +54,11 @@ export class DvDialog {
      * Form wird benoetigt um das Form beim clicken von CANCEL wieder dirty zu setzen. Falls man kein form hat kann auc
      * undefined uebergeben werden
      * @param template Man kann ein belibiges Template eingeben in dem man das Layout des ganzen Dialogs gestaltet.
-     * @param form Fuer den RemoveDialog muss zwingend ein Form mitgegeben werden, damit beim Abbrechen das Form wieder dirty gesetzt werden kann.
+     * @param form Fuer den RemoveDialog muss zwingend ein Form mitgegeben werden, damit beim Abbrechen das Form wieder
+     *         dirty gesetzt werden kann.
      * @param controller Hier implementiert man die verschiedenen Funktionen, die benoetigt sind
-     * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller injected
-     * @returns {angular.IPromise<any>}
+     * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller
+     *         injected
      */
     public showRemoveDialog(template: string, form: any, controller?: any, params?: any): IPromise<any> {
         params.form = form;

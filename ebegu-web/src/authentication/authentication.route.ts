@@ -21,7 +21,7 @@ import {getRoleBasedTargetState} from '../utils/AuthenticationUtil';
 
 authenticationRoutes.$inject = ['RouterHelper'];
 
-export function authenticationRoutes(routerHelper: RouterHelper) {
+export function authenticationRoutes(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 
@@ -61,15 +61,14 @@ export class IAuthenticationStateParams {
 /**
  * A resolve function for 'login' state which figures out what state to return to, after a successful login.
  *
- * If the user was initially redirected to login state (due to the requiresAuth redirect), then return the toState/params
- * they were redirected from.
- * Otherwise, if they transitioned directly, return the fromState/params.
+ * If the user was initially redirected to login state (due to the requiresAuth redirect), then return the
+ * toState/params they were redirected from. Otherwise, if they transitioned directly, return the fromState/params.
  * Otherwise return the main "home" state.
  */
 returnTo.$inject = ['$transition$'];
 
 export function returnTo($transition$: Transition): TargetState {
-    if ($transition$.redirectedFrom() != null) {
+    if ($transition$.redirectedFrom() !== null && $transition$.redirectedFrom() !== undefined) {
         // The user was redirected to the login state (e.g., via the requiresAuth hook when trying to activate contacts)
         // Return to the original attempted target state (e.g., contacts)
         return $transition$.redirectedFrom().targetState();
@@ -84,6 +83,7 @@ export function returnTo($transition$: Transition): TargetState {
         return $state.target($transition$.from(), $transition$.params('from'));
     }
 
-    // If the fromState's name is empty, then this was the initial transition. Just return them to the default ANONYMOUS state
+    // If the fromState's name is empty, then this was the initial transition. Just return them to the default
+    // ANONYMOUS state
     return getRoleBasedTargetState(TSRole.ANONYMOUS, $state);
 }

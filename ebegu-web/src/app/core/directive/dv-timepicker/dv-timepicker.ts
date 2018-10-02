@@ -78,15 +78,15 @@ export class TimepickerController implements IController {
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
-    public $onChanges(changes: any) {
+    public $onChanges(changes: any): void {
         if (changes.ngRequired && !changes.ngRequired.isFirstChange()) {
             this.dateTimeRequired = changes.ngRequired.currentValue;
         }
 
     }
 
-    // wird von angular aufgerufen
-    public $onInit() {
+    // tslint:disable-next-line:cognitive-complexity
+    public $onInit(): void {
 
         if (!this.ngModelCtrl) {
             return;
@@ -174,14 +174,14 @@ export class TimepickerController implements IController {
         return inputdateTime;
     }
 
-    public onBlur() {
+    public onBlur(): void {
         if (this.dvOnBlur) { // userdefined onBlur event
             this.dvOnBlur();
         }
         this.ngModelCtrl.$setTouched();
     }
 
-    public updateTimeModelValue() {
+    public updateTimeModelValue(): void {
         this.ngModelCtrl.$setViewValue(this.dateTime);
     }
 }

@@ -38,7 +38,8 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 
 export default class AuthServiceRS {
 
-    public static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer', 'AuthLifeCycleService',
+    public static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',
+        'AuthLifeCycleService',
         'BenutzerRS'];
 
     private principal?: TSBenutzer;
@@ -125,7 +126,7 @@ export default class AuthServiceRS {
         }
     }
 
-    public logoutRequest() {
+    public logoutRequest(): any {
         return this.$http.post(CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
             this.clearPrincipal();
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
@@ -139,13 +140,15 @@ export default class AuthServiceRS {
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
-        return this.$http.get(CONSTANTS.REST_API + 'auth/singleSignOn', {params: {relayPath}}).then((res: any) => {
-            return res.data;
-        });
+        return this.initSSO(CONSTANTS.REST_API + 'auth/singleSignOn', relayPath);
     }
 
     public initSingleLogout(relayPath: string): IPromise<string> {
-        return this.$http.get(CONSTANTS.REST_API + 'auth/singleLogout', {params: {relayPath}}).then((res: any) => {
+        return this.initSSO(CONSTANTS.REST_API + 'auth/singleLogout', relayPath);
+    }
+
+    private initSSO(path: string, relayPath: string): IPromise<string> {
+        return this.$http.get(path, {params: {relayPath}}).then((res: any) => {
             return res.data;
         });
     }
@@ -154,7 +157,7 @@ export default class AuthServiceRS {
      * Gibt true zurueck, wenn der eingelogte Benutzer die gegebene Role hat. Fuer undefined Werte wird immer false
      * zurueckgegeben.
      */
-    public isRole(role: TSRole) {
+    public isRole(role: TSRole): boolean {
         if (role && this.principal) {
             return this.principal.hasRole(role);
         }

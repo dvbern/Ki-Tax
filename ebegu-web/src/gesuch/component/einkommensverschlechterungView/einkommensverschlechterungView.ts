@@ -21,6 +21,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
 import TSFinanzModel from '../../../models/TSFinanzModel';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {IEinkommensverschlechterungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -39,7 +40,8 @@ export class EinkommensverschlechterungViewComponentConfig implements IComponent
 
 export class EinkommensverschlechterungViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService', '$log',
+    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+        '$log',
         'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
 
     public showSelbstaendig: boolean;
@@ -51,16 +53,30 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     public allowedRoles: Array<TSRole>;
     public initialModel: TSFinanzModel;
 
-    public constructor($stateParams: IEinkommensverschlechterungStateParams, gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService, private readonly $log: ILogService,
-                       wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly $translate: ITranslateService,
+    public constructor($stateParams: IEinkommensverschlechterungStateParams,
+                       gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly errorService: ErrorService,
+                       private readonly $log: ILogService,
+                       wizardStepManager: WizardStepManager,
+                       private readonly $q: IQService,
+                       $scope: IScope,
+                       private readonly $translate: ITranslateService,
                        $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, $timeout);
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            $timeout);
         const parsedGesuchstelllerNum = parseInt($stateParams.gesuchstellerNumber, 10);
         const parsedBasisJahrPlusNum = parseInt($stateParams.basisjahrPlus, 10);
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), parsedGesuchstelllerNum, parsedBasisJahrPlusNum);
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            parsedGesuchstelllerNum,
+            parsedBasisJahrPlusNum);
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
@@ -71,25 +87,28 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
 
     }
 
-    private initViewModel() {
+    private initViewModel(): void {
         this.initGeschaeftsgewinnFromFS();
-        this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig()
-            || (this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr !== null
-                && this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr !== undefined);
-        if (this.model.getFiSiConToWorkWith().finanzielleSituationGS && this.model.getEkvToWorkWith_GS()) {
-            this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig()
-                || (this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr !== null
-                    && this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr !== undefined);
+        const fiSiConToWorkWith = this.model.getFiSiConToWorkWith();
+
+        this.showSelbstaendig = fiSiConToWorkWith.finanzielleSituationJA.isSelbstaendig()
+            || EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr);
+
+        if (!fiSiConToWorkWith.finanzielleSituationGS || !this.model.getEkvToWorkWith_GS()) {
+            return;
         }
+
+        this.showSelbstaendigGS = fiSiConToWorkWith.finanzielleSituationGS.isSelbstaendig()
+            || EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr);
     }
 
-    public showSelbstaendigClicked() {
+    public showSelbstaendigClicked(): void {
         if (!this.showSelbstaendig) {
             this.resetSelbstaendigFields();
         }
     }
 
-    private resetSelbstaendigFields() {
+    private resetSelbstaendigFields(): void {
         if (this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr) {
             this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr = undefined;
             this.calculate();
@@ -101,8 +120,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
      *  ist es unmöglich, dass die Steuerveranlagung und Steuererklärung für 2017 schon dem Gesuchsteller vorliegt
      */
     public showSteuerveranlagung(): boolean {
-        return (this.model.getBasisJahrPlus() === 1) &&
-            (!this.model.getGemeinsameSteuererklaerungToWorkWith() || !this.model.getGemeinsameSteuererklaerungToWorkWith());
+        return this.model.getBasisJahrPlus() === 1 && !this.model.getGemeinsameSteuererklaerungToWorkWith();
     }
 
     public showSteuererklaerung(): boolean {
@@ -110,8 +128,9 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     public showHintSteuererklaerung(): boolean {
-        return this.model.getEkvToWorkWith().steuererklaerungAusgefuellt &&
-            !this.model.getEkvToWorkWith().steuerveranlagungErhalten;
+        const ekvToWorkWith = this.model.getEkvToWorkWith();
+
+        return ekvToWorkWith.steuererklaerungAusgefuellt && !ekvToWorkWith.steuerveranlagungErhalten;
     }
 
     public showHintSteuerveranlagung(): boolean {
@@ -142,7 +161,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         return undefined;
     }
 
-    public calculate() {
+    public calculate(): void {
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus());
     }
 
@@ -154,6 +173,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         return this.berechnungsManager.getEinkommensverschlechterungResultate(this.model.getBasisJahrPlus());
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public initGeschaeftsgewinnFromFS(): void {
         if (!this.model.getFiSiConToWorkWith()
             || !this.model.getFiSiConToWorkWith().finanzielleSituationJA) {
@@ -165,14 +185,20 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         const fsGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS;
         if (this.model.getBasisJahrPlus() === 2) {
             // basisjahr Plus 2
-            if (this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1) {
+            const infoContainer = this.model.einkommensverschlechterungInfoContainer;
+            if (infoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1) {
                 const einkommensverschlJABasisjahrPlus1 = this.model.getEkvContToWorkWith().ekvJABasisJahrPlus1;
-                this.geschaeftsgewinnBasisjahrMinus1 = einkommensverschlJABasisjahrPlus1 ? einkommensverschlJABasisjahrPlus1.geschaeftsgewinnBasisjahr : undefined;
+                this.geschaeftsgewinnBasisjahrMinus1 = einkommensverschlJABasisjahrPlus1 ?
+                    einkommensverschlJABasisjahrPlus1.geschaeftsgewinnBasisjahr :
+                    undefined;
                 const einkommensverschlGSBasisjahrPlus1 = this.model.getEkvContToWorkWith().ekvGSBasisJahrPlus1;
-                this.geschaeftsgewinnBasisjahrMinus1GS = einkommensverschlGSBasisjahrPlus1 ? einkommensverschlGSBasisjahrPlus1.geschaeftsgewinnBasisjahr : undefined;
+                this.geschaeftsgewinnBasisjahrMinus1GS = einkommensverschlGSBasisjahrPlus1 ?
+                    einkommensverschlGSBasisjahrPlus1.geschaeftsgewinnBasisjahr :
+                    undefined;
             } else {
                 const einkommensverschlGS = this.model.getEkvToWorkWith_GS();
-                this.geschaeftsgewinnBasisjahrMinus1GS = einkommensverschlGS ? einkommensverschlGS.geschaeftsgewinnBasisjahrMinus1 : undefined;
+                this.geschaeftsgewinnBasisjahrMinus1GS =
+                    einkommensverschlGS ? einkommensverschlGS.geschaeftsgewinnBasisjahrMinus1 : undefined;
             }
 
             this.geschaeftsgewinnBasisjahrMinus2 = fs.geschaeftsgewinnBasisjahr;
@@ -186,10 +212,12 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     public enableGeschaeftsgewinnBasisjahrMinus1(): boolean {
-        return this.model.getBasisJahrPlus() === 2 && !this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1;
+        const info = this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
+
+        return this.model.getBasisJahrPlus() === 2 && !info.ekvFuerBasisJahrPlus1;
     }
 
-    public getTextSelbstaendigKorrektur() {
+    public getTextSelbstaendigKorrektur(): any {
         if (this.showSelbstaendigGS && this.model.getEkvToWorkWith_GS()) {
             const gew1 = this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr;
             if (gew1) {

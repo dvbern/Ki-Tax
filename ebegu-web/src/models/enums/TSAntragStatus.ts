@@ -184,7 +184,7 @@ export function isAnyStatusOfMahnung(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.ZWEITE_MAHNUNG || status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN;
 }
 
-export function  getStartAntragStatusFromEingangsart(eingangsart: TSEingangsart) {
+export function getStartAntragStatusFromEingangsart(eingangsart: TSEingangsart) {
     if (TSEingangsart.ONLINE === eingangsart) {
         return TSAntragStatus.IN_BEARBEITUNG_GS;
     } else {

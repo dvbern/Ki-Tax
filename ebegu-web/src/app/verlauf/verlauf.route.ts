@@ -19,7 +19,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 verlaufRun.$inject = ['RouterHelper'];
 
-export function verlaufRun(routerHelper: RouterHelper) {
+export function verlaufRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

@@ -38,9 +38,10 @@ export class DvCountdownComponentConfig implements IComponentOptions {
 
 export class DvCountdownController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog', 'GesuchModelManager'];
+    public static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog',
+        'GesuchModelManager'];
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
     public timer: moment.Duration;
     public timerInterval: IPromise<any>;
 
@@ -52,32 +53,34 @@ export class DvCountdownController implements IController {
                        private readonly gesuchModelManager: GesuchModelManager) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this.$rootScope.$on(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], () => {
-            if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && this.isGesuchAvailableAndWritable() && this.isOnGesuchView()) {
-                if (this.timerInterval === undefined) {
-                    this.startTimer();
-                } else {
-                    this.resetTimer();
-                }
-            } else {
+            if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+                || !this.isGesuchAvailableAndWritable()
+                || !this.isOnGesuchView()) {
+
                 this.cancelInterval();
+                return;
             }
 
+            if (this.timerInterval === undefined) {
+                this.startTimer();
+            } else {
+                this.resetTimer();
+            }
         });
 
     }
 
     public getTimeLeft(): string {
-        if (this.timer) {
-            if (this.timer.asMinutes() < 5) {
-                return this.timer.minutes() + ' : ' + (this.timer.seconds() < 10 ? '0' + this.timer.seconds() : this.timer.seconds());
-            }
+        if (this.timer && this.timer.asMinutes() < 5) {
+            const seconds = this.timer.seconds() < 10 ? '0' + this.timer.seconds() : this.timer.seconds();
+            return `${this.timer.minutes()} : ${seconds}`;
         }
         return '';
     }
 
-    public decrease() {
+    public decrease(): void {
         if (this.timer.asMilliseconds() <= 0) {
             this.stopTimer();
         } else {
@@ -98,11 +101,13 @@ export class DvCountdownController implements IController {
     }
 
     public cancelInterval(): void {
-        if (this.timerInterval !== undefined) {
-            this.$interval.cancel(this.timerInterval);
-            this.timerInterval = undefined;
-            this.timer = undefined;
+        if (this.timerInterval === undefined) {
+            return;
         }
+
+        this.$interval.cancel(this.timerInterval);
+        this.timerInterval = undefined;
+        this.timer = undefined;
     }
 
     public startTimer(): void {
@@ -116,7 +121,8 @@ export class DvCountdownController implements IController {
     }
 
     public isGesuchAvailableAndWritable(): boolean {
-        // verursacht login problem wenn man nicht schon eingelogged ist (gesuch model manager versucht services aufzurufen)
+        // verursacht login problem wenn man nicht schon eingelogged ist (gesuch model manager versucht services
+        // aufzurufen)
         if (this.gesuchModelManager.getGesuch()) {
             return !this.gesuchModelManager.isGesuchReadonly();
         }

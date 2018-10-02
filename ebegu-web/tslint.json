@@ -70,7 +70,7 @@
             true,
             {
                 "limit": 120,
-                "ignore-pattern": "^require| ^import |^export {(.*?)}"
+                "ignore-pattern": "^require|^import |^export {(.*?)}|it(.*?)"
             }
         ],
         "member-access": [
@@ -179,7 +179,7 @@
             }
         ],
         "new-parens": true,
-        "newline-before-return": true,
+//        "newline-before-return": true,
         "no-angle-bracket-type-assertion": true,
         "no-arg": true,
         "no-attribute-parameter-decorator": true,

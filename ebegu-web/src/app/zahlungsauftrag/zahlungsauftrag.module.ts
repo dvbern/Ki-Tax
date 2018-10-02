@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {zahlungsauftragRun} from './zahlungsauftrag.route';
 import {ZahlungsauftragViewComponentConfig} from './component/zahlungsauftragView';
 
 export const EbeguWebZahlungsauftrag =
-    angular.module('ebeguWeb.zahlungsauftrag', [EbeguWebCore.name])
+    angular.module('ebeguWeb.zahlungsauftrag', [CORE_JS_MODULE.name])
         .run(zahlungsauftragRun)
         .component('zahlungsauftragView', new ZahlungsauftragViewComponentConfig());

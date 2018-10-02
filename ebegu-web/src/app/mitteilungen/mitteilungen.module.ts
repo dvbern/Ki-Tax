@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {MitteilungenViewComponentConfig} from './component/mitteilungenView/mitteilungenView';
 import {mitteilungenRun} from './mitteilungen.route';
 
 export const EbeguWebMitteilungen =
-    angular.module('ebeguWeb.mitteilungen', [EbeguWebCore.name])
+    angular.module('ebeguWeb.mitteilungen', [CORE_JS_MODULE.name])
         .run(mitteilungenRun)
         .component('mitteilungenView', new MitteilungenViewComponentConfig());

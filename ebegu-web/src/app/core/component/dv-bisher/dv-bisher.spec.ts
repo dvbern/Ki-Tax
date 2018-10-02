@@ -14,11 +14,11 @@
  */
 
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import {EbeguWebCore} from '../../core.angularjs.module';
+import {CORE_JS_MODULE} from '../../core.angularjs.module';
 
 describe('dvBisher', () => {
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 /**
  * DTO für einen Einwohnercode aus dem EWK

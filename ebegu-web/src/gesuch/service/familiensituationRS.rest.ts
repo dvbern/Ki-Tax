@@ -28,13 +28,13 @@ export default class FamiliensituationRS {
                        public ebeguRestUtil: EbeguRestUtil,
                        private readonly $log: ILogService,
                        private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'familiensituation';
+        this.serviceURL = `${REST_API}familiensituation`;
     }
 
     public saveFamiliensituation(familiensituation: TSFamiliensituationContainer, gesuchId: string): IPromise<TSFamiliensituationContainer> {
         let returnedFamiliensituation = {};
         returnedFamiliensituation = this.ebeguRestUtil.familiensituationContainerToRestObject(returnedFamiliensituation, familiensituation);
-        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), returnedFamiliensituation, {
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, returnedFamiliensituation, {
             headers: {
                 'Content-Type': 'application/json'
             }

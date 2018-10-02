@@ -22,7 +22,7 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import GesuchsperiodeRS from './gesuchsperiodeRS.rest';
 
 describe('gesuchsperiodeRS', () => {
@@ -35,7 +35,7 @@ describe('gesuchsperiodeRS', () => {
     let date: moment.Moment;
     let $http: IHttpService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

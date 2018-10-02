@@ -15,9 +15,9 @@
 
 import IRootScopeService = angular.IRootScopeService;
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
-import TSExceptionReport from '../../../../models/TSExceptionReport';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
+import TSExceptionReport from '../../../../models/TSExceptionReport';
 
 export default class ErrorService {
 
@@ -35,15 +35,15 @@ export default class ErrorService {
     /**
      * Clears all stored errors
      */
-    public clearAll() {
+    public clearAll(): void {
         this.errors = [];
         this.$rootScope.$broadcast(TSMessageEvent[TSMessageEvent.CLEAR]);
     }
 
-    /** clear specific error
-     * @param {string} msgKey
+    /**
+     * clear specific error
      */
-    public clearError(msgKey: string) {
+    public clearError(msgKey: string): void {
         // noinspection SuspiciousTypeOfGuard
         if (typeof msgKey !== 'string') {
             return;
@@ -59,48 +59,51 @@ export default class ErrorService {
 
     /**
      * This can be used to add a client-siede global error
-     * @param {string} msgKey translation key
-     * @param {Object} [args] message parameters
+     * @param msgKey translation key
+     * @param [args] message parameters
      */
-    public addValidationError(msgKey: string, args?: any) {
+    public addValidationError(msgKey: string, args?: any): void {
         const err = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
         this.addDvbError(err);
     }
 
-    public containsError(dvbError: TSExceptionReport) {
+    public containsError(dvbError: TSExceptionReport): boolean {
         return this.errors.filter(e => e.msgKey === dvbError.msgKey).length > 0;
     }
 
-    public addDvbError(dvbError: TSExceptionReport) {
-        if (dvbError && dvbError.isValid()) {
-            if (!this.containsError(dvbError)) {
-                this.errors.push(dvbError);
-                const udateEvent = (dvbError.severity === TSErrorLevel.INFO ) ? TSMessageEvent.INFO_UPDATE : TSMessageEvent.ERROR_UPDATE;
-                this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
-            }
-        } else {
+    public addDvbError(dvbError: TSExceptionReport): void {
+        if (!(dvbError && dvbError.isValid())) {
             console.log('could not display received TSExceptionReport ' + dvbError);
+            return;
         }
+
+        if (this.containsError(dvbError)) {
+            return;
+        }
+
+        this.errors.push(dvbError);
+        const udateEvent = (dvbError.severity === TSErrorLevel.INFO) ?
+            TSMessageEvent.INFO_UPDATE :
+            TSMessageEvent.ERROR_UPDATE;
+        this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
     }
 
-    public addMesageAsError(msg: string) {
+    public addMesageAsError(msg: string): void {
         const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
         this.addDvbError(error);
 
     }
 
-    public addMesageAsInfo(msg: string) {
+    public addMesageAsInfo(msg: string): void {
         const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
         this.addDvbError(error);
     }
 
     /**
-     * @param {boolean} isValid when FALSE a new validationError is added. Otherwise the validationError is cleared
-     * @param {string} msgKey
-     * @param {Object} [args]
+     * when isValid FALSE a new validationError is added. Otherwise the validationError is cleared
      */
-    public handleValidationError(isValid: boolean, msgKey: string, args?: any) {
-        // noinspection PointlessBooleanExpressionJS
+    public handleValidationError(isValid: boolean, msgKey: string, args?: any): void {
+        // noinspection NegatedIfStatementJS
         if (!!isValid) {
             this.clearError(msgKey);
         } else {
@@ -111,19 +114,20 @@ export default class ErrorService {
     /**
      * adds a DvbError to the errors
      */
-    public handleError(dvbError: TSExceptionReport) {
+    public handleError(dvbError: TSExceptionReport): void {
         this.addDvbError(dvbError);
     }
 
     /**
      * adds all Errors to the errors service
      */
-    public handleErrors(dvbErrors: Array<TSExceptionReport>) {
-        if (dvbErrors) {
-            for (const err of dvbErrors) {
-                this.addDvbError(err);
-            }
+    public handleErrors(dvbErrors: Array<TSExceptionReport>): void {
+        if (!dvbErrors) {
+            return;
         }
 
+        for (const err of dvbErrors) {
+            this.addDvbError(err);
+        }
     }
 }

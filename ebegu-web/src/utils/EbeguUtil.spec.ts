@@ -21,14 +21,17 @@ import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
 import EbeguUtil from './EbeguUtil';
 import TestDataUtil from './TestDataUtil.spec';
+import IProvideService = angular.auto.IProvideService;
 
+// tslint:disable:no-magic-numbers
 describe('EbeguUtil', () => {
 
     let ebeguUtil: EbeguUtil;
+    const defaultFormat = 'DD.MM.YYYY';
 
     // Das wird nur fuer tests gebraucht in denen etwas uebersetzt wird. Leider muss man dieses erstellen
     // bevor man den Injector erstellt hat. Deshalb muss es fuer alle Tests definiert werden
-    beforeEach(angular.mock.module(($provide: angular.auto.IProvideService) => {
+    beforeEach(angular.mock.module(($provide: IProvideService) => {
         const mockTranslateFilter = (value: any) => {
             if (value === 'FIRST') {
                 return 'Erster';
@@ -101,12 +104,13 @@ describe('EbeguUtil', () => {
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns empty string for undefined gueltigAb', () => {
-            const daterange: TSDateRange = new TSDateRange(undefined, moment('31.07.2017', 'DD.MM.YYYY'));
+            const daterange: TSDateRange = new TSDateRange(undefined, moment('31.07.2017', defaultFormat));
             const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns 01.08.2016', () => {
-            const daterange: TSDateRange = new TSDateRange(moment('01.08.2016', 'DD.MM.YYYY'), moment('31.07.2017', 'DD.MM.YYYY'));
+            const daterange: TSDateRange = new TSDateRange(moment('01.08.2016', defaultFormat),
+                moment('31.07.2017', defaultFormat));
             const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('01.08.2016');
         });

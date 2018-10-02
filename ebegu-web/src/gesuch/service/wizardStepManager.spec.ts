@@ -13,7 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import * as angular from 'angular';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
@@ -33,6 +34,7 @@ import DateUtil from '../../utils/DateUtil';
 import WizardStepManager from './wizardStepManager';
 import WizardStepRS from './WizardStepRS.rest';
 
+// tslint:disable:no-big-function
 describe('wizardStepManager', () => {
 
     let authServiceRS: AuthServiceRS;
@@ -41,9 +43,9 @@ describe('wizardStepManager', () => {
     let scope: angular.IScope;
     let $q: angular.IQService;
 
-    const gesuchAntrag: TSGesuch = new TSGesuch;
+    const gesuchAntrag: TSGesuch = new TSGesuch();
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -77,7 +79,8 @@ describe('wizardStepManager', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
-            expect(wizardStepManager.getAllowedSteps().length).toBe(13);
+            const expectedSteps = 13;
+            expect(wizardStepManager.getAllowedSteps().length).toBe(expectedSteps);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
             expect(wizardStepManager.getAllowedSteps()[2]).toBe(TSWizardStepName.GESUCHSTELLER);
@@ -117,7 +120,7 @@ describe('wizardStepManager', () => {
 
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith('123');
             expect(wizardStepManager.getWizardSteps()).toBeDefined();
-            expect(wizardStepManager.getWizardSteps().length).toBe(2); //erste 2 states sind definiert
+            expect(wizardStepManager.getWizardSteps().length).toBe(2); // erste 2 states sind definiert
             expect(wizardStepManager.getWizardSteps()[0].wizardStepName).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getWizardSteps()[0].wizardStepStatus).toBe(TSWizardStepStatus.IN_BEARBEITUNG);
             expect(wizardStepManager.getWizardSteps()[0].verfuegbar).toBe(true);
@@ -173,12 +176,15 @@ describe('wizardStepManager', () => {
         });
         it('returns false if the Step does not have the given status', () => {
             createAllSteps(TSWizardStepStatus.OK);
-            expect(wizardStepManager.hasStepGivenStatus(TSWizardStepName.BETREUUNG, TSWizardStepStatus.NOK)).toBe(false);
+            expect(wizardStepManager.hasStepGivenStatus(TSWizardStepName.BETREUUNG, TSWizardStepStatus.NOK))
+                .toBe(false);
         });
         it('returns false if the Step does not exist', () => {
             wizardStepManager.getWizardSteps().splice(0, wizardStepManager.getWizardSteps().length);
-            wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.GESUCH_ERSTELLEN, TSWizardStepStatus.OK, '', true));
-            expect(wizardStepManager.hasStepGivenStatus(TSWizardStepName.BETREUUNG, TSWizardStepStatus.NOK)).toBe(false);
+            const step = new TSWizardStep('', TSWizardStepName.GESUCH_ERSTELLEN, TSWizardStepStatus.OK, '', true);
+            wizardStepManager.getWizardSteps().push(step);
+            expect(wizardStepManager.hasStepGivenStatus(TSWizardStepName.BETREUUNG, TSWizardStepStatus.NOK))
+                .toBe(false);
         });
     });
     describe('getNextStep', () => {
@@ -261,17 +267,18 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
             expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
         });
-        it('should hide the steps ABWESENHEIT and UMZUG and unhide FREIGABE for PAPIER Erstgesuch without umzug', () => {
-            createAllSteps(TSWizardStepStatus.OK);
-            const gesuch = new TSGesuch();
-            gesuch.eingangsart = TSEingangsart.PAPIER;
-            gesuch.typ = TSAntragTyp.ERSTGESUCH;
-            wizardStepManager.setHiddenSteps(gesuch);
+        it('should hide the steps ABWESENHEIT and UMZUG and unhide FREIGABE for PAPIER Erstgesuch without umzug',
+            () => {
+                createAllSteps(TSWizardStepStatus.OK);
+                const gesuch = new TSGesuch();
+                gesuch.eingangsart = TSEingangsart.PAPIER;
+                gesuch.typ = TSAntragTyp.ERSTGESUCH;
+                wizardStepManager.setHiddenSteps(gesuch);
 
-            expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
-            expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
-            expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
-        });
+                expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);
+                expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
+                expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
+            });
         it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for PAPIER Gesuch', () => {
             createAllSteps(TSWizardStepStatus.OK);
             const gesuch = new TSGesuch();
@@ -290,29 +297,45 @@ describe('wizardStepManager', () => {
             const umzugsAdresse = new TSAdresseContainer();
             umzugsAdresse.adresseJA = new TSAdresse();
             umzugsAdresse.adresseJA.adresseTyp = TSAdressetyp.WOHNADRESSE;
-            umzugsAdresse.adresseJA.gueltigkeit = new TSDateRange(DateUtil.today().add(1, 'months'), DateUtil.today().add(7, 'months'));
-            gesuch.gesuchsteller1.adressen = [umzugsAdresse, umzugsAdresse]; // for an umzugAdresse we just need more than one Wohnadressen
+            umzugsAdresse.adresseJA.gueltigkeit =
+                new TSDateRange(DateUtil.today().add(1, 'months'), DateUtil.today().add(7, 'months'));
+            gesuch.gesuchsteller1.adressen = [umzugsAdresse, umzugsAdresse]; // for an umzugAdresse we just need more
+                                                                             // than one Wohnadressen
             gesuch.eingangsart = TSEingangsart.ONLINE;
             gesuch.typ = TSAntragTyp.ERSTGESUCH;
 
             wizardStepManager.setHiddenSteps(gesuch);
 
-            // expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(true);
-            // expect(wizardStepManager.isStepVisible(TSWizardStepName.ABWESENHEIT)).toBe(false);
             expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(true);
         });
     });
 
     function createAllSteps(status: TSWizardStepStatus): void {
         wizardStepManager.getWizardSteps().splice(0, wizardStepManager.getWizardSteps().length);
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.GESUCH_ERSTELLEN, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.FAMILIENSITUATION, status, '', true));
+        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
+            TSWizardStepName.GESUCH_ERSTELLEN,
+            status,
+            '',
+            true));
+        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
+            TSWizardStepName.FAMILIENSITUATION,
+            status,
+            '',
+            true));
         wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.GESUCHSTELLER, status, '', true));
         wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.KINDER, status, '', true));
         wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.BETREUUNG, status, '', true));
         wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.ERWERBSPENSUM, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.FINANZIELLE_SITUATION, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, status, '', true));
+        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
+            TSWizardStepName.FINANZIELLE_SITUATION,
+            status,
+            '',
+            true));
+        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            status,
+            '',
+            true));
         wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.DOKUMENTE, status, '', true));
         wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.VERFUEGEN, status, '', true));
     }

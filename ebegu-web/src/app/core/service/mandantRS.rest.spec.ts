@@ -16,7 +16,7 @@
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMandant} from '../../../models/TSMandant';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {MandantRS} from './mandantRS.rest';
 
 describe('mandantRS', () => {
@@ -27,7 +27,7 @@ describe('mandantRS', () => {
     let mockMandant: TSMandant;
     let mockMandantRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

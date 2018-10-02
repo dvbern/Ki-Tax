@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {searchRun} from './search.route';
 import {SearchListViewComponentConfig} from './component/searchListView';
 
 export const EbeguWebSearch =
-    angular.module('ebeguWeb.search', [EbeguWebCore.name])
+    angular.module('ebeguWeb.search', [CORE_JS_MODULE.name])
         .run(searchRun)
         .component('searchListView', new SearchListViewComponentConfig());

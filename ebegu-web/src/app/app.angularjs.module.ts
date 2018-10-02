@@ -16,14 +16,14 @@
 import {upgradeModule} from '@uirouter/angular-hybrid';
 import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
-import EbeguWebAdmin from '../admin/admin.module';
+import ADMIN_JS_MODULE from '../admin/admin.module';
 import {EbeguWebGesuch} from '../gesuch/gesuch.module';
-import {EbeguWebZahlung} from './zahlung/zahlung.module';
+import {ZAHLUNG_JS_MODULE} from './zahlung/zahlung.module';
 import {EbeguWebZahlungsauftrag} from './zahlungsauftrag/zahlungsauftrag.module';
-import {EbeguWebAlleVerfuegungen} from './alleVerfuegungen/alleVerfuegungen.module';
-import {AppAngularjsComponent} from './app.angularjs.component';
-import {EbeguWebCore} from './core/core.angularjs.module';
-import {EbeguWebDossier} from './dossier/dossier.angularjs.module';
+import {ALLE_VERFUEGUNGEN_JS_MODULE} from './alleVerfuegungen/alleVerfuegungen.module';
+import {APP_ANGULARJS_COMPONENT} from './app.angularjs.component';
+import {CORE_JS_MODULE} from './core/core.angularjs.module';
+import {DOSSIER_JS_MODULE} from './dossier/dossier.angularjs.module';
 import {EbeguWebFaelle} from './faelle/faelle.module';
 import {EbeguWebGesuchstellerDashboard} from './gesuchstellerDashboard/gesuchstellerDashboard.module';
 import {EbeguWebMitteilungen} from './mitteilungen/mitteilungen.module';
@@ -34,15 +34,15 @@ import {EbeguWebPosteingang} from './posteingang/posteingang.module';
 import {EbeguWebQuicksearch} from './quicksearch/quicksearch.module';
 import {EbeguWebSearch} from './searchResult/search.module';
 import {EbeguWebStatistik} from './statistik/statistik.module';
-import {EbeguWebVerlauf} from './verlauf/verlauf.module';
+import {VERLAUF_JS_MODULE} from './verlauf/verlauf.module';
 
-export const appModuleAngularJS = angular.module('ebeguWeb', [
+export const APP_JS_MODULE = angular.module('ebeguWeb', [
         upgradeModule.name,
-        EbeguWebCore.name,
-        EbeguWebAdmin.name,
+        CORE_JS_MODULE.name,
+        ADMIN_JS_MODULE.name,
         EbeguWebGesuch.name,
         EbeguWebPendenzen.name,
-        EbeguWebDossier.name,
+        DOSSIER_JS_MODULE.name,
         EbeguWebPendenzenBetreuungen.name,
         EbeguWebPendenzenSteueramt.name,
         EbeguWebFaelle.name,
@@ -51,13 +51,13 @@ export const appModuleAngularJS = angular.module('ebeguWeb', [
         EbeguWebPosteingang.name,
         EbeguWebSearch.name,
         EbeguWebStatistik.name,
-        EbeguWebZahlung.name,
+        ZAHLUNG_JS_MODULE.name,
         EbeguWebZahlungsauftrag.name,
-        EbeguWebAlleVerfuegungen.name,
-        EbeguWebVerlauf.name,
+        ALLE_VERFUEGUNGEN_JS_MODULE.name,
+        VERLAUF_JS_MODULE.name,
         EbeguWebQuicksearch.name,
     ])
-        .component('appRoot', AppAngularjsComponent)
+        .component('appRoot', APP_ANGULARJS_COMPONENT)
         .config(conf)
 ;
 

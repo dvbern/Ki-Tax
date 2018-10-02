@@ -26,11 +26,11 @@ export class ApplicationPropertyRS {
     public constructor(public http: IHttpService,
                        REST_API: string,
                        public ebeguRestUtil: EbeguRestUtil) {
-        this.serviceURL = REST_API + 'application-properties';
+        this.serviceURL = `${REST_API}application-properties`;
     }
 
     public getAllowedMimetypes(): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/public/' + encodeURIComponent('UPLOAD_FILETYPES_WHITELIST'),
+        return this.http.get(`${this.serviceURL}/public/${encodeURIComponent('UPLOAD_FILETYPES_WHITELIST')}`,
             {cache: true})
             .then((response: IHttpResponse<TSApplicationProperty>) => {
                 return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
@@ -38,7 +38,7 @@ export class ApplicationPropertyRS {
     }
 
     public getByName(name: string): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/key/' + encodeURIComponent(name)).then(
+        return this.http.get(`${this.serviceURL}/key/${encodeURIComponent(name)}`).then(
             (response: any) => {
                 return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
             }
@@ -46,25 +46,25 @@ export class ApplicationPropertyRS {
     }
 
     public isDevMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/devmode', {cache: true}).then(response => {
+        return this.http.get(`${this.serviceURL}/public/devmode`, {cache: true}).then(response => {
             return response.data as boolean;
         });
     }
 
     public isDummyMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/dummy').then(response => {
+        return this.http.get(`${this.serviceURL}/public/dummy`).then(response => {
             return response.data as boolean;
         });
     }
 
     public getBackgroundColor(): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/public/background').then(response => {
-            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty, response.data);
+        return this.http.get(`${this.serviceURL}/public/background`).then(response => {
+            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
         });
     }
 
     public create(name: string, value: string): IHttpPromise<any> {
-        return this.http.post(this.serviceURL + '/' + encodeURIComponent(name), value, {
+        return this.http.post(`${this.serviceURL}/${encodeURIComponent(name)}`, value, {
             headers: {
                 'Content-Type': 'text/plain'
             }
@@ -72,25 +72,21 @@ export class ApplicationPropertyRS {
     }
 
     public update(name: string, value: string): IHttpPromise<any> {
-        return this.http.post(this.serviceURL + '/' + encodeURIComponent(name), value, {
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        });
+        return this.create(name, value);
     }
 
     public remove(name: string): IHttpPromise<any> {
-        return this.http.delete(this.serviceURL + '/' + encodeURIComponent(name));
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(name)}`);
     }
 
     public getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
-        return this.http.get(this.serviceURL + '/').then(
+        return this.http.get(`${this.serviceURL}/`).then(
             (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data)
         );
     }
 
     public isZahlungenTestMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/zahlungentestmode', {cache: true}).then(response => {
+        return this.http.get(`${this.serviceURL}/public/zahlungentestmode`, {cache: true}).then(response => {
             return response.data as boolean;
         });
     }

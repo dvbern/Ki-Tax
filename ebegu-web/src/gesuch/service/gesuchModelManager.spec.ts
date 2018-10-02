@@ -15,7 +15,7 @@
 
 import {async} from '@angular/core/testing';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
 import KindRS from '../../app/core/service/kindRS.rest';
@@ -60,7 +60,7 @@ describe('gesuchModelManager', () => {
     let verfuegungRS: VerfuegungRS;
     let antragStatusHistoryRS: AntragStatusHistoryRS;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

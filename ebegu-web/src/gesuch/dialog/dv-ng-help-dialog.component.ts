@@ -32,7 +32,7 @@ export class DvNgHelpDialogComponent {
         private readonly downloadRS: DownloadRS) {
     }
 
-    public close() {
+    public close(): void {
         this.dialogRef.close();
     }
 

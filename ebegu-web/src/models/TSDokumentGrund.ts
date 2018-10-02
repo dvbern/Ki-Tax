@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSDokument from './TSDokument';
-import {TSDokumentGrundTyp} from './enums/TSDokumentGrundTyp';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSDokumentTyp} from './enums/TSDokumentTyp';
 import {TSDokumentGrundPersonType} from './enums/TSDokumentGrundPersonType';
+import {TSDokumentGrundTyp} from './enums/TSDokumentGrundTyp';
+import {TSDokumentTyp} from './enums/TSDokumentTyp';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSDokument from './TSDokument';
 
 export default class TSDokumentGrund extends TSAbstractMutableEntity {
 

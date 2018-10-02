@@ -20,7 +20,7 @@ import TSGesuch from '../../../models/TSGesuch';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import AntragStatusHistoryRS from './antragStatusHistoryRS.rest';
 
 describe('antragStatusHistoryRS', () => {
@@ -29,7 +29,7 @@ describe('antragStatusHistoryRS', () => {
     let $httpBackend: angular.IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -52,13 +52,18 @@ describe('antragStatusHistoryRS', () => {
         it('should return the last status change for the given gesuch', () => {
             const gesuch: TSGesuch = new TSGesuch();
             gesuch.id = '123456';
-            const antragStatusHistory: TSAntragStatusHistory = new TSAntragStatusHistory(gesuch.id, undefined, DateUtil.today(), undefined, TSAntragStatus.VERFUEGEN);
+            const antragStatusHistory: TSAntragStatusHistory = new TSAntragStatusHistory(gesuch.id,
+                undefined,
+                DateUtil.today(),
+                undefined,
+                TSAntragStatus.VERFUEGEN);
             TestDataUtil.setAbstractMutableFieldsUndefined(antragStatusHistory);
             const restAntStatusHistory: any = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
-            $httpBackend.expectGET(antragStatusHistoryRS.serviceURL + '/' + encodeURIComponent(gesuch.id)).respond(restAntStatusHistory);
+            $httpBackend.expectGET(`${antragStatusHistoryRS.serviceURL}/${encodeURIComponent(gesuch.id)}`).respond(
+                restAntStatusHistory);
 
             let lastStatusChange: TSAntragStatusHistory;
-            antragStatusHistoryRS.loadLastStatusChange(gesuch).then((response) => {
+            antragStatusHistoryRS.loadLastStatusChange(gesuch).then(response => {
                 lastStatusChange = response;
             });
             $httpBackend.flush();

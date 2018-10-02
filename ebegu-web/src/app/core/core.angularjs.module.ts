@@ -16,6 +16,7 @@
 import {LOCALE_ID} from '@angular/core';
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
+// tslint:disable:no-import-side-effect
 import 'angular-animate';
 import 'angular-aria';
 import 'angular-cookies';
@@ -31,8 +32,9 @@ import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'ng-file-upload';
+// tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
-import {EbeguAuthentication} from '../../authentication/authentication.module';
+import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
 import BerechnungsManager from '../../gesuch/service/berechnungsManager';
@@ -53,10 +55,10 @@ import MahnungRS from '../../gesuch/service/mahnungRS.rest';
 import SearchRS from '../../gesuch/service/searchRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import WizardStepRS from '../../gesuch/service/WizardStepRS.rest';
-import {PosteingangService} from '../posteingang/service/posteingang.service';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
+import {PosteingangService} from '../posteingang/service/posteingang.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
@@ -105,13 +107,14 @@ import DVTrimEmpty from './directive/dv-trim-empty/dv-trim-empty';
 import {DVUserselect} from './directive/dv-userselect/dv-userselect';
 import {DVValueinput} from './directive/dv-valueinput/dv-valueinput';
 import {DvVerantwortlicherselect} from './directive/dv-verantwortlicherselect/dv-verantwortlicherselect';
-import {EbeguErrors} from './errors/errors';
+import {ERRORS_JS_MODULE} from './errors/errors';
 import {arrayToString} from './filters/array-to-string.filter';
 import {gemeindenToString} from './filters/gemeinden-to-string.filter';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import AdresseRS from './service/adresseRS.rest';
 import AntragStatusHistoryRS from './service/antragStatusHistoryRS.rest';
 import BatchJobRS from './service/batchRS.rest';
+import BenutzerRS from './service/benutzerRS.rest';
 import BetreuungRS from './service/betreuungRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
@@ -133,7 +136,6 @@ import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
-import BenutzerRS from './service/benutzerRS.rest';
 import VerfuegungRS from './service/verfuegungRS.rest';
 import HttpVersionInterceptor from './service/version/HttpVersionInterceptor';
 import ZahlungRS from './service/zahlungRS.rest';
@@ -147,8 +149,8 @@ const dependencies = [
     'ngCookies',
     /* shared DVBern modules */
     router.name,
-    EbeguErrors.name,
-    EbeguAuthentication.name,
+    ERRORS_JS_MODULE.name,
+    AUTHENTICATION_JS_MODULE.name,
     /* 3rd-party modules */
     'ui.bootstrap',
     'smart-table',
@@ -161,7 +163,7 @@ const dependencies = [
     'unsavedChanges',
 ];
 
-export const EbeguWebCore = angular
+export const CORE_JS_MODULE = angular
     .module('ebeguWeb.core', dependencies)
     .run(appRun)
     .config(configure)

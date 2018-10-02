@@ -67,11 +67,22 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     private removed: boolean;
     private readonly changedBetreuungen: Array<TSBetreuung> = [];
 
-    public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                       wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog, private readonly $translate: ITranslateService,
-                       private readonly $q: IQService, private readonly errorService: ErrorService, $scope: IScope, $timeout: ITimeoutService) {
+    public constructor(gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       wizardStepManager: WizardStepManager,
+                       private readonly DvDialog: DvDialog,
+                       private readonly $translate: ITranslateService,
+                       private readonly $q: IQService,
+                       private readonly errorService: ErrorService,
+                       $scope: IScope,
+                       $timeout: ITimeoutService) {
 
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ABWESENHEIT, $timeout);
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.ABWESENHEIT,
+            $timeout);
         this.initViewModel();
     }
 
@@ -92,9 +103,12 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         kinderList.forEach(kind => {
             const betreuungenFromKind = kind.betreuungen;
             betreuungenFromKind.forEach(betreuung => {
-                if (betreuung.institutionStammdaten && betreuung.institutionStammdaten.betreuungsangebotTyp &&
-                    (betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
-                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN)) {
+                if (betreuung.institutionStammdaten
+                    && betreuung.institutionStammdaten.betreuungsangebotTyp
+                    && (
+                        betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
+                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN
+                    )) {
                     this.betreuungList.push({betreuung, kind});
                 }
             });
@@ -104,11 +118,13 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     private initAbwesenheitList(): void {
         this.model = [];
         this.betreuungList.forEach(kindBetreuung => {
-            if (kindBetreuung.betreuung.abwesenheitContainers) {
-                kindBetreuung.betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
-                    this.model.push(new AbwesenheitUI(kindBetreuung, abwesenheitCont));
-                });
+            if (!kindBetreuung.betreuung.abwesenheitContainers) {
+                return;
             }
+
+            kindBetreuung.betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
+                this.model.push(new AbwesenheitUI(kindBetreuung, abwesenheitCont));
+            });
         });
     }
 
@@ -150,7 +166,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * Anhand des IDs schaut es ob die gegebene Betreuung bereits in der Liste changedBetreuungen ist.
      * Nur wenn sie noch nicht da ist, wird sie hinzugefuegt
      */
-    private addChangedBetreuungToList(betreuung: TSBetreuung) {
+    private addChangedBetreuungToList(betreuung: TSBetreuung): void {
         let betreuungAlreadyChanged = false;
         this.changedBetreuungen.forEach(changedBetreuung => {
             if (changedBetreuung.id === betreuung.id) {
@@ -167,31 +183,35 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * Sonst wird sie einfach geloescht
      */
     public removeAbwesenheitConfirm(abwesenheit: AbwesenheitUI): void {
-        if (abwesenheit.abwesenheit.id) {
-            const remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
-            this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: remTitleText,
-                deleteText: '',
-                parentController: undefined,
-                elementID: undefined
-            }).then(() => {   // User confirmed removal
-                this.removeAbwesenheit(abwesenheit);
-            });
-        } else {
+        if (!abwesenheit.abwesenheit.id) {
             this.removeAbwesenheit(abwesenheit);
+
+            return;
         }
+
+        const remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
+        this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: remTitleText,
+            deleteText: '',
+            parentController: undefined,
+            elementID: undefined
+        }).then(() => {   // User confirmed removal
+            this.removeAbwesenheit(abwesenheit);
+        });
     }
 
-    private removeAbwesenheit(abwesenheit: AbwesenheitUI) {
+    private removeAbwesenheit(abwesenheit: AbwesenheitUI): void {
         const indexOf = this.model.lastIndexOf(abwesenheit);
-        if (indexOf >= 0) {
-            if (abwesenheit.kindBetreuung) {
-                this.removed = true;
-                this.addChangedBetreuungToList(abwesenheit.kindBetreuung.betreuung);
-            }
-            this.model.splice(indexOf, 1);
-            this.$timeout(() => EbeguUtil.selectFirst(), 100);
+        if (indexOf < 0) {
+            return;
         }
+
+        if (abwesenheit.kindBetreuung) {
+            this.removed = true;
+            this.addChangedBetreuungToList(abwesenheit.kindBetreuung.betreuung);
+        }
+        this.model.splice(indexOf, 1);
+        this.$timeout(() => EbeguUtil.selectFirst(), 100);
     }
 
     public createAbwesenheit(): void {
@@ -213,11 +233,18 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * Leerer String wieder zurueckgeliefert wenn die Daten nicht richtig sind
      */
     public getTextForBetreuungDDL(kindBetreuung: KindBetreuungUI): string {
-        if (kindBetreuung && kindBetreuung.kind && kindBetreuung.kind.kindJA
-            && kindBetreuung.betreuung && kindBetreuung.betreuung.institutionStammdaten && kindBetreuung.betreuung.institutionStammdaten.institution) {
+        if (kindBetreuung
+            && kindBetreuung.kind
+            && kindBetreuung.kind.kindJA
+            && kindBetreuung.betreuung
+            && kindBetreuung.betreuung.institutionStammdaten
+            && kindBetreuung.betreuung.institutionStammdaten.institution) {
 
-            return kindBetreuung.kind.kindJA.getFullName() + ' - ' + kindBetreuung.betreuung.institutionStammdaten.institution.name;
+            const institution = kindBetreuung.betreuung.institutionStammdaten.institution;
+
+            return `${kindBetreuung.kind.kindJA.getFullName()} - ${institution.name}`;
         }
+
         return '';
     }
 
@@ -228,27 +255,23 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     public changedAngebot(oldKindID: string, oldBetreuungID: string): void {
         // In case the Abwesenheit didn't exist before, the old IDs will be empty and there is no need to change
         // anything
-        if (oldKindID && oldKindID !== '' && oldBetreuungID && oldBetreuungID !== '') {
-            this.gesuchModelManager.findKindById(oldKindID);
-            this.gesuchModelManager.findBetreuungById(oldBetreuungID);
-            const betreuungToWorkWith = this.gesuchModelManager.getBetreuungToWorkWith();
-            if (betreuungToWorkWith && betreuungToWorkWith.id) {
-                this.addChangedBetreuungToList(betreuungToWorkWith);
-            }
+        if (!oldKindID || oldKindID === '' || !oldBetreuungID || oldBetreuungID === '') {
+            return;
+        }
+
+        this.gesuchModelManager.findKindById(oldKindID);
+        this.gesuchModelManager.findBetreuungById(oldBetreuungID);
+        const betreuungToWorkWith = this.gesuchModelManager.getBetreuungToWorkWith();
+        if (betreuungToWorkWith && betreuungToWorkWith.id) {
+            this.addChangedBetreuungToList(betreuungToWorkWith);
         }
     }
 
     public getPreviousButtonText(): string {
-        if (this.getAbwesenheiten().length === 0) {
-            return 'ZURUECK_ONLY_UPPER';
-        }
-        return 'ZURUECK_UPPER';
+        return this.getAbwesenheiten().length === 0 ? 'ZURUECK_ONLY_UPPER' : 'ZURUECK_UPPER';
     }
 
     public getNextButtonText(): string {
-        if (this.getAbwesenheiten().length === 0) {
-            return 'WEITER_ONLY_UPPER';
-        }
-        return 'WEITER_UPPER';
+        return this.getAbwesenheiten().length === 0 ? 'WEITER_ONLY_UPPER' : 'WEITER_UPPER';
     }
 }

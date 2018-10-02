@@ -20,7 +20,7 @@ import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import SearchRS from './searchRS.rest';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 
 describe('searchRS', () => {
 
@@ -30,7 +30,7 @@ describe('searchRS', () => {
     let mockPendenz: TSAntragDTO;
     let mockPendenzRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

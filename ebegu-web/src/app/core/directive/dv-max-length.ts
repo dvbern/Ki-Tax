@@ -25,12 +25,12 @@ export default class DVMaxLength implements IDirective {
 
     public constructor(CONSTANTS: any) {
         this.length = CONSTANTS.MAX_LENGTH;
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrl: any) => {
+        this.link = (_scope: IScope, _element: IAugmentedJQuery, _attrs, ctrl: any) => {
             if (!ctrl) {
                 return;
             }
 
-            ctrl.$validators.dvMaxLength = (modelValue: any, viewValue: any) => {
+            ctrl.$validators.dvMaxLength = (_modelValue: any, viewValue: any) => {
                 return ctrl.$isEmpty(viewValue) || (viewValue.length <= this.length);
             };
         };

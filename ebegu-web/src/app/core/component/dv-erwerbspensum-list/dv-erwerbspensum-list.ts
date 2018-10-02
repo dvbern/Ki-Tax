@@ -52,7 +52,7 @@ export class DVErwerbspensumListController implements IOnInit {
     public onEdit: (pensumToEdit: any) => void;
     public onAdd: () => void;
 
-    public $onInit() {
+    public $onInit(): void {
         if (!this.addButtonText) {
             this.addButtonText = 'add item';
         }
@@ -72,19 +72,19 @@ export class DVErwerbspensumListController implements IOnInit {
         }
     }
 
-    public removeClicked(pensumToRemove: TSErwerbspensumContainer, index: any) {
+    public removeClicked(pensumToRemove: TSErwerbspensumContainer, index: any): void {
         this.onRemove({pensum: pensumToRemove, index});
     }
 
-    public editClicked(pensumToEdit: any) {
+    public editClicked(pensumToEdit: any): void {
         this.onEdit({pensum: pensumToEdit});
     }
 
-    public addClicked() {
+    public addClicked(): void {
         this.onAdd();
     }
 
-    public isRemoveAllowed(pensumToEdit: any) {
+    public isRemoveAllowed(_pensumToEdit: any): boolean {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
         // erfasste Taetigkeiten bei nicht-zustandekommen des Jobs nicht mehr geloescht werden koennen
         // Siehe auch EBEGU-1146 und EBEGU-580

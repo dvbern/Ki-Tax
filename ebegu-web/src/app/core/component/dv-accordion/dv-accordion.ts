@@ -34,7 +34,7 @@ export class DvAccordionController implements IOnChanges {
     public allowMultipleSections: boolean;
     public selectedTabId: string;
 
-    public $onChanges() {
+    public $onChanges(): void {
         // erlaubt dass man von Anfang an, ein Tab oeffnet, wenn man eine bestimmte Mitteilung oeffnen will
         if (this.selectedTabId) {
             this.toggleTab(this.selectedTabId);
@@ -44,12 +44,12 @@ export class DvAccordionController implements IOnChanges {
     public toggleTab(i: string): void {
         if (this.isTagOpen(i)) {
             this.accordion.splice(this.accordion.indexOf(i), 1);
-        } else {
-            if (!this.allowMultipleSections) {
-                this.accordion = [];
-            }
-            this.accordion.push(i);
+            return;
         }
+        if (!this.allowMultipleSections) {
+            this.accordion = [];
+        }
+        this.accordion.push(i);
     }
 
     public isTagOpen(i: string): boolean {

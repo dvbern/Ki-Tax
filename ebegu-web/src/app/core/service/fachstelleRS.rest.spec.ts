@@ -17,7 +17,7 @@ import {IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {FachstelleRS} from './fachstelleRS.rest';
 
 describe('fachstelleRS', () => {
@@ -29,7 +29,7 @@ describe('fachstelleRS', () => {
     let mockFachstelleRest: any;
     let $http: IHttpService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

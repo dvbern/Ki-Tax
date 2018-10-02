@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {zahlungRun} from './zahlung.route';
 import {ZahlungViewComponentConfig} from './component/zahlungView';
 
-export const EbeguWebZahlung =
-    angular.module('ebeguWeb.zahlung', [EbeguWebCore.name])
+export const ZAHLUNG_JS_MODULE =
+    angular.module('ebeguWeb.zahlung', [CORE_JS_MODULE.name])
         .run(zahlungRun)
         .component('zahlungView', new ZahlungViewComponentConfig());

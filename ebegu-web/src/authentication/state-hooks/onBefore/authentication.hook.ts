@@ -34,7 +34,7 @@ const LOG = LogFactory.createLog('authenticationHookRunBlock');
  */
 authenticationHookRunBlock.$inject = ['$transitions'];
 
-export function authenticationHookRunBlock($transitions: TransitionService) {
+export function authenticationHookRunBlock($transitions: TransitionService): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
         to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS),

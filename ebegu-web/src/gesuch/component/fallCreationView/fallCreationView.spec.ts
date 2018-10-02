@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import TSGesuch from '../../../models/TSGesuch';
@@ -33,7 +33,7 @@ describe('fallCreationView', () => {
     let form: any;
     let gesuch: TSGesuch;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

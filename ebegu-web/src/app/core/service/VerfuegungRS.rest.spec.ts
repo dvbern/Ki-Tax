@@ -19,7 +19,7 @@ import TSKindContainer from '../../../models/TSKindContainer';
 import TSVerfuegung from '../../../models/TSVerfuegung';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import VerfuegungRS from './verfuegungRS.rest';
 
 describe('VerfuegungRS', () => {
@@ -29,10 +29,10 @@ describe('VerfuegungRS', () => {
     let ebeguRestUtil: EbeguRestUtil;
     let mockKindContainerListRest: Array<any> = [];
     let mockKind: TSKindContainer;
-    const gesuchId: string = '1234567789';
-    const betreuungId: string = '321123';
+    const gesuchId = '1234567789';
+    const betreuungId = '321123';
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -68,10 +68,11 @@ describe('VerfuegungRS', () => {
     describe('API Usage', () => {
         describe('calculate', () => {
             it('should return all KindContainer', () => {
-                $httpBackend.expectGET(verfuegungRS.serviceURL + '/calculate/' + gesuchId).respond(mockKindContainerListRest);
+                $httpBackend.expectGET(`${verfuegungRS.serviceURL}/calculate/${gesuchId}`).respond(
+                    mockKindContainerListRest);
 
                 let foundKind: Array<TSKindContainer>;
-                verfuegungRS.calculateVerfuegung(gesuchId).then((result) => {
+                verfuegungRS.calculateVerfuegung(gesuchId).then(result => {
                     foundKind = result;
                 });
                 $httpBackend.flush();
@@ -83,11 +84,12 @@ describe('VerfuegungRS', () => {
         describe('saveVerfuegung', () => {
             it('should save the given Verfuegung', () => {
                 const verfuegung: TSVerfuegung = TestDataUtil.createVerfuegung();
-                $httpBackend.expectPUT(verfuegungRS.serviceURL + '/' + gesuchId + '/' + betreuungId + '/false').respond(ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
-                $httpBackend.expectGET('/ebegu/api/v1/wizard-steps/' + gesuchId).respond({});
+                $httpBackend.expectPUT(`${verfuegungRS.serviceURL}/${gesuchId}/${betreuungId}/false`).respond(
+                    ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
+                $httpBackend.expectGET(`/ebegu/api/v1/wizard-steps/${gesuchId}`).respond({});
 
                 let savedVerfuegung: TSVerfuegung;
-                verfuegungRS.saveVerfuegung(verfuegung, gesuchId, betreuungId, false).then((result) => {
+                verfuegungRS.saveVerfuegung(verfuegung, gesuchId, betreuungId, false).then(result => {
                     savedVerfuegung = result;
                 });
                 $httpBackend.flush();

@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSErrorType} from './enums/TSErrorType';
-import {TSErrorLevel} from './enums/TSErrorLevel';
 import {TSErrorAction} from './enums/TSErrorAction';
+import {TSErrorLevel} from './enums/TSErrorLevel';
+import {TSErrorType} from './enums/TSErrorType';
 
 export default class TSExceptionReport {
 
@@ -147,7 +147,7 @@ export default class TSExceptionReport {
      * @param type Type of the Error
      * @param severity Severity of the Error
      * @param msgKey This is the message key of the error. can also be the message itself
-     * @param args
+     * @param args anything
      */
     public constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any) {
         this._type = type || null;
@@ -157,7 +157,10 @@ export default class TSExceptionReport {
         this._action = undefined;
     }
 
-    public static createFromViolation(constraintType: string, message: string, path: string, value: string): TSExceptionReport {
+    public static createFromViolation(_constraintType: string,
+                                      message: string,
+                                      path: string,
+                                      value: string): TSExceptionReport {
         const report = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
         report.path = path;
         // hint: here we could also pass along the path to the Exception Report
@@ -170,12 +173,13 @@ export default class TSExceptionReport {
 
     /**
      * takes a data Object that matches the fields of a EbeguExceptionReport and transforms them to a TSExceptionReport.
-     * @param data
-     * @returns {TSExceptionReport}
      */
-    public static createFromExceptionReport(data: any) {
+    public static createFromExceptionReport(data: any): TSExceptionReport {
         const msgToDisp = data.translatedMessage || data.customMessage || 'ERROR_UNEXPECTED_EBEGU_RUNTIME';
-        const exceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST, TSErrorLevel.SEVERE, msgToDisp, data.argumentList);
+        const exceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST,
+            TSErrorLevel.SEVERE,
+            msgToDisp,
+            data.argumentList);
         exceptionReport.errorCodeEnum = data.errorCodeEnum;
         exceptionReport.exceptionName = data.exceptionName;
         exceptionReport.methodName = data.methodName;
@@ -189,7 +193,7 @@ export default class TSExceptionReport {
 
     }
 
-    public isConstantValue(constant: any, value: any) {
+    public isConstantValue(constant: any, value: any): boolean {
         const keys = Object.keys(constant);
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < keys.length; i++) {
@@ -201,7 +205,7 @@ export default class TSExceptionReport {
         return false;
     }
 
-    public isValid() {
+    public isValid(): boolean {
         const validType = this.isConstantValue(TSErrorType, this.type);
         const validSeverity = this.isConstantValue(TSErrorLevel, this.severity);
         const validMsgKey = typeof this.msgKey === 'string' && this.msgKey.length > 0;
@@ -209,7 +213,7 @@ export default class TSExceptionReport {
         return validType && validSeverity && validMsgKey;
     }
 
-    public isInternal() {
+    public isInternal(): boolean {
         return this.type === TSErrorType.INTERNAL;
     }
 

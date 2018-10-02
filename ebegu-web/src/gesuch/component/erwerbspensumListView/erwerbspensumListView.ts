@@ -43,7 +43,8 @@ export class ErwerbspensumListViewComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class ErwerbspensumListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
+export class ErwerbspensumListViewController
+    extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
     public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$log', 'DvDialog',
         'ErrorService', 'WizardStepManager', '$scope', 'AuthServiceRS', '$timeout'];
@@ -52,14 +53,26 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
     public erwerbspensenGS2: Array<TSErwerbspensumContainer>;
     public erwerbspensumRequired: boolean;
 
-    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                       private readonly $log: ILogService, private readonly dvDialog: DvDialog, private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager, $scope: IScope, private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ERWERBSPENSUM, $timeout);
+    public constructor(private readonly $state: StateService,
+                       gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly $log: ILogService,
+                       private readonly dvDialog: DvDialog,
+                       private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager,
+                       $scope: IScope,
+                       private readonly authServiceRS: AuthServiceRS,
+                       $timeout: ITimeoutService) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.ERWERBSPENSUM,
+            $timeout);
         this.initViewModel();
     }
 
-    private initViewModel() {
+    private initViewModel(): void {
         this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
             this.erwerbspensumRequired = response;
             if (this.isSaveDisabled()) {
@@ -103,16 +116,20 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
         this.openErwerbspensumView(gesuchstellerNumber, undefined);
     }
 
-    public removePensum(pensum: TSErwerbspensumContainer, gesuchstellerNumber: number, element_id: string, index: any): void {
+    public removePensum(pensum: TSErwerbspensumContainer,
+                        gesuchstellerNumber: number,
+                        elementId: string,
+                        index: any): void {
         // Spezielle Meldung, wenn es ein GS ist, der in einer Mutation loescht
-        const gsInMutation = (this.authServiceRS.getPrincipalRole() === TSRole.GESUCHSTELLER && pensum.vorgaengerId !== undefined);
+        const principalRole = this.authServiceRS.getPrincipalRole();
+        const gsInMutation = principalRole === TSRole.GESUCHSTELLER && pensum.vorgaengerId !== undefined;
         const pensumLaufendOderVergangen = pensum.erwerbspensumJA.gueltigkeit.gueltigAb.isBefore(moment(moment.now()));
         this.errorService.clearAll();
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             deleteText: (gsInMutation && pensumLaufendOderVergangen) ? 'ERWERBSPENSUM_LOESCHEN_GS_MUTATION' : '',
             title: 'ERWERBSPENSUM_LOESCHEN',
             parentController: this,
-            elementID: element_id + index
+            elementID: elementId + index
         })
             .then(() => {   // User confirmed removal
                 this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
@@ -123,7 +140,7 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
     }
 
     public editPensum(pensum: any, gesuchstellerNumber: any): void {
-        const index = this.gesuchModelManager.findIndexOfErwerbspensum(parseInt(gesuchstellerNumber), pensum);
+        const index = this.gesuchModelManager.findIndexOfErwerbspensum(parseInt(gesuchstellerNumber, 10), pensum);
         this.openErwerbspensumView(gesuchstellerNumber, index);
     }
 
@@ -136,21 +153,21 @@ export class ErwerbspensumListViewController extends AbstractGesuchViewControlle
     }
 
     /**
-     * Gibt true zurueck wenn Erwerbspensen nicht notwendig sind oder wenn sie notwendig sind aber mindestens eines pro Gesuchsteller
-     * eingegeben wurde.
-     * @returns {boolean}
+     * Gibt true zurueck wenn Erwerbspensen nicht notwendig sind oder wenn sie notwendig sind aber mindestens eines pro
+     * Gesuchsteller eingegeben wurde.
      */
     public isSaveDisabled(): boolean {
-        const erwerbspensenNumber = 0;
-        if (this.erwerbspensumRequired) {
-            if (this.getErwerbspensenListGS1() && this.getErwerbspensenListGS1().length <= 0) {
-                return true;
-            }
-            if (this.gesuchModelManager.isGesuchsteller2Required() && this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0) {
-                return true;
-            }
+        if (!this.erwerbspensumRequired) {
+            return false;
         }
-        return false;
+
+        if (this.getErwerbspensenListGS1() && this.getErwerbspensenListGS1().length <= 0) {
+            return true;
+        }
+
+        const pensen = this.getErwerbspensenListGS2();
+
+        return this.gesuchModelManager.isGesuchsteller2Required() && pensen && pensen.length <= 0;
     }
 
     public setFocusBack(elementID: string): void {

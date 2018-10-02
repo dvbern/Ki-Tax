@@ -31,11 +31,13 @@ export class DvSkiplinksComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
+const gesuchstellerDashboard = 'gesuchsteller.dashboard';
+
 export class DvSkiplinksController implements IDVFocusableController {
 
     public static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly $state: StateService,
                        private readonly DvDialog: DvDialog,
@@ -43,16 +45,16 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public goBackHome(): void {
-        this.$state.go('gesuchsteller.dashboard');
+        this.$state.go(gesuchstellerDashboard);
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === 'gesuchsteller.dashboard');
+        return (this.$state.current && this.$state.current.name === gesuchstellerDashboard);
     }
 
     public isCurrentPageGesuch(): boolean {
         return (this.$state.current &&
-            this.$state.current.name !== 'gesuchsteller.dashboard' &&
+            this.$state.current.name !== gesuchstellerDashboard &&
             this.$state.current.name !== 'alleVerfuegungen.view' &&
             this.$state.current.name !== 'mitteilungen.view');
     }
@@ -80,7 +82,7 @@ export class DvSkiplinksController implements IDVFocusableController {
     /**
      * Sets the focus back to the Kontakt icon.
      */
-    public setFocusBack(elementID: string): void {
+    public setFocusBack(_elementID: string): void {
         angular.element('#SKIP_4').first().focus();
     }
 }

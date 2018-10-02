@@ -13,7 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {StateService} from '@uirouter/core';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSBetreuung from '../../../models/TSBetreuung';
@@ -25,9 +26,10 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {VerfuegenListViewController} from './verfuegenListView';
-import {StateService} from '@uirouter/core';
 
 describe('verfuegenListViewTest', () => {
+
+    const verfuegenView = 'gesuch.verfuegenView';
 
     let verfuegenListView: VerfuegenListViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -38,7 +40,7 @@ describe('verfuegenListViewTest', () => {
     let $rootScope: angular.IScope;
     let $httpBackend: angular.IHttpBackendService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
@@ -104,46 +106,52 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                expect(gesuchModelManager.convertKindNumberToKindIndex).toHaveBeenCalledWith(tsKindContainer.kindNummer);
+                expect(gesuchModelManager.convertKindNumberToKindIndex)
+                    .toHaveBeenCalledWith(tsKindContainer.kindNummer);
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
-                expect($state.go).not.toHaveBeenCalledWith('gesuch.verfuegenView', {gesuchId: ''});
+
+                expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
             });
-            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page', () => {
-                spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
-                spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(-1);
-                spyOn(gesuchModelManager, 'setKindIndex');
-                spyOn(gesuchModelManager, 'setBetreuungIndex');
-                spyOn($state, 'go');
-                const betreuung: TSBetreuung = new TSBetreuung();
-                betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
+            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
+                () => {
+                    spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
+                    spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(-1);
+                    spyOn(gesuchModelManager, 'setKindIndex');
+                    spyOn(gesuchModelManager, 'setBetreuungIndex');
+                    spyOn($state, 'go');
+                    const betreuung: TSBetreuung = new TSBetreuung();
+                    betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
 
-                verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
+                    verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                expect(gesuchModelManager.convertKindNumberToKindIndex).toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                expect(gesuchModelManager.setBetreuungIndex).not.toHaveBeenCalled();
-                expect($state.go).not.toHaveBeenCalledWith('gesuch.verfuegenView', {gesuchId: ''});
-            });
-            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page', () => {
-                spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
-                spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(1);
-                spyOn(gesuchModelManager, 'setKindIndex');
-                spyOn(gesuchModelManager, 'setBetreuungIndex');
-                spyOn($state, 'go');
-                const betreuung: TSBetreuung = new TSBetreuung();
-                betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
-                betreuung.betreuungNummer = 2;
-
-                verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
-
-                expect(gesuchModelManager.convertKindNumberToKindIndex).toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                expect($state.go).toHaveBeenCalledWith('gesuch.verfuegenView', {
-                    betreuungNumber: 2,
-                    kindNumber: 1,
-                    gesuchId: undefined
+                    expect(gesuchModelManager.convertKindNumberToKindIndex)
+                        .toHaveBeenCalledWith(tsKindContainer.kindNummer);
+                    expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
+                    expect(gesuchModelManager.setBetreuungIndex).not.toHaveBeenCalled();
+                    expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
                 });
-            });
+            it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
+                () => {
+                    spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
+                    spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(1);
+                    spyOn(gesuchModelManager, 'setKindIndex');
+                    spyOn(gesuchModelManager, 'setBetreuungIndex');
+                    spyOn($state, 'go');
+                    const betreuung: TSBetreuung = new TSBetreuung();
+                    betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
+                    betreuung.betreuungNummer = 2;
+
+                    verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
+
+                    expect(gesuchModelManager.convertKindNumberToKindIndex)
+                        .toHaveBeenCalledWith(tsKindContainer.kindNummer);
+                    expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
+                    expect($state.go).toHaveBeenCalledWith(verfuegenView, {
+                        betreuungNumber: 2,
+                        kindNumber: 1,
+                        gesuchId: undefined
+                    });
+                });
         });
     });
 

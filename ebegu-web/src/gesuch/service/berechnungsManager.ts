@@ -13,30 +13,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import TSGesuch from '../../models/TSGesuch';
 import {IPromise} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import FinanzielleSituationRS from './finanzielleSituationRS.rest';
-import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
-import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
+import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import TSDokumenteDTO from '../../models/dto/TSDokumenteDTO';
-import DokumenteRS from './dokumenteRS.rest';
-import TSFinanzModel from '../../models/TSFinanzModel';
+import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import TSFinanzModel from '../../models/TSFinanzModel';
+import TSGesuch from '../../models/TSGesuch';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import DokumenteRS from './dokumenteRS.rest';
+import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
+import FinanzielleSituationRS from './finanzielleSituationRS.rest';
 
 export default class BerechnungsManager {
 
-    public static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS', 'DokumenteRS', 'AuthLifeCycleService'];
+    public static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS',
+        'DokumenteRS', 'AuthLifeCycleService'];
 
     public finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
     public einkommensverschlechterungResultateBjP1: TSFinanzielleSituationResultateDTO;
     public einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;
     public dokumente: TSDokumenteDTO;
 
-    public constructor(private readonly finanzielleSituationRS: FinanzielleSituationRS, private readonly ebeguRestUtil: EbeguRestUtil,
+    public constructor(private readonly finanzielleSituationRS: FinanzielleSituationRS,
+                       private readonly ebeguRestUtil: EbeguRestUtil,
                        private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
-                       private readonly dokumenteRS: DokumenteRS, private readonly authLifeCycleService: AuthLifeCycleService) {
+                       private readonly dokumenteRS: DokumenteRS,
+                       private readonly authLifeCycleService: AuthLifeCycleService) {
 
         this.initValues();
 
@@ -44,11 +47,11 @@ export default class BerechnungsManager {
             .subscribe(() => this.initValues());
     }
 
-    private initValues() {
+    private initValues(): void {
         this.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
         this.einkommensverschlechterungResultateBjP1 = new TSFinanzielleSituationResultateDTO();
         this.einkommensverschlechterungResultateBjP2 = new TSFinanzielleSituationResultateDTO();
-        this.dokumente = new TSDokumenteDTO;
+        this.dokumente = new TSDokumenteDTO();
     }
 
     public calculateFinanzielleSituation(gesuch: TSGesuch): IPromise<TSFinanzielleSituationResultateDTO> {
@@ -60,7 +63,9 @@ export default class BerechnungsManager {
             });
     }
 
-    public calculateFinanzielleSituationTemp(tsFinSitModel: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateFinanzielleSituationTemp(tsFinSitModel: TSFinanzModel)
+        : IPromise<TSFinanzielleSituationResultateDTO> {
+
         return this.finanzielleSituationRS.calculateFinanzielleSituationTemp(
             tsFinSitModel)
             .then((finSitContRespo: TSFinanzielleSituationResultateDTO) => {
@@ -69,30 +74,33 @@ export default class BerechnungsManager {
             });
     }
 
-    public calculateEinkommensverschlechterung(gesuch: TSGesuch, basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
-        return this.einkommensverschlechterungContainerRS.calculateEinkommensverschlechterung(
-            gesuch, basisJahrPlus)
-            .then((finSitContRespo: TSFinanzielleSituationResultateDTO) => {
-                if (basisJahrPlus === 2) {
-                    this.einkommensverschlechterungResultateBjP2 = finSitContRespo;
-                } else {
-                    this.einkommensverschlechterungResultateBjP1 = finSitContRespo;
-                }
-                return finSitContRespo;
-            });
+    public calculateEinkommensverschlechterung(gesuch: TSGesuch,
+                                               basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
+        return this.einkommensverschlechterungContainerRS
+            .calculateEinkommensverschlechterung(gesuch, basisJahrPlus)
+            .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
     }
 
-    public calculateEinkommensverschlechterungTemp(finanzModel: TSFinanzModel, basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
-        return this.einkommensverschlechterungContainerRS.calculateEinkommensverschlechterungTemp(
-            finanzModel, basisJahrPlus)
-            .then((finSitContRespo: TSFinanzielleSituationResultateDTO) => {
-                if (basisJahrPlus === 2) {
-                    this.einkommensverschlechterungResultateBjP2 = finSitContRespo;
-                } else {
-                    this.einkommensverschlechterungResultateBjP1 = finSitContRespo;
-                }
-                return finSitContRespo;
-            });
+    private setEinkommensverschlechterung(basisJahrPlus: number, finSitContRespo: TSFinanzielleSituationResultateDTO)
+        : TSFinanzielleSituationResultateDTO {
+
+        if (basisJahrPlus === 2) {
+            this.einkommensverschlechterungResultateBjP2 = finSitContRespo;
+        } else {
+            this.einkommensverschlechterungResultateBjP1 = finSitContRespo;
+        }
+
+        return finSitContRespo;
+    }
+
+    public calculateEinkommensverschlechterungTemp(finanzModel: TSFinanzModel,
+                                                   basisJahrPlus: number)
+        : IPromise<TSFinanzielleSituationResultateDTO> {
+
+        return this.einkommensverschlechterungContainerRS
+            .calculateEinkommensverschlechterungTemp(finanzModel, basisJahrPlus)
+            .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
+
     }
 
     public getEinkommensverschlechterungResultate(basisJahrPlus: number): TSFinanzielleSituationResultateDTO {
@@ -114,7 +122,7 @@ export default class BerechnungsManager {
     /**
      * setzt alle Resultate zureuck so dass sicher nichts mehr gesetzt ist, wird zB gebraucht wenn man den Fall wechselt
      */
-    public clear() {
+    public clear(): void {
         this.einkommensverschlechterungResultateBjP1 = undefined;
         this.einkommensverschlechterungResultateBjP2 = undefined;
         this.finanzielleSituationResultate = undefined;

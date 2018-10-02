@@ -22,7 +22,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionStammdatenRS} from './institutionStammdatenRS.rest';
 
 describe('institutionStammdatenRS', () => {
@@ -36,7 +36,7 @@ describe('institutionStammdatenRS', () => {
     let mockAdresse: TSAdresse;
     let today: moment.Moment;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

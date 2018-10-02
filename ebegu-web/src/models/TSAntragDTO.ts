@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import {TSAntragTyp} from './enums/TSAntragTyp';
-import {TSAntragStatus} from './enums/TSAntragStatus';
-import {TSEingangsart} from './enums/TSEingangsart';
 import * as moment from 'moment';
+import {TSAntragStatus} from './enums/TSAntragStatus';
+import {TSAntragTyp} from './enums/TSAntragTyp';
+import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSEingangsart} from './enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 

@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import HttpErrorInterceptor from './service/HttpErrorInterceptor';
-import ErrorService from './service/ErrorService';
 import {DvErrorMessagesPanelComponentConfig} from './directive/dvb-error-messages/dvb-error-messages-panel';
+import ErrorService from './service/ErrorService';
+import HttpErrorInterceptor from './service/HttpErrorInterceptor';
 
-export const EbeguErrors = angular.module('dvbAngular.errors', ['ui.bootstrap', 'ui.router', 'ngAnimate'])
+export const ERRORS_JS_MODULE = angular.module('dvbAngular.errors', ['ui.bootstrap', 'ui.router', 'ngAnimate'])
     .service('ErrorService', ErrorService)
     .service('HttpErrorInterceptor', HttpErrorInterceptor)
     .component('dvbErrorMessagesPanel', new DvErrorMessagesPanelComponentConfig());

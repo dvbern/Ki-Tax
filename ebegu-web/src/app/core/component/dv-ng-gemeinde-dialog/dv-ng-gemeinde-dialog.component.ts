@@ -41,11 +41,11 @@ export class DvNgGemeindeDialogComponent {
         this.gemeindeList = data.gemeindeList;
     }
 
-    public save() {
+    public save(): void {
         this.dialogRef.close(this.selectedGemeinde ? this.selectedGemeinde.id : undefined);
     }
 
-    public close() {
+    public close(): void {
         this.dialogRef.close();
     }
 }

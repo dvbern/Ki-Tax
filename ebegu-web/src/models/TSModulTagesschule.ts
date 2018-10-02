@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
-import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import * as moment from 'moment';
+import {TSDayOfWeek} from './enums/TSDayOfWeek';
+import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
@@ -27,7 +27,10 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
     private _angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
 
-    public constructor(wochentag?: TSDayOfWeek, modulTagesschuleName?: TSModulTagesschuleName, zeitVon?: moment.Moment, zeitBis?: moment.Moment) {
+    public constructor(wochentag?: TSDayOfWeek,
+                       modulTagesschuleName?: TSModulTagesschuleName,
+                       zeitVon?: moment.Moment,
+                       zeitBis?: moment.Moment) {
         super();
         this._wochentag = wochentag;
         this._modulTagesschuleName = modulTagesschuleName;
@@ -77,7 +80,8 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
     /**
      * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
-     * Die ZeitVon und ZeitBis spielt keine Rolle in diesem Fall, da so Module unterschiedlichen Institutionen verglichen werden koennen.
+     * Die ZeitVon und ZeitBis spielt keine Rolle in diesem Fall, da so Module unterschiedlichen Institutionen
+     * verglichen werden koennen.
      */
     public isSameModul(instModul: TSModulTagesschule): boolean {
         return instModul

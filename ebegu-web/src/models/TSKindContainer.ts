@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSKind from './TSKind';
 import TSBetreuung from './TSBetreuung';
 import {TSFachstelle} from './TSFachstelle';
+import TSKind from './TSKind';
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export default class TSKindContainer extends TSAbstractMutableEntity {

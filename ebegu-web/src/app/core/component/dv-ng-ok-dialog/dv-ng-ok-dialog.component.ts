@@ -36,7 +36,7 @@ export class DvNgOkDialogComponent {
         }
     }
 
-    public close() {
+    public close(): void {
         this.dialogRef.close();
     }
 }

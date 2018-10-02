@@ -30,7 +30,7 @@ import {errorLoggerHookRunBlock} from './state-hooks/onError/errorLogger.hook';
 import {errorRecoveryHookRunBlock} from './state-hooks/onError/errorRecovery.hook';
 import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook';
 
-export const EbeguAuthentication =
+export const AUTHENTICATION_JS_MODULE =
     angular.module('dvbAngular.authentication', ['ngCookies'])
         .run(debugHookRunBlock)
         .run(authenticationHookRunBlock)

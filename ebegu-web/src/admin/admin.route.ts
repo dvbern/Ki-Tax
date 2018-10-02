@@ -23,7 +23,7 @@ import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 adminRun.$inject = ['RouterHelper'];
 
-export function adminRun(routerHelper: RouterHelper) {
+export function adminRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States);
 }
 
@@ -71,7 +71,8 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'admin.view',
-        template: '<dv-admin-view flex="auto" class="overflow-scroll" application-properties="$resolve.applicationProperties"></dv-admin-view>',
+        template: '<dv-admin-view flex="auto" class="overflow-scroll" '
+            + 'application-properties="$resolve.applicationProperties"></dv-admin-view>',
         url: '/admin',
         resolve: {
             applicationProperties: applicationPropertiesResolver

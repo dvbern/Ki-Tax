@@ -27,15 +27,16 @@ export class DVRoleElementController {
     }
 
     /**
-     * Gibt true zurueck wenn die Rolle der Benutzer eraubt ist den Element zu sehen und die zusaetzliche Expression true ist.
+     * Gibt true zurueck wenn die Rolle der Benutzer eraubt ist den Element zu sehen und die zusaetzliche Expression
+     * true ist.
      */
     public checkValidity(): boolean {
         return this.checkRoles() && this.checkExpression();
     }
 
     /**
-     * Die Rollen muessen gesetzt sein, wenn diese Direktive verwendet wird. Sollten die Rollen nicht gesetzt sein, wird das Element ausgeblendet
-     * @returns {boolean}
+     * Die Rollen muessen gesetzt sein, wenn diese Direktive verwendet wird. Sollten die Rollen nicht gesetzt sein,
+     * wird das Element ausgeblendet
      */
     private checkRoles(): boolean {
         if (this.dvAllowedRoles) {
@@ -49,13 +50,15 @@ export class DVRoleElementController {
     }
 
     /**
-     * Diese Methode gibt einfach den Wert von expression zurueck. Hier koennte man aber auch etwas berechnen wenn noetig
-     * @returns {boolean} wenn die expression is null oder undefined gibt es true zurueck. Sonst gibt es den Wert von expression zurueck
+     * Diese Methode gibt einfach den Wert von expression zurueck. Hier koennte man aber auch etwas berechnen wenn
+     * noetig
+     * @returns wenn die expression is null oder undefined gibt es true zurueck. Sonst gibt es den Wert von expression
+     *         zurueck
      */
     private checkExpression(): boolean {
         if (this.dvExpression === undefined || this.dvExpression === null) {
             return true;
         }
-        return (this.dvExpression);
+        return this.dvExpression;
     }
 }

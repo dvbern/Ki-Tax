@@ -47,15 +47,15 @@ export class ZahlungViewController implements IController {
     public itemsByPage: number = 20;
 
     public constructor(private readonly zahlungRS: ZahlungRS,
-                private readonly CONSTANTS: any,
-                private readonly $stateParams: IZahlungsauftragStateParams,
-                private readonly $state: StateService,
-                private readonly downloadRS: DownloadRS,
-                private readonly reportRS: ReportRS,
-                private readonly authServiceRS: AuthServiceRS) {
+                       private readonly CONSTANTS: any,
+                       private readonly $stateParams: IZahlungsauftragStateParams,
+                       private readonly $state: StateService,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly reportRS: ReportRS,
+                       private readonly authServiceRS: AuthServiceRS) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         if (!this.$stateParams.zahlungsauftragId) {
             return;
         }
@@ -84,7 +84,7 @@ export class ZahlungViewController implements IController {
         this.$state.go('zahlungsauftrag.view');
     }
 
-    public downloadDetails(zahlung: TSZahlung) {
+    public downloadDetails(zahlung: TSZahlung): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.reportRS.getZahlungReportExcel(zahlung.id)
             .then((downloadFile: TSDownloadFile) => {
@@ -95,7 +95,7 @@ export class ZahlungViewController implements IController {
             });
     }
 
-    public bestaetigen(zahlung: TSZahlung) {
+    public bestaetigen(zahlung: TSZahlung): void {
         console.log('bestaetigen');
         this.zahlungRS.zahlungBestaetigen(zahlung.id).then((response: TSZahlung) => {
             const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);

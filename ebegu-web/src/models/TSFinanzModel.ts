@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import TSEinkommensverschlechterung from './TSEinkommensverschlechterung';
+import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
+import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
+import TSFinanzielleSituation from './TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from './TSFinanzielleSituationContainer';
 import TSGesuch from './TSGesuch';
-import TSFinanzielleSituation from './TSFinanzielleSituation';
-import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterung from './TSEinkommensverschlechterung';
-import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
 
 export default class TSFinanzModel {
 
@@ -36,7 +36,10 @@ export default class TSFinanzModel {
     private readonly gesuchsteller2Required: boolean;
     private readonly gesuchstellerNumber: number;
 
-    public constructor(basisjahr: number, gesuchsteller2Required: boolean, gesuchstellerNumber: number, basisjahrPlus?: number) {
+    public constructor(basisjahr: number,
+                       gesuchsteller2Required: boolean,
+                       gesuchstellerNumber: number,
+                       basisjahrPlus?: number) {
         this.basisjahr = basisjahr;
         this.basisjahrPlus = basisjahrPlus;
         this.gesuchsteller2Required = gesuchsteller2Required;
@@ -83,11 +86,14 @@ export default class TSFinanzModel {
         this._finanzielleSituationContainerGS2 = value;
     }
 
-    public copyFinSitDataFromGesuch(gesuch: TSGesuch) {
+    public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
 
-        this.gemeinsameSteuererklaerung = this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
-        this.sozialhilfeBezueger = this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().sozialhilfeBezueger);
-        this.verguenstigungGewuenscht = this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().verguenstigungGewuenscht);
+        this.gemeinsameSteuererklaerung =
+            this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
+        this.sozialhilfeBezueger =
+            this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().sozialhilfeBezueger);
+        this.verguenstigungGewuenscht =
+            this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().verguenstigungGewuenscht);
         this.finanzielleSituationContainerGS1 = angular.copy(gesuch.gesuchsteller1.finanzielleSituationContainer);
         if (gesuch.gesuchsteller2) {
             this.finanzielleSituationContainerGS2 = angular.copy(gesuch.gesuchsteller2.finanzielleSituationContainer);
@@ -96,47 +102,43 @@ export default class TSFinanzModel {
     }
 
     private getCopiedValueOrFalse(value: boolean): boolean {
-        if (value) {
-            return angular.copy(value);
-        } else {
-            return false;
-        }
+        return value ? angular.copy(value) : false;
     }
 
     private getCopiedValueOrUndefined(value: boolean): boolean {
-        if (value || !value) {
-            return angular.copy(value);
-        } else {
-            return undefined;
-        }
+        return value || !value ? angular.copy(value) : undefined;
     }
 
-    public copyEkvDataFromGesuch(gesuch: TSGesuch) {
+    public copyEkvDataFromGesuch(gesuch: TSGesuch): void {
         if (gesuch.einkommensverschlechterungInfoContainer) {
             this.einkommensverschlechterungInfoContainer = angular.copy(gesuch.einkommensverschlechterungInfoContainer);
         } else {
             this.einkommensverschlechterungInfoContainer = new TSEinkommensverschlechterungInfoContainer;
         }
         // geesuchstelelr1 nullsave?
-        this.einkommensverschlechterungContainerGS1 = angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
+        this.einkommensverschlechterungContainerGS1 =
+            angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
         if (gesuch.gesuchsteller2) {
-            this.einkommensverschlechterungContainerGS2 = angular.copy(gesuch.gesuchsteller2.einkommensverschlechterungContainer);
+            this.einkommensverschlechterungContainerGS2 =
+                angular.copy(gesuch.gesuchsteller2.einkommensverschlechterungContainer);
         }
 
     }
 
-    public initFinSit() {
+    public initFinSit(): void {
         if (!this.finanzielleSituationContainerGS1) {
             this.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
             this.finanzielleSituationContainerGS1.jahr = this.basisjahr;
             this.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
         }
 
-        if (this.gesuchsteller2Required && !this.finanzielleSituationContainerGS2) {
-            this.finanzielleSituationContainerGS2 = new TSFinanzielleSituationContainer();
-            this.finanzielleSituationContainerGS2.jahr = this.basisjahr;
-            this.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
+        if (!this.gesuchsteller2Required || this.finanzielleSituationContainerGS2) {
+            return;
         }
+
+        this.finanzielleSituationContainerGS2 = new TSFinanzielleSituationContainer();
+        this.finanzielleSituationContainerGS2.jahr = this.basisjahr;
+        this.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
     }
 
     public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
@@ -146,11 +148,9 @@ export default class TSFinanzModel {
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
-        } else {
-            if (this.finanzielleSituationContainerGS2) {
-                // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
-                console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
-            }
+        } else if (this.finanzielleSituationContainerGS2) {
+            // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
+            console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
         }
         this.resetSteuerveranlagungErhalten(gesuch);
         return gesuch;
@@ -160,7 +160,7 @@ export default class TSFinanzModel {
      * if gemeinsameSteuererklaerung has been set to true and steuerveranlagungErhalten ist set to true for the GS1
      * as well, then we need to set steuerveranlagungErhalten to true for the GS2 too, if it exists.
      */
-    private resetSteuerveranlagungErhalten(gesuch: TSGesuch) {
+    private resetSteuerveranlagungErhalten(gesuch: TSGesuch): void {
         if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung
             && gesuch.gesuchsteller1 && gesuch.gesuchsteller2
             && gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten) {
@@ -174,61 +174,47 @@ export default class TSFinanzModel {
         gesuch.gesuchsteller1.einkommensverschlechterungContainer = this.einkommensverschlechterungContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.einkommensverschlechterungContainer = this.einkommensverschlechterungContainerGS2;
-        } else {
-            if (this.einkommensverschlechterungContainerGS2) {
-                // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
-                console.log('illegal state: einkommensverschlechterungContainerGS2 exists but no gs2 is available');
-            }
+        } else if (this.einkommensverschlechterungContainerGS2) {
+            // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
+            console.log('illegal state: einkommensverschlechterungContainerGS2 exists but no gs2 is available');
         }
         return gesuch;
     }
 
     public getFiSiConToWorkWith(): TSFinanzielleSituationContainer {
-        if (this.gesuchstellerNumber === 2) {
-            return this.finanzielleSituationContainerGS2;
-        } else {
-            return this.finanzielleSituationContainerGS1;
-        }
+        return this.gesuchstellerNumber === 2 ?
+            this.finanzielleSituationContainerGS2 :
+            this.finanzielleSituationContainerGS1;
     }
 
     public getEkvContToWorkWith(): TSEinkommensverschlechterungContainer {
-        if (this.gesuchstellerNumber === 2) {
-            return this.einkommensverschlechterungContainerGS2;
-        } else {
-            return this.einkommensverschlechterungContainerGS1;
-        }
+        return this.gesuchstellerNumber === 2 ?
+            this.einkommensverschlechterungContainerGS2 :
+            this.einkommensverschlechterungContainerGS1;
     }
 
     public getEkvToWorkWith(): TSEinkommensverschlechterung {
-        if (this.gesuchstellerNumber === 2) {
-            return this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS2);
-        } else {
-            return this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
-        }
+        return this.gesuchstellerNumber === 2 ?
+            this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS2) :
+            this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
     }
 
     private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer): TSEinkommensverschlechterung {
-        if (this.basisjahrPlus === 2) {
-            return einkommensverschlechterungContainer.ekvJABasisJahrPlus2;
-        } else {
-            return einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
-        }
+        return this.basisjahrPlus === 2 ?
+            einkommensverschlechterungContainer.ekvJABasisJahrPlus2 :
+            einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
     }
 
     public getEkvToWorkWith_GS(): TSEinkommensverschlechterung {
-        if (this.gesuchstellerNumber === 2) {
-            return this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2);
-        } else {
-            return this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS1);
-        }
+        return this.gesuchstellerNumber === 2 ?
+            this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2) :
+            this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS1);
     }
 
     private getEkvOfBsj_GS(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer): TSEinkommensverschlechterung {
-        if (this.basisjahrPlus === 2) {
-            return einkommensverschlechterungContainer.ekvGSBasisJahrPlus2;
-        } else {
-            return einkommensverschlechterungContainer.ekvGSBasisJahrPlus1;
-        }
+        return this.basisjahrPlus === 2 ?
+            einkommensverschlechterungContainer.ekvGSBasisJahrPlus2 :
+            einkommensverschlechterungContainer.ekvGSBasisJahrPlus1;
     }
 
     public getGesuchstellerNumber(): number {
@@ -263,64 +249,69 @@ export default class TSFinanzModel {
         this._einkommensverschlechterungInfoContainer = value;
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public initEinkommensverschlechterungContainer(basisjahrPlus: number, gesuchstellerNumber: number): void {
+        const infoJA = this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
 
         if (gesuchstellerNumber === 1) {
             if (!this.einkommensverschlechterungContainerGS1) {
                 this.einkommensverschlechterungContainerGS1 = new TSEinkommensverschlechterungContainer();
             }
 
-            if (basisjahrPlus === 1) {
-                if (!this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1) {
-                    this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 = new TSEinkommensverschlechterung();
-                }
+            if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1) {
+                this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 =
+                    new TSEinkommensverschlechterung();
             }
 
             if (basisjahrPlus === 2) {
                 if (!this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2) {
-                    this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 = new TSEinkommensverschlechterung();
+                    this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
+                        new TSEinkommensverschlechterung();
                 }
                 // Wenn z.B. in der Periode 2016/2017 eine Einkommensverschlechterung für 2017 geltend gemacht wird,
-                // ist es unmöglich, dass die Steuerveranlagung und Steuererklärung für 2017 schon dem Gesuchsteller vorliegt
-                this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.gemeinsameSteuererklaerung_BjP2 = false;
+                // ist es unmöglich, dass die Steuerveranlagung und Steuererklärung für 2017 schon dem Gesuchsteller
+                // vorliegt
+                infoJA.gemeinsameSteuererklaerung_BjP2 = false;
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
             }
         }
 
-        if (gesuchstellerNumber === 2) {
-            if (!this.einkommensverschlechterungContainerGS2) {
-                this.einkommensverschlechterungContainerGS2 = new TSEinkommensverschlechterungContainer();
-            }
-
-            if (basisjahrPlus === 1) {
-                if (!this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1) {
-                    this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1 = new TSEinkommensverschlechterung();
-                }
-            }
-
-            if (basisjahrPlus === 2) {
-                if (!this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
-                    this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 = new TSEinkommensverschlechterung();
-                }
-                // Wenn z.B. in der Periode 2016/2017 eine Einkommensverschlechterung für 2017 geltend gemacht wird,
-                // ist es unmöglich, dass die Steuerveranlagung und Steuererklärung für 2017 schon dem Gesuchsteller vorliegt
-                this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.gemeinsameSteuererklaerung_BjP2 = false;
-                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
-                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
-            }
+        if (gesuchstellerNumber !== 2) {
+            return;
         }
+
+        if (!this.einkommensverschlechterungContainerGS2) {
+            this.einkommensverschlechterungContainerGS2 = new TSEinkommensverschlechterungContainer();
+        }
+        if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1) {
+            this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1 =
+                new TSEinkommensverschlechterung();
+        }
+
+        if (basisjahrPlus !== 2) {
+            return;
+        }
+
+        if (!this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
+            this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
+                new TSEinkommensverschlechterung();
+        }
+        infoJA.gemeinsameSteuererklaerung_BjP2 =
+            false;
+        this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
+        this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
     }
 
     public getGemeinsameSteuererklaerungToWorkWith(): boolean {
-        if (this.basisjahrPlus === 2) {
-            return this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.gemeinsameSteuererklaerung_BjP2;
-        } else {
-            return this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.gemeinsameSteuererklaerung_BjP1;
-        }
+        const info = this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
+
+        return this.basisjahrPlus === 2 ?
+            info.gemeinsameSteuererklaerung_BjP2 :
+            info.gemeinsameSteuererklaerung_BjP1;
     }
 
-    public getBasisJahrPlus() {
+    public getBasisJahrPlus(): number {
         return this.basisjahrPlus;
     }
 

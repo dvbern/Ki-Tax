@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {DVQuicksearchListConfig} from './component/dv-quicksearch-list/dv-quicksearch-list';
 import {QuicksearchFilter} from './filter/quicksearchFilter';
 
 export const EbeguWebQuicksearch =
-    angular.module('ebeguWeb.quicksearch', [EbeguWebCore.name])
+    angular.module('ebeguWeb.quicksearch', [CORE_JS_MODULE.name])
         .filter('quicksearchFilter', QuicksearchFilter)
         .component('dvQuicksearchList', new DVQuicksearchListConfig());

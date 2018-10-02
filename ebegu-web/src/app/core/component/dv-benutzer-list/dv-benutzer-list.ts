@@ -49,7 +49,8 @@ export class DVBenutzerListConfig implements IComponentOptions {
 
 export class DVBenutzerListController implements IOnInit {
 
-    public static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window',
+    public static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS',
+        '$window',
         '$translate', 'GemeindeRS'];
 
     public totalResultCount: number;
@@ -75,7 +76,7 @@ export class DVBenutzerListController implements IOnInit {
 
     public onFilterChange: (changedTableState: any) => IPromise<any>;
     public onEdit: (user: any) => void;
-    public TSRoleUtil: TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
     public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
 
     public constructor(private readonly $log: ILogService,
@@ -85,11 +86,9 @@ export class DVBenutzerListController implements IOnInit {
                        private readonly $window: IWindowService,
                        private readonly $translate: ITranslateService,
                        private readonly gemeindeRS: GemeindeRS) {
-
-        this.TSRoleUtil = TSRoleUtil;
     }
 
-    public $onInit() {
+    public $onInit(): void {
         // statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
@@ -123,7 +122,7 @@ export class DVBenutzerListController implements IOnInit {
             );
     }
 
-    public editClicked(user: any, event: any) {
+    public editClicked(user: any, event: any): void {
         this.onEdit({user, event});
     }
 
@@ -131,17 +130,19 @@ export class DVBenutzerListController implements IOnInit {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 
-        if (this.onFilterChange && angular.isFunction(this.onFilterChange)) {
-            this.onFilterChange({tableState: tableFilterState}).then((result: TSUserSearchresultDTO) => {
-                if (result) {
-                    pagination.totalItemCount = result.totalResultSize;
-                    pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
-                    this.displayedCollection = [].concat(result.userDTOs);
-                }
-            });
-        } else {
+        if (!this.onFilterChange || !angular.isFunction(this.onFilterChange)) {
             this.$log.info('no callback function spcified for filtering');
+            return;
         }
+        this.onFilterChange({tableState: tableFilterState}).then((result: TSUserSearchresultDTO) => {
+            if (!result) {
+                return;
+            }
+
+            pagination.totalItemCount = result.totalResultSize;
+            pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
+            this.displayedCollection = [].concat(result.userDTOs);
+        });
     };
 
     public getRollen(): TSRole[] {

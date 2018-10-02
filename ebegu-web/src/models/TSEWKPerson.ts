@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
 import {TSGeschlecht} from './enums/TSGeschlecht';
-import TSEWKEinwohnercode from './TSEWKEinwohnercode';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSEWKAdresse from './TSEWKAdresse';
 import TSEWKBeziehung from './TSEWKBeziehung';
+import TSEWKEinwohnercode from './TSEWKEinwohnercode';
 
 /**
  * DTO für eine Person aus dem EWK
@@ -44,11 +44,24 @@ export default class TSEWKPerson extends TSAbstractMutableEntity {
     private _adressen: Array<TSEWKAdresse>;
     private _beziehungen: Array<TSEWKBeziehung>;
 
-    public constructor(personID?: string, einwohnercodes?: Array<TSEWKEinwohnercode>, nachname?: string, ledigname?: string,
-                       vorname?: string, rufname?: string, geburtsdatum?: moment.Moment, zuzugsdatum?: moment.Moment,
-                       nationalitaet?: string, zivilstand?: string, zivilstandTxt?: string, zivilstandsdatum?: moment.Moment,
-                       geschlecht?: TSGeschlecht, bewilligungsart?: string, bewilligungsartTxt?: string, bewilligungBis?: moment.Moment,
-                       adressen?: Array<TSEWKAdresse>, beziehungen?: Array<TSEWKBeziehung>) {
+    public constructor(personID?: string,
+                       einwohnercodes?: Array<TSEWKEinwohnercode>,
+                       nachname?: string,
+                       ledigname?: string,
+                       vorname?: string,
+                       rufname?: string,
+                       geburtsdatum?: moment.Moment,
+                       zuzugsdatum?: moment.Moment,
+                       nationalitaet?: string,
+                       zivilstand?: string,
+                       zivilstandTxt?: string,
+                       zivilstandsdatum?: moment.Moment,
+                       geschlecht?: TSGeschlecht,
+                       bewilligungsart?: string,
+                       bewilligungsartTxt?: string,
+                       bewilligungBis?: moment.Moment,
+                       adressen?: Array<TSEWKAdresse>,
+                       beziehungen?: Array<TSEWKBeziehung>) {
         super();
         this._personID = personID;
         this._einwohnercodes = einwohnercodes;

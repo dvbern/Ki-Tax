@@ -50,7 +50,7 @@ export class DvAdresseController {
     public parentForm: IFormController;
     public laenderList: TSLand[];
     public organisation: boolean;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
     public showNichtInGemeinde: boolean;
     public bisherLand: string;
 
@@ -66,16 +66,17 @@ export class DvAdresseController {
         });
     }
 
-    public submit() {
+    public submit(): void {
         this.adresseRS.create(this.adresse)
             .then((response: any) => {
-                if (response.status === 201) {
+                const responseCode = 201;
+                if (response.status === responseCode) {
                     this.resetForm();
                 }
             });
     }
 
-    public resetForm() {
+    public resetForm(): void {
         this.adresse = undefined;
     }
 

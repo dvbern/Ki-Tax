@@ -24,7 +24,10 @@ export class BemerkungenDialogController {
     public title: string;
     public bemerkungen: string;
 
-    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, bemerkungen: string) {
+    public constructor(private readonly $mdDialog: IDialogService,
+                       $translate: ITranslateService,
+                       title: string,
+                       bemerkungen: string) {
         this.title = $translate.instant(title);
         this.bemerkungen = bemerkungen;
     }

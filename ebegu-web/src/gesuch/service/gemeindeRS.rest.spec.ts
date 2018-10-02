@@ -17,7 +17,7 @@
 
 import * as angular from 'angular';
 import {IRootScopeService} from 'angular';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
 import TSGemeinde from '../../models/TSGemeinde';
@@ -34,7 +34,7 @@ describe('dossier', () => {
     let allGemeinde: TSGemeinde[];
     let $rootScope: IRootScopeService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

@@ -13,19 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSApplicationProperty from '../../../models/TSApplicationProperty';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebAdmin} from '../../../admin/admin.module';
 import {ApplicationPropertyRS} from './applicationPropertyRS.rest';
+import IHttpBackendService = angular.IHttpBackendService;
 
 describe('ApplicationPropertyRS', () => {
 
     let applicationPropertyRS: ApplicationPropertyRS;
-    let $httpBackend: angular.IHttpBackendService;
-    let ebeguRestUtil: EbeguRestUtil;
+    let $httpBackend: IHttpBackendService;
+    // tslint:disable-next-line:naming-convention
     let REST_API: string;
-    const testName: string = 'myTestName';
+    const testName = 'myTestName';
 
     const mockApplicationProp = new TSApplicationProperty(testName, 'myTestValue');
 
@@ -34,24 +34,28 @@ describe('ApplicationPropertyRS', () => {
         value: 'myTestValue'
     };
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');
         $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
         REST_API = $injector.get('REST_API');
     }));
 
     // set the mock response
     beforeEach(() => {
-        $httpBackend.when('GET', REST_API + 'application-properties/key/' + testName).respond(mockApplicationPropertyRest);
-        $httpBackend.when('GET', REST_API + 'application-properties/').respond([mockApplicationPropertyRest]);
-        $httpBackend.when('DELETE', REST_API + 'application-properties/' + testName).respond(200, '');
-        $httpBackend.when('POST', REST_API + 'application-properties/' + testName)
-            .respond(201, mockApplicationPropertyRest, {Location: 'http://localhost:8080/ebegu/api/v1/application-properties/key/test2'});
+        $httpBackend.when('GET', `${REST_API}application-properties/key/${testName}`).respond(
+            mockApplicationPropertyRest);
+        $httpBackend.when('GET', `${REST_API}application-properties/`).respond([mockApplicationPropertyRest]);
+        const httpOk = 200;
+        $httpBackend.when('DELETE', `${REST_API}application-properties/${testName}`).respond(httpOk, '');
+        const httpCreated = 201;
+        $httpBackend.when('POST', `${REST_API}application-properties/${testName}`)
+            .respond(httpCreated,
+                mockApplicationPropertyRest,
+                {Location: 'http://localhost:8080/ebegu/api/v1/application-properties/key/test2'});
 
     });
 
@@ -77,9 +81,9 @@ describe('ApplicationPropertyRS', () => {
         describe('getByName', () => {
 
             it('should fetch property with given name', () => {
-                $httpBackend.expectGET(REST_API + 'application-properties/key/' + testName);
+                $httpBackend.expectGET(`${REST_API}application-properties/key/${testName}`);
                 const promise: angular.IPromise<TSApplicationProperty> = applicationPropertyRS.getByName(testName);
-                let property: TSApplicationProperty = undefined;
+                let property: TSApplicationProperty;
 
                 promise.then(data => {
                     property = data;
@@ -95,9 +99,11 @@ describe('ApplicationPropertyRS', () => {
         describe('create', () => {
 
             it('should create property with name and value', () => {
-                $httpBackend.expectPOST(REST_API + 'application-properties/' + testName, mockApplicationPropertyRest.value);
-                const promise: angular.IHttpPromise<any> = applicationPropertyRS.create(mockApplicationPropertyRest.name, mockApplicationPropertyRest.value);
-                let property: TSApplicationProperty = undefined;
+                $httpBackend.expectPOST(`${REST_API}application-properties/${testName}`,
+                    mockApplicationPropertyRest.value);
+                const promise = applicationPropertyRS.create(mockApplicationPropertyRest.name,
+                    mockApplicationPropertyRest.value);
+                let property: TSApplicationProperty;
 
                 promise.then(response => {
                     property = response.data;
@@ -112,9 +118,9 @@ describe('ApplicationPropertyRS', () => {
         describe('getAllApplicationProperties', () => {
 
             it('should fetch a list of all properties', () => {
-                $httpBackend.expectGET(REST_API + 'application-properties/');
-                const promise: angular.IPromise<TSApplicationProperty[]> = applicationPropertyRS.getAllApplicationProperties();
-                let list: TSApplicationProperty[] = undefined;
+                $httpBackend.expectGET(`${REST_API}application-properties/`);
+                const promise = applicationPropertyRS.getAllApplicationProperties();
+                let list: TSApplicationProperty[];
 
                 promise.then(data => {
                     list = data;
@@ -132,16 +138,17 @@ describe('ApplicationPropertyRS', () => {
         describe('remove', () => {
 
             it('should remove a property', () => {
-                $httpBackend.expectDELETE(REST_API + 'application-properties/' + testName);
+                $httpBackend.expectDELETE(`${REST_API}application-properties/${testName}`);
                 const promise = applicationPropertyRS.remove(testName);
-                let status: number = undefined;
+                let status: number;
 
                 promise.then(response => {
                     status = response.status;
 
                 });
                 $httpBackend.flush();
-                expect(200).toEqual(status);
+                const httpOk = 200;
+                expect(httpOk).toEqual(status);
 
             });
         });

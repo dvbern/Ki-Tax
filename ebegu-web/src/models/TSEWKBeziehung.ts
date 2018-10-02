@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSEWKAdresse from './TSEWKAdresse';
 
 /**
@@ -32,8 +32,15 @@ export default class TSEWKBeziehung extends TSAbstractMutableEntity {
     private _geburtsdatum: moment.Moment;
     private _adresse: TSEWKAdresse;
 
-    public constructor(beziehungstyp?: string, beziehungstypTxt?: string, personID?: string, nachname?: string, ledigname?: string,
-                       vorname?: string, rufname?: string, geburtsdatum?: moment.Moment, adresse?: TSEWKAdresse) {
+    public constructor(beziehungstyp?: string,
+                       beziehungstypTxt?: string,
+                       personID?: string,
+                       nachname?: string,
+                       ledigname?: string,
+                       vorname?: string,
+                       rufname?: string,
+                       geburtsdatum?: moment.Moment,
+                       adresse?: TSEWKAdresse) {
         super();
         this._beziehungstyp = beziehungstyp;
         this._beziehungstypTxt = beziehungstypTxt;

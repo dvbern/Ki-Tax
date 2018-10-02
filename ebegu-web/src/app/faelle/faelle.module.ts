@@ -15,11 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {faelleRun} from './faelle.route';
 import {FaelleListViewComponentConfig} from './component/faelleListView';
 
 export const EbeguWebFaelle =
-    angular.module('ebeguWeb.faelle', [EbeguWebCore.name])
+    angular.module('ebeguWeb.faelle', [CORE_JS_MODULE.name])
         .run(faelleRun)
         .component('faelleListView', new FaelleListViewComponentConfig());

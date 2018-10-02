@@ -16,8 +16,8 @@
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import TSGesuch from '../../../../models/TSGesuch';
 import TSBenutzer from '../../../../models/TSBenutzer';
+import TSGesuch from '../../../../models/TSGesuch';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import BenutzerRS from '../../service/benutzerRS.rest';
@@ -46,7 +46,7 @@ export class VerantwortlicherselectController implements IController {
 
     public static $inject: string[] = ['BenutzerRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
     public isSchulamt: boolean;
     public gemeindeId: string;
 
@@ -58,7 +58,7 @@ export class VerantwortlicherselectController implements IController {
                        private readonly $translate: ITranslateService) {
     }
 
-    public $onChanges(changes: any) {
+    public $onChanges(changes: any): void {
         if (changes.gemeindeId) {
             this.updateUserList();
         }
@@ -86,14 +86,13 @@ export class VerantwortlicherselectController implements IController {
 
     /**
      * Sets the given user as the verantworlicher fuer den aktuellen Fall
-     * @param verantwortlicher
      */
     public setVerantwortlicher(verantwortlicher: TSBenutzer): void {
         this.setVerantwortlicherGesuchModelManager(verantwortlicher);
         this.setUserAsFallVerantwortlicherLocal(verantwortlicher);
     }
 
-    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzer) {
+    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzer): void {
         if (this.isSchulamt) {
             this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
@@ -101,31 +100,29 @@ export class VerantwortlicherselectController implements IController {
         }
     }
 
-    public setUserAsFallVerantwortlicherLocal(user: TSBenutzer) {
-        if (user && this.getGesuch() && this.getGesuch().dossier) {
-            if (this.isSchulamt) {
-                this.getGesuch().dossier.verantwortlicherTS = user;
-            } else {
-                this.getGesuch().dossier.verantwortlicherBG = user;
-            }
+    public setUserAsFallVerantwortlicherLocal(user: TSBenutzer): void {
+        if (!(user && this.getGesuch() && this.getGesuch().dossier)) {
+            return;
+        }
+
+        if (this.isSchulamt) {
+            this.getGesuch().dossier.verantwortlicherTS = user;
+        } else {
+            this.getGesuch().dossier.verantwortlicherBG = user;
         }
     }
 
     /**
-     *
-     * @param user
-     * @returns {boolean} true if the given user is already the verantwortlicherBG of the current fall
+     * @returns true if the given user is already the verantwortlicherBG of the current fall
      */
     public isCurrentVerantwortlicher(user: TSBenutzer): boolean {
         return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
     }
 
     public getFallVerantwortlicher(): TSBenutzer {
-        if (this.isSchulamt) {
-            return this.gesuchModelManager.getFallVerantwortlicherTS();
-        } else {
-            return this.gesuchModelManager.getFallVerantwortlicherBG();
-        }
+        return this.isSchulamt ?
+            this.gesuchModelManager.getFallVerantwortlicherTS() :
+            this.gesuchModelManager.getFallVerantwortlicherBG();
     }
 
     private updateUserList(): void {
@@ -152,7 +149,7 @@ export class VerantwortlicherselectController implements IController {
         });
     }
 
-    private sortUsers(userList: Array<TSBenutzer>) {
+    private sortUsers(userList: Array<TSBenutzer>): Array<TSBenutzer> {
         return userList.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
     }
 

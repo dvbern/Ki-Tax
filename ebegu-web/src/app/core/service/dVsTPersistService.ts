@@ -35,7 +35,7 @@ export class DVsTPersistService {
             .subscribe(() => this.clearAll());
     }
 
-    private clearAll() {
+    private clearAll(): void {
         this.persistedData = [];
     }
 

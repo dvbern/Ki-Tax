@@ -53,16 +53,24 @@ export class BetreuungListViewComponentConfig implements IComponentOptions {
  */
 export class BetreuungListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', '$translate', 'DvDialog', 'EbeguUtil', 'BerechnungsManager',
+    public static $inject: string[] = ['$state', 'GesuchModelManager', '$translate', 'DvDialog', 'EbeguUtil',
+        'BerechnungsManager',
         'ErrorService', 'WizardStepManager', 'AuthServiceRS', '$scope', '$log', '$timeout'];
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager,
+    public constructor(private readonly $state: StateService,
+                       gesuchModelManager: GesuchModelManager,
                        private readonly $translate: ITranslateService,
-                       private readonly DvDialog: DvDialog, private readonly ebeguUtil: EbeguUtil, berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService, wizardStepManager: WizardStepManager,
-                       private readonly authServiceRS: AuthServiceRS, $scope: IScope, private readonly $log: ILogService, $timeout: ITimeoutService) {
+                       private readonly DvDialog: DvDialog,
+                       private readonly ebeguUtil: EbeguUtil,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager,
+                       private readonly authServiceRS: AuthServiceRS,
+                       $scope: IScope,
+                       private readonly $log: ILogService,
+                       $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
 
@@ -76,11 +84,12 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public isNotAllowedToRemove(betreuung: TSBetreuung): boolean {
-        if (betreuung.betreuungsstatus === TSBetreuungsstatus.ABGEWIESEN && this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole())) {
+        if (betreuung.betreuungsstatus === TSBetreuungsstatus.ABGEWIESEN
+            && this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole())) {
             return false;
-        } else {
-            return this.isKorrekturModusJugendamt();
         }
+
+        return this.isKorrekturModusJugendamt();
     }
 
     public getKinderWithBetreuungList(): Array<TSKindContainer> {
@@ -96,18 +105,19 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
 
     public createBetreuung(kind: TSKindContainer): void {
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
-        if (kindIndex >= 0) {
-            this.gesuchModelManager.setKindIndex(kindIndex);
-            this.resetActiveInstitutionenList();
-            this.openBetreuungView(undefined, kind.kindNummer);
-        } else {
+        if (kindIndex < 0) {
             this.$log.error('kind nicht gefunden ', kind);
+            return;
         }
+        this.gesuchModelManager.setKindIndex(kindIndex);
+        this.resetActiveInstitutionenList();
+        this.openBetreuungView(undefined, kind.kindNummer);
     }
 
-    private resetActiveInstitutionenList() {
+    private resetActiveInstitutionenList(): void {
         // Beim Navigieren auf die BetreuungView muss eventuell die Liste der Institutionen neu geladen werden.
-        // Diese wird im GMM gecached und enthält eventuell nicht die neuesten Daten, insbesondere beim Hinzufügen von Betreuungen.
+        // Diese wird im GMM gecached und enthält eventuell nicht die neuesten Daten, insbesondere beim Hinzufügen von
+        // Betreuungen.
         if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
             this.gesuchModelManager.resetActiveInstitutionenList();
         }
@@ -123,26 +133,27 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
 
     private createAnmeldungSchulamt(betreuungstyp: TSBetreuungsangebotTyp, kind: TSKindContainer): void {
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
-        if (kindIndex >= 0) {
-            this.gesuchModelManager.setKindIndex(kindIndex);
-            this.resetActiveInstitutionenList();
-            this.openAnmeldungView(kind.kindNummer, betreuungstyp);
-        } else {
+        if (kindIndex < 0) {
             this.$log.error('kind nicht gefunden ', kind);
+            return;
         }
+        this.gesuchModelManager.setKindIndex(kindIndex);
+        this.resetActiveInstitutionenList();
+        this.openAnmeldungView(kind.kindNummer, betreuungstyp);
     }
 
     public removeBetreuung(kind: TSKindContainer, betreuung: TSBetreuung, index: any): void {
         this.gesuchModelManager.findKind(kind);     // kind index setzen
+        const typ = TSBetreuungsangebotTyp[betreuung.institutionStammdaten.betreuungsangebotTyp];
         const remTitleText: any = this.$translate.instant('BETREUUNG_LOESCHEN', {
             kindname: this.gesuchModelManager.getKindToWorkWith().kindJA.getFullName(),
-            betreuungsangebottyp: this.ebeguUtil.translateString(TSBetreuungsangebotTyp[betreuung.institutionStammdaten.betreuungsangebotTyp])
+            betreuungsangebottyp: this.ebeguUtil.translateString(typ)
         });
         this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'BETREUUNG_LOESCHEN_BESCHREIBUNG',
             parentController: this,
-            elementID: 'removeBetreuungButton' + kind.kindNummer + '_' + index
+            elementID: `removeBetreuungButton${kind.kindNummer}_${index}`
         }).then(() => {   // User confirmed removal
             this.errorService.clearAll();
             const betreuungIndex = this.gesuchModelManager.findBetreuung(betreuung);
@@ -175,8 +186,6 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     /**
      * Gibt den Betreuungsangebottyp der Institution, die mit der gegebenen Betreuung verknuepft ist zurueck.
      * By default wird ein Leerzeichen zurueckgeliefert.
-     * @param betreuung
-     * @returns {string}
      */
     public getBetreuungsangebotTyp(betreuung: TSBetreuung): string {
         if (betreuung && betreuung.institutionStammdaten) {
@@ -189,7 +198,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         let detail = betreuung.institutionStammdaten.institution.name;
         if (betreuung.isAngebotFerieninsel()) {
             const ferien = this.$translate.instant(betreuung.belegungFerieninsel.ferienname.toLocaleString());
-            detail = detail + ' (' + ferien + ')';
+            detail = `${detail} (${ferien})`;
         }
         return detail;
     }
@@ -202,7 +211,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
     }
 
-    private gotoMitteilung(betreuung: TSBetreuung) {
+    private gotoMitteilung(betreuung: TSBetreuung): void {
         this.$state.go('gesuch.mitteilung', {
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
@@ -212,20 +221,23 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public setFocusBack(elementID: string): void {
-        angular.element('#' + elementID).first().focus();
+        angular.element(`#${elementID}`).first().focus();
     }
 
     public showButtonAnmeldungSchulamt(): boolean {
-        // Anmeldung Schulamt: Solange das Gesuch noch "normal" editiert werden kann, soll der Weg ueber "Betreuung hinzufuegen" verwendet werden
-        // Nachdem readonly: nur fuer Jugendamt, Schulamt und Gesuchsteller verfuegbar sein. Nur fuer GP.hasTagesschulenAnmeldung().
+        // Anmeldung Schulamt: Solange das Gesuch noch "normal" editiert werden kann, soll der Weg ueber "Betreuung
+        // hinzufuegen" verwendet werden Nachdem readonly: nur fuer Jugendamt, Schulamt und Gesuchsteller verfuegbar
+        // sein. Nur fuer GP.hasTagesschulenAnmeldung().
         const isStatus = isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)
             || this.gesuchModelManager.isGesuchReadonlyForRole()
             || this.gesuchModelManager.isKorrekturModusJugendamt()
             || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
-        const isRole = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles());
+        const allowedRoles = TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles();
+        const isRole = this.authServiceRS.isOneOfRoles(allowedRoles);
         const isGesuchsperiode = this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung();
         const istNotStatusFreigabequittung = this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG;
         const isSchulamtAngeboteEnabled = EbeguUtil.isTagesschulangebotEnabled();
+
         return isSchulamtAngeboteEnabled && isStatus && isRole && isGesuchsperiode && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
     }
 
@@ -237,7 +249,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
     }
 
-    public hasOnlyFerieninsel() {
+    public hasOnlyFerieninsel(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
         return !!gesuch && gesuch.areThereOnlyFerieninsel();
     }

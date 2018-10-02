@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 /**
  * DTO für eine Adresse aus dem EWK
@@ -35,9 +35,19 @@ export default class TSEWKAdresse extends TSAbstractMutableEntity {
     private _kanton: string;
     private _land: string;
 
-    public constructor(adresstyp?: string, adresstypTxt?: string, gueltigVon?: moment.Moment, gueltigBis?: moment.Moment,
-                       coName?: string, postfach?: string, bfSGemeinde?: string, strasse?: string, hausnummer?: string,
-                       postleitzahl?: string, ort?: string, kanton?: string, land?: string) {
+    public constructor(adresstyp?: string,
+                       adresstypTxt?: string,
+                       gueltigVon?: moment.Moment,
+                       gueltigBis?: moment.Moment,
+                       coName?: string,
+                       postfach?: string,
+                       bfSGemeinde?: string,
+                       strasse?: string,
+                       hausnummer?: string,
+                       postleitzahl?: string,
+                       ort?: string,
+                       kanton?: string,
+                       land?: string) {
         super();
         this._adresstyp = adresstyp;
         this._adresstypTxt = adresstypTxt;
@@ -159,6 +169,6 @@ export default class TSEWKAdresse extends TSAbstractMutableEntity {
     }
 
     public getShortDescription(): string {
-        return this.strasse + ' ' + this.hausnummer + ', ' + this.postleitzahl + ' ' + this.ort;
+        return `${this.strasse} ${this.hausnummer}, ${this.postleitzahl} ${this.ort}`;
     }
 }

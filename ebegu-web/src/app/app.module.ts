@@ -21,7 +21,7 @@ import {NgAdminModule} from '../admin/ng-admin.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {AppRoutingModule} from './app-routing.module';
-import {appModuleAngularJS} from './app.angularjs.module';
+import {APP_JS_MODULE} from './app.angularjs.module';
 import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
@@ -56,8 +56,8 @@ export class AppModule {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    public ngDoBootstrap() {
+    public ngDoBootstrap(): void {
         // noinspection XHTMLIncompatabilitiesJS
-        this.upgrade.bootstrap(document.body, [appModuleAngularJS.name], {strictDi: true});
+        this.upgrade.bootstrap(document.body, [APP_JS_MODULE.name], {strictDi: true});
     }
 }

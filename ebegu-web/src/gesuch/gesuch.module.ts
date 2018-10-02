@@ -15,7 +15,7 @@
 
 import * as angular from 'angular';
 import {downgradeComponent} from '@angular/upgrade/static';
-import {EbeguWebCore} from '../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
@@ -48,7 +48,7 @@ import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenV
 import {gesuchRun} from './gesuch.route';
 
 export const EbeguWebGesuch =
-    angular.module('ebeguWeb.gesuch', [EbeguWebCore.name])
+    angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .component('familiensituationView', new FamiliensituationViewComponentConfig())
         .component('stammdatenView', new StammdatenViewComponentConfig)

@@ -20,7 +20,7 @@ export default class TSEinkommensverschlechterungInfoContainer extends TSAbstrac
 
     private _einkommensverschlechterungInfoGS: TSEinkommensverschlechterungInfo;
 
-    private _einkommensverschlechterungInfoJA: TSEinkommensverschlechterungInfo = new TSEinkommensverschlechterungInfo();
+    private _einkommensverschlechterungInfoJA = new TSEinkommensverschlechterungInfo();
 
     public get einkommensverschlechterungInfoGS(): TSEinkommensverschlechterungInfo {
         return this._einkommensverschlechterungInfoGS;

@@ -56,35 +56,50 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
 
-    public constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                       private readonly dokumenteRS: DokumenteRS, private readonly $log: ILogService, wizardStepManager: WizardStepManager,
-                       private readonly ebeguUtil: EbeguUtil, private readonly globalCacheService: GlobalCacheService, $scope: IScope, $timeout: ITimeoutService) {
+    public constructor($stateParams: IStammdatenStateParams,
+                       gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly dokumenteRS: DokumenteRS,
+                       private readonly $log: ILogService,
+                       wizardStepManager: WizardStepManager,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly globalCacheService: GlobalCacheService,
+                       $scope: IScope,
+                       $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.calculate();
     }
 
-    public calculate() {
-        if (this.gesuchModelManager.getGesuch()) {
-            this.berechnungsManager
-                .getDokumente(this.gesuchModelManager.getGesuch())
-                .then((alleDokumente: TSDokumenteDTO) => {
-                    this.searchDokumente(alleDokumente, this.dokumenteEkv, TSDokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-                    this.searchDokumente(alleDokumente, this.dokumenteFinSit, TSDokumentGrundTyp.FINANZIELLESITUATION);
-                    this.searchDokumente(alleDokumente, this.dokumenteFamSit, TSDokumentGrundTyp.FAMILIENSITUATION);
-                    this.searchDokumente(alleDokumente, this.dokumenteErwp, TSDokumentGrundTyp.ERWERBSPENSUM);
-                    this.searchDokumente(alleDokumente, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
-                    this.searchDokumente(alleDokumente, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
-                    this.searchDokumente(alleDokumente, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
-                    this.searchDokumente(alleDokumente, this.dokumenteFreigabequittung, TSDokumentGrundTyp.FREIGABEQUITTUNG);
-                });
-        } else {
+    public calculate(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
             this.$log.debug('No gesuch für dokumente');
+
+            return;
         }
+
+        this.berechnungsManager
+            .getDokumente(this.gesuchModelManager.getGesuch())
+            .then((alleDokumente: TSDokumenteDTO) => {
+                this.searchDokumente(alleDokumente,
+                    this.dokumenteEkv,
+                    TSDokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
+                this.searchDokumente(alleDokumente, this.dokumenteFinSit, TSDokumentGrundTyp.FINANZIELLESITUATION);
+                this.searchDokumente(alleDokumente, this.dokumenteFamSit, TSDokumentGrundTyp.FAMILIENSITUATION);
+                this.searchDokumente(alleDokumente, this.dokumenteErwp, TSDokumentGrundTyp.ERWERBSPENSUM);
+                this.searchDokumente(alleDokumente, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
+                this.searchDokumente(alleDokumente, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
+                this.searchDokumente(alleDokumente, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
+                this.searchDokumente(alleDokumente,
+                    this.dokumenteFreigabequittung,
+                    TSDokumentGrundTyp.FREIGABEQUITTUNG);
+            });
     }
 
-    private searchDokumente(alleDokumente: TSDokumenteDTO, dokumenteForType: TSDokumentGrund[], dokumentGrundTyp: TSDokumentGrundTyp) {
+    private searchDokumente(alleDokumente: TSDokumenteDTO,
+                            dokumenteForType: TSDokumentGrund[],
+                            dokumentGrundTyp: TSDokumentGrundTyp): void {
 
         const dokumentGruende = alleDokumente.dokumentGruende;
         const found = dokumentGruende.find(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp);
@@ -98,10 +113,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                 if (n1.tag && n2.tag) {
                     result = n1.tag.localeCompare(n2.tag);
                 }
-                if (result === 0) {
-                    if (n1.dokumentTyp && n2.dokumentTyp) {
-                        result = n1.dokumentTyp.toString().localeCompare(n2.dokumentTyp.toString());
-                    }
+                if (result === 0 && n1.dokumentTyp && n2.dokumentTyp) {
+                    result = n1.dokumentTyp.toString().localeCompare(n2.dokumentTyp.toString());
                 }
             }
             return result;
@@ -124,7 +137,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         EbeguUtil.handleSmarttablesUpdateBug(dokumente);
     }
 
-    public removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]) {
+    public removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]): void {
 
         const index = EbeguUtil.getIndexOfElementwithID(dokument, dokumentGrund.dokumente);
 
@@ -139,10 +152,10 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
             if (returnedDG) {
                 // replace existing object in table with returned if returned not null
-                const index = EbeguUtil.getIndexOfElementwithID(returnedDG, dokumente);
-                if (index > -1) {
+                const idx = EbeguUtil.getIndexOfElementwithID(returnedDG, dokumente);
+                if (idx > -1) {
                     this.$log.debug('update dokumentGrund in dokumentList');
-                    dokumente[index] = dokumentGrund;
+                    dokumente[idx] = dokumentGrund;
 
                     // Clear cached Papiergesuch on remove...
                     if (dokumentGrund.dokumentGrundTyp === TSDokumentGrundTyp.PAPIERGESUCH) {
@@ -151,10 +164,10 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                 }
             } else {
                 // delete object in table with sended if returned is null
-                const index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
-                if (index > -1) {
+                const idx = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
+                if (idx > -1) {
                     this.$log.debug('remove dokumentGrund in dokumentList');
-                    dokumente.splice(index, 1);
+                    dokumente.splice(idx, 1);
                 }
             }
             this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id);

@@ -26,7 +26,7 @@ export default class DVSubmitevent implements IDirective {
     public link: IDirectiveLinkFn;
 
     public constructor() {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrl: any) => {
+        this.link = (scope: IScope, element: IAugmentedJQuery, _attrs, _ctrl: any) => {
             element.on('submit', () => {
                 scope.$broadcast(TSSubmitEvent[TSSubmitEvent.FORM_SUBMIT]);
             });

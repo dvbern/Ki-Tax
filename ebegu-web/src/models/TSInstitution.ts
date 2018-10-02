@@ -14,8 +14,8 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSTraegerschaft} from './TSTraegerschaft';
 import {TSMandant} from './TSMandant';
+import {TSTraegerschaft} from './TSTraegerschaft';
 
 export default class TSInstitution extends TSAbstractMutableEntity {
     private _name: string;

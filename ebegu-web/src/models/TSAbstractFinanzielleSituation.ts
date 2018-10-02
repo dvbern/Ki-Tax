@@ -27,9 +27,15 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
     private _geschaeftsgewinnBasisjahr: number;
     private _geleisteteAlimente: number;
 
-    public constructor(steuerveranlagungErhalten?: boolean, steuererklaerungAusgefuellt?: boolean,
-                       familienzulage?: number, ersatzeinkommen?: number, erhalteneAlimente?: number, bruttovermoegen?: number,
-                       schulden?: number, geschaeftsgewinnBasisjahr?: number, geleisteteAlimente?: number) {
+    public constructor(steuerveranlagungErhalten?: boolean,
+                       steuererklaerungAusgefuellt?: boolean,
+                       familienzulage?: number,
+                       ersatzeinkommen?: number,
+                       erhalteneAlimente?: number,
+                       bruttovermoegen?: number,
+                       schulden?: number,
+                       geschaeftsgewinnBasisjahr?: number,
+                       geleisteteAlimente?: number) {
         super();
         this._steuerveranlagungErhalten = steuerveranlagungErhalten || false;
         this._steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;

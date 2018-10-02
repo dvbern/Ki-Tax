@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSWizardStepName} from './enums/TSWizardStepName';
 import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSWizardStep extends TSAbstractMutableEntity {
 
@@ -25,7 +25,10 @@ export default class TSWizardStep extends TSAbstractMutableEntity {
     private _bemerkungen: string;
     private _verfuegbar: boolean;
 
-    public constructor(gesuchId?: string, wizardStepName?: TSWizardStepName, wizardStepStatus?: TSWizardStepStatus, bemerkungen?: string,
+    public constructor(gesuchId?: string,
+                       wizardStepName?: TSWizardStepName,
+                       wizardStepStatus?: TSWizardStepStatus,
+                       bemerkungen?: string,
                        verfuegbar?: boolean) {
         super();
         this._gesuchId = gesuchId;

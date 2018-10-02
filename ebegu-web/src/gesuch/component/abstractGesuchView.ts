@@ -13,36 +13,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import GesuchModelManager from '../service/gesuchModelManager';
-import BerechnungsManager from '../service/berechnungsManager';
-import {TSRole} from '../../models/enums/TSRole';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import WizardStepManager from '../service/wizardStepManager';
+import {IController} from 'angular';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
-import TSExceptionReport from '../../models/TSExceptionReport';
 import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
+import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
+import TSExceptionReport from '../../models/TSExceptionReport';
 import EbeguUtil from '../../utils/EbeguUtil';
-import IPromise = angular.IPromise;
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import BerechnungsManager from '../service/berechnungsManager';
+import GesuchModelManager from '../service/gesuchModelManager';
+import WizardStepManager from '../service/wizardStepManager';
 import IFormController = angular.IFormController;
+import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-export default class AbstractGesuchViewController<T> {
+export default class AbstractGesuchViewController<T> implements IController {
 
     public $scope: IScope;
     public gesuchModelManager: GesuchModelManager;
     public berechnungsManager: BerechnungsManager;
     public wizardStepManager: WizardStepManager;
-    public TSRole = TSRole;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRole = TSRole;
+    public readonly TSRoleUtil = TSRoleUtil;
     private _model: T;
     public form: IFormController;
     public $timeout: ITimeoutService;
 
-    public constructor($gesuchModelManager: GesuchModelManager, $berechnungsManager: BerechnungsManager,
-                       wizardStepManager: WizardStepManager, $scope: IScope, stepName: TSWizardStepName,
+    public constructor($gesuchModelManager: GesuchModelManager,
+                       $berechnungsManager: BerechnungsManager,
+                       wizardStepManager: WizardStepManager,
+                       $scope: IScope,
+                       stepName: TSWizardStepName,
                        $timeout: ITimeoutService) {
         this.gesuchModelManager = $gesuchModelManager;
         this.berechnungsManager = $berechnungsManager;
@@ -52,14 +56,14 @@ export default class AbstractGesuchViewController<T> {
         this.wizardStepManager.setCurrentStep(stepName);
     }
 
-    public $onInit() {
+    public $onInit(): void {
         /**
          * Grund fuer diesen Code ist:
          * Wenn der Server einen Validation-Fehler zurueckgibt, wird der DirtyPlugin nicht informiert und setzt das Form
          * auf !dirty. Dann kann der Benutzer nochmal auf Speichern klicken und die Daten werden gespeichert.
          * Damit dies nicht passiert, hoeren wir in allen Views auf diesen Event und setzen das Form auf dirty
          */
-        this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], (event: any, errors: Array<TSExceptionReport>) => {
+        this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], (_event: any, _errors: TSExceptionReport[]) => {
             this.form.$dirty = true;
             this.form.$pristine = false;
         });
@@ -76,24 +80,20 @@ export default class AbstractGesuchViewController<T> {
      */
     public isGesuchValid(): boolean {
         if (!this.form.$valid) {
-           EbeguUtil.selectFirstInvalid();
+            EbeguUtil.selectFirstInvalid();
         }
+
         return this.form.$valid;
     }
 
     public getGesuchId(): string {
-        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().id;
-        } else {
-            return '';
-        }
+        return this.gesuchModelManager && this.gesuchModelManager.getGesuch() ?
+            this.gesuchModelManager.getGesuch().id :
+            '';
     }
 
     public setGesuchStatus(status: TSAntragStatus): IPromise<TSAntragStatus> {
-        if (this.gesuchModelManager) {
-            return this.gesuchModelManager.saveGesuchStatus(status);
-        }
-        return undefined;
+        return this.gesuchModelManager ? this.gesuchModelManager.saveGesuchStatus(status) : undefined;
     }
 
     public isGesuchInStatus(status: TSAntragStatus): boolean {
@@ -101,17 +101,13 @@ export default class AbstractGesuchViewController<T> {
     }
 
     public isBetreuungInStatus(status: TSBetreuungsstatus): boolean {
-        if (this.gesuchModelManager.getBetreuungToWorkWith()) {
-            return status === this.gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus;
-        }
-        return false;
+        return this.gesuchModelManager.getBetreuungToWorkWith() ?
+            status === this.gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus :
+            false;
     }
 
     public isMutation(): boolean {
-        if (this.gesuchModelManager.getGesuch()) {
-            return this.gesuchModelManager.getGesuch().isMutation();
-        }
-        return false;
+        return this.gesuchModelManager.getGesuch() ? this.gesuchModelManager.getGesuch().isMutation() : false;
     }
 
     public isKorrekturModusJugendamt(): boolean {
@@ -127,22 +123,21 @@ export default class AbstractGesuchViewController<T> {
     }
 
     public extractFullNameGS1(): string {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1) {
-            return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
-        }
-        return '';
+        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName() :
+            '';
     }
 
     public extractFullNameGS2(): string {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2) {
-            return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
-        }
-        return '';
+        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() :
+            '';
     }
 
-    public $postLink() {
+    public $postLink(): void {
+        const delay = 200;
         this.$timeout(() => {
             EbeguUtil.selectFirst();
-        }, 200);
+        }, delay);
     }
 }

@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class ErwerbspensumRS {
 

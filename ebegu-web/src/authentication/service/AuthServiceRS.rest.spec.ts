@@ -14,7 +14,7 @@
  */
 
 import * as angular from 'angular';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
@@ -22,7 +22,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSBerechtigung from '../../models/TSBerechtigung';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
-import {EbeguAuthentication} from '../authentication.module';
+import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
 import AuthServiceRS from './AuthServiceRS.rest';
 
 describe('AuthServiceRS', () => {
@@ -37,8 +37,8 @@ describe('AuthServiceRS', () => {
     let gesuchModelManager: GesuchModelManager;
     let benutzerRS: BenutzerRS;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
-    beforeEach(angular.mock.module(EbeguAuthentication.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
+    beforeEach(angular.mock.module(AUTHENTICATION_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -86,7 +86,7 @@ describe('AuthServiceRS', () => {
             spyOn(benutzerRS, 'findBenutzer').and.returnValue($q.when(benutzer));
 
             let cookieUser: TSBenutzer;
-            //if we can decode the cookie the client application assumes the user is logged in for ui purposes
+            // if we can decode the cookie the client application assumes the user is logged in for ui purposes
             TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
             authServiceRS.loginRequest(benutzer).then(response => {
                 cookieUser = response;

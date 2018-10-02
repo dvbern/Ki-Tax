@@ -29,7 +29,7 @@ export class DvHomeIconController {
 
     public static $inject: ReadonlyArray<string> = ['$state'];
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly $state: StateService) {
     }

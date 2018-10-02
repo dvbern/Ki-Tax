@@ -34,7 +34,7 @@ authorisationHookRunBlock.$inject = ['$transitions'];
 
 const LOG = LogFactory.createLog('authorisationHookRunBlock');
 
-export function authorisationHookRunBlock($transitions: TransitionService) {
+export function authorisationHookRunBlock($transitions: TransitionService): void {
     // Matches if the destination state has a data.roles array
     const requiresAuthCriteria: HookMatchCriteria = {
         to: state => state.data && Array.isArray(state.data.roles),

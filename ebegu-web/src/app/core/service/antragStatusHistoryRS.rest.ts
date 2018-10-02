@@ -38,7 +38,7 @@ export default class AntragStatusHistoryRS {
                        public ebeguRestUtil: EbeguRestUtil,
                        public log: ILogService,
                        private readonly authServiceRS: AuthServiceRS) {
-        this.serviceURL = REST_API + 'antragStatusHistory';
+        this.serviceURL = `${REST_API}antragStatusHistory`;
     }
 
     /**
@@ -46,7 +46,7 @@ export default class AntragStatusHistoryRS {
      */
     public loadLastStatusChange(gesuch: TSGesuch): IPromise<TSAntragStatusHistory> {
         if (gesuch && gesuch.id) {
-            return this.http.get(this.serviceURL + '/' + encodeURIComponent(gesuch.id))
+            return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`)
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     const history = new TSAntragStatusHistory();
@@ -64,9 +64,9 @@ export default class AntragStatusHistoryRS {
         : IPromise<Array<TSAntragStatusHistory>> {
 
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
-            const baseUrl = this.serviceURL + '/verlauf/';
+            const baseUrl = `${this.serviceURL}/verlauf/`;
 
-            return this.http.get(baseUrl + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
+            return this.http.get(`${baseUrl + encodeURIComponent(gesuchsperiode.id)}/${encodeURIComponent(dossier.id)}`)
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);

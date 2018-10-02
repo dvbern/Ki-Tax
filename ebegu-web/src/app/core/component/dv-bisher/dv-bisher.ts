@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
@@ -49,13 +49,16 @@ export class DvBisherComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class DvBisher {
+const defaultDateFormat = 'DD.MM.YYYY';
+
+export class DvBisher implements IController {
 
     public static $inject = ['GesuchModelManager', '$translate'];
 
     public gs: any;
     public ja: any;
-    public showIfBisherNone: boolean;  // sollen die korrekturen des jugendamts angezeigt werden wenn im GS container kein wert ist
+    // sollen die korrekturen des jugendamts angezeigt werden wenn im GS container kein wert ist
+    public showIfBisherNone: boolean;
     public specificBisherText: string;
     public bisherText: Array<string>;
     public blockExisted: boolean;
@@ -64,7 +67,7 @@ export class DvBisher {
                        private readonly $translate: ITranslateService) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         if (this.showIfBisherNone === undefined) {// wenn nicht von aussen gesetzt auf true
             this.showIfBisherNone = true;
         }
@@ -77,20 +80,22 @@ export class DvBisher {
             // War es eine Loeschung, oder ein Hinzufuegen?
             if (this.hasBisher()) {
                 return this.bisherText; // neue eingabe als ein einzelner block
-            } else {
-                return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
             }
-        } else if (this.gs instanceof moment) {
-            return [DateUtil.momentToLocalDateFormat(this.gs, 'DD.MM.YYYY')];
-        } else if (this.gs === true) {
-            return [this.$translate.instant('LABEL_JA')];
-        } else if (this.gs === false) {
-            return [this.$translate.instant('LABEL_NEIN')];
-        } else if (!this.hasBisher()) {
-            return [this.$translate.instant('LABEL_KEINE_ANGABE')];
-        } else {
-            return [this.$translate.instant(this.gs)];
+            return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
         }
+        if (this.gs instanceof moment) {
+            return [DateUtil.momentToLocalDateFormat(this.gs, defaultDateFormat)];
+        }
+        if (this.gs === true) {
+            return [this.$translate.instant('LABEL_JA')];
+        }
+        if (this.gs === false) {
+            return [this.$translate.instant('LABEL_NEIN')];
+        }
+        if (!this.hasBisher()) {
+            return [this.$translate.instant('LABEL_KEINE_ANGABE')];
+        }
+        return [this.$translate.instant(this.gs)];
     }
 
     public hasBisher(): boolean {
@@ -98,7 +103,8 @@ export class DvBisher {
     }
 
     public showBisher(): boolean {
-        return ((this.showIfBisherNone || this.blockExisted) || this.hasBisher()) && this.isKorrekturModusJugendamtOrFreigegeben();
+        return ((this.showIfBisherNone || this.blockExisted) || this.hasBisher())
+            && this.isKorrekturModusJugendamtOrFreigegeben();
     }
 
     private isKorrekturModusJugendamtOrFreigegeben(): boolean {
@@ -109,7 +115,8 @@ export class DvBisher {
 
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
-            return this.equals(DateUtil.momentToLocalDateFormat(gs, 'DD.MM.YYYY'), DateUtil.momentToLocalDateFormat(ja, 'DD.MM.YYYY'));
+            return this.equals(DateUtil.momentToLocalDateFormat(gs, defaultDateFormat),
+                DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
         }
         if (gs instanceof Array) {
             return JSON.stringify(gs) === JSON.stringify(ja);

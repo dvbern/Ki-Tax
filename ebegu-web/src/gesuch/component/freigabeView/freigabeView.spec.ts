@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebAdmin} from '../../../admin/admin.module';
+import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -47,7 +47,7 @@ describe('freigabeView', () => {
 
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));  //to inject applicationPropertyRS
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));  //to inject applicationPropertyRS
 
     beforeEach(angular.mock.module(ngServicesMock));
 

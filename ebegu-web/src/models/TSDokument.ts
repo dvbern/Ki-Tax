@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSFile from './TSFile';
 import * as moment from 'moment';
 import TSBenutzer from './TSBenutzer';
+import TSFile from './TSFile';
 
 export default class TSDokument extends TSFile {
 

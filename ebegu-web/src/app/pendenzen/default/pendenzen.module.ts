@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../core/core.angularjs.module';
 import {PendenzenListViewComponentConfig} from './component/pendenzenListView/pendenzenListView';
 import EllipsisTooltip from './directive/ellipsisTooltip';
 import {pendenzRun} from './pendenzen.route';
 
 export const EbeguWebPendenzen =
-    angular.module('ebeguWeb.pendenzen', [EbeguWebCore.name])
+    angular.module('ebeguWeb.pendenzen', [CORE_JS_MODULE.name])
         .run(pendenzRun)
         .directive('ellipsisTooltip', EllipsisTooltip.factory())
         .component('pendenzenListView', new PendenzenListViewComponentConfig());

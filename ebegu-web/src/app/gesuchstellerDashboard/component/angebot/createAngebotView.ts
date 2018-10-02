@@ -13,9 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
-import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
@@ -27,6 +26,7 @@ import TSBetreuung from '../../../../models/TSBetreuung';
 import TSInstitutionStammdaten from '../../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../../models/TSKindContainer';
 import DateUtil from '../../../../utils/DateUtil';
+import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
@@ -38,7 +38,7 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class CreateAngebotListViewController {
+export class CreateAngebotListViewController implements IController {
 
     public static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
 
@@ -48,14 +48,16 @@ export class CreateAngebotListViewController {
     private fi: boolean;
     private readonly kindContainer: TSKindContainer;
     private readonly institution: TSInstitutionStammdaten;
-    private anmeldungDTO: TSAnmeldungDTO = new TSAnmeldungDTO;
+    private anmeldungDTO: TSAnmeldungDTO = new TSAnmeldungDTO();
 
-    public constructor(private readonly $state: StateService, private readonly $log: ILogService,
-                private readonly gesuchModelManager: GesuchModelManager, private readonly $stateParams: IAngebotStateParams,
-                private readonly betreuungRS: BetreuungRS) {
+    public constructor(private readonly $state: StateService,
+                       private readonly $log: ILogService,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly $stateParams: IAngebotStateParams,
+                       private readonly betreuungRS: BetreuungRS) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this.anmeldungDTO = new TSAnmeldungDTO();
         this.einschulungTypValues = getTSEinschulungTypValues();
         if (this.$stateParams.type === 'TS') {
@@ -74,16 +76,14 @@ export class CreateAngebotListViewController {
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
         const result: Array<TSInstitutionStammdaten> = [];
-        /*if (this.betreuungsangebot) {*/
         this.gesuchModelManager.getActiveInstitutionenList().forEach((instStamm: TSInstitutionStammdaten) => {
             if (this.ts) {
-                if (instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm)) {
+                if (instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE
+                    && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm)) {
                     result.push(instStamm);
                 }
-            } else if (this.fi) {
-                if (instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL) {
-                    result.push(instStamm);
-                }
+            } else if (this.fi && instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL) {
+                result.push(instStamm);
             }
         });
         return result;
@@ -107,6 +107,7 @@ export class CreateAngebotListViewController {
         return this.fi && !!this.institution;
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public selectedInstitutionStammdatenChanged(): void {
         if (!this.anmeldungDTO.betreuung) {
             this.anmeldungDTO.betreuung = new TSBetreuung();
@@ -139,10 +140,9 @@ export class CreateAngebotListViewController {
             }
             this.anmeldungDTO.betreuung.belegungTagesschule = undefined;
         }
-
     }
 
-    public isTageschulenAnmeldungAktiv() {
+    public isTageschulenAnmeldungAktiv(): boolean {
         return this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
     }
 
@@ -161,17 +161,18 @@ export class CreateAngebotListViewController {
         if (this.ts) {
             this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
 
-            this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule = this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule
-                .filter(modul => modul.angemeldet);
+            this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule =
+                this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule
+                    .filter(modul => modul.angemeldet);
 
-            this.betreuungRS.createAngebot(this.anmeldungDTO).then((response: any) => {
+            this.betreuungRS.createAngebot(this.anmeldungDTO).then(() => {
                 this.backToHome('TAGESSCHULE_ANMELDUNG_GESPEICHERT');
             }).catch(() => {
                 this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
             });
         } else if (this.fi) {
             this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
-            this.betreuungRS.createAngebot(this.anmeldungDTO).then((response: any) => {
+            this.betreuungRS.createAngebot(this.anmeldungDTO).then(() => {
                 this.kindContainer.kindJA.familienErgaenzendeBetreuung = true;
                 this.backToHome('FERIENINSEL_ANMELDUNG_GESPEICHERT');
             }).catch(() => {
@@ -181,7 +182,7 @@ export class CreateAngebotListViewController {
         }
     }
 
-    public backToHome(infoMessage: string | undefined = undefined) {
+    public backToHome(infoMessage?: string): void {
         this.form.$setPristine();
         this.$state.go('gesuchsteller.dashboard', {
             gesuchstellerDashboardStateParams: {infoMessage}

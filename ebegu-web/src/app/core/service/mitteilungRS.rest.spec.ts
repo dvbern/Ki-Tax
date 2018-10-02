@@ -20,7 +20,7 @@ import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import MitteilungRS from './mitteilungRS.rest';
 
 describe('MitteilungRS', () => {
@@ -34,7 +34,7 @@ describe('MitteilungRS', () => {
     let dossier: TSDossier;
     let betreuung: TSBetreuung;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

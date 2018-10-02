@@ -13,10 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {StateService} from '@uirouter/core';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -24,7 +25,6 @@ import {EbeguWebGesuch} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungListViewController} from './betreuungListView';
-import {StateService} from '@uirouter/core';
 
 describe('betreuungListViewTest', () => {
 
@@ -32,7 +32,7 @@ describe('betreuungListViewTest', () => {
     let gesuchModelManager: GesuchModelManager;
     let $state: StateService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
     beforeEach(angular.mock.module(EbeguWebGesuch.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
@@ -50,8 +50,19 @@ describe('betreuungListViewTest', () => {
         const $timeout = $injector.get('$timeout');
         const authServiceRS: AuthServiceRS = $injector.get('AuthServiceRS');
 
-        betreuungListView = new BetreuungListViewController($state, gesuchModelManager, $translate, dialog, ebeguUtil, undefined,
-            errorService, wizardStepManager, authServiceRS, $injector.get('$rootScope'), undefined, $timeout);
+        betreuungListView = new BetreuungListViewController(
+            $state,
+            gesuchModelManager,
+            $translate,
+            dialog,
+            ebeguUtil,
+            undefined,
+            errorService,
+            wizardStepManager,
+            authServiceRS,
+            $injector.get('$rootScope'),
+            undefined,
+            $timeout);
     }));
 
     describe('Public API', () => {

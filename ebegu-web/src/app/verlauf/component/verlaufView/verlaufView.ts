@@ -22,7 +22,6 @@ import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import TSAntragStatusHistory from '../../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../../models/TSDossier';
 import TSGesuch from '../../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.rest';
@@ -44,42 +43,43 @@ export class VerlaufViewController implements IController {
     public dossier: TSDossier;
     public gesuche: { [gesuchId: string]: string } = {};
     public itemsByPage: number = 20;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
     public verlauf: Array<TSAntragStatusHistory>;
 
     public constructor(private readonly $state: StateService,
-                private readonly $stateParams: IVerlaufStateParams,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly gesuchRS: GesuchRS,
-                private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
-                private readonly ebeguUtil: EbeguUtil) {
+                       private readonly $stateParams: IVerlaufStateParams,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+                       private readonly ebeguUtil: EbeguUtil) {
     }
 
-    public $onInit() {
-        if (this.$stateParams.gesuchId) {
-            this.gesuchRS.findGesuch(this.$stateParams.gesuchId).then((gesuchResponse: TSGesuch) => {
-                this.dossier = gesuchResponse.dossier;
-                const gesuchsperiode = gesuchResponse.gesuchsperiode;
-                if (this.dossier === undefined) {
-                    this.cancel();
-                }
-                this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode)
-                    .then((response: TSAntragStatusHistory[]) => {
-                        this.verlauf = response;
-                    });
-                this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(response => {
-                    response.forEach(item => {
-                        this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
-                            item.antragTyp,
-                            item.eingangsdatum,
-                            item.laufnummer
-                        );
-                    });
+    public $onInit(): void {
+        if (!this.$stateParams.gesuchId) {
+            this.cancel();
+            return;
+        }
+
+        this.gesuchRS.findGesuch(this.$stateParams.gesuchId).then((gesuchResponse: TSGesuch) => {
+            this.dossier = gesuchResponse.dossier;
+            const gesuchsperiode = gesuchResponse.gesuchsperiode;
+            if (this.dossier === undefined) {
+                this.cancel();
+            }
+            this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode)
+                .then((response: TSAntragStatusHistory[]) => {
+                    this.verlauf = response;
+                });
+            this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(response => {
+                response.forEach(item => {
+                    this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
+                        item.antragTyp,
+                        item.eingangsdatum,
+                        item.laufnummer
+                    );
                 });
             });
-        } else {
-            this.cancel();
-        }
+        });
     }
 
     public getVerlaufList(): Array<TSAntragStatusHistory> {
