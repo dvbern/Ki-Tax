@@ -48,6 +48,8 @@ import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -98,10 +100,26 @@ public class GemeindeResource {
 			benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde)
 		);
 
+		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
+
+		assertUserHasRequiredRole(benutzer);
+
 		benutzerService.einladen(benutzer, EinladungTyp.GEMEINDE, persistedGemeinde, null, null);
 
-		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
-		return jaxGemeinde;
+		return converter.gemeindeToJAX(persistedGemeinde);
+	}
+
+	/**
+	 * Asserts that the given user has a gemeindeabhaengige role. Otherwise it will throw an Exception
+	 */
+	private void assertUserHasRequiredRole(@Nonnull Benutzer benutzer) {
+		if (!benutzer.getRole().isRoleAnyAdminGemeinde()) {
+			throw new EbeguRuntimeException(
+				"convertStatusToEntity",
+				ErrorCodeEnum.ERROR_WRONG_EXISTING_ROLE,
+				benutzer.getRole()
+			);
+		}
 	}
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)

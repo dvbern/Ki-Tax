@@ -56,6 +56,10 @@ public enum UserRole {
 		return ADMIN_BG == this || SACHBEARBEITER_BG == this || isRoleGemeinde();
 	}
 
+	public boolean isRoleAnyAdminGemeinde() {
+		return ADMIN_GEMEINDE == this || ADMIN_BG == this || ADMIN_TS == this;
+	}
+
 	public boolean isRoleGemeinde() {
 		return  ADMIN_GEMEINDE == this || SACHBEARBEITER_GEMEINDE == this;
 	}

@@ -47,6 +47,8 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
@@ -93,9 +95,12 @@ public class TraegerschaftResource {
 		Traegerschaft persistedTraegerschaft = this.traegerschaftService.saveTraegerschaft(convertedTraegerschaft);
 
 		if (convertedTraegerschaft.isNew()) {
-			final Benutzer benutzer = benutzerService.findBenutzerByEmail(traegerschaftJAXP.getMail()).orElseGet(() ->
-				benutzerService.createAdminTraegerschaftByEmail(traegerschaftJAXP.getMail(), persistedTraegerschaft)
-			);
+			if (benutzerService.findBenutzerByEmail(traegerschaftJAXP.getMail()).isPresent()) {
+				// an existing user cannot be used to create a new Traegerschaft
+				throw new EbeguRuntimeException("saveTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, traegerschaftJAXP.getMail());
+			}
+			final Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(traegerschaftJAXP.getMail(), persistedTraegerschaft);
+
 			benutzerService.einladen(benutzer, EinladungTyp.TRAEGERSCHAFT, null, null, traegerschaft);
 		}
 

@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import io.swagger.annotations.Api;
@@ -87,9 +88,11 @@ public class InstitutionResource {
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		final Benutzer benutzer = benutzerService.findBenutzerByEmail(institutionJAXP.getMail()).orElseGet(() ->
-			benutzerService.createAdminInstitutionByEmail(institutionJAXP.getMail(), persistedInstitution)
-		);
+		if (benutzerService.findBenutzerByEmail(institutionJAXP.getMail()).isPresent()) {
+			// an existing user cannot be used to create a new Institution
+			throw new EbeguRuntimeException("createInstitution", ErrorCodeEnum.EXISTING_USER_MAIL, institutionJAXP.getMail());
+		}
+		final Benutzer benutzer = benutzerService.createAdminInstitutionByEmail(institutionJAXP.getMail(), persistedInstitution);
 		benutzerService.einladen(benutzer, EinladungTyp.INSTITUTION, null, persistedInstitution, null);
 
 		URI uri = uriInfo.getBaseUriBuilder()
