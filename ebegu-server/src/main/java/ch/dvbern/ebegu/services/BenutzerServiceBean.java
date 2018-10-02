@@ -201,6 +201,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	) {
 		requireNonNull(adminMail);
 		requireNonNull(principalBean.getMandant());
+		checkRolabhaengigeParameters(role, gemeinde, institution, traegerschaft);
 
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setEmail(adminMail);
@@ -218,18 +219,35 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			new TreeSet<>(Collections.singletonList(berechtigung))
 		);
 
-		if (gemeinde != null && role == UserRole.ADMIN_GEMEINDE) {
+		if (role == UserRole.ADMIN_GEMEINDE) {
 			benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeinde);
 		}
-		if (institution != null && role == UserRole.ADMIN_INSTITUTION) {
+		if (role == UserRole.ADMIN_INSTITUTION) {
 			benutzer.getCurrentBerechtigung().setInstitution(institution);
 		}
-		if (traegerschaft != null && role == UserRole.ADMIN_TRAEGERSCHAFT) {
+		if (role == UserRole.ADMIN_TRAEGERSCHAFT) {
 			benutzer.getCurrentBerechtigung().setTraegerschaft(traegerschaft);
 		}
 
 
 		return saveBenutzer(benutzer);
+	}
+
+	private void checkRolabhaengigeParameters(
+		@Nonnull UserRole role,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
+		if (role == UserRole.ADMIN_GEMEINDE) {
+			requireNonNull(gemeinde);
+		}
+		if (role == UserRole.ADMIN_INSTITUTION) {
+			requireNonNull(institution);
+		}
+		if (role == UserRole.ADMIN_TRAEGERSCHAFT) {
+			requireNonNull(traegerschaft);
+		}
 	}
 
 	@Nonnull
