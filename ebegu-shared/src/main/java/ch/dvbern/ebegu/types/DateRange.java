@@ -147,6 +147,13 @@ public class DateRange implements Serializable, Comparable<DateRange> {
 	}
 
 	/**
+	 * date <= gueltigAb
+	 */
+	public boolean startsSameDayOrAfter(@Nonnull ChronoLocalDate date) {
+		return getGueltigAb().isAfter(date) || getGueltigAb().isEqual(date);
+	}
+
+	/**
 	 * gueltigAb == other.gueltigAb
 	 */
 	public boolean startsSameDay(@Nonnull DateRange other) {

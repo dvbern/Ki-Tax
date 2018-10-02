@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.validators;
 
-import java.time.LocalDate;
-
 import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

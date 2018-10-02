@@ -44,8 +44,11 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,6 +64,9 @@ public class GesuchsperiodeResource {
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -142,6 +148,7 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllGesuchsperioden() {
 		return gesuchsperiodeService.getAllGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
 	}
@@ -169,6 +176,7 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden() {
 		return gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
 	}
@@ -187,6 +195,29 @@ public class GesuchsperiodeResource {
 
 		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId).stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+			.filter(periode -> periode.getGueltigAb() != null)
+			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV oder INAKTIV sind und nach dem " +
+		"BetreuungsgutscheineStartdatum der Gemeinde liegen.",
+	responseContainer = "List",
+	response = JaxGesuchsperiode.class)
+	@Nonnull
+	@GET
+	@Path("/gemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(@Nonnull @PathParam("gemeindeId") String gemeindeId) {
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getAllPeriodenForGemeinde",
+				String.format("Keine Gemeinde für ID %s", gemeindeId)));
+
+		return gesuchsperiodeService.getGesuchsperiodenAfterDate(gemeinde.getBetreuungsgutscheineStartdatum()).stream()
+			.map(periode -> converter.gesuchsperiodeToJAX(periode))
+			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
 	}

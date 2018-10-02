@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -244,6 +245,15 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@PermitAll
 	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden() {
 		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV);
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(@Nonnull LocalDate date) {
+		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV).stream()
+			.filter(periode -> periode.getGueltigkeit().startsSameDayOrAfter(date))
+			.collect(Collectors.toList());
 	}
 
 	@Override
