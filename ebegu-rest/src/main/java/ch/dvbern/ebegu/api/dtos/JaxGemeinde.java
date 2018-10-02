@@ -15,13 +15,18 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.time.LocalDate;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
@@ -36,11 +41,18 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
+	@Nonnull
 	private long gemeindeNummer;
 
+	@Nullable
 	private Long bfsNummer;
 
+	@Nonnull
 	private GemeindeStatus status;
+
+	@Nonnull
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate BEGUab;
 
 
 	@Nonnull
@@ -60,22 +72,32 @@ public class JaxGemeinde extends JaxAbstractDTO {
 		this.gemeindeNummer = gemeindeNummer;
 	}
 
+	@Nonnull
 	public GemeindeStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(GemeindeStatus status) {
+	public void setStatus(@Nonnull GemeindeStatus status) {
 		this.status = status;
 	}
 
+	@Nullable
 	public Long getBfsNummer() {
 		return bfsNummer;
 	}
 
-	public void setBfsNummer(Long bfsNummer) {
+	public void setBfsNummer(@Nullable Long bfsNummer) {
 		this.bfsNummer = bfsNummer;
 	}
 
+	@Nonnull
+	public LocalDate getBEGUab() {
+		return BEGUab;
+	}
+
+	public void setBEGUab(@Nonnull LocalDate BEGUab) {
+		this.BEGUab = BEGUab;
+	}
 
 	@Override
 	public int compareTo(@Nonnull JaxAbstractDTO o) {
@@ -86,6 +108,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 			builder.append(this.getName(), parsedEntity.getName());
 			builder.append(this.getGemeindeNummer(), parsedEntity.getGemeindeNummer());
 			builder.append(this.getStatus(), parsedEntity.getStatus());
+			builder.append(this.getBEGUab(), parsedEntity.getBEGUab());
 			return builder.toComparison();
 		}
 		return builder.toComparison();

@@ -89,9 +89,4 @@ public interface EinstellungService {
 	 * Löscht alle Einstellungen der uebergebenen Gesuchsperiode
 	 */
 	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
-
-	/**
-	 * Creates the Einstellung BEGU_BIETEN_AB for the given Gemeinde with the given date
-	 */
-	Einstellung createBeguBietenAbEinstellung(@Nonnull LocalDate eingangsdatum, @Nullable Gemeinde gemeinde);
 }

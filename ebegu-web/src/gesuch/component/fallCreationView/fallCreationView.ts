@@ -43,16 +43,28 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         'WizardStepManager', '$translate', '$q', '$scope', 'AuthServiceRS', 'GesuchsperiodeRS', '$timeout'];
     private gesuchsperiodeId: string;
 
-    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt wird
-    // sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
+    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
+    // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     showError: boolean = false;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly errorService: ErrorService, private readonly $stateParams: INewFallStateParams, wizardStepManager: WizardStepManager,
-                private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS, $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCH_ERSTELLEN, $timeout);
+    constructor(gesuchModelManager: GesuchModelManager,
+                berechnungsManager: BerechnungsManager,
+                private readonly errorService: ErrorService,
+                private readonly $stateParams: INewFallStateParams,
+                wizardStepManager: WizardStepManager,
+                private readonly $translate: ITranslateService,
+                private readonly $q: IQService,
+                $scope: IScope,
+                private readonly authServiceRS: AuthServiceRS,
+                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                $timeout: ITimeoutService) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.GESUCH_ERSTELLEN,
+            $timeout);
     }
 
     $onInit() {
@@ -77,9 +89,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
             }
         }
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then((response: TSGesuchsperiode[]) => {
-            this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
-        });
+        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then(
+            (response: TSGesuchsperiode[]) => {
+                this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
+            });
     }
 
     save(): IPromise<TSGesuch> {
@@ -133,12 +146,16 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     public getTitle(): string {
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.isGesuch()) {
             if (this.gesuchModelManager.isGesuchSaved() && this.gesuchModelManager.getGesuchsperiode()) {
-                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'KITAX_ERNEUERUNGSGESUCH_PERIODE' : 'KITAX_ERSTGESUCH_PERIODE';
+                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ?
+                    'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
+                    'KITAX_ERSTGESUCH_PERIODE';
                 return this.$translate.instant(key, {
                     periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString
                 });
             } else {
-                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'KITAX_ERNEUERUNGSGESUCH' : 'KITAX_ERSTGESUCH';
+                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ?
+                    'KITAX_ERNEUERUNGSGESUCH' :
+                    'KITAX_ERSTGESUCH';
                 return this.$translate.instant(key);
             }
         } else {

@@ -17,26 +17,26 @@
 
 package ch.dvbern.ebegu.validators;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.enums.EinstellungKey;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-public class CheckEinstellungValidator implements ConstraintValidator<CheckEinstellung, Einstellung> {
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-	@Override
-	public void initialize(CheckEinstellung constraintAnnotation) {
-		// nop
-	}
+@Target({ TYPE, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Constraint(validatedBy = CheckEinstellungValidator.class)
+@Documented
+public @interface CheckGemeinde {
 
-	/**
-	 * For each EinstellungKey we can check in this method if the given value is right or not.
-	 */
-	@Override
-	public boolean isValid(@Nonnull Einstellung instance, @Nullable ConstraintValidatorContext context) {
-		return true;
-	}
+	String message() default "{invalid_einstellung}";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
 }

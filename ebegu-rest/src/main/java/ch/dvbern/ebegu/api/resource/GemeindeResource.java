@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,19 +35,17 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -67,7 +64,7 @@ public class GemeindeResource {
 	private EinstellungService einstellungService;
 
 	@Inject
-	private JaxBConverter converter;
+	private GemeindeJaxBConverter converter;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
@@ -76,16 +73,12 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
-		@Nonnull @NotNull @QueryParam("date") String stringDateBeguBietenAb,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
 		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
-		LocalDate eingangsdatum = DateUtil.parseStringToDate(stringDateBeguBietenAb);
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
-
-		einstellungService.createBeguBietenAbEinstellung(eingangsdatum, persistedGemeinde);
 
 		// todo KIBON-211 the given user must be informed
 

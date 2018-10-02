@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.validators.CheckEinstellungValidator;
@@ -39,25 +37,8 @@ public class CheckEinstellungValidatorTest {
 	}
 
 	@Test
-	public void checkBeguBietenAbFirstOfMonth() {
-		Assert.assertTrue(validator.isValid(createBeguBietenAb("2018-10-01"), null));
-	}
-
-	@Test
-	public void checkBeguBietenAbInMonth() {
-		Assert.assertFalse(validator.isValid(createBeguBietenAb("2018-10-15"), null));
-	}
-
-	@Test
 	public void checkBegucreateTageMaxKita() {
 		Assert.assertTrue(validator.isValid(createTageMaxKita(), null));
-	}
-
-	private Einstellung createBeguBietenAb(@Nonnull String date) {
-		Einstellung einstellung = new Einstellung();
-		einstellung.setKey(EinstellungKey.BEGU_ANBIETEN_AB);
-		einstellung.setValue(date);
-		return einstellung;
 	}
 
 	private Einstellung createTageMaxKita() {
