@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -271,7 +270,7 @@ public class MailTemplateConfiguration {
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
-		paramMap.put("acceptLink", createLink(eingeladener));
+		paramMap.put("acceptLink", createLink(eingeladener, einladungTyp, gemeinde, institution, traegerschaft));
 		paramMap.put("eingeladener", eingeladener);
 		paramMap.put("content",
 			ServerMessageUtil.getMessage(
@@ -332,16 +331,44 @@ public class MailTemplateConfiguration {
 		return "";
 	}
 
-	private String createLink(@Nonnull Benutzer eingeladener) {
-		if (eingeladener.getRole() == UserRole.ADMIN_GEMEINDE) {
-			//todo it should also be allowed ADMIN_BG and TS --> better use EinladungTyp
-			return "http://ffffff/user=?/gemeinde=?";
+	private String createLink(
+		@Nonnull Benutzer eingeladener,
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
+		final String einladungRelatedObjectId = isEinladungRelatedObjectRequired(einladungTyp)
+			? "&entityid=" + getEinladungRelatedObjectId(einladungTyp, gemeinde, institution, traegerschaft)
+			: "";
+
+		return ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://"
+			+ ebeguConfiguration.getHostname()
+			+ "/einladung?typ=" + einladungTyp
+			+ einladungRelatedObjectId
+			+ "&userid=" + eingeladener.getId();
+	}
+
+	private boolean isEinladungRelatedObjectRequired(@Nonnull EinladungTyp einladungTyp) {
+		return einladungTyp != EinladungTyp.MITARBEITER;
+	}
+
+	@Nonnull
+	private String getEinladungRelatedObjectId(
+		@Nonnull EinladungTyp einladungTyp,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
+		@Nullable Traegerschaft traegerschaft
+	) {
+		// todo KIBON-228 mejorar, eliminar rojo
+		if (einladungTyp == EinladungTyp.GEMEINDE) {
+			return gemeinde.getId();
 		}
-		if (eingeladener.getRole() == UserRole.ADMIN_INSTITUTION) {
-			return "http://ffffff/user=?/institution=?";
+		if (einladungTyp == EinladungTyp.INSTITUTION) {
+			return institution.getId();
 		}
-		if (eingeladener.getRole() == UserRole.ADMIN_TRAEGERSCHAFT) {
-			return "http://ffffff/user=?/traegerschaft=?";
+		if (einladungTyp == EinladungTyp.TRAEGERSCHAFT) {
+			return traegerschaft.getId();
 		}
 		return "";
 	}
