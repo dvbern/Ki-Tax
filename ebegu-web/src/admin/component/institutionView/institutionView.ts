@@ -23,12 +23,14 @@ import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStam
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IInstitutionStateParams} from '../../admin.route';
 import IFormController = angular.IFormController;
@@ -184,5 +186,10 @@ export class InstitutionViewController extends AbstractAdminViewController {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: undefined
         });
+    }
+
+    public isCreateInstitutionAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles())
+            || this.authServiceRS.isRole(TSRole.SACHBEARBEITER_MANDANT);
     }
 }

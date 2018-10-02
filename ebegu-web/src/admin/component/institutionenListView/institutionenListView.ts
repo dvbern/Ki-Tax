@@ -19,8 +19,10 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
@@ -80,5 +82,10 @@ export class InstitutionenListViewController extends AbstractAdminViewController
         this.$state.go('admin.institution', {
             institutionId: institution.id
         });
+    }
+
+    public isCreateInstitutionAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles())
+            || this.authServiceRS.isRole(TSRole.SACHBEARBEITER_MANDANT);
     }
 }

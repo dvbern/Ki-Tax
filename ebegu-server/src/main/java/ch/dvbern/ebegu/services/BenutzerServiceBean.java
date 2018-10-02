@@ -242,6 +242,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ADMIN_MANDANT,
 		ADMIN_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_MANDANT,
 	})
 	public Benutzer einladen(
 		@Nonnull Benutzer benutzer,
