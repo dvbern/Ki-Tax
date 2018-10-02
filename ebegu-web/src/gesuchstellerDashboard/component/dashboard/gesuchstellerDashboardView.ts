@@ -49,10 +49,11 @@ export class GesuchstellerDashboardViewController {
         '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
 
     private antragList: Array<TSAntragDTO> = [];
-    private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
+    private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     dossier: TSDossier;
     totalResultCount: string = '-';
     amountNewMitteilungen: number;
+    periodYear: string;
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
     mapOfNewestAntraege: { [key: string]: string } = {};
 
@@ -74,6 +75,9 @@ export class GesuchstellerDashboardViewController {
             this.errorService.addMesageAsInfo(this.$translate.instant(params.infoMessage));
         }
 
+        const year = this.dossier.gemeinde.betreuungsgutscheineStartdatum.year();
+        this.periodYear = `${year} / ${year + 1}`;
+
         this.initViewModel();
     }
 
@@ -94,20 +98,18 @@ export class GesuchstellerDashboardViewController {
     }
 
     private updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then((response: TSGesuchsperiode[]) => {
-            this._activeGesuchsperiodenList = angular.copy(response);
-            // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils
-            // neueste Gesuch pro Periode
-            for (const gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(response => {
-                    this.mapOfNewestAntraege[gp.id] = response;
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.dossier.gemeinde.id)
+            .then((response: TSGesuchsperiode[]) => {
+                this.activeGesuchsperiodenList = response;
+                // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen.
+                // Wir merken uns das jeweils neueste Gesuch pro Periode
+                response.map(gp => {
+                    this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id)
+                        .then(response => {
+                            this.mapOfNewestAntraege[gp.id] = response;
+                        });
                 });
-            }
-        });
-    }
-
-    public getActiveGesuchsperiodenList(): Array<TSGesuchsperiode> {
-        return this._activeGesuchsperiodenList;
+            });
     }
 
     public goToMitteilungenOeffen() {
