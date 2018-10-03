@@ -48,9 +48,11 @@ export class DvNgShowElementDirective implements OnInit {
     private _roles: TSRole[];
     private _condition: boolean;
 
-    public constructor(private readonly templateRef: TemplateRef<any>,
-                       private readonly viewContainer: ViewContainerRef,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly templateRef: TemplateRef<any>,
+        private readonly viewContainer: ViewContainerRef,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     public ngOnInit(): void {

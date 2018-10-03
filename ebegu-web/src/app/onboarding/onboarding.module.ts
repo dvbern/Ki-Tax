@@ -18,8 +18,8 @@ import {SharedModule} from '../shared/shared.module';
 import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingComponent} from './dv-onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
+import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingRoutingModule} from './onboarding-routing.module';
-import { OnboardingMainComponent } from './onboarding-main/onboarding-main.component';
 
 @NgModule({
     imports: [
@@ -30,8 +30,8 @@ import { OnboardingMainComponent } from './onboarding-main/onboarding-main.compo
         OnboardingComponent,
         OnboardingBeLoginComponent,
         OnboardingMainComponent,
-        OnboardingGsAbschliessenComponent
-    ]
+        OnboardingGsAbschliessenComponent,
+    ],
 })
 class OnboardingModule {
 }

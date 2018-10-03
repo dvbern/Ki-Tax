@@ -25,11 +25,13 @@ export default class TSWizardStep extends TSAbstractMutableEntity {
     private _bemerkungen: string;
     private _verfuegbar: boolean;
 
-    public constructor(gesuchId?: string,
-                       wizardStepName?: TSWizardStepName,
-                       wizardStepStatus?: TSWizardStepStatus,
-                       bemerkungen?: string,
-                       verfuegbar?: boolean) {
+    public constructor(
+        gesuchId?: string,
+        wizardStepName?: TSWizardStepName,
+        wizardStepStatus?: TSWizardStepStatus,
+        bemerkungen?: string,
+        verfuegbar?: boolean,
+    ) {
         super();
         this._gesuchId = gesuchId;
         this._wizardStepName = wizardStepName;

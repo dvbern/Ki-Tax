@@ -52,7 +52,7 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
         anmeldungSchulamtAblehnen: '&',
         anmeldungSchulamtFalscheInstitution: '&',
         cancel: '&',
-        form: '='
+        form: '=',
     };
     public template = require('./betreuungFerieninselView.html');
     public controller = BetreuungFerieninselViewController;
@@ -61,10 +61,24 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
 
 export class BetreuungFerieninselViewController extends BetreuungViewController {
 
-    public static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager',
+    public static $inject = [
+        '$state',
+        'GesuchModelManager',
+        'EbeguUtil',
+        'CONSTANTS',
+        '$scope',
+        'BerechnungsManager',
         'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout',
-        '$translate', 'FerieninselStammdatenRS'];
+        'AuthServiceRS',
+        'WizardStepManager',
+        '$stateParams',
+        'MitteilungRS',
+        'DvDialog',
+        '$log',
+        '$timeout',
+        '$translate',
+        'FerieninselStammdatenRS',
+    ];
 
     public betreuung: TSBetreuung;
     public onSave: () => void;
@@ -76,22 +90,24 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
 
-    public constructor($state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       ebeguUtil: EbeguUtil,
-                       CONSTANTS: any,
-                       $scope: IScope,
-                       berechnungsManager: BerechnungsManager,
-                       errorService: ErrorService,
-                       authServiceRS: AuthServiceRS,
-                       wizardStepManager: WizardStepManager,
-                       $stateParams: IBetreuungStateParams,
-                       mitteilungRS: MitteilungRS,
-                       dvDialog: DvDialog,
-                       $log: ILogService,
-                       $timeout: ITimeoutService,
-                       $translate: ITranslateService,
-                       private readonly ferieninselStammdatenRS: FerieninselStammdatenRS) {
+    public constructor(
+        $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        ebeguUtil: EbeguUtil,
+        CONSTANTS: any,
+        $scope: IScope,
+        berechnungsManager: BerechnungsManager,
+        errorService: ErrorService,
+        authServiceRS: AuthServiceRS,
+        wizardStepManager: WizardStepManager,
+        $stateParams: IBetreuungStateParams,
+        mitteilungRS: MitteilungRS,
+        dvDialog: DvDialog,
+        $log: ILogService,
+        $timeout: ITimeoutService,
+        $translate: ITranslateService,
+        private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
+    ) {
         super($state,
             gesuchModelManager,
             ebeguUtil,
@@ -203,7 +219,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
                     title: 'CONFIRM_SAVE_FERIENINSEL',
                     deleteText: 'BESCHREIBUNG_SAVE_FERIENINSEL',
                     parentController: undefined,
-                    elementID: undefined
+                    elementID: undefined,
                 }).then(() => {
                     this.onSave();
                 });
@@ -241,15 +257,19 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         return weekdays;
     }
 
-    public displayBreak(tag: TSBelegungFerieninselTag,
-                        index: number,
-                        dayArray: Array<TSBelegungFerieninselTag>): boolean {
+    public displayBreak(
+        tag: TSBelegungFerieninselTag,
+        index: number,
+        dayArray: Array<TSBelegungFerieninselTag>,
+    ): boolean {
         return dayArray[index + 1] ? tag.tag.week() !== dayArray[index + 1].tag.week() : false;
     }
 
-    public displayWeekRow(tag: TSBelegungFerieninselTag,
-                          index: number,
-                          dayArray: Array<TSBelegungFerieninselTag>): boolean {
+    public displayWeekRow(
+        tag: TSBelegungFerieninselTag,
+        index: number,
+        dayArray: Array<TSBelegungFerieninselTag>,
+    ): boolean {
         return dayArray[index + 1] ? dayArray[index + 1].tag.diff(tag.tag, 'days') > 7 : false;
     }
 

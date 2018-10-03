@@ -29,12 +29,14 @@ export default class TSFerieninselStammdaten extends TSAbstractMutableEntity {
     private _gesuchsperiode: TSGesuchsperiode;
     private _potenzielleFerieninselTageFuerBelegung: TSBelegungFerieninselTag[] = [];
 
-    public constructor(ferienname?: TSFerienname,
-                       zeitraum?: TSFerieninselZeitraum,
-                       zeitraumList?: TSFerieninselZeitraum[],
-                       anmeldeschluss?: moment.Moment,
-                       gesuchsperiode?: TSGesuchsperiode,
-                       potenzielleFerieninselTageFuerBelegung?: TSBelegungFerieninselTag[]) {
+    public constructor(
+        ferienname?: TSFerienname,
+        zeitraum?: TSFerieninselZeitraum,
+        zeitraumList?: TSFerieninselZeitraum[],
+        anmeldeschluss?: moment.Moment,
+        gesuchsperiode?: TSGesuchsperiode,
+        potenzielleFerieninselTageFuerBelegung?: TSBelegungFerieninselTag[],
+    ) {
         super();
         this._ferienname = ferienname;
         this._zeitraum = zeitraum;

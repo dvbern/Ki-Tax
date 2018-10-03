@@ -29,6 +29,7 @@ export default class HttpBuffer {
 
     /** Service initialized later because of circular dependency problem. */
     public $http: IHttpService;
+
     public constructor(private readonly $injector: IInjectorService) {
     }
 
@@ -51,7 +52,7 @@ export default class HttpBuffer {
     public append(config: IRequestConfig, deferred: IDeferred<any>): void {
         this.buffer.push({
             config,
-            deferred
+            deferred,
         });
     }
 

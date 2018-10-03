@@ -40,23 +40,34 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
 
 export class AlleVerfuegungenViewController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$state', '$stateParams', 'AuthServiceRS', 'BetreuungRS',
-        'DownloadRS', '$log', '$timeout', 'DossierRS', 'EbeguUtil'];
+    public static $inject: ReadonlyArray<string> = [
+        '$state',
+        '$stateParams',
+        'AuthServiceRS',
+        'BetreuungRS',
+        'DownloadRS',
+        '$log',
+        '$timeout',
+        'DossierRS',
+        'EbeguUtil',
+    ];
 
     public dossier: TSDossier;
     public alleVerfuegungen: Array<any> = [];
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $state: StateService,
-                       private readonly $stateParams: IAlleVerfuegungenStateParams,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly betreuungRS: BetreuungRS,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly $log: ILogService,
-                       private readonly $timeout: ITimeoutService,
-                       private readonly dossierRS: DossierRS,
-                       private readonly ebeguUtil: EbeguUtil) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly $stateParams: IAlleVerfuegungenStateParams,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly betreuungRS: BetreuungRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly $log: ILogService,
+        private readonly $timeout: ITimeoutService,
+        private readonly dossierRS: DossierRS,
+        private readonly ebeguUtil: EbeguUtil,
+    ) {
     }
 
     public $onInit(): void {
@@ -98,7 +109,7 @@ export class AlleVerfuegungenViewController implements IController {
         this.$state.go('gesuch.verfuegenView', {
             betreuungNumber: betreuungNummer,
             kindNumber: kindNummer,
-            gesuchId
+            gesuchId,
         });
     }
 

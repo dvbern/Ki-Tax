@@ -92,7 +92,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                 LOG.debug('unauthorised');
 
                 return false;
-            })
+            }),
         )
         .toPromise();
 }

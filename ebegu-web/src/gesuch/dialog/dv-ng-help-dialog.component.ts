@@ -29,7 +29,8 @@ export class DvNgHelpDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
-        private readonly downloadRS: DownloadRS) {
+        private readonly downloadRS: DownloadRS,
+    ) {
     }
 
     public close(): void {

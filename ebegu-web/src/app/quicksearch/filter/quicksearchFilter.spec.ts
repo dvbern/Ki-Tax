@@ -54,51 +54,51 @@ describe('filter', () => {
 
         quicksearchArray = [];
         antrag1 = new TSAntragDTO('id1',
-                                  1,
-                                  'Hernandez',
-                                  TSAntragTyp.ERSTGESUCH,
-                                  ab,
-                                  ab,
-                                  undefined,
-                                  [TSBetreuungsangebotTyp.KITA],
-                                  ['Instit1'],
-                                  'Juan Arbolado',
-                                  'Juan Arbolado',
-                                  TSAntragStatus.IN_BEARBEITUNG_JA,
-                                  gesuchsperiode.gueltigkeit.gueltigAb,
-                                  gesuchsperiode.gueltigkeit.gueltigBis);
+            1,
+            'Hernandez',
+            TSAntragTyp.ERSTGESUCH,
+            ab,
+            ab,
+            undefined,
+            [TSBetreuungsangebotTyp.KITA],
+            ['Instit1'],
+            'Juan Arbolado',
+            'Juan Arbolado',
+            TSAntragStatus.IN_BEARBEITUNG_JA,
+            gesuchsperiode.gueltigkeit.gueltigAb,
+            gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag1);
 
         antrag2 = new TSAntragDTO('id2',
-                                  2,
-                                  'Perez',
-                                  TSAntragTyp.ERSTGESUCH,
-                                  ab,
-                                  ab,
-                                  undefined,
-                                  [TSBetreuungsangebotTyp.TAGESFAMILIEN],
-                                  ['Instit2'],
-                                  'Antonio Jimenez',
-                                  'Antonio Jimenez',
-                                  TSAntragStatus.IN_BEARBEITUNG_JA,
-                                  gesuchsperiode.gueltigkeit.gueltigAb,
-                                  gesuchsperiode.gueltigkeit.gueltigBis);
+            2,
+            'Perez',
+            TSAntragTyp.ERSTGESUCH,
+            ab,
+            ab,
+            undefined,
+            [TSBetreuungsangebotTyp.TAGESFAMILIEN],
+            ['Instit2'],
+            'Antonio Jimenez',
+            'Antonio Jimenez',
+            TSAntragStatus.IN_BEARBEITUNG_JA,
+            gesuchsperiode.gueltigkeit.gueltigAb,
+            gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag2);
 
         antrag3 = new TSAntragDTO('id3',
-                                  3,
-                                  'Dominguez',
-                                  TSAntragTyp.MUTATION,
-                                  ab,
-                                  ab,
-                                  undefined,
-                                  [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN],
-                                  ['Instit1', 'Instit2'],
-                                  'Eustaquio Romualdo',
-                                  'Eustaquio Romualdo',
-                                  TSAntragStatus.IN_BEARBEITUNG_JA,
-                                  gesuchsperiode.gueltigkeit.gueltigAb,
-                                  gesuchsperiode.gueltigkeit.gueltigBis);
+            3,
+            'Dominguez',
+            TSAntragTyp.MUTATION,
+            ab,
+            ab,
+            undefined,
+            [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN],
+            ['Instit1', 'Instit2'],
+            'Eustaquio Romualdo',
+            'Eustaquio Romualdo',
+            TSAntragStatus.IN_BEARBEITUNG_JA,
+            gesuchsperiode.gueltigkeit.gueltigAb,
+            gesuchsperiode.gueltigkeit.gueltigBis);
         quicksearchArray.push(antrag3);
 
     }));
@@ -112,18 +112,18 @@ describe('filter', () => {
             expect(filter(quicksearchArray, {fallNummer: '4'})).toEqual([]);
         });
         it('should return an array with only the elements with the given Familienname or containing the given string',
-           () => {
-               expect(filter(quicksearchArray, {familienName: 'Hernandez'}))
-                   .toEqual([antrag1]);
-               expect(filter(quicksearchArray, {familienName: 'ez'}))
-                   .toEqual([antrag1, antrag2, antrag3]);
-               // empty string returns all elements
-               expect(filter(quicksearchArray, {familienName: ''}))
-                   .toEqual([antrag1, antrag2, antrag3]);
-               // no familienname with this pattern
-               expect(filter(quicksearchArray, {familienName: 'rrr'}))
-                   .toEqual([]);
-           });
+            () => {
+                expect(filter(quicksearchArray, {familienName: 'Hernandez'}))
+                    .toEqual([antrag1]);
+                expect(filter(quicksearchArray, {familienName: 'ez'}))
+                    .toEqual([antrag1, antrag2, antrag3]);
+                // empty string returns all elements
+                expect(filter(quicksearchArray, {familienName: ''}))
+                    .toEqual([antrag1, antrag2, antrag3]);
+                // no familienname with this pattern
+                expect(filter(quicksearchArray, {familienName: 'rrr'}))
+                    .toEqual([]);
+            });
         it('should return an array with only the elements of the given antragTyp', () => {
             expect(filter(quicksearchArray, {antragTyp: TSAntragTyp.ERSTGESUCH}))
                 .toEqual([antrag1, antrag2]);

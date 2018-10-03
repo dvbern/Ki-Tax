@@ -33,17 +33,19 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
     private _institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
     private _institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
 
-    public constructor(iban?: string,
-                       oeffnungstage?: number,
-                       oeffnungsstunden?: number,
-                       betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-                       institution?: TSInstitution,
-                       adresse?: TSAdresse,
-                       gueltigkeit?: TSDateRange,
-                       kontoinhaber?: string,
-                       adresseKontoinhaber?: TSAdresse,
-                       institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
-                       institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel) {
+    public constructor(
+        iban?: string,
+        oeffnungstage?: number,
+        oeffnungsstunden?: number,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        institution?: TSInstitution,
+        adresse?: TSAdresse,
+        gueltigkeit?: TSDateRange,
+        kontoinhaber?: string,
+        adresseKontoinhaber?: TSAdresse,
+        institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
+        institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
+    ) {
         super(gueltigkeit);
         this._iban = iban;
         this._oeffnungstage = oeffnungstage;

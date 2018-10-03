@@ -42,12 +42,14 @@ export default class AbstractGesuchViewController<T> implements IController {
     public form: IFormController;
     public $timeout: ITimeoutService;
 
-    public constructor($gesuchModelManager: GesuchModelManager,
-                       $berechnungsManager: BerechnungsManager,
-                       wizardStepManager: WizardStepManager,
-                       $scope: IScope,
-                       stepName: TSWizardStepName,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $gesuchModelManager: GesuchModelManager,
+        $berechnungsManager: BerechnungsManager,
+        wizardStepManager: WizardStepManager,
+        $scope: IScope,
+        stepName: TSWizardStepName,
+        $timeout: ITimeoutService,
+    ) {
         this.gesuchModelManager = $gesuchModelManager;
         this.berechnungsManager = $berechnungsManager;
         this.wizardStepManager = wizardStepManager;

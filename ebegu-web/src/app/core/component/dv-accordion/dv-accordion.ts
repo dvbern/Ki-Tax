@@ -22,7 +22,7 @@ export class DvAccordionComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
     public bindings = {
         allowMultipleSections: '<',
-        selectedTabId: '<'
+        selectedTabId: '<',
     };
 }
 

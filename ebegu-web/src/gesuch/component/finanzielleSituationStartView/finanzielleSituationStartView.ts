@@ -43,8 +43,16 @@ export class FinanzielleSituationStartViewComponentConfig implements IComponentO
 
 export class FinanzielleSituationStartViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', '$timeout', 'DvDialog'];
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        '$timeout',
+        'DvDialog',
+    ];
 
     public finanzielleSituationRequired: boolean;
     public areThereOnlySchulamtangebote: boolean;
@@ -52,14 +60,16 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     public allowedRoles: Array<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       $timeout: ITimeoutService,
-                       private readonly dvDialog: DvDialog) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+        private readonly dvDialog: DvDialog,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
@@ -121,7 +131,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
                     deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
                     parentController: undefined,
                     elementID: undefined,
-                    form: this.form
+                    form: this.form,
                 }).then(() => {   // User confirmed changes
                     return this.save();
                 });

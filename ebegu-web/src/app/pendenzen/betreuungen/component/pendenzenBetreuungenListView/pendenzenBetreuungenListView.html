@@ -14,8 +14,11 @@
   -->
 
 <div class="dv-view">
-    <div class="col-md-12" st-table="displayedCollection" st-set-filter="pendenzBetreuungenFilter"
-         st-safe-src="vm.getPendenzenList()"  st-delay="20">
+    <div class="col-md-12"
+         st-table="displayedCollection"
+         st-set-filter="pendenzBetreuungenFilter"
+         st-safe-src="vm.getPendenzenList()"
+         st-delay="20">
 
         <div class="row">
             <div class="col-md-10">
@@ -44,7 +47,10 @@
                         <th st-sort="geburtsdatum" class="sortable" data-translate="GEBURTSDATUM_UPPER"></th>
                         <th st-sort="typ" class="sortable" data-translate="TYP_UPPER"></th>
                         <th st-sort="gesuchsperiodeString" class="sortable" data-translate="PERIODE_UPPER"></th>
-                        <th st-sort="eingangsdatum" st-sort-default="reverse" class="sortable" data-translate="EINGANG_UPPER"></th>
+                        <th st-sort="eingangsdatum"
+                            st-sort-default="reverse"
+                            class="sortable"
+                            data-translate="EINGANG_UPPER"></th>
                         <th st-sort="betreuungsangebotTyp" class="sortable" data-translate="ANGEBOT_UPPER"></th>
                         <th st-sort="institution" class="sortable" data-translate="INSTITUTION_UPPER"></th>
                     </tr>
@@ -67,7 +73,11 @@
                         <th><input st-search="typ" class="form-control" type="text"/></th>
                         <th>
                             <div class="dv-select-style">
-                                <select st-input-event="change" name="gesuchsperiodeString" id="gesuchsperiodeString" st-search="gesuchsperiode.gesuchsperiodeString" class="form-control"
+                                <select st-input-event="change"
+                                        name="gesuchsperiodeString"
+                                        id="gesuchsperiodeString"
+                                        st-search="gesuchsperiode.gesuchsperiodeString"
+                                        class="form-control"
                                         ng-options="periode for periode in vm.activeGesuchsperiodenList track by periode"
                                         ng-model="vm.selectedGesuchsperiode">
                                     <option value="">{{"ALLE" | translate}}</option>
@@ -77,7 +87,11 @@
                         <th><input st-search="eingangsdatum" class="form-control" type="text"/></th>
                         <th>
                             <div class="dv-select-style">
-                                <select st-input-event="change" name="betreuungsangebotTyp" id="betreuungsangebotTyp" st-search="betreuungsangebotTyp" class="form-control"
+                                <select st-input-event="change"
+                                        name="betreuungsangebotTyp"
+                                        id="betreuungsangebotTyp"
+                                        st-search="betreuungsangebotTyp"
+                                        class="form-control"
                                         ng-options="typ | translate for typ in vm.betreuungsangebotTypList track by typ"
                                         ng-model="vm.selectedBetreuungsangebotTyp">
                                     <option value="">{{"ALLE" | translate}}</option>
@@ -86,7 +100,11 @@
                         </th>
                         <th>
                             <div class="dv-select-style">
-                                <select st-input-event="change" name="institution" id="institution" st-search="institution" class="form-control"
+                                <select st-input-event="change"
+                                        name="institution"
+                                        id="institution"
+                                        st-search="institution"
+                                        class="form-control"
                                         ng-options="institution.name for institution in vm.institutionenList | orderBy: 'name' track by institution.name"
                                         ng-model="vm.selectedInstitution">
                                     <option value="">{{"ALLE" | translate}}</option>

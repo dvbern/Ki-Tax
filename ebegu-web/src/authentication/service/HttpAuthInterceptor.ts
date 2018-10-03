@@ -23,10 +23,12 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
 
     public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
 
-    public constructor(private readonly authLifeCycleService: AuthLifeCycleService,
-                       private readonly $q: IQService,
-                       private readonly CONSTANTS: any,
-                       private readonly httpBuffer: HttpBuffer) {
+    public constructor(
+        private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly $q: IQService,
+        private readonly CONSTANTS: any,
+        private readonly httpBuffer: HttpBuffer,
+    ) {
     }
 
     public responseError = <T>(response: any): IPromise<IHttpResponse<T>> | IHttpResponse<T> => {

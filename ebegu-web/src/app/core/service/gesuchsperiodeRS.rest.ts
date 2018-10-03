@@ -25,11 +25,13 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly $q: IQService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly $q: IQService,
+    ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }
 
@@ -53,11 +55,7 @@ export default class GesuchsperiodeRS {
     private saveGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
         let restGesuchsperiode = {};
         restGesuchsperiode = this.ebeguRestUtil.gesuchsperiodeToRestObject(restGesuchsperiode, gesuchsperiode);
-        return this.http.put(this.serviceURL, restGesuchsperiode, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+        return this.http.put(this.serviceURL, restGesuchsperiode).then((response: any) => {
             this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
             return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);
         });

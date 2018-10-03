@@ -40,10 +40,12 @@ export class BenutzerListViewController extends AbstractAdminViewController {
     public totalResultCount: string = '0';
     public readonly PERMISSION_BENUTZER_EINLADEN = PERMISSIONS[Permission.BENUTZER_EINLADEN];
 
-    public constructor(private readonly $state: StateService,
-                       private readonly $log: ILogService,
-                       authServiceRS: AuthServiceRS,
-                       private readonly benutzerRS: BenutzerRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly $log: ILogService,
+        authServiceRS: AuthServiceRS,
+        private readonly benutzerRS: BenutzerRS,
+    ) {
         super(authServiceRS);
     }
 

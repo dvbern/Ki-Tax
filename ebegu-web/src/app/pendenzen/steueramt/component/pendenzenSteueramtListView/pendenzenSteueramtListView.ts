@@ -38,10 +38,12 @@ export class PendenzenSteueramtListViewController implements IController {
     public totalResultCount: string = '0';
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $state: StateService,
-                       private readonly $log: ILogService,
-                       private readonly searchRS: SearchRS) {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $state: StateService,
+        private readonly $log: ILogService,
+        private readonly searchRS: SearchRS,
+    ) {
     }
 
     public editpendenzSteueramt(pendenz: TSAntragDTO, event: any): void {
@@ -63,7 +65,7 @@ export class PendenzenSteueramtListViewController implements IController {
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {
         this.gesuchModelManager.clearGesuch();
         const navObj: any = {
-            gesuchId: pendenz.antragId
+            gesuchId: pendenz.antragId,
         };
         if (isCtrlKeyPressed) {
             const url = this.$state.href('gesuch.familiensituation', navObj);

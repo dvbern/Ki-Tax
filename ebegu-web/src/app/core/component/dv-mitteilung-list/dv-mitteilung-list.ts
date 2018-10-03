@@ -60,9 +60,23 @@ export class DVMitteilungListConfig implements IComponentOptions {
 
 export class DVMitteilungListController implements IOnInit {
 
-    public static $inject: ReadonlyArray<string> = ['$stateParams', 'MitteilungRS', 'AuthServiceRS', 'BetreuungRS',
-        '$q', '$window', '$rootScope', '$state', 'EbeguUtil', 'DvDialog', 'GesuchModelManager', '$scope', '$timeout',
-        'DossierRS', 'PosteingangService'];
+    public static $inject: ReadonlyArray<string> = [
+        '$stateParams',
+        'MitteilungRS',
+        'AuthServiceRS',
+        'BetreuungRS',
+        '$q',
+        '$window',
+        '$rootScope',
+        '$state',
+        'EbeguUtil',
+        'DvDialog',
+        'GesuchModelManager',
+        '$scope',
+        '$timeout',
+        'DossierRS',
+        'PosteingangService',
+    ];
 
     public dossier: TSDossier;
     public betreuung: TSBetreuung;
@@ -74,21 +88,23 @@ export class DVMitteilungListController implements IOnInit {
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $stateParams: IMitteilungenStateParams,
-                       private readonly mitteilungRS: MitteilungRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly betreuungRS: BetreuungRS,
-                       private readonly $q: IQService,
-                       private readonly $window: IWindowService,
-                       private readonly $rootScope: IRootScopeService,
-                       private readonly $state: StateService,
-                       public ebeguUtil: EbeguUtil,
-                       private readonly dvDialog: DvDialog,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $scope: IScope,
-                       private readonly $timeout: ITimeoutService,
-                       private readonly dossierRS: DossierRS,
-                       private readonly posteingangService: PosteingangService) {
+    public constructor(
+        private readonly $stateParams: IMitteilungenStateParams,
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly betreuungRS: BetreuungRS,
+        private readonly $q: IQService,
+        private readonly $window: IWindowService,
+        private readonly $rootScope: IRootScopeService,
+        private readonly $state: StateService,
+        public ebeguUtil: EbeguUtil,
+        private readonly dvDialog: DvDialog,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $scope: IScope,
+        private readonly $timeout: ITimeoutService,
+        private readonly dossierRS: DossierRS,
+        private readonly posteingangService: PosteingangService,
+    ) {
     }
 
     public $onInit(): void {
@@ -192,9 +208,9 @@ export class DVMitteilungListController implements IOnInit {
         return this.mitteilungRS.sendMitteilung(this.getCurrentMitteilung())
             .then(() => this.reloadEntwurfAndMitteilungen())
             .finally(() => {
-            this.form.$setPristine();
-            this.form.$setUntouched();
-        });
+                this.form.$setPristine();
+                this.form.$setUntouched();
+            });
     }
 
     private reloadEntwurfAndMitteilungen(): TSMitteilung {
@@ -211,11 +227,11 @@ export class DVMitteilungListController implements IOnInit {
     public saveEntwurf(): IPromise<TSMitteilung> {
         if (this.form.$dirty && !this.isMitteilungEmpty()) {
             return this.mitteilungRS.saveEntwurf(this.getCurrentMitteilung())
-                  .then(() => this.reloadEntwurfAndMitteilungen())
-               .finally(() => {
-                this.form.$setPristine();
-                this.form.$setUntouched();
-            });
+                .then(() => this.reloadEntwurfAndMitteilungen())
+                .finally(() => {
+                    this.form.$setPristine();
+                    this.form.$setUntouched();
+                });
 
         }
         if (this.isMitteilungEmpty() && !this.currentMitteilung.isNew() && this.currentMitteilung.id) {
@@ -352,7 +368,7 @@ export class DVMitteilungListController implements IOnInit {
         this.$state.go('gesuch.betreuung', {
             betreuungNumber: mitteilung.betreuung.betreuungNummer,
             kindNumber: mitteilung.betreuung.kindNummer,
-            gesuchId: mitteilung.betreuung.gesuchId
+            gesuchId: mitteilung.betreuung.gesuchId,
         });
     }
 
@@ -388,7 +404,7 @@ export class DVMitteilungListController implements IOnInit {
             title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
             deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
             parentController: this,
-            elementID: 'Intro'
+            elementID: 'Intro',
         }).then(() => {   // User confirmed message
             const betreuungsmitteilung = mitteilung as TSBetreuungsmitteilung;
             // JaxID kommt als response

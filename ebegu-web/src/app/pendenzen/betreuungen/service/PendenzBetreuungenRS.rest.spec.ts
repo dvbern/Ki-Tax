@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSPendenzBetreuung from '../../../../models/TSPendenzBetreuung';
@@ -23,7 +24,7 @@ import PendenzBetreuungenRS from './PendenzBetreuungenRS.rest';
 describe('pendenzBetreuungenRS', () => {
 
     let pendenzBetreuungenRS: PendenzBetreuungenRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockPendenzBetreuungen: TSPendenzBetreuung;
     let mockPendenzBetreuungenRest: any;

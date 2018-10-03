@@ -64,8 +64,8 @@ describe('AddGemeindeComponent', () => {
             ],
             declarations: [
                 AddGemeindeComponent,
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
+            ],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(

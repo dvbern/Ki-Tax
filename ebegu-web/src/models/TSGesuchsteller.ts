@@ -29,18 +29,20 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     private _ewkAbfrageDatum: moment.Moment;
     private _korrespondenzSprache: TSSprache;
 
-    public constructor(vorname?: string,
-                       nachname?: string,
-                       geburtsdatum?: moment.Moment,
-                       geschlecht?: TSGeschlecht,
-                       email?: string,
-                       mobile?: string,
-                       telefon?: string,
-                       telefonAusland?: string,
-                       diplomatenstatus?: boolean,
-                       ewkPersonId?: string,
-                       ewkAbfrageDatum?: moment.Moment,
-                       korrespondenzSprache?: TSSprache) {
+    public constructor(
+        vorname?: string,
+        nachname?: string,
+        geburtsdatum?: moment.Moment,
+        geschlecht?: TSGeschlecht,
+        email?: string,
+        mobile?: string,
+        telefon?: string,
+        telefonAusland?: string,
+        diplomatenstatus?: boolean,
+        ewkPersonId?: string,
+        ewkAbfrageDatum?: moment.Moment,
+        korrespondenzSprache?: TSSprache,
+    ) {
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._mail = email;
         this._mobile = mobile;

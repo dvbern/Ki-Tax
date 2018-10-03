@@ -27,7 +27,7 @@ import BenutzerRS from '../../core/service/benutzerRS.rest';
 @Component({
     selector: 'dv-benutzer-einladen',
     templateUrl: './benutzer-einladen.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BenutzerEinladenComponent {
 

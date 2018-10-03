@@ -14,6 +14,7 @@
  */
 
 import {async} from '@angular/core/testing';
+import {IQService, IScope, ITimeoutService} from 'angular';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -31,11 +32,11 @@ describe('stammdatenView', () => {
     let gesuchModelManager: GesuchModelManager;
     let stammdatenViewController: StammdatenViewController;
     let $stateParams: IStammdatenStateParams;
-    let $q: angular.IQService;
+    let $q: IQService;
     let $rootScope: any;
-    let $scope: angular.IScope;
+    let $scope: IScope;
     let ewkRS: EwkRS;
-    let $timeout: angular.ITimeoutService;
+    let $timeout: ITimeoutService;
 
     beforeEach(angular.mock.module('ebeguWeb.gesuch'));
 

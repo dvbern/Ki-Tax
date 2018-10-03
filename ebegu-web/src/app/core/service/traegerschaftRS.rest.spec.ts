@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -22,7 +23,7 @@ import {TraegerschaftRS} from './traegerschaftRS.rest';
 describe('institutionStammdatenRS', () => {
 
     let traegerschaftRS: TraegerschaftRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockTraegerschaft: TSTraegerschaft;
     let mockTraegerschaftRest: any;

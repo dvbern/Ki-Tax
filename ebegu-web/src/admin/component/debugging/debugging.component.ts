@@ -29,7 +29,7 @@ const LOG = LogFactory.createLog('DebuggingComponent');
     selector: 'dv-debugging',
     templateUrl: './debugging.component.html',
     styleUrls: ['./debugging.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DebuggingComponent implements OnInit, OnDestroy {
 

@@ -157,10 +157,12 @@ export default class TSExceptionReport {
         this._action = undefined;
     }
 
-    public static createFromViolation(_constraintType: string,
-                                      message: string,
-                                      path: string,
-                                      value: string): TSExceptionReport {
+    public static createFromViolation(
+        _constraintType: string,
+        message: string,
+        path: string,
+        value: string,
+    ): TSExceptionReport {
         const report = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
         report.path = path;
         // hint: here we could also pass along the path to the Exception Report

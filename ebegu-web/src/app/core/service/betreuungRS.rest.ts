@@ -24,11 +24,13 @@ export default class BetreuungRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}betreuungen`;
     }
 
@@ -51,10 +53,12 @@ export default class BetreuungRS {
             });
     }
 
-    public saveBetreuung(betreuung: TSBetreuung,
-                         kindId: string,
-                         gesuchId: string,
-                         abwesenheit: boolean): IPromise<TSBetreuung> {
+    public saveBetreuung(
+        betreuung: TSBetreuung,
+        kindId: string,
+        gesuchId: string,
+        abwesenheit: boolean,
+    ): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
         const url = `${this.serviceURL}/betreuung/${encodeURIComponent(kindId)}/${abwesenheit}`;
@@ -76,9 +80,11 @@ export default class BetreuungRS {
             .then(response => this.parseBetreuung(response, gesuchId));
     }
 
-    public anmeldungSchulamtUebernehmen(betreuung: TSBetreuung,
-                                        kindId: string,
-                                        gesuchId: string): IPromise<TSBetreuung> {
+    public anmeldungSchulamtUebernehmen(
+        betreuung: TSBetreuung,
+        kindId: string,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
         return this.http.put(`${this.serviceURL}/schulamt/uebernehmen/${encodeURIComponent(kindId)}/`, restBetreuung)
@@ -98,9 +104,11 @@ export default class BetreuungRS {
         });
     }
 
-    public anmeldungSchulamtFalscheInstitution(betreuung: TSBetreuung,
-                                               kindId: string,
-                                               gesuchId: string): IPromise<TSBetreuung> {
+    public anmeldungSchulamtFalscheInstitution(
+        betreuung: TSBetreuung,
+        kindId: string,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
         const url = `${this.serviceURL}/schulamt/falscheInstitution/${encodeURIComponent(kindId)}/`;
@@ -122,9 +130,11 @@ export default class BetreuungRS {
      * Dies wird empfohlen wenn mehrere Betreuungen gleichzeitig gespeichert werden muessen,
      * damit alles in einer Transaction passiert. Z.B. fuer Abwesenheiten
      */
-    public saveBetreuungen(betreuungenToUpdate: Array<TSBetreuung>,
-                           gesuchId: string,
-                           saveForAbwesenheit: boolean): IPromise<Array<TSBetreuung>> {
+    public saveBetreuungen(
+        betreuungenToUpdate: Array<TSBetreuung>,
+        gesuchId: string,
+        saveForAbwesenheit: boolean,
+    ): IPromise<Array<TSBetreuung>> {
         const restBetreuungen: Array<any> = [];
         betreuungenToUpdate.forEach((betreuungToUpdate: TSBetreuung) => {
             restBetreuungen.push(this.ebeguRestUtil.betreuungToRestObject({}, betreuungToUpdate));

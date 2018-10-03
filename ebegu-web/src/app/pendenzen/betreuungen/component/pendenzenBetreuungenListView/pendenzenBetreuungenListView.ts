@@ -43,8 +43,17 @@ export class PendenzenBetreuungenListViewComponentConfig implements IComponentOp
 
 export class PendenzenBetreuungenListViewController implements IController {
 
-    public static $inject: string[] = ['PendenzBetreuungenRS', 'EbeguUtil', 'InstitutionRS', 'InstitutionStammdatenRS',
-        'GesuchsperiodeRS', 'GesuchModelManager', 'BerechnungsManager', '$state', 'GemeindeRS'];
+    public static $inject: string[] = [
+        'PendenzBetreuungenRS',
+        'EbeguUtil',
+        'InstitutionRS',
+        'InstitutionStammdatenRS',
+        'GesuchsperiodeRS',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        '$state',
+        'GemeindeRS',
+    ];
 
     private pendenzenList: Array<TSPendenzBetreuung>;
     public selectedBetreuungsangebotTyp: string;
@@ -60,15 +69,16 @@ export class PendenzenBetreuungenListViewController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    public constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly institutionRS: InstitutionRS,
-                       private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly berechnungsManager: BerechnungsManager,
-                       private readonly $state: StateService,
-                       private readonly gemeindeRS: GemeindeRS,
+    public constructor(
+        public pendenzBetreuungenRS: PendenzBetreuungenRS,
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly institutionRS: InstitutionRS,
+        private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly berechnungsManager: BerechnungsManager,
+        private readonly $state: StateService,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -129,7 +139,7 @@ export class PendenzenBetreuungenListViewController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -161,7 +171,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         const navObj: any = {
             betreuungNumber,
             kindNumber,
-            gesuchId: pendenz.gesuchId
+            gesuchId: pendenz.gesuchId,
         };
         if (isCtrlKeyPressed) {
             const url = this.$state.href('gesuch.betreuung', navObj);

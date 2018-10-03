@@ -23,19 +23,23 @@ export default class GesuchstellerRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}gesuchsteller`;
 
     }
 
-    public saveGesuchsteller(gesuchsteller: TSGesuchstellerContainer,
-                             gesuchId: string,
-                             gsNumber: number,
-                             umzug: boolean): IPromise<TSGesuchstellerContainer> {
+    public saveGesuchsteller(
+        gesuchsteller: TSGesuchstellerContainer,
+        gesuchId: string,
+        gsNumber: number,
+        umzug: boolean,
+    ): IPromise<TSGesuchstellerContainer> {
         const gessteller = this.ebeguRestUtil.gesuchstellerContainerToRestObject({}, gesuchsteller);
         const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}/gsNumber/${gsNumber}/${umzug}`;
 

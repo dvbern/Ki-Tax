@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService} from 'angular';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export class ReindexRS {
 
@@ -22,14 +22,16 @@ export class ReindexRS {
 
     public serviceURL: string;
 
-    public constructor(public readonly http: IHttpService,
-                       REST_API: string,
-                       public readonly ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public readonly http: IHttpService,
+        REST_API: string,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+    ) {
         this.serviceURL = REST_API + 'admin/reindex';
     }
 
     public reindex(): IHttpPromise<any> {
-        return this.http.get(this.serviceURL + '/' );
+        return this.http.get(this.serviceURL + '/');
     }
 
 }

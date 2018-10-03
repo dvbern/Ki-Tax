@@ -163,8 +163,10 @@ describe('institutionStammdatenRS', () => {
         });
     });
 
-    function checkFieldValues(institutionStammdaten1: TSInstitutionStammdaten,
-                              institutionStammdaten2: TSInstitutionStammdaten): void {
+    function checkFieldValues(
+        institutionStammdaten1: TSInstitutionStammdaten,
+        institutionStammdaten2: TSInstitutionStammdaten,
+    ): void {
         expect(institutionStammdaten1).toBeDefined();
         expect(institutionStammdaten1.iban).toEqual(institutionStammdaten2.iban);
         expect(institutionStammdaten1.id).toEqual(institutionStammdaten2.id);

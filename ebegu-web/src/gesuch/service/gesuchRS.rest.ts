@@ -32,11 +32,13 @@ export default class GesuchRS implements IEntityRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'WizardStepManager', '$rootScope'];
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly wizardStepManager: WizardStepManager,
-                       private readonly $rootScope: IRootScopeService) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly $rootScope: IRootScopeService,
+    ) {
         this.serviceURL = `${REST_API}gesuche`;
     }
 
@@ -120,7 +122,7 @@ export default class GesuchRS implements IEntityRS {
     public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/freigeben/${encodeURIComponent(antragId)}/JA/${usernameJA}/SCH/${usernameSCH}`;
         return this.$http.post(url, null, {
-            headers: {'Content-Type': 'text/plain'}
+            headers: {'Content-Type': 'text/plain'},
         }).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });

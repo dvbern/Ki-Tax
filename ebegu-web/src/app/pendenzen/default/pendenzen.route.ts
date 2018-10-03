@@ -38,5 +38,5 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'pendenzen.list-view',
         template: '<pendenzen-list-view flex="auto" class="overflow-scroll">',
         url: '/pendenzen',
-    }
+    },
 ];

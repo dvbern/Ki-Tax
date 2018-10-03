@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
@@ -25,7 +26,7 @@ import VerfuegungRS from './verfuegungRS.rest';
 describe('VerfuegungRS', () => {
 
     let verfuegungRS: VerfuegungRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockKindContainerListRest: Array<any> = [];
     let mockKind: TSKindContainer;

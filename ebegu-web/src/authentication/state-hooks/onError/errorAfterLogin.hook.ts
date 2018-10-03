@@ -51,7 +51,7 @@ function recover(transition: Transition): HookResult {
             take(1),
             map(principal => principal ? principal.getCurrentRole() : TSRole.ANONYMOUS),
             mergeMap(role => navigateToStartPageForRole(role, transition.router.stateService)),
-            map(() => true)
+            map(() => true),
         )
         .toPromise();
 }

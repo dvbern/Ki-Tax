@@ -36,11 +36,11 @@ const ng1States: Ng1StateDeclaration[] = [
         component: 'dvLogin',
         url: '/login?type',
         resolve: {
-            returnTo
+            returnTo,
         },
         data: {
-            roles: getTSRoleValues()
-        }
+            roles: getTSRoleValues(),
+        },
     },
     {
 
@@ -50,8 +50,8 @@ const ng1States: Ng1StateDeclaration[] = [
         data: {
             roles: getTSRoleValues(),
             requiresDummyLogin: true,
-        }
-    }
+        },
+    },
 ];
 
 export class IAuthenticationStateParams {

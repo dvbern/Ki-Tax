@@ -19,7 +19,7 @@ import {DvAccordionController} from '../dv-accordion';
 export class DvAccordionTabComponentConfig implements IComponentOptions {
     public transclude: any = {
         title: '?tabTitle',
-        body: '?tabBody'
+        body: '?tabBody',
     };
     public template = require('./dv-accordion-tab.html');
     public controller = DvAccordionTabController;

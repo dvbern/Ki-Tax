@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
@@ -26,7 +27,7 @@ import AntragStatusHistoryRS from './antragStatusHistoryRS.rest';
 describe('antragStatusHistoryRS', () => {
 
     let antragStatusHistoryRS: AntragStatusHistoryRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));

@@ -23,10 +23,12 @@ export default class TSEinkommensverschlechterungContainer extends TSAbstractMut
     private _ekvJABasisJahrPlus1: TSEinkommensverschlechterung;
     private _ekvJABasisJahrPlus2: TSEinkommensverschlechterung;
 
-    public constructor(ekvGSBasisJahrPlus1?: TSEinkommensverschlechterung,
-                       ekvGSBasisJahrPlus2?: TSEinkommensverschlechterung,
-                       ekvJABasisJahrPlus1?: TSEinkommensverschlechterung,
-                       ekvJABasisJahrPlus2?: TSEinkommensverschlechterung) {
+    public constructor(
+        ekvGSBasisJahrPlus1?: TSEinkommensverschlechterung,
+        ekvGSBasisJahrPlus2?: TSEinkommensverschlechterung,
+        ekvJABasisJahrPlus1?: TSEinkommensverschlechterung,
+        ekvJABasisJahrPlus2?: TSEinkommensverschlechterung,
+    ) {
         super();
         this._ekvGSBasisJahrPlus1 = ekvGSBasisJahrPlus1;
         this._ekvGSBasisJahrPlus2 = ekvGSBasisJahrPlus2;

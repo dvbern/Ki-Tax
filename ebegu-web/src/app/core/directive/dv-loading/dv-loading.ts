@@ -13,7 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDirective, IDirectiveFactory, IHttpService, IPromise, ITimeoutService} from 'angular';
+import {
+    IAttributes,
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IHttpService,
+    IPromise,
+    IScope,
+    ITimeoutService,
+} from 'angular';
 
 export class DVLoading implements IDirective {
     public restrict = 'A';
@@ -26,10 +35,12 @@ export class DVLoading implements IDirective {
         return directive;
     }
 
-    public link = (scope: ng.IScope,
-                   element: ng.IAugmentedJQuery,
-                   _attributes: ng.IAttributes,
-                   controller: DVLoadingController) => {
+    public link = (
+        scope: IScope,
+        element: IAugmentedJQuery,
+        _attributes: IAttributes,
+        controller: DVLoadingController,
+    ) => {
         let promise: IPromise<any>;
         scope.$watch(controller.isLoading, v => {
 

@@ -26,11 +26,6 @@ export default class AdresseRS {
     }
 
     public create(adresse: TSAdresseContainer): IHttpPromise<any> {
-        return this.http.post(this.serviceURL, adresse, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        return this.http.post(this.serviceURL, adresse);
     }
-
 }

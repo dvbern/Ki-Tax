@@ -26,11 +26,13 @@ export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
     private _timestampBis: moment.Moment;
     private _status: TSAntragStatus;
 
-    public constructor(gesuchId?: string,
-                       benutzer?: TSBenutzer,
-                       timestampVon?: moment.Moment,
-                       timestampBis?: moment.Moment,
-                       status?: TSAntragStatus) {
+    public constructor(
+        gesuchId?: string,
+        benutzer?: TSBenutzer,
+        timestampVon?: moment.Moment,
+        timestampBis?: moment.Moment,
+        status?: TSAntragStatus,
+    ) {
         super();
         this._gesuchId = gesuchId;
         this._benutzer = benutzer;

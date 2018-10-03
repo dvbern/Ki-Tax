@@ -32,12 +32,12 @@ describe('dvValueinput', () => {
         controller.ngModelCtrl = {
             $modelValue: undefined,
             // renderCalled: false,
-            $setViewValue (passedValue: any): void {
+            $setViewValue(passedValue: any): void {
                 controller.ngModelCtrl.$modelValue = passedValue;
             },
             $render: () => {
                 return;
-            }
+            },
         } as any;
     }));
 

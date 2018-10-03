@@ -14,9 +14,9 @@
  */
 
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
+import {CreateAngebotListViewConfig} from './component/angebot/createAngebotView';
 import {GesuchstellerDashboardListViewConfig} from './component/dashboard/gesuchstellerDashboardView';
 import {gesuchstellerDashboardRun} from './gesuchstellerDashboard.route';
-import {CreateAngebotListViewConfig} from './component/angebot/createAngebotView';
 
 export const GESUCHSTELLER_DASHBOARD_JS_MODULE =
     angular.module('ebeguWeb.gesuchstellerDashboard', [CORE_JS_MODULE.name])

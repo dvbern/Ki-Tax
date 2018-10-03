@@ -60,22 +60,33 @@ export class AbwesenheitUI {
 
 export class AbwesenheitViewController extends AbstractGesuchViewController<Array<AbwesenheitUI>> {
 
-    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'DvDialog',
-        '$translate', '$q', 'ErrorService', '$scope', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'WizardStepManager',
+        'DvDialog',
+        '$translate',
+        '$q',
+        'ErrorService',
+        '$scope',
+        '$timeout',
+    ];
 
     public betreuungList: Array<KindBetreuungUI>;
     private removed: boolean;
     private readonly changedBetreuungen: Array<TSBetreuung> = [];
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       wizardStepManager: WizardStepManager,
-                       private readonly dvDialog: DvDialog,
-                       private readonly $translate: ITranslateService,
-                       private readonly $q: IQService,
-                       private readonly errorService: ErrorService,
-                       $scope: IScope,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly $translate: ITranslateService,
+        private readonly $q: IQService,
+        private readonly errorService: ErrorService,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager,
             berechnungsManager,
@@ -194,7 +205,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             title: remTitleText,
             deleteText: '',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.removeAbwesenheit(abwesenheit);
         });

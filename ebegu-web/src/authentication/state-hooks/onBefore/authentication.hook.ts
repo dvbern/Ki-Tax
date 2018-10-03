@@ -64,7 +64,7 @@ function redirectToLogin(transition: Transition): HookResult {
 
                 // continue the original transition
                 return true;
-            })
+            }),
         )
         .toPromise();
 }

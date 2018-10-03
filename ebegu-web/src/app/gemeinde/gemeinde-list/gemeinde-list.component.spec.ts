@@ -49,7 +49,7 @@ describe('GemeindeListComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
-            declarations: [GemeindeListComponent]
+            declarations: [GemeindeListComponent],
         }).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(

@@ -28,10 +28,12 @@ export default class DokumenteRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}dokumente`;
     }
 
@@ -43,9 +45,11 @@ export default class DokumenteRS {
             });
     }
 
-    public getDokumenteByTypeCached(gesuch: TSGesuch,
-                                    dokumentGrundTyp: TSDokumentGrundTyp,
-                                    cache: ICacheObject): IPromise<TSDokumenteDTO> {
+    public getDokumenteByTypeCached(
+        gesuch: TSGesuch,
+        dokumentGrundTyp: TSDokumentGrundTyp,
+        cache: ICacheObject,
+    ): IPromise<TSDokumenteDTO> {
         const grund = encodeURIComponent(TSDokumentGrundTyp[dokumentGrundTyp]);
         const url = `${this.serviceURL}/byTyp/${encodeURIComponent(gesuch.id)}/${grund}`;
 

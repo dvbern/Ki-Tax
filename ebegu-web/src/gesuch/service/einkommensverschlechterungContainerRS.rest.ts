@@ -28,11 +28,13 @@ export default class EinkommensverschlechterungContainerRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public $log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public $log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}einkommensverschlechterung`;
     }
 
@@ -54,16 +56,20 @@ export default class EinkommensverschlechterungContainerRS {
         });
     }
 
-    public calculateEinkommensverschlechterung(gesuch: TSGesuch,
-                                               basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateEinkommensverschlechterung(
+        gesuch: TSGesuch,
+        basisJahrPlus: number,
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
         let gesuchToSend = {};
         gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
         return this.$http.post(`${this.serviceURL}/calculate/${basisJahrPlus}`, gesuchToSend)
             .then(response => this.toFinanzielleSituationResult(response));
     }
 
-    public calculateEinkommensverschlechterungTemp(finanzModel: TSFinanzModel,
-                                                   basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateEinkommensverschlechterungTemp(
+        finanzModel: TSFinanzModel,
+        basisJahrPlus: number,
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
         let finanzenToSend = {};
         finanzenToSend = this.ebeguRestUtil.finanzModelToRestObject(finanzenToSend, finanzModel);
         return this.$http.post(`${this.serviceURL}/calculateTemp/${basisJahrPlus}`, finanzenToSend)

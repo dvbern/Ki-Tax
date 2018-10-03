@@ -36,10 +36,12 @@ export default class TSFinanzModel {
     private readonly gesuchsteller2Required: boolean;
     private readonly gesuchstellerNumber: number;
 
-    public constructor(basisjahr: number,
-                       gesuchsteller2Required: boolean,
-                       gesuchstellerNumber: number,
-                       basisjahrPlus?: number) {
+    public constructor(
+        basisjahr: number,
+        gesuchsteller2Required: boolean,
+        gesuchstellerNumber: number,
+        basisjahrPlus?: number,
+    ) {
         this.basisjahr = basisjahr;
         this.basisjahrPlus = basisjahrPlus;
         this.gesuchsteller2Required = gesuchsteller2Required;
@@ -198,7 +200,7 @@ export default class TSFinanzModel {
     }
 
     // tslint:disable-next-line:naming-convention
-    private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
+    private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
     ): TSEinkommensverschlechterung {
         return this.basisjahrPlus === 2 ?
             einkommensverschlechterungContainer.ekvJABasisJahrPlus2 :
@@ -213,7 +215,7 @@ export default class TSFinanzModel {
     }
 
     // tslint:disable-next-line:naming-convention
-    private getEkvOfBsj_GS(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
+    private getEkvOfBsj_GS(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
     ): TSEinkommensverschlechterung {
         return this.basisjahrPlus === 2 ?
             einkommensverschlechterungContainer.ekvGSBasisJahrPlus2 :

@@ -21,10 +21,12 @@ export default class ExportRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}export`;
     }
 

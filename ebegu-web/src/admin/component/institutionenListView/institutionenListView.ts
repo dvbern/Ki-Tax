@@ -45,7 +45,8 @@ export class InstitutionenListViewController extends AbstractAdminViewController
 
     public constructor(private readonly institutionRS: InstitutionRS,
                        private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS,
-                       private readonly $state: StateService) {
+                       private readonly $state: StateService,
+    ) {
         super(authServiceRS);
     }
 
@@ -58,7 +59,7 @@ export class InstitutionenListViewController extends AbstractAdminViewController
             deleteText: '',
             title: 'LOESCHEN_DIALOG_TITLE',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.selectedInstitution = undefined;
             this.institutionRS.removeInstitution(institution.id).then(() => {
@@ -72,13 +73,13 @@ export class InstitutionenListViewController extends AbstractAdminViewController
 
     public createInstitution(): void {
         this.$state.go('admin.institution', {
-            institutionId: undefined
+            institutionId: undefined,
         });
     }
 
     public editInstitution(institution: TSInstitution): void {
         this.$state.go('admin.institution', {
-            institutionId: institution.id
+            institutionId: institution.id,
         });
     }
 }

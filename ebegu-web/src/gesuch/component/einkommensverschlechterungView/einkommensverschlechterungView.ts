@@ -40,9 +40,18 @@ export class EinkommensverschlechterungViewComponentConfig implements IComponent
 
 export class EinkommensverschlechterungViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
         '$log',
-        'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        '$translate',
+        '$timeout',
+    ];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
@@ -53,16 +62,18 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     public allowedRoles: Array<TSRole>;
     public initialModel: TSFinanzModel;
 
-    public constructor($stateParams: IEinkommensverschlechterungStateParams,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       private readonly $log: ILogService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       private readonly $translate: ITranslateService,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $stateParams: IEinkommensverschlechterungStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        private readonly $log: ILogService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly $translate: ITranslateService,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,

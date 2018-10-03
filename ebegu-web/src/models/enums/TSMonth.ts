@@ -42,7 +42,7 @@ export function getTSMonthValues(): Array<TSMonth> {
         TSMonth.SEPTEMBER,
         TSMonth.OCTOBER,
         TSMonth.NOVEMBER,
-        TSMonth.DECEMBER
+        TSMonth.DECEMBER,
     ];
 }
 
@@ -60,6 +60,6 @@ export function getTSMonthWithVorjahrValues(): Array<TSMonth> {
         TSMonth.SEPTEMBER,
         TSMonth.OCTOBER,
         TSMonth.NOVEMBER,
-        TSMonth.DECEMBER
+        TSMonth.DECEMBER,
     ];
 }

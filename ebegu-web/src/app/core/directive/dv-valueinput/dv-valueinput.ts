@@ -19,7 +19,7 @@ import {
     IDirective,
     IDirectiveFactory,
     IDirectiveLinkFn,
-    INgModelController
+    INgModelController,
 } from 'angular';
 import ITimeoutService = angular.ITimeoutService;
 

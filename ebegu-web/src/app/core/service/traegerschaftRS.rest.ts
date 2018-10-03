@@ -22,10 +22,12 @@ export class TraegerschaftRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}traegerschaften`;
     }
 

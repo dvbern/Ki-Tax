@@ -28,10 +28,12 @@ export default class ZahlungRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}zahlungen`;
     }
 
@@ -84,16 +86,18 @@ export default class ZahlungRS {
         });
     }
 
-    public createZahlungsauftrag(beschrieb: string,
-                                 faelligkeitsdatum: moment.Moment,
-                                 datumGeneriert: moment.Moment): IPromise<TSZahlungsauftrag> {
+    public createZahlungsauftrag(
+        beschrieb: string,
+        faelligkeitsdatum: moment.Moment,
+        datumGeneriert: moment.Moment,
+    ): IPromise<TSZahlungsauftrag> {
         return this.http.get(`${this.serviceURL}/create`,
             {
                 params: {
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
                     beschrieb,
-                    datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert)
-                }
+                    datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert),
+                },
             }).then((httpresponse: any) => {
             // Direkt die Zahlungspruefung durchfuehren
             this.pruefeZahlungen();
@@ -108,16 +112,18 @@ export default class ZahlungRS {
         });
     }
 
-    public updateZahlungsauftrag(beschrieb: string,
-                                 faelligkeitsdatum: moment.Moment,
-                                 id: string): IPromise<TSZahlungsauftrag> {
+    public updateZahlungsauftrag(
+        beschrieb: string,
+        faelligkeitsdatum: moment.Moment,
+        id: string,
+    ): IPromise<TSZahlungsauftrag> {
         return this.http.get(`${this.serviceURL}/update`,
             {
                 params: {
                     beschrieb,
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-                    id
-                }
+                    id,
+                },
             }).then((httpresponse: any) => {
             return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse.data);
         });

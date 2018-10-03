@@ -14,8 +14,8 @@
  */
 
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
-import {zahlungsauftragRun} from './zahlungsauftrag.route';
 import {ZahlungsauftragViewComponentConfig} from './component/zahlungsauftragView';
+import {zahlungsauftragRun} from './zahlungsauftrag.route';
 
 export const ZAHLUNGSAUFTRAG_VIEW_JS_MODULE =
     angular.module('ebeguWeb.zahlungsauftrag', [CORE_JS_MODULE.name])

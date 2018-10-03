@@ -24,10 +24,12 @@ export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
     private _datumFreischaltungTagesschule: moment.Moment;
     private _datumErsterSchultag: moment.Moment;
 
-    public constructor(status?: TSGesuchsperiodeStatus,
-                       gueltigkeit?: TSDateRange,
-                       datumFreischaltungTagesschule?: moment.Moment,
-                       datumErsterSchultag?: moment.Moment) {
+    public constructor(
+        status?: TSGesuchsperiodeStatus,
+        gueltigkeit?: TSDateRange,
+        datumFreischaltungTagesschule?: moment.Moment,
+        datumErsterSchultag?: moment.Moment,
+    ) {
         super(gueltigkeit);
         this._status = status;
         this._datumFreischaltungTagesschule = datumFreischaltungTagesschule;

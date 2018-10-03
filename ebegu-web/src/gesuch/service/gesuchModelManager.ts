@@ -33,7 +33,7 @@ import {
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -84,12 +84,14 @@ import WizardStepManager from './wizardStepManager';
 
 export default class GesuchModelManager {
 
-    public static $inject = ['GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
+    public static $inject = [
+        'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
         'GlobalCacheService',
-        'DossierRS', 'GesuchGenerator'];
+        'DossierRS', 'GesuchGenerator',
+    ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
     public gesuchstellerNumber: number = 1;
@@ -104,35 +106,37 @@ export default class GesuchModelManager {
     public ewkPersonGS1: TSEWKPerson;
     public ewkPersonGS2: TSEWKPerson;
 
-    public constructor(private readonly gesuchRS: GesuchRS,
-                       private readonly gesuchstellerRS: GesuchstellerRS,
-                       private readonly finanzielleSituationRS: FinanzielleSituationRS,
-                       private readonly kindRS: KindRS,
-                       private readonly fachstelleRS: FachstelleRS,
-                       private readonly erwerbspensumRS: ErwerbspensumRS,
-                       private readonly instStamRS: InstitutionStammdatenRS,
-                       private readonly betreuungRS: BetreuungRS,
-                       private readonly log: ILogService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
-                       private readonly verfuegungRS: VerfuegungRS,
-                       private readonly wizardStepManager: WizardStepManager,
-                       private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly errorService: ErrorService,
-                       private readonly $q: IQService,
-                       private readonly authLifeCycleService: AuthLifeCycleService,
-                       private readonly ewkRS: EwkRS,
-                       private readonly globalCacheService: GlobalCacheService,
-                       private readonly dossierRS: DossierRS,
-                       private readonly gesuchGenerator: GesuchGenerator) {
+    public constructor(
+        private readonly gesuchRS: GesuchRS,
+        private readonly gesuchstellerRS: GesuchstellerRS,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS,
+        private readonly kindRS: KindRS,
+        private readonly fachstelleRS: FachstelleRS,
+        private readonly erwerbspensumRS: ErwerbspensumRS,
+        private readonly instStamRS: InstitutionStammdatenRS,
+        private readonly betreuungRS: BetreuungRS,
+        private readonly log: ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
+        private readonly verfuegungRS: VerfuegungRS,
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly errorService: ErrorService,
+        private readonly $q: IQService,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly ewkRS: EwkRS,
+        private readonly globalCacheService: GlobalCacheService,
+        private readonly dossierRS: DossierRS,
+        private readonly gesuchGenerator: GesuchGenerator,
+    ) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(() => {
                     this.setGesuch(undefined);
                     this.log.debug('Cleared gesuch on logout');
                 },
-                err => this.log.error(err)
+                err => this.log.error(err),
             );
     }
 
@@ -255,12 +259,14 @@ export default class GesuchModelManager {
      * Depending on the value of the parameter creationAction, it creates new Fall, Dossier, Gesuch, Mutation or
      * Folgegesuch
      */
-    public createNewAntrag(gesuchId: string,
-                           dossierId: string,
-                           eingangsart: TSEingangsart,
-                           gemeindeId: string,
-                           gesuchsperiodeId: string,
-                           creationAction: TSCreationAction): IPromise<TSGesuch> {
+    public createNewAntrag(
+        gesuchId: string,
+        dossierId: string,
+        eingangsart: TSEingangsart,
+        gemeindeId: string,
+        gesuchsperiodeId: string,
+        creationAction: TSCreationAction,
+    ): IPromise<TSGesuch> {
 
         switch (creationAction) {
             case TSCreationAction.CREATE_NEW_FALL:
@@ -300,7 +306,8 @@ export default class GesuchModelManager {
             default:
                 // for no action we return the current Gesuch and log an error
                 this.log.error(
-                    'No action or an invalid action have been passed. This method must always been called with a valide action', creationAction);
+                    'No action or an invalid action have been passed. This method must always been called with a valide action',
+                    creationAction);
 
                 return Promise.resolve(this.getGesuch());
         }
@@ -557,9 +564,11 @@ export default class GesuchModelManager {
         }
     }
 
-    public initGesuch(eingangsart: TSEingangsart,
-                      creationAction: TSCreationAction,
-                      gesuchsperiodeId: string): IPromise<TSGesuch> {
+    public initGesuch(
+        eingangsart: TSEingangsart,
+        creationAction: TSCreationAction,
+        gesuchsperiodeId: string,
+    ): IPromise<TSGesuch> {
         return this.gesuchGenerator.initGesuch(eingangsart,
             creationAction,
             gesuchsperiodeId,
@@ -677,9 +686,11 @@ export default class GesuchModelManager {
         return listResult;
     }
 
-    public saveBetreuung(betreuungToSave: TSBetreuung,
-                         betreuungsstatusNeu: TSBetreuungsstatus,
-                         abwesenheit: boolean): IPromise<TSBetreuung> {
+    public saveBetreuung(
+        betreuungToSave: TSBetreuung,
+        betreuungsstatusNeu: TSBetreuungsstatus,
+        abwesenheit: boolean,
+    ): IPromise<TSBetreuung> {
         const kindId = this.getKindToWorkWith().id;
 
         const handleStatus = (betreuungenStatus: TSGesuchBetreuungenStatus, storedBetreuung: TSBetreuung) => {
@@ -693,10 +704,12 @@ export default class GesuchModelManager {
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
 
-    private doSaveBetreuung(betreuungToSave: TSBetreuung,
-                            betreuungsstatusNeu: TSBetreuungsstatus,
-                            kindId: string,
-                            abwesenheit: boolean): IPromise<TSBetreuung> {
+    private doSaveBetreuung(
+        betreuungToSave: TSBetreuung,
+        betreuungsstatusNeu: TSBetreuungsstatus,
+        kindId: string,
+        abwesenheit: boolean,
+    ): IPromise<TSBetreuung> {
 
         switch (betreuungsstatusNeu) {
             case TSBetreuungsstatus.ABGEWIESEN:
@@ -975,8 +988,10 @@ export default class GesuchModelManager {
         return gesuchsteller.erwerbspensenContainer.indexOf(pensum);
     }
 
-    public saveErwerbspensum(gesuchsteller: TSGesuchstellerContainer,
-                             erwerbspensum: TSErwerbspensumContainer): IPromise<TSErwerbspensumContainer> {
+    public saveErwerbspensum(
+        gesuchsteller: TSGesuchstellerContainer,
+        erwerbspensum: TSErwerbspensumContainer,
+    ): IPromise<TSErwerbspensumContainer> {
         if (erwerbspensum.id) {
             return this.erwerbspensumRS.saveErwerbspensum(erwerbspensum, gesuchsteller.id, this.gesuch.id)
                 .then((response: TSErwerbspensumContainer) => {
@@ -1385,8 +1400,10 @@ export default class GesuchModelManager {
      * Aktualisiert alle gegebenen Betreuungen.
      * ACHTUNG. Die Betreuungen muessen existieren damit alles richtig funktioniert
      */
-    public updateBetreuungen(betreuungenToUpdate: Array<TSBetreuung>,
-                             saveForAbwesenheit: boolean): IPromise<Array<TSBetreuung>> {
+    public updateBetreuungen(
+        betreuungenToUpdate: Array<TSBetreuung>,
+        saveForAbwesenheit: boolean,
+    ): IPromise<Array<TSBetreuung>> {
         if (betreuungenToUpdate && betreuungenToUpdate.length > 0) {
             return this.betreuungRS.saveBetreuungen(betreuungenToUpdate,
                 this.gesuch.id,

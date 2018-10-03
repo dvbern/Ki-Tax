@@ -24,7 +24,7 @@ import {ReindexRS} from '../../service/reindexRS.rest';
 export class AdminViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        applicationProperties: '<'
+        applicationProperties: '<',
     };
     public template = require('./adminView.html');
     public controller = AdminViewController;
@@ -39,10 +39,12 @@ export class AdminViewController extends AbstractAdminViewController {
     public applicationProperties: TSApplicationProperty[];
     public ebeguRestUtil: EbeguRestUtil;
 
-    public constructor(applicationPropertyRS: ApplicationPropertyRS,
-                       ebeguRestUtil: EbeguRestUtil,
-                       private readonly reindexRS: ReindexRS,
-                       authServiceRS: AuthServiceRS) {
+    public constructor(
+        applicationPropertyRS: ApplicationPropertyRS,
+        ebeguRestUtil: EbeguRestUtil,
+        private readonly reindexRS: ReindexRS,
+        authServiceRS: AuthServiceRS,
+    ) {
         super(authServiceRS);
         this.applicationProperty = undefined;
         this.applicationPropertyRS = applicationPropertyRS;

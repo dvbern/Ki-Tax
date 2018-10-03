@@ -43,18 +43,20 @@ export class NavbarComponent implements OnDestroy {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    public constructor(private readonly authServiceRS: AuthServiceRS,
-                       private readonly changeDetectorRef: ChangeDetectorRef,
-                       private readonly dialog: MatDialog,
-                       private readonly $state: StateService,
-                       private readonly gemeindeRS: GemeindeRS) {
+    public constructor(
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly dialog: MatDialog,
+        private readonly $state: StateService,
+        private readonly gemeindeRS: GemeindeRS,
+    ) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => this.changeDetectorRef.markForCheck(),
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -77,7 +79,7 @@ export class NavbarComponent implements OnDestroy {
                     this.$state.go('gesuch.fallcreation', params);
                 }
                 ,
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -101,9 +103,9 @@ export class NavbarComponent implements OnDestroy {
                                 dialogConfig.data = {gemeindeList};
 
                                 return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
-                            })
+                            }),
                         );
-                })
+                }),
             );
     }
 

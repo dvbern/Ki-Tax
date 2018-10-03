@@ -28,15 +28,17 @@ export default class TSKind extends TSAbstractPersonEntity {
     private _einschulungTyp: TSEinschulungTyp;
     private _pensumFachstelle: TSPensumFachstelle;
 
-    public constructor(vorname?: string,
-                       nachname?: string,
-                       geburtsdatum?: moment.Moment,
-                       geschlecht?: TSGeschlecht,
-                       kinderabzug?: TSKinderabzug,
-                       familienErgaenzendeBetreuung?: boolean,
-                       mutterspracheDeutsch?: boolean,
-                       pensumFachstelle?: TSPensumFachstelle,
-                       einschulungTyp?: TSEinschulungTyp) {
+    public constructor(
+        vorname?: string,
+        nachname?: string,
+        geburtsdatum?: moment.Moment,
+        geschlecht?: TSGeschlecht,
+        kinderabzug?: TSKinderabzug,
+        familienErgaenzendeBetreuung?: boolean,
+        mutterspracheDeutsch?: boolean,
+        pensumFachstelle?: TSPensumFachstelle,
+        einschulungTyp?: TSEinschulungTyp,
+    ) {
 
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._kinderabzug = kinderabzug;

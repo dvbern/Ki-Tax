@@ -51,10 +51,12 @@ describe('httpErrorInterceptor', () => {
                 .then(() => deferred.resolve())
                 .catch(err => deferred.reject(err));
 
-            const errors = [(TSExceptionReport.createFromViolation('PARAMETER',
-                'Die Länge des Feldes muss zwischen 36 und 36 sein',
-                'markAsRead.arg1',
-                '8a146418-ab12-456f-9b17-aad6990f51'))];
+            const errors = [
+                (TSExceptionReport.createFromViolation('PARAMETER',
+                    'Die Länge des Feldes muss zwischen 36 und 36 sein',
+                    'markAsRead.arg1',
+                    '8a146418-ab12-456f-9b17-aad6990f51')),
+            ];
             $rootScope.$digest();
             expect(errorHandler).toHaveBeenCalledWith(errors);
         });

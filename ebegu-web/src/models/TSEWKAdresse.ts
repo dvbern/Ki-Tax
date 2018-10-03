@@ -35,19 +35,21 @@ export default class TSEWKAdresse extends TSAbstractMutableEntity {
     private _kanton: string;
     private _land: string;
 
-    public constructor(adresstyp?: string,
-                       adresstypTxt?: string,
-                       gueltigVon?: moment.Moment,
-                       gueltigBis?: moment.Moment,
-                       coName?: string,
-                       postfach?: string,
-                       bfSGemeinde?: string,
-                       strasse?: string,
-                       hausnummer?: string,
-                       postleitzahl?: string,
-                       ort?: string,
-                       kanton?: string,
-                       land?: string) {
+    public constructor(
+        adresstyp?: string,
+        adresstypTxt?: string,
+        gueltigVon?: moment.Moment,
+        gueltigBis?: moment.Moment,
+        coName?: string,
+        postfach?: string,
+        bfSGemeinde?: string,
+        strasse?: string,
+        hausnummer?: string,
+        postleitzahl?: string,
+        ort?: string,
+        kanton?: string,
+        land?: string,
+    ) {
         super();
         this._adresstyp = adresstyp;
         this._adresstypTxt = adresstypTxt;

@@ -39,15 +39,23 @@ export class FinanzielleSituationResultateViewComponentConfig implements ICompon
  */
 export class FinanzielleSituationResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$scope', '$timeout'];
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$scope',
+        '$timeout',
+    ];
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       $scope: IScope,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,

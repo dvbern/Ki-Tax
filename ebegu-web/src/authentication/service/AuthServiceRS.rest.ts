@@ -38,9 +38,11 @@ const LOG = LogFactory.createLog('AuthServiceRS');
 
 export default class AuthServiceRS {
 
-    public static $inject = ['$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',
+    public static $inject = [
+        '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',
         'AuthLifeCycleService',
-        'BenutzerRS'];
+        'BenutzerRS',
+    ];
 
     private principal?: TSBenutzer;
 
@@ -51,14 +53,16 @@ export default class AuthServiceRS {
 
     private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
 
-    public constructor(private readonly $http: IHttpService,
-                       private readonly $q: IQService,
-                       private readonly $timeout: ITimeoutService,
-                       private readonly $cookies: ICookiesService,
-                       private readonly ebeguRestUtil: EbeguRestUtil,
-                       private readonly httpBuffer: HttpBuffer,
-                       private readonly authLifeCycleService: AuthLifeCycleService,
-                       private readonly benutzerRS: BenutzerRS) {
+    public constructor(
+        private readonly $http: IHttpService,
+        private readonly $q: IQService,
+        private readonly $timeout: ITimeoutService,
+        private readonly $cookies: ICookiesService,
+        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly httpBuffer: HttpBuffer,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly benutzerRS: BenutzerRS,
+    ) {
     }
 
     // Use the observable, when the state must be updated automatically, when the principal changes.

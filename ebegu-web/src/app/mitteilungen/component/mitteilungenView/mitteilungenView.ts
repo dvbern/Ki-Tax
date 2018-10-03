@@ -39,8 +39,12 @@ export class MitteilungenViewController implements IController {
     public fallId: string;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
-                       private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly $stateParams: IMitteilungenStateParams,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $timeout: ITimeoutService,
+    ) {
     }
 
     public $onInit(): void {

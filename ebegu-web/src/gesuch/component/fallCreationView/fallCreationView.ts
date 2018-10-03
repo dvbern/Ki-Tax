@@ -39,8 +39,19 @@ export class FallCreationViewComponentConfig implements IComponentOptions {
 
 export class FallCreationViewController extends AbstractGesuchViewController<any> {
 
-    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', '$stateParams',
-        'WizardStepManager', '$translate', '$q', '$scope', 'AuthServiceRS', 'GesuchsperiodeRS', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        '$stateParams',
+        'WizardStepManager',
+        '$translate',
+        '$q',
+        '$scope',
+        'AuthServiceRS',
+        'GesuchsperiodeRS',
+        '$timeout',
+    ];
     private gesuchsperiodeId: string;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
@@ -48,17 +59,19 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     public showError: boolean = false;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       private readonly $stateParams: INewFallStateParams,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $translate: ITranslateService,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        private readonly $stateParams: INewFallStateParams,
+        wizardStepManager: WizardStepManager,
+        private readonly $translate: ITranslateService,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
@@ -151,7 +164,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
                 'KITAX_ERSTGESUCH_PERIODE';
             return this.$translate.instant(k, {
-                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString
+                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString,
             });
         }
         const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?

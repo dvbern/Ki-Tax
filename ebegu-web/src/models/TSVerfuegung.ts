@@ -28,14 +28,16 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
     private _kategorieZuschlagZumErwerbspensum: boolean;
     private _kategorieNichtEintreten: boolean;
 
-    public constructor(generatedBemerkungen?: string,
-                       manuelleBemerkungen?: string,
-                       zeitabschnitte?: Array<TSVerfuegungZeitabschnitt>,
-                       kategorieNormal?: boolean,
-                       kategorieMaxEinkommen?: boolean,
-                       kategorieKeinPensum?: boolean,
-                       kategorieZuschlagZumErwerbspensum?: boolean,
-                       kategorieNichtEintreten?: boolean) {
+    public constructor(
+        generatedBemerkungen?: string,
+        manuelleBemerkungen?: string,
+        zeitabschnitte?: Array<TSVerfuegungZeitabschnitt>,
+        kategorieNormal?: boolean,
+        kategorieMaxEinkommen?: boolean,
+        kategorieKeinPensum?: boolean,
+        kategorieZuschlagZumErwerbspensum?: boolean,
+        kategorieNichtEintreten?: boolean,
+    ) {
         super();
         this._generatedBemerkungen = generatedBemerkungen;
         this._manuelleBemerkungen = manuelleBemerkungen;

@@ -53,24 +53,37 @@ export class BetreuungListViewComponentConfig implements IComponentOptions {
  */
 export class BetreuungListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', '$translate', 'DvDialog', 'EbeguUtil',
+    public static $inject: string[] = [
+        '$state',
+        'GesuchModelManager',
+        '$translate',
+        'DvDialog',
+        'EbeguUtil',
         'BerechnungsManager',
-        'ErrorService', 'WizardStepManager', 'AuthServiceRS', '$scope', '$log', '$timeout'];
+        'ErrorService',
+        'WizardStepManager',
+        'AuthServiceRS',
+        '$scope',
+        '$log',
+        '$timeout',
+    ];
 
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       private readonly $translate: ITranslateService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly ebeguUtil: EbeguUtil,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly authServiceRS: AuthServiceRS,
-                       $scope: IScope,
-                       private readonly $log: ILogService,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        private readonly $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService,
+        private readonly dvDialog: DvDialog,
+        private readonly ebeguUtil: EbeguUtil,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly authServiceRS: AuthServiceRS,
+        $scope: IScope,
+        private readonly $log: ILogService,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
 
@@ -147,13 +160,13 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         const typ = TSBetreuungsangebotTyp[betreuung.institutionStammdaten.betreuungsangebotTyp];
         const remTitleText: any = this.$translate.instant('BETREUUNG_LOESCHEN', {
             kindname: this.gesuchModelManager.getKindToWorkWith().kindJA.getFullName(),
-            betreuungsangebottyp: this.ebeguUtil.translateString(typ)
+            betreuungsangebottyp: this.ebeguUtil.translateString(typ),
         });
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'BETREUUNG_LOESCHEN_BESCHREIBUNG',
             parentController: this,
-            elementID: `removeBetreuungButton${kind.kindNummer}_${index}`
+            elementID: `removeBetreuungButton${kind.kindNummer}_${index}`,
         }).then(() => {   // User confirmed removal
             this.errorService.clearAll();
             const betreuungIndex = this.gesuchModelManager.findBetreuung(betreuung);
@@ -170,7 +183,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         this.$state.go('gesuch.betreuung', {
             betreuungNumber,
             kindNumber,
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
@@ -179,7 +192,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             betreuungNumber: undefined,
             kindNumber,
             gesuchId: this.getGesuchId(),
-            betreuungsangebotTyp: betreuungsangebotTyp.toString()
+            betreuungsangebotTyp: betreuungsangebotTyp.toString(),
         });
     }
 
@@ -216,7 +229,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: betreuung.id,
-            mitteilungId: undefined
+            mitteilungId: undefined,
         });
     }
 

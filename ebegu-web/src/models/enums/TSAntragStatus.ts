@@ -60,7 +60,7 @@ export function getTSAntragStatusValues(): Array<TSAntragStatus> {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
     ];
 }
 
@@ -72,7 +72,7 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
         case TSRole.STEUERAMT:
             return [
                 TSAntragStatus.PRUEFUNG_STV,
-                TSAntragStatus.IN_BEARBEITUNG_STV
+                TSAntragStatus.IN_BEARBEITUNG_STV,
             ];
         case TSRole.SACHBEARBEITER_TS:
         case TSRole.ADMIN_TS:
@@ -151,7 +151,7 @@ export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
     ];
     return validStates.indexOf(status) !== -1;
 }

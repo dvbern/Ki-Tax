@@ -33,11 +33,13 @@ export default class AntragStatusHistoryRS {
 
     private _lastChange: TSAntragStatusHistory;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
         this.serviceURL = `${REST_API}antragStatusHistory`;
     }
 
@@ -59,8 +61,10 @@ export default class AntragStatusHistoryRS {
         return Promise.resolve(this._lastChange);
     }
 
-    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier,
-                                                      gesuchsperiode: TSGesuchsperiode)
+    public loadAllAntragStatusHistoryByGesuchsperiode(
+        dossier: TSDossier,
+        gesuchsperiode: TSGesuchsperiode,
+    )
         : IPromise<Array<TSAntragStatusHistory>> {
 
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {

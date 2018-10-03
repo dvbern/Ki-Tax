@@ -30,17 +30,19 @@ export default class TSAdresse extends TSAbstractDateRangedEntity {
     private _nichtInGemeinde: boolean;
     private _organisation: string;
 
-    public constructor(strasse?: string,
-                       hausnummer?: string,
-                       zusatzzeile?: string,
-                       plz?: string,
-                       ort?: string,
-                       land?: string,
-                       gemeinde?: string,
-                       gueltigkeit?: TSDateRange,
-                       adresseTyp?: TSAdressetyp,
-                       nichtInGemeinde?: boolean,
-                       organisation?: string) {
+    public constructor(
+        strasse?: string,
+        hausnummer?: string,
+        zusatzzeile?: string,
+        plz?: string,
+        ort?: string,
+        land?: string,
+        gemeinde?: string,
+        gueltigkeit?: TSDateRange,
+        adresseTyp?: TSAdressetyp,
+        nichtInGemeinde?: boolean,
+        organisation?: string,
+    ) {
         super(gueltigkeit);
         this._strasse = strasse;
         this._hausnummer = hausnummer;

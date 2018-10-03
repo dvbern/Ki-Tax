@@ -53,7 +53,7 @@ export class BenutzerRolleComponent implements OnInit {
             .reduce((rollenMap, rolle) => {
                     return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
                 },
-                new Map<TSRole, string>()
+                new Map<TSRole, string>(),
             );
     }
 

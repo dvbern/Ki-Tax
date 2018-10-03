@@ -43,8 +43,15 @@ export class InstitutionStammdatenViewComponentConfig implements IComponentOptio
 
 export class InstitutionStammdatenViewController extends AbstractAdminViewController {
 
-    public static $inject = ['InstitutionRS', 'EbeguUtil', 'InstitutionStammdatenRS', '$state', 'ListResourceRS',
-        'AuthServiceRS', '$stateParams'];
+    public static $inject = [
+        'InstitutionRS',
+        'EbeguUtil',
+        'InstitutionStammdatenRS',
+        '$state',
+        'ListResourceRS',
+        'AuthServiceRS',
+        '$stateParams',
+    ];
 
     public form: IFormController;
 
@@ -57,13 +64,15 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     public hasDifferentZahlungsadresse: boolean = false;
     public modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
 
-    public constructor(private readonly institutionRS: InstitutionRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                       private readonly $state: StateService,
-                       private readonly listResourceRS: ListResourceRS,
-                       authServiceRS: AuthServiceRS,
-                       private readonly $stateParams: IInstitutionStammdatenStateParams) {
+    public constructor(
+        private readonly institutionRS: InstitutionRS,
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+        private readonly $state: StateService,
+        private readonly listResourceRS: ListResourceRS,
+        authServiceRS: AuthServiceRS,
+        private readonly $stateParams: IInstitutionStammdatenStateParams,
+    ) {
         super(authServiceRS);
     }
 
@@ -139,7 +148,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
 
     private goBack(): void {
         this.$state.go('admin.institution', {
-            institutionId: this.selectedInstitution.id
+            institutionId: this.selectedInstitution.id,
         });
     }
 

@@ -19,7 +19,7 @@ import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
     getSchulamtBetreuungsangebotTypValues,
     isOfAnyBetreuungsangebotTyp,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';

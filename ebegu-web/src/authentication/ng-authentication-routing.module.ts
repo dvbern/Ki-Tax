@@ -29,18 +29,18 @@ export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
         {
             token: 'returnTo',
             deps: [Transition],
-            resolveFn: returnTo
-        }
+            resolveFn: returnTo,
+        },
     ],
     data: {
         roles: getTSRoleValues(),
         requiresDummyLogin: true,
-    }
+    },
 };
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [LOCALLOGIN_STATE]})
+        UIRouterUpgradeModule.forChild({states: [LOCALLOGIN_STATE]}),
     ],
     exports: [],
 })

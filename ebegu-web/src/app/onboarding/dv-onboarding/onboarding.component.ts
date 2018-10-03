@@ -41,9 +41,10 @@ export class OnboardingComponent {
 
     public isDummyMode$: Observable<boolean>;
 
-    public constructor(private readonly gemeindeRS: GemeindeRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly stateService: StateService,
+    public constructor(
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly stateService: StateService,
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
             .pipe(map(gemeinden => {

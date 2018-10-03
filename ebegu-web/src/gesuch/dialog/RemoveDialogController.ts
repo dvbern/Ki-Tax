@@ -23,21 +23,32 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class RemoveDialogController {
 
-    public static $inject = ['$mdDialog', '$translate', '$q', '$log', 'title', 'deleteText', 'parentController',
-        'elementID', 'form'];
+    public static $inject = [
+        '$mdDialog',
+        '$translate',
+        '$q',
+        '$log',
+        'title',
+        'deleteText',
+        'parentController',
+        'elementID',
+        'form',
+    ];
 
     public deleteText: string;
     public title: string;
 
-    public constructor(private readonly $mdDialog: IDialogService,
-                       $translate: ITranslateService,
-                       private readonly $q: IQService,
-                       private readonly $log: ILogService,
-                       title: string,
-                       deleteText: string,
-                       private readonly parentController: IDVFocusableController,
-                       private readonly elementID: string,
-                       private readonly form: any) {
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+        $translate: ITranslateService,
+        private readonly $q: IQService,
+        private readonly $log: ILogService,
+        title: string,
+        deleteText: string,
+        private readonly parentController: IDVFocusableController,
+        private readonly elementID: string,
+        private readonly form: any,
+    ) {
 
         this.deleteText = EbeguUtil.isNotNullOrUndefined(deleteText) ?
             $translate.instant(deleteText) :

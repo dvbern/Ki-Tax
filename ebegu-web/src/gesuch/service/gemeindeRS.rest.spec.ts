@@ -52,7 +52,7 @@ describe('dossier', () => {
                     expect(gemeinden[0]).toEqual(user.extractCurrentGemeinden()[0]);
                     done();
                 },
-                err => done.fail(err)
+                err => done.fail(err),
             );
         });
 
@@ -68,7 +68,7 @@ describe('dossier', () => {
                     expect(gemeinden[1]).toEqual(allGemeinde[1]);
                     done();
                 },
-                err => done.fail(err)
+                err => done.fail(err),
             );
 
             $httpBackend.flush();
@@ -80,7 +80,7 @@ describe('dossier', () => {
                     expect(gemeinden.length).toBe(0);
                     done();
                 },
-                err => done.fail(err)
+                err => done.fail(err),
             );
         });
     });

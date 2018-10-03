@@ -40,11 +40,11 @@ const states: Ng2StateDeclaration[] = [
                 token: 'traegerschaften',
                 deps: [TraegerschaftRS],
                 resolveFn: getTraegerschaften,
-            }
+            },
         ],
         data: {
             roles: TSRoleUtil.getMandantRoles(),
-        }
+        },
     },
     {
         name: 'admin.testdaten',
@@ -52,7 +52,7 @@ const states: Ng2StateDeclaration[] = [
         component: TestdatenViewComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
-        }
+        },
     },
     {
         name: 'admin.batchjobTrigger',
@@ -71,7 +71,7 @@ const states: Ng2StateDeclaration[] = [
         data: {
             roles: TSRoleUtil.getAllAdministratorRevisorRole(),
         },
-    }
+    },
 ];
 
 @NgModule({
@@ -79,7 +79,7 @@ const states: Ng2StateDeclaration[] = [
         UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
 })
 export class NgAdminRoutingModule {

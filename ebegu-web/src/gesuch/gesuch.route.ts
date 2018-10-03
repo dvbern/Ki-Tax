@@ -71,19 +71,19 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: fallCreationView
+            template: fallCreationView,
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: reloadGesuchModelManager
+        gesuch: reloadGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
@@ -93,19 +93,19 @@ export class EbeguMutationState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: fallCreationView
+            template: fallCreationView,
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: reloadGesuchModelManager
+        gesuch: reloadGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
     };
 }
 
@@ -115,19 +115,19 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: fallCreationView
+            template: fallCreationView,
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: reloadGesuchModelManager
+        gesuch: reloadGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
     };
 }
 
@@ -137,19 +137,19 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<familiensituation-view>'
+            template: '<familiensituation-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -162,19 +162,19 @@ export class EbeguStammdatenState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<stammdaten-view>'
+            template: '<stammdaten-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -184,19 +184,19 @@ export class EbeguUmzugState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<umzug-view>'
+            template: '<umzug-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -206,20 +206,20 @@ export class EbeguKinderListState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<kinder-list-view kinder-dubletten="$resolve.kinderDubletten">'
+            template: '<kinder-list-view kinder-dubletten="$resolve.kinderDubletten">',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
         gesuch: getGesuchModelManager,
-        kinderDubletten: getKinderDubletten
+        kinderDubletten: getKinderDubletten,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -232,19 +232,19 @@ export class EbeguKindState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<kind-view>'
+            template: '<kind-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -254,19 +254,19 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<betreuung-list-view>'
+            template: '<betreuung-list-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -280,19 +280,19 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<betreuung-view>'
+            template: '<betreuung-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -302,19 +302,19 @@ export class EbeguAbwesenheitState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<abwesenheit-view>'
+            template: '<abwesenheit-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButSteueramt()
+        roles: TSRoleUtil.getAllRolesButSteueramt(),
     };
 }
 
@@ -324,19 +324,19 @@ export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<erwerbspensum-list-view>'
+            template: '<erwerbspensum-list-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
@@ -349,19 +349,19 @@ export class EbeguErwerbspensumState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<erwerbspensum-view>'
+            template: '<erwerbspensum-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
@@ -374,19 +374,19 @@ export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<finanzielle-situation-view>'
+            template: '<finanzielle-situation-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -396,19 +396,19 @@ export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration 
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<finanzielle-situation-start-view>'
+            template: '<finanzielle-situation-start-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -418,19 +418,19 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<finanzielle-situation-resultate-view>'
+            template: '<finanzielle-situation-resultate-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -440,20 +440,20 @@ export class EbeguVerfuegenListState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<verfuegen-list-view mahnung-list="$resolve.mahnungList">'
+            template: '<verfuegen-list-view mahnung-list="$resolve.mahnungList">',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
         gesuch: getGesuchModelManager,
-        mahnungList: getMahnungen
+        mahnungList: getMahnungen,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButSteueramt()
+        roles: TSRoleUtil.getAllRolesButSteueramt(),
     };
 }
 
@@ -463,19 +463,19 @@ export class EbeguVerfuegenState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<verfuegen-view>'
+            template: '<verfuegen-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButSteueramt()
+        roles: TSRoleUtil.getAllRolesButSteueramt(),
     };
 }
 
@@ -485,19 +485,19 @@ export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclara
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<einkommensverschlechterung-info-view>'
+            template: '<einkommensverschlechterung-info-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -507,19 +507,19 @@ export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDecl
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<einkommensverschlechterung-steuern-view>'
+            template: '<einkommensverschlechterung-steuern-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -533,19 +533,19 @@ export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<einkommensverschlechterung-view>'
+            template: '<einkommensverschlechterung-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -558,19 +558,19 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<einkommensverschlechterung-resultate-view>'
+            template: '<einkommensverschlechterung-resultate-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -583,19 +583,19 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<dokumente-view>'
+            template: '<dokumente-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
@@ -605,19 +605,19 @@ export class EbeguFreigabeState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<freigabe-view>'
+            template: '<freigabe-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
@@ -630,19 +630,19 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<betreuung-mitteilung-view>'
+            template: '<betreuung-mitteilung-view>',
         },
         kommentarViewPort: {
-            template: kommentarView
-        }
+            template: kommentarView,
+        },
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager
+        gesuch: getGesuchModelManager,
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -724,10 +724,12 @@ export class IEinkommensverschlechterungResultateStateParams {
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
 // tslint:disable-next-line:variable-name no-shadowed-variable
-export function getMahnungen(MahnungRS: MahnungRS,
-                             $stateParams: IGesuchStateParams,
-                             $q: IQService,
-                             $log: ILogService): IPromise<TSMahnung[]> {
+export function getMahnungen(
+    MahnungRS: MahnungRS,
+    $stateParams: IGesuchStateParams,
+    $q: IQService,
+    $log: ILogService,
+): IPromise<TSMahnung[]> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
@@ -741,11 +743,13 @@ export function getMahnungen(MahnungRS: MahnungRS,
 getGesuchModelManager.$inject =
     ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
 
-export function getGesuchModelManager(gesuchModelManager: GesuchModelManager,
-                                      berechnungsManager: BerechnungsManager,
-                                      $stateParams: IGesuchStateParams,
-                                      $q: IQService,
-                                      $log: ILogService): IPromise<TSGesuch> {
+export function getGesuchModelManager(
+    gesuchModelManager: GesuchModelManager,
+    berechnungsManager: BerechnungsManager,
+    $stateParams: IGesuchStateParams,
+    $q: IQService,
+    $log: ILogService,
+): IPromise<TSGesuch> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
@@ -769,11 +773,13 @@ export function getGesuchModelManager(gesuchModelManager: GesuchModelManager,
 reloadGesuchModelManager.$inject =
     ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
 
-export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
-                                         berechnungsManager: BerechnungsManager,
-                                         $stateParams: INewFallStateParams,
-                                         $q: IQService,
-                                         $log: ILogService): IPromise<TSGesuch> {
+export function reloadGesuchModelManager(
+    gesuchModelManager: GesuchModelManager,
+    berechnungsManager: BerechnungsManager,
+    $stateParams: INewFallStateParams,
+    $q: IQService,
+    $log: ILogService,
+): IPromise<TSGesuch> {
     if ($stateParams) {
 
         if ($stateParams.creationAction) {
@@ -802,10 +808,12 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
 getKinderDubletten.$inject = ['$stateParams', '$q', 'KindRS', 'AuthServiceRS'];
 
 // Die Kinderdubletten werden nur für SCH-Mitarbeiter oder JA-Mitarbeiter (inkl. Revisor und Jurist) angezeigt
-export function getKinderDubletten($stateParams: IGesuchStateParams,
-                                   $q: IQService,
-                                   kindRS: KindRS,
-                                   authService: AuthServiceRS): IPromise<TSKindDublette[]> {
+export function getKinderDubletten(
+    $stateParams: IGesuchStateParams,
+    $q: IQService,
+    kindRS: KindRS,
+    authService: AuthServiceRS,
+): IPromise<TSKindDublette[]> {
     const isUserAllowed = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
     if (isUserAllowed && $stateParams && $stateParams.gesuchId) {
         const gesuchIdParam = $stateParams.gesuchId;

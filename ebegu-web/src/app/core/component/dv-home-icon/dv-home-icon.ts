@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {StateService} from '@uirouter/core';
 
 export class DvHomeIconComponentConfig implements IComponentOptions {
     public transclude = false;

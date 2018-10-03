@@ -36,7 +36,7 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'search.list-view',
         template: '<search-list-view flex="auto" class="overflow-scroll">',
         url: '/search/:searchString',
-    }
+    },
 ];
 
 // TODO hefa implizite Parameter definition

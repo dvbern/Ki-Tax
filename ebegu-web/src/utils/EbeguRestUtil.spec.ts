@@ -350,14 +350,18 @@ describe('EbeguRestUtil', () => {
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
                 expect(restInstitutionStammdaten.oeffnungsstunden).toEqual(myInstitutionStammdaten.oeffnungsstunden);
                 expect(restInstitutionStammdaten.oeffnungstage).toEqual(myInstitutionStammdaten.oeffnungstage);
-                expect(restInstitutionStammdaten.gueltigAb).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
-                expect(restInstitutionStammdaten.gueltigBis).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
-                expect(restInstitutionStammdaten.betreuungsangebotTyp).toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
+                expect(restInstitutionStammdaten.gueltigAb)
+                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
+                expect(restInstitutionStammdaten.gueltigBis)
+                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
+                expect(restInstitutionStammdaten.betreuungsangebotTyp)
+                    .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule.length).toBe(1);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag).toBeUndefined();
+                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag)
+                    .toBeUndefined();
 
                 const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                     restInstitutionStammdaten);
@@ -376,8 +380,10 @@ describe('EbeguRestUtil', () => {
                 expect(restErwerbspensum).toBeDefined();
                 expect(restErwerbspensum.taetigkeit).toEqual(erwerbspensumJA.taetigkeit);
                 expect(restErwerbspensum.pensum).toEqual(erwerbspensumJA.pensum);
-                expect(restErwerbspensum.gueltigAb).toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigAb));
-                expect(restErwerbspensum.gueltigBis).toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigBis));
+                expect(restErwerbspensum.gueltigAb)
+                    .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigAb));
+                expect(restErwerbspensum.gueltigBis)
+                    .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigBis));
                 expect(restErwerbspensum.zuschlagZuErwerbspensum).toEqual(erwerbspensumJA.zuschlagZuErwerbspensum);
                 expect(restErwerbspensum.zuschlagsprozent).toEqual(erwerbspensumJA.zuschlagsprozent);
                 expect(restErwerbspensum.zuschlagsgrund).toEqual(erwerbspensumJA.zuschlagsgrund);
@@ -464,7 +470,8 @@ describe('EbeguRestUtil', () => {
 
                 expect(verfuegungTS).toBeDefined();
                 expect(verfuegungTS.abzugFamGroesse).toEqual(restVerfuegungZeitabschnitt.abzugFamGroesse);
-                expect(verfuegungTS.anspruchberechtigtesPensum).toEqual(restVerfuegungZeitabschnitt.anspruchberechtigtesPensum);
+                expect(verfuegungTS.anspruchberechtigtesPensum)
+                    .toEqual(restVerfuegungZeitabschnitt.anspruchberechtigtesPensum);
                 expect(verfuegungTS.anspruchspensumRest).toEqual(restVerfuegungZeitabschnitt.anspruchspensumRest);
                 expect(verfuegungTS.betreuungspensum).toEqual(restVerfuegungZeitabschnitt.betreuungspensum);
                 expect(verfuegungTS.betreuungsstunden).toEqual(restVerfuegungZeitabschnitt.betreuungsstunden);
@@ -472,7 +479,8 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.erwerbspensumGS1).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS1);
                 expect(verfuegungTS.erwerbspensumGS2).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS2);
                 expect(verfuegungTS.fachstellenpensum).toEqual(restVerfuegungZeitabschnitt.fachstellenpensum);
-                expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr).toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
+                expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr)
+                    .toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);
                 expect(verfuegungTS.bemerkungen).toEqual(restVerfuegungZeitabschnitt.bemerkungen);
                 expect(verfuegungTS.zahlungsstatus).toEqual(restVerfuegungZeitabschnitt.zahlungsstatus);

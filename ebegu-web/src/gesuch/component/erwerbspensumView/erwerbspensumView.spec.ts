@@ -14,12 +14,13 @@
  */
 
 import {async} from '@angular/core/testing';
+import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
-import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
-import GesuchModelManager from '../../service/gesuchModelManager';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
 
 describe('erwerbspensumView', () => {
 
@@ -30,8 +31,8 @@ describe('erwerbspensumView', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let component: ErwerbspensumViewComponentConfig;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');

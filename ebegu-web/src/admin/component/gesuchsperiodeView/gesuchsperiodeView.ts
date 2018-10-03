@@ -43,8 +43,14 @@ export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     public static $inject = [
-        'EinstellungRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log',
-        '$stateParams', '$state', 'AuthServiceRS'
+        'EinstellungRS',
+        'DvDialog',
+        'GlobalCacheService',
+        'GesuchsperiodeRS',
+        '$log',
+        '$stateParams',
+        '$state',
+        'AuthServiceRS',
     ];
 
     public form: IFormController;
@@ -63,7 +69,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         private readonly $log: ILogService,
         private readonly $stateParams: IGesuchsperiodeStateParams,
         private readonly $state: StateService,
-        authServiceRS: AuthServiceRS) {
+        authServiceRS: AuthServiceRS,
+    ) {
         super(authServiceRS);
     }
 
@@ -114,7 +121,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 title: 'GESUCHSPERIODE_DIALOG_TITLE',
                 deleteText: dialogText,
                 parentController: undefined,
-                elementID: undefined
+                elementID: undefined,
             }).then(() => {
                 this.saveGesuchsperiodeFreischaltungTagesschule();
             });
@@ -136,7 +143,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             title: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TITLE',
             deleteText: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TEXT',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             this.gesuchsperiode.datumFreischaltungTagesschule = this.datumFreischaltungTagesschule;
             this.doSave();

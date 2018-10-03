@@ -22,10 +22,12 @@ export class FachstelleRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}fachstellen`;
     }
 
@@ -41,11 +43,7 @@ export class FachstelleRS {
         let fachstelleObject = {};
         fachstelleObject = this.ebeguRestUtil.fachstelleToRestObject(fachstelleObject, fachstelle);
 
-        return this.http.put(this.serviceURL, fachstelleObject, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+        return this.http.put(this.serviceURL, fachstelleObject).then((response: any) => {
             this.log.debug('PARSING fachstelle REST object ', response.data);
             return this.ebeguRestUtil.parseFachstelle(new TSFachstelle(), response.data);
         });
@@ -65,7 +63,7 @@ export class FachstelleRS {
 
     public getAllFachstellen(): IPromise<TSFachstelle[]> {
         return this.http.get(this.serviceURL).then(
-            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data)
+            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
         );
     }
 

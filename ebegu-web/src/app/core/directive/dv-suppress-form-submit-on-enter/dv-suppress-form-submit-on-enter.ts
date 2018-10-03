@@ -60,9 +60,11 @@ export class DVSuppressFormSubmitOnEnterController {
 
     public mdRadioGroupCtrl: any; // see radioButton.js of angular material: mdRadioGroup
 
-    public constructor(private readonly $mdConstant: any,
-                       private readonly $mdUtil: any,
-                       private readonly $log: ILogService) {
+    public constructor(
+        private readonly $mdConstant: any,
+        private readonly $mdUtil: any,
+        private readonly $log: ILogService,
+    ) {
 
     }
 

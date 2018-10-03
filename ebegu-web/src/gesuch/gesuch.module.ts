@@ -25,7 +25,7 @@ import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungV
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
 import {
     DossierToolbarComponentConfig,
-    DossierToolbarGesuchstellerComponentConfig
+    DossierToolbarGesuchstellerComponentConfig,
 } from './component/dossierToolbar/dossierToolbar';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';

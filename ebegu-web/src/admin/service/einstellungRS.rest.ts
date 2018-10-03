@@ -28,9 +28,11 @@ export class EinstellungRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     public serviceURL: string;
 
-    public constructor(public readonly http: IHttpService,
-                       REST_API: string,
-                       public readonly ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public readonly http: IHttpService,
+        REST_API: string,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+    ) {
         this.serviceURL = `${REST_API}einstellung`;
     }
 
@@ -39,13 +41,15 @@ export class EinstellungRS {
         restEinstellung = this.ebeguRestUtil.einstellungToRestObject(restEinstellung, tsEinstellung);
         return this.http.put(this.serviceURL, restEinstellung).then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response.data);
-            }
+            },
         );
     }
 
-    public findEinstellung(key: TSEinstellungKey,
-                           gemeinde: TSGemeinde,
-                           gesuchsperiode: TSGesuchsperiode): IPromise<TSEinstellung> {
+    public findEinstellung(
+        key: TSEinstellungKey,
+        gemeinde: TSGemeinde,
+        gesuchsperiode: TSGesuchsperiode,
+    ): IPromise<TSEinstellung> {
         return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeinde.id}/gp/${gesuchsperiode.id}`)
             .then((param: IHttpResponse<TSEinstellung>) => {
                 return param.data;

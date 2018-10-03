@@ -28,22 +28,22 @@ const states: Ng2StateDeclaration[] = [
         parent: 'app',
         name: 'onboarding',
         abstract: true,
-        component: OnboardingMainComponent
+        component: OnboardingMainComponent,
     },
     {
         name: 'onboarding.start',
         url: '/',
         component: OnboardingComponent,
         data: {
-            roles: [TSRole.ANONYMOUS]
-        }
+            roles: [TSRole.ANONYMOUS],
+        },
     },
     {
         name: 'onboarding.be-login',
         url: '/{gemeindeId:[0-9a-fA-F\-]{36}}',
         component: OnboardingBeLoginComponent,
         data: {
-            roles: [TSRole.ANONYMOUS]
+            roles: [TSRole.ANONYMOUS],
         },
     },
     {
@@ -51,7 +51,7 @@ const states: Ng2StateDeclaration[] = [
         abstract: true,
         component: UiViewComponent,
         data: {
-            roles: [TSRole.GESUCHSTELLER]
+            roles: [TSRole.GESUCHSTELLER],
         },
         onEnter: disableWhenDossierExists,
     },
@@ -67,7 +67,7 @@ const states: Ng2StateDeclaration[] = [
         resolve: {
             nextState: () => 'onboarding.gesuchsteller.registration',
             showLogin: () => false,
-        }
+        },
     },
 ];
 
@@ -88,9 +88,9 @@ function disableWhenDossierExists(transition: Transition): HookResult {
         UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
-    declarations: []
+    declarations: [],
 })
 export class OnboardingRoutingModule {
 }

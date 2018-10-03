@@ -28,7 +28,7 @@ describe('HttpAuthInterceptor', () => {
     const authErrorResponse: any = {
         status: 401,
         data: '',
-        statusText: 'Unauthorized'
+        statusText: 'Unauthorized',
     };
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));

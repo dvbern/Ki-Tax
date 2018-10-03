@@ -38,8 +38,8 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/mitteilungen/:fallId/:dossierId/:betreuungId',
         params: {
             betreuungId: '',
-        }
-    }
+        },
+    },
 ];
 
 // TODO hefa nicht alle Params wurden bei der StateDefinition deklariert!

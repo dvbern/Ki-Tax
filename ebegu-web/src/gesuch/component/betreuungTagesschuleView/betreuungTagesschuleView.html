@@ -18,10 +18,12 @@
 
     <fieldset ng-disabled="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
 
-        <div ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.hasTagesschulenAnmeldung() && !vm.getBetreuungModel().keineDetailinformationen">
+        <div
+            ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.hasTagesschulenAnmeldung() && !vm.getBetreuungModel().keineDetailinformationen">
 
             <!-- Modulauswahl Tagesschule -->
-            <div ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.isTageschulenAnmeldungAktiv() && vm.isTagesschuleAlreadySelected()">
+            <div
+                ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.isTageschulenAnmeldungAktiv() && vm.isTagesschuleAlreadySelected()">
 
                 <!-- Eintrittsdatum -->
                 <div class="row">
@@ -92,7 +94,8 @@
             </div>
 
             <!-- Hinweis, wenn keine Module ausgewaehlt -->
-            <div class="marginTop30" ng-if="vm.showErrorMessageNoModule === true && !vm.getBetreuungModel().keineDetailinformationen">
+            <div class="marginTop30"
+                 ng-if="vm.showErrorMessageNoModule === true && !vm.getBetreuungModel().keineDetailinformationen">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                     <span data-translate="WARN_TAGESSCHULE_KEIN_MODUL_GEWAEHLT"></span>

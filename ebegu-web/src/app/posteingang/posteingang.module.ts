@@ -14,9 +14,9 @@
  */
 
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
-import {posteingangRun} from './posteingang.route';
 import {PosteingangViewComponentConfig} from './component/posteingangView';
 import {posteingangFilter} from './filter/posteingangFilter';
+import {posteingangRun} from './posteingang.route';
 
 export const POSTEINGANG_JS_MODULE =
     angular.module('ebeguWeb.posteingang', [CORE_JS_MODULE.name])

@@ -38,19 +38,27 @@ export class DvCountdownComponentConfig implements IComponentOptions {
 
 export class DvCountdownController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$state', '$interval', '$rootScope', 'DvDialog',
-        'GesuchModelManager'];
+    public static $inject: ReadonlyArray<string> = [
+        'AuthServiceRS',
+        '$state',
+        '$interval',
+        '$rootScope',
+        'DvDialog',
+        'GesuchModelManager',
+    ];
 
     public readonly TSRoleUtil = TSRoleUtil;
     public timer: moment.Duration;
     public timerInterval: IPromise<any>;
 
-    public constructor(private readonly authServiceRS: AuthServiceRS,
-                       private readonly $state: StateService,
-                       private readonly $interval: IIntervalService,
-                       private readonly $rootScope: IRootScopeService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly gesuchModelManager: GesuchModelManager) {
+    public constructor(
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $state: StateService,
+        private readonly $interval: IIntervalService,
+        private readonly $rootScope: IRootScopeService,
+        private readonly dvDialog: DvDialog,
+        private readonly gesuchModelManager: GesuchModelManager,
+    ) {
     }
 
     public $onInit(): void {

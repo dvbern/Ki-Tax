@@ -33,7 +33,7 @@ describe('OnboardingMainComponent', () => {
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingMainComponent]
+            declarations: [OnboardingMainComponent],
         })
             .compileComponents();
     }));

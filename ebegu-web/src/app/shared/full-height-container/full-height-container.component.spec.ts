@@ -25,7 +25,7 @@ describe('FullHeightContainerComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [FullHeightContainerComponent]
+            declarations: [FullHeightContainerComponent],
         })
             .compileComponents();
     }));

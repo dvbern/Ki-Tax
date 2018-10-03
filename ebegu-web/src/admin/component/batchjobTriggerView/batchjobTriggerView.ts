@@ -22,13 +22,15 @@ import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 @Component({
     selector: 'dv-batchjob-trigger-view',
     templateUrl: './batchjobTriggerView.html',
-    styleUrls: ['./batchjobTrigger.less']
+    styleUrls: ['./batchjobTrigger.less'],
 })
 export class BatchjobTriggerViewComponent {
 
-    public constructor(private readonly dialog: MatDialog,
-                       private readonly databaseMigrationRS: DatabaseMigrationRS,
-                       private readonly dailyBatchRS: DailyBatchRS) {
+    public constructor(
+        private readonly dialog: MatDialog,
+        private readonly databaseMigrationRS: DatabaseMigrationRS,
+        private readonly dailyBatchRS: DailyBatchRS,
+    ) {
     }
 
     public processScript(script: string): void {

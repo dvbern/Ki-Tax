@@ -111,7 +111,7 @@ describe('verfuegenListViewTest', () => {
                 // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.convertKindNumberToKindIndex)
                     .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                    // tslint:disable-next-line:no-unbound-method
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
 
                 // tslint:disable-next-line:no-unbound-method

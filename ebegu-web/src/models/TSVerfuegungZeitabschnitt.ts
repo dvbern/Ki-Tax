@@ -42,28 +42,30 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _sameVerfuegungsdaten: boolean;
     private _sameVerguenstigung: boolean;
 
-    public constructor(erwerbspensumGS1?: number,
-                       erwerbspensumGS2?: number,
-                       betreuungspensum?: number,
-                       fachstellenpensum?: number,
-                       anspruchspensumRest?: number,
-                       anspruchberechtigtesPensum?: number,
-                       bgPensum?: number,
-                       betreuungsstunden?: number,
-                       vollkosten?: number,
-                       elternbeitrag?: number,
-                       abzugFamGroesse?: number,
-                       massgebendesEinkommen?: number,
-                       bemerkungen?: string,
-                       zahlungsstatus?: TSVerfuegungZeitabschnittZahlungsstatus,
-                       gueltigkeit?: TSDateRange,
-                       famGroesse?: number,
-                       einkommensjahr?: number,
-                       kategorieMaxEinkommen?: boolean,
-                       kategorieKeinPensum?: boolean,
-                       kategorieZuschlagZumErwerbspensum?: boolean,
-                       sameVerfuegungsdaten?: boolean,
-                       sameVerguenstigung?: boolean) {
+    public constructor(
+        erwerbspensumGS1?: number,
+        erwerbspensumGS2?: number,
+        betreuungspensum?: number,
+        fachstellenpensum?: number,
+        anspruchspensumRest?: number,
+        anspruchberechtigtesPensum?: number,
+        bgPensum?: number,
+        betreuungsstunden?: number,
+        vollkosten?: number,
+        elternbeitrag?: number,
+        abzugFamGroesse?: number,
+        massgebendesEinkommen?: number,
+        bemerkungen?: string,
+        zahlungsstatus?: TSVerfuegungZeitabschnittZahlungsstatus,
+        gueltigkeit?: TSDateRange,
+        famGroesse?: number,
+        einkommensjahr?: number,
+        kategorieMaxEinkommen?: boolean,
+        kategorieKeinPensum?: boolean,
+        kategorieZuschlagZumErwerbspensum?: boolean,
+        sameVerfuegungsdaten?: boolean,
+        sameVerguenstigung?: boolean,
+    ) {
         super(gueltigkeit);
         this._erwerbspensumGS1 = erwerbspensumGS1;
         this._erwerbspensumGS2 = erwerbspensumGS2;

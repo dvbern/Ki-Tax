@@ -28,7 +28,7 @@ import AbstractAdminViewController from '../../abstractAdminView';
 @Component({
     selector: 'dv-traegerschaft-view',
     templateUrl: './traegerschaftView.html',
-    styleUrls: ['./traegerschaftView.less']
+    styleUrls: ['./traegerschaftView.less'],
 })
 export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
@@ -41,10 +41,12 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
 
-    public constructor(private readonly traegerschaftRS: TraegerschaftRS,
-                       private readonly errorService: ErrorService,
-                       private readonly dialog: MatDialog,
-                       authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly errorService: ErrorService,
+        private readonly dialog: MatDialog,
+        authServiceRS: AuthServiceRS,
+    ) {
 
         super(authServiceRS);
     }
@@ -62,7 +64,7 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                 id: 'name',
                 start: 'asc',
                 disableClear: false,
-            }
+            },
         );
     }
 

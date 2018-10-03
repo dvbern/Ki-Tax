@@ -45,10 +45,12 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     public errors: Array<TSExceptionReport> = [];
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $scope: IScope,
-                       private readonly errorService: ErrorService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly gesuchRS: GesuchRS) {
+    public constructor(
+        private readonly $scope: IScope,
+        private readonly errorService: ErrorService,
+        private readonly dvDialog: DvDialog,
+        private readonly gesuchRS: GesuchRS,
+    ) {
     }
 
     public $onInit(): void {
@@ -82,7 +84,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             title: 'REMOVE_ONLINE_MUTATION_CONFIRMATION',
             deleteText: 'REMOVE_ONLINE_MUTATION_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId);
         });
@@ -93,7 +95,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             title: 'REMOVE_ONLINE_ERNEUERUNGSGESUCH_CONFIRMATION',
             deleteText: 'REMOVE_ONLINE_ERNEUERUNGSGESUCH_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId);
         });

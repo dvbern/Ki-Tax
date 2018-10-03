@@ -31,7 +31,8 @@ export class InstitutionStammdatenRS {
     public constructor(public $http: IHttpService,
                        REST_API: string,
                        public ebeguRestUtil: EbeguRestUtil,
-                       public $log: ILogService, private readonly globalCacheService: GlobalCacheService) {
+                       public $log: ILogService, private readonly globalCacheService: GlobalCacheService,
+    ) {
         this.serviceURL = `${REST_API}institutionstammdaten`;
     }
 
@@ -53,11 +54,12 @@ export class InstitutionStammdatenRS {
 
     private saveInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
         let restInstitutionStammdaten = {};
-        restInstitutionStammdaten = this.ebeguRestUtil.institutionStammdatenToRestObject(restInstitutionStammdaten, institutionStammdaten);
+        restInstitutionStammdaten =
+            this.ebeguRestUtil.institutionStammdatenToRestObject(restInstitutionStammdaten, institutionStammdaten);
 
         return this.$http.put(this.serviceURL, restInstitutionStammdaten).then((response: any) => {
                 return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
-            }
+            },
         );
     }
 

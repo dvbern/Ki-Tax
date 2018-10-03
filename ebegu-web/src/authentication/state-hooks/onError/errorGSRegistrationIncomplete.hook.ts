@@ -24,7 +24,7 @@ erorGSRegistrationIncompleteHookRunBlock.$inject = ['$transitions'];
 export function erorGSRegistrationIncompleteHookRunBlock($transitions: TransitionService): void {
     const criteria: HookMatchCriteria = {
         to: 'gesuchsteller.dashboard',
-        from: state => state.name !== 'onboarding.gesuchsteller.registration-incomplete'
+        from: state => state.name !== 'onboarding.gesuchsteller.registration-incomplete',
     };
 
     $transitions.onError(criteria,

@@ -53,7 +53,7 @@ describe('BenutzerEinladenComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot()
+                UIRouterModule.forRoot(),
             ],
             declarations: [BenutzerEinladenComponent, BerechtigungComponent, BenutzerRolleComponent],
             providers: [
@@ -63,7 +63,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: BenutzerRS, useValue: benutzerSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
-            ]
+            ],
         })
             .compileComponents();
     }));

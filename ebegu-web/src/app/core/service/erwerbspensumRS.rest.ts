@@ -24,11 +24,13 @@ export default class ErwerbspensumRS {
 
     public serviceURL: string;
 
-    public constructor(public readonly http: IHttpService,
-                       REST_API: string,
-                       public readonly ebeguRestUtil: EbeguRestUtil,
-                       public readonly log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public readonly http: IHttpService,
+        REST_API: string,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+        public readonly log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}erwerbspensen`;
     }
 
@@ -45,7 +47,8 @@ export default class ErwerbspensumRS {
     }
 
     public saveErwerbspensum(erwerbspensenContainer: TSErwerbspensumContainer, gesuchstellerID: string,
-                             gesuchId: string): IPromise<TSErwerbspensumContainer> {
+                             gesuchId: string,
+    ): IPromise<TSErwerbspensumContainer> {
         let restErwerbspensum = {};
         restErwerbspensum =
             this.ebeguRestUtil.erwerbspensumContainerToRestObject(restErwerbspensum, erwerbspensenContainer);

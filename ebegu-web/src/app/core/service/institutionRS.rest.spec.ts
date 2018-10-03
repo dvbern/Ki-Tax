@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
@@ -20,7 +21,6 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionRS} from './institutionRS.rest';
-import {IHttpBackendService} from 'angular';
 
 describe('institutionRS', () => {
 

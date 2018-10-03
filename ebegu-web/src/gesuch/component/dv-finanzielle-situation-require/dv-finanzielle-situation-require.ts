@@ -24,7 +24,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         areThereOnlySchulamtangebote: '=',
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
-        finanzielleSituationRequired: '='
+        finanzielleSituationRequired: '=',
     };
     public template = require('./dv-finanzielle-situation-require.html');
     public controller = DVFinanzielleSituationRequireController;
@@ -44,7 +44,8 @@ export class DVFinanzielleSituationRequireController implements IController {
 
     public constructor(
         private readonly einstellungRS: EinstellungRS,
-        private readonly gesuchModelManager: GesuchModelManager) {
+        private readonly gesuchModelManager: GesuchModelManager,
+    ) {
     }
 
     public $onInit(): void {

@@ -33,12 +33,14 @@ export default class TSErwerbspensum extends TSAbstractPensumEntity {
 
     private _bezeichnung: string;
 
-    public constructor(pensum?: number,
-                       gueltigkeit?: TSDateRange,
-                       taetigkeit?: TSTaetigkeit,
-                       zuschlagZuErwerbspensum?: boolean,
-                       zuschlagsgrund?: TSZuschlagsgrund,
-                       zuschlagsprozent?: number) {
+    public constructor(
+        pensum?: number,
+        gueltigkeit?: TSDateRange,
+        taetigkeit?: TSTaetigkeit,
+        zuschlagZuErwerbspensum?: boolean,
+        zuschlagsgrund?: TSZuschlagsgrund,
+        zuschlagsprozent?: number,
+    ) {
         super(pensum, gueltigkeit);
         this._taetigkeit = taetigkeit;
         this._zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;

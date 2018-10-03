@@ -16,11 +16,11 @@
  */
 
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
+import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material';
 import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material';
 
 @NgModule({
     imports: [
@@ -57,7 +57,7 @@ export class CoreModule {
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
                 {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
                 {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
-            ]
+            ],
         };
     }
 }

@@ -40,19 +40,21 @@ export default class TSBenutzer {
     private _currentBerechtigung: TSBerechtigung;
     private _berechtigungen: Array<TSBerechtigung> = [];
 
-    public constructor(vorname?: string,
-                       nachname?: string,
-                       username?: string,
-                       password?: string,
-                       email?: string,
-                       mandant?: TSMandant,
-                       role?: TSRole,
-                       traegerschaft?: TSTraegerschaft,
-                       institution?: TSInstitution,
-                       gemeinde?: TSGemeinde[],
-                       amt?: TSAmt,
-                       status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
-                       externalUUID?: string) {
+    public constructor(
+        vorname?: string,
+        nachname?: string,
+        username?: string,
+        password?: string,
+        email?: string,
+        mandant?: TSMandant,
+        role?: TSRole,
+        traegerschaft?: TSTraegerschaft,
+        institution?: TSInstitution,
+        gemeinde?: TSGemeinde[],
+        amt?: TSAmt,
+        status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
+        externalUUID?: string,
+    ) {
         this._vorname = vorname;
         this._nachname = nachname;
         this._username = username;

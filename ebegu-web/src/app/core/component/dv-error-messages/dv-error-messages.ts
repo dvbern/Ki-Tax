@@ -19,7 +19,7 @@ export class DvErrorMessagesComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
         errorObject: '<for',
-        inputid: '@inputId'
+        inputid: '@inputId',
     };
     public template = require('./dv-error-messages.html');
     public controller = DvErrorMessages;

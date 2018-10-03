@@ -34,7 +34,8 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
 
     public constructor(gesuchstellerJA?: TSGesuchsteller, finanzielleSituation?: TSFinanzielleSituationContainer,
                        erwerbspensen?: Array<TSErwerbspensumContainer>,
-                       einkommensverschlechterungContainer?: TSEinkommensverschlechterungContainer) {
+                       einkommensverschlechterungContainer?: TSEinkommensverschlechterungContainer,
+    ) {
         super();
         this._gesuchstellerJA = gesuchstellerJA;
         this._finanzielleSituationContainer = finanzielleSituation;

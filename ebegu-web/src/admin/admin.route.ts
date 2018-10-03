@@ -20,6 +20,7 @@ import {MandantRS} from '../app/core/service/mandantRS.rest';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+
 export class IGesuchsperiodeStateParams {
     public gesuchsperiodeId: string;
 }
@@ -37,21 +38,29 @@ export class IBenutzerStateParams {
     public benutzerId: string;
 }
 
-const applicationPropertiesResolver = ['ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
-    return applicationPropertyRS.getAllApplicationProperties();
-}];
+const applicationPropertiesResolver = [
+    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
+        return applicationPropertyRS.getAllApplicationProperties();
+    },
+];
 
-const institutionenResolver = ['InstitutionRS', (institutionRS: InstitutionRS) => {
-    return institutionRS.getAllActiveInstitutionen();
-}];
+const institutionenResolver = [
+    'InstitutionRS', (institutionRS: InstitutionRS) => {
+        return institutionRS.getAllActiveInstitutionen();
+    },
+];
 
-const traegerschaftenResolver = ['TraegerschaftRS', (traegerschaftRS: TraegerschaftRS) => {
-    return traegerschaftRS.getAllActiveTraegerschaften();
-}];
+const traegerschaftenResolver = [
+    'TraegerschaftRS', (traegerschaftRS: TraegerschaftRS) => {
+        return traegerschaftRS.getAllActiveTraegerschaften();
+    },
+];
 
-const mandantResolver = ['MandantRS', (mandantRS: MandantRS) => {
-    return mandantRS.getFirst();
-}];
+const mandantResolver = [
+    'MandantRS', (mandantRS: MandantRS) => {
+        return mandantRS.getFirst();
+    },
+];
 
 const ng1States: Ng1StateDeclaration[] = [
     {
@@ -68,7 +77,7 @@ const ng1States: Ng1StateDeclaration[] = [
             + 'application-properties="$resolve.applicationProperties"></dv-admin-view>',
         url: '/admin',
         resolve: {
-            applicationProperties: applicationPropertiesResolver
+            applicationProperties: applicationPropertiesResolver,
         },
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
@@ -85,7 +94,7 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         name: 'admin.institutionen',
         template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
-        + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
+            + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
         url: '/institutionen',
         resolve: {
             institutionen: institutionenResolver,
@@ -97,19 +106,19 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         name: 'admin.institution',
         template: '<dv-institution-view flex="auto" class="overflow-scroll"'
-        + ' traegerschaften="$resolve.traegerschaften"'
-        + ' mandant="$resolve.mandant"></dv-institution-view>',
+            + ' traegerschaften="$resolve.traegerschaften"'
+            + ' mandant="$resolve.mandant"></dv-institution-view>',
         url: '/institutionen/institution/:institutionId',
         params: {
             institutionId: '',
         },
         resolve: {
             traegerschaften: traegerschaftenResolver,
-            mandant: mandantResolver
+            mandant: mandantResolver,
         },
         data: {
             roles: TSRoleUtil.getMandantRoles(),
-        }
+        },
     },
     {
         name: 'admin.institutionstammdaten',
@@ -133,7 +142,7 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         name: 'admin.gesuchsperiode',
         template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
-        + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
+            + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
         params: {
             gesuchsperiodeId: '',

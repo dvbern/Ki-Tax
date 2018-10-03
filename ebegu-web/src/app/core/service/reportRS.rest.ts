@@ -23,11 +23,13 @@ export class ReportRS {
     public serviceURL: string;
     public reportingTimeout: number = 240000;
 
-    public constructor(public httpParamSerializer: IHttpParamSerializer,
-                       REST_API: string,
-                       public log: ILogService,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public http: IHttpService) {
+    public constructor(
+        public httpParamSerializer: IHttpParamSerializer,
+        REST_API: string,
+        public log: ILogService,
+        public ebeguRestUtil: EbeguRestUtil,
+        public http: IHttpService,
+    ) {
         this.serviceURL = `${REST_API}reporting`;
     }
 
@@ -35,7 +37,7 @@ export class ReportRS {
 
         const reportParams = this.httpParamSerializer({
             dateTimeStichtag,
-            gesuchPeriodeID
+            gesuchPeriodeID,
         });
 
         const url = `${this.serviceURL}/async/excel/gesuchStichtag?${reportParams}`;
@@ -47,14 +49,16 @@ export class ReportRS {
 
     }
 
-    public getGesuchZeitraumReportExcel(dateTimeFrom: string,
-                                        dateTimeTo: string,
-                                        gesuchPeriodeID: string): IPromise<TSDownloadFile> {
+    public getGesuchZeitraumReportExcel(
+        dateTimeFrom: string,
+        dateTimeTo: string,
+        gesuchPeriodeID: string,
+    ): IPromise<TSDownloadFile> {
 
         const reportParams = this.httpParamSerializer({
             dateTimeFrom,
             dateTimeTo,
-            gesuchPeriodeID
+            gesuchPeriodeID,
         });
 
         return this.http.get(`${this.serviceURL}/excel/gesuchZeitraum?${reportParams}`,
@@ -68,7 +72,7 @@ export class ReportRS {
 
         const reportParams = this.httpParamSerializer({
             auswertungVon,
-            auswertungBis
+            auswertungBis,
         });
 
         return this.http.get(`${this.serviceURL}/excel/kanton?${reportParams}`, {timeout: this.reportingTimeout})
@@ -80,7 +84,7 @@ export class ReportRS {
     public getMitarbeiterinnenReportExcel(auswertungVon: string, auswertungBis: string): IPromise<TSDownloadFile> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
-            auswertungBis
+            auswertungBis,
         });
         return this.http.get(`${this.serviceURL}/excel/mitarbeiterinnen?${reportParams}`,
             {timeout: this.reportingTimeout})
@@ -92,7 +96,7 @@ export class ReportRS {
     public getZahlungsauftragReportExcel(zahlungsauftragID: string): IPromise<TSDownloadFile> {
 
         const reportParams = this.httpParamSerializer({
-            zahlungsauftragID
+            zahlungsauftragID,
         });
 
         return this.http.get(`${this.serviceURL}/excel/zahlungsauftrag?${reportParams}`,
@@ -105,7 +109,7 @@ export class ReportRS {
     public getZahlungReportExcel(zahlungID: string): IPromise<TSDownloadFile> {
 
         const reportParams = this.httpParamSerializer({
-            zahlungID
+            zahlungID,
         });
 
         return this.http.get(`${this.serviceURL}/excel/zahlung?${reportParams}`, {timeout: this.reportingTimeout})
@@ -116,7 +120,7 @@ export class ReportRS {
 
     public getZahlungPeriodeReportExcel(gesuchsperiode: string): IPromise<TSDownloadFile> {
         const reportParams = this.httpParamSerializer({
-            gesuchsperiodeID: gesuchsperiode
+            gesuchsperiodeID: gesuchsperiode,
         });
 
         return this.http.get(`${this.serviceURL}/excel/zahlungperiode?${reportParams}`,
@@ -127,13 +131,15 @@ export class ReportRS {
 
     }
 
-    public getGesuchstellerKinderBetreuungReportExcel(auswertungVon: string,
-                                                      auswertungBis: string,
-                                                      gesuchPeriodeID: string): IPromise<TSDownloadFile> {
+    public getGesuchstellerKinderBetreuungReportExcel(
+        auswertungVon: string,
+        auswertungBis: string,
+        gesuchPeriodeID: string,
+    ): IPromise<TSDownloadFile> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
-            gesuchPeriodeID
+            gesuchPeriodeID,
         });
         return this.http.get(`${this.serviceURL}/excel/gesuchstellerkinderbetreuung?${reportParams}`,
             {timeout: this.reportingTimeout})
@@ -142,13 +148,15 @@ export class ReportRS {
             });
     }
 
-    public getKinderReportExcel(auswertungVon: string,
-                                auswertungBis: string,
-                                gesuchPeriodeID: string): IPromise<TSDownloadFile> {
+    public getKinderReportExcel(
+        auswertungVon: string,
+        auswertungBis: string,
+        gesuchPeriodeID: string,
+    ): IPromise<TSDownloadFile> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
-            gesuchPeriodeID
+            gesuchPeriodeID,
         });
         return this.http.get(`${this.serviceURL}/excel/kinder?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {
@@ -158,7 +166,7 @@ export class ReportRS {
 
     public getGesuchstellerReportExcel(stichtag: string): IPromise<TSDownloadFile> {
         const reportParams = this.httpParamSerializer({
-            stichtag
+            stichtag,
         });
         return this.http.get(`${this.serviceURL}/excel/gesuchsteller?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {

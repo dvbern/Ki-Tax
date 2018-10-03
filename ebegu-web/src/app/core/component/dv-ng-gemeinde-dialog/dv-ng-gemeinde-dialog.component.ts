@@ -36,7 +36,8 @@ export class DvNgGemeindeDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any) {
+        @Inject(MAT_DIALOG_DATA) data: any,
+    ) {
 
         this.gemeindeList = data.gemeindeList;
     }

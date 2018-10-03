@@ -29,10 +29,12 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
     private _role: TSRole;
     private _gemeindeList: Array<TSGemeinde> = [];
 
-    public constructor(gueltigkeit?: TSDateRange,
-                       role?: TSRole,
-                       traegerschaft?: TSTraegerschaft,
-                       institution?: TSInstitution) {
+    public constructor(
+        gueltigkeit?: TSDateRange,
+        role?: TSRole,
+        traegerschaft?: TSTraegerschaft,
+        institution?: TSInstitution,
+    ) {
         super(gueltigkeit);
         this._role = role;
         this._traegerschaft = traegerschaft;

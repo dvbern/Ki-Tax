@@ -25,9 +25,11 @@ export class TestFaelleRS {
 
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public readonly ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+    ) {
         this.serviceURL = `${REST_API}testfaelle`;
     }
 
@@ -35,12 +37,14 @@ export class TestFaelleRS {
         return 'TestFaelleRS';
     }
 
-    public createTestFallGS(testFall: string,
-                            gesuchsperiodeId: string,
-                            gemeindeId: string,
-                            bestaetigt: boolean,
-                            verfuegen: boolean,
-                            username: string): IHttpPromise<string> {
+    public createTestFallGS(
+        testFall: string,
+        gesuchsperiodeId: string,
+        gemeindeId: string,
+        bestaetigt: boolean,
+        verfuegen: boolean,
+        username: string,
+    ): IHttpPromise<string> {
         // TODO that is a strange API path. Configuration does not belong in a hierarchy. Use POST and move the
         // parameter to the method body
         // tslint:disable-next-line:max-line-length
@@ -53,40 +57,46 @@ export class TestFaelleRS {
         return this.http.delete(`${this.serviceURL}/testfallgs/${encodeURIComponent(username)}`);
     }
 
-    public createTestFall(testFall: string,
-                          gesuchsperiodeId: string,
-                          gemeindeId: string,
-                          bestaetigt: boolean,
-                          verfuegen: boolean): IHttpPromise<string> {
+    public createTestFall(
+        testFall: string,
+        gesuchsperiodeId: string,
+        gemeindeId: string,
+        bestaetigt: boolean,
+        verfuegen: boolean,
+    ): IHttpPromise<string> {
         // tslint:disable-next-line:max-line-length
         const url = `${this.serviceURL}/testfall/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}`;
 
         return this.http.get(url);
     }
 
-    public mutiereFallHeirat(dossierid: string,
-                             gesuchsperiodeid: string,
-                             mutationsdatum: moment.Moment,
-                             aenderungper: moment.Moment): IHttpPromise<string> {
+    public mutiereFallHeirat(
+        dossierid: string,
+        gesuchsperiodeid: string,
+        mutationsdatum: moment.Moment,
+        aenderungper: moment.Moment,
+    ): IHttpPromise<string> {
         return this.http.get(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                aenderungper: DateUtil.momentToLocalDate(aenderungper)
-            }
+                aenderungper: DateUtil.momentToLocalDate(aenderungper),
+            },
         });
     }
 
-    public mutiereFallScheidung(dossierid: string,
-                                gesuchsperiodeid: string,
-                                mutationsdatum: moment.Moment,
-                                aenderungper: moment.Moment): IHttpPromise<string> {
+    public mutiereFallScheidung(
+        dossierid: string,
+        gesuchsperiodeid: string,
+        mutationsdatum: moment.Moment,
+        aenderungper: moment.Moment,
+    ): IHttpPromise<string> {
         const url = `${this.serviceURL}/mutationScheidung/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`;
         return this.http.get(url,
             {
                 params: {
                     mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
-                }
+                    aenderungper: DateUtil.momentToLocalDate(aenderungper),
+                },
             });
     }
 

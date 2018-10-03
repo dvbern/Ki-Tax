@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, IHttpBackendService} from 'angular';
+import {IHttpBackendService, IHttpService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -133,9 +133,11 @@ describe('gesuchsperiodeRS', () => {
         });
     });
 
-    function checkFieldValues(createdGesuchsperiode: TSGesuchsperiode,
-                              mockPeriode: TSGesuchsperiode,
-                              _active: boolean): void {
+    function checkFieldValues(
+        createdGesuchsperiode: TSGesuchsperiode,
+        mockPeriode: TSGesuchsperiode,
+        _active: boolean,
+    ): void {
         expect(createdGesuchsperiode).toBeDefined();
         expect(createdGesuchsperiode.status).toBe(TSGesuchsperiodeStatus.AKTIV);
         TestDataUtil.checkGueltigkeitAndSetIfSame(createdGesuchsperiode, mockPeriode);

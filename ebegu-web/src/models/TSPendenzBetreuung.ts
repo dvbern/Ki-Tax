@@ -35,20 +35,22 @@ export default class TSPendenzBetreuung {
     private _institution: TSInstitution;
     private _gemeinde: string;
 
-    public constructor(betreuungsNummer?: string,
-                       betreuungsId?: string,
-                       gesuchId?: string,
-                       kindId?: string,
-                       name?: string,
-                       vorname?: string,
-                       geburtsdatum?: moment.Moment,
-                       typ?: string,
-                       gesuchsperiode?: TSGesuchsperiode,
-                       eingangsdatum?: moment.Moment,
-                       eingangsdatumSTV?: moment.Moment,
-                       betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-                       institution?: TSInstitution,
-                       gemeinde?: string) {
+    public constructor(
+        betreuungsNummer?: string,
+        betreuungsId?: string,
+        gesuchId?: string,
+        kindId?: string,
+        name?: string,
+        vorname?: string,
+        geburtsdatum?: moment.Moment,
+        typ?: string,
+        gesuchsperiode?: TSGesuchsperiode,
+        eingangsdatum?: moment.Moment,
+        eingangsdatumSTV?: moment.Moment,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        institution?: TSInstitution,
+        gemeinde?: string,
+    ) {
         this._betreuungsNummer = betreuungsNummer;
         this._betreuungsId = betreuungsId;
         this._gesuchId = gesuchId;

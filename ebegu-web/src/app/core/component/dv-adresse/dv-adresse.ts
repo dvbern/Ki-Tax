@@ -33,7 +33,7 @@ export class AdresseComponentConfig implements IComponentOptions {
         prefix: '@',
         organisation: '<',
         showNichtInGemeinde: '<',
-        showIfBisherNone: '<'
+        showIfBisherNone: '<',
     };
     public template = require('./dv-adresse.html');
     public controller = DvAdresseController;
@@ -54,11 +54,13 @@ export class DvAdresseController {
     public showNichtInGemeinde: boolean;
     public bisherLand: string;
 
-    public constructor(public readonly adresseRS: AdresseRS,
-                       listResourceRS: ListResourceRS,
-                       public readonly gesuchModelManager: GesuchModelManager,
-                       public readonly $translate: ITranslateService,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        public readonly adresseRS: AdresseRS,
+        listResourceRS: ListResourceRS,
+        public readonly gesuchModelManager: GesuchModelManager,
+        public readonly $translate: ITranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
         this.TSRoleUtil = TSRoleUtil;
         this.bisherLand = this.getBisherLand();
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {

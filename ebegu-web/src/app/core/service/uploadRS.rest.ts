@@ -22,12 +22,14 @@ export class UploadRS {
     public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public log: ILogService,
-                       private readonly upload: any,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public q: IQService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public log: ILogService,
+        private readonly upload: any,
+        public ebeguRestUtil: EbeguRestUtil,
+        public q: IQService,
+    ) {
         this.serviceURL = REST_API + 'upload';
     }
 
@@ -50,12 +52,12 @@ export class UploadRS {
             method: 'POST',
             headers: {
                 'x-filename': names.join(';'),
-                'x-gesuchID': gesuchID
+                'x-gesuchID': gesuchID,
             },
             data: {
                 file: files,
-                dokumentGrund: restDokumentString
-            }
+                dokumentGrund: restDokumentString,
+            },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
         }, (response: any) => {

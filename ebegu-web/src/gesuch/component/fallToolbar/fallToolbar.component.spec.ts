@@ -16,17 +16,17 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import DossierRS from '../../service/dossierRS.rest';
-import {StateService} from '@uirouter/core';
 import GemeindeRS from '../../service/gemeindeRS.rest';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {FallToolbarComponent} from './fallToolbar.component';
@@ -64,17 +64,17 @@ describe('fallToolbar', () => {
         authServiceSpy.principal$ = of(user) as any;
 
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
-            findDossiersByFall: Promise.resolve([dossier1, dossier2])
+            findDossiersByFall: Promise.resolve([dossier1, dossier2]),
         });
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, {
-            getIdOfNewestGesuchForDossier: Promise.resolve(mockGesuchId)
+            getIdOfNewestGesuchForDossier: Promise.resolve(mockGesuchId),
         });
 
         TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
-                TranslateModule
+                TranslateModule,
             ],
             providers: [
                 {provide: DossierRS, useValue: dossierServiceSpy},
@@ -86,7 +86,7 @@ describe('fallToolbar', () => {
             declarations: [
                 FallToolbarComponent,
                 DvNgShowElementDirective,
-            ]
+            ],
         });
     }));
 
@@ -112,7 +112,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(dossier1)).toBe(true);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
 
@@ -122,7 +122,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(dossier2)).toBe(false);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
         it('should return false for undefined', done => {
@@ -131,7 +131,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(undefined)).toBe(false);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
         it('should return false for the no selected dossier', done => {
@@ -140,7 +140,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(dossier1)).toBe(false);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
     });
@@ -150,7 +150,7 @@ describe('fallToolbar', () => {
             initTestBed();
         }));
 
-        it('should reload all data when changing input values', fakeAsync( () => {
+        it('should reload all data when changing input values', fakeAsync(() => {
             component.dossierId = dossier2.id;
             component.fallId = fall.id;
             component.ngOnChanges({
@@ -194,7 +194,7 @@ describe('fallToolbar', () => {
             });
             dossier1.fall.besitzer = new TSBenutzer(); // it  is now an onlineGesuch
             const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
-                findDossiersByFall: Promise.resolve([dossier1, dossier2])
+                findDossiersByFall: Promise.resolve([dossier1, dossier2]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             TestBed.overrideProvider(DossierRS, {useValue: dossierServiceSpy});

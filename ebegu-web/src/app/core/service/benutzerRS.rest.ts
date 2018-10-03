@@ -25,10 +25,12 @@ export default class BenutzerRS implements IEntityRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}benutzer`;
     }
 
@@ -60,11 +62,7 @@ export default class BenutzerRS implements IEntityRS {
     }
 
     public searchUsers(userSearch: any): IPromise<TSUserSearchresultDTO> {
-        return this.$http.post(`${this.serviceURL}/search/`, userSearch, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+        return this.$http.post(`${this.serviceURL}/search/`, userSearch).then((response: any) => {
             this.$log.debug('PARSING benutzer REST array object', response.data);
             const tsBenutzers = this.ebeguRestUtil.parseUserList(response.data.benutzerDTOs);
 

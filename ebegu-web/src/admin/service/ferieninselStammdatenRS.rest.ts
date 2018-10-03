@@ -24,9 +24,11 @@ export class FerieninselStammdatenRS {
 
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+    ) {
         this.serviceURL = `${REST_API}ferieninselStammdaten`;
     }
 
@@ -34,11 +36,7 @@ export class FerieninselStammdatenRS {
         let stammdatenObj = {};
         stammdatenObj = this.ebeguRestUtil.ferieninselStammdatenToRestObject(stammdatenObj, stammdaten);
 
-        return this.http.put(this.serviceURL, stammdatenObj, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+        return this.http.put(this.serviceURL, stammdatenObj).then((response: any) => {
             return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
         });
     }

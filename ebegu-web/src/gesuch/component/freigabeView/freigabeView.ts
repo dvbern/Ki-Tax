@@ -45,23 +45,34 @@ export class FreigabeViewComponentConfig implements IComponentOptions {
 
 export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
-    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager',
-        'DvDialog', 'DownloadRS', '$scope', 'ApplicationPropertyRS', 'AuthServiceRS', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'WizardStepManager',
+        'DvDialog',
+        'DownloadRS',
+        '$scope',
+        'ApplicationPropertyRS',
+        'AuthServiceRS',
+        '$timeout',
+    ];
 
     public bestaetigungFreigabequittung: boolean = false;
     public isFreigebenClicked: boolean = false;
     public showGesuchFreigebenSimulationButton: boolean = false;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       wizardStepManager: WizardStepManager,
-                       private readonly dvDialog: DvDialog,
-                       private readonly downloadRS: DownloadRS,
-                       $scope: IScope,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly downloadRS: DownloadRS,
+        $scope: IScope,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly authServiceRS: AuthServiceRS,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
         this.initViewModel();
@@ -77,7 +88,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         if (this.isGesuchValid() && this.bestaetigungFreigabequittung) {
             this.form.$setPristine();
             return this.dvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
-                parentController: this
+                parentController: this,
             });
         }
         return undefined;

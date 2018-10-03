@@ -19,7 +19,7 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet
+    TSGesuchstellerKardinalitaet,
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -50,24 +50,36 @@ export class FamiliensituationViewComponentConfig implements IComponentOptions {
 
 export class FamiliensituationViewController extends AbstractGesuchViewController<TSFamiliensituationContainer> {
 
-    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'WizardStepManager',
-        'DvDialog', '$translate', '$q', '$scope', 'FamiliensituationRS', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        'DvDialog',
+        '$translate',
+        '$q',
+        '$scope',
+        'FamiliensituationRS',
+        '$timeout',
+    ];
     public familienstatusValues: Array<TSFamilienstatus>;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public allowedRoles: Array<TSRole>;
     public initialFamiliensituation: TSFamiliensituation;
     public savedClicked: boolean = false;
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly dvDialog: DvDialog,
-                       private readonly $translate: ITranslateService,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       private readonly familiensituationRS: FamiliensituationRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly $translate: ITranslateService,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly familiensituationRS: FamiliensituationRS,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager,
             berechnungsManager,
@@ -104,14 +116,14 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             if (this.isConfirmationRequired()) {
                 const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.gesuchModelManager.getGesuch().gesuchsteller2
-                        ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : ''
+                        ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '',
                 });
                 return this.dvDialog.showDialog(removeDialogTemplate, RemoveDialogController, {
                     title: 'FAMILIENSITUATION_WARNING',
                     deleteText: descriptionText,
                     parentController: undefined,
                     elementID: undefined,
-                    form: this.form
+                    form: this.form,
                 }).then(() => {   // User confirmed changes
                     return this.save();
                 });

@@ -46,5 +46,5 @@ export const SHARED_MODULE_OVERRIDES = {
     add: {
         declarations: [MockDvLoadingButton],
         exports: [MockDvLoadingButton],
-    }
+    },
 };

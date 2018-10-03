@@ -43,7 +43,7 @@ export class DvDialog {
             template,
             controller,
             controllerAs: 'vm',
-            locals: params
+            locals: params,
         };
         return this.$mdDialog.show(confirm);
     }
@@ -66,7 +66,7 @@ export class DvDialog {
             template,
             controller,
             controllerAs: 'vm',
-            locals: params
+            locals: params,
         };
         return this.$mdDialog.show(confirm);
     }
@@ -77,7 +77,7 @@ export class DvDialog {
             controller,
             controllerAs: 'vm',
             fullscreen: true,
-            locals: params
+            locals: params,
         };
         return this.$mdDialog.show(confirm);
     }

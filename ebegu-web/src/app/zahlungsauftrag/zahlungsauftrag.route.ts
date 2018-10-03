@@ -36,5 +36,5 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'zahlungsauftrag.view',
         template: '<zahlungsauftrag-view flex="auto" class="overflow-scroll">',
         url: '/zahlungsauftrag',
-    }
+    },
 ];

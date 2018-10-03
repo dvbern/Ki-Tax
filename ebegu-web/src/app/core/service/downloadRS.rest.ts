@@ -26,12 +26,14 @@ export class DownloadRS {
 
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly $window: IWindowService,
-                       private readonly $interval: IIntervalService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly $window: IWindowService,
+        private readonly $interval: IIntervalService,
+    ) {
         this.serviceURL = `${REST_API}blobs/temp`;
     }
 
@@ -70,8 +72,10 @@ export class DownloadRS {
             });
     }
 
-    public getFreigabequittungAccessTokenGeneratedDokument(gesuchId: string,
-                                                           forceCreation: boolean): IPromise<TSDownloadFile> {
+    public getFreigabequittungAccessTokenGeneratedDokument(
+        gesuchId: string,
+        forceCreation: boolean,
+    ): IPromise<TSDownloadFile> {
         const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.FREIGABEQUITTUNG]);
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const url = `${this.serviceURL}/${gesuchIdEnc}/${dokumentTypEnc}/${forceCreation}/generated`;
@@ -93,10 +97,12 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenVerfuegungGeneratedDokument(gesuchId: string,
-                                                     betreuungId: string,
-                                                     forceCreation: boolean,
-                                                     manuelleBemerkungen: string): IPromise<TSDownloadFile> {
+    public getAccessTokenVerfuegungGeneratedDokument(
+        gesuchId: string,
+        betreuungId: string,
+        forceCreation: boolean,
+        manuelleBemerkungen: string,
+    ): IPromise<TSDownloadFile> {
 
         const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.VERFUEGUNG]);
         const gesuchIdEnc = encodeURIComponent(gesuchId);
@@ -109,8 +115,10 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenNichteintretenGeneratedDokument(betreuungId: string,
-                                                         forceCreation: boolean): IPromise<TSDownloadFile> {
+    public getAccessTokenNichteintretenGeneratedDokument(
+        betreuungId: string,
+        forceCreation: boolean,
+    ): IPromise<TSDownloadFile> {
 
         const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.NICHTEINTRETEN]);
         const betreuungIdEnc = encodeURIComponent(betreuungId);

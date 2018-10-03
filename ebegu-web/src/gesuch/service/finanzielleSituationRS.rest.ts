@@ -28,17 +28,21 @@ export default class FinanzielleSituationRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public $log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public $log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}finanzielleSituation`;
     }
 
-    public saveFinanzielleSituation(finanzielleSituationContainer: TSFinanzielleSituationContainer,
-                                    gesuchstellerId: string,
-                                    gesuchId: string): IPromise<TSFinanzielleSituationContainer> {
+    public saveFinanzielleSituation(
+        finanzielleSituationContainer: TSFinanzielleSituationContainer,
+        gesuchstellerId: string,
+        gesuchId: string,
+    ): IPromise<TSFinanzielleSituationContainer> {
         let returnedFinanzielleSituation = {};
         returnedFinanzielleSituation = this.ebeguRestUtil.finanzielleSituationContainerToRestObject(
             returnedFinanzielleSituation,
@@ -81,8 +85,8 @@ export default class FinanzielleSituationRS {
         finSitModelToSend = this.ebeguRestUtil.finanzModelToRestObject(finSitModelToSend, finSitModel);
         return this.$http.post(`${this.serviceURL}/calculateTemp`, finSitModelToSend, {
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         }).then((httpresponse: any) => {
             this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
             return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
@@ -91,10 +95,11 @@ export default class FinanzielleSituationRS {
     }
 
     public findFinanzielleSituation(finanzielleSituationID: string): IPromise<TSFinanzielleSituationContainer> {
-        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(finanzielleSituationID)}`).then((httpresponse: any) => {
-            this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                httpresponse.data);
-        });
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(finanzielleSituationID)}`)
+            .then((httpresponse: any) => {
+                this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
+                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                    httpresponse.data);
+            });
     }
 }

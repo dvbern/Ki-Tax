@@ -26,8 +26,8 @@ export const LoginComponentConfig: IComponentOptions = {
     template: require('./login.component.html'),
     controllerAs: 'vm',
     bindings: {
-        returnTo: '<'
-    }
+        returnTo: '<',
+    },
 };
 
 export class LoginComponentController implements IController {
@@ -41,12 +41,13 @@ export class LoginComponentController implements IController {
 
     public returnTo: TargetState;
 
-    public constructor(private readonly $state: StateService,
-                       private readonly $stateParams: IAuthenticationStateParams,
-                       private readonly $window: IWindowService,
-                       private readonly $timeout: ITimeoutService,
-                       private readonly authService: AuthServiceRS,
-                       private readonly $location: ILocationService,
+    public constructor(
+        private readonly $state: StateService,
+        private readonly $stateParams: IAuthenticationStateParams,
+        private readonly $window: IWindowService,
+        private readonly $timeout: ITimeoutService,
+        private readonly authService: AuthServiceRS,
+        private readonly $location: ILocationService,
     ) {
     }
 

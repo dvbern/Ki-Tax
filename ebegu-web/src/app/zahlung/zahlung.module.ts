@@ -14,8 +14,8 @@
  */
 
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
-import {zahlungRun} from './zahlung.route';
 import {ZahlungViewComponentConfig} from './component/zahlungView';
+import {zahlungRun} from './zahlung.route';
 
 export const ZAHLUNG_JS_MODULE =
     angular.module('ebeguWeb.zahlung', [CORE_JS_MODULE.name])

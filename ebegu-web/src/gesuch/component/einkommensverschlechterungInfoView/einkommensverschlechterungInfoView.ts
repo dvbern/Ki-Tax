@@ -52,9 +52,20 @@ export class EinkommensverschlechterungInfoViewComponentConfig implements ICompo
 export class EinkommensverschlechterungInfoViewController
     extends AbstractGesuchViewController<TSEinkommensverschlechterungInfoContainer> {
 
-    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', 'EbeguUtil'
-        , 'WizardStepManager', 'DvDialog', '$q', 'EinkommensverschlechterungInfoRS', '$scope', 'AuthServiceRS',
-        'EinkommensverschlechterungContainerRS', '$timeout'];
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'EbeguUtil',
+        'WizardStepManager',
+        'DvDialog',
+        '$q',
+        'EinkommensverschlechterungInfoRS',
+        '$scope',
+        'AuthServiceRS',
+        'EinkommensverschlechterungContainerRS',
+        '$timeout',
+    ];
 
     public monthsStichtage: Array<TSMonth>;
     public monthsStichtageWithVorjahr: Array<TSMonth>;
@@ -69,21 +80,23 @@ export class EinkommensverschlechterungInfoViewController
     public basisJahrUndPeriode = {
         jahr1periode: this.gesuchModelManager.getBasisjahrPlus(1),
         jahr2periode: this.gesuchModelManager.getBasisjahrPlus(2),
-        basisjahr: this.gesuchModelManager.getBasisjahr()
+        basisjahr: this.gesuchModelManager.getBasisjahr(),
     };
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       private readonly ebeguUtil: EbeguUtil,
-                       wizardStepManager: WizardStepManager,
-                       private readonly dvDialog: DvDialog,
-                       private readonly $q: IQService,
-                       private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
-                       $scope: IScope,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        private readonly ebeguUtil: EbeguUtil,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly $q: IQService,
+        private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
+        $scope: IScope,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
@@ -195,7 +208,7 @@ export class EinkommensverschlechterungInfoViewController
                     deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
                     parentController: undefined,
                     elementID: undefined,
-                    form: this.form
+                    form: this.form,
                 }).then(() => {   // User confirmed changes
                     return this.save();
                 });

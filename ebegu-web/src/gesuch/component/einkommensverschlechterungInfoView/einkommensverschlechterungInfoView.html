@@ -77,7 +77,9 @@
                                     </md-checkbox>
                                     <dv-tooltip text="'EKVI_MONAT_DES_EREIGNISSES_1_HELP' | translate"></dv-tooltip>
                                     <div class="dv-error-messages">
-                                        <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error" role="alert" class="error">
+                                        <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
+                                             role="alert"
+                                             class="error">
                                             <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM"
                                                  for="vm.form.ekvFuerBasisJahrPlus1.$error"></div>
                                         </div>
@@ -93,7 +95,8 @@
                                 <label class="md-no-float required" data-translate="EKVI_MONAT_DES_EREIGNISSES"
                                        for="stichtagBasisJahrPlus1"></label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="stichtagBasisJahrPlus1-error" name="stichtagBasisJahrPlus1"
+                                    <select aria-describedby="stichtagBasisJahrPlus1-error"
+                                            name="stichtagBasisJahrPlus1"
                                             id="stichtagBasisJahrPlus1" class="form-control"
                                             ng-model="vm.selectedStichtagBjP1"
                                             ng-options="stichtagMonat | translate for stichtagMonat in vm.monthsStichtage"
@@ -166,7 +169,8 @@
                                     </md-checkbox>
                                     <dv-tooltip text="'EKVI_MONAT_DES_EREIGNISSES_2_HELP' | translate"></dv-tooltip>
                                     <div class="dv-error-messages">
-                                        <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert" class="error">
+                                        <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert"
+                                             class="error">
                                             <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM"
                                                  for="vm.form.ekvFuerBasisJahrPlus2.$error"></div>
                                         </div>
@@ -183,7 +187,8 @@
                                     <span data-translate="EKVI_MONAT_DES_EREIGNISSES" class="required"></span>
                                 </label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="stichtagBasisJahrPlus2-error" name="stichtagBasisJahrPlus2"
+                                    <select aria-describedby="stichtagBasisJahrPlus2-error"
+                                            name="stichtagBasisJahrPlus2"
                                             id="stichtagBasisJahrPlus2" class="form-control"
                                             ng-model="vm.selectedStichtagBjP2"
                                             ng-options="stichtagMonat | translate for stichtagMonat in vm.monthsStichtageWithVorjahr"

@@ -192,14 +192,14 @@ describe('dvNavigation', () => {
             moveComingFromErwerbspensum(false);
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: '123'
+                gesuchId: '123',
             });
         });
         it('moves to gesuch.finanzielleSituationStart when coming from ERWERBSPENSUM substep 1 and 2GS and FinSit not required',
             () => {
                 moveComingFromErwerbspensum(true);
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStart', {
-                    gesuchId: '123'
+                    gesuchId: '123',
                 });
             });
         it('moves to gesuch.erwerbsPensen when coming from ERWERBSPENSUM substep 2', () => {
@@ -220,7 +220,7 @@ describe('dvNavigation', () => {
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                     gesuchstellerNumber: '2',
-                    gesuchId: '123'
+                    gesuchId: '123',
                 });
             });
         it('moves to gesuch.finanzielleSituationResultate when coming from FINANZIELLE_SITUATION substep 1 with GS1 and 2GS NOT required',
@@ -245,7 +245,7 @@ describe('dvNavigation', () => {
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: '123'
+                gesuchId: '123',
             });
         });
         it('moves to gesuch.einkommensverschlechterungInfo when coming from FINANZIELLE_SITUATION substep 3', () => {
@@ -269,7 +269,7 @@ describe('dvNavigation', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterung', {
                     gesuchstellerNumber: '1',
                     basisjahrPlus: '2',
-                    gesuchId: '123'
+                    gesuchId: '123',
                 });
             });
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS NOT required',
@@ -286,7 +286,7 @@ describe('dvNavigation', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterung', {
                     gesuchstellerNumber: '1',
                     basisjahrPlus: '2',
-                    gesuchId: '123'
+                    gesuchId: '123',
                 });
             });
         it('moves to gesuch.dokumente when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 without EV', () => {
@@ -431,7 +431,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: ''
+                gesuchId: '',
             });
         });
         it('moves to gesuch.finanzielleSituationStart when coming from FINANZIELLE_SITUATION substep 1', () => {
@@ -467,7 +467,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: ''
+                gesuchId: '',
             });
         });
         it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 3', () => {
@@ -477,7 +477,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '2',
-                gesuchId: ''
+                gesuchId: '',
             });
         });
         it('moves to gesuch.finanzielleSituation when coming from EINKOMMENSVERSCHLECHTERUNG substep 1', () => {
@@ -488,7 +488,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: '123'
+                gesuchId: '123',
             });
         });
         it('moves to gesuch.einkommensverschlechterungInfo when coming from EINKOMMENSVERSCHLECHTERUNG substep 3',

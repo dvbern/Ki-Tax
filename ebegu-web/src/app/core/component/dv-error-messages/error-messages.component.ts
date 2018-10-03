@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+} from '@angular/core';
 import {ControlContainer, NgForm, ValidationErrors} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -47,7 +55,7 @@ export class ErrorMessagesComponent implements OnChanges, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => this.changeDetectorRef.markForCheck(),
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 

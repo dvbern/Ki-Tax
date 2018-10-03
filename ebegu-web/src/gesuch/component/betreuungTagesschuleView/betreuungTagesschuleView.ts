@@ -52,7 +52,7 @@ export class BetreuungTagesschuleViewComponentConfig implements IComponentOption
         anmeldungSchulamtUebernehmen: '&',
         anmeldungSchulamtAblehnen: '&',
         anmeldungSchulamtFalscheInstitution: '&',
-        form: '='
+        form: '=',
     };
     public template = require('./betreuungTagesschuleView.html');
     public controller = BetreuungTagesschuleViewController;
@@ -61,10 +61,23 @@ export class BetreuungTagesschuleViewComponentConfig implements IComponentOption
 
 export class BetreuungTagesschuleViewController extends BetreuungViewController {
 
-    public static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager',
+    public static $inject = [
+        '$state',
+        'GesuchModelManager',
+        'EbeguUtil',
+        'CONSTANTS',
+        '$scope',
+        'BerechnungsManager',
         'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout',
-        '$translate'];
+        'AuthServiceRS',
+        'WizardStepManager',
+        '$stateParams',
+        'MitteilungRS',
+        'DvDialog',
+        '$log',
+        '$timeout',
+        '$translate',
+    ];
 
     public onSave: () => void;
     public form: IFormController;
@@ -75,21 +88,23 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
 
-    public constructor($state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       ebeguUtil: EbeguUtil,
-                       CONSTANTS: any,
-                       $scope: IScope,
-                       berechnungsManager: BerechnungsManager,
-                       errorService: ErrorService,
-                       authServiceRS: AuthServiceRS,
-                       wizardStepManager: WizardStepManager,
-                       $stateParams: IBetreuungStateParams,
-                       mitteilungRS: MitteilungRS,
-                       dvDialog: DvDialog,
-                       $log: ILogService,
-                       $timeout: ITimeoutService,
-                       $translate: ITranslateService) {
+    public constructor(
+        $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        ebeguUtil: EbeguUtil,
+        CONSTANTS: any,
+        $scope: IScope,
+        berechnungsManager: BerechnungsManager,
+        errorService: ErrorService,
+        authServiceRS: AuthServiceRS,
+        wizardStepManager: WizardStepManager,
+        $stateParams: IBetreuungStateParams,
+        mitteilungRS: MitteilungRS,
+        dvDialog: DvDialog,
+        $log: ILogService,
+        $timeout: ITimeoutService,
+        $translate: ITranslateService,
+    ) {
 
         super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS,
             wizardStepManager, $stateParams, mitteilungRS, dvDialog, $log, $timeout, $translate);
@@ -131,7 +146,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             if (gp.isTagesschulenAnmeldungKonfiguriert()) {
                 const terminValue = DateUtil.momentToLocalDateFormat(gp.datumFreischaltungTagesschule, 'DD.MM.YYYY');
                 return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
-                    termin: terminValue
+                    termin: terminValue,
                 });
             }
             return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
@@ -209,7 +224,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                     title: 'CONFIRM_SAVE_TAGESSCHULE',
                     deleteText: 'BESCHREIBUNG_SAVE_TAGESSCHULE',
                     parentController: undefined,
-                    elementID: undefined
+                    elementID: undefined,
                 }).then(() => {
                     this.onSave();
                 });

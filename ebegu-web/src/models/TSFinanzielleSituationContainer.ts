@@ -22,8 +22,11 @@ export default class TSFinanzielleSituationContainer extends TSAbstractMutableEn
     private _finanzielleSituationGS: TSFinanzielleSituation;
     private _finanzielleSituationJA: TSFinanzielleSituation;
 
-    public constructor(jahr?: number, finanzielleSituationGS?: TSFinanzielleSituation,
-                       finanzielleSituationJA?: TSFinanzielleSituation) {
+    public constructor(
+        jahr?: number,
+        finanzielleSituationGS?: TSFinanzielleSituation,
+        finanzielleSituationJA?: TSFinanzielleSituation,
+    ) {
         super();
         this._jahr = jahr;
         this._finanzielleSituationGS = finanzielleSituationGS;

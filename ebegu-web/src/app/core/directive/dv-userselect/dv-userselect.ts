@@ -38,7 +38,7 @@ export class DVUserselect implements IDirective {
         showSelectionAll: '=',
         onUserChanged: '&',
         selectedUser: '=?',
-        schulamt: '<'
+        schulamt: '<',
         // initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
     };
     public template = require('./dv-userselect.html');
@@ -68,8 +68,10 @@ export class UserselectController implements IController {
     public onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     public schulamt: string;
 
-    public constructor(private readonly benutzerRS: BenutzerRS,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly benutzerRS: BenutzerRS,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
 
     }
 
@@ -82,7 +84,7 @@ export class UserselectController implements IController {
                     principal => {
                         this.selectedUser = principal;
                     },
-                    err => LOG.error(err)
+                    err => LOG.error(err),
                 );
         }
         // initial nach aktuell eingeloggtem filtern

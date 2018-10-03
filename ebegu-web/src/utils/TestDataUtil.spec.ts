@@ -78,8 +78,10 @@ export default class TestDataUtil {
         return dummyErwerbspensum;
     }
 
-    public static checkGueltigkeitAndSetIfSame(first: TSAbstractDateRangedEntity,
-                                               second: TSAbstractDateRangedEntity): void {
+    public static checkGueltigkeitAndSetIfSame(
+        first: TSAbstractDateRangedEntity,
+        second: TSAbstractDateRangedEntity,
+    ): void {
         // Dieses hack wird gebraucht weil um 2 Moment zu vergleichen kann man nicht einfach equal() benutzen sondern
         // isSame
         expect(first.gueltigkeit.gueltigAb.isSame(second.gueltigkeit.gueltigAb)).toBe(true);
@@ -100,8 +102,9 @@ export default class TestDataUtil {
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen').respond({});
         $httpBackend.when('GET',
-            '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a').respond(
-            {});
+            '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
+            .respond(
+                {});
     }
 
     public static createWizardStep(gesuchId: string): TSWizardStep {
@@ -165,14 +168,16 @@ export default class TestDataUtil {
                 parameterViolations: [],
                 classViolations: [],
                 fieldViolations: [],
-                propertyViolations: [{
-                    constraintType: 'PARAMETER',
-                    path: 'markAsRead.arg1',
-                    message: 'Die Länge des Feldes muss zwischen 36 und 36 sein',
-                    value: '8a146418-ab12-456f-9b17-aad6990f51'
-                }],
-                returnValueViolations: []
-            }
+                propertyViolations: [
+                    {
+                        constraintType: 'PARAMETER',
+                        path: 'markAsRead.arg1',
+                        message: 'Die Länge des Feldes muss zwischen 36 und 36 sein',
+                        value: '8a146418-ab12-456f-9b17-aad6990f51',
+                    },
+                ],
+                returnValueViolations: [],
+            },
         };
     }
 
@@ -188,7 +193,7 @@ export default class TestDataUtil {
                 customMessage: 'test',
                 objectId: '44-55-66-77',
                 argumentList: null,
-            }
+            },
         };
     }
 

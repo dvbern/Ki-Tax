@@ -51,7 +51,7 @@ export class DVNavigation implements IDirective {
         dvSave: '&?',
         dvSavingPossible: '<?',
         dvTranslateNext: '@',
-        dvTranslatePrevious: '@'
+        dvTranslatePrevious: '@',
     };
     public template = require('./dv-navigation.html');
 
@@ -67,8 +67,15 @@ export class DVNavigation implements IDirective {
  */
 export class NavigatorController implements IController {
 
-    public static $inject: string[] = ['WizardStepManager', '$state', 'GesuchModelManager', '$translate',
-        'ErrorService', '$q', '$timeout'];
+    public static $inject: string[] = [
+        'WizardStepManager',
+        '$state',
+        'GesuchModelManager',
+        '$translate',
+        'ErrorService',
+        '$q',
+        '$timeout',
+    ];
 
     public dvPrevious: () => any;
     public dvNext: () => any;
@@ -84,13 +91,15 @@ export class NavigatorController implements IController {
 
     public performSave: boolean;
 
-    public constructor(private readonly wizardStepManager: WizardStepManager,
-                       private readonly state: StateService,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $translate: ITranslateService,
-                       private readonly errorService: ErrorService,
-                       private readonly $q: IQService,
-                       private readonly $timeout: ITimeoutService) {
+    public constructor(
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly state: StateService,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService,
+        private readonly errorService: ErrorService,
+        private readonly $q: IQService,
+        private readonly $timeout: ITimeoutService,
+    ) {
     }
 
     // wird von angular aufgerufen
@@ -430,7 +439,7 @@ export class NavigatorController implements IController {
                     this.state.target('gesuch.finanzielleSituationStart', gesuchIdParam) :
                     this.state.target('gesuch.finanzielleSituation', {
                         gesuchstellerNumber: '1',
-                        gesuchId
+                        gesuchId,
                     }),
                 [TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG]: this.state.target(
                     'gesuch.einkommensverschlechterungInfo', gesuchIdParam),
@@ -450,34 +459,34 @@ export class NavigatorController implements IController {
         return this.state.go('gesuch.einkommensverschlechterung', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
     private navigateToFinanziellSituationResultate(): TransitionPromise {
         return this.state.go('gesuch.finanzielleSituationResultate', {
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
     // tslint:disable-next-line:no-identical-functions
     private navigateToStepEinkommensverschlechterungSteuern(): TransitionPromise {
         return this.state.go('gesuch.einkommensverschlechterungSteuern', {
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
     private navigateToStepEinkommensverschlechterungResultate(basisjahrPlus: string): TransitionPromise {
         return this.state.go('gesuch.einkommensverschlechterungResultate', {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
     private navigateToStepFinanzielleSituation(gsNumber: string): TransitionPromise {
         return this.state.go('gesuch.finanzielleSituation', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 

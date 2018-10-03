@@ -37,7 +37,7 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'zahlung.view',
         template: '<zahlung-view flex="auto" class="overflow-scroll">',
         url: '/zahlung/:zahlungsauftragId',
-    }
+    },
 ];
 
 export class IZahlungsauftragStateParams {

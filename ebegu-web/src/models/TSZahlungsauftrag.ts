@@ -28,13 +28,15 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
     private _betragTotalAuftrag: number;
     private _zahlungen: Array<TSZahlung>;
 
-    public constructor(gueltigkeit?: TSDateRange,
-                       datumGeneriert?: moment.Moment,
-                       datumFaellig?: moment.Moment,
-                       status?: TSZahlungsauftragsstatus,
-                       beschrieb?: string,
-                       betragTotalAuftrag?: number,
-                       zahlungen?: Array<TSZahlung>) {
+    public constructor(
+        gueltigkeit?: TSDateRange,
+        datumGeneriert?: moment.Moment,
+        datumFaellig?: moment.Moment,
+        status?: TSZahlungsauftragsstatus,
+        beschrieb?: string,
+        betragTotalAuftrag?: number,
+        zahlungen?: Array<TSZahlung>,
+    ) {
         super(gueltigkeit);
         this._datumGeneriert = datumGeneriert;
         this._datumFaellig = datumFaellig;

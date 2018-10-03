@@ -36,9 +36,10 @@ export class SearchListViewController {
     public totalResultCount: string = '-';
     public searchString: string;
 
-    public constructor(private readonly $log: ILogService,
-                       $stateParams: ISearchResultateStateParams,
-                       private readonly searchIndexRS: SearchIndexRS,
+    public constructor(
+        private readonly $log: ILogService,
+        $stateParams: ISearchResultateStateParams,
+        private readonly searchIndexRS: SearchIndexRS,
     ) {
         this.searchString = $stateParams.searchString;
         this.initViewModel();

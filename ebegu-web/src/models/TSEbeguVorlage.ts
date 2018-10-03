@@ -24,10 +24,12 @@ export default class TSEbeguVorlage extends TSAbstractDateRangedEntity {
     private _vorlage: TSVorlage;
     private _proGesuchsperiode: boolean;
 
-    public constructor(name?: TSEbeguVorlageKey,
-                       vorlage?: TSVorlage,
-                       gueltigkeit?: TSDateRange,
-                       proGesuchsperiode?: boolean) {
+    public constructor(
+        name?: TSEbeguVorlageKey,
+        vorlage?: TSVorlage,
+        gueltigkeit?: TSDateRange,
+        proGesuchsperiode?: boolean,
+    ) {
         super(gueltigkeit);
         this._name = name;
         this._vorlage = vorlage;

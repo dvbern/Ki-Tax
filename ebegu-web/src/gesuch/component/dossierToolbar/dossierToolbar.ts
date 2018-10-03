@@ -23,7 +23,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {
     isAnyStatusOfVerfuegt,
     isAtLeastFreigegebenOrFreigabequittung,
-    isStatusVerfuegenVerfuegt
+    isStatusVerfuegenVerfuegt,
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -59,7 +59,7 @@ export class DossierToolbarComponentConfig implements IComponentOptions {
         dossierId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
-        forceLoadingFromFall: '@'
+        forceLoadingFromFall: '@',
     };
 
     public template = require('./dossierToolbar.html');
@@ -75,7 +75,7 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
         fallId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
-        forceLoadingFromFall: '@'
+        forceLoadingFromFall: '@',
     };
     public template = require('./dossierToolbarGesuchsteller.html');
     public controller = DossierToolbarController;
@@ -86,9 +86,21 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
 
 export class DossierToolbarController implements IDVFocusableController {
 
-    public static $inject = ['EbeguUtil', 'GesuchRS', '$state',
-        '$scope', 'GesuchModelManager', 'AuthServiceRS', '$mdSidenav', '$log', 'GesuchsperiodeRS',
-        'DvDialog', 'unsavedWarningSharedService', 'MitteilungRS', 'DossierRS'];
+    public static $inject = [
+        'EbeguUtil',
+        'GesuchRS',
+        '$state',
+        '$scope',
+        'GesuchModelManager',
+        'AuthServiceRS',
+        '$mdSidenav',
+        '$log',
+        'GesuchsperiodeRS',
+        'DvDialog',
+        'unsavedWarningSharedService',
+        'MitteilungRS',
+        'DossierRS',
+    ];
 
     public antragList: Array<TSAntragDTO>;
     public gesuchid: string;
@@ -122,7 +134,8 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly dvDialog: DvDialog,
                        private readonly unsavedWarningSharedService: any,
                        private readonly mitteilungRS: MitteilungRS,
-                       private readonly dossierRS: DossierRS) {
+                       private readonly dossierRS: DossierRS,
+    ) {
 
     }
 
@@ -408,7 +421,7 @@ export class DossierToolbarController implements IDVFocusableController {
         NavigationUtil.navigateToStartsiteOfGesuchForRole(
             this.authServiceRS.getPrincipalRole(),
             this.$state,
-            gesuchId
+            gesuchId,
         );
     }
 
@@ -557,7 +570,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public openVerlauf(): void {
         this.$state.go('verlauf.view', {
-            gesuchId: this.getGesuch().id
+            gesuchId: this.getGesuch().id,
         });
     }
 
@@ -583,7 +596,7 @@ export class DossierToolbarController implements IDVFocusableController {
             title: 'CONFIRM_GESUCH_LOESCHEN',
             deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN',
             parentController: this,
-            elementID: 'gesuchLoeschenButton'
+            elementID: 'gesuchLoeschenButton',
         }).then(() => {
             this.setAllFormsPristine();
             if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
@@ -601,7 +614,7 @@ export class DossierToolbarController implements IDVFocusableController {
                     }
                     const navObj: any = {
                         gesuchId: this.antragList[0].antragId,
-                        dossierId: this.antragList[0].dossierId
+                        dossierId: this.antragList[0].dossierId,
                     };
                     this.$state.go('gesuch.fallcreation', navObj);
                 });
@@ -621,7 +634,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public openAlleVerfuegungen(): void {
         this.$state.go('alleVerfuegungen.view', {
-            dossierId: this.dossier.id
+            dossierId: this.dossier.id,
         });
     }
 
@@ -632,7 +645,7 @@ export class DossierToolbarController implements IDVFocusableController {
         this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
             text,
-            parentController: this
+            parentController: this,
         });
     }
 

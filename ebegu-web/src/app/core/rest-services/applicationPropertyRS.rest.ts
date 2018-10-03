@@ -23,9 +23,11 @@ export class ApplicationPropertyRS {
 
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+    ) {
         this.serviceURL = `${REST_API}application-properties`;
     }
 
@@ -41,7 +43,7 @@ export class ApplicationPropertyRS {
         return this.http.get(`${this.serviceURL}/key/${encodeURIComponent(name)}`).then(
             (response: any) => {
                 return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-            }
+            },
         );
     }
 
@@ -66,8 +68,8 @@ export class ApplicationPropertyRS {
     public create(name: string, value: string): IHttpPromise<any> {
         return this.http.post(`${this.serviceURL}/${encodeURIComponent(name)}`, value, {
             headers: {
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         });
     }
 
@@ -81,7 +83,7 @@ export class ApplicationPropertyRS {
 
     public getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
         return this.http.get(`${this.serviceURL}/`).then(
-            (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data)
+            (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data),
         );
     }
 

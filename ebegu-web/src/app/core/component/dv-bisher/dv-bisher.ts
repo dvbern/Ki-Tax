@@ -42,7 +42,7 @@ export class DvBisherComponentConfig implements IComponentOptions {
         ja: '<',
         specificBisherText: '<',
         blockExisted: '<',
-        showIfBisherNone: '<'
+        showIfBisherNone: '<',
     };
     public template = require('./dv-bisher.html');
     public controller = DvBisher;
@@ -63,8 +63,10 @@ export class DvBisher implements IController {
     public bisherText: Array<string>;
     public blockExisted: boolean;
 
-    public constructor(private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $translate: ITranslateService) {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService,
+    ) {
     }
 
     public $onInit(): void {
@@ -117,7 +119,7 @@ export class DvBisher implements IController {
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
             return this.equals(DateUtil.momentToLocalDateFormat(gs, defaultDateFormat),
-                               DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
+                DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
         }
         if (Array.isArray(gs)) {
             return JSON.stringify(gs) === JSON.stringify(ja);

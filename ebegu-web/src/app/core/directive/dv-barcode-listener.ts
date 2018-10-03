@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IDirective, IDirectiveFactory} from 'angular';
+import {IController, IDirective, IDirectiveFactory, IDocumentService, ILogService, ITimeoutService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
@@ -23,9 +23,6 @@ import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../errors/service/ErrorService';
 import {DvDialog} from './dv-dialog/dv-dialog';
-import IDocumentService = angular.IDocumentService;
-import ILogService = angular.ILogService;
-import ITimeoutService = angular.ITimeoutService;
 
 const FREIGEBEN_DIALOG_TEMPLATE = require('../../../gesuch/dialog/freigabe.html');
 

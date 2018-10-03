@@ -20,10 +20,12 @@ export default class TSKindDublette {
     private _kindNummerOriginal: number;
     private _kindNummerDublette: number;
 
-    public constructor(gesuchId?: string,
-                       fallNummer?: number,
-                       kindNummerOriginal?: number,
-                       kindNummerDublette?: number) {
+    public constructor(
+        gesuchId?: string,
+        fallNummer?: number,
+        kindNummerOriginal?: number,
+        kindNummerDublette?: number,
+    ) {
         this._gesuchId = gesuchId;
         this._fallNummer = fallNummer;
         this._kindNummerOriginal = kindNummerOriginal;

@@ -43,7 +43,7 @@ describe('traegerschaftView', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
-            declarations: [TraegerschaftViewComponent]
+            declarations: [TraegerschaftViewComponent],
         })
             .compileComponents();
     }));

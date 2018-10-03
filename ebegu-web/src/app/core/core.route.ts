@@ -56,22 +56,23 @@ appRun.$inject = [
     'LOCALE_ID',
 ];
 
-export function appRun(angularMomentConfig: any,
-                       listResourceRS: ListResourceRS,
-                       mandantRS: MandantRS,
-                       $injector: IInjectorService,
-                       authLifeCycleService: AuthLifeCycleService,
-                       hotkeys: any,
-                       $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS,
-                       $state: StateService,
-                       $location: ILocationService,
-                       gesuchModelManager: GesuchModelManager,
-                       gesuchsperiodeRS: GesuchsperiodeRS,
-                       institutionsStammdatenRS: InstitutionStammdatenRS,
-                       globalCacheService: GlobalCacheService,
-                       gemeindeRS: GemeindeRS,
-                       LOCALE_ID: string,
+export function appRun(
+    angularMomentConfig: any,
+    listResourceRS: ListResourceRS,
+    mandantRS: MandantRS,
+    $injector: IInjectorService,
+    authLifeCycleService: AuthLifeCycleService,
+    hotkeys: any,
+    $timeout: ITimeoutService,
+    authServiceRS: AuthServiceRS,
+    $state: StateService,
+    $location: ILocationService,
+    gesuchModelManager: GesuchModelManager,
+    gesuchsperiodeRS: GesuchsperiodeRS,
+    institutionsStammdatenRS: InstitutionStammdatenRS,
+    globalCacheService: GlobalCacheService,
+    gemeindeRS: GemeindeRS,
+    LOCALE_ID: string,
 ): void {
 
     function onNotAuthenticated(): void {
@@ -114,13 +115,13 @@ export function appRun(angularMomentConfig: any,
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
             onLoginSuccess,
-            err => LOG.error(err)
+            err => LOG.error(err),
         );
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
         .subscribe(
             onNotAuthenticated,
-            err => LOG.error(err)
+            err => LOG.error(err),
         );
 
     angularMomentConfig.format = 'DD.MM.YYYY';
@@ -146,7 +147,7 @@ export function appRun(angularMomentConfig: any,
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: () => $timeout(() => angular.element('.next').last().trigger('click'))
+        callback: () => $timeout(() => angular.element('.next').last().trigger('click')),
     });
 
 }

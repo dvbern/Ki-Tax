@@ -14,6 +14,7 @@
  */
 
 import {async} from '@angular/core/testing';
+import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -32,8 +33,8 @@ describe('einkommensverschlechterungSteuernView', () => {
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');

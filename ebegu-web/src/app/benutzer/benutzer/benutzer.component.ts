@@ -44,7 +44,7 @@ const LOG = LogFactory.createLog('BenutzerComponent');
     selector: 'dv-benutzer',
     templateUrl: './benutzer.component.html',
     styleUrls: ['./benutzer.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BenutzerComponent implements OnInit {
 
@@ -64,14 +64,16 @@ export class BenutzerComponent implements OnInit {
 
     private _berechtigungHistoryList: TSBerechtigungHistory[];
 
-    public constructor(private readonly $transition$: Transition,
-                       private readonly changeDetectorRef: ChangeDetectorRef,
-                       private readonly $state: StateService,
-                       private readonly translate: TranslateService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly benutzerRS: BenutzerRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly dialog: MatDialog) {
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly $state: StateService,
+        private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly dialog: MatDialog,
+    ) {
     }
 
     public get berechtigungHistoryList(): TSBerechtigungHistory[] {
@@ -166,11 +168,11 @@ export class BenutzerComponent implements OnInit {
                     return this.dialog.open(DvNgRemoveDialogComponent, adminDialogConfig)
                         .afterClosed()
                         .pipe(filter(userAccepted => !!userAccepted));
-                })
+                }),
             )
             .subscribe(
                 () => this.doSaveBenutzer(),
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 

@@ -25,7 +25,7 @@ import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragSta
 import {
     getTSBetreuungsangebotTypValues,
     getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -68,10 +68,12 @@ const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
-    public static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager',
+    public static $inject = [
+        '$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager',
         'ErrorService',
         'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout',
-        '$translate'];
+        '$translate',
+    ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
     public instStammId: string; // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
@@ -91,21 +93,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public aktuellGueltig: boolean = true;
     public isDuplicated: boolean = false;
 
-    public constructor(private readonly $state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly CONSTANTS: any,
-                       $scope: IScope,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $stateParams: IBetreuungStateParams,
-                       private readonly mitteilungRS: MitteilungRS,
-                       dvDialog: DvDialog,
-                       private readonly $log: ILogService,
-                       $timeout: ITimeoutService,
-                       $translate: ITranslateService) {
+    public constructor(
+        private readonly $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly CONSTANTS: any,
+        $scope: IScope,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        private readonly authServiceRS: AuthServiceRS,
+        wizardStepManager: WizardStepManager,
+        private readonly $stateParams: IBetreuungStateParams,
+        private readonly mitteilungRS: MitteilungRS,
+        dvDialog: DvDialog,
+        private readonly $log: ILogService,
+        $timeout: ITimeoutService,
+        $translate: ITranslateService,
+    ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
         this.$translate = $translate;
@@ -424,7 +428,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
@@ -772,7 +776,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'MUTATIONSMELDUNG_CONFIRMATION',
             deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
                 this.mutationsmeldungModel).then(() => {
@@ -819,7 +823,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
-            mitteilungId: this.existingMutationsMeldung.id
+            mitteilungId: this.existingMutationsMeldung.id,
         });
     }
 

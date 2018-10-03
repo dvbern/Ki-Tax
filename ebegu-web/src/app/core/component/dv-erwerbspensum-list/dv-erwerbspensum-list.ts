@@ -30,7 +30,7 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
         addButtonVisible: '<',
         addButtonEnabled: '<',
         addButtonText: '@',
-        inputId: '@'
+        inputId: '@',
     };
     public template = require('./dv-erwerbspensum-list.html');
     public controller = DVErwerbspensumListController;

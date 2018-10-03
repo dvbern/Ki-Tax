@@ -24,10 +24,12 @@ export class OkDialogController {
 
     public title: string;
 
-    public constructor(private readonly $mdDialog: IDialogService,
-                       $translate: ITranslateService,
-                       title: string,
-                       _okText: string) {
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+        $translate: ITranslateService,
+        title: string,
+        _okText: string,
+    ) {
 
         this.title = EbeguUtil.isNotNullOrUndefined(title) ?
             $translate.instant(title) :

@@ -37,13 +37,13 @@ describe('OnboardingBeLoginComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({ useHash: true }),
+                UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingBeLoginComponent],
             providers: [
-                {provide: Transition, useValue: transitionSpy}
+                {provide: Transition, useValue: transitionSpy},
 
-            ]
+            ],
         })
             .compileComponents();
     }));

@@ -39,7 +39,7 @@ export class InstitutionViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
         traegerschaften: '<',
-        mandant: '<'
+        mandant: '<',
     };
     public template = require('./institutionView.html');
     public controller = InstitutionViewController;
@@ -48,8 +48,16 @@ export class InstitutionViewComponentConfig implements IComponentOptions {
 
 export class InstitutionViewController extends AbstractAdminViewController {
 
-    public static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil',
-        'AuthServiceRS', '$stateParams', '$state'];
+    public static $inject = [
+        'InstitutionRS',
+        'InstitutionStammdatenRS',
+        'ErrorService',
+        'DvDialog',
+        'EbeguUtil',
+        'AuthServiceRS',
+        '$stateParams',
+        '$state',
+    ];
 
     public form: IFormController;
 
@@ -61,14 +69,16 @@ export class InstitutionViewController extends AbstractAdminViewController {
     public betreuungsangebotValues: Array<any>;
     public errormessage: string = undefined;
 
-    public constructor(private readonly institutionRS: InstitutionRS,
-                       private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                       private readonly errorService: ErrorService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly ebeguUtil: EbeguUtil,
-                       authServiceRS: AuthServiceRS,
-                       private readonly $stateParams: IInstitutionStateParams,
-                       private readonly $state: StateService) {
+    public constructor(
+        private readonly institutionRS: InstitutionRS,
+        private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+        private readonly errorService: ErrorService,
+        private readonly dvDialog: DvDialog,
+        private readonly ebeguUtil: EbeguUtil,
+        authServiceRS: AuthServiceRS,
+        private readonly $stateParams: IInstitutionStateParams,
+        private readonly $state: StateService,
+    ) {
         super(authServiceRS);
     }
 
@@ -177,14 +187,14 @@ export class InstitutionViewController extends AbstractAdminViewController {
     public editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten): void {
         this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
-            institutionStammdatenId: institutionstammdaten.id
+            institutionStammdatenId: institutionstammdaten.id,
         });
     }
 
     public createInstitutionStammdaten(): void {
         this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
-            institutionStammdatenId: undefined
+            institutionStammdatenId: undefined,
         });
     }
 }

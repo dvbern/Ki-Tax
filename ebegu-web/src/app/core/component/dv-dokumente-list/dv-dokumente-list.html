@@ -55,18 +55,20 @@
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color':vm.sonstige}"></td>
 
                     <!--with tag-->
-                    <td headers="{{vm.tableId +'-tag'}}"  ng-bind="row.tag" ng-if="!vm.sonstige && vm.tag"
+                    <td headers="{{vm.tableId +'-tag'}}"
+                        ng-bind="row.tag"
+                        ng-if="!vm.sonstige && vm.tag"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"></td>
                     <td ng-if="!vm.sonstige && !vm.tag"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"></td>
 
-                    <td headers="{{vm.tableId +'-fuer'}}"  ng-bind="vm.extractFullName(row)"
+                    <td headers="{{vm.tableId +'-fuer'}}" ng-bind="vm.extractFullName(row)"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"
                         ng-if="!vm.sonstige"></td>
 
 
                     <td ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}"></td>
-                    <td headers="{{vm.tableId +'-status'}}"  ng-if="!vm.sonstige" class="symbol"
+                    <td headers="{{vm.tableId +'-status'}}" ng-if="!vm.sonstige" class="symbol"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}">
                         <i ng-if="!vm.hasDokuments(row)" class="fa fa-circle" aria-hidden="true"></i>
                         <i ng-if="row.needed && vm.hasDokuments(row)" class="fa fa-check" aria-hidden="true"></i>
@@ -82,20 +84,23 @@
                     <td ng-if="vm.sonstige" class="no-color">
 
                     </td>
-                    <td headers="{{vm.tableId +'-upload'}}" width="5%" class="symbol" tabindex="-1"
-                    ng-click="$event.stopPropagation()"
+                    <td headers="{{vm.tableId +'-upload'}}"
+                        width="5%"
+                        class="symbol"
+                        tabindex="-1"
+                        ng-click="$event.stopPropagation()"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}">
-                        <button  ngf-select="vm.uploadAnhaenge($files, row)" ngf-multiple="true"
-                               accept="{{vm.allowedMimetypes}}"
-                               class="dv-btn fa fa-upload dv-btn-operation"
-                                 title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                               aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                               ng-disabled="vm.isDokumenteUploadDisabled()" tabindex="0">
+                        <button ngf-select="vm.uploadAnhaenge($files, row)" ngf-multiple="true"
+                                accept="{{vm.allowedMimetypes}}"
+                                class="dv-btn fa fa-upload dv-btn-operation"
+                                title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                ng-disabled="vm.isDokumenteUploadDisabled()" tabindex="0">
                         </button>
                     </td>
                 </tr>
 
-                <tr class="dateientable" style="background-color: transparent" ng-if="vm.hasDokuments(row)">
+                <tr class="dateientable" style="background-color: transparent;" ng-if="vm.hasDokuments(row)">
                     <!--without tag-->
                     <th id="{{vm.tableId +'-name-'+$index}}" class="dateientable-th" width="40%"
                         st-sort-default="true">

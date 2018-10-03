@@ -27,12 +27,14 @@ export default class TSMahnung extends TSAbstractMutableEntity {
     private _timestampAbgeschlossen: moment.Moment;
     private _abgelaufen: boolean;
 
-    public constructor(gesuch?: TSGesuch,
-                       mahnungTyp?: TSMahnungTyp,
-                       datumFristablauf?: moment.Moment,
-                       bemerkungen?: string,
-                       timestampAbgeschlossen?: moment.Moment,
-                       abgelaufen?: boolean) {
+    public constructor(
+        gesuch?: TSGesuch,
+        mahnungTyp?: TSMahnungTyp,
+        datumFristablauf?: moment.Moment,
+        bemerkungen?: string,
+        timestampAbgeschlossen?: moment.Moment,
+        abgelaufen?: boolean,
+    ) {
         super();
         this._gesuch = gesuch;
         this._mahnungTyp = mahnungTyp;

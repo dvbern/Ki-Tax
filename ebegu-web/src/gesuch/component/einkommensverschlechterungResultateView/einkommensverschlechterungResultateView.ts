@@ -44,21 +44,32 @@ export class EinkommensverschlechterungResultateViewComponentConfig implements I
  */
 export class EinkommensverschlechterungResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', 'AuthServiceRS', '$timeout'];
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        'AuthServiceRS',
+        '$timeout',
+    ];
 
     public resultatBasisjahr: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
 
-    public constructor($stateParams: IEinkommensverschlechterungResultateStateParams,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       private readonly authServiceRS: AuthServiceRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $stateParams: IEinkommensverschlechterungResultateStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly authServiceRS: AuthServiceRS,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,

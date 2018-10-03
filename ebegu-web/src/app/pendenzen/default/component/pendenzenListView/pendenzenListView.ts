@@ -39,11 +39,13 @@ export class PendenzenListViewController {
 
     public totalResultCount: string = '0';
 
-    public constructor(private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $state: StateService,
-                       private readonly $log: ILogService,
-                       private readonly searchRS: SearchRS,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $state: StateService,
+        private readonly $log: ILogService,
+        private readonly searchRS: SearchRS,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
@@ -66,13 +68,13 @@ export class PendenzenListViewController {
         this.gesuchModelManager.clearGesuch();
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
             const navObj: any = {
-                gesuchId: pendenz.antragId
+                gesuchId: pendenz.antragId,
             };
             this.navigate('gesuch.familiensituation', navObj, isCtrlKeyPressed);
         } else {
             const navObj: any = {
                 gesuchId: pendenz.antragId,
-                dossierId: pendenz.dossierId
+                dossierId: pendenz.dossierId,
             };
             this.navigate('gesuch.fallcreation', navObj, isCtrlKeyPressed);
         }

@@ -24,11 +24,13 @@ export default class VerfuegungRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}verfuegung`;
     }
 
@@ -44,10 +46,12 @@ export default class VerfuegungRS {
             });
     }
 
-    public saveVerfuegung(verfuegung: TSVerfuegung,
-                          gesuchId: string,
-                          betreuungId: string,
-                          ignorieren: boolean): IPromise<TSVerfuegung> {
+    public saveVerfuegung(
+        verfuegung: TSVerfuegung,
+        gesuchId: string,
+        betreuungId: string,
+        ignorieren: boolean,
+    ): IPromise<TSVerfuegung> {
         const restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const url = `${this.serviceURL}/${gesuchIdEnc}/${encodeURIComponent(betreuungId)}/${ignorieren}`;
@@ -70,15 +74,12 @@ export default class VerfuegungRS {
 
     public nichtEintreten(verfuegung: TSVerfuegung, gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
         const restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
-        return this.http.put(`${this.serviceURL}/nichtEintreten/${encodeURIComponent(betreuungId)}`, restVerfuegung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Verfuegung REST object ', response.data);
-                return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
+        return this.http.put(`${this.serviceURL}/nichtEintreten/${encodeURIComponent(betreuungId)}`, restVerfuegung)
+            .then((response: any) => {
+                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+                    this.log.debug('PARSING Verfuegung REST object ', response.data);
+                    return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
+                });
             });
-        });
     }
 }

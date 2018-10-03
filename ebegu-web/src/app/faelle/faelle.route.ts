@@ -38,5 +38,5 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'faelle.list',
         template: '<faelle-list-view flex="auto" class="overflow-scroll">',
         url: '/faelle',
-    }
+    },
 ];

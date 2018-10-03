@@ -41,7 +41,7 @@ describe('posteingangService', () => {
                         expect(value).toBe(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);
                         done();
                     },
-                    done.fail
+                    done.fail,
                 );
         });
     });

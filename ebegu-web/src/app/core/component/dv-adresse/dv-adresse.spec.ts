@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 
@@ -23,8 +24,8 @@ describe('dvAdresse', () => {
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');

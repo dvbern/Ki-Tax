@@ -29,7 +29,8 @@ export default class TSKindContainer extends TSAbstractMutableEntity {
     private _kindMutiert: boolean;
 
     public constructor(kindGS?: TSKind, kindJA?: TSKind, betreuungen?: Array<TSBetreuung>, kindNummer?: number,
-                       nextNumberBetreuung?: number, kindMutiert?: boolean) {
+                       nextNumberBetreuung?: number, kindMutiert?: boolean,
+    ) {
         super();
         this._kindGS = kindGS;
         this._kindJA = kindJA;

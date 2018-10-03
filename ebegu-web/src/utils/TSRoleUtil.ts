@@ -62,7 +62,7 @@ export class TSRoleUtil {
             TSRole.REVISOR,
             TSRole.JURIST,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
+            TSRole.SACHBEARBEITER_MANDANT,
         ];
     }
 
@@ -81,7 +81,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
+            TSRole.SACHBEARBEITER_MANDANT,
         ];
     }
 
@@ -115,7 +115,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
         ];
     }
 
@@ -128,7 +128,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
-            TSRole.ADMIN_GEMEINDE
+            TSRole.ADMIN_GEMEINDE,
         ];
     }
 
@@ -142,7 +142,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
             TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-            TSRole.STEUERAMT
+            TSRole.STEUERAMT,
         ];
     }
 
@@ -153,7 +153,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_BG,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE
+            TSRole.SACHBEARBEITER_GEMEINDE,
         ];
     }
 
@@ -166,7 +166,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.SACHBEARBEITER_TS,
-            TSRole.ADMIN_TS
+            TSRole.ADMIN_TS,
         ];
     }
 
@@ -176,7 +176,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE
+            TSRole.SACHBEARBEITER_GEMEINDE,
         ];
     }
 
@@ -188,7 +188,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS
+            TSRole.SACHBEARBEITER_TS,
         ];
     }
 
@@ -203,7 +203,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.REVISOR,
-            TSRole.ADMIN_MANDANT
+            TSRole.ADMIN_MANDANT,
         ];
     }
 
@@ -215,7 +215,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
+            TSRole.SACHBEARBEITER_MANDANT,
         ];
     }
 
@@ -228,7 +228,7 @@ export class TSRoleUtil {
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
             TSRole.ADMIN_INSTITUTION,
-            TSRole.ADMIN_TRAEGERSCHAFT
+            TSRole.ADMIN_TRAEGERSCHAFT,
         ];
     }
 
@@ -240,7 +240,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.ADMIN_MANDANT,
             TSRole.ADMIN_INSTITUTION,
-            TSRole.ADMIN_TRAEGERSCHAFT
+            TSRole.ADMIN_TRAEGERSCHAFT,
         ];
     }
 
@@ -257,7 +257,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_MANDANT,
             TSRole.GESUCHSTELLER,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS
+            TSRole.SACHBEARBEITER_TS,
         ];
     }
 
@@ -272,7 +272,7 @@ export class TSRoleUtil {
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT,
-            TSRole.GESUCHSTELLER
+            TSRole.GESUCHSTELLER,
         ];
     }
 
@@ -292,7 +292,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS
+            TSRole.SACHBEARBEITER_TS,
         ];
     }
 
@@ -305,7 +305,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
-            TSRole.STEUERAMT
+            TSRole.STEUERAMT,
         ];
     }
 
@@ -318,52 +318,52 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
-            TSRole.GESUCHSTELLER
+            TSRole.GESUCHSTELLER,
         ];
     }
 
     public static getAllButAdministratorJugendamtRole(): Array<TSRole> {
         return TSRoleUtil.getAllRolesButAnonymous()
             .filter(element =>
-                        element !== TSRole.SACHBEARBEITER_BG &&
-                        element !== TSRole.ADMIN_BG &&
-                        element !== TSRole.SACHBEARBEITER_GEMEINDE &&
-                        element !== TSRole.ADMIN_GEMEINDE &&
-                        element !== TSRole.SUPER_ADMIN
+                element !== TSRole.SACHBEARBEITER_BG &&
+                element !== TSRole.ADMIN_BG &&
+                element !== TSRole.SACHBEARBEITER_GEMEINDE &&
+                element !== TSRole.ADMIN_GEMEINDE &&
+                element !== TSRole.SUPER_ADMIN,
             );
     }
 
     public static getAllButAdministratorAmtRole(): Array<TSRole> {
         return getTSRoleValues()
             .filter(element =>
-                        element !== TSRole.SACHBEARBEITER_BG &&
-                        element !== TSRole.ADMIN_BG &&
-                        element !== TSRole.SACHBEARBEITER_GEMEINDE &&
-                        element !== TSRole.ADMIN_GEMEINDE &&
-                        element !== TSRole.SACHBEARBEITER_TS &&
-                        element !== TSRole.ADMIN_TS &&
-                        element !== TSRole.SUPER_ADMIN
+                element !== TSRole.SACHBEARBEITER_BG &&
+                element !== TSRole.ADMIN_BG &&
+                element !== TSRole.SACHBEARBEITER_GEMEINDE &&
+                element !== TSRole.ADMIN_GEMEINDE &&
+                element !== TSRole.SACHBEARBEITER_TS &&
+                element !== TSRole.ADMIN_TS &&
+                element !== TSRole.SUPER_ADMIN,
             );
     }
 
     public static getAllRolesButTraegerschaftInstitution(): Array<TSRole> {
         return TSRoleUtil.getAllRolesButAnonymous()
             .filter(element =>
-                        element !== TSRole.ADMIN_INSTITUTION
-                        && element !== TSRole.SACHBEARBEITER_INSTITUTION
-                        && element !== TSRole.ADMIN_TRAEGERSCHAFT
-                        && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+                element !== TSRole.ADMIN_INSTITUTION
+                && element !== TSRole.SACHBEARBEITER_INSTITUTION
+                && element !== TSRole.ADMIN_TRAEGERSCHAFT
+                && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
             );
     }
 
     public static getAllRolesButTraegerschaftInstitutionSteueramt(): Array<TSRole> {
         return TSRoleUtil.getAllRolesButAnonymous()
             .filter(element =>
-                        element !== TSRole.ADMIN_INSTITUTION
-                        && element !== TSRole.SACHBEARBEITER_INSTITUTION
-                        && element !== TSRole.ADMIN_TRAEGERSCHAFT
-                        && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-                        && element !== TSRole.STEUERAMT
+                element !== TSRole.ADMIN_INSTITUTION
+                && element !== TSRole.SACHBEARBEITER_INSTITUTION
+                && element !== TSRole.ADMIN_TRAEGERSCHAFT
+                && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+                && element !== TSRole.STEUERAMT,
             );
     }
 
@@ -377,7 +377,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE
+            TSRole.SACHBEARBEITER_GEMEINDE,
         ];
     }
 
@@ -418,7 +418,7 @@ export class TSRoleUtil {
             TSRole.JURIST,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT
+            TSRole.SACHBEARBEITER_MANDANT,
         ];
     }
 

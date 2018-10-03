@@ -36,7 +36,7 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'verlauf.view',
         template: '<verlauf-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/verlauf/:gesuchId',
-    }
+    },
 ];
 
 // TODO hefa implizite state param definition

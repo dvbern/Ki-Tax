@@ -44,24 +44,26 @@ export default class TSEWKPerson extends TSAbstractMutableEntity {
     private _adressen: Array<TSEWKAdresse>;
     private _beziehungen: Array<TSEWKBeziehung>;
 
-    public constructor(personID?: string,
-                       einwohnercodes?: Array<TSEWKEinwohnercode>,
-                       nachname?: string,
-                       ledigname?: string,
-                       vorname?: string,
-                       rufname?: string,
-                       geburtsdatum?: moment.Moment,
-                       zuzugsdatum?: moment.Moment,
-                       nationalitaet?: string,
-                       zivilstand?: string,
-                       zivilstandTxt?: string,
-                       zivilstandsdatum?: moment.Moment,
-                       geschlecht?: TSGeschlecht,
-                       bewilligungsart?: string,
-                       bewilligungsartTxt?: string,
-                       bewilligungBis?: moment.Moment,
-                       adressen?: Array<TSEWKAdresse>,
-                       beziehungen?: Array<TSEWKBeziehung>) {
+    public constructor(
+        personID?: string,
+        einwohnercodes?: Array<TSEWKEinwohnercode>,
+        nachname?: string,
+        ledigname?: string,
+        vorname?: string,
+        rufname?: string,
+        geburtsdatum?: moment.Moment,
+        zuzugsdatum?: moment.Moment,
+        nationalitaet?: string,
+        zivilstand?: string,
+        zivilstandTxt?: string,
+        zivilstandsdatum?: moment.Moment,
+        geschlecht?: TSGeschlecht,
+        bewilligungsart?: string,
+        bewilligungsartTxt?: string,
+        bewilligungBis?: moment.Moment,
+        adressen?: Array<TSEWKAdresse>,
+        beziehungen?: Array<TSEWKBeziehung>,
+    ) {
         super();
         this._personID = personID;
         this._einwohnercodes = einwohnercodes;

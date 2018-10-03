@@ -39,10 +39,10 @@ function conf($stateProvider: StateProvider): void {
             abstract: true,
             url: '/dossier/:dossierId',
             resolve: {
-                dossier
+                dossier,
             },
             data: {
-                roles: TSRoleUtil.getAllRolesButAnonymous()
+                roles: TSRoleUtil.getAllRolesButAnonymous(),
             },
             params: {
                 dossierId: {
@@ -53,8 +53,8 @@ function conf($stateProvider: StateProvider): void {
                     // Mit etwas Zusatzaufwand könnte man die ID in die URL schreiben (dynamic parameter).
                     value: '',
                     squash: true,
-                }
-            }
+                },
+            },
         },
     );
 }

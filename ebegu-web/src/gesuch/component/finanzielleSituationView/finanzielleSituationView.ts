@@ -42,22 +42,33 @@ export class FinanzielleSituationViewComponentConfig implements IComponentOption
 
 export class FinanzielleSituationViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        '$translate',
+        '$timeout',
+    ];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
     public allowedRoles: Array<TSRole>;
 
-    public constructor($stateParams: IStammdatenStateParams,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       private readonly $translate: ITranslateService,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $stateParams: IStammdatenStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly $translate: ITranslateService,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,

@@ -25,11 +25,13 @@ export default class KindRS {
 
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public $log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public $log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
         this.serviceURL = `${REST_API}kinder`;
     }
 
@@ -48,11 +50,7 @@ export default class KindRS {
     public saveKind(kindContainer: TSKindContainer, gesuchId: string): IPromise<TSKindContainer> {
         let restKind = {};
         restKind = this.ebeguRestUtil.kindContainerToRestObject(restKind, kindContainer);
-        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.$log.debug('PARSING KindContainer REST object ', response.data);
                 return this.ebeguRestUtil.parseKindContainer(new TSKindContainer(), response.data);

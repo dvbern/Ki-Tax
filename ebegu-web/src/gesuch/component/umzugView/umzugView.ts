@@ -56,20 +56,22 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
         'DvDialog',
         '$q',
         '$scope',
-        '$timeout'
+        '$timeout',
     ];
 
     public dirty = false;
 
-    public constructor(gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       wizardStepManager: WizardStepManager,
-                       private readonly errorService: ErrorService,
-                       private readonly $translate: ITranslateService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        wizardStepManager: WizardStepManager,
+        private readonly errorService: ErrorService,
+        private readonly $translate: ITranslateService,
+        private readonly dvDialog: DvDialog,
+        private readonly $q: IQService,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.UMZUG, $timeout);
         this.initViewModel();
@@ -196,7 +198,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
             title: remTitleText,
             deleteText: '',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.dirty = true;
             const indexOf = this.model.lastIndexOf(adresse);

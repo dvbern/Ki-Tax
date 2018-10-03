@@ -28,11 +28,13 @@ export default class EwkRS {
     public gesuchsteller1: TSGesuchstellerContainer;
     public gesuchsteller2: TSGesuchstellerContainer;
 
-    public constructor(public readonly http: IHttpService,
-                       public readonly httpParamSerializer: IHttpParamSerializer,
-                       REST_API: string,
-                       public readonly ebeguRestUtil: EbeguRestUtil,
-                       public readonly log: ILogService) {
+    public constructor(
+        public readonly http: IHttpService,
+        public readonly httpParamSerializer: IHttpParamSerializer,
+        REST_API: string,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+        public readonly log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}gesuchsteller`;
     }
 
@@ -78,7 +80,7 @@ export default class EwkRS {
             nachname: gs.nachname,
             vorname: gs.vorname,
             geburtsdatum: DateUtil.momentToLocalDate(gs.geburtsdatum),
-            geschlecht: gs.geschlecht.toLocaleString()
+            geschlecht: gs.geschlecht.toLocaleString(),
         });
 
         return this.http.get(`${this.serviceURL}/ewk/search/attributes?${reportParams}`)
