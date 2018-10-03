@@ -1288,6 +1288,7 @@ export default class EbeguRestUtil {
         if (betreuungspensum.nichtEingetreten !== null) { // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
         }
+        restBetreuungspensum.monatlicheBetreuungskosten = betreuungspensum.monatlicheBetreuungskosten;
         return restBetreuungspensum;
     }
 
@@ -1382,6 +1383,7 @@ export default class EbeguRestUtil {
         if (betreuungspensumFromServer) {
             this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
+            betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
             return betreuungspensumTS;
         }
         return undefined;

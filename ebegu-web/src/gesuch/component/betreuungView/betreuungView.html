@@ -258,6 +258,34 @@
                                     </div>
                                 </div>
 
+                                <!--Monatliche Betreuungskosten-->
+                                <div class="row">
+                                    <div class="col-sm-12 dv-input-container-small">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   data-translate-value-betreuungspensumnumber="{{$index + 1}}"
+                                                   for="monatlicheBetreuungskosten-{{$index}}">
+                                                <span data-translate="MONATLICHE_BETREUUNGSKOSTEN" class="required"></span>
+                                                <dv-tooltip input-id="betreuungsangebot"
+                                                            text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
+                                            </label>
+                                            <div>
+                                                <input aria-describedby="monatlicheBetreuungskosten-{{$index}}-error"
+                                                       id="monatlicheBetreuungskosten-{{$index}}" type="number"
+                                                       name="monatlicheBetreuungskosten-{{$index}}"
+                                                       ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
+                                                       dv-max-length class="form-control"
+                                                       ng-pattern="vm.CONSTANTS.PATTERN_BETRAG_RAPPEN"
+                                                       ng-required="true"
+                                                       ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                                <dv-error-messages input-id="monatlicheBetreuungskosten-{{$index}}"
+                                                                   for="vm.form['monatlicheBetreuungskosten-' + $index].$error"></dv-error-messages>
+                                            </div>
+
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+
                                 <!-- gueltig ab / gueltig bis -->
                                 <div class="row">
                                     <div class="col-sm-12 dv-input-container-small">
