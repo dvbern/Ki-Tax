@@ -31,7 +31,7 @@ import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component
 
 import {BerechtigungComponent} from './berechtigung.component';
 
-describe('EditBerechtigungComponent', () => {
+describe('BerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
@@ -41,11 +41,12 @@ describe('EditBerechtigungComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    authServiceSpy.principal$ = of(TestDataUtil.createSuperadmin()) as any;
 
     const inputSelector = '.dv-input-container-medium';
 
     beforeEach(async(() => {
+        const superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
@@ -78,12 +79,10 @@ describe('EditBerechtigungComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load institutionen and traegerschaften', fakeAsync(() => {
+    it('should load institutionen and traegerschaften', () => {
         fixture.detectChanges();
-        tick();
         expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
-        expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
-    }));
+    });
 
     it('should display gemeinde when gemeinde dependent role', () => {
         component.berechtigung.role = TSRole.ADMIN_GEMEINDE;
