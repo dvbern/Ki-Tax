@@ -49,7 +49,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         this.gemeindeId = this.transition.params().gemeindeId;
     }
 
-    public ngOnInit() {
+    public ngOnInit(): void {
         this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
         this.user$ = this.authServiceRS.principal$;
     }

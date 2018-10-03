@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSMandant} from '../../../models/TSMandant';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class MandantRS {
 
@@ -27,11 +27,11 @@ export class MandantRS {
                        REST_API: string,
                        public ebeguRestUtil: EbeguRestUtil,
                        public $log: ILogService) {
-        this.serviceURL = REST_API + 'mandanten';
+        this.serviceURL = `${REST_API}mandanten`;
     }
 
     public findMandant(mandantID: string): IPromise<TSMandant> {
-        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(mandantID))
+        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(mandantID)}`)
             .then((response: any) => {
                 this.$log.debug('PARSING mandant REST object ', response.data);
                 return this.ebeguRestUtil.parseMandant(new TSMandant(), response.data);
@@ -40,10 +40,9 @@ export class MandantRS {
 
     /**
      * laedt und cached den ersten und einzigenMandanten aus der DB
-     * @returns {IPromise<TSMandant>}
      */
     public getFirst(): IPromise<TSMandant> {
-        return this.$http.get(this.serviceURL + '/first', { cache: true })
+        return this.$http.get(`${this.serviceURL}/first`, {cache: true})
             .then((response: any) => {
                 this.$log.debug('PARSING mandant REST object ', response.data);
                 return this.ebeguRestUtil.parseMandant(new TSMandant(), response.data);

@@ -40,10 +40,10 @@ export class PendenzenListViewController {
     public totalResultCount: string = '0';
 
     public constructor(private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $state: StateService,
-                private readonly $log: ILogService,
-                private readonly searchRS: SearchRS,
-                private readonly authServiceRS: AuthServiceRS) {
+                       private readonly $state: StateService,
+                       private readonly $log: ILogService,
+                       private readonly searchRS: SearchRS,
+                       private readonly authServiceRS: AuthServiceRS) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
@@ -62,7 +62,7 @@ export class PendenzenListViewController {
         }
     }
 
-    private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean) {
+    private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {
         this.gesuchModelManager.clearGesuch();
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
             const navObj: any = {

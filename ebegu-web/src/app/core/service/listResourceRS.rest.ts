@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService} from 'angular';
+import {IHttpService, IPromise} from 'angular';
 import TSLand from '../../../models/types/TSLand';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -29,7 +29,7 @@ export default class ListResourceRS {
         ListResourceRS.laenderList = [];
     }
 
-    public getLaenderList() {
+    public getLaenderList(): IPromise<TSLand[]> {
         return this.http.get(this.serviceURL + '/laender', {cache: true}).then((response: any) => {
             if (ListResourceRS.laenderList.length <= 0 && Array.isArray(response.data)) {
                 response.data

@@ -16,7 +16,6 @@
 import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -107,7 +106,7 @@ describe('ErwerbspensumRS', () => {
 
     describe('updateErwerbspensumContainer', () => {
         it('should update an ErwerbspensumContainer', () => {
-            const changedEwp: TSErwerbspensum = TestDataUtil.createErwerbspensum();
+            const changedEwp = TestDataUtil.createErwerbspensum();
             const pensum = 40;
             changedEwp.pensum = pensum;
             changedEwp.zuschlagsprozent = 10;

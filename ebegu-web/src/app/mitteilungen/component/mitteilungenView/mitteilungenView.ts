@@ -17,6 +17,7 @@ import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
+import {IController} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -29,20 +30,20 @@ export class MitteilungenViewComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class MitteilungenViewController {
+export class MitteilungenViewController implements IController {
 
     public static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
 
     public form: IFormController;
     public dossierId: string;
     public fallId: string;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly $state: StateService, private readonly $stateParams: IMitteilungenStateParams,
-                private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
+                       private readonly authServiceRS: AuthServiceRS, private readonly $timeout: ITimeoutService) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         if (this.$stateParams.dossierId) {
             this.dossierId = this.$stateParams.dossierId;
         }
@@ -59,9 +60,10 @@ export class MitteilungenViewController {
         }
     }
 
-    public $postLink() {
+    public $postLink(): void {
+        const delay = 500;
         this.$timeout(() => {
             EbeguUtil.selectFirst();
-        }, 500); // this is the only way because it needs a little until everything is loaded
+        }, delay); // this is the only way because it needs a little until everything is loaded
     }
 }

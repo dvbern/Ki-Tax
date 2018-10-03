@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import TSGesuch from '../../models/TSGesuch';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSMahnung from '../../models/TSMahnung';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class MahnungRS implements IEntityRS {
 
@@ -29,7 +29,7 @@ export default class MahnungRS implements IEntityRS {
                        REST_API: string,
                        public ebeguRestUtil: EbeguRestUtil,
                        private readonly $log: ILogService) {
-        this.serviceURL = REST_API + 'mahnung';
+        this.serviceURL = `${REST_API}mahnung`;
     }
 
     public saveMahnung(mahnung: TSMahnung): IPromise<TSMahnung> {
@@ -44,14 +44,14 @@ export default class MahnungRS implements IEntityRS {
     }
 
     public findMahnungen(gesuchId: string): IPromise<TSMahnung[]> {
-        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(gesuchId))
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseMahnungen(response.data);
             });
     }
 
     public mahnlaufBeenden(gesuch: TSGesuch): IPromise<TSGesuch> {
-        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuch.id), {
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -62,7 +62,7 @@ export default class MahnungRS implements IEntityRS {
     }
 
     public getInitialeBemerkungen(gesuch: TSGesuch): IHttpPromise<string> {
-        return this.$http.get(this.serviceURL + '/bemerkungen/' + encodeURIComponent(gesuch.id), {
+        return this.$http.get(`${this.serviceURL}/bemerkungen/${encodeURIComponent(gesuch.id)}`, {
             headers: {
                 'Content-Type': 'text/plain'
             }

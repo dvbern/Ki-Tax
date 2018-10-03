@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import TSEWKResultat from '../../../models/TSEWKResultat';
+import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import IHttpParamSerializer = angular.IHttpParamSerializer;
 
 export default class EwkRS {
@@ -33,7 +33,7 @@ export default class EwkRS {
                        REST_API: string,
                        public readonly ebeguRestUtil: EbeguRestUtil,
                        public readonly log: ILogService) {
-        this.serviceURL = REST_API + 'gesuchsteller';
+        this.serviceURL = `${REST_API}gesuchsteller`;
     }
 
     public ewkSearchAvailable(gsNr: number): boolean {
@@ -58,33 +58,33 @@ export default class EwkRS {
     public getGesuchsteller(gsNr: number): TSGesuchstellerContainer {
         if (1 === gsNr) {
             return this.gesuchsteller1;
-        } else if (2 === gsNr) {
-            return this.gesuchsteller2;
-        } else {
-            this.log.error('invalid gesuchstellernummer', gsNr);
-            return null;
         }
+        if (2 === gsNr) {
+            return this.gesuchsteller2;
+        }
+        this.log.error('invalid gesuchstellernummer', gsNr);
+        return null;
     }
 
     private suchePersonInEwk(gesuchstellerContainer: TSGesuchstellerContainer): IPromise<TSEWKResultat> {
         const gs = gesuchstellerContainer.gesuchstellerJA;
         if (gs.ewkPersonId) {
-            return this.http.get(this.serviceURL + '/ewk/search/id/' + gs.ewkPersonId)
-                .then((response: any) => {
-                    return this.handlePersonSucheResult(response);
-                });
-        } else {
-            const reportParams = this.httpParamSerializer({
-                nachname: gs.nachname,
-                vorname: gs.vorname,
-                geburtsdatum: DateUtil.momentToLocalDate(gs.geburtsdatum),
-                geschlecht: gs.geschlecht.toLocaleString()
-            });
-            return this.http.get(this.serviceURL + '/ewk/search/attributes?' + reportParams)
+            return this.http.get(`${this.serviceURL}/ewk/search/id/${gs.ewkPersonId}`)
                 .then((response: any) => {
                     return this.handlePersonSucheResult(response);
                 });
         }
+        const reportParams = this.httpParamSerializer({
+            nachname: gs.nachname,
+            vorname: gs.vorname,
+            geburtsdatum: DateUtil.momentToLocalDate(gs.geburtsdatum),
+            geschlecht: gs.geschlecht.toLocaleString()
+        });
+
+        return this.http.get(`${this.serviceURL}/ewk/search/attributes?${reportParams}`)
+            .then((response: any) => {
+                return this.handlePersonSucheResult(response);
+            });
     }
 
     private handlePersonSucheResult(response: any): TSEWKResultat {

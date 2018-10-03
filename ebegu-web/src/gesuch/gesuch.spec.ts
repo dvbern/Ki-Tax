@@ -35,10 +35,19 @@ describe('gesuch', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        gesuchRouteController = new GesuchRouteController(gesuchModelManager, $injector.get('BerechnungsManager'),
-            $injector.get('WizardStepManager'), $injector.get('EbeguUtil'), $injector.get('ErrorService'), $injector.get('AntragStatusHistoryRS'),
-            $injector.get('$translate'), $injector.get('AuthServiceRS'), $injector.get('$mdSidenav'), $injector.get('CONSTANTS'),
-            undefined, undefined,  undefined);
+        gesuchRouteController = new GesuchRouteController(gesuchModelManager,
+            $injector.get('BerechnungsManager'),
+            $injector.get('WizardStepManager'),
+            $injector.get('EbeguUtil'),
+            $injector.get('ErrorService'),
+            $injector.get('AntragStatusHistoryRS'),
+            $injector.get('$translate'),
+            $injector.get('AuthServiceRS'),
+            $injector.get('$mdSidenav'),
+            $injector.get('CONSTANTS'),
+            undefined,
+            undefined,
+            undefined);
         gesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
     }));
@@ -51,19 +60,19 @@ describe('gesuch', () => {
             expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Erstellen einer Mutation');
         });
         it('should return Art der Mutation', () => {
-            const gesuch: TSGesuch = new TSGesuch();
-            gesuch.eingangsdatum = moment('01.07.2016', 'DD.MM.YYYY');
+            const g = new TSGesuch();
+            g.eingangsdatum = moment('01.07.2016', 'DD.MM.YYYY');
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
+            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(g);
             expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Mutation vom 01.07.2016');
         });
         it('should return Erstgesuch der Periode', () => {
-            const gesuch: TSGesuch = new TSGesuch();
-            gesuch.eingangsdatum = moment('01.07.2016', 'DD.MM.YYYY');
+            const g = new TSGesuch();
+            g.eingangsdatum = moment('01.07.2016', 'DD.MM.YYYY');
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
+            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(g);
             expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Erstgesuch vom 01.07.2016');
         });
         it('should return Erstgesuch', () => {

@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSKindContainer from '../../../models/TSKindContainer';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import TSKindContainer from '../../../models/TSKindContainer';
 import TSKindDublette from '../../../models/TSKindDublette';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class KindRS {
 
@@ -30,7 +30,7 @@ export default class KindRS {
                        public ebeguRestUtil: EbeguRestUtil,
                        public $log: ILogService,
                        private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'kinder';
+        this.serviceURL = `${REST_API}kinder`;
     }
 
     public getServiceName(): string {
@@ -38,7 +38,7 @@ export default class KindRS {
     }
 
     public findKind(kindContainerID: string): IPromise<TSKindContainer> {
-        return this.$http.get(this.serviceURL + '/find/' + encodeURIComponent(kindContainerID))
+        return this.$http.get(`${this.serviceURL}/find/${encodeURIComponent(kindContainerID)}`)
             .then((response: any) => {
                 this.$log.debug('PARSING kindContainers REST object ', response.data);
                 return this.ebeguRestUtil.parseKindContainer(new TSKindContainer(), response.data);
@@ -48,7 +48,7 @@ export default class KindRS {
     public saveKind(kindContainer: TSKindContainer, gesuchId: string): IPromise<TSKindContainer> {
         let restKind = {};
         restKind = this.ebeguRestUtil.kindContainerToRestObject(restKind, kindContainer);
-        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId), restKind, {
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -61,7 +61,7 @@ export default class KindRS {
     }
 
     public removeKind(kindID: string, gesuchId: string): IPromise<any> {
-        return this.$http.delete(this.serviceURL + '/' + encodeURIComponent(kindID))
+        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(kindID)}`)
             .then(response => {
                 this.wizardStepManager.findStepsFromGesuch(gesuchId);
                 return response;
@@ -69,7 +69,7 @@ export default class KindRS {
     }
 
     public getKindDubletten(gesuchId: string): IPromise<TSKindDublette[]> {
-        return this.$http.get(this.serviceURL + '/dubletten/' + encodeURIComponent(gesuchId))
+        return this.$http.get(`${this.serviceURL}/dubletten/${encodeURIComponent(gesuchId)}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseKindDubletteList(response.data);
             });

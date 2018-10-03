@@ -51,16 +51,18 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     private readGesuchsperioden(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: Array<TSGesuchsperiode>) => {
-            this.gesuchsperiodenList = response; // angular.copy(response);
+            this.gesuchsperiodenList = response;
         });
     }
 
-    public gesuchsperiodeClicked(gesuchsperiode: any) {
-        if (gesuchsperiode.isSelected) {
-            this.$state.go('admin.gesuchsperiode', {
-                gesuchsperiodeId: gesuchsperiode.id
-            });
+    public gesuchsperiodeClicked(gesuchsperiode: any): void {
+        if (!gesuchsperiode.isSelected) {
+            return;
         }
+
+        this.$state.go('admin.gesuchsperiode', {
+            gesuchsperiodeId: gesuchsperiode.id
+        });
     }
 
     public createGesuchsperiode(): void {
@@ -71,13 +73,11 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     public getStatusTagesschulenFreischaltung(gp: TSGesuchsperiode): string {
         if (gp.hasTagesschulenAnmeldung()) {
-            if (gp.isTagesschulenAnmeldungKonfiguriert()) {
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_KONFIGURIERT');
-            } else {
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NOT_YET');
-            }
-        } else {
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NONE');
+            return gp.isTagesschulenAnmeldungKonfiguriert() ?
+                this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_KONFIGURIERT') :
+                this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NOT_YET');
         }
+
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NONE');
     }
 }

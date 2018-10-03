@@ -14,8 +14,8 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSFall from '../../models/TSFall';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class FallRS {
 
@@ -53,7 +53,7 @@ export default class FallRS {
     }
 
     public findFall(fallID: string): IPromise<any> {
-        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(fallID))
+        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(fallID)}`)
             .then((response: any) => {
                 this.$log.debug('PARSING fall REST object ', response.data);
                 return this.ebeguRestUtil.parseFall(new TSFall(), response.data);

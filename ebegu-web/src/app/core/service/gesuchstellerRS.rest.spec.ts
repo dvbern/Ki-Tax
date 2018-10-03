@@ -28,7 +28,7 @@ describe('GesuchstellerRS', () => {
     let ebeguRestUtil: EbeguRestUtil;
     let mockGesuchsteller: TSGesuchstellerContainer;
     let mockGesuchstellerRest: any;
-    const dummyGesuchID: string = '123';
+    const dummyGesuchID = '123';
     let $q: angular.IQService;
     let wizardStepManager: WizardStepManager;
 
@@ -52,7 +52,8 @@ describe('GesuchstellerRS', () => {
         mockGesuchsteller.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockGesuchstellerRest = ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller);
 
-        $httpBackend.whenGET(gesuchstellerRS.serviceURL + '/' + encodeURIComponent(mockGesuchsteller.id)).respond(mockGesuchstellerRest);
+        const url = `${gesuchstellerRS.serviceURL}/${encodeURIComponent(mockGesuchsteller.id)}`;
+        $httpBackend.whenGET(url).respond(mockGesuchstellerRest);
     });
 
     describe('Public API', () => {
@@ -72,18 +73,19 @@ describe('GesuchstellerRS', () => {
             it('should updateGesuchsteller a gesuchsteller and her adresses', () => {
                     mockGesuchsteller.gesuchstellerJA.nachname = 'changedname';
                     let updatedGesuchsteller: TSGesuchstellerContainer;
-                    $httpBackend.expectPUT(gesuchstellerRS.serviceURL + '/' + dummyGesuchID + '/gsNumber/1/false',
+                    $httpBackend.expectPUT(`${gesuchstellerRS.serviceURL}/${dummyGesuchID}/gsNumber/1/false`,
                         ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller))
                         .respond(ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller));
 
-                    gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then((result) => {
+                    gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then(result => {
                         updatedGesuchsteller = result;
                     });
                     $httpBackend.flush();
                     expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(dummyGesuchID);
                     expect(updatedGesuchsteller).toBeDefined();
                     expect(updatedGesuchsteller.gesuchstellerJA).toBeDefined();
-                    expect(updatedGesuchsteller.gesuchstellerJA.nachname).toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
+                    expect(updatedGesuchsteller.gesuchstellerJA.nachname)
+                        .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
                     expect(updatedGesuchsteller.id).toEqual(mockGesuchsteller.id);
                 }
             );
@@ -92,14 +94,16 @@ describe('GesuchstellerRS', () => {
         describe('findGesuchsteller', () => {
             it('should return the gesuchsteller by id', () => {
                     let foundGesuchsteller: TSGesuchstellerContainer;
-                    $httpBackend.expectGET(gesuchstellerRS.serviceURL + '/id/' + mockGesuchsteller.id).respond(mockGesuchsteller);
+                    const url = `${gesuchstellerRS.serviceURL}/id/${mockGesuchsteller.id}`;
+                    $httpBackend.expectGET(url).respond(mockGesuchsteller);
 
-                    gesuchstellerRS.findGesuchsteller(mockGesuchsteller.id).then((result) => {
+                    gesuchstellerRS.findGesuchsteller(mockGesuchsteller.id).then(result => {
                         foundGesuchsteller = result;
                     });
                     $httpBackend.flush();
                     expect(foundGesuchsteller).toBeDefined();
-                    expect(foundGesuchsteller.gesuchstellerJA.nachname).toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
+                    expect(foundGesuchsteller.gesuchstellerJA.nachname)
+                        .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
                 }
             );
         });

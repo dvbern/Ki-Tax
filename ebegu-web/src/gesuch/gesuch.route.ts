@@ -27,16 +27,17 @@ import {GesuchRouteController} from './gesuch';
 import BerechnungsManager from './service/berechnungsManager';
 import GesuchModelManager from './service/gesuchModelManager';
 import MahnungRS from './service/mahnungRS.rest';
-import WizardStepManager from './service/wizardStepManager';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
+
+// tslint:disable:no-duplicate-string
 
 const gesuchTpl = require('./gesuch.html');
 
 gesuchRun.$inject = ['RouterHelper'];
 
-export function gesuchRun(routerHelper: RouterHelper) {
+export function gesuchRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 
@@ -52,6 +53,10 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
     public controllerAs = 'vm';
 }
 
+const fallCreationView = '<fall-creation-view>';
+
+const kommentarView = '<kommentar-view>';
+
 export class EbeguNewFallState implements Ng1StateDeclaration {
     public name = 'gesuch.fallcreation';
     public url = '/fall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
@@ -66,10 +71,10 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<fall-creation-view>'
+            template: fallCreationView
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -88,10 +93,10 @@ export class EbeguMutationState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<fall-creation-view>'
+            template: fallCreationView
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -110,10 +115,10 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<fall-creation-view>'
+            template: fallCreationView
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -135,7 +140,7 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
             template: '<familiensituation-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -160,7 +165,7 @@ export class EbeguStammdatenState implements Ng1StateDeclaration {
             template: '<stammdaten-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -182,7 +187,7 @@ export class EbeguUmzugState implements Ng1StateDeclaration {
             template: '<umzug-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -204,7 +209,7 @@ export class EbeguKinderListState implements Ng1StateDeclaration {
             template: '<kinder-list-view kinder-dubletten="$resolve.kinderDubletten">'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -230,7 +235,7 @@ export class EbeguKindState implements Ng1StateDeclaration {
             template: '<kind-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -252,7 +257,7 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
             template: '<betreuung-list-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -278,7 +283,7 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
             template: '<betreuung-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -300,7 +305,7 @@ export class EbeguAbwesenheitState implements Ng1StateDeclaration {
             template: '<abwesenheit-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -322,7 +327,7 @@ export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
             template: '<erwerbspensum-list-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -347,7 +352,7 @@ export class EbeguErwerbspensumState implements Ng1StateDeclaration {
             template: '<erwerbspensum-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -372,7 +377,7 @@ export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
             template: '<finanzielle-situation-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -394,7 +399,7 @@ export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration 
             template: '<finanzielle-situation-start-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -416,7 +421,7 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
             template: '<finanzielle-situation-resultate-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -438,7 +443,7 @@ export class EbeguVerfuegenListState implements Ng1StateDeclaration {
             template: '<verfuegen-list-view mahnung-list="$resolve.mahnungList">'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -461,7 +466,7 @@ export class EbeguVerfuegenState implements Ng1StateDeclaration {
             template: '<verfuegen-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -483,7 +488,7 @@ export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclara
             template: '<einkommensverschlechterung-info-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -505,7 +510,7 @@ export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDecl
             template: '<einkommensverschlechterung-steuern-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -531,7 +536,7 @@ export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration
             template: '<einkommensverschlechterung-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -556,7 +561,7 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
             template: '<einkommensverschlechterung-resultate-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -581,7 +586,7 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
             template: '<dokumente-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -603,7 +608,7 @@ export class EbeguFreigabeState implements Ng1StateDeclaration {
             template: '<freigabe-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -628,7 +633,7 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
             template: '<betreuung-mitteilung-view>'
         },
         kommentarViewPort: {
-            template: '<kommentar-view>'
+            template: kommentarView
         }
     };
 
@@ -714,56 +719,60 @@ export class IEinkommensverschlechterungResultateStateParams {
     public basisjahrPlus: string;
 }
 
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
+// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen
+// (Grossbuchstaben am Anfang). Warum?
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
-export function getMahnungen(MahnungRS: MahnungRS, $stateParams: IGesuchStateParams, $q: IQService, $log: ILogService) {
-    // return [];
+// tslint:disable-next-line:variable-name no-shadowed-variable
+export function getMahnungen(MahnungRS: MahnungRS,
+                             $stateParams: IGesuchStateParams,
+                             $q: IQService,
+                             $log: ILogService): IPromise<TSMahnung[]> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             return MahnungRS.findMahnungen(gesuchIdParam);
         }
     }
-    $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    const deferred = $q.defer<TSMahnung[]>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+    $log.warn('keine stateParams oder keine gesuchId, gebe leeres Array zurueck');
+    return $q.resolve([]);
 }
 
-getGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
+getGesuchModelManager.$inject =
+    ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
 
-export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                                      wizardStepManager: WizardStepManager, $stateParams: IGesuchStateParams, $q: IQService,
+export function getGesuchModelManager(gesuchModelManager: GesuchModelManager,
+                                      berechnungsManager: BerechnungsManager,
+                                      $stateParams: IGesuchStateParams,
+                                      $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
-            if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
+            if (!gesuchModelManager.getGesuch() ||
+                gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
                 || gesuchModelManager.getGesuch().emptyCopy) {
-                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId ueberreinstimmt wird das gesuch neu geladen
-                // Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im Gesuchmodelmanager um eine leere Mutation handelt
-                // oder um ein leeres Erneuerungsgesuch
+                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId ueberreinstimmt wird das gesuch
+                // neu geladen Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im
+                // Gesuchmodelmanager um eine leere Mutation handelt oder um ein leeres Erneuerungsgesuch
                 berechnungsManager.clear();
                 return gesuchModelManager.openGesuch(gesuchIdParam);
-            } else {
-                const deferred = $q.defer<TSGesuch>();
-                deferred.resolve(gesuchModelManager.getGesuch());
-                return deferred.promise;
             }
 
+            return $q.resolve(gesuchModelManager.getGesuch());
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    const deferred = $q.defer<TSGesuch>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+    return $q.resolve(undefined);
 }
 
-reloadGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
+reloadGesuchModelManager.$inject =
+    ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
 
-export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                                         wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
+export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
+                                         berechnungsManager: BerechnungsManager,
+                                         $stateParams: INewFallStateParams,
+                                         $q: IQService,
                                          $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
 
@@ -787,19 +796,20 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
 
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
-    return $q.defer(gesuchModelManager.getGesuch());
+    return $q.resolve(gesuchModelManager.getGesuch());
 }
 
-getKinderDubletten.$inject = ['$stateParams', '$q', '$log', 'KindRS', 'AuthServiceRS'];
+getKinderDubletten.$inject = ['$stateParams', '$q', 'KindRS', 'AuthServiceRS'];
 
 // Die Kinderdubletten werden nur für SCH-Mitarbeiter oder JA-Mitarbeiter (inkl. Revisor und Jurist) angezeigt
-export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQService, $log: ILogService, KindRS: KindRS, authService: AuthServiceRS) {
+export function getKinderDubletten($stateParams: IGesuchStateParams,
+                                   $q: IQService,
+                                   kindRS: KindRS,
+                                   authService: AuthServiceRS): IPromise<TSKindDublette[]> {
     const isUserAllowed = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
     if (isUserAllowed && $stateParams && $stateParams.gesuchId) {
         const gesuchIdParam = $stateParams.gesuchId;
-        return KindRS.getKindDubletten(gesuchIdParam);
+        return kindRS.getKindDubletten(gesuchIdParam);
     }
-    const deferred = $q.defer<TSKindDublette[]>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+    return $q.resolve([]);
 }

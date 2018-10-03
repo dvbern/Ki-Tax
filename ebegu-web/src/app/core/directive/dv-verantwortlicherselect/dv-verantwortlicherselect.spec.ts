@@ -54,8 +54,8 @@ describe('dvVerantwortlicherSelect', () => {
         });
 
         it('returns the fullname of the verantwortlicherBG', () => {
-            const verantwortlicher: TSBenutzer = new TSBenutzer('Emiliano', 'Camacho');
-            const gesuch: TSGesuch = new TSGesuch();
+            const verantwortlicher = new TSBenutzer('Emiliano', 'Camacho');
+            const gesuch = new TSGesuch();
             gesuch.dossier = new TSDossier();
             gesuch.dossier.verantwortlicherBG = verantwortlicher;
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
@@ -74,15 +74,15 @@ describe('dvVerantwortlicherSelect', () => {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
-            const newUser: TSBenutzer = new TSBenutzer('Adolfo', 'Contreras');
+            const newUser = new TSBenutzer('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
             expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
         });
     });
 
     function createGesuch(): void {
-        const gesuch: TSGesuch = new TSGesuch();
-        const dossier: TSDossier = new TSDossier();
+        const gesuch = new TSGesuch();
+        const dossier = new TSDossier();
         dossier.verantwortlicherBG = benutzer;
         gesuch.dossier = dossier;
         gesuchModelManager.setGesuch(gesuch);

@@ -21,7 +21,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungListViewController} from './betreuungListView';
@@ -33,7 +33,7 @@ describe('betreuungListViewTest', () => {
     let $state: StateService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

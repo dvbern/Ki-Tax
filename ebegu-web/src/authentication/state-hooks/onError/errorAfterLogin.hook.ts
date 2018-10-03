@@ -21,7 +21,7 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import AuthServiceRS from '../../service/AuthServiceRS.rest';
-import {onErrorPriorities} from './onErrorPriorities';
+import {OnErrorPriorities} from './onErrorPriorities';
 
 /**
  * This hook navigates to a valid state when the failed transition originated from a login state.
@@ -33,7 +33,7 @@ const loginStates = ['authentication.login', 'authentication.locallogin'];
 export function errorAfterLoginHookRunBlock($transitions: TransitionService): void {
     $transitions.onError({from: state => loginStates.includes(state.name)},
         recover,
-        {priority: onErrorPriorities.ERROR_AFTER_LOGIN});
+        {priority: OnErrorPriorities.ERROR_AFTER_LOGIN});
 }
 
 const LOG = LogFactory.createLog('errorAfterLoginHookRunBlock');

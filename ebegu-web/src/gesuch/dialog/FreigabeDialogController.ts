@@ -25,7 +25,9 @@ export class FreigabeDialogController {
     public deleteText: string;
     public title: string;
 
-    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, private readonly parentController: FreigabeViewController) {
+    public constructor(private readonly $mdDialog: IDialogService,
+                       $translate: ITranslateService,
+                       private readonly parentController: FreigabeViewController) {
         this.title = $translate.instant('CONFIRM_GESUCH_FREIGEBEN');
         this.deleteText = $translate.instant('CONFIRM_GESUCH_FREIGEBEN_DESCRIPTION');
     }

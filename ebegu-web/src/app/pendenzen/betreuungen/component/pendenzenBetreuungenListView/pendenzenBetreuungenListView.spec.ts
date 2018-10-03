@@ -14,10 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import * as angular from 'angular';
 import {IHttpBackendService, IQService, IScope} from 'angular';
-import {AuthLifeCycleService} from '../../../../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
 import BerechnungsManager from '../../../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
@@ -45,10 +42,7 @@ describe('pendenzenBetreuungenListView', () => {
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
     let $state: StateService;
-    let CONSTANTS: any;
     let gemeindeRS: GemeindeRS;
-    let authServiceRS: AuthServiceRS;
-    let authLifeCycleService: AuthLifeCycleService;
 
     beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
 
@@ -65,19 +59,16 @@ describe('pendenzenBetreuungenListView', () => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         berechnungsManager = $injector.get('BerechnungsManager');
         $state = $injector.get('$state');
-        CONSTANTS = $injector.get('CONSTANTS');
         gemeindeRS = $injector.get('GemeindeRS');
-        authServiceRS = $injector.get('AuthServiceRS');
-        authLifeCycleService = $injector.get('AuthLifeCycleService');
     }));
 
     describe('API Usage', () => {
         describe('initFinSit Pendenzenliste', () => {
             it('should return the list with all pendenzen', () => {
-                const mockPendenz: TSPendenzBetreuung = mockGetPendenzenList();
+                const mockPendenz = mockGetPendenzenList();
                 mockRestCalls();
-                spyOn(gesuchsperiodeRS,
-                    'getAllActiveGesuchsperioden').and.returnValue($q.when([TestDataUtil.createGesuchsperiode20162017()]));
+                const gesuchsperiode = $q.when([TestDataUtil.createGesuchsperiode20162017()]);
+                spyOn(gesuchsperiodeRS, 'getAllActiveGesuchsperioden').and.returnValue(gesuchsperiode);
                 pendenzBetreuungenListViewController =
                     new PendenzenBetreuungenListViewController(pendenzBetreuungenRS,
                         undefined,
@@ -93,7 +84,7 @@ describe('pendenzenBetreuungenListView', () => {
                 $scope.$apply();
                 expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toHaveBeenCalled();
 
-                const list: Array<TSPendenzBetreuung> = pendenzBetreuungenListViewController.getPendenzenList();
+                const list = pendenzBetreuungenListViewController.getPendenzenList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(1);
                 expect(list[0]).toEqual(mockPendenz);
@@ -102,7 +93,7 @@ describe('pendenzenBetreuungenListView', () => {
     });
 
     function mockGetPendenzenList(): TSPendenzBetreuung {
-        const mockPendenz: TSPendenzBetreuung = new TSPendenzBetreuung('123.12.12.12',
+        const mockPendenz = new TSPendenzBetreuung('123.12.12.12',
             '123',
             '123',
             '123',
@@ -115,7 +106,7 @@ describe('pendenzenBetreuungenListView', () => {
             undefined,
             TSBetreuungsangebotTyp.KITA,
             undefined);
-        const result: Array<TSPendenzBetreuung> = [mockPendenz];
+        const result = [mockPendenz];
         spyOn(pendenzBetreuungenRS, 'getPendenzenBetreuungenList').and.returnValue($q.when(result));
         return mockPendenz;
     }

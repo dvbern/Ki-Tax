@@ -13,23 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
+import {IQService, IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {FallCreationViewController} from './fallCreationView';
-import {StateService} from '@uirouter/core';
 
 describe('fallCreationView', () => {
 
     let fallCreationview: FallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
     let $state: StateService;
-    let $q: angular.IQService;
-    let $rootScope: angular.IScope;
+    let $q: IQService;
+    let $rootScope: IScope;
     let form: any;
     let gesuch: TSGesuch;
 
@@ -46,9 +46,16 @@ describe('fallCreationView', () => {
         form = {};
         form.$valid = true;
         form.$dirty = true;
-        fallCreationview = new FallCreationViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
-            $injector.get('ErrorService'), $injector.get('$stateParams'), $injector.get('WizardStepManager'),
-            $injector.get('$translate'), $q, $rootScope, $injector.get('AuthServiceRS'), $injector.get('GesuchsperiodeRS'),
+        fallCreationview = new FallCreationViewController(gesuchModelManager,
+            $injector.get('BerechnungsManager'),
+            $injector.get('ErrorService'),
+            $injector.get('$stateParams'),
+            $injector.get('WizardStepManager'),
+            $injector.get('$translate'),
+            $q,
+            $rootScope,
+            $injector.get('AuthServiceRS'),
+            $injector.get('GesuchsperiodeRS'),
             $injector.get('$timeout'));
         fallCreationview.form = form;
         spyOn(fallCreationview, 'isGesuchValid').and.callFake(() => form.$valid);
@@ -60,7 +67,7 @@ describe('fallCreationView', () => {
         it('submitted but rejected -> it does not go to the next step', () => {
             spyOn($state, 'go');
             const reject = $q.reject({}).catch(() => {
-                //need to catch rejected promise
+                // need to catch rejected promise
             });
             spyOn(gesuchModelManager, 'saveGesuchAndFall').and.returnValue(reject);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
@@ -91,7 +98,7 @@ describe('fallCreationView', () => {
             expect(fallCreationview.getTitle()).toBe('Änderung Ihrer Daten');
         });
         it('should return kiBon – Erstgesuch der Periode', () => {
-            const gesuchsperiode: TSGesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
+            const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);

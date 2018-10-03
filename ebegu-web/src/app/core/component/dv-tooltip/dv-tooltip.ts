@@ -39,11 +39,11 @@ export class DvTooltipController implements IDVFocusableController {
     private readonly inputId: string;
 
     public constructor(private readonly $translate: ITranslateService,
-                       private readonly DvDialog: DvDialog) {
+                       private readonly dvDialog: DvDialog) {
     }
 
     public showTooltip(info: any): void {
-        this.DvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
+        this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
             title: '',
             text: info,
             parentController: this

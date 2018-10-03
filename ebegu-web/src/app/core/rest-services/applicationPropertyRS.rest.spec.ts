@@ -82,7 +82,7 @@ describe('ApplicationPropertyRS', () => {
 
             it('should fetch property with given name', () => {
                 $httpBackend.expectGET(`${REST_API}application-properties/key/${testName}`);
-                const promise: angular.IPromise<TSApplicationProperty> = applicationPropertyRS.getByName(testName);
+                const promise = applicationPropertyRS.getByName(testName);
                 let property: TSApplicationProperty;
 
                 promise.then(data => {

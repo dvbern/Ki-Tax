@@ -17,6 +17,7 @@ import IComponentOptions = angular.IComponentOptions;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import {StateService} from '@uirouter/core';
+import {IController} from 'angular';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
 import SearchRS from '../../../../../gesuch/service/searchRS.rest';
 import TSAntragDTO from '../../../../../models/TSAntragDTO';
@@ -30,20 +31,17 @@ export class PendenzenSteueramtListViewComponentConfig implements IComponentOpti
     public controllerAs = 'vm';
 }
 
-export class PendenzenSteueramtListViewController {
+export class PendenzenSteueramtListViewController implements IController {
 
     public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
 
     public totalResultCount: string = '0';
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $state: StateService,
-                private readonly $log: ILogService,
-                private readonly searchRS: SearchRS) {
-    }
-
-    public $onInit() {
+                       private readonly $state: StateService,
+                       private readonly $log: ILogService,
+                       private readonly searchRS: SearchRS) {
     }
 
     public editpendenzSteueramt(pendenz: TSAntragDTO, event: any): void {
@@ -62,7 +60,7 @@ export class PendenzenSteueramtListViewController {
 
     }
 
-    private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean) {
+    private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {
         this.gesuchModelManager.clearGesuch();
         const navObj: any = {
             gesuchId: pendenz.antragId

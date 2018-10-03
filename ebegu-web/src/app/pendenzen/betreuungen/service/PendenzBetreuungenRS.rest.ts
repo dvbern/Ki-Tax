@@ -23,9 +23,9 @@ export default class PendenzBetreuungenRS {
     public serviceURL: string;
 
     public constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public $log: ILogService) {
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public $log: ILogService) {
         this.serviceURL = REST_API + 'search/pendenzenBetreuungen';
     }
 

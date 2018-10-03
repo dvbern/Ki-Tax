@@ -41,9 +41,12 @@ export class FaelleListViewController {
     private antragList: Array<TSAntragDTO>;
     public totalResultCount: string = '0';
 
-    public constructor(private readonly $filter: IFilterService, private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $state: StateService, private readonly $log: ILogService,
-                private readonly authServiceRS: AuthServiceRS, private readonly searchRS: SearchRS) {
+    public constructor(private readonly $filter: IFilterService,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly $state: StateService,
+                       private readonly $log: ILogService,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly searchRS: SearchRS) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
@@ -63,48 +66,47 @@ export class FaelleListViewController {
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch
      * mit beschraenkten Daten Fuer anderen Benutzer wird das Gesuch mit allen Daten geoeffnet
-     * @param antrag
+     * @param antrag der antrag
      * @param event optinally this function can check if ctrl was clicked when opeing
      */
     public editFall(antrag: TSAntragDTO, event: any): void {
-        if (antrag) {
-            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
-                // last time
-                this.gesuchModelManager.clearGesuch();
-                if (isAnyStatusOfVerfuegt(antrag.status)) {
-                    this.openGesuch(antrag, 'gesuch.verfuegen',
-                        {gesuchId: antrag.antragId},
-                        isCtrlKeyPressed);
-                } else {
-                    this.openGesuch(antrag, 'gesuch.betreuungen',
-                        {gesuchId: antrag.antragId},
-                        isCtrlKeyPressed);
-                }
+        if (!antrag) {
+            return;
+        }
+
+        const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
+            // last time
+            this.gesuchModelManager.clearGesuch();
+            if (isAnyStatusOfVerfuegt(antrag.status)) {
+                this.openGesuch(antrag, 'gesuch.verfuegen',
+                    {gesuchId: antrag.antragId},
+                    isCtrlKeyPressed);
             } else {
-                this.openGesuch(antrag, 'gesuch.fallcreation',
-                    {gesuchId: antrag.antragId, dossierId: antrag.dossierId},
+                this.openGesuch(antrag, 'gesuch.betreuungen',
+                    {gesuchId: antrag.antragId},
                     isCtrlKeyPressed);
             }
+        } else {
+            this.openGesuch(antrag, 'gesuch.fallcreation',
+                {gesuchId: antrag.antragId, dossierId: antrag.dossierId},
+                isCtrlKeyPressed);
         }
     }
 
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
-     * @param antrag
-     * @param urlToGoTo
-     * @param params
-     * @param isCtrlKeyPressed true if user pressed ctrl when clicking
      */
     private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, params: any, isCtrlKeyPressed: boolean): void {
-        if (antrag) {
-            if (isCtrlKeyPressed) {
-                const url = this.$state.href(urlToGoTo, params);
-                window.open(url, '_blank');
-            } else {
-                this.$state.go(urlToGoTo, params);
-            }
+        if (!antrag) {
+            return;
+        }
+        if (isCtrlKeyPressed) {
+            const url = this.$state.href(urlToGoTo, params);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go(urlToGoTo, params);
         }
     }
 }

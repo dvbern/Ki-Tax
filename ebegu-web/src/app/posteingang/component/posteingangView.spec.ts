@@ -13,16 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import {of} from 'rxjs';
-import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import BerechnungsManager from '../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
@@ -32,6 +26,7 @@ import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import MitteilungRS from '../../core/service/mitteilungRS.rest';
 import {EbeguWebPosteingang} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
@@ -39,21 +34,12 @@ import {PosteingangViewController} from './posteingangView';
 describe('posteingangView', () => {
 
     let authServiceRS: AuthServiceRS;
-    let gesuchRS: GesuchRS;
     let mitteilungRS: MitteilungRS;
     let posteingangViewController: PosteingangViewController;
     let $q: angular.IQService;
     let $rootScope: angular.IRootScopeService;
-    let $filter: angular.IFilterService;
     let $httpBackend: angular.IHttpBackendService;
-    let gesuchModelManager: GesuchModelManager;
-    let berechnungsManager: BerechnungsManager;
-    let $state: StateService;
-    let $log: any;
-    let CONSTANTS: any;
-    let wizardStepManager: WizardStepManager;
     let mockMitteilung: TSMitteilung;
-    let authLifeCycleService: AuthLifeCycleService;
     let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(EbeguWebPosteingang.name));
@@ -63,19 +49,10 @@ describe('posteingangView', () => {
     beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         mitteilungRS = $injector.get('MitteilungRS');
-        gesuchRS = $injector.get('GesuchRS');
         $q = $injector.get('$q');
         $rootScope = $injector.get('$rootScope');
-        $filter = $injector.get('$filter');
         $httpBackend = $injector.get('$httpBackend');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        berechnungsManager = $injector.get('BerechnungsManager');
-        $state = $injector.get('$state');
-        $log = $injector.get('$log');
-        CONSTANTS = $injector.get('CONSTANTS');
-        wizardStepManager = $injector.get('WizardStepManager');
         mockMitteilung = mockGetMitteilung();
-        authLifeCycleService = $injector.get('AuthLifeCycleService');
         gemeindeRS = $injector.get('GemeindeRS');
     }));
 
@@ -92,9 +69,9 @@ describe('posteingangView', () => {
                     gemeindeRS);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
-                posteingangViewController.passFilterToServer(tableFilterState).then(result => {
+                posteingangViewController.passFilterToServer(tableFilterState).then(() => {
                     expect(mitteilungRS.searchMitteilungen).toHaveBeenCalled();
-                    const list: Array<TSMitteilung> = posteingangViewController.displayedCollection;
+                    const list = posteingangViewController.displayedCollection;
                     expect(list).toBeDefined();
                     expect(list.length).toBe(1);
                     expect(list[0]).toEqual(mockMitteilung);
@@ -104,13 +81,14 @@ describe('posteingangView', () => {
     });
 
     function mockGetMitteilung(): TSMitteilung {
-        const mockFall: TSFall = new TSFall();
+        const mockFall = new TSFall();
+        // tslint:disable-next-line:no-magic-numbers
         mockFall.fallNummer = 123;
-        const mockDossier: TSDossier = new TSDossier();
+        const mockDossier = new TSDossier();
         mockDossier.fall = mockFall;
-        const gesuchsteller: TSBenutzer = new TSBenutzer();
+        const gesuchsteller = new TSBenutzer();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
-        const mockMitteilung: TSMitteilung = new TSMitteilung(mockDossier,
+        const result = new TSMitteilung(mockDossier,
             undefined,
             TSMitteilungTeilnehmerTyp.GESUCHSTELLER,
             TSMitteilungTeilnehmerTyp.JUGENDAMT,
@@ -120,10 +98,10 @@ describe('posteingangView', () => {
             'Warum ist die Banane krumm?',
             TSMitteilungStatus.NEU,
             undefined);
-        const dtoList: Array<TSMitteilung> = [mockMitteilung];
-        const totalSize: number = 1;
+        const dtoList = [result];
         spyOn(mitteilungRS, 'searchMitteilungen').and.returnValue($q.when(dtoList));
-        return mockMitteilung;
+
+        return result;
     }
 
     function mockRestCalls(): void {
@@ -133,4 +111,3 @@ describe('posteingangView', () => {
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
     }
 });
-

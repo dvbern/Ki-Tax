@@ -19,7 +19,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 mitteilungenRun.$inject = ['RouterHelper'];
 
-export function mitteilungenRun(routerHelper: RouterHelper) {
+export function mitteilungenRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

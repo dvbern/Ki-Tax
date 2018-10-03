@@ -20,7 +20,6 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSBetroffene} from '../../../models/enums/TSBetroffene';
-import TSAdresseContainer from '../../../models/TSAdresseContainer';
 import TSGesuch from '../../../models/TSGesuch';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -67,7 +66,7 @@ describe('umzugView', () => {
                 wizardStepManager, errorService, $translate, dialog, $q, $rootScope, $timeout);
         });
         it('should return the names of the GS or beide Gesuchsteller', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
@@ -80,7 +79,7 @@ describe('umzugView', () => {
                 'beide Gesuchstellenden');
         });
         it('should return empty string for empty data', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
             expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1)).toEqual('');
@@ -96,21 +95,21 @@ describe('umzugView', () => {
                 wizardStepManager, errorService, $translate, dialog, $q, $rootScope, $timeout);
         });
         it('should return a list with only GS1', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
-            const betroffenenList: Array<TSBetroffene> = umzugController.getBetroffenenList();
+            const betroffenenList = umzugController.getBetroffenenList();
             expect(betroffenenList.length).toBe(1);
             expect(betroffenenList[0]).toBe(TSBetroffene.GESUCHSTELLER_1);
         });
         it('should return a list with GS1, GS2 und BEIDE', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
-            const betroffenenList: Array<TSBetroffene> = umzugController.getBetroffenenList();
+            const betroffenenList = umzugController.getBetroffenenList();
             expect(betroffenenList.length).toBe(3);
             expect(betroffenenList[0]).toBe(TSBetroffene.GESUCHSTELLER_1);
             expect(betroffenenList[1]).toBe(TSBetroffene.GESUCHSTELLER_2);
@@ -128,16 +127,16 @@ describe('umzugView', () => {
             expect(umzugController.getUmzugAdressenList().length).toBe(0);
         });
         it('should have all adressen for GS1 and GS2', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller1.addAdresse(TestDataUtil.createAdresse('strasse1', '10'));
-            const umzugAdresseGS1: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse1', '10');
+            const umzugAdresseGS1 = TestDataUtil.createAdresse('umzugstrasse1', '10');
             umzugAdresseGS1.showDatumVon = true;
             gesuch.gesuchsteller1.addAdresse(umzugAdresseGS1);
 
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Conchita', 'Prieto');
             gesuch.gesuchsteller2.addAdresse(TestDataUtil.createAdresse('strasse2', '20'));
-            const umzugAdresseGS2: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse2', '20');
+            const umzugAdresseGS2 = TestDataUtil.createAdresse('umzugstrasse2', '20');
             umzugAdresseGS2.showDatumVon = true;
             gesuch.gesuchsteller2.addAdresse(umzugAdresseGS2);
 
@@ -153,10 +152,10 @@ describe('umzugView', () => {
             expect(umzugController.getUmzugAdressenList()[1].adresse).toEqual(umzugAdresseGS2);
         });
         it('should merge the adresse of GS1 and GS2 in a single one with BEIDE_GESUCHSTELLER', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
-            const adresse1: TSAdresseContainer = TestDataUtil.createAdresse('strasse1', '10');
-            const adresse2: TSAdresseContainer = TestDataUtil.createAdresse('strasse2', '20');
+            const adresse1 = TestDataUtil.createAdresse('strasse1', '10');
+            const adresse2 = TestDataUtil.createAdresse('strasse2', '20');
             gesuch.gesuchsteller1.addAdresse(adresse1);
             gesuch.gesuchsteller1.addAdresse(adresse2);
 
@@ -181,10 +180,10 @@ describe('umzugView', () => {
             spyOn(dialog, 'showRemoveDialog').and.returnValue($q.when({}));
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
             gesuch.gesuchsteller1.addAdresse(TestDataUtil.createAdresse('strasse1', '10'));
-            const umzugAdresseGS1: TSAdresseContainer = TestDataUtil.createAdresse('umzugstrasse1', '10');
+            const umzugAdresseGS1 = TestDataUtil.createAdresse('umzugstrasse1', '10');
             umzugAdresseGS1.showDatumVon = true;
             gesuch.gesuchsteller1.addAdresse(umzugAdresseGS1);
             gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Conchita', 'Prieto');

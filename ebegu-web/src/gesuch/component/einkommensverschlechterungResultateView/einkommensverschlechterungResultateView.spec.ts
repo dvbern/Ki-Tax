@@ -21,7 +21,7 @@ import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFinanzModel from '../../../models/TSFinanzModel';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -34,7 +34,7 @@ describe('einkommensverschlechterungResultateView', () => {
     let berechnungsManager: BerechnungsManager;
     let ekvrvc: EinkommensverschlechterungResultateViewController;
 
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -147,10 +147,10 @@ describe('einkommensverschlechterungResultateView', () => {
         });
 
         function setValues(massgebendesEinkommenVj: number, massgebendesEinkommenBj: number): void {
-            const finsint: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
+            const finsint = new TSFinanzielleSituationResultateDTO();
             finsint.massgebendesEinkVorAbzFamGr = massgebendesEinkommenBj;
 
-            const finsintvj: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
+            const finsintvj = new TSFinanzielleSituationResultateDTO();
             finsintvj.massgebendesEinkVorAbzFamGr = massgebendesEinkommenVj;
 
             spyOn(ekvrvc, 'getResultate').and.returnValue(finsint);

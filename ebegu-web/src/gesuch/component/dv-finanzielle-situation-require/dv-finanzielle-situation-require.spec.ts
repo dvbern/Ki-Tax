@@ -16,7 +16,7 @@
 import ADMIN_JS_MODULE from '../../../admin/admin.module';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situation-require';
 
@@ -24,7 +24,7 @@ import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situatio
 describe('finanzielleSituationRequire', () => {
 
     beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

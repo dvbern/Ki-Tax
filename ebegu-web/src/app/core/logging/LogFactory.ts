@@ -125,13 +125,13 @@ function formatColored(args: any[], formattedModuleName: string, colorSupport: C
             `border: 1px solid ${backgroundColor};`,
             ...args.slice(1)
         ];
-    } else {
-        return [
-            `%c${formattedModuleName}`,
-            `background-color: ${backgroundColor}; color: white; border: 1px solid ${backgroundColor};`,
-            ...args
-        ];
     }
+
+    return [
+        `%c${formattedModuleName}`,
+        `background-color: ${backgroundColor}; color: white; border: 1px solid ${backgroundColor};`,
+        ...args
+    ];
 }
 
 /**

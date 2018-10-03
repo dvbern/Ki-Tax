@@ -21,14 +21,14 @@ import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlech
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
 describe('einkommensverschlechterungView', () => {
 
     let gesuchModelManager: GesuchModelManager;
 
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

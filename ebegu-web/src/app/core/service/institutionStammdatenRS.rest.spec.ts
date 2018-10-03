@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -28,7 +29,7 @@ import {InstitutionStammdatenRS} from './institutionStammdatenRS.rest';
 describe('institutionStammdatenRS', () => {
 
     let institutionStammdatenRS: InstitutionStammdatenRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockInstitutionStammdaten: TSInstitutionStammdaten;
     let mockInstitutionStammdatenRest: any;
@@ -50,7 +51,8 @@ describe('institutionStammdatenRS', () => {
         today = DateUtil.today();
         mockInstitution = new TSInstitution('Institution_Test');
         mockAdresse = new TSAdresse();
-        mockInstitutionStammdaten = new TSInstitutionStammdaten('InstStammDaten_Test', 250, 12,
+        const oeffnungstage = 250;
+        mockInstitutionStammdaten = new TSInstitutionStammdaten('InstStammDaten_Test', oeffnungstage, 12,
             TSBetreuungsangebotTyp.KITA, mockInstitution, mockAdresse, new TSDateRange(today, today));
         mockInstitutionStammdaten.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
@@ -83,11 +85,12 @@ describe('institutionStammdatenRS', () => {
     describe('API Usage', () => {
         describe('findInstitutionStammdaten', () => {
             it('should return the InstitutionStammdaten by id', () => {
-                $httpBackend.expectGET(institutionStammdatenRS.serviceURL + '/id/' + encodeURIComponent(mockInstitutionStammdaten.id))
+                const url = `${institutionStammdatenRS.serviceURL}/id/${encodeURIComponent(mockInstitutionStammdaten.id)}`;
+                $httpBackend.expectGET(url)
                     .respond(mockInstitutionStammdatenRest);
 
                 let foundInstitutionStammdaten: TSInstitutionStammdaten;
-                institutionStammdatenRS.findInstitutionStammdaten(mockInstitutionStammdaten.id).then((result) => {
+                institutionStammdatenRS.findInstitutionStammdaten(mockInstitutionStammdaten.id).then(result => {
                     foundInstitutionStammdaten = result;
                 });
                 $httpBackend.flush();
@@ -99,10 +102,11 @@ describe('institutionStammdatenRS', () => {
         describe('createInstitutionStammdaten', () => {
             it('should create a InstitutionStammdaten', () => {
                 let createdInstitutionStammdaten: TSInstitutionStammdaten;
-                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(mockInstitutionStammdatenRest);
+                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(
+                    mockInstitutionStammdatenRest);
 
                 institutionStammdatenRS.createInstitutionStammdaten(mockInstitutionStammdaten)
-                    .then((result) => {
+                    .then(result => {
                         createdInstitutionStammdaten = result;
                     });
                 $httpBackend.flush();
@@ -113,12 +117,14 @@ describe('institutionStammdatenRS', () => {
         describe('updateInstitutionStammdaten', () => {
             it('should update a InstitutionStammdaten', () => {
                 mockInstitutionStammdaten.iban = 'CH123456';
-                mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
+                mockInstitutionStammdatenRest =
+                    ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
                 let updatedInstitutionStammdaten: TSInstitutionStammdaten;
-                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(mockInstitutionStammdatenRest);
+                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(
+                    mockInstitutionStammdatenRest);
 
                 institutionStammdatenRS.updateInstitutionStammdaten(mockInstitutionStammdaten)
-                    .then((result) => {
+                    .then(result => {
                         updatedInstitutionStammdaten = result;
                     });
                 $httpBackend.flush();
@@ -128,27 +134,29 @@ describe('institutionStammdatenRS', () => {
 
         describe('removeInstitutionStammdaten', () => {
             it('should remove a InstitutionStammdaten', () => {
-                $httpBackend.expectDELETE(institutionStammdatenRS.serviceURL + '/' + encodeURIComponent(mockInstitutionStammdaten.id))
-                    .respond(200);
+                const httpOk = 200;
+                $httpBackend.expectDELETE(`${institutionStammdatenRS.serviceURL}/${encodeURIComponent(
+                    mockInstitutionStammdaten.id)}`)
+                    .respond(httpOk);
 
                 let deleteResult: any;
                 institutionStammdatenRS.removeInstitutionStammdaten(mockInstitutionStammdaten.id)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
 
         describe('getAllInstitutionStammdaten', () => {
             it('should return all InstitutionStammdaten', () => {
-                const institutionStammdatenRestArray: Array<any> = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
+                const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
                 $httpBackend.expectGET(institutionStammdatenRS.serviceURL).respond(institutionStammdatenRestArray);
 
                 let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
-                institutionStammdatenRS.getAllInstitutionStammdaten().then((result) => {
+                institutionStammdatenRS.getAllInstitutionStammdaten().then(result => {
                     returnedInstitutionStammdaten = result;
                 });
                 $httpBackend.flush();
@@ -161,13 +169,13 @@ describe('institutionStammdatenRS', () => {
 
         describe('getAllInstitutionStammdatenByDate', () => {
             it('should return all InstitutionStammdaten im gegebenen Datum', () => {
-                const institutionStammdatenRestArray: Array<any> = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
-                $httpBackend.expectGET(institutionStammdatenRS.serviceURL + '/date?date='
-                    + DateUtil.momentToLocalDate(today))
+                const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
+                $httpBackend.expectGET(`${institutionStammdatenRS.serviceURL}/date?date=${DateUtil.momentToLocalDate(
+                    today)}`)
                     .respond(institutionStammdatenRestArray);
 
                 let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
-                institutionStammdatenRS.getAllInstitutionStammdatenByDate(today).then((result) => {
+                institutionStammdatenRS.getAllInstitutionStammdatenByDate(today).then(result => {
                     returnedInstitutionStammdaten = result;
                 });
                 $httpBackend.flush();
@@ -180,7 +188,7 @@ describe('institutionStammdatenRS', () => {
     });
 
     function checkFieldValues(institutionStammdaten1: TSInstitutionStammdaten,
-                              institutionStammdaten2: TSInstitutionStammdaten) {
+                              institutionStammdaten2: TSInstitutionStammdaten): void {
         expect(institutionStammdaten1).toBeDefined();
         expect(institutionStammdaten1.iban).toEqual(institutionStammdaten2.iban);
         expect(institutionStammdaten1.id).toEqual(institutionStammdaten2.id);

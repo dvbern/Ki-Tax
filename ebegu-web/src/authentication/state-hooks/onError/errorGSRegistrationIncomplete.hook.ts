@@ -17,7 +17,7 @@
 
 import {HookMatchCriteria, HookResult, RejectType, Transition, TransitionService} from '@uirouter/core';
 import {DISABLE_RECOVERY_ERROR_MESSAGE} from './errorRecovery.hook';
-import {onErrorPriorities} from './onErrorPriorities';
+import {OnErrorPriorities} from './onErrorPriorities';
 
 erorGSRegistrationIncompleteHookRunBlock.$inject = ['$transitions'];
 
@@ -29,7 +29,7 @@ export function erorGSRegistrationIncompleteHookRunBlock($transitions: Transitio
 
     $transitions.onError(criteria,
         onGSRegistrationIncompleteError,
-        {priority: onErrorPriorities.ERROR_GS_REGISTRATION_INCOMPLETE});
+        {priority: OnErrorPriorities.ERROR_GS_REGISTRATION_INCOMPLETE});
 }
 
 function onGSRegistrationIncompleteError(transition: Transition): HookResult {

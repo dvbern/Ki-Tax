@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('NavbarComponent');
 })
 export class NavbarComponent implements OnDestroy {
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -114,9 +114,9 @@ export class NavbarComponent implements OnDestroy {
     private getListOfGemeinden$(): Observable<TSGemeinde[]> {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
             return fromPromise(this.gemeindeRS.getAktiveGemeinden());
-        } else {
-            return this.authServiceRS.principal$
-                .pipe(map(p => p.extractCurrentAktiveGemeinden()));
         }
+
+        return this.authServiceRS.principal$
+            .pipe(map(p => p.extractCurrentAktiveGemeinden()));
     }
 }

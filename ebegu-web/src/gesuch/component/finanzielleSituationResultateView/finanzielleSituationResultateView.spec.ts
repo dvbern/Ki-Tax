@@ -21,7 +21,7 @@ import TSFamiliensituation from '../../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -31,7 +31,7 @@ describe('finanzielleSituationResultateView', () => {
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
 
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

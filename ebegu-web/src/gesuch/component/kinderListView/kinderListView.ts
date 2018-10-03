@@ -50,9 +50,15 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     public kinderDubletten: TSKindDublette[] = [];
 
-    public constructor(private readonly $state: StateService, gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                       private readonly $translate: ITranslateService, private readonly DvDialog: DvDialog,
-                       wizardStepManager: WizardStepManager, $scope: IScope, private readonly CONSTANTS: any, $timeout: ITimeoutService) {
+    public constructor(private readonly $state: StateService,
+                       gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly $translate: ITranslateService,
+                       private readonly dvDialog: DvDialog,
+                       wizardStepManager: WizardStepManager,
+                       $scope: IScope,
+                       private readonly CONSTANTS: any,
+                       $timeout: ITimeoutService) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         this.initViewModel();
     }
@@ -90,7 +96,8 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     public gotoKindDublette(dublette: TSKindDublette): void {
-        const url = this.$state.href('gesuch.kind', {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
+        const url = this.$state.href('gesuch.kind',
+            {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
         window.open(url, '_blank');
     }
 
@@ -104,7 +111,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     public removeKind(kind: any, index: any): void {
         const remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
-        this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
             parentController: this,
@@ -122,13 +129,16 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     /**
      * Ein Kind darf geloescht werden wenn: Das Gesuch noch nicht verfuegt/verfuegen ist und das vorgaengerId null
      * ist (es ist ein neues kind) oder in einer mutation wenn es (obwohl ein altes Kind) keine Betreuungen hat
-     * @param kind
-     * @returns {boolean}
      */
     public canRemoveKind(kind: TSKindContainer): boolean {
         return !this.isGesuchReadonly()
-            && ((this.gesuchModelManager.getGesuch().isMutation() && (!kind.betreuungen || kind.betreuungen.length <= 0))
-                || !kind.kindJA.vorgaengerId);
+            && (
+                (
+                    this.gesuchModelManager.getGesuch().isMutation()
+                    && (!kind.betreuungen || kind.betreuungen.length <= 0)
+                )
+                || !kind.kindJA.vorgaengerId
+            );
     }
 
     public getColsNumber(): number {

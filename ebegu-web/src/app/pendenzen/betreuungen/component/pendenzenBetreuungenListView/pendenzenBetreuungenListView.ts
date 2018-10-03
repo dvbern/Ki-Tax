@@ -20,7 +20,6 @@ import {takeUntil} from 'rxjs/operators';
 import BerechnungsManager from '../../../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
-import TSBetreuungsnummerParts from '../../../../../models/dto/TSBetreuungsnummerParts';
 import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsangebotTyp';
 import TSGemeinde from '../../../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../../../models/TSGesuchsperiode';
@@ -62,14 +61,14 @@ export class PendenzenBetreuungenListViewController implements IController {
     private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(public pendenzBetreuungenRS: PendenzBetreuungenRS,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly institutionRS: InstitutionRS,
-                private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly berechnungsManager: BerechnungsManager,
-                private readonly $state: StateService,
-                private readonly gemeindeRS: GemeindeRS,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly institutionRS: InstitutionRS,
+                       private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly berechnungsManager: BerechnungsManager,
+                       private readonly $state: StateService,
+                       private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -93,7 +92,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         return 0;
     }
 
-    private updatePendenzenList() {
+    private updatePendenzenList(): void {
         this.pendenzBetreuungenRS.getPendenzenBetreuungenList().then(response => {
             this.pendenzenList = response;
             this.numberOfPages = this.pendenzenList.length / this.itemsByPage;
@@ -106,7 +105,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         });
     }
 
-    private extractGesuchsperiodeStringList(allActiveGesuchsperioden: TSGesuchsperiode[]) {
+    private extractGesuchsperiodeStringList(allActiveGesuchsperioden: TSGesuchsperiode[]): void {
         allActiveGesuchsperioden.forEach(gesuchsperiode => {
             this.activeGesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
         });
@@ -147,27 +146,28 @@ export class PendenzenBetreuungenListViewController implements IController {
 
     private openBetreuung(pendenz: TSPendenzBetreuung, isCtrlKeyPressed: boolean): void {
         const numberParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
-        if (numberParts && pendenz) {
-            const kindNumber = parseInt(numberParts.kindnummer);
-            const betreuungNumber = parseInt(numberParts.betreuungsnummer);
-            if (betreuungNumber > 0) {
-                this.berechnungsManager.clear(); // nur um sicher zu gehen, dass alle alte Werte geloescht sind
+        if (!numberParts || !pendenz) {
+            return;
+        }
 
-                // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
-                // last time
-                this.gesuchModelManager.clearGesuch();
-                const navObj: any = {
-                    betreuungNumber,
-                    kindNumber,
-                    gesuchId: pendenz.gesuchId
-                };
-                if (isCtrlKeyPressed) {
-                    const url = this.$state.href('gesuch.betreuung', navObj);
-                    window.open(url, '_blank');
-                } else {
-                    this.$state.go('gesuch.betreuung', navObj);
-                }
-            }
+        const kindNumber = parseInt(numberParts.kindnummer, 10);
+        const betreuungNumber = parseInt(numberParts.betreuungsnummer, 10);
+        if (betreuungNumber <= 0) {
+            return;
+        }
+
+        this.berechnungsManager.clear();
+        this.gesuchModelManager.clearGesuch();
+        const navObj: any = {
+            betreuungNumber,
+            kindNumber,
+            gesuchId: pendenz.gesuchId
+        };
+        if (isCtrlKeyPressed) {
+            const url = this.$state.href('gesuch.betreuung', navObj);
+            window.open(url, '_blank');
+        } else {
+            this.$state.go('gesuch.betreuung', navObj);
         }
     }
 }

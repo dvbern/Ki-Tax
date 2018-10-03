@@ -24,7 +24,7 @@ import IQService = angular.IQService;
 
 gesuchstellerDashboardRun.$inject = ['RouterHelper'];
 
-export function gesuchstellerDashboardRun(routerHelper: RouterHelper) {
+export function gesuchstellerDashboardRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 
@@ -54,7 +54,8 @@ const ng1States: Ng1StateDeclaration[] = [
             gesuchstellerDashboardStateParams: IGesuchstellerDashboardStateParams
         },
         resolve: {
-            gesuch: resetGesuchModelManager // always when navigating to the Dashboard the gesuchModelManager must be reset
+            // always when navigating to the Dashboard the gesuchModelManager must be reset
+            gesuch: resetGesuchModelManager
         },
     },
     {
@@ -69,22 +70,23 @@ const ng1States: Ng1StateDeclaration[] = [
 
 getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$log'];
 
-export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, $stateParams: IAngebotStateParams, $q: IQService,
+export function getGesuchModelManager(gesuchModelManager: GesuchModelManager,
+                                      $stateParams: IAngebotStateParams,
+                                      $q: IQService,
                                       $log: ILogService): IPromise<TSGesuch> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             const gesuch = gesuchModelManager.getGesuch();
             if (!gesuch || gesuch && gesuch.id !== gesuchIdParam || gesuch.emptyCopy) {
-                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId uebereinstimmt wird das gesuch neu geladen
-                // Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im Gesuchmodelmanager um eine leere Mutation handelt
-                // oder um ein leeres Erneuerungsgesuch
+                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId uebereinstimmt wird das gesuch neu
+                // geladen Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im
+                // Gesuchmodelmanager um eine leere Mutation handelt oder um ein leeres Erneuerungsgesuch
 
                 return gesuchModelManager.openGesuch(gesuchIdParam);
-            } else {
-                return $q.resolve(gesuch);
             }
 
+            return $q.resolve(gesuch);
         }
     }
 

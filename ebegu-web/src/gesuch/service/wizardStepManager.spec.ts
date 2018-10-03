@@ -43,7 +43,7 @@ describe('wizardStepManager', () => {
     let scope: angular.IScope;
     let $q: angular.IQService;
 
-    const gesuchAntrag: TSGesuch = new TSGesuch();
+    const gesuchAntrag = new TSGesuch();
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -98,9 +98,9 @@ describe('wizardStepManager', () => {
     });
     describe('findStepsFromGesuch', () => {
         it('retrieves the steps from server', () => {
-            const step: TSWizardStep = new TSWizardStep();
+            const step = new TSWizardStep();
             step.bemerkungen = 'step1';
-            const steps: TSWizardStep[] = [step];
+            const steps = [step];
             spyOn(wizardStepRS, 'findWizardStepsFromGesuch').and.returnValue($q.when(steps));
 
             wizardStepManager.findStepsFromGesuch('123');
@@ -140,13 +140,13 @@ describe('wizardStepManager', () => {
     describe('areAllStepsOK', () => {
         it('returns true when all steps are OK', () => {
             createAllSteps(TSWizardStepStatus.OK);
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             spyOn(gesuch, 'isThereAnyBetreuung').and.returnValue(true);
             expect(wizardStepManager.areAllStepsOK(gesuch)).toBe(true);
         });
         it('returns true when all steps are OK although Betreuung is still PLATZBESTAETIGUNG', () => {
             createAllSteps(TSWizardStepStatus.OK);
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             spyOn(gesuch, 'isThereAnyBetreuung').and.returnValue(true);
             wizardStepManager.setCurrentStep(TSWizardStepName.BETREUUNG);
             wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.PLATZBESTAETIGUNG);
@@ -154,7 +154,7 @@ describe('wizardStepManager', () => {
         });
         it('returns true when step Betreuung is not OK but there is not any Betreuung', () => {
             createAllSteps(TSWizardStepStatus.OK);
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             spyOn(gesuch, 'isThereAnyBetreuung').and.returnValue(false);
             wizardStepManager.setCurrentStep(TSWizardStepName.BETREUUNG);
             wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.NOK);
@@ -162,7 +162,7 @@ describe('wizardStepManager', () => {
         });
         it('returns false when not all steps are OK', () => {
             createAllSteps(TSWizardStepStatus.OK);
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             spyOn(gesuch, 'isThereAnyBetreuung').and.returnValue(true);
             wizardStepManager.setCurrentStep(TSWizardStepName.FINANZIELLE_SITUATION);
             wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.NOK);

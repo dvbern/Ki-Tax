@@ -51,7 +51,8 @@ export class StatistikViewController implements IController {
         return this._gesuchsperioden;
     }
 
-    public static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS', 'BatchJobRS',
+    public static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS',
+        'BatchJobRS',
         'ErrorService', '$translate', '$interval'];
 
     public readonly TSStatistikParameterType = TSStatistikParameterType;
@@ -59,8 +60,8 @@ export class StatistikViewController implements IController {
     private polling: IPromise<any>;
     private _statistikParameter: TSStatistikParameter;
     private _gesuchsperioden: Array<TSGesuchsperiode>;
-    public TSRole = TSRole;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRole = TSRole;
+    public readonly TSRoleUtil = TSRoleUtil;
     private readonly DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
     private maxDate: moment.Moment;
@@ -69,17 +70,17 @@ export class StatistikViewController implements IController {
     private allJobs: Array<TSBatchJobInformation>;
 
     public constructor(private readonly $state: StateService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $log: ILogService,
-                private readonly reportAsyncRS: ReportAsyncRS,
-                private readonly downloadRS: DownloadRS,
-                private readonly bachJobRS: BatchJobRS,
-                private readonly errorService: ErrorService,
-                private readonly $translate: ITranslateService,
-                private readonly $interval: IIntervalService) {
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly $log: ILogService,
+                       private readonly reportAsyncRS: ReportAsyncRS,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly bachJobRS: BatchJobRS,
+                       private readonly errorService: ErrorService,
+                       private readonly $translate: ITranslateService,
+                       private readonly $interval: IIntervalService) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this._statistikParameter = new TSStatistikParameter();
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: any) => {
             this._gesuchsperioden = response;
@@ -93,20 +94,21 @@ export class StatistikViewController implements IController {
         this.initBatchJobPolling();
     }
 
-    public $onDestroy() {
+    public $onDestroy(): void {
         if (this.polling) {
             this.$interval.cancel(this.polling);
             this.$log.debug('canceld job polling');
         }
     }
 
-    private initBatchJobPolling() {
+    private initBatchJobPolling(): void {
         // check all 8 seconds for the state
-        this.polling = this.$interval(() => this.refreshUserJobs(), 12000);
+        const delay = 12000;
+        this.polling = this.$interval(() => this.refreshUserJobs(), delay);
 
     }
 
-    private refreshUserJobs() {
+    private refreshUserJobs(): void {
         this.bachJobRS.getBatchJobsOfUser().then((response: TSWorkJob[]) => {
             this.userjobs = response;
         });
@@ -118,17 +120,16 @@ export class StatistikViewController implements IController {
         }
 
         this.$log.debug('Validated Form: ' + form.$name);
+        const stichtag = this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT);
+
         switch (type) {
             case TSStatistikParameterType.GESUCH_STICHTAG:
-                this.reportAsyncRS.getGesuchStichtagReportExcel(this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT),
+                this.reportAsyncRS.getGesuchStichtagReportExcel(stichtag,
                     this._statistikParameter.gesuchsperiode ?
                         this._statistikParameter.gesuchsperiode.toString() :
                         null)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 return;
             case TSStatistikParameterType.GESUCH_ZEITRAUM:
@@ -139,9 +140,6 @@ export class StatistikViewController implements IController {
                         null)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 return;
             case TSStatistikParameterType.KINDER:
@@ -153,18 +151,12 @@ export class StatistikViewController implements IController {
                         null)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 break;
             case TSStatistikParameterType.GESUCHSTELLER:
-                this.reportAsyncRS.getGesuchstellerReportExcel(this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT))
+                this.reportAsyncRS.getGesuchstellerReportExcel(stichtag)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 return;
             case TSStatistikParameterType.KANTON:
@@ -172,9 +164,6 @@ export class StatistikViewController implements IController {
                     this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 break;
             case TSStatistikParameterType.MITARBEITERINNEN:
@@ -182,18 +171,12 @@ export class StatistikViewController implements IController {
                     this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 return;
             case TSStatistikParameterType.BENUTZER:
                 this.reportAsyncRS.getBenutzerReportExcel()
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
-                    })
-                    .catch(() => {
-                        this.$log.error('An error occurred downloading the document, closing download window.');
                     });
                 break;
             case TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG:
@@ -218,9 +201,6 @@ export class StatistikViewController implements IController {
                             this.$log.debug('executionID: ' + batchExecutionId);
                             const startmsg = this.$translate.instant('STARTED_GENERATION');
                             this.errorService.addMesageAsInfo(startmsg);
-                        })
-                        .catch(() => {
-                            this.$log.error('An error occurred downloading the document, closing download window.');
                         });
                 } else {
                     this.$log.warn('gesuchsperiode muss gewählt sein');
@@ -231,29 +211,32 @@ export class StatistikViewController implements IController {
         }
     }
 
-    private informReportGenerationStarted(batchExecutionId: string) {
+    private informReportGenerationStarted(batchExecutionId: string): void {
         this.$log.debug('executionID: ' + batchExecutionId);
         const startmsg = this.$translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
         this.refreshUserJobs();
     }
 
-    public rowClicked(row: TSWorkJob) {
-        if (EbeguUtil.isNotNullOrUndefined(row) && EbeguUtil.isNotNullOrUndefined(row.execution)) {
-            if (EbeguUtil.isNotNullOrUndefined(row.execution.batchStatus) && row.execution.batchStatus === 'COMPLETED') {
-                const win = this.downloadRS.prepareDownloadWindow();
-                this.$log.debug('accessToken: ' + row.resultData);
-                this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
-            } else {
-                this.$log.info('batch-job is not yet finnished');
-            }
+    public rowClicked(row: TSWorkJob): void {
+        if (EbeguUtil.isNullOrUndefined(row) || EbeguUtil.isNullOrUndefined(row.execution)) {
+            return;
         }
+
+        if (EbeguUtil.isNullOrUndefined(row.execution.batchStatus) || row.execution.batchStatus !== 'COMPLETED') {
+            this.$log.info('batch-job is not yet finnished');
+            return;
+        }
+
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.$log.debug('accessToken: ' + row.resultData);
+        this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
     }
 
     /**
      * helper methode die es dem Admin erlaubt alle jobs zu sehen
      */
-    public showAllJobs() {
+    public showAllJobs(): void {
         this.bachJobRS.getAllJobs().then((result: TSWorkJob[]) => {
             let res: TSBatchJobInformation[] = [];
             res = res.concat(result.map(value => {

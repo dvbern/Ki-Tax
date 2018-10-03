@@ -32,12 +32,12 @@ export default class HttpBuffer {
     public constructor(private readonly $injector: IInjectorService) {
     }
 
-    private retryHttpRequest(config: IRequestConfig, deferred: IDeferred<any>) {
-        function successCallback(response: any) {
+    private retryHttpRequest(config: IRequestConfig, deferred: IDeferred<any>): void {
+        function successCallback(response: any): void {
             deferred.resolve(response);
         }
 
-        function errorCallback(response: any) {
+        function errorCallback(response: any): void {
             deferred.reject(response);
         }
 
@@ -48,7 +48,7 @@ export default class HttpBuffer {
     /**
      * Appends HTTP request configuration object with deferred response attached to buffer.
      */
-    public append(config: IRequestConfig, deferred: IDeferred<any>) {
+    public append(config: IRequestConfig, deferred: IDeferred<any>): void {
         this.buffer.push({
             config,
             deferred
@@ -58,7 +58,7 @@ export default class HttpBuffer {
     /**
      * Abandon or reject (if reason provided) all the buffered requests.
      */
-    public rejectAll(reason: any) {
+    public rejectAll(reason: any): void {
         if (reason) {
             this.buffer.forEach(b => b.deferred.reject(reason));
         }
@@ -68,7 +68,7 @@ export default class HttpBuffer {
     /**
      * Retries all the buffered requests clears the buffer.
      */
-    public retryAll(updater: any) {
+    public retryAll(updater: any): void {
         this.buffer.forEach(b => this.retryHttpRequest(updater(b.config), b.deferred));
         this.buffer = [];
     }

@@ -528,7 +528,7 @@ describe('dvNavigation', () => {
     });
 
     function mockGesuch(): TSGesuch {
-        const gesuch: TSGesuch = new TSGesuch();
+        const gesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
         gesuch.eingangsart = TSEingangsart.ONLINE;
         gesuch.id = '123';

@@ -18,7 +18,7 @@ import {GesuchstellerDashboardListViewConfig} from './component/dashboard/gesuch
 import {gesuchstellerDashboardRun} from './gesuchstellerDashboard.route';
 import {CreateAngebotListViewConfig} from './component/angebot/createAngebotView';
 
-export const EbeguWebGesuchstellerDashboard =
+export const GESUCHSTELLER_DASHBOARD_JS_MODULE =
     angular.module('ebeguWeb.gesuchstellerDashboard', [CORE_JS_MODULE.name])
         .run(gesuchstellerDashboardRun)
         .component('gesuchstellerDashboardView', new GesuchstellerDashboardListViewConfig())

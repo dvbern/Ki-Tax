@@ -25,7 +25,7 @@ import {
     ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatSort, MatSortable, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import {Subject} from 'rxjs';
@@ -54,11 +54,11 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     @ViewChild(MatSort) public sort: MatSort;
 
     public constructor(private readonly gemeindeRS: GemeindeRS,
-                private readonly $state: StateService,
-                private readonly errorService: ErrorService,
-                private readonly dialog: MatDialog,
-                private readonly changeDetectorRef: ChangeDetectorRef,
-                authServiceRS: AuthServiceRS) {
+                       private readonly $state: StateService,
+                       private readonly errorService: ErrorService,
+                       private readonly dialog: MatDialog,
+                       private readonly changeDetectorRef: ChangeDetectorRef,
+                       authServiceRS: AuthServiceRS) {
 
         super(authServiceRS);
     }
@@ -91,14 +91,15 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
             });
     }
 
-     /**
+    /**
      * It sorts the table by default using the variable sort.
      */
-    private sortTable() {
+    private sortTable(): void {
         this.sort.sort({
                 id: 'name',
-                start: 'asc'
-            } as MatSortable
+                start: 'asc',
+                disableClear: false,
+            }
         );
     }
 

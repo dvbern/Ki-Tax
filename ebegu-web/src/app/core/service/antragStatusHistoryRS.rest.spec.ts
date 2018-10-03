@@ -50,15 +50,15 @@ describe('antragStatusHistoryRS', () => {
 
     describe('loadLastStatusChange', () => {
         it('should return the last status change for the given gesuch', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.id = '123456';
-            const antragStatusHistory: TSAntragStatusHistory = new TSAntragStatusHistory(gesuch.id,
+            const antragStatusHistory = new TSAntragStatusHistory(gesuch.id,
                 undefined,
                 DateUtil.today(),
                 undefined,
                 TSAntragStatus.VERFUEGEN);
             TestDataUtil.setAbstractMutableFieldsUndefined(antragStatusHistory);
-            const restAntStatusHistory: any = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
+            const restAntStatusHistory = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
             $httpBackend.expectGET(`${antragStatusHistoryRS.serviceURL}/${encodeURIComponent(gesuch.id)}`).respond(
                 restAntStatusHistory);
 
@@ -78,7 +78,7 @@ describe('antragStatusHistoryRS', () => {
             expect(antragStatusHistoryRS.lastChange).toBeUndefined();
         });
         it('should return undefined if the gesuch id is undefined', () => {
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.id = undefined;
             antragStatusHistoryRS.loadLastStatusChange(gesuch);
             expect(antragStatusHistoryRS.lastChange).toBeUndefined();

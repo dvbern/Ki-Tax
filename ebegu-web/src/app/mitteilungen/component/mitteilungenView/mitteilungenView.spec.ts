@@ -16,7 +16,6 @@
 import * as angular from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../../gesuch/service/dossierRS.rest';
-import FallRS from '../../../../gesuch/service/fallRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSRole} from '../../../../models/enums/TSRole';
@@ -28,7 +27,7 @@ import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
-import {EbeguWebMitteilungen} from '../../mitteilungen.module';
+import {MITTEILUNGEN_JS_MODULE} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import ITimeoutService = angular.ITimeoutService;
 
@@ -37,7 +36,6 @@ describe('mitteilungenView', () => {
     let mitteilungRS: MitteilungRS;
     let authServiceRS: AuthServiceRS;
     let stateParams: IMitteilungenStateParams;
-    let fallRS: FallRS;
     let dossierRS: DossierRS;
     let betreuungRS: BetreuungRS;
     let fall: TSFall;
@@ -50,14 +48,13 @@ describe('mitteilungenView', () => {
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
 
-    beforeEach(angular.mock.module(EbeguWebMitteilungen.name));
+    beforeEach(angular.mock.module(MITTEILUNGEN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
         mitteilungRS = $injector.get('MitteilungRS');
         authServiceRS = $injector.get('AuthServiceRS');
-        fallRS = $injector.get('FallRS');
         betreuungRS = $injector.get('BetreuungRS');
         stateParams = $injector.get('$stateParams');
         dossierRS = $injector.get('DossierRS');
@@ -94,7 +91,7 @@ describe('mitteilungenView', () => {
     };
     describe('loading initial data', () => {
         it('should create an empty TSMItteilung for GS', () => {
-            const gesuchsteller: TSBenutzer = new TSBenutzer();
+            const gesuchsteller = new TSBenutzer();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
@@ -103,40 +100,40 @@ describe('mitteilungenView', () => {
             assertMitteilungContent();
         });
         it('should create an empty TSMItteilung for JA', () => {
-            const sachbearbeiter_bg: TSBenutzer = new TSBenutzer();
-            sachbearbeiter_bg.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
+            const sachbearbeiterBG = new TSBenutzer();
+            sachbearbeiterBG.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0;
             });
 
-            createMitteilungForUser(sachbearbeiter_bg);
+            createMitteilungForUser(sachbearbeiterBG);
 
-            compareCommonAttributes(sachbearbeiter_bg);
+            compareCommonAttributes(sachbearbeiterBG);
             assertMitteilungContent();
         });
         it('should create an empty TSMItteilung for Institution', () => {
-            const sachbearbeiter_inst: TSBenutzer = new TSBenutzer();
-            sachbearbeiter_inst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
+            const sachbearbeiterInst = new TSBenutzer();
+            sachbearbeiterInst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
             spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
                 return roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0;
             });
 
-            createMitteilungForUser(sachbearbeiter_inst);
+            createMitteilungForUser(sachbearbeiterInst);
 
-            compareCommonAttributes(sachbearbeiter_inst);
+            compareCommonAttributes(sachbearbeiterInst);
             assertMitteilungContent();
         });
     });
     describe('sendMitteilung', () => {
         it('should send the current mitteilung and update currentMitteilung with the new content', () => {
-            const gesuchsteller: TSBenutzer = new TSBenutzer();
+            const gesuchsteller = new TSBenutzer();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
             createMitteilungForUser(gesuchsteller);
 
             // mock saved mitteilung
-            const savedMitteilung: TSMitteilung = new TSMitteilung();
+            const savedMitteilung = new TSMitteilung();
             savedMitteilung.id = '321';
             savedMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
             spyOn(mitteilungRS, 'sendMitteilung').and.returnValue($q.when(savedMitteilung));
@@ -154,13 +151,13 @@ describe('mitteilungenView', () => {
     });
     describe('setErledigt', () => {
         it('should change the status from GELESEN to ERLEDIGT and save the mitteilung', () => {
-            const gesuchsteller: TSBenutzer = new TSBenutzer();
+            const gesuchsteller = new TSBenutzer();
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
             createMitteilungForUser(gesuchsteller);
 
-            const mitteilung: TSMitteilung = new TSMitteilung();
+            const mitteilung = new TSMitteilung();
             mitteilung.id = '123';
             spyOn(mitteilungRS, 'setMitteilungErledigt').and.returnValue($q.when(mitteilung));
 

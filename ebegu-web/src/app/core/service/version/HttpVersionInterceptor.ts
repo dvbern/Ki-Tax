@@ -39,25 +39,27 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
 
     // interceptor methode
     public response = (response: any) => {
-        if (response.headers && response.config && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0 && !response.config.cache) {
+        if (response.headers
+            && response.config
+            && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0
+            && !response.config.cache) {
             this.updateBackendVersion(response.headers('x-ebegu-version'));
         }
 
         return response;
     };
 
-    /**
-     * @param {*} newVersion
-     */
-    private updateBackendVersion(newVersion: string) {
-        if (newVersion !== this.backendVersion) {
-            this.backendVersion = newVersion;
-            if (HttpVersionInterceptor.hasVersionCompatibility(VERSION, this.backendVersion)) {
-                // could throw match event here but currently there is no action we want to perform when it matches
-            } else {
-                this.$log.warn('Versions of Frontend and Backend do not match');
-                this.$rootScope.$broadcast(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH]);
-            }
+    private updateBackendVersion(newVersion: string): void {
+        if (newVersion === this.backendVersion) {
+            return;
+        }
+
+        this.backendVersion = newVersion;
+        if (HttpVersionInterceptor.hasVersionCompatibility(VERSION, this.backendVersion)) {
+            // could throw match event here but currently there is no action we want to perform when it matches
+        } else {
+            this.$log.warn('Versions of Frontend and Backend do not match');
+            this.$rootScope.$broadcast(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH]);
         }
     }
 }

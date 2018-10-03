@@ -59,11 +59,11 @@ export class PosteingangViewController implements IController {
     public gemeindenList: Array<TSGemeinde> = [];
 
     public constructor(private readonly mitteilungRS: MitteilungRS,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly CONSTANTS: any,
-                private readonly $state: StateService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly gemeindeRS: GemeindeRS) {
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly CONSTANTS: any,
+                       private readonly $state: StateService,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly gemeindeRS: GemeindeRS) {
 
         this.updateGemeindenList();
     }
@@ -77,7 +77,7 @@ export class PosteingangViewController implements IController {
         return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
-    private gotoMitteilung(mitteilung: TSMitteilung) {
+    private gotoMitteilung(mitteilung: TSMitteilung): void {
         this.$state.go('mitteilungen.view', {
             dossierId: mitteilung.dossier.id,
             fallId: mitteilung.dossier.fall.id,
@@ -122,11 +122,13 @@ export class PosteingangViewController implements IController {
     };
 
     private setResult(result: TSMtteilungSearchresultDTO): void {
-        if (result) {
-            this.pagination.totalItemCount = result.totalResultSize;
-            this.pagination.numberOfPages = Math.ceil(result.totalResultSize / this.pagination.number);
-            this.displayedCollection = [].concat(result.mitteilungen);
-            this.totalResultCount = result.totalResultSize ? result.totalResultSize.toString() : '0';
+        if (!result) {
+            return;
         }
+
+        this.pagination.totalItemCount = result.totalResultSize;
+        this.pagination.numberOfPages = Math.ceil(result.totalResultSize / this.pagination.number);
+        this.displayedCollection = [].concat(result.mitteilungen);
+        this.totalResultCount = result.totalResultSize ? result.totalResultSize.toString() : '0';
     }
 }

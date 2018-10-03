@@ -20,6 +20,7 @@ import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {IAuthenticationStateParams} from '../authentication.route';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 
+// tslint:disable-next-line:naming-convention variable-name
 export const LoginComponentConfig: IComponentOptions = {
     transclude: false,
     template: require('./login.component.html'),
@@ -58,18 +59,20 @@ export class LoginComponentController implements IController {
                 this.redirectionHref = url;
                 if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
                     this.doLogout();
-                } else {
-                    this.redirecting = true;
-                    if (this.countdown > 0) {
-                        this.$timeout(this.doCountdown, 1000);
-                    }
-                    this.$timeout(() => this.redirect(url), this.countdown * 1000);
+                    return;
                 }
+
+                this.redirecting = true;
+                if (this.countdown > 0) {
+                    this.$timeout(this.doCountdown, 1000);
+                }
+                this.$timeout(() => this.redirect(url), this.countdown * 1000);
             });
     }
 
     public getBaseURL(): string {
-        // let port = (this.$location.port() === 80 || this.$location.port() === 443) ? '' : ':' + this.$location.port();
+        // let port = (this.$location.port() === 80 || this.$location.port() === 443) ? '' : ':' + tslint:disable-line
+        // this.$location.port();
         const absURL = this.$location.absUrl();
         const index = absURL.indexOf(this.$location.url());
         let result = absURL;
@@ -84,16 +87,15 @@ export class LoginComponentController implements IController {
         return result;
     }
 
-    public singlelogout() {
+    public singlelogout(): void {
         this.authService.logoutRequest().then(() => {
             // FIXME
             // Bei der logoutHref kommt immer ein 404 Fehler vom Backend.
-            // Die URL sieht z.B. so aus: http://localhost:4200/connector/fedletSloInit?NameIDValue&SessionIndex=55a0ca81-d34f-4d28-8a3b-3c4486363a8b&RelayState=http%3A%2F%2Flocalhost%3A4200%2F
-            // Ich deaktiviere das bis auf weiteres, damit man die Logout Funktion sinnvoll nutzen kann.
-            // if (this.logoutHref !== '' || this.logoutHref === undefined) {
-            //     this.$window.open(this.logoutHref, '_self');
-            // } else {
-            // wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
+            // Die URL sieht z.B. so aus:
+            // http://localhost:4200/connector/fedletSloInit?NameIDValue&SessionIndex=55a0ca81-d34f-4d28-8a3b-3c4486363a8b&RelayState=http%3A%2F%2Flocalhost%3A4200%2F
+            // Ich deaktiviere das bis auf weiteres, damit man die Logout Funktion sinnvoll nutzen kann. if
+            // (this.logoutHref !== '' || this.logoutHref === undefined) { this.$window.open(this.logoutHref, '_self');
+            // } else { wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
             navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
             // }
         });
@@ -104,7 +106,7 @@ export class LoginComponentController implements IController {
         return !!this.authService.getPrincipal();
     }
 
-    private redirect(urlToGoTo: string) {
+    private redirect(urlToGoTo: string): void {
         console.log('redirecting to login', urlToGoTo);
 
         this.$window.open(urlToGoTo, '_self');
@@ -114,16 +116,18 @@ export class LoginComponentController implements IController {
      * triggered einen logout, fuer iam user sowohl in iam als auch in ebegu,
      * bei lokalen benutzern wird auch nur bei uns ausgeloggt
      */
-    private doLogout() {
-        if (this.authService.getPrincipal()) {  // wenn logged in
+    private doLogout(): void {
+        if (this.authService.getPrincipal()) {
+            // wenn logged in
             this.authService.initSingleLogout(this.getBaseURL()).then(responseLogut => {
                 this.logoutHref = responseLogut;
                 this.singlelogout();
             });
-        } else {
-            // wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
-            navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
+            return;
         }
+
+        // wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
+        navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
     }
 
     private readonly doCountdown = () => {

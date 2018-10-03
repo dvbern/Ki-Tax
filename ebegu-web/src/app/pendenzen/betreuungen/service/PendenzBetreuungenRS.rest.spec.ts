@@ -64,11 +64,11 @@ describe('pendenzBetreuungenRS', () => {
     describe('API Usage', () => {
         describe('findBetreuung', () => {
             it('should return all pending Betreuungen', () => {
-                const arrayResult: Array<any> = [mockPendenzBetreuungenRest];
+                const arrayResult = [mockPendenzBetreuungenRest];
                 $httpBackend.expectGET(pendenzBetreuungenRS.serviceURL).respond(arrayResult);
 
                 let foundPendenzen: Array<TSPendenzBetreuung>;
-                pendenzBetreuungenRS.getPendenzenBetreuungenList().then((result) => {
+                pendenzBetreuungenRS.getPendenzenBetreuungenList().then(result => {
                     foundPendenzen = result;
                 });
                 $httpBackend.flush();

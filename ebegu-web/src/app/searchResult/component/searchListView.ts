@@ -14,10 +14,10 @@
  */
 
 import {IComponentOptions} from 'angular';
-import {SearchIndexRS} from '../../core/service/searchIndexRS.rest';
 import TSQuickSearchResult from '../../../models/dto/TSQuickSearchResult';
 import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {SearchIndexRS} from '../../core/service/searchIndexRS.rest';
 import {ISearchResultateStateParams} from '../search.route';
 import ILogService = angular.ILogService;
 
@@ -30,23 +30,24 @@ export class SearchListViewComponentConfig implements IComponentOptions {
 
 export class SearchListViewController {
 
-    public static $inject: string[] = ['$log', '$stateParams', 'SearchIndexRS', 'EbeguUtil'];
+    public static $inject: string[] = ['$log', '$stateParams', 'SearchIndexRS'];
 
     private antragList: Array<TSAbstractAntragDTO>;
     public totalResultCount: string = '-';
-    private readonly ignoreRequest: boolean = true; // we want to ignore the first filter request because the default sort triggers always a second one
+    // we want to ignore the first filter request because the default sort triggers always a second one
+    private readonly ignoreRequest: boolean = true;
     public searchString: string;
 
     public constructor(private readonly $log: ILogService,
-                $stateParams: ISearchResultateStateParams,
-                private readonly searchIndexRS: SearchIndexRS,
-                private readonly ebeguUtil: EbeguUtil) {
+                       $stateParams: ISearchResultateStateParams,
+                       private readonly searchIndexRS: SearchIndexRS,
+    ) {
         this.searchString = $stateParams.searchString;
         this.initViewModel();
 
     }
 
-    private initViewModel() {
+    private initViewModel(): void {
         this.searchIndexRS.globalSearch(this.searchString).then((quickSearchResult: TSQuickSearchResult) => {
             this.antragList = [];
             for (const res of quickSearchResult.resultEntities) {

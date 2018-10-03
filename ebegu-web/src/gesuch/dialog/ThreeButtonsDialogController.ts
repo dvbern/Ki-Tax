@@ -28,7 +28,7 @@ export class ThreeButtonsDialogController {
     public secondOkText: string;
 
     public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, confirmationText: string, cancelText: string,
-                firstOkText: string, secondOkText: string) {
+                       firstOkText: string, secondOkText: string) {
         this.title = $translate.instant(title);
         this.confirmationText = $translate.instant(confirmationText);
         this.cancelText = $translate.instant(cancelText);

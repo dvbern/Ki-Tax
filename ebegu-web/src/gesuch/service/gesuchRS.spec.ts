@@ -15,15 +15,11 @@
 
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import GesuchRS from './gesuchRS.rest';
 
 describe('gesuch', () => {
 
     let gesuchRS: GesuchRS;
-    let $httpBackend: angular.IHttpBackendService;
-    let ebeguRestUtil: EbeguRestUtil;
-    let REST_API: string;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -31,9 +27,6 @@ describe('gesuch', () => {
 
     beforeEach(angular.mock.inject($injector => {
         gesuchRS = $injector.get('GesuchRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        REST_API = $injector.get('REST_API');
     }));
 
     describe('Public API', () => {

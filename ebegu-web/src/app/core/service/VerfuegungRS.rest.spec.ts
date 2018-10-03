@@ -43,9 +43,9 @@ describe('VerfuegungRS', () => {
     }));
 
     beforeEach(() => {
-        const kindGS: TSKind = new TSKind('Pedro', 'Bern');
+        const kindGS = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
-        const kindJA: TSKind = new TSKind('Pedro', 'Bern');
+        const kindJA = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
@@ -83,7 +83,7 @@ describe('VerfuegungRS', () => {
         });
         describe('saveVerfuegung', () => {
             it('should save the given Verfuegung', () => {
-                const verfuegung: TSVerfuegung = TestDataUtil.createVerfuegung();
+                const verfuegung = TestDataUtil.createVerfuegung();
                 $httpBackend.expectPUT(`${verfuegungRS.serviceURL}/${gesuchId}/${betreuungId}/false`).respond(
                     ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
                 $httpBackend.expectGET(`/ebegu/api/v1/wizard-steps/${gesuchId}`).respond({});

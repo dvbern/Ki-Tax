@@ -83,7 +83,7 @@ export class DVMitteilungListController implements IOnInit {
                        private readonly $rootScope: IRootScopeService,
                        private readonly $state: StateService,
                        public ebeguUtil: EbeguUtil,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly gesuchModelManager: GesuchModelManager,
                        private readonly $scope: IScope,
                        private readonly $timeout: ITimeoutService,
@@ -384,7 +384,7 @@ export class DVMitteilungListController implements IOnInit {
             return;
         }
 
-        this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
             deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
             parentController: this,

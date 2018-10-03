@@ -31,7 +31,7 @@ describe('DvPulldownUserMenuController', () => {
     let component: DvPulldownUserMenuController;
     let $componentController: IComponentControllerService;
 
-    const user: TSBenutzer = new TSBenutzer('pedro');
+    const user = new TSBenutzer('pedro');
     const principalProperty = 'principal$';
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));

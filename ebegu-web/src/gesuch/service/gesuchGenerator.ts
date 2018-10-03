@@ -37,8 +37,8 @@ import WizardStepManager from './wizardStepManager';
 
 /**
  * This class presents methods to init and create new Fall/Dossier/Gesuch objects.
- * All init-methods will create a clientside copy of the required object. This copy will be returned by the method but it won't be saved in the DB
- * The create-methods will take the given object and save it in the DB.
+ * All init-methods will create a clientside copy of the required object. This copy will be returned by the method but
+ * it won't be saved in the DB The create-methods will take the given object and save it in the DB.
  */
 @Injectable({
     providedIn: 'root'
@@ -56,7 +56,8 @@ export class GesuchGenerator {
         private readonly wizardStepManager: WizardStepManager,
         private readonly authServiceRS: AuthServiceRS,
         private readonly fallRS: FallRS
-    ) {}
+    ) {
+    }
 
     /**
      * Erstellt ein neues Gesuch mit der angegebenen Eingangsart und Gesuchsperiode. Damit dies im resolve des
@@ -80,8 +81,8 @@ export class GesuchGenerator {
     }
 
     /**
-     * Creates a complete new Dossier. Depending on the value of creationAction the new dossier will be added to the existing Fall
-     * or a complete new Fall will be created instead.
+     * Creates a complete new Dossier. Depending on the value of creationAction the new dossier will be added to the
+     * existing Fall or a complete new Fall will be created instead.
      */
     private initDossier(eingangsart: TSEingangsart,
                         gemeindeId: string,
@@ -100,8 +101,8 @@ export class GesuchGenerator {
     }
 
     /**
-     * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht erstellt wurde i.e. es null/undefined ist
-     * Wenn force werden Gesuch und Fall immer erstellt.
+     * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht
+     * erstellt wurde i.e. es null/undefined ist Wenn force werden Gesuch und Fall immer erstellt.
      */
     public initGesuch(eingangsart: TSEingangsart,
                       creationAction: TSCreationAction,
@@ -109,7 +110,11 @@ export class GesuchGenerator {
                       currentFall: TSFall,
                       currentDossier: TSDossier): IPromise<TSGesuch> {
 
-        const gesuch = this.initAntrag(TSAntragTyp.ERSTGESUCH, eingangsart, creationAction, currentFall, currentDossier);
+        const gesuch = this.initAntrag(TSAntragTyp.ERSTGESUCH,
+            eingangsart,
+            creationAction,
+            currentFall,
+            currentDossier);
         gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
 
         if (gesuchsperiodeId) {
@@ -119,18 +124,18 @@ export class GesuchGenerator {
                     return gesuch;
                 });
             });
-        } else {
-            return this.antragStatusHistoryRS.loadLastStatusChange(gesuch).then(() => {
-                return gesuch;
-            });
         }
+
+        return this.antragStatusHistoryRS.loadLastStatusChange(gesuch).then(() => {
+            return gesuch;
+        });
     }
 
     /**
-     * Diese Methode erstellt eine Fake-Mutation als gesuch fuer das GesuchModelManager. Die Mutation ist noch leer und hat
-     * das ID des Gesuchs aus dem sie erstellt wurde. Wenn der Benutzer auf speichern klickt, wird der Service "antragMutieren"
-     * mit dem ID des alten Gesuchs aufgerufen. Das Objekt das man zurueckbekommt, wird dann diese Fake-Mutation mit den richtigen
-     * Daten ueberschreiben
+     * Diese Methode erstellt eine Fake-Mutation als gesuch fuer das GesuchModelManager. Die Mutation ist noch leer und
+     * hat das ID des Gesuchs aus dem sie erstellt wurde. Wenn der Benutzer auf speichern klickt, wird der Service
+     * "antragMutieren" mit dem ID des alten Gesuchs aufgerufen. Das Objekt das man zurueckbekommt, wird dann diese
+     * Fake-Mutation mit den richtigen Daten ueberschreiben
      */
     public initMutation(gesuchID: string,
                         eingangsart: TSEingangsart,
@@ -145,8 +150,8 @@ export class GesuchGenerator {
     }
 
     /**
-     * Diese Methode erstellt ein Fake-Erneuerungsgesuch als gesuch fuer das GesuchModelManager. Das Gesuch ist noch leer und hat
-     * das ID des Gesuchs aus dem es erstellt wurde.
+     * Diese Methode erstellt ein Fake-Erneuerungsgesuch als gesuch fuer das GesuchModelManager. Das Gesuch ist noch
+     * leer und hat das ID des Gesuchs aus dem es erstellt wurde.
      */
     public initErneuerungsgesuch(gesuchID: string,
                                  eingangsart: TSEingangsart,
@@ -175,7 +180,8 @@ export class GesuchGenerator {
             gesuch.gesuchsperiode = periode;
             return this.dossierRS.findDossier(dossierId).then(foundDossier => {
                 gesuch.dossier = foundDossier;
-                gesuch.id = gesuchID; // setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu koennen
+                gesuch.id = gesuchID; // setzen wir das alte gesuchID, um danach im Server die Mutation erstellen zu
+                                      // koennen
                 gesuch.status = getStartAntragStatusFromEingangsart(eingangsart);
                 gesuch.emptyCopy = true;
                 return gesuch;
@@ -227,16 +233,18 @@ export class GesuchGenerator {
      * Takes current user and sets him as the verantwortlicherBG of Fall. Depending on the role it sets him as
      * verantwortlicherBG or verantworlicherSCH
      */
-    private setCurrentUserAsFallVerantwortlicher(gesuch: TSGesuch) {
-        if (this.authServiceRS) {
-            this.authServiceRS.principal$.subscribe(currentUser => {
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole())) {
-                    gesuch.dossier.verantwortlicherBG = currentUser;
-
-                } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
-                    gesuch.dossier.verantwortlicherTS = currentUser;
-                }
-            });
+    private setCurrentUserAsFallVerantwortlicher(gesuch: TSGesuch): void {
+        if (!this.authServiceRS) {
+            return;
         }
+
+        this.authServiceRS.principal$.subscribe(currentUser => {
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole())) {
+                gesuch.dossier.verantwortlicherBG = currentUser;
+
+            } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
+                gesuch.dossier.verantwortlicherTS = currentUser;
+            }
+        });
     }
 }

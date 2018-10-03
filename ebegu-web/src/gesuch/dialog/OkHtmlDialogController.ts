@@ -23,14 +23,14 @@ export class OkHtmlDialogController {
 
     public title: string;
 
-    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, okText: string) {
+    public constructor(private readonly $mdDialog: IDialogService,
+                       $translate: ITranslateService,
+                       title: string,
+                       _okText: string) {
 
-        if (title !== undefined && title !== null) {
-            this.title = $translate.instant(title);
-
-        } else {
-            this.title = $translate.instant('LOESCHEN_DIALOG_TITLE');
-        }
+        this.title = title !== undefined && title !== null ?
+            $translate.instant(title) :
+            $translate.instant('LOESCHEN_DIALOG_TITLE');
     }
 
     public hide(): IPromise<any> {

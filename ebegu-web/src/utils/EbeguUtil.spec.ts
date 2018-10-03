@@ -50,8 +50,8 @@ describe('EbeguUtil', () => {
 
     describe('translateStringList', () => {
         it('should translate the given list of words', () => {
-            const list: Array<string> = ['FIRST', 'SECOND'];
-            const returnedList: Array<any> = ebeguUtil.translateStringList(list);
+            const list = ['FIRST', 'SECOND'];
+            const returnedList = ebeguUtil.translateStringList(list);
             expect(returnedList.length).toEqual(2);
             expect(returnedList[0].key).toEqual('FIRST');
             expect(returnedList[0].value).toEqual('Erster');
@@ -78,17 +78,17 @@ describe('EbeguUtil', () => {
             expect(ebeguUtil.calculateBetreuungsId(undefined, undefined, undefined, 0, 0)).toBe('');
         });
         it('it returns empty string for undefined kindContainer', () => {
-            const fall: TSFall = new TSFall();
-            const gemeinde: TSGemeinde = new TSGemeinde();
+            const fall = new TSFall();
+            const gemeinde = new TSGemeinde();
             expect(ebeguUtil.calculateBetreuungsId(undefined, fall, gemeinde, 0, 0)).toBe('');
         });
         it('it returns empty string for undefined betreuung', () => {
-            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode();
+            const gesuchsperiode = new TSGesuchsperiode();
             expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, undefined, undefined, 0, 0)).toBe('');
         });
         it('it returns the right ID: YY(gesuchsperiodeBegin).fallNummer.gemeindeNummer.Kind.Betreuung', () => {
-            const fall: TSFall = new TSFall(254);
-            const gemeinde: TSGemeinde = new TSGemeinde();
+            const fall = new TSFall(254);
+            const gemeinde = new TSGemeinde();
             gemeinde.gemeindeNummer = 99;
             const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
             expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, fall, gemeinde, 1, 1)).toBe('16.000254.099.1.1');
@@ -99,19 +99,19 @@ describe('EbeguUtil', () => {
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(undefined)).toBe('');
         });
         it('it returns empty string for undefined daterange in the Gesuchsperiode', () => {
-            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, undefined);
+            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, undefined);
             gesuchsperiode.gueltigkeit = undefined;
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns empty string for undefined gueltigAb', () => {
-            const daterange: TSDateRange = new TSDateRange(undefined, moment('31.07.2017', defaultFormat));
-            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
+            const daterange = new TSDateRange(undefined, moment('31.07.2017', defaultFormat));
+            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
         });
         it('it returns 01.08.2016', () => {
-            const daterange: TSDateRange = new TSDateRange(moment('01.08.2016', defaultFormat),
+            const daterange = new TSDateRange(moment('01.08.2016', defaultFormat),
                 moment('31.07.2017', defaultFormat));
-            const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
+            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
             expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('01.08.2016');
         });
     });

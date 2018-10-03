@@ -21,7 +21,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 faelleRun.$inject = ['RouterHelper'];
 
-export function faelleRun(routerHelper: RouterHelper) {
+export function faelleRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

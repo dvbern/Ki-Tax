@@ -23,7 +23,6 @@ import HttpAuthInterceptor from './HttpAuthInterceptor';
 describe('HttpAuthInterceptor', () => {
 
     let httpAuthInterceptor: HttpAuthInterceptor;
-    let $window: angular.IWindowService;
     let authLifeCycleService: AuthLifeCycleService;
 
     const authErrorResponse: any = {
@@ -39,7 +38,6 @@ describe('HttpAuthInterceptor', () => {
 
     beforeEach(angular.mock.inject($injector => {
         httpAuthInterceptor = $injector.get('HttpAuthInterceptor');
-        $window = $injector.get('$window');
         authLifeCycleService = $injector.get('AuthLifeCycleService');
         window.onbeforeunload = () => 'Oh no!';
         spyOn(authLifeCycleService, 'changeAuthStatus').and.callFake(() => {
@@ -57,7 +55,8 @@ describe('HttpAuthInterceptor', () => {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
-            expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
+            expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED,
+                authErrorResponse);
         });
     });
 });

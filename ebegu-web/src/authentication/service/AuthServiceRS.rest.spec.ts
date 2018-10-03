@@ -66,7 +66,7 @@ describe('AuthServiceRS', () => {
         it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSBenutzer sein. Deswegen machen wir hier ein Objekt mit
             // dem Inhalt, den die Cookie braucht
-            const benutzer: TSBenutzer = new TSBenutzer('Emma',
+            const benutzer = new TSBenutzer('Emma',
                 'Gerber',
                 'geem',
                 'password5',

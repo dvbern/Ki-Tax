@@ -20,7 +20,6 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../../../models/TSFinanzModel';
-import {IStammdatenStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -40,17 +39,27 @@ export class FinanzielleSituationResultateViewComponentConfig implements ICompon
  */
 export class FinanzielleSituationResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$scope', '$timeout'];
 
     private readonly initialModel: TSFinanzModel;
 
-    public constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager, $scope: IScope, $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
+    public constructor(gesuchModelManager: GesuchModelManager,
+                       berechnungsManager: BerechnungsManager,
+                       private readonly errorService: ErrorService,
+                       wizardStepManager: WizardStepManager,
+                       $scope: IScope,
+                       $timeout: ITimeoutService) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.FINANZIELLE_SITUATION,
+            $timeout);
 
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), null);
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            null);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.initialModel = angular.copy(this.model);
 
@@ -78,9 +87,8 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
                         this.gesuchModelManager.setGesuchstellerNumber(2);
                         return this.saveFinanzielleSituation();
                     });
-                } else {
-                    return this.saveFinanzielleSituation();
                 }
+                return this.saveFinanzielleSituation();
             }
         }
         return undefined;
@@ -96,14 +104,12 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
     private updateWizardStepStatus(): IPromise<void> {
-        if (this.gesuchModelManager.getGesuch().isMutation()) {
-            return this.wizardStepManager.updateCurrentWizardStepStatusMutiert();
-        } else {
-            return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
-        }
+        return this.gesuchModelManager.getGesuch().isMutation() ?
+            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
+            this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
     }
 
-    public calculate() {
+    public calculate(): void {
         this.berechnungsManager.calculateFinanzielleSituationTemp(this.model);
     }
 

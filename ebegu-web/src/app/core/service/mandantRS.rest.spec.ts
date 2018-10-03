@@ -56,10 +56,11 @@ describe('mandantRS', () => {
     describe('API Usage', () => {
         describe('findMandant', () => {
             it('should return the mandant by id', () => {
-                $httpBackend.expectGET(mandantRS.serviceURL + '/id/' + encodeURIComponent(mockMandant.id)).respond(mockMandantRest);
+                const url = `${mandantRS.serviceURL}/id/${encodeURIComponent(mockMandant.id)}`;
+                $httpBackend.expectGET(url).respond(mockMandantRest);
 
                 let foundMandant: TSMandant;
-                mandantRS.findMandant(mockMandant.id).then((result) => {
+                mandantRS.findMandant(mockMandant.id).then(result => {
                     foundMandant = result;
                 });
                 $httpBackend.flush();

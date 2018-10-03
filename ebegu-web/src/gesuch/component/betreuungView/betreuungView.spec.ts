@@ -122,7 +122,7 @@ describe('betreuungView', () => {
 
         describe('Object creation', () => {
             it('create an empty list of Betreuungspensen for a role different than Institution', () => {
-                const myBetreuungView: BetreuungViewController = new BetreuungViewController($state,
+                const myBetreuungView = new BetreuungViewController($state,
                     gesuchModelManager,
                     ebeguUtil,
                     null,
@@ -175,13 +175,13 @@ describe('betreuungView', () => {
                     TSBetreuungsangebotTyp.TAGESSCHULE));
             });
             it('should return an empty list if betreuungsangebot is not yet defined', () => {
-                const list: Array<TSInstitutionStammdaten> = betreuungView.getInstitutionenSDList();
+                const list = betreuungView.getInstitutionenSDList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(0);
             });
             it('should return a list with 2 Institutions of type TSBetreuungsangebotTyp.KITA', () => {
                 betreuungView.betreuungsangebot = {key: 'KITA', value: 'kita'};
-                const list: Array<TSInstitutionStammdaten> = betreuungView.getInstitutionenSDList();
+                const list = betreuungView.getInstitutionenSDList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(2);
                 expect(list[0].iban).toBe('1');
@@ -379,7 +379,7 @@ describe('betreuungView', () => {
     });
 
     function initGesuch(typ: TSAntragTyp, status: TSAntragStatus, gesperrtWegenBeschwerde: boolean): TSGesuch {
-        const gesuch: TSGesuch = new TSGesuch();
+        const gesuch = new TSGesuch();
         gesuch.typ = typ;
         gesuch.status = status;
         gesuch.gesperrtWegenBeschwerde = gesperrtWegenBeschwerde;
@@ -390,7 +390,7 @@ describe('betreuungView', () => {
     }
 
     function createInstitutionStammdaten(iban: string, betAngTyp: TSBetreuungsangebotTyp): TSInstitutionStammdaten {
-        const instStam1: TSInstitutionStammdaten = new TSInstitutionStammdaten();
+        const instStam1 = new TSInstitutionStammdaten();
         instStam1.iban = iban;
         instStam1.betreuungsangebotTyp = betAngTyp;
         return instStam1;

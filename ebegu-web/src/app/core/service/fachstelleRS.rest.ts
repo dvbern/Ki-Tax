@@ -13,17 +13,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSFachstelle} from '../../../models/TSFachstelle';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class FachstelleRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService) {
-        this.serviceURL = REST_API + 'fachstellen';
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public log: ILogService) {
+        this.serviceURL = `${REST_API}fachstellen`;
     }
 
     public updateFachstelle(fachstelle: TSFachstelle): IPromise<TSFachstelle> {
@@ -49,11 +52,11 @@ export class FachstelleRS {
     }
 
     public removeFachstelle(fachstelleID: string): IHttpPromise<any> {
-        return this.http.delete(this.serviceURL + '/' + encodeURIComponent(fachstelleID));
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(fachstelleID)}`);
     }
 
     public findFachstelle(fachstelleID: string): IPromise<TSFachstelle> {
-        return this.http.get(this.serviceURL + '/' + encodeURIComponent(fachstelleID))
+        return this.http.get(`${this.serviceURL}/${encodeURIComponent(fachstelleID)}`)
             .then((response: any) => {
                 this.log.debug('PARSING fachstelle REST object ', response.data);
                 return this.ebeguRestUtil.parseFachstelle(new TSFachstelle(), response.data);

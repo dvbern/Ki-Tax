@@ -14,7 +14,7 @@ export class LoadingButtonDirective extends UpgradeComponent {
     @Input() public ariaLabel: string;
     @Input() public inputId: string;
 
-    @Output() public buttonClick: EventEmitter<void>;
+    @Output() public readonly buttonClick: EventEmitter<void>;
 
     public constructor(elementRef: ElementRef, injector: Injector) {
         super('dvLoadingButton', elementRef, injector);

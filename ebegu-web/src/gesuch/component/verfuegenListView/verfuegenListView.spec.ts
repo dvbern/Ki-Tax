@@ -21,7 +21,7 @@ import TSBetreuung from '../../../models/TSBetreuung';
 import TSGesuch from '../../../models/TSGesuch';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -41,7 +41,7 @@ describe('verfuegenListViewTest', () => {
     let $httpBackend: angular.IHttpBackendService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -90,7 +90,7 @@ describe('verfuegenListViewTest', () => {
         describe('openVerfuegen', () => {
             it('does not open the betreuung because it is not BESTAETIGT', () => {
                 spyOn(gesuchModelManager, 'findKind').and.returnValue(1);
-                const betreuung: TSBetreuung = new TSBetreuung();
+                const betreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.ABGEWIESEN;
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
@@ -101,7 +101,7 @@ describe('verfuegenListViewTest', () => {
                 spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(-1);
                 spyOn(gesuchModelManager, 'setKindIndex');
                 spyOn($state, 'go');
-                const betreuung: TSBetreuung = new TSBetreuung();
+                const betreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
@@ -119,7 +119,7 @@ describe('verfuegenListViewTest', () => {
                     spyOn(gesuchModelManager, 'setKindIndex');
                     spyOn(gesuchModelManager, 'setBetreuungIndex');
                     spyOn($state, 'go');
-                    const betreuung: TSBetreuung = new TSBetreuung();
+                    const betreuung = new TSBetreuung();
                     betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
@@ -137,7 +137,7 @@ describe('verfuegenListViewTest', () => {
                     spyOn(gesuchModelManager, 'setKindIndex');
                     spyOn(gesuchModelManager, 'setBetreuungIndex');
                     spyOn($state, 'go');
-                    const betreuung: TSBetreuung = new TSBetreuung();
+                    const betreuung = new TSBetreuung();
                     betreuung.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
                     betreuung.betreuungNummer = 2;
 

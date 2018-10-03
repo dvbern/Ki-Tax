@@ -19,7 +19,7 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {faelleRun} from './faelle.route';
 import {FaelleListViewComponentConfig} from './component/faelleListView';
 
-export const EbeguWebFaelle =
+export const FAELLE_JS_MODULE =
     angular.module('ebeguWeb.faelle', [CORE_JS_MODULE.name])
         .run(faelleRun)
         .component('faelleListView', new FaelleListViewComponentConfig());

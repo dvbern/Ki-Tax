@@ -28,6 +28,7 @@ import TSDokumentGrund from '../../../../models/TSDokumentGrund';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {MAX_FILE_SIZE} from '../../constants/CONSTANTS';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../service/downloadRS.rest';
@@ -107,9 +108,7 @@ export class DVDokumenteListController implements IController {
         this.$log.debug(`Uploading files on gesuch ${gesuchID}`);
         for (const file of files) {
             this.$log.debug(`File: ${file.name} size: ${file.size}`);
-            // Maximale Filegrösse ist 10MB
-            const maxFileSize = 10000000;
-            if (file.size > maxFileSize) {
+            if (file.size > MAX_FILE_SIZE) {
                 filesTooBig.push(file);
             } else {
                 filesOk.push(file);

@@ -20,11 +20,12 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionRS} from './institutionRS.rest';
+import {IHttpBackendService} from 'angular';
 
 describe('institutionRS', () => {
 
     let institutionRS: InstitutionRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockInstitution: TSInstitution;
     let mockInstitutionRest: any;
@@ -76,10 +77,11 @@ describe('institutionRS', () => {
     describe('API Usage', () => {
         describe('findInstitution', () => {
             it('should return the Institution by id', () => {
-                $httpBackend.expectGET(institutionRS.serviceURL + '/id/' + mockInstitution.id).respond(mockInstitutionRest);
+                const url = `${institutionRS.serviceURL}/id/${mockInstitution.id}`;
+                $httpBackend.expectGET(url).respond(mockInstitutionRest);
 
                 let foundInstitution: TSInstitution;
-                institutionRS.findInstitution(mockInstitution.id).then((result) => {
+                institutionRS.findInstitution(mockInstitution.id).then(result => {
                     foundInstitution = result;
                 });
                 $httpBackend.flush();
@@ -94,7 +96,7 @@ describe('institutionRS', () => {
                 $httpBackend.expectPOST(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
 
                 institutionRS.createInstitution(mockInstitution)
-                    .then((result) => {
+                    .then(result => {
                         createdInstitution = result;
                     });
                 $httpBackend.flush();
@@ -110,7 +112,7 @@ describe('institutionRS', () => {
                 $httpBackend.expectPUT(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
 
                 institutionRS.updateInstitution(mockInstitution)
-                    .then((result) => {
+                    .then(result => {
                         updatedInstitution = result;
                     });
                 $httpBackend.flush();
@@ -120,27 +122,28 @@ describe('institutionRS', () => {
 
         describe('removeInstitution', () => {
             it('should remove an institution', () => {
-                $httpBackend.expectDELETE(institutionRS.serviceURL + '/' + encodeURIComponent(mockInstitution.id))
-                    .respond(200);
+                const httpOk = 200;
+                $httpBackend.expectDELETE(`${institutionRS.serviceURL}/${encodeURIComponent(mockInstitution.id)}`)
+                    .respond(httpOk);
 
                 let deleteResult: any;
                 institutionRS.removeInstitution(mockInstitution.id)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
 
         describe('getAllInstitutionen', () => {
             it('should return all Institutionen', () => {
-                const institutionenRestArray: Array<any> = [mockInstitutionRest, mockInstitutionRest];
+                const institutionenRestArray = [mockInstitutionRest, mockInstitutionRest];
                 $httpBackend.expectGET(institutionRS.serviceURL).respond(institutionenRestArray);
 
                 let returnedInstitution: Array<TSInstitution>;
-                institutionRS.getAllInstitutionen().then((result) => {
+                institutionRS.getAllInstitutionen().then(result => {
                     returnedInstitution = result;
                 });
                 $httpBackend.flush();
@@ -153,7 +156,7 @@ describe('institutionRS', () => {
 
     });
 
-    function checkFieldValues(institution1: TSInstitution, institution2: TSInstitution) {
+    function checkFieldValues(institution1: TSInstitution, institution2: TSInstitution): void {
         expect(institution1).toBeDefined();
         expect(institution1.name).toEqual(institution2.name);
         expect(institution1.id).toEqual(institution2.id);

@@ -103,7 +103,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             return;
         }
 
-        if (this.gesuchsperiode.isNew() || this.initialStatus !== this.gesuchsperiode.status || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV) {
+        if (this.gesuchsperiode.isNew()
+            || this.initialStatus !== this.gesuchsperiode.status
+            || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV) {
             const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
             this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'GESUCHSPERIODE_DIALOG_TITLE',
@@ -113,9 +115,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             }).then(() => {
                 this.saveGesuchsperiodeFreischaltungTagesschule();
             });
-        } else {
-            this.saveGesuchsperiodeFreischaltungTagesschule();
+            return;
         }
+
+        this.saveGesuchsperiodeFreischaltungTagesschule();
     }
 
     public saveGesuchsperiodeFreischaltungTagesschule(): void {
@@ -160,8 +163,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.ENTWURF, new TSDateRange());
             this.initialStatus = undefined; // initialStatus ist undefined for new created Gesuchsperioden
             this.datumFreischaltungTagesschule = undefined;
-            this.gesuchsperiode.gueltigkeit.gueltigAb = newestGeuschsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
-            this.gesuchsperiode.gueltigkeit.gueltigBis = newestGeuschsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
+            this.gesuchsperiode.gueltigkeit.gueltigAb =
+                newestGeuschsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
+            this.gesuchsperiode.gueltigkeit.gueltigBis =
+                newestGeuschsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
             this.gesuchsperiode.datumFreischaltungTagesschule = this.gesuchsperiode.gueltigkeit.gueltigAb;
             this.datumFreischaltungMax = this.getDatumFreischaltungMax();
         });

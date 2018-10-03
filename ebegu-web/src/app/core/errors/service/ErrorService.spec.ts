@@ -63,7 +63,7 @@ describe('errorService', () => {
                 expect(errorService.getErrors()).toEqual([]);
             });
             it('the internal error array should be immutable', () => {
-                const errors: Array<TSExceptionReport> = errorService.getErrors();
+                const errors = errorService.getErrors();
                 const length = errors.length;
 
                 errors.push(TSExceptionReport.createClientSideError(TSErrorLevel.INFO, 'custom test', null));
@@ -81,9 +81,9 @@ describe('errorService', () => {
                 expect(args).toBeTruthy();
                 errorService.addValidationError(msgKey, args);
 
-                const errors: Array<TSExceptionReport> = errorService.getErrors();
+                const errors = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
-                const error: TSExceptionReport = errors[0];
+                const error = errors[0];
                 expect(error.severity === TSErrorLevel.SEVERE);
                 expect(error.msgKey).toBe(msgKey);
                 expect(error.argumentList).toEqual(args);

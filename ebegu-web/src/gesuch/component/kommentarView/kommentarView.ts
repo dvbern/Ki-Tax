@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import GesuchstellerRS from '../../../app/core/service/gesuchstellerRS.rest';
@@ -25,9 +26,9 @@ import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import TSDokument from '../../../models/TSDokument';
 import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSGesuch from '../../../models/TSGesuch';
 import TSWizardStep from '../../../models/TSWizardStep';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
@@ -56,18 +57,31 @@ export class KommentarViewComponentConfig implements IComponentOptions {
  */
 export class KommentarViewController {
 
-    public static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q', 'UploadRS',
-        'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope', '$state', '$mdSidenav'];
+    public static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q',
+        'UploadRS',
+        'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope',
+        '$state', '$mdSidenav'];
 
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $log: ILogService, private readonly gesuchModelManager: GesuchModelManager, private readonly gesuchRS: GesuchRS,
-                private readonly dokumenteRS: DokumenteRS, private readonly downloadRS: DownloadRS, private readonly $q: IQService,
-                private readonly uploadRS: UploadRS, private readonly wizardStepManager: WizardStepManager, private readonly globalCacheService: GlobalCacheService,
-                private readonly dvDialog: DvDialog, private readonly $translate: ITranslateService, private readonly $window: ng.IWindowService, private readonly gesuchstellerRS: GesuchstellerRS,
-                private readonly $rootScope: IRootScopeService, private readonly $state: StateService, private readonly $mdSidenav: ng.material.ISidenavService) {
+    public constructor(private readonly $log: ILogService,
+                       private readonly gesuchModelManager: GesuchModelManager,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly dokumenteRS: DokumenteRS,
+                       private readonly downloadRS: DownloadRS,
+                       private readonly $q: IQService,
+                       private readonly uploadRS: UploadRS,
+                       private readonly wizardStepManager: WizardStepManager,
+                       private readonly globalCacheService: GlobalCacheService,
+                       private readonly dvDialog: DvDialog,
+                       private readonly $translate: ITranslateService,
+                       private readonly $window: ng.IWindowService,
+                       private readonly gesuchstellerRS: GesuchstellerRS,
+                       private readonly $rootScope: IRootScopeService,
+                       private readonly $state: StateService,
+                       private readonly $mdSidenav: ng.material.ISidenavService) {
 
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
@@ -77,7 +91,9 @@ export class KommentarViewController {
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
 
         return this.dokumenteRS.getDokumenteByTypeCached(
-            this.getGesuch(), TSDokumentGrundTyp.PAPIERGESUCH, this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT))
+            this.getGesuch(),
+            TSDokumentGrundTyp.PAPIERGESUCH,
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT))
             .then((promiseValue: TSDokumenteDTO) => {
 
                 if (promiseValue.dokumentGruende.length === 1) {
@@ -93,7 +109,7 @@ export class KommentarViewController {
         return this.gesuchModelManager.getGesuch();
     }
 
-    public toggleEwkSidenav() {
+    public toggleEwkSidenav(): void {
         this.$mdSidenav('ewk').toggle();
     }
 
@@ -118,33 +134,27 @@ export class KommentarViewController {
     }
 
     public hasPapiergesuch(): boolean {
-        if (this.dokumentePapiergesuch) {
-            if (this.dokumentePapiergesuch.dokumente && this.dokumentePapiergesuch.dokumente.length !== 0) {
-                if (this.dokumentePapiergesuch.dokumente[0].filename) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return !!(this.dokumentePapiergesuch
+            && this.dokumentePapiergesuch.dokumente
+            && this.dokumentePapiergesuch.dokumente.length !== 0
+            && this.dokumentePapiergesuch.dokumente[0].filename);
     }
 
-    public download() {
+    public download(): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.getPapiergesuchFromServer().then((promiseValue: any) => {
+        this.getPapiergesuchFromServer().then(() => {
             if (!this.hasPapiergesuch()) {
                 this.$log.error('Kein Papiergesuch für Download vorhanden!');
-            } else {
-                const newest = this.getNewest(this.dokumentePapiergesuch.dokumente);
-                this.downloadRS.getAccessTokenDokument(newest.id)
-                    .then(response => {
-                        const tempDokument = angular.copy(response);
-                        this.downloadRS.startDownload(tempDokument.accessToken, newest.filename, false, win);
-                    })
-                    .catch(ex => {
-                        win.close();
-                        this.$log.error('An error occurred downloading the document, closing download window.');
-                    });
+                return;
             }
+
+            const newest = this.getNewest(this.dokumentePapiergesuch.dokumente);
+            this.downloadRS.getAccessTokenDokument(newest.id)
+                .then(response => {
+                    const tempDokument = angular.copy(response);
+                    this.downloadRS.startDownload(tempDokument.accessToken, newest.filename, false, win);
+                })
+                .catch(ex => EbeguUtil.handleDownloadError(win, ex));
         });
     }
 
@@ -160,49 +170,51 @@ export class KommentarViewController {
 
     }
 
-    public upload(files: any[]) {
-        this.getPapiergesuchFromServer().then((promiseValue: any) => {
+    public upload(files: any[]): void {
+        this.getPapiergesuchFromServer().then(() => {
             if (this.hasPapiergesuch()) {
                 this.$log.error('Papiergesuch schon vorhanden');
-            } else {
-                const gesuchID = this.getGesuch().id;
-                console.log('Uploading files on gesuch ' + gesuchID);
+                return;
+            }
+            const gesuchID = this.getGesuch().id;
+            console.log('Uploading files on gesuch ' + gesuchID);
 
-                const filesTooBig: any[] = [];
-                const filesOk: any[] = [];
-                this.$log.debug('Uploading files on gesuch ' + gesuchID);
-                for (const file of files) {
-                    this.$log.debug('File: ' + file.name + ' size: ' + file.size);
-                    if (file.size > 10000000) { // Maximale Filegrösse ist 10MB
-                        filesTooBig.push(file);
-                    } else {
-                        filesOk.push(file);
-                    }
-                }
-
-                if (filesTooBig.length > 0) {
-                    // DialogBox anzeigen für Files, welche zu gross sind!
-                    let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
-                    returnString += '<ul>';
-                    for (const file of filesTooBig) {
-                        returnString += '<li>';
-                        returnString += file.name;
-                        returnString += '</li>';
-                    }
-                    returnString += '</ul>';
-
-                    this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                        title: returnString
-                    });
-                }
-
-                if (filesOk.length > 0) {
-                    this.uploadRS.uploadFile(filesOk, this.dokumentePapiergesuch, gesuchID).then(response => {
-                        this.dokumentePapiergesuch = angular.copy(response);
-                        this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
-                    });
+            const filesTooBig: any[] = [];
+            const filesOk: any[] = [];
+            this.$log.debug('Uploading files on gesuch ' + gesuchID);
+            for (const file of files) {
+                this.$log.debug(`File: ${file.name} size: ${file.size}`);
+                if (file.size > MAX_FILE_SIZE) {
+                    filesTooBig.push(file);
+                } else {
+                    filesOk.push(file);
                 }
             }
+
+            if (filesTooBig.length > 0) {
+                // DialogBox anzeigen für Files, welche zu gross sind!
+                let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
+                returnString += '<ul>';
+                for (const file of filesTooBig) {
+                    returnString += '<li>';
+                    returnString += file.name;
+                    returnString += '</li>';
+                }
+                returnString += '</ul>';
+
+                this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                    title: returnString
+                });
+            }
+
+            if (filesOk.length <= 0) {
+                return;
+            }
+
+            this.uploadRS.uploadFile(filesOk, this.dokumentePapiergesuch, gesuchID).then(response => {
+                this.dokumentePapiergesuch = angular.copy(response);
+                this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
+            });
         });
     }
 
@@ -237,7 +249,9 @@ export class KommentarViewController {
     }
 
     public showBemerkungenPruefungSTV(): boolean {
-        return this.getGesuch().geprueftSTV || this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
+        return this.getGesuch().geprueftSTV
+            || this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV
+            || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
             || this.getGesuch().status === TSAntragStatus.GEPRUEFT_STV;
     }
 
@@ -246,16 +260,12 @@ export class KommentarViewController {
     }
 
     public getFreigabeTitel(): string {
-        if (this.getGesuch().areThereOnlySchulamtAngebote()) {
-            return 'FREIGABE_SCH';
-        }
-        return 'FREIGABE_JA';
+        return this.getGesuch().areThereOnlySchulamtAngebote() ? 'FREIGABE_SCH' : 'FREIGABE_JA';
     }
 
     public getFreigabeBeschreibung(): string {
-        if (this.getGesuch().areThereOnlySchulamtAngebote()) {
-            return 'FREIGABE_SCH_BESCHREIBUNG';
-        }
-        return 'FREIGABE_JA_BESCHREIBUNG';
+        return this.getGesuch().areThereOnlySchulamtAngebote() ?
+            'FREIGABE_SCH_BESCHREIBUNG' :
+            'FREIGABE_JA_BESCHREIBUNG';
     }
 }

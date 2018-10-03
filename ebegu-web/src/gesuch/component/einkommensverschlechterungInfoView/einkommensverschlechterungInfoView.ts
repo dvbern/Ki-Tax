@@ -77,7 +77,7 @@ export class EinkommensverschlechterungInfoViewController
                        private readonly errorService: ErrorService,
                        private readonly ebeguUtil: EbeguUtil,
                        wizardStepManager: WizardStepManager,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly $q: IQService,
                        private readonly einkommensverschlechterungInfoRS: EinkommensverschlechterungInfoRS,
                        $scope: IScope,
@@ -190,7 +190,7 @@ export class EinkommensverschlechterungInfoViewController
                 return this.$q.when(this.model);
             }
             if (this.isConfirmationRequired()) {
-                return this.DvDialog.showDialog(removeDialogTemplate, RemoveDialogController, {
+                return this.dvDialog.showDialog(removeDialogTemplate, RemoveDialogController, {
                     title: 'EINKVERS_WARNING',
                     deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
                     parentController: undefined,

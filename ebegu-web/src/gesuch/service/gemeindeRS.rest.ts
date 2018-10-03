@@ -43,27 +43,21 @@ export default class GemeindeRS implements IEntityRS {
                        private readonly globalCacheService: GlobalCacheService,
                        private readonly $q: IQService,
                        private readonly authServiceRS: AuthServiceRS) {
-        this.serviceURL = REST_API + 'gemeinde';
+        this.serviceURL = `${REST_API}gemeinde`;
 
         this.initGemeindenForPrincipal();
     }
 
     public getAllGemeinden(): IPromise<TSGemeinde[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
-        return this.$http.get(this.serviceURL + '/all', {cache} )
-            .then((response: any) => {
-                this.$log.debug('PARSING gemeinde REST object ', response.data);
-                return this.ebeguRestUtil.parseGemeindeList(response.data);
-            });
+        return this.$http.get(`${this.serviceURL}/all`, {cache})
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
     public getAktiveGemeinden(): IPromise<TSGemeinde[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
-        return this.$http.get(this.serviceURL + '/active', {cache})
-            .then((response: any) => {
-                this.$log.debug('PARSING gemeinde REST object ', response.data);
-                return this.ebeguRestUtil.parseGemeindeList(response.data);
-            });
+        return this.$http.get(`${this.serviceURL}/active`, {cache})
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
     public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
@@ -71,19 +65,13 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
-        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(gemeindeId))
-            .then((response: any) => {
-                this.$log.debug('PARSING gemeinde REST object ', response.data);
-                return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
-            });
+        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(gemeindeId)}`)
+            .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
     }
 
     public findGemeindeByName(gemeindeName: string): IPromise<TSGemeinde> {
-        return this.$http.get(this.serviceURL + '/name/' + encodeURIComponent(gemeindeName))
-            .then((response: any) => {
-                this.$log.debug('PARSING gemeinde REST object ', response.data);
-                return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
-            });
+        return this.$http.get(`${this.serviceURL}/name/${encodeURIComponent(gemeindeName)}`)
+            .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
     }
 
     private initGemeindenForPrincipal(): void {
@@ -118,7 +106,6 @@ export default class GemeindeRS implements IEntityRS {
 
         return this.$http.post(this.serviceURL, restGemeinde,
             {
-                headers: {'Content-Type': 'application/json'},
                 params: {date: DateUtil.momentToLocalDate(beguStartDatum)},
             })
             .then(response => {
@@ -128,9 +115,8 @@ export default class GemeindeRS implements IEntityRS {
             });
     }
 
-    private resetGemeindeCache() {
+    private resetGemeindeCache(): void {
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
         this.initGemeindenForPrincipal();
     }
-
 }

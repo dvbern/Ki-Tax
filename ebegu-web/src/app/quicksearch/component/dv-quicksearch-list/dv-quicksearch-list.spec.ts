@@ -89,7 +89,7 @@ describe('DVQuicksearchList', () => {
         });
         describe('editAntrag', () => {
             it('should call findGesuch and open the view gesuch.fallcreation with it', () => {
-                const mockAntrag: TSAntragDTO = mockGetAntragList();
+                const mockAntrag = mockGetAntragList();
                 mockRestCalls();
                 spyOn($state, 'go');
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
@@ -113,7 +113,7 @@ describe('DVQuicksearchList', () => {
 
     function mockGetAntragList(): TSAntragDTO {
         const fallNummer = 123;
-        const mockAntrag: TSAntragDTO = new TSAntragDTO('66345345',
+        const mockAntrag = new TSAntragDTO('66345345',
             fallNummer,
             'name',
             TSAntragTyp.ERSTGESUCH,
@@ -127,7 +127,7 @@ describe('DVQuicksearchList', () => {
             undefined,
             undefined,
             undefined);
-        const result: Array<TSAntragDTO> = [mockAntrag];
+        const result = [mockAntrag];
         spyOn(searchRS, 'getPendenzenList').and.returnValue($q.when(result));
         return mockAntrag;
     }

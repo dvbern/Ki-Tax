@@ -14,7 +14,7 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
+import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRole} from '../../models/enums/TSRole';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
@@ -73,7 +73,7 @@ const states: Ng2StateDeclaration[] = [
 
 disableWhenDossierExists.$inject = ['$transition$'];
 
-function disableWhenDossierExists(transition: Transition) {
+function disableWhenDossierExists(transition: Transition): HookResult {
     const dossierService = transition.injector().get('DossierRS');
 
     return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()

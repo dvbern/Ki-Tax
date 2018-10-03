@@ -49,7 +49,7 @@ export class DvCountdownController implements IController {
                        private readonly $state: StateService,
                        private readonly $interval: IIntervalService,
                        private readonly $rootScope: IRootScopeService,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly gesuchModelManager: GesuchModelManager) {
     }
 
@@ -95,7 +95,7 @@ export class DvCountdownController implements IController {
 
     public stopTimer(): void {
         this.cancelInterval();
-        this.DvDialog.showDialog(dialogTemplate, OkDialogController, {
+        this.dvDialog.showDialog(dialogTemplate, OkDialogController, {
             title: 'Bitte fahren Sie mit der Bearbeitung fort',
         });
     }

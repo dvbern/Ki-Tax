@@ -23,6 +23,7 @@ import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import {EbeguWebPosteingang} from '../posteingang.module';
 
+// tslint:disable:no-magic-numbers no-duplicate-string
 describe('posteingangFilter', () => {
 
     let posteingangFilter: any;
@@ -148,24 +149,24 @@ describe('posteingangFilter', () => {
         });
         it('should return an array with only the element with the given Fallnummer', () => {
             expect(posteingangFilter(mitteilungArray,
-                {'dossier': {'fall': {'fallNummer': '000'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3,
+                {dossier: {fall: {fallNummer: '000'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3,
                 mitteilung4]);
             expect(posteingangFilter(mitteilungArray,
-                {'dossier': {'fall': {'fallNummer': '0001'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3,
+                {dossier: {fall: {fallNummer: '0001'}}})).toEqual([mitteilung1, mitteilung2, mitteilung3,
                 mitteilung4]);
-            expect(posteingangFilter(mitteilungArray, {'dossier': {'fall': {'fallNummer': '1'}}})).toEqual([mitteilung1,
+            expect(posteingangFilter(mitteilungArray, {dossier: {fall: {fallNummer: '1'}}})).toEqual([mitteilung1,
                 mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
             expect(posteingangFilter(mitteilungArray,
-                {'dossier': {'fall': {'fallNummer': '12'}}})).toEqual([mitteilung1, mitteilung2]);
+                {dossier: {fall: {fallNummer: '12'}}})).toEqual([mitteilung1, mitteilung2]);
         });
         it('should return an array with only the elements with the given Familie (Besitzer)', () => {
             expect(posteingangFilter(mitteilungArray,
-                {'dossier': {'fall': {'besitzer': 'berger'}}})).toEqual([mitteilung1, mitteilung2]);
-            expect(posteingangFilter(mitteilungArray, {'dossier': {'fall': {'besitzer': 'er'}}})).toEqual([mitteilung1,
+                {dossier: {fall: {besitzer: 'berger'}}})).toEqual([mitteilung1, mitteilung2]);
+            expect(posteingangFilter(mitteilungArray, {dossier: {fall: {besitzer: 'er'}}})).toEqual([mitteilung1,
                 mitteilung2, mitteilung3, mitteilung4]);
-            expect(posteingangFilter(mitteilungArray, {'dossier': {'fall': {'besitzer': ''}}})).toEqual([mitteilung1,
+            expect(posteingangFilter(mitteilungArray, {dossier: {fall: {besitzer: ''}}})).toEqual([mitteilung1,
                 mitteilung2, mitteilung3, mitteilung4, mitteilung5]);
-            expect(posteingangFilter(mitteilungArray, {'dossier': {'fall': {'besitzer': 'rrr'}}})).toEqual([]);
+            expect(posteingangFilter(mitteilungArray, {dossier: {fall: {besitzer: 'rrr'}}})).toEqual([]);
         });
         it('should return an array with only the elements with the given subject', () => {
             expect(posteingangFilter(mitteilungArray, {subject: 'frage'})).toEqual([mitteilung1, mitteilung3]);

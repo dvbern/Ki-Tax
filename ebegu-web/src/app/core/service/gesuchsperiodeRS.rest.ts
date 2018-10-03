@@ -14,8 +14,8 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class GesuchsperiodeRS {
 
@@ -25,8 +25,12 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private readonly $q: IQService) {
-        this.serviceURL = REST_API + 'gesuchsperioden';
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public log: ILogService,
+                       private readonly $q: IQService) {
+        this.serviceURL = `${REST_API}gesuchsperioden`;
     }
 
     public getServiceName(): string {
@@ -34,11 +38,8 @@ export default class GesuchsperiodeRS {
     }
 
     public findGesuchsperiode(gesuchsperiodeID: string): IPromise<TSGesuchsperiode> {
-        return this.http.get(this.serviceURL + '/gesuchsperiode/' + encodeURIComponent(gesuchsperiodeID))
-            .then((response: any) => {
-                this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
-                return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);
-            });
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeID)}`)
+            .then(response => this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data));
     }
 
     public createGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
@@ -63,11 +64,11 @@ export default class GesuchsperiodeRS {
     }
 
     public removeGesuchsperiode(gesuchsperiodeId: string): IHttpPromise<TSGesuchsperiode> {
-        return this.http.delete(this.serviceURL + '/' + encodeURIComponent(gesuchsperiodeId));
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(gesuchsperiodeId)}`);
     }
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(this.serviceURL + '/active').then((response: any) => {
+        return this.http.get(`${this.serviceURL}/active`).then((response: any) => {
             const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.activeGesuchsperiodenList;
@@ -84,13 +85,13 @@ export default class GesuchsperiodeRS {
     }
 
     public getAllGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(this.serviceURL + '/').then((response: any) => {
+        return this.http.get(`${this.serviceURL}/`).then((response: any) => {
             return this.ebeguRestUtil.parseGesuchsperioden(response.data);
         });
     }
 
     public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(this.serviceURL + '/unclosed').then((response: any) => {
+        return this.http.get(`${this.serviceURL}/unclosed`).then((response: any) => {
             const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.nichtAbgeschlosseneGesuchsperiodenList;
@@ -107,13 +108,13 @@ export default class GesuchsperiodeRS {
     }
 
     public getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId: string): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(this.serviceURL + '/unclosed/' + dossierId).then((response: any) => {
+        return this.http.get(`${this.serviceURL}/unclosed/${dossierId}`).then((response: any) => {
             return this.ebeguRestUtil.parseGesuchsperioden(response.data);
         });
     }
 
     public getNewestGesuchsperiode(): IPromise<TSGesuchsperiode> {
-        return this.http.get(this.serviceURL + '/newestGesuchsperiode/')
+        return this.http.get(`${this.serviceURL}/newestGesuchsperiode/`)
             .then((response: any) => {
                 this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
                 return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);

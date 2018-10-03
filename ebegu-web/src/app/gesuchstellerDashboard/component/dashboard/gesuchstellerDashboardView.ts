@@ -14,10 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {IComponentOptions, IController, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../../gesuch/service/searchRS.rest';
@@ -30,7 +27,9 @@ import TSDossier from '../../../../models/TSDossier';
 import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import ILogService = angular.ILogService;
+import ErrorService from '../../../core/errors/service/ErrorService';
+import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
@@ -43,7 +42,7 @@ export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     };
 }
 
-export class GesuchstellerDashboardViewController {
+export class GesuchstellerDashboardViewController implements IController {
 
     public static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
         '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
@@ -57,18 +56,18 @@ export class GesuchstellerDashboardViewController {
     public mapOfNewestAntraege: { [key: string]: string } = {};
 
     public constructor(private readonly $state: StateService,
-                private readonly $log: ILogService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly searchRS: SearchRS,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $translate: ITranslateService,
-                private readonly mitteilungRS: MitteilungRS,
-                private readonly gesuchRS: GesuchRS,
-                private readonly errorService: ErrorService) {
+                       private readonly $log: ILogService,
+                       private readonly authServiceRS: AuthServiceRS,
+                       private readonly searchRS: SearchRS,
+                       private readonly ebeguUtil: EbeguUtil,
+                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+                       private readonly $translate: ITranslateService,
+                       private readonly mitteilungRS: MitteilungRS,
+                       private readonly gesuchRS: GesuchRS,
+                       private readonly errorService: ErrorService) {
     }
 
-    public $onInit() {
+    public $onInit(): void {
         const params = this.$state.params.gesuchstellerDashboardStateParams;
         if (params && params.infoMessage) {
             this.errorService.addMesageAsInfo(this.$translate.instant(params.infoMessage));
@@ -77,7 +76,7 @@ export class GesuchstellerDashboardViewController {
         this.initViewModel();
     }
 
-    private initViewModel() {
+    private initViewModel(): IPromise<TSAntragDTO[]> {
         return this.searchRS.getAntraegeOfDossier(this.dossier.id).then((response: any) => {
             this.antragList = angular.copy(response);
             this.getAmountNewMitteilungen();
@@ -99,8 +98,8 @@ export class GesuchstellerDashboardViewController {
             // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen. Wir merken uns das jeweils
             // neueste Gesuch pro Periode
             for (const gp of this._activeGesuchsperiodenList) {
-                this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(response => {
-                    this.mapOfNewestAntraege[gp.id] = response;
+                this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id).then(id => {
+                    this.mapOfNewestAntraege[gp.id] = id;
                 });
             }
         });
@@ -110,7 +109,7 @@ export class GesuchstellerDashboardViewController {
         return this._activeGesuchsperiodenList;
     }
 
-    public goToMitteilungenOeffen() {
+    public goToMitteilungenOeffen(): void {
         this.$state.go('mitteilungen.view', {
             dossierId: this.dossier.id,
             fallId: this.dossier.fall.id,
@@ -136,10 +135,12 @@ export class GesuchstellerDashboardViewController {
 
     public openAntrag(periode: TSGesuchsperiode, ansehen: boolean): void {
         const antrag = this.getAntragForGesuchsperiode(periode);
+        const fallcreation = 'gesuch.fallcreation';
+
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go('gesuch.fallcreation', {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+                this.$state.go(fallcreation, {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
             } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
@@ -154,47 +155,43 @@ export class GesuchstellerDashboardViewController {
                     dossierId: this.dossier.id
                 });
             }
-        } else {
+        } else if (this.antragList && this.antragList.length > 0) {
             // Noch kein Antrag für die Gesuchsperiode vorhanden
-            if (this.antragList && this.antragList.length > 0) {
-                // Aber schon mindestens einer für eine frühere Periode
-                this.$state.go('gesuch.erneuerung', {
-                    creationAction: TSCreationAction.CREATE_NEW_FOLGEGESUCH,
-                    gesuchsperiodeId: periode.id,
-                    eingangsart: TSEingangsart.ONLINE,
-                    gesuchId: this.antragList[0].antragId,
-                    dossierId: this.dossier.id
-                });
-            } else {
-                // Dies ist das erste Gesuch
-                this.$state.go('gesuch.fallcreation', {
-                    creationAction: TSCreationAction.CREATE_NEW_GESUCH,
-                    eingangsart: TSEingangsart.ONLINE,
-                    gesuchsperiodeId: periode.id,
-                    gemeindeId: this.dossier.gemeinde.id,
-                    dossierId: this.dossier.id
-                });
-            }
+            // Aber schon mindestens einer für eine frühere Periode
+            this.$state.go('gesuch.erneuerung', {
+                creationAction: TSCreationAction.CREATE_NEW_FOLGEGESUCH,
+                gesuchsperiodeId: periode.id,
+                eingangsart: TSEingangsart.ONLINE,
+                gesuchId: this.antragList[0].antragId,
+                dossierId: this.dossier.id
+            });
+        } else {
+            // Dies ist das erste Gesuch
+            this.$state.go(fallcreation, {
+                creationAction: TSCreationAction.CREATE_NEW_GESUCH,
+                eingangsart: TSEingangsart.ONLINE,
+                gesuchsperiodeId: periode.id,
+                gemeindeId: this.dossier.gemeinde.id,
+                dossierId: this.dossier.id
+            });
         }
     }
 
     public createTagesschule(periode: TSGesuchsperiode): void {
-        const antrag = this.getAntragForGesuchsperiode(periode);
-
-        if (antrag) {
-            this.$state.go('gesuchsteller.createAngebot', {type: 'TS', gesuchId: antrag.antragId});
-        } else {
-            console.error('Fehler: kein Gesuch gefunden für Gesuchsperiode in createTagesschule');
-        }
+        this.createAntrag(periode, 'TS');
     }
 
     public createFerieninsel(periode: TSGesuchsperiode): void {
+        this.createAntrag(periode, 'FI');
+    }
+
+    private createAntrag(periode: TSGesuchsperiode, type: 'FI' | 'TS'): void {
         const antrag = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
-            this.$state.go('gesuchsteller.createAngebot', {type: 'FI', gesuchId: antrag.antragId});
+            this.$state.go('gesuchsteller.createAngebot', {type, gesuchId: antrag.antragId});
         } else {
-            console.error('Fehler: kein Gesuch gefunden für Gesuchsperiode in createFerieninsel');
+            console.error('Fehler: kein Gesuch gefunden für Gesuchsperiode und Typ ' + type);
         }
     }
 
@@ -213,10 +210,12 @@ export class GesuchstellerDashboardViewController {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status) {
                 // Noch nicht freigegeben -> Text BEARBEITEN
                 return this.$translate.instant('GS_BEARBEITEN');
-            } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
+            }
+            if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung -> Text DOKUMENTE HOCHLADEN
                 return this.$translate.instant('GS_DOKUMENTE_HOCHLADEN');
-            } else if (this.isNeuestAntragOfGesuchsperiode(periode, antrag)) {
+            }
+            if (this.isNeuestAntragOfGesuchsperiode(periode, antrag)) {
                 // Im Else-Fall ist das Gesuch nicht mehr ueber den Button verfuegbar
                 // Es kann nur noch eine Mutation gemacht werden -> Text MUTIEREN
                 return this.$translate.instant('GS_MUTIEREN');
@@ -229,12 +228,14 @@ export class GesuchstellerDashboardViewController {
     }
 
     public editAntrag(antrag: TSAntragDTO): void {
-        if (antrag) {
-            if (isAnyStatusOfVerfuegt(antrag.status)) {
-                this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
-            } else {
-                this.$state.go('gesuch.fallcreation', {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
-            }
+        if (!antrag) {
+            return;
+        }
+
+        if (isAnyStatusOfVerfuegt(antrag.status)) {
+            this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
+        } else {
+            this.$state.go('gesuch.fallcreation', {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
         }
     }
 
@@ -254,13 +255,14 @@ export class GesuchstellerDashboardViewController {
      * Status muss speziell uebersetzt werden damit Gesuchsteller nur "In Bearbeitung" sieht und nicht in
      * "Bearbeitung Gesuchsteller"
      */
-    public translateStatus(antrag: TSAntragDTO) {
+    public translateStatus(antrag: TSAntragDTO): string {
         const status = antrag.status;
         const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         if (status === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
             if (TSGesuchBetreuungenStatus.ABGEWIESEN === antrag.gesuchBetreuungenStatus) {
                 return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]);
-            } else if (TSGesuchBetreuungenStatus.WARTEN === antrag.gesuchBetreuungenStatus) {
+            }
+            if (TSGesuchBetreuungenStatus.WARTEN === antrag.gesuchBetreuungenStatus) {
                 return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_WARTEN]);
             }
             return this.ebeguUtil.translateString(IN_BEARBEITUNG_BASE_NAME);
@@ -284,19 +286,20 @@ export class GesuchstellerDashboardViewController {
             if (antrag.verantwortlicherTS) {
                 return antrag.verantwortlicherTS;
             }
-            if (antrag.status === TSAntragStatus.NUR_SCHULAMT) { // legacy for old Faelle where verantwortlicherTS didn't exist
+            if (antrag.status === TSAntragStatus.NUR_SCHULAMT) {
+                // legacy for old Faelle where verantwortlicherTS didn't exist
                 return this.ebeguUtil.translateString('NUR_SCHULAMT');
             }
         }
         return '';
     }
 
-    public gesperrtWegenMutation(periode: TSGesuchsperiode) {
+    public gesperrtWegenMutation(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         return !!antrag && !this.isNeuestAntragOfGesuchsperiode(periode, antrag);
     }
 
-    public hasOnlyFerieninsel(periode: TSGesuchsperiode) {
+    public hasOnlyFerieninsel(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         return !!antrag && antrag.hasOnlyFerieninsel();
     }
