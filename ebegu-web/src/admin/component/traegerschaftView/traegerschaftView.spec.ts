@@ -14,11 +14,13 @@
  */
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatDialog} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '../../../app/shared/shared.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
+import {SharedModuleOverrides} from '../../../hybridTools/mockUpgradedComponent';
 
 import {TraegerschaftViewComponent} from './traegerschaftView';
 
@@ -31,6 +33,7 @@ describe('traegerschaftView', () => {
         const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['createTraegerschaft']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+        const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -41,9 +44,11 @@ describe('traegerschaftView', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: MatDialog, useValue: dvDialogSpy},
             ],
             declarations: [TraegerschaftViewComponent]
         })
+            .overrideModule(SharedModule, SharedModuleOverrides)
             .compileComponents();
     }));
 

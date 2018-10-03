@@ -76,9 +76,15 @@ describe('EditBerechtigungComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load institutionen and traegerschaften', () => {
+    it('should load institutionen', () => {
         fixture.detectChanges();
         expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
+    });
+
+    it('should load traegerschaften for role ADMIN_TRAEGERSCHAFT', () => {
+        component.berechtigung.role = TSRole.ADMIN_TRAEGERSCHAFT;
+        fixture.detectChanges();
+        // after detecting changes the element in the html should subscribe to the controller and thus get the list of traegerschaften
         expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
     });
 
