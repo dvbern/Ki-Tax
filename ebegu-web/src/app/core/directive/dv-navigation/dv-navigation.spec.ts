@@ -14,6 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
+import {IQService, IScope} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
@@ -35,8 +36,8 @@ describe('dvNavigation', () => {
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
     let $state: StateService;
-    let $q: angular.IQService;
-    let $rootScope: angular.IScope;
+    let $q: IQService;
+    let $rootScope: IScope;
     let gesuchModelManager: GesuchModelManager;
     let authServiceRS: AuthServiceRS;
     let isStatusVerfuegen: boolean;

@@ -13,10 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, TargetState, TransitionPromise} from '@uirouter/core';
+import {StateService, TransitionPromise} from '@uirouter/core';
 import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
+import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import ErrorService from '../../errors/service/ErrorService';
@@ -413,46 +414,55 @@ export class NavigatorController implements IController {
      */
     private navigateToStep(stepName: TSWizardStepName, gsNumber?: string): TransitionPromise {
         const gesuchId = this.getGesuchId();
+        const gesuchIdParam = {gesuchId};
+        const gesuchstellerParams = {gesuchstellerNumber: gsNumber ? gsNumber : '1', gesuchId};
 
-        const fallCreationParams = {
-            eingangsart: this.gesuchModelManager.getGesuch().eingangsart,
-            gesuchId,
-            gesuchsperiodeId: this.gesuchModelManager.getGesuch().gesuchsperiode.id,
+        switch (stepName) {
+            case TSWizardStepName.GESUCH_ERSTELLEN:
+                return this.state.go('gesuch.fallcreation', this.getFallCreationParams());
+            case TSWizardStepName.FAMILIENSITUATION:
+                return this.state.go('gesuch.familiensituation', gesuchIdParam);
+            case TSWizardStepName.GESUCHSTELLER:
+                return this.state.go('gesuch.stammdaten', gesuchstellerParams);
+            case TSWizardStepName.UMZUG:
+                return this.state.go('gesuch.umzug', gesuchIdParam);
+            case TSWizardStepName.KINDER:
+                return this.state.go('gesuch.kinder', gesuchIdParam);
+            case TSWizardStepName.BETREUUNG:
+                return this.state.go('gesuch.betreuungen', gesuchIdParam);
+            case TSWizardStepName.ABWESENHEIT:
+                return this.state.go('gesuch.abwesenheit', gesuchIdParam);
+            case TSWizardStepName.ERWERBSPENSUM:
+                return this.state.go('gesuch.erwerbsPensen', gesuchIdParam);
+            case TSWizardStepName.FINANZIELLE_SITUATION:
+                return this.gesuchModelManager.showFinanzielleSituationStart() ?
+                    this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam) :
+                    this.state.go('gesuch.finanzielleSituation', {gesuchstellerNumber: '1', gesuchId});
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
+                return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
+            case TSWizardStepName.DOKUMENTE:
+                return this.state.go('gesuch.dokumente', gesuchIdParam);
+            case TSWizardStepName.FREIGABE:
+                return this.state.go('gesuch.freigabe', gesuchIdParam);
+            case TSWizardStepName.VERFUEGEN:
+                return this.state.go('gesuch.verfuegen', gesuchIdParam);
+            default:
+                throw new Error(`not implemented for step ${stepName}`);
+        }
+    }
+
+    private getFallCreationParams(): {
+        eingangsart: TSEingangsart; gesuchId: string; gesuchsperiodeId: string; dossierId: string; gemeindeId: string
+    } {
+        const gesuch = this.gesuchModelManager.getGesuch();
+
+        return {
+            eingangsart: gesuch.eingangsart,
+            gesuchId: gesuch.id,
+            gesuchsperiodeId: gesuch.gesuchsperiode.id,
             dossierId: this.gesuchModelManager.getDossier().id,
             gemeindeId: this.gesuchModelManager.getDossier().gemeinde.id,
         };
-
-        const gesuchIdParam = {gesuchId};
-
-        const gesuchstellerParams = {gesuchstellerNumber: gsNumber ? gsNumber : '1', gesuchId};
-
-        const stateByStep: { [key in TSWizardStepName]: TargetState } = {
-                [TSWizardStepName.GESUCH_ERSTELLEN]: this.state.target('gesuch.fallcreation', fallCreationParams),
-                [TSWizardStepName.FAMILIENSITUATION]: this.state.target('gesuch.familiensituation', gesuchIdParam),
-                [TSWizardStepName.GESUCHSTELLER]: this.state.target('gesuch.stammdaten', gesuchstellerParams),
-                [TSWizardStepName.UMZUG]: this.state.target('gesuch.umzug', gesuchIdParam),
-                [TSWizardStepName.KINDER]: this.state.target('gesuch.kinder', gesuchIdParam),
-                [TSWizardStepName.BETREUUNG]: this.state.target('gesuch.betreuungen', gesuchIdParam),
-                [TSWizardStepName.ABWESENHEIT]: this.state.target('gesuch.abwesenheit', gesuchIdParam),
-                [TSWizardStepName.ERWERBSPENSUM]: this.state.target('gesuch.erwerbsPensen', gesuchIdParam),
-                [TSWizardStepName.FINANZIELLE_SITUATION]: this.gesuchModelManager.showFinanzielleSituationStart() ?
-                    this.state.target('gesuch.finanzielleSituationStart', gesuchIdParam) :
-                    this.state.target('gesuch.finanzielleSituation', {
-                        gesuchstellerNumber: '1',
-                        gesuchId,
-                    }),
-                [TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG]: this.state.target(
-                    'gesuch.einkommensverschlechterungInfo', gesuchIdParam),
-                [TSWizardStepName.DOKUMENTE]: this.state.target('gesuch.dokumente', gesuchIdParam),
-                [TSWizardStepName.FREIGABE]: this.state.target('gesuch.freigabe', gesuchIdParam),
-                [TSWizardStepName.VERFUEGEN]: this.state.target('gesuch.verfuegen', gesuchIdParam),
-
-            }
-        ;
-
-        const targetState = stateByStep[stepName];
-
-        return this.state.go(targetState.state(), targetState.params(), targetState.options());
     }
 
     private navigateToStepEinkommensverschlechterung(gsNumber: string, basisjahrPlus: string): TransitionPromise {

@@ -21,12 +21,10 @@ import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStat
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {quicksearchFilter} from './quicksearchFilter';
 import IProvideService = angular.auto.IProvideService;
 
-describe('filter', () => {
+describe('quicksearchFilter', () => {
 
     let quicksearchArray: Array<TSAntragDTO>;
     let antrag1: TSAntragDTO;
@@ -37,16 +35,12 @@ describe('filter', () => {
     const abStr = '31.08.2016';
     let filter: any;
 
-    beforeEach(angular.mock.module('pascalprecht.translate'));
-
     beforeEach(angular.mock.module(($provide: IProvideService) => {
-        $provide.value('CONSTANTS', CONSTANTS);
-        $provide.service('EbeguUtil', EbeguUtil);
         $provide.service('quicksearchFilterFilter', quicksearchFilter);
     }));
 
     beforeEach(angular.mock.inject($injector => {
-        filter = $injector.get('$filter')('filter');
+        filter = $injector.get('$filter')('quicksearchFilter');
 
         const ab = moment(abStr, 'DD.MM.YYYY');
         const bis = moment('01.07.2017', 'DD.MM.YYYY');

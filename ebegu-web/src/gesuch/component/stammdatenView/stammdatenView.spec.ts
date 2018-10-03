@@ -22,6 +22,7 @@ import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -38,7 +39,7 @@ describe('stammdatenView', () => {
     let ewkRS: EwkRS;
     let $timeout: ITimeoutService;
 
-    beforeEach(angular.mock.module('ebeguWeb.gesuch'));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

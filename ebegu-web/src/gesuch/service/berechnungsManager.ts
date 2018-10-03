@@ -31,7 +31,6 @@ export default class BerechnungsManager {
 
     public static $inject = [
         'FinanzielleSituationRS',
-        'EbeguRestUtil',
         'EinkommensverschlechterungContainerRS',
         'DokumenteRS',
         'AuthLifeCycleService',

@@ -723,9 +723,8 @@ export class IEinkommensverschlechterungResultateStateParams {
 // (Grossbuchstaben am Anfang). Warum?
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
-// tslint:disable-next-line:variable-name no-shadowed-variable
 export function getMahnungen(
-    MahnungRS: MahnungRS,
+    MahnungRS: MahnungRS, // tslint:disable-line:variable-name no-shadowed-variable
     $stateParams: IGesuchStateParams,
     $q: IQService,
     $log: ILogService,

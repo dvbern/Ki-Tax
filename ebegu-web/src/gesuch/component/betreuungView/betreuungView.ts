@@ -69,9 +69,20 @@ const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
     public static $inject = [
-        '$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager',
+        '$state',
+        'GesuchModelManager',
+        'EbeguUtil',
+        'CONSTANTS',
+        '$scope',
+        'BerechnungsManager',
         'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout',
+        'AuthServiceRS',
+        'WizardStepManager',
+        '$stateParams',
+        'MitteilungRS',
+        'DvDialog',
+        '$log',
+        '$timeout',
         '$translate',
     ];
     public betreuungsangebot: any;

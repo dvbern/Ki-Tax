@@ -15,12 +15,13 @@
 
 import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {ErwerbspensumListViewComponentConfig} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
 
 describe('erwerbspensumListView', () => {
 
-    beforeEach(angular.mock.module('ebeguWeb.gesuch'));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
