@@ -20,18 +20,27 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 @Audited
 @Entity
 @Table
-public class GemeindeStammdaten extends AbstractMutableEntity{
+public class GemeindeStammdaten extends AbstractEntity {
+
+	private static final long serialVersionUID = -6627279554105679587L;
 
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerbg_id"), nullable = true)
@@ -44,6 +53,25 @@ public class GemeindeStammdaten extends AbstractMutableEntity{
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_gemeinde_id"), nullable = true)
 	private Gemeinde gemeinde;
+
+	@NotNull
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_adresse_id"), nullable = false)
+	private Adresse adresse;
+
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
+	@NotNull
+	@Column(nullable = false)
+	private String mail;
+
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
+	private String telefon;
+
+	@Pattern(regexp = Constants.REGEX_URL, message = "{validator.constraints.url.message}")
+	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
+	private String webseite;
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -84,4 +112,37 @@ public class GemeindeStammdaten extends AbstractMutableEntity{
 	public void setGemeinde(Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
 	}
+
+	public Adresse getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(Adresse adresse) {
+		this.adresse = adresse;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public String getTelefon() {
+		return telefon;
+	}
+
+	public void setTelefon(String telefon) {
+		this.telefon = telefon;
+	}
+
+	public String getWebseite() {
+		return webseite;
+	}
+
+	public void setWebseite(String webseite) {
+		this.webseite = webseite;
+	}
+
 }
