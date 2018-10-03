@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {of} from 'rxjs';
