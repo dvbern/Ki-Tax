@@ -20,10 +20,18 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.ejb.EJBException;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -33,9 +41,14 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Arquillian Tests fuer die Klasse BenutzerService
@@ -59,8 +72,8 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.merge(benutzer);
 
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
-		Assert.assertNotNull(berechtigungen);
-		Assert.assertEquals(1, berechtigungen.size());
+		assertNotNull(berechtigungen);
+		assertEquals(1, berechtigungen.size());
 	}
 
 	@Test
@@ -72,12 +85,12 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.merge(benutzer.getMandant());
 		benutzer = persistence.merge(benutzer);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
-		Assert.assertNotNull(berechtigungen);
-		Assert.assertEquals(1, berechtigungen.size());
+		assertNotNull(berechtigungen);
+		assertEquals(1, berechtigungen.size());
 		Berechtigung firstBerechtigung = berechtigungen.iterator().next();
-		Assert.assertEquals(AB_ERSTE_BERECHTIGUNG, firstBerechtigung.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(Constants.END_OF_TIME, firstBerechtigung.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(UserRole.ADMIN_BG, firstBerechtigung.getRole());
+		assertEquals(AB_ERSTE_BERECHTIGUNG, firstBerechtigung.getGueltigkeit().getGueltigAb());
+		assertEquals(Constants.END_OF_TIME, firstBerechtigung.getGueltigkeit().getGueltigBis());
+		assertEquals(UserRole.ADMIN_BG, firstBerechtigung.getRole());
 
 		// Eine zweite Berechtigung erfassen
 		LocalDate AB_ZWEITE_BERECHTIGUNG = LocalDate.now().plusMonths(1);
@@ -89,17 +102,17 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		benutzer.getBerechtigungen().add(secondBerechtigung);
 		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 
-		berechtigungen = benutzer.getBerechtigungen();
-		Assert.assertNotNull(berechtigungen);
-		Assert.assertEquals(2, berechtigungen.size());
-		Iterator<Berechtigung> iterator = berechtigungen.iterator();
-		firstBerechtigung = iterator.next();
-		secondBerechtigung = iterator.next();
+		Set<Berechtigung> berechtigungen2 = benutzer.getBerechtigungen();
+		assertNotNull(berechtigungen2);
+		assertEquals(2, berechtigungen2.size());
+		Iterator<Berechtigung> iterator = berechtigungen2.iterator();
+		Berechtigung firstBerechtigung2 = iterator.next();
+		Berechtigung secondBerechtigung2 = iterator.next();
 
-		Assert.assertEquals(AB_ERSTE_BERECHTIGUNG, firstBerechtigung.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(AB_ZWEITE_BERECHTIGUNG.minusDays(1), firstBerechtigung.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(AB_ZWEITE_BERECHTIGUNG, secondBerechtigung.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(Constants.END_OF_TIME, secondBerechtigung.getGueltigkeit().getGueltigBis());
+		assertEquals(AB_ERSTE_BERECHTIGUNG, firstBerechtigung2.getGueltigkeit().getGueltigAb());
+		assertEquals(AB_ZWEITE_BERECHTIGUNG.minusDays(1), firstBerechtigung2.getGueltigkeit().getGueltigBis());
+		assertEquals(AB_ZWEITE_BERECHTIGUNG, secondBerechtigung2.getGueltigkeit().getGueltigAb());
+		assertEquals(Constants.END_OF_TIME, secondBerechtigung2.getGueltigkeit().getGueltigBis());
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -116,8 +129,8 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		benutzerService.handleAbgelaufeneRollen(LocalDate.now());
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(benutzer.getUsername());
 		Berechtigung currentBerechtigung = benutzerOptional.get().getCurrentBerechtigung();
-		Assert.assertEquals(AB_ERSTE_BERECHTIGUNG, currentBerechtigung.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(Constants.END_OF_TIME, currentBerechtigung.getGueltigkeit().getGueltigBis());
+		assertEquals(AB_ERSTE_BERECHTIGUNG, currentBerechtigung.getGueltigkeit().getGueltigAb());
+		assertEquals(Constants.END_OF_TIME, currentBerechtigung.getGueltigkeit().getGueltigBis());
 
 		// Eine zweite Berechtigung erfassen
 		LocalDate AB_ZWEITE_BERECHTIGUNG = LocalDate.now().minusDays(1);
@@ -130,13 +143,101 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		benutzer.getBerechtigungen().add(secondBerechtigung);
 		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
-		Assert.assertEquals(2, berechtigungen.size());
+		assertEquals(2, berechtigungen.size());
 
 		// Timer durchlaufen lassen: Es ist jetzt die neue Berechtigung aktiv
 		benutzerService.handleAbgelaufeneRollen(LocalDate.now());
-		benutzerOptional = benutzerService.findBenutzer(benutzer.getUsername());
-		currentBerechtigung = benutzerOptional.get().getCurrentBerechtigung();
-		Assert.assertEquals(AB_ZWEITE_BERECHTIGUNG, currentBerechtigung.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(Constants.END_OF_TIME, currentBerechtigung.getGueltigkeit().getGueltigBis());
+		Optional<Benutzer> benutzerOptional2 = benutzerService.findBenutzer(benutzer.getUsername());
+		Berechtigung currentBerechtigung2 = benutzerOptional2.get().getCurrentBerechtigung();
+		assertEquals(AB_ZWEITE_BERECHTIGUNG, currentBerechtigung2.getGueltigkeit().getGueltigAb());
+		assertEquals(Constants.END_OF_TIME, currentBerechtigung2.getGueltigkeit().getGueltigBis());
+	}
+
+	@Test
+	public void createAdminTraegerschaftByEmail() {
+		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
+		persistence.persist(traegerschaft);
+		final String adminMail = "traegerschaft@example.com";
+		final Benutzer adminTraegerschaft = benutzerService.createAdminTraegerschaftByEmail(adminMail, traegerschaft);
+
+		assertCommonBenutzerFields(adminMail, adminTraegerschaft);
+
+		assertEquals(traegerschaft, adminTraegerschaft.getTraegerschaft());
+		assertEquals(UserRole.ADMIN_TRAEGERSCHAFT, adminTraegerschaft.getRole());
+		assertNotNull(adminTraegerschaft.getCurrentBerechtigung());
+		assertTrue(adminTraegerschaft.getCurrentBerechtigung().getGemeindeList().isEmpty());
+		assertNull(adminTraegerschaft.getInstitution());
+	}
+
+	@Test
+	public void createAdminInstitutionByEmail() {
+		Institution institution = TestDataUtil.createAndPersistDefaultInstitution(persistence);
+		final String adminMail = "institution@example.com";
+		final Benutzer adminInstitution = benutzerService.createAdminInstitutionByEmail(adminMail, institution);
+
+		assertCommonBenutzerFields(adminMail, adminInstitution);
+
+		assertEquals(institution, adminInstitution.getInstitution());
+		assertEquals(UserRole.ADMIN_INSTITUTION, adminInstitution.getRole());
+		assertNotNull(adminInstitution.getCurrentBerechtigung());
+		assertTrue(adminInstitution.getCurrentBerechtigung().getGemeindeList().isEmpty());
+		assertNull(adminInstitution.getTraegerschaft());
+	}
+
+	@Test
+	public void createAdminGemeindeByEmail() {
+		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		final String adminMail = "gemeinde@example.com";
+		final Benutzer adminGemeinde = benutzerService.createAdminGemeindeByEmail(adminMail, gemeinde);
+
+		assertCommonBenutzerFields(adminMail, adminGemeinde);
+
+		assertEquals(UserRole.ADMIN_GEMEINDE, adminGemeinde.getRole());
+		assertNotNull(adminGemeinde.getCurrentBerechtigung());
+		assertEquals(1, adminGemeinde.getCurrentBerechtigung().getGemeindeList().size());
+		assertEquals(gemeinde, adminGemeinde.getCurrentBerechtigung().getGemeindeList().iterator().next());
+		assertNull(adminGemeinde.getInstitution());
+		assertNull(adminGemeinde.getTraegerschaft());
+	}
+
+	@Test
+	public void einladenGemeindeWrongStatus() {
+		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		Einladung einladung = new Einladung(EinladungTyp.GEMEINDE, gemeinde, null, null);
+		Benutzer benutzer = TestDataUtil.createBenutzerSCH();
+		benutzer.setMandant(getDummySuperadmin().getMandant());
+		benutzer.setStatus(BenutzerStatus.AKTIV);
+
+		try {
+			benutzerService.einladen(benutzer, einladung);
+			fail("It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be EINGELADEN");
+		} catch (EJBException e) {
+			// nop
+		}
+
+	}
+
+	@Test
+	public void einladenGemeindeWrongUserWithoutGemeinde() {
+		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		Einladung einladung = new Einladung(EinladungTyp.GEMEINDE, gemeinde, null, null);
+		Benutzer benutzer = TestDataUtil.createBenutzerSCH();
+		benutzer.setStatus(BenutzerStatus.EINGELADEN);
+		benutzer.setMandant(getDummySuperadmin().getMandant());
+
+		try {
+			benutzerService.einladen(benutzer, einladung);
+			fail("It should throw a ConstraintViolationException because the user must have a Gemeinde");
+		} catch (EJBTransactionRolledbackException e) {
+			// nop
+		}
+	}
+
+	private void assertCommonBenutzerFields(String adminMail, Benutzer adminTraegerschaft) {
+		assertEquals(adminMail, adminTraegerschaft.getUsername());
+		assertEquals(adminMail, adminTraegerschaft.getEmail());
+		assertEquals(Constants.UNKNOWN, adminTraegerschaft.getNachname());
+		assertEquals(Constants.UNKNOWN, adminTraegerschaft.getVorname());
+		assertEquals(BenutzerStatus.EINGELADEN, adminTraegerschaft.getStatus());
 	}
 }

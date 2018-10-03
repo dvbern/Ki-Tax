@@ -97,7 +97,7 @@ public class Einladung {
 
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	public void checkValues() {
+	private void checkValues() {
 		switch (einladungTyp) {
 		case GEMEINDE:
 			requireNonNull(gemeinde, "For an Einladung of the type Gemeinde a Gemeinde must be set");
