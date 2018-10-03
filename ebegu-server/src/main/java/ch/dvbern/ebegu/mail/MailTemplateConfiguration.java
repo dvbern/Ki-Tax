@@ -21,8 +21,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,19 +28,17 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
-import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -262,22 +258,19 @@ public class MailTemplateConfiguration {
 	public String getBenutzerEinladung(
 		@Nonnull Benutzer einladender,
 		@Nonnull Benutzer eingeladener,
-		@Nonnull EinladungTyp einladungTyp,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
+		@Nonnull Einladung einladung
 	) {
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
-		paramMap.put("acceptLink", createLink(eingeladener, einladungTyp, gemeinde, institution, traegerschaft));
+		paramMap.put("acceptLink", createLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
 		paramMap.put("content",
 			ServerMessageUtil.getMessage(
-				"EinladungEmail_" + einladungTyp.toString(),
+				"EinladungEmail_" + einladung.getEinladungTyp(),
 				einladender.getFullName(),
 				ServerMessageUtil.translateEnumValue(eingeladener.getRole()),
-				getRollenZusatz(einladungTyp, eingeladener, gemeinde, institution, traegerschaft)
+				getRollenZusatz(einladung, eingeladener)
 			)
 		);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
@@ -286,91 +279,24 @@ public class MailTemplateConfiguration {
 	}
 
 	@Nonnull
-	private String getRollenZusatz(
-		@Nonnull EinladungTyp einladungTyp,
-		@Nullable Benutzer eingeladener,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
-	) {
-		if (einladungTyp == EinladungTyp.MITARBEITER) {
+	private String getRollenZusatz(@Nonnull Einladung einladung, @Nullable Benutzer eingeladener) {
+		if (einladung.getEinladungTyp() == EinladungTyp.MITARBEITER) {
 			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
-			return getRollenZusatzForMitarbeiter(eingeladener);
+			return eingeladener.extractRollenAbhaengigkeitAsString();
 		}
-		if (einladungTyp == EinladungTyp.GEMEINDE) {
-			requireNonNull(gemeinde, "For an Einladung of the type Gemeinde a Gemeinde must be set");
-			return '(' + gemeinde.getName() + ')';
-		}
-		if (einladungTyp == EinladungTyp.TRAEGERSCHAFT) {
-			requireNonNull(traegerschaft, "For an Einladung of the type Traegerschaft a Traegerschaft must be set");
-			return '(' + traegerschaft.getName() + ')';
-		}
-		if (einladungTyp == EinladungTyp.INSTITUTION) {
-			requireNonNull(institution, "For an Einladung of the type Institution an Institution must be set");
-			return '(' + institution.getName() + ')';
-		}
-		return "";
-	}
-
-	private String getRollenZusatzForMitarbeiter(@Nonnull Benutzer eingeladener) {
-		if (eingeladener.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.GEMEINDE) {
-			final Set<Gemeinde> gemeindeList = eingeladener.getCurrentBerechtigung().getGemeindeList();
-			requireNonNull(gemeindeList);
-			return gemeindeList.stream()
-				.map(Gemeinde::getName)
-				.collect(Collectors.joining(", "));
-		}
-		if (eingeladener.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.TRAEGERSCHAFT) {
-			requireNonNull(eingeladener.getTraegerschaft());
-			return eingeladener.getTraegerschaft().getName();
-		}
-		if (eingeladener.getRole().getRollenAbhaengigkeit() == RollenAbhaengigkeit.INSTITUTION) {
-			requireNonNull(eingeladener.getInstitution());
-			return eingeladener.getInstitution().getName();
-		}
-		return "";
+		return einladung.getEinladungObjectName()
+			.map(name -> '(' + name + ')').orElse("");
 	}
 
 	private String createLink(
 		@Nonnull Benutzer eingeladener,
-		@Nonnull EinladungTyp einladungTyp,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
+		@Nonnull Einladung einladung
 	) {
-		final String einladungRelatedObjectId = isEinladungRelatedObjectRequired(einladungTyp)
-			? "&entityid=" + getEinladungRelatedObjectId(einladungTyp, gemeinde, institution, traegerschaft)
-			: "";
-
 		return ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://"
 			+ ebeguConfiguration.getHostname()
-			+ "/einladung?typ=" + einladungTyp
-			+ einladungRelatedObjectId
+			+ "/einladung?typ=" + einladung.getEinladungTyp()
+			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
 			+ "&userid=" + eingeladener.getId();
-	}
-
-	private boolean isEinladungRelatedObjectRequired(@Nonnull EinladungTyp einladungTyp) {
-		return einladungTyp != EinladungTyp.MITARBEITER;
-	}
-
-	@Nonnull
-	private String getEinladungRelatedObjectId(
-		@Nonnull EinladungTyp einladungTyp,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
-	) {
-		// todo KIBON-228 mejorar, eliminar rojo
-		if (einladungTyp == EinladungTyp.GEMEINDE) {
-			return gemeinde.getId();
-		}
-		if (einladungTyp == EinladungTyp.INSTITUTION) {
-			return institution.getId();
-		}
-		if (einladungTyp == EinladungTyp.TRAEGERSCHAFT) {
-			return traegerschaft.getId();
-		}
-		return "";
 	}
 
 	private String processTemplateGesuch(

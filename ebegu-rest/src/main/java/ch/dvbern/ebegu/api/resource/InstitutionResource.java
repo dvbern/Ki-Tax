@@ -43,6 +43,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.EinladungTyp;
@@ -93,7 +94,7 @@ public class InstitutionResource {
 			throw new EbeguRuntimeException("createInstitution", ErrorCodeEnum.EXISTING_USER_MAIL, institutionJAXP.getMail());
 		}
 		final Benutzer benutzer = benutzerService.createAdminInstitutionByEmail(institutionJAXP.getMail(), persistedInstitution);
-		benutzerService.einladen(benutzer, EinladungTyp.INSTITUTION, null, persistedInstitution, null);
+		benutzerService.einladen(benutzer, new Einladung(EinladungTyp.INSTITUTION, null, persistedInstitution, null));
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(InstitutionResource.class)

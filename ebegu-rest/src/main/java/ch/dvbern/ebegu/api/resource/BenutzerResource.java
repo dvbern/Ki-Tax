@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -106,7 +107,12 @@ public class BenutzerResource {
 	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
 
-		return converter.benutzerToJaxBenutzer(benutzerService.einladen(benutzer, EinladungTyp.MITARBEITER, null, null, null));
+		return converter.benutzerToJaxBenutzer(
+			benutzerService.einladen(
+				benutzer,
+				new Einladung(EinladungTyp.MITARBEITER, null, null, null)
+			)
+		);
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, "

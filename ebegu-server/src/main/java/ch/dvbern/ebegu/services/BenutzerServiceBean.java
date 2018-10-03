@@ -55,6 +55,7 @@ import javax.persistence.criteria.SetJoin;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -262,22 +263,16 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_MANDANT,
 	})
-	public Benutzer einladen(
-		@Nonnull Benutzer benutzer,
-		@Nonnull EinladungTyp einladungTyp,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
-	) {
+	public Benutzer einladen(@Nonnull Benutzer benutzer, @Nonnull Einladung einladung) {
 		requireNonNull(benutzer);
-		requireNonNull(einladungTyp);
+		requireNonNull(einladung);
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
-		checkEinladung(benutzer, einladungTyp);
+		checkEinladung(benutzer, einladung.getEinladungTyp());
 
-		Benutzer persisted = saveBenutzer(benutzer);
+		Benutzer persistedBenutzer = saveBenutzer(benutzer);
 
 		try {
-			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted, einladungTyp, gemeinde, institution, traegerschaft);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persistedBenutzer, einladung);
 
 		} catch (MailException e) {
 			String message =
@@ -285,7 +280,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
-		return persisted;
+		return persistedBenutzer;
 	}
 
 	/**

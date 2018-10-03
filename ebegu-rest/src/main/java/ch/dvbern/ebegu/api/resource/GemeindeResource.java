@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinladungTyp;
@@ -104,7 +105,7 @@ public class GemeindeResource {
 
 		assertUserHasRequiredRole(benutzer);
 
-		benutzerService.einladen(benutzer, EinladungTyp.GEMEINDE, persistedGemeinde, null, null);
+		benutzerService.einladen(benutzer, new Einladung(EinladungTyp.GEMEINDE, persistedGemeinde, null, null));
 
 		return converter.gemeindeToJAX(persistedGemeinde);
 	}

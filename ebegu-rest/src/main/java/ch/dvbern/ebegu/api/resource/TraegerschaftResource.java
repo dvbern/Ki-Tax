@@ -43,6 +43,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -101,7 +102,7 @@ public class TraegerschaftResource {
 			}
 			final Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(traegerschaftJAXP.getMail(), persistedTraegerschaft);
 
-			benutzerService.einladen(benutzer, EinladungTyp.TRAEGERSCHAFT, null, null, traegerschaft);
+			benutzerService.einladen(benutzer, new Einladung(EinladungTyp.TRAEGERSCHAFT, null, null, traegerschaft));
 		}
 
 		JaxTraegerschaft jaxTraegerschaft = converter.traegerschaftToJAX(persistedTraegerschaft);
