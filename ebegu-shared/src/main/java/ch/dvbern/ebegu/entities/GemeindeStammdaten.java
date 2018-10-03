@@ -38,7 +38,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Entity
 @Table
-public class GemeindeStammdaten extends AbstractEntity {
+public class GemeindeStammdaten extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
 

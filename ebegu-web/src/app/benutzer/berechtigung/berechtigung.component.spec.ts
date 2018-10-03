@@ -79,7 +79,6 @@ describe('EditBerechtigungComponent', () => {
     it('should load institutionen and traegerschaften', () => {
         fixture.detectChanges();
         expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
-        expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
     });
 
     it('should display gemeinde when gemeinde dependent role', () => {
