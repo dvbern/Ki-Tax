@@ -21,6 +21,7 @@ import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -34,14 +35,17 @@ describe('BenutzerEinladenComponent', () => {
     let fixture: ComponentFixture<BenutzerEinladenComponent>;
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getGemeindenForPrincipal$']);
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+        ['isRole', 'getGemeindenForPrincipal$', 'getVisibleRolesForPrincipal']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
 
     beforeEach(async(() => {
-        insitutionSpy.getAllInstitutionen.and.returnValue([]);
+        const superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
+        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
+        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
 

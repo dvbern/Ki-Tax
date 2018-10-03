@@ -85,6 +85,8 @@ public final class Constants {
 	public static final String TEMP_REPORT_FOLDERNAME = "tempReports";
 
 	public static final String SYSTEM_USER_USERNAME = "System";
+	public static final String ANONYMOUS_USER_USERNAME = "anonymous";
+	public static final String LOGINCONNECTOR_USER_USERNAME = "LoginConnector";
 
 	private Constants() {
 		//this prevents even the native class from

@@ -34,7 +34,7 @@ import org.apache.commons.codec.binary.StringUtils;
  */
 public class UTF8Base64MailHeaderDirective implements TemplateDirectiveModel {
 
-	private final static String CHARSET = "UTF-8";
+	private static final String CHARSET = "UTF-8";
 
 	@Override
 	public void execute(final Environment env, final Map params, final TemplateModel[] loopVars, final TemplateDirectiveBody body) throws TemplateException, IOException {
@@ -61,7 +61,7 @@ public class UTF8Base64MailHeaderDirective implements TemplateDirectiveModel {
 
 		private final Writer out;
 
-		public Base64Writer(final Writer out) {
+		Base64Writer(final Writer out) {
 			this.out = out;
 		}
 

@@ -16,7 +16,11 @@ package ch.dvbern.ebegu.vorlagen;
 
 import com.lowagie.text.FontFactory;
 
-public class PDFFontUtil {
+public final class PDFFontUtil {
+
+	private PDFFontUtil() {
+		// util
+	}
 
     /*
 	public static final String FONT_FACE_ARIAL = "arial";

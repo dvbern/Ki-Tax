@@ -21,7 +21,6 @@ import java.util.List;
 public enum GemeindeStatus {
 
 	AKTIV,
-	GESPERRT,
 	EINGELADEN;
 
 	public boolean isEnabled() {

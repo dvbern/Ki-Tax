@@ -78,6 +78,7 @@ public class BetreuungsgutscheinConfigurator {
 
 	}
 
+	@SuppressWarnings("checkstyle:LocalVariableName")
 	private void abschnitteErstellenRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 

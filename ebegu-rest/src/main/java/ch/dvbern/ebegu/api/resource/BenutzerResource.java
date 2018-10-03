@@ -231,7 +231,6 @@ public class BenutzerResource {
 	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
@@ -245,7 +244,7 @@ public class BenutzerResource {
 	@Path("/inactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public JaxBenutzer inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
@@ -262,7 +261,7 @@ public class BenutzerResource {
 	@Path("/reactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public JaxBenutzer reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
@@ -279,7 +278,7 @@ public class BenutzerResource {
 	@Path("/saveBenutzerBerechtigungen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public JaxBenutzer saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,

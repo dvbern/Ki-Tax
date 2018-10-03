@@ -47,7 +47,7 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde"
                               (click)="setSelectedGemeinde(gemeinde)">
-                        {{gemeinde.status | translate}}
+                        {{'GEMEINDE_STATUS_' + gemeinde.status | translate}}
                     </mat-cell>
                 </ng-container>
 

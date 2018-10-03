@@ -23,6 +23,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -34,13 +35,17 @@ describe('EditBerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
     beforeEach(async(() => {
-        insitutionSpy.getAllInstitutionen.and.returnValue([]);
+        const superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
+        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
+        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
 
@@ -73,7 +78,7 @@ describe('EditBerechtigungComponent', () => {
 
     it('should load institutionen and traegerschaften', () => {
         fixture.detectChanges();
-        expect(insitutionSpy.getAllInstitutionen).toHaveBeenCalled();
+        expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
         expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
     });
 

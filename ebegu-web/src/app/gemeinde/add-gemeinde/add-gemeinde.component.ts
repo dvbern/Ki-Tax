@@ -113,6 +113,6 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private navigateBack() {
-        this.$state.go('admin.gemeindelist');
+        this.$state.go('gemeinde.list');
     }
 }

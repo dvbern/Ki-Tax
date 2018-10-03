@@ -59,7 +59,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
@@ -531,7 +530,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 
 		final Dossier persistedDossier = dossierService.saveDossier(dossier);
-		fromTestfall.setDossier(persistedDossier);;
+		fromTestfall.setDossier(persistedDossier);
 
 		fromTestfall.createGesuch(LocalDate.of(2016, Month.FEBRUARY, 15));
 		gesuchService.createGesuch(fromTestfall.getGesuch());

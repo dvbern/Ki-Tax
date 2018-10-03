@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -38,8 +37,10 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Gemeinden
@@ -70,15 +72,19 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private SequenceService sequenceService;
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde) {
+		requireNonNull(gemeinde);
+
 		if (gemeinde.isNew()) {
-			gemeinde = initGemeindeNummerAndMandant(gemeinde);
+			initGemeindeNummerAndMandant(gemeinde);
 		}
-		Objects.requireNonNull(gemeinde);
+
 		return persistence.merge(gemeinde);
 	}
 
@@ -101,7 +107,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		requireNonNull(id, "id muss gesetzt sein");
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
 		return Optional.ofNullable(gemeinde);
 	}
@@ -109,7 +115,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
-		Objects.requireNonNull(name, "Gemeindename muss gesetzt sein");
+		requireNonNull(name, "Gemeindename muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
 	}
 
@@ -136,25 +142,18 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	private long getNextGemeindeNummer() {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Long> query = cb.createQuery(Long.TYPE);
-		Root<Gemeinde> root = query.from(Gemeinde.class);
-		query.select(cb.max(root.get(Gemeinde_.gemeindeNummer)));
-		Long max = persistence.getCriteriaSingleResult(query);
-		if (max == null) {
-			max = 0L;
-		}
-		return max + 1;
+		Mandant mandant = requireNonNull(principalBean.getMandant());
+
+		return sequenceService.createNumberTransactional(SequenceType.GEMEINDE_NUMMER, mandant);
 	}
 
-	private Gemeinde initGemeindeNummerAndMandant(Gemeinde gemeinde) {
-		if (gemeinde.getMandant() == null && principalBean.getMandant() != null) {
-			gemeinde.setMandant(principalBean.getMandant());
+	private void initGemeindeNummerAndMandant(@Nonnull Gemeinde gemeinde) {
+		if (gemeinde.getMandant() == null) {
+			gemeinde.setMandant(requireNonNull(principalBean.getMandant()));
 		}
 		if (gemeinde.getGemeindeNummer() == 0) {
 			gemeinde.setGemeindeNummer(getNextGemeindeNummer());
 		}
-		return gemeinde;
 	}
 
 
@@ -174,7 +173,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 //		// and taking the FIXME into account should be enough
 //		// Nur Gemeinden meines Mandanten zurueckgeben
 //		final Principal principal = principalBean.getPrincipal();
-//		if (!"anonymous".equals(principal.getName())) {
+//		if (!Constants.ANONYMOUS_USER_USERNAME.equals(principal.getName())) {
 //			// user anonymous can get the list of active Gemeinden, though anonymous user doesn't really exist
 //			// FIXME MANDANTEN this is actually a problem if we work with different Mandanten because in onBoarding there is no user at all
 //			// so we cannot get the mandant out of the user. In this case we need to send the mandant when calling this method

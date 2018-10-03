@@ -119,6 +119,11 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nullable Betreuung betreuungToRemove);
 
 	/**
+	 * prueft ob der aktuell eingeloggte benutzer den Benutzer schreibend bearbeiten darf
+	 */
+	void checkWriteAuthorization(@Nonnull Benutzer benutzer);
+
+	/**
 	 * prueft ob der aktuell eingeloggte benutzer ALLE betreuung in der Liste lesen darf
 	 */
 	void checkReadAuthorizationForAllBetreuungen(@Nullable Collection<Betreuung> betreuungen);

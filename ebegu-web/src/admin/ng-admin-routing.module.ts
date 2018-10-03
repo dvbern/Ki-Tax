@@ -22,91 +22,59 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
-import {AddGemeindeComponent} from '../app/gemeinde/add-gemeinde/add-gemeinde.component';
-import {GemeindeListComponent} from '../app/gemeinde/gemeinde-list/gemeinde-list.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 
-export const traegerschaftState: Ng2StateDeclaration = {
-    name: 'admin.traegerschaft',
-    url: '/traegerschaft',
-    component: TraegerschaftViewComponent,
-    resolve: [
-        {
-            token: 'traegerschaften',
-            deps: [TraegerschaftRS],
-            resolveFn: getTraegerschaften,
+const states: Ng2StateDeclaration[] = [
+    {
+        name: 'admin.traegerschaft',
+        url: '/traegerschaft',
+        component: TraegerschaftViewComponent,
+        resolve: [
+            {
+                token: 'traegerschaften',
+                deps: [TraegerschaftRS],
+                resolveFn: getTraegerschaften,
+            }
+        ],
+        data: {
+            roles: TSRoleUtil.getMandantRoles(),
         }
-    ],
-    data: {
-        roles: TSRoleUtil.getMandantRoles(),
-    }
-};
-
-export const testdatenState: Ng2StateDeclaration = {
-    name: 'admin.testdaten',
-    url: '/testdaten',
-    component: TestdatenViewComponent,
-    data: {
-        roles: TSRoleUtil.getSuperAdminRoles(),
-    }
-};
-
-export const batchjobTriggerState: Ng2StateDeclaration = {
-    name: 'admin.batchjobTrigger',
-    url: '/batchjobTrigger',
-    component: BatchjobTriggerViewComponent,
-};
-
-export const gemeindeListState: Ng2StateDeclaration = {
-    name: 'admin.gemeindelist',
-    url: '/gemeindelist',
-    component: GemeindeListComponent,
-    data: {
-        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-    }
-};
-
-export const addGemeindenState: Ng2StateDeclaration = {
-    name: 'admin.addgemeinde',
-    url: '/gemeindelist/add/:gemeindeId',
-    component: AddGemeindeComponent,
-    data: {
-        roles: TSRoleUtil.getMandantRoles(),
-    }
-};
-
-export const debuggingState: Ng2StateDeclaration = {
-    name: 'admin.debugging',
-    url: '/debug',
-    component: DebuggingComponent,
-};
-
-export const benutzerState: Ng2StateDeclaration = {
-    name: 'admin.benutzer',
-    component: BenutzerComponent,
-    url: '/benutzerlist/benutzer/:benutzerId',
-    data: {
-        roles: TSRoleUtil.getAllAdministratorRevisorRole(),
     },
-};
+    {
+        name: 'admin.testdaten',
+        url: '/testdaten',
+        component: TestdatenViewComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        }
+    },
+    {
+        name: 'admin.batchjobTrigger',
+        url: '/batchjobTrigger',
+        component: BatchjobTriggerViewComponent,
+    },
+    {
+        name: 'admin.debugging',
+        url: '/debug',
+        component: DebuggingComponent,
+    },
+    {
+        name: 'admin.benutzer',
+        component: BenutzerComponent,
+        url: '/benutzerlist/benutzer/:benutzerId',
+        data: {
+            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+        },
+    }
+];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({
-            states: [
-                traegerschaftState,
-                testdatenState,
-                batchjobTriggerState,
-                debuggingState,
-                benutzerState,
-                gemeindeListState,
-                addGemeindenState,
-            ]
-        }),
+        UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
         UIRouterUpgradeModule

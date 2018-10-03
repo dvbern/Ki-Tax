@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,27 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {SharedModule} from '../shared/shared.module';
-import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
-import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
-import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
+import {GemeindeRoutingModule} from './gemeinde-routing.module';
 
-@NgModule({
-    imports: [
-        SharedModule,
-        GemeindeRoutingModule,
-    ],
-    declarations: [
-        GemeindeListComponent,
-        AddGemeindeComponent,
-    ],
-    entryComponents: [
-        GemeindeListComponent,
-        AddGemeindeComponent,
-    ],
-    providers: [],
-})
-export class GemeindeModule {
-}
+describe('GemeindeRoutingModule', () => {
+    let gemeindeRoutingModule: GemeindeRoutingModule;
 
+    beforeEach(() => {
+        gemeindeRoutingModule = new GemeindeRoutingModule();
+    });
+
+    it('should create an instance', () => {
+        expect(gemeindeRoutingModule).toBeTruthy();
+    });
+});

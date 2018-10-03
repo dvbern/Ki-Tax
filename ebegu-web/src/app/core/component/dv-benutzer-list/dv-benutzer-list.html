@@ -46,9 +46,15 @@
                         data-translate="ROLLE_GUELTIG_AB"></th>
                     <th st-sort="roleGueltigBis" class="sortable row-roleGueltigBis"
                         data-translate="ROLLE_GUELTIG_BIS"></th>
-                    <th st-sort="gemeinde" class="sortable row-gemeinde" data-translate="GEMEINDEN"></th>
-                    <th st-sort="institution" class="sortable row-institution" data-translate="INSTITUTION"></th>
-                    <th st-sort="traegerschaft" class="sortable row-traegerschaft" data-translate="TRAEGERSCHAFT"></th>
+                    <th st-sort="gemeinde" class="sortable row-gemeinde" data-translate="GEMEINDEN"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()"></th>
+                    <th st-sort="institution" class="sortable row-institution" data-translate="INSTITUTION"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftRoles()"></th>
+                    <th st-sort="traegerschaft" class="sortable row-traegerschaft" data-translate="TRAEGERSCHAFT"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"></th>
                     <th st-sort="status" class="sortable row-status" data-translate="STATUS"></th>
                 </tr>
                 <!--Filterspalten-->
@@ -76,7 +82,8 @@
                     </th>
                     <th><input st-search="roleGueltigAb" class="form-control" type="text"/></th>
                     <th><input st-search="roleGueltigBis" class="form-control" type="text"/></th>
-                    <th>
+                    <th dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()">
                         <div class="dv-select-style">
                             <select st-input-event="change" name="gemeinde" id="gemeinde"
                                     st-search="gemeinde" class="form-control"
@@ -86,7 +93,8 @@
                             </select>
                         </div>
                     </th>
-                    <th>
+                    <th dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftRoles()">
                         <div class="dv-select-style">
                             <select st-input-event="change" name="institution" id="institution"
                                     st-search="institution" class="form-control"
@@ -96,7 +104,8 @@
                             </select>
                         </div>
                     </th>
-                    <th>
+                    <th dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
                         <div class="dv-select-style">
                             <select st-input-event="change" name="traegerschaft" id="traegerschaft"
                                     st-search="traegerschaft" class="form-control"
@@ -153,15 +162,21 @@
                     </td>
                     <td class="ellipsis"
                         title="{{gemeinden}}"
-                        ng-bind="gemeinden">
+                        ng-bind="gemeinden"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()">
                     </td>
                     <td class="ellipsis"
                         title="{{row.currentBerechtigung.institution.name}}"
-                        ng-bind="row.currentBerechtigung.institution.name">
+                        ng-bind="row.currentBerechtigung.institution.name"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftRoles()">
                     </td>
                     <td class="ellipsis"
                         title="{{row.currentBerechtigung.traegerschaft.name}}"
-                        ng-bind="row.currentBerechtigung.traegerschaft.name">
+                        ng-bind="row.currentBerechtigung.traegerschaft.name"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
                     </td>
                     <td class="ellipsis"
                         title="{{'BENUTZER_STATUS_' + row.status  | translate}}"

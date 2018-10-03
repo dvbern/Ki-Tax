@@ -37,9 +37,6 @@ public class BegleitschreibenPrintImpl extends BriefPrintImpl implements Begleit
 
 	private final List<AufzaehlungPrint> beilagen = new ArrayList<>();
 
-	/**
-	 * @param gesuch
-	 */
 	public BegleitschreibenPrintImpl(Gesuch gesuch) {
 
 		super(gesuch);
@@ -71,7 +68,7 @@ public class BegleitschreibenPrintImpl extends BriefPrintImpl implements Begleit
 
 	@Override
 	public boolean isHasFSDokument() {
-		return gesuch.isHasFSDokument();
+		return getGesuch().isHasFSDokument();
 	}
 
 	@Override

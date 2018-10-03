@@ -288,7 +288,8 @@ public class FinanzielleSituationRechner {
 	 * muss auch uebergeben werden, da manche Daten aus ihr genommen werden
 	 */
 	@Nullable
-	public static BigDecimal calcGeschaeftsgewinnDurchschnitt(@Nullable FinanzielleSituation finanzielleSituation,
+	public static BigDecimal calcGeschaeftsgewinnDurchschnitt(
+		@Nullable FinanzielleSituation finanzielleSituation,
 		@Nullable Einkommensverschlechterung einkVersBjp1,
 		@Nullable Einkommensverschlechterung einkVersBjp2,
 		@Nullable EinkommensverschlechterungInfo ekvi,
@@ -348,7 +349,10 @@ public class FinanzielleSituationRechner {
 	 * Berechnet 5 prozent des Nettovermoegens von GS1 und GS2. Der Gesamtwert kann dabei nicht kleiner als 0 sein auch
 	 * wenn ein einzelner Gesuchsteller ein negatives Nettovermoegen hat.
 	 */
-	public static BigDecimal calcVermoegen5Prozent(@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1, @Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+	public static BigDecimal calcVermoegen5Prozent(
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+
 		final BigDecimal totalBruttovermoegen = add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getBruttovermoegen() : BigDecimal.ZERO,
 			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getBruttovermoegen() : BigDecimal.ZERO);
 

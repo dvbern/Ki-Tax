@@ -17,15 +17,25 @@
 
 package ch.dvbern.ebegu.services.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
+import ch.dvbern.ebegu.enums.UserRole;
 
 public final class FilterFunctions {
 
@@ -33,7 +43,7 @@ public final class FilterFunctions {
 		// util
 	}
 
-	public static void getGemeindeFilterForCurrentUser(
+	public static void setGemeindeFilterForCurrentUser(
 		@Nonnull Benutzer currentBenutzer,
 		@Nonnull Join<?, Gemeinde> joinGemeinde,
 		@Nonnull List<Predicate> predicates) {
@@ -43,5 +53,65 @@ public final class FilterFunctions {
 			Predicate inGemeinde = joinGemeinde.in(gemeindenForBenutzer);
 			predicates.add(inGemeinde);
 		}
+	}
+
+	public static void setRoleFilterForCurrentUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinBerechtigung,
+		@Nonnull List<Predicate> predicates) {
+
+		final UserRole role = currentBenutzer.getCurrentBerechtigung().getRole();
+
+		if (role == UserRole.ADMIN_MANDANT) {
+			predicates.add(joinBerechtigung.get(Berechtigung_.role).in(UserRole.getMandantRoles()));
+			return;
+		}
+
+		final RollenAbhaengigkeit abhaengigkeit = role.getRollenAbhaengigkeit();
+		switch (abhaengigkeit) {
+		case GEMEINDE:
+		case INSTITUTION:
+			predicates.add(joinBerechtigung.get(Berechtigung_.role)
+				.in(UserRole.getRolesByAbhaengigkeit(abhaengigkeit)));
+			return;
+		case TRAEGERSCHAFT:
+			predicates.add(joinBerechtigung.get(Berechtigung_.role)
+				.in(UserRole.getRolesByAbhaengigkeiten(
+					Arrays.asList(RollenAbhaengigkeit.INSTITUTION, RollenAbhaengigkeit.TRAEGERSCHAFT))
+				));
+			return;
+		default:
+			return;
+		}
+	}
+
+	public static void setInstitutionFilterForCurrentUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull List<Predicate> predicates) {
+
+		final Institution userInstitution = currentBenutzer.getCurrentBerechtigung().getInstitution();
+		Objects.requireNonNull(userInstitution);
+
+		Predicate sameInstitution = cb.equal(joinCurrentBerechtigung.get(Berechtigung_.institution), userInstitution);
+		predicates.add(sameInstitution);
+	}
+
+	public static void setTraegerschaftFilterForCurrentUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinCurrentBerechtigung,
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull List<Predicate> predicates) {
+
+		final Traegerschaft userTraegerschaft = currentBenutzer.getCurrentBerechtigung().getTraegerschaft();
+		Objects.requireNonNull(userTraegerschaft);
+
+		Predicate sameTraegerschaft =
+			cb.equal(joinCurrentBerechtigung.get(Berechtigung_.traegerschaft), userTraegerschaft);
+		Predicate institutionOfTraegerschaft = cb.equal(
+			joinCurrentBerechtigung.get(Berechtigung_.institution).get(Institution_.traegerschaft), userTraegerschaft);
+
+		predicates.add(cb.or(sameTraegerschaft, institutionOfTraegerschaft));
 	}
 }
