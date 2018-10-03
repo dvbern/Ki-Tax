@@ -26,46 +26,46 @@ export default class TSSearchResultEntry {
     private _dossierId: string;
     private _text: string;
 
-    constructor() {
+    public constructor() {
     }
 
-    get additionalInformation(): string {
+    public get additionalInformation(): string {
         return this._additionalInformation;
     }
 
-    set additionalInformation(value: string) {
+    public set additionalInformation(value: string) {
         this._additionalInformation = value;
     }
 
-    get antragDTO(): TSAbstractAntragDTO {
+    public get antragDTO(): TSAbstractAntragDTO {
         return this._antragDTO;
     }
 
-    set antragDTO(value: TSAbstractAntragDTO) {
+    public set antragDTO(value: TSAbstractAntragDTO) {
         this._antragDTO = value;
     }
 
-    get entity(): string {
+    public get entity(): string {
         return this._entity;
     }
 
-    set entity(value: string) {
+    public set entity(value: string) {
         this._entity = value;
     }
 
-    get resultId(): string {
+    public get resultId(): string {
         return this._resultId;
     }
 
-    set resultId(value: string) {
+    public set resultId(value: string) {
         this._resultId = value;
     }
 
-    get gesuchID(): string {
+    public get gesuchID(): string {
         return this._gesuchID;
     }
 
-    set gesuchID(value: string) {
+    public set gesuchID(value: string) {
         this._gesuchID = value;
     }
 
@@ -85,11 +85,11 @@ export default class TSSearchResultEntry {
         this._dossierId = value;
     }
 
-    get text(): string {
+    public get text(): string {
         return this._text;
     }
 
-    set text(value: string) {
+    public set text(value: string) {
         this._text = value;
     }
 }

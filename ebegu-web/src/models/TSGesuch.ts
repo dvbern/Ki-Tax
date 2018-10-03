@@ -16,7 +16,11 @@
 import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
-import {getSchulamtBetreuungsangebotTypValues, isOfAnyBetreuungsangebotTyp, TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {
+    getSchulamtBetreuungsangebotTypValues,
+    isOfAnyBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp,
+} from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';
@@ -72,139 +76,139 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         this._gesuchsteller2 = value;
     }
 
-    get kindContainers(): Array<TSKindContainer> {
+    public get kindContainers(): Array<TSKindContainer> {
         return this._kindContainers;
     }
 
-    set kindContainers(value: Array<TSKindContainer>) {
+    public set kindContainers(value: Array<TSKindContainer>) {
         this._kindContainers = value;
     }
 
-    get familiensituationContainer(): TSFamiliensituationContainer {
+    public get familiensituationContainer(): TSFamiliensituationContainer {
         return this._familiensituationContainer;
     }
 
-    set familiensituationContainer(value: TSFamiliensituationContainer) {
+    public set familiensituationContainer(value: TSFamiliensituationContainer) {
         this._familiensituationContainer = value;
     }
 
-    get einkommensverschlechterungInfoContainer(): TSEinkommensverschlechterungInfoContainer {
+    public get einkommensverschlechterungInfoContainer(): TSEinkommensverschlechterungInfoContainer {
         return this._einkommensverschlechterungInfoContainer;
     }
 
-    set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
+    public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
         this._einkommensverschlechterungInfoContainer = value;
     }
 
-    get bemerkungen(): string {
+    public get bemerkungen(): string {
         return this._bemerkungen;
     }
 
-    set bemerkungen(value: string) {
+    public set bemerkungen(value: string) {
         this._bemerkungen = value;
     }
 
-    get bemerkungenSTV(): string {
+    public get bemerkungenSTV(): string {
         return this._bemerkungenSTV;
     }
 
-    set bemerkungenSTV(value: string) {
+    public set bemerkungenSTV(value: string) {
         this._bemerkungenSTV = value;
     }
 
-    get bemerkungenPruefungSTV(): string {
+    public get bemerkungenPruefungSTV(): string {
         return this._bemerkungenPruefungSTV;
     }
 
-    set bemerkungenPruefungSTV(value: string) {
+    public set bemerkungenPruefungSTV(value: string) {
         this._bemerkungenPruefungSTV = value;
     }
 
-    get laufnummer(): number {
+    public get laufnummer(): number {
         return this._laufnummer;
     }
 
-    set laufnummer(value: number) {
+    public set laufnummer(value: number) {
         this._laufnummer = value;
     }
 
-    get geprueftSTV(): boolean {
+    public get geprueftSTV(): boolean {
         return this._geprueftSTV;
     }
 
-    set geprueftSTV(value: boolean) {
+    public set geprueftSTV(value: boolean) {
         this._geprueftSTV = value;
     }
 
-    get hasFSDokument(): boolean {
+    public get hasFSDokument(): boolean {
         return this._hasFSDokument;
     }
 
-    set hasFSDokument(value: boolean) {
+    public set hasFSDokument(value: boolean) {
         this._hasFSDokument = value;
     }
 
-    get gesperrtWegenBeschwerde(): boolean {
+    public get gesperrtWegenBeschwerde(): boolean {
         return this._gesperrtWegenBeschwerde;
     }
 
-    set gesperrtWegenBeschwerde(value: boolean) {
+    public set gesperrtWegenBeschwerde(value: boolean) {
         this._gesperrtWegenBeschwerde = value;
     }
 
-    get emptyCopy(): boolean {
+    public get emptyCopy(): boolean {
         return this._emptyCopy;
     }
 
-    set emptyCopy(value: boolean) {
+    public set emptyCopy(value: boolean) {
         this._emptyCopy = value;
     }
 
-    get datumGewarntNichtFreigegeben(): moment.Moment {
+    public get datumGewarntNichtFreigegeben(): moment.Moment {
         return this._datumGewarntNichtFreigegeben;
     }
 
-    set datumGewarntNichtFreigegeben(value: moment.Moment) {
+    public set datumGewarntNichtFreigegeben(value: moment.Moment) {
         this._datumGewarntNichtFreigegeben = value;
     }
 
-    get datumGewarntFehlendeQuittung(): moment.Moment {
+    public get datumGewarntFehlendeQuittung(): moment.Moment {
         return this._datumGewarntFehlendeQuittung;
     }
 
-    set datumGewarntFehlendeQuittung(value: moment.Moment) {
+    public set datumGewarntFehlendeQuittung(value: moment.Moment) {
         this._datumGewarntFehlendeQuittung = value;
     }
 
-    get timestampVerfuegt(): moment.Moment {
+    public get timestampVerfuegt(): moment.Moment {
         return this._timestampVerfuegt;
     }
 
-    set timestampVerfuegt(value: moment.Moment) {
+    public set timestampVerfuegt(value: moment.Moment) {
         this._timestampVerfuegt = value;
     }
 
-    get gueltig(): boolean {
+    public get gueltig(): boolean {
         return this._gueltig;
     }
 
-    set gueltig(value: boolean) {
+    public set gueltig(value: boolean) {
         this._gueltig = value;
     }
 
-    get gesuchBetreuungenStatus(): TSGesuchBetreuungenStatus {
+    public get gesuchBetreuungenStatus(): TSGesuchBetreuungenStatus {
         return this._gesuchBetreuungenStatus;
     }
 
-    set gesuchBetreuungenStatus(value: TSGesuchBetreuungenStatus) {
+    public set gesuchBetreuungenStatus(value: TSGesuchBetreuungenStatus) {
         this._gesuchBetreuungenStatus = value;
     }
 
-    get dokumenteHochgeladen(): boolean {
+    public get dokumenteHochgeladen(): boolean {
         return this._dokumenteHochgeladen;
     }
 
-    set dokumenteHochgeladen(value: boolean) {
+    public set dokumenteHochgeladen(value: boolean) {
         this._dokumenteHochgeladen = value;
     }
 
@@ -244,7 +248,7 @@ export default class TSGesuch extends TSAbstractAntragEntity {
     public getKinderWithBetreuungList(): Array<TSKindContainer> {
         const listResult: Array<TSKindContainer> = [];
         if (this.kindContainers) {
-            this.kindContainers.forEach((kind) => {
+            this.kindContainers.forEach(kind => {
                 if (kind.kindJA.familienErgaenzendeBetreuung) {
                     listResult.push(kind);
                 }
@@ -258,13 +262,14 @@ export default class TSGesuch extends TSAbstractAntragEntity {
      * ACHTUNG! Diese Methode gibt auch true zurueck wenn es keine Betreuungen gibt, was nicht immer richtig ist
      */
     private areThereOnlyAngeboteOfType(types: TSBetreuungsangebotTyp[]): boolean {
-        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
         }
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.institutionStammdaten && !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp, types)) {
+                if (betreuung.institutionStammdaten && !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp,
+                    types)) {
                     return false;
                 }
             }
@@ -292,7 +297,7 @@ export default class TSGesuch extends TSAbstractAntragEntity {
      * Returns true when all Betreuungen are geschlossen ohne verfuegung
      */
     public areThereOnlyGeschlossenOhneVerfuegung(): boolean {
-        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
         }
@@ -307,7 +312,7 @@ export default class TSGesuch extends TSAbstractAntragEntity {
     }
 
     public hasBetreuungInStatusWarten(): boolean {
-        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
                 if (betreuung.betreuungsstatus === TSBetreuungsstatus.WARTEN) {
@@ -345,10 +350,9 @@ export default class TSGesuch extends TSAbstractAntragEntity {
 
     /**
      * Schaut dass mindestens eine Betreuung erfasst wurde.
-     * @returns {boolean}
      */
     public isThereAnyBetreuung(): boolean {
-        const kinderWithBetreuungList: Array<TSKindContainer> = this.getKinderWithBetreuungList();
+        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
             if (kind.betreuungen && kind.betreuungen.length > 0) {
                 return true;

@@ -21,9 +21,9 @@ import {TSHTTPEvent} from '../events/TSHTTPEvent';
  */
 export default class HttpResponseInterceptor implements IHttpInterceptor {
 
-    static $inject = ['$rootScope', '$q'];
+    public static $inject = ['$rootScope', '$q'];
 
-    constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService) {
+    public constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService) {
     }
 
     public responseError = (response: any) => {

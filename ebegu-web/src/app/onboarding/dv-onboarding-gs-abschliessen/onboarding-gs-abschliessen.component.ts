@@ -22,9 +22,9 @@ import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSBenutzer from '../../../models/TSBenutzer';
 
 @Component({
     selector: 'dv-onboarding-gs-abschliessen',
@@ -39,17 +39,18 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     private readonly gemeindeId: string; // Parameter aus URL
 
-    constructor(
+    public constructor(
         private readonly transition: Transition,
         public readonly authServiceRS: AuthServiceRS,
         public readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
-        private readonly dossierRS: DossierRS) {
+        private readonly dossierRS: DossierRS,
+    ) {
 
         this.gemeindeId = this.transition.params().gemeindeId;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
         this.user$ = this.authServiceRS.principal$;
     }
@@ -60,7 +61,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         }
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
             this.stateService.go('gesuchsteller.dashboard', {
-                dossierId: dossier.id
+                dossierId: dossier.id,
             });
         });
     }

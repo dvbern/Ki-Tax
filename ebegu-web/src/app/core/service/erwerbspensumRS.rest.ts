@@ -13,23 +13,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class ErwerbspensumRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public readonly http: IHttpService,
-                REST_API: string,
-                public readonly ebeguRestUtil: EbeguRestUtil,
-                public readonly log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'erwerbspensen';
+    public constructor(
+        public readonly http: IHttpService,
+        REST_API: string,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+        public readonly log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
+        this.serviceURL = `${REST_API}erwerbspensen`;
     }
 
     public getServiceName(): string {
@@ -37,21 +39,21 @@ export default class ErwerbspensumRS {
     }
 
     public findErwerbspensum(erwerbspensenContainerID: string): IPromise<TSErwerbspensumContainer> {
-        return this.http.get(this.serviceURL + '/' + encodeURIComponent(erwerbspensenContainerID))
+        return this.http.get(`${this.serviceURL}/${encodeURIComponent(erwerbspensenContainerID)}`)
             .then((response: any) => {
                 this.log.debug('PARSING erwerbspensenContainer REST object ', response.data);
                 return this.ebeguRestUtil.parseErwerbspensumContainer(new TSErwerbspensumContainer(), response.data);
             });
     }
 
-    public saveErwerbspensum(erwerbspensenContainer: TSErwerbspensumContainer, gesuchstellerID: string, gesuchId: string): IPromise<TSErwerbspensumContainer> {
+    public saveErwerbspensum(erwerbspensenContainer: TSErwerbspensumContainer, gesuchstellerID: string,
+                             gesuchId: string,
+    ): IPromise<TSErwerbspensumContainer> {
         let restErwerbspensum = {};
-        restErwerbspensum = this.ebeguRestUtil.erwerbspensumContainerToRestObject(restErwerbspensum, erwerbspensenContainer);
-        return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuchstellerID) + '/' + gesuchId, restErwerbspensum, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+        restErwerbspensum =
+            this.ebeguRestUtil.erwerbspensumContainerToRestObject(restErwerbspensum, erwerbspensenContainer);
+        const url = `${this.serviceURL}/${encodeURIComponent(gesuchstellerID)}/${gesuchId}`;
+        return this.http.put(url, restErwerbspensum).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.log.debug('PARSING ErwerbspensumContainer REST object ', response.data);
                 return this.ebeguRestUtil.parseErwerbspensumContainer(new TSErwerbspensumContainer(), response.data);
@@ -60,16 +62,19 @@ export default class ErwerbspensumRS {
     }
 
     public removeErwerbspensum(erwerbspensumContID: string, gesuchId: string): IPromise<any> {
-        return this.http.delete(this.serviceURL + '/gesuchId/' + encodeURIComponent(gesuchId) + '/erwPenId/' + encodeURIComponent(erwerbspensumContID))
-            .then((response) => {
+        const gesuchIdEnc = encodeURIComponent(gesuchId);
+        const url = `${this.serviceURL}/gesuchId/${gesuchIdEnc}/erwPenId/${encodeURIComponent(erwerbspensumContID)}`;
+        return this.http.delete(url)
+            .then(response => {
                 this.wizardStepManager.findStepsFromGesuch(gesuchId);
                 return response;
             });
     }
 
     public isErwerbspensumRequired(gesuchId: string): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/required/' + encodeURIComponent(gesuchId)).then((response: any) => {
-            return response.data;
-        });
+        return this.http.get(`${this.serviceURL}/required/${encodeURIComponent(gesuchId)}`)
+            .then((response: any) => {
+                return response.data;
+            });
     }
 }

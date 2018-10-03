@@ -13,39 +13,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {IHttpService, IPromise} from 'angular';
 import TSWizardStep from '../../models/TSWizardStep';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class WizardStepRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
-        this.serviceURL = REST_API + 'wizard-steps';
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+    ) {
+        this.serviceURL = `${REST_API}wizard-steps`;
     }
 
-    public updateWizardStep(wizardStep: TSWizardStep): IPromise<any> {
+    public updateWizardStep(wizardStep: TSWizardStep): IPromise<TSWizardStep> {
         const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
 
-        return this.$http.post(this.serviceURL, wizardStepObject, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING WizardStep REST object ', response.data);
+        return this.$http.post(this.serviceURL, wizardStepObject).then((response: any) => {
             return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
         });
     }
 
-    public findWizardStepsFromGesuch(gesuchID: string): IPromise<any> {
-        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(gesuchID))
+    public findWizardStepsFromGesuch(gesuchID: string): IPromise<TSWizardStep[]> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchID)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING wizardSteps REST objects ', response.data);
                 return this.ebeguRestUtil.parseWizardStepList(response.data);
             });
     }
@@ -55,9 +50,9 @@ export default class WizardStepRS {
     }
 
     public setWizardStepMutiert(wizardStepId: string): IPromise<TSWizardStep> {
-        return this.$http.post(this.serviceURL + '/setWizardStepMutiert/' + encodeURIComponent(wizardStepId), null)
-            .then((response) => {
-            return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
-        });
+        return this.$http.post(`${this.serviceURL}/setWizardStepMutiert/${encodeURIComponent(wizardStepId)}`, null)
+            .then(response => {
+                return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
+            });
     }
 }

@@ -14,18 +14,20 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSFall from '../../models/TSFall';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class FallRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+    ) {
         this.serviceURL = REST_API + 'falle';
     }
 
@@ -43,8 +45,8 @@ export default class FallRS {
 
         return this.$http.put(this.serviceURL, fallObject, {
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         }).then((response: any) => {
             this.$log.debug('PARSING fall REST object ', response.data);
             this.$log.debug('PARSed fall REST object ', this.ebeguRestUtil.parseFall(new TSFall(), response.data));
@@ -53,7 +55,7 @@ export default class FallRS {
     }
 
     public findFall(fallID: string): IPromise<any> {
-        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(fallID))
+        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(fallID)}`)
             .then((response: any) => {
                 this.$log.debug('PARSING fall REST object ', response.data);
                 return this.ebeguRestUtil.parseFall(new TSFall(), response.data);

@@ -41,19 +41,19 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
         this._gemeindeNummer = value;
     }
 
-    get status(): TSGemeindeStatus {
+    public get status(): TSGemeindeStatus {
         return this._status;
     }
 
-    set status(value: TSGemeindeStatus) {
+    public set status(value: TSGemeindeStatus) {
         this._status = value;
     }
 
-    get bfsNummer(): number {
+    public get bfsNummer(): number {
         return this._bfsNummer;
     }
 
-    set bfsNummer(value: number) {
+    public set bfsNummer(value: number) {
         this._bfsNummer = value;
     }
 }

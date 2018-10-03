@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSGeschlecht} from './enums/TSGeschlecht';
 import * as moment from 'moment';
+import {TSGeschlecht} from './enums/TSGeschlecht';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
 
@@ -24,7 +24,7 @@ export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
     private _geburtsdatum: moment.Moment;
     private _geschlecht: TSGeschlecht;
 
-    constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht) {
+    public constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht) {
         super();
         this._vorname = vorname;
         this._nachname = nachname;
@@ -65,6 +65,6 @@ export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
     }
 
     public getFullName(): string {
-        return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
+        return `${this.vorname ? this.vorname : ''} ${this.nachname ? this.nachname : ''}`;
     }
 }

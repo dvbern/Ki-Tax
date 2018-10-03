@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
@@ -20,17 +22,16 @@ import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import SearchRS from './searchRS.rest';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
 
+// tslint:disable:no-magic-numbers
 describe('searchRS', () => {
 
     let searchRS: SearchRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockPendenz: TSAntragDTO;
-    let mockPendenzRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -41,35 +42,40 @@ describe('searchRS', () => {
     }));
 
     beforeEach(() => {
-        mockPendenz = new TSAntragDTO('id1', 123, 'name', TSAntragTyp.ERSTGESUCH, undefined, undefined, undefined,
-            [TSBetreuungsangebotTyp.KITA], ['Inst1, Inst2'], 'Juan Arbolado', 'Juan Arbolado', undefined, undefined, undefined, undefined, undefined);
-        mockPendenzRest = ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
-    });
-
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(searchRS.getServiceName()).toBe('SearchRS');
-        });
-        it('should include a getPendenzenBetreuungenList() function', () => {
-            expect(searchRS.getPendenzenList).toBeDefined();
-        });
+        mockPendenz = new TSAntragDTO('id1',
+            123,
+            'name',
+            TSAntragTyp.ERSTGESUCH,
+            undefined,
+            undefined,
+            undefined,
+            [TSBetreuungsangebotTyp.KITA],
+            ['Inst1, Inst2'],
+            'Juan Arbolado',
+            'Juan Arbolado',
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined);
+        ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
     });
 
     describe('API Usage', () => {
         describe('getPendenzenList', () => {
             it('should return all pending Antraege', () => {
-                const tsAntragDTO: TSAntragDTO = new TSAntragDTO();
+                const tsAntragDTO = new TSAntragDTO();
                 tsAntragDTO.fallNummer = 1234;
                 const searchResult: any = {
                     antragDTOs: [tsAntragDTO],
-                    paginationDTO: {totalItemCount: 1}
+                    paginationDTO: {totalItemCount: 1},
                 };
 
                 const filter: any = {};
                 $httpBackend.expectPOST(searchRS.serviceURL + '/jugendamt/', filter).respond(searchResult);
 
                 let foundPendenzen: TSAntragSearchresultDTO;
-                searchRS.getPendenzenList(filter).then((result) => {
+                searchRS.getPendenzenList(filter).then(result => {
                     foundPendenzen = result;
                 });
                 $httpBackend.flush();

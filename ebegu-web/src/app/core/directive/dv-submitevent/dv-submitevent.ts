@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveLinkFn, IScope} from 'angular';
 import {TSSubmitEvent} from '../../events/TSSubmitEvent';
 
 /**
@@ -21,21 +21,15 @@ import {TSSubmitEvent} from '../../events/TSSubmitEvent';
  */
 export default class DVSubmitevent implements IDirective {
 
-    restrict = 'A';
-    require = 'form';
-    link: IDirectiveLinkFn;
+    public restrict = 'A';
+    public require = 'form';
+    public link: IDirectiveLinkFn;
 
-    constructor() {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrl: any) => {
+    public constructor() {
+        this.link = (scope: IScope, element: IAugmentedJQuery, _attrs, _ctrl: any) => {
             element.on('submit', () => {
                 scope.$broadcast(TSSubmitEvent[TSSubmitEvent.FORM_SUBMIT]);
             });
         };
     }
-
-    static factory(): IDirectiveFactory {
-        const directive = () => new DVSubmitevent();
-        return directive;
-    }
 }
-

@@ -35,16 +35,16 @@ describe('dvbErrorMessages', () => {
     describe('displayMessages', () => {
         it('should not add any action', () => {
             exceptionReport.errorCodeEnum = 'OTHER_TYPE';
-            const error: TSExceptionReport = TSExceptionReport.createFromExceptionReport(exceptionReport);
-            const errors: TSExceptionReport[] = [error];
+            const error = TSExceptionReport.createFromExceptionReport(exceptionReport);
+            const errors = [error];
             controller.displayMessages(undefined, errors);
 
             expect(error.action).toBeUndefined();
         });
         it('should add an action to ERROR_EXISTING_ONLINE_MUTATION', () => {
             exceptionReport.errorCodeEnum = 'ERROR_EXISTING_ONLINE_MUTATION';
-            const error: TSExceptionReport = TSExceptionReport.createFromExceptionReport(exceptionReport);
-            const errors: TSExceptionReport[] = [error];
+            const error = TSExceptionReport.createFromExceptionReport(exceptionReport);
+            const errors = [error];
             controller.displayMessages(undefined, errors);
 
             expect(error.action).toBe(TSErrorAction.REMOVE_ONLINE_MUTATION);

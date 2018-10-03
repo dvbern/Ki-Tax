@@ -25,7 +25,8 @@
                     </div>
                     <!--Betreuungsangebot auswählen-->
                     <div class="form-group col-md-6">
-                        <label class="md-no-float" data-translate="BETREUUNGSANGEBOT_WAEHLEN" for="betreuungsangebot"></label>
+                        <label class="md-no-float" data-translate="BETREUUNGSANGEBOT_WAEHLEN"
+                               for="betreuungsangebot"></label>
                         <div class="dv-select-style">
                             <select name="betreuungsangebot" id="betreuungsangebot"
                                     class="form-control"
@@ -96,7 +97,8 @@
                         </div>
                         <div class="col-md-6">
                             <dv-input-container class="form-group secondColumn">
-                                <label class="md-no-float" data-translate="OEFFNUNGSSTUNDEN" for="oeffnungsstunden"></label>
+                                <label class="md-no-float" data-translate="OEFFNUNGSSTUNDEN"
+                                       for="oeffnungsstunden"></label>
                                 <input id="oeffnungsstunden" type="number"
                                        name="oeffnungsstunden"
                                        ng-model="vm.getSelectedInstitutionStammdaten().oeffnungsstunden"
@@ -138,16 +140,20 @@
                             <div class="col-md-2">
                                 <dv-timepicker input-id="{{modul}}_zeitvon" name="{{modul}}_zeitvon"
                                                ng-model="vm.getModulTagesschule(modul).zeitVon"
-                                               ng-required="vm.getModulTagesschule(modul).zeitBis" class="input-element">
+                                               ng-required="vm.getModulTagesschule(modul).zeitBis"
+                                               class="input-element">
                                 </dv-timepicker>
-                                <dv-error-messages input-id="{{modul}}_zeitvon" for="form[modul + '_zeitvon'].$error" class="error"></dv-error-messages>
+                                <dv-error-messages input-id="{{modul}}_zeitvon" for="form[modul + '_zeitvon'].$error"
+                                                   class="error"></dv-error-messages>
                             </div>
                             <div class="col-md-2">
                                 <dv-timepicker input-id="{{modul}}_zeitbis" name="{{modul}}_zeitbis"
                                                ng-model="vm.getModulTagesschule(modul).zeitBis"
-                                               ng-required="vm.getModulTagesschule(modul).zeitVon" class="input-element">
+                                               ng-required="vm.getModulTagesschule(modul).zeitVon"
+                                               class="input-element">
                                 </dv-timepicker>
-                                <dv-error-messages input-id="{{modul}}_zeitbis" for="form[modul + '_zeitbis'].$error" class="error"></dv-error-messages>
+                                <dv-error-messages input-id="{{modul}}_zeitbis" for="form[modul + '_zeitbis'].$error"
+                                                   class="error"></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -161,48 +167,56 @@
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="HERBSTFERIEN" for="inst-fi-herbstferien"></label>
+                                    <label class="md-no-float" data-translate="HERBSTFERIEN"
+                                           for="inst-fi-herbstferien"></label>
                                     <input id="inst-fi-herbstferien" type="text"
                                            name="herbstferien"
                                            ng-model="vm.getStammdatenFerieninsel().ausweichstandortHerbstferien"
                                            dv-max-length class="form-control">
-                                    <dv-error-messages for="adresseForm.herbstferien.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.herbstferien.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="SPORTFERIEN" for="inst-fi-sportferien"></label>
+                                    <label class="md-no-float" data-translate="SPORTFERIEN"
+                                           for="inst-fi-sportferien"></label>
                                     <input id="inst-fi-sportferien" type="text"
                                            name="sportferien"
                                            ng-model="vm.getStammdatenFerieninsel().ausweichstandortSportferien"
                                            dv-max-length class="form-control">
-                                    <dv-error-messages for="adresseForm.sportferien.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.sportferien.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="FRUEHLINGSFERIEN" for="inst-fi-fruehlingsferien"></label>
+                                    <label class="md-no-float" data-translate="FRUEHLINGSFERIEN"
+                                           for="inst-fi-fruehlingsferien"></label>
                                     <input id="inst-fi-fruehlingsferien" type="text"
                                            name="fruehlingsferien"
                                            ng-model="vm.getStammdatenFerieninsel().ausweichstandortFruehlingsferien"
                                            dv-max-length class="form-control">
-                                    <dv-error-messages for="adresseForm.fruehlingsferien.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.fruehlingsferien.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="SOMMERFERIEN" for="inst-fi-sommerferien"></label>
+                                    <label class="md-no-float" data-translate="SOMMERFERIEN"
+                                           for="inst-fi-sommerferien"></label>
                                     <input id="inst-fi-sommerferien" type="text"
                                            name="sommerferien"
                                            ng-model="vm.getStammdatenFerieninsel().ausweichstandortSommerferien"
                                            dv-max-length class="form-control">
-                                    <dv-error-messages for="adresseForm.sommerferien.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.sommerferien.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
@@ -219,21 +233,25 @@
                         <!--Strasse-->
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="ADRESSE_STRASSE" for="inst-adr-strasse"></label>
+                                <label class="md-no-float" data-translate="ADRESSE_STRASSE"
+                                       for="inst-adr-strasse"></label>
                                 <input id="inst-adr-strasse" type="text" name="adresseStrasse"
                                        ng-model="vm.getSelectedInstitutionStammdaten().adresse.strasse"
                                        dv-max-length class="form-control" required>
-                                <dv-error-messages for="adresseForm.adresseStrasse.$error" class="error"></dv-error-messages>
+                                <dv-error-messages for="adresseForm.adresseStrasse.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group secondColumn">
-                                <label class="md-no-float" data-translate="ADRESSE_HAUSNUMMER" for="inst-adr-hausnummer"></label>
+                                <label class="md-no-float" data-translate="ADRESSE_HAUSNUMMER"
+                                       for="inst-adr-hausnummer"></label>
                                 <input id="inst-adr-hausnummer" type="text"
                                        name="adresseHausnummer"
                                        ng-model="vm.getSelectedInstitutionStammdaten().adresse.hausnummer"
                                        dv-max-length class="form-control">
-                                <dv-error-messages for="adresseForm.adresseHausnummer.$error" class="error"></dv-error-messages>
+                                <dv-error-messages for="adresseForm.adresseHausnummer.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -241,12 +259,14 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="ADRESSE_ZUSATZZEILE" for="inst-adr-zusatzzeile"></label>
+                                <label class="md-no-float" data-translate="ADRESSE_ZUSATZZEILE"
+                                       for="inst-adr-zusatzzeile"></label>
                                 <input id="inst-adr-zusatzzeile" type="text"
                                        name="adresseZusatzzeile"
                                        ng-model="vm.getSelectedInstitutionStammdaten().adresse.zusatzzeile"
                                        dv-max-length class="form-control">
-                                <dv-error-messages for="adresseForm.adresseZusatzzeile.$error" class="error"></dv-error-messages>
+                                <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -270,7 +290,8 @@
                                 <input id="inst-adr-ort" type="text" name="adresseOrt"
                                        ng-model="vm.getSelectedInstitutionStammdaten().adresse.ort"
                                        dv-max-length class="form-control" required>
-                                <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
+                                <dv-error-messages for="adresseForm.adresseOrt.$error"
+                                                   class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -289,7 +310,8 @@
                                             class="form-control"
                                             required>
                                     </select>
-                                    <dv-error-messages for="adresseForm.adresseLand.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.adresseLand.$error"
+                                                       class="error"></dv-error-messages>
                                 </div>
                             </div>
                         </div>
@@ -331,22 +353,26 @@
                             <!--Strasse-->
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="ADRESSE_STRASSE" for="inst-adr-strasse"></label>
+                                    <label class="md-no-float" data-translate="ADRESSE_STRASSE"
+                                           for="inst-adr-strasse"></label>
                                     <input id="inst-adrKonto-strasse" type="text"
                                            name="adresseStrasse"
                                            ng-model="vm.getSelectedInstitutionStammdaten().adresseKontoinhaber.strasse"
                                            dv-max-length class="form-control" required>
-                                    <dv-error-messages for="adresseForm.adresseStrasse.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.adresseStrasse.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group secondColumn">
-                                    <label class="md-no-float" data-translate="ADRESSE_HAUSNUMMER" for="inst-adr-hausnummer"></label>
+                                    <label class="md-no-float" data-translate="ADRESSE_HAUSNUMMER"
+                                           for="inst-adr-hausnummer"></label>
                                     <input id="inst-adrKonto-hausnummer" type="text"
                                            name="adresseHausnummer"
                                            ng-model="vm.getSelectedInstitutionStammdaten().adresseKontoinhaber.hausnummer"
                                            dv-max-length class="form-control">
-                                    <dv-error-messages for="adresseForm.adresseHausnummer.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.adresseHausnummer.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
@@ -362,7 +388,8 @@
                                            name="adresseZusatzzeile"
                                            ng-model="vm.getSelectedInstitutionStammdaten().adresseKontoinhaber.zusatzzeile"
                                            dv-max-length class="form-control">
-                                    <dv-error-messages for="adresseForm.adresseZusatzzeile.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
@@ -376,7 +403,8 @@
                                     <input id="inst-adrKonto-plz" type="text" name="adressePlz"
                                            ng-model="vm.getSelectedInstitutionStammdaten().adresseKontoinhaber.plz"
                                            dv-max-length class="form-control" required>
-                                    <dv-error-messages for="adresseForm.adressePlz.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.adressePlz.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                             <div class="col-sm-12 dv-input-container-small">
@@ -387,7 +415,8 @@
                                     <input id="inst-adrKonto-ort" type="text" name="adresseOrt"
                                            ng-model="vm.getSelectedInstitutionStammdaten().adresseKontoinhaber.ort"
                                            dv-max-length class="form-control" required>
-                                    <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
+                                    <dv-error-messages for="adresseForm.adresseOrt.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
@@ -406,7 +435,8 @@
                                                 class="form-control"
                                                 required>
                                         </select>
-                                        <dv-error-messages for="adresseForm.adresseLand.$error" class="error"></dv-error-messages>
+                                        <dv-error-messages for="adresseForm.adresseLand.$error"
+                                                           class="error"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>

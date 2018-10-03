@@ -18,4 +18,3 @@ export enum TSAnmeldungMutationZustand {
     MUTIERT = 'MUTIERT',
     AKTUELLE_ANMELDUNG = 'AKTUELLE_ANMELDUNG'
 }
-

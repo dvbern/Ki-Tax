@@ -13,17 +13,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import ADMIN_JS_MODULE from '../../../admin/admin.module';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {EbeguWebGesuch} from '../../gesuch.module';
-import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situation-require';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import EbeguWebAdmin from '../../../admin/admin.module';
+import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situation-require';
 
+// tslint:disable:max-line-length
 describe('finanzielleSituationRequire', () => {
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -39,7 +40,8 @@ describe('finanzielleSituationRequire', () => {
         einstellungRS = $injector.get('EinstellungRS');
         $q = $injector.get('$q');
         $componentController = $injector.get('$componentController');
-        spyOn(einstellungRS, 'getAllEinstellungenBySystem').and.returnValue($q.when(150000));
+        const value = 150000;
+        spyOn(einstellungRS, 'getAllEinstellungenBySystem').and.returnValue($q.when(value));
         controller = new DVFinanzielleSituationRequireController(einstellungRS, gesuchModelManager);
     }));
 
@@ -59,19 +61,21 @@ describe('finanzielleSituationRequire', () => {
             controller.setFinanziellesituationRequired();
             expect(controller.finanzielleSituationRequired).toBe(true);
         });
-        it('should be true when areThereOnlySchulamtangebote is false, not sozialhilfeBezueger and verguenstigungGewuenscht', () => {
-            controller.areThereOnlySchulamtangebote = false;
-            controller.sozialhilfeBezueger = false;
-            controller.verguenstigungGewuenscht = true;
-            controller.setFinanziellesituationRequired();
-            expect(controller.finanzielleSituationRequired).toBe(true);
-        });
-        it('should be true when areThereOnlySchulamtangebote is false, not sozialhilfeBezueger and verguenstigungGewuenscht', () => {
-            controller.areThereOnlySchulamtangebote = false;
-            controller.sozialhilfeBezueger = false;
-            controller.verguenstigungGewuenscht = false;
-            controller.setFinanziellesituationRequired();
-            expect(controller.finanzielleSituationRequired).toBe(true);
-        });
+        it('should be true when areThereOnlySchulamtangebote is false, not sozialhilfeBezueger and verguenstigungGewuenscht',
+            () => {
+                controller.areThereOnlySchulamtangebote = false;
+                controller.sozialhilfeBezueger = false;
+                controller.verguenstigungGewuenscht = true;
+                controller.setFinanziellesituationRequired();
+                expect(controller.finanzielleSituationRequired).toBe(true);
+            });
+        it('should be true when areThereOnlySchulamtangebote is false, not sozialhilfeBezueger and verguenstigungGewuenscht',
+            () => {
+                controller.areThereOnlySchulamtangebote = false;
+                controller.sozialhilfeBezueger = false;
+                controller.verguenstigungGewuenscht = false;
+                controller.setFinanziellesituationRequired();
+                expect(controller.finanzielleSituationRequired).toBe(true);
+            });
     });
 });

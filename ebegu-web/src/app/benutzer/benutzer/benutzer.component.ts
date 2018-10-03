@@ -44,7 +44,7 @@ const LOG = LogFactory.createLog('BenutzerComponent');
     selector: 'dv-benutzer',
     templateUrl: './benutzer.component.html',
     styleUrls: ['./benutzer.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BenutzerComponent implements OnInit {
 
@@ -64,14 +64,16 @@ export class BenutzerComponent implements OnInit {
 
     private _berechtigungHistoryList: TSBerechtigungHistory[];
 
-    constructor(private readonly $transition$: Transition,
-                private readonly changeDetectorRef: ChangeDetectorRef,
-                private readonly $state: StateService,
-                private readonly translate: TranslateService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly benutzerRS: BenutzerRS,
-                private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly dialog: MatDialog) {
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly $state: StateService,
+        private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly dialog: MatDialog,
+    ) {
     }
 
     public get berechtigungHistoryList(): TSBerechtigungHistory[] {
@@ -86,6 +88,7 @@ export class BenutzerComponent implements OnInit {
         if (role.userErstellt === 'anonymous') {
             return 'system';
         }
+
         return role.userErstellt;
     }
 
@@ -135,6 +138,7 @@ export class BenutzerComponent implements OnInit {
 
         if (!this.isMoreThanGesuchstellerRole()) {
             this.doSaveBenutzer();
+
             return;
         }
 
@@ -164,38 +168,42 @@ export class BenutzerComponent implements OnInit {
                     return this.dialog.open(DvNgRemoveDialogComponent, adminDialogConfig)
                         .afterClosed()
                         .pipe(filter(userAccepted => !!userAccepted));
-                })
+                }),
             )
             .subscribe(
                 () => this.doSaveBenutzer(),
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
     public inactivateBenutzer(): void {
-        if (this.isDisabled || this.form.valid) {
-            this.benutzerRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
-                this.selectedUser = changedUser;
-                this.changeDetectorRef.markForCheck();
-            });
+        if (!(this.isDisabled || this.form.valid)) {
+            return;
         }
+
+        this.benutzerRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
+            this.selectedUser = changedUser;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     public reactivateBenutzer(): void {
-        if (this.isDisabled || this.form.valid) {
-            this.benutzerRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
-                this.selectedUser = changedUser;
-                this.changeDetectorRef.markForCheck();
-            });
+        if (!(this.isDisabled || this.form.valid)) {
+            return;
         }
+
+        this.benutzerRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
+            this.selectedUser = changedUser;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 
     public canAddBerechtigung(): boolean {
         return EbeguUtil.isNullOrUndefined(this.futureBerechtigung);
     }
 
-    public addBerechtigung() {
-        const berechtigung: TSBerechtigung = new TSBerechtigung();
+    public addBerechtigung(): void {
+        const berechtigung = new TSBerechtigung();
         berechtigung.role = TSRole.GESUCHSTELLER;
         berechtigung.gueltigkeit = new TSDateRange();
         berechtigung.gueltigkeit.gueltigAb = this.tomorrow;
@@ -268,7 +276,7 @@ export class BenutzerComponent implements OnInit {
         });
     }
 
-    private navigateBackToUsersList() {
+    private navigateBackToUsersList(): void {
         this.$state.go('admin.benutzerlist');
     }
 }

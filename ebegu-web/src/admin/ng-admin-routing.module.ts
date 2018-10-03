@@ -20,8 +20,10 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {IPromise} from 'angular';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
+import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {DebuggingComponent} from './component/debugging/debugging.component';
@@ -38,11 +40,11 @@ const states: Ng2StateDeclaration[] = [
                 token: 'traegerschaften',
                 deps: [TraegerschaftRS],
                 resolveFn: getTraegerschaften,
-            }
+            },
         ],
         data: {
             roles: TSRoleUtil.getMandantRoles(),
-        }
+        },
     },
     {
         name: 'admin.testdaten',
@@ -50,7 +52,7 @@ const states: Ng2StateDeclaration[] = [
         component: TestdatenViewComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
-        }
+        },
     },
     {
         name: 'admin.batchjobTrigger',
@@ -69,7 +71,7 @@ const states: Ng2StateDeclaration[] = [
         data: {
             roles: TSRoleUtil.getAllAdministratorRevisorRole(),
         },
-    }
+    },
 ];
 
 @NgModule({
@@ -77,12 +79,12 @@ const states: Ng2StateDeclaration[] = [
         UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
 })
 export class NgAdminRoutingModule {
 }
 
-function getTraegerschaften(traegerschaftRS: TraegerschaftRS) {
+function getTraegerschaften(traegerschaftRS: TraegerschaftRS): IPromise<TSTraegerschaft[]> {
     return traegerschaftRS.getAllActiveTraegerschaften();
 }

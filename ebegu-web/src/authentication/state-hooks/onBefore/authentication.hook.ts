@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
+import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -34,7 +34,7 @@ const LOG = LogFactory.createLog('authenticationHookRunBlock');
  */
 authenticationHookRunBlock.$inject = ['$transitions'];
 
-export function authenticationHookRunBlock($transitions: TransitionService) {
+export function authenticationHookRunBlock($transitions: TransitionService): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
         to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS),
@@ -48,7 +48,7 @@ export function authenticationHookRunBlock($transitions: TransitionService) {
 // if the user is not currently authenticated (according to the AuthService)
 function redirectToLogin(transition: Transition): HookResult {
     const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
-    const $state: StateService = transition.router.stateService;
+    const $state = transition.router.stateService;
 
     return authService.principal$
         .pipe(
@@ -64,7 +64,7 @@ function redirectToLogin(transition: Transition): HookResult {
 
                 // continue the original transition
                 return true;
-            })
+            }),
         )
         .toPromise();
 }

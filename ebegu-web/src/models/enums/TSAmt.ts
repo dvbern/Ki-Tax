@@ -24,6 +24,6 @@ export function getAemterForFilter(): Array<TSAmt> {
     return [
         TSAmt.JUGENDAMT,
         TSAmt.SCHULAMT,
-        TSAmt.GEMEINDE
+        TSAmt.GEMEINDE,
     ];
 }

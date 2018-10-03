@@ -14,14 +14,13 @@
  */
 
 import {IHttpResponse} from 'angular';
-import ErrorService from './ErrorService';
-import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
+import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import TSExceptionReport from '../../../../models/TSExceptionReport';
-import IQService = angular.IQService;
-import IRootScopeService = angular.IRootScopeService;
+import ErrorService from './ErrorService';
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
+import IQService = angular.IQService;
 
 export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
     return response.config && response.config.url.includes('notokenrefresh');
@@ -29,25 +28,28 @@ export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
 
 export default class HttpErrorInterceptor implements IHttpInterceptor {
 
-    static $inject = ['$rootScope', '$q', 'ErrorService', '$log'];
+    public static $inject = ['$q', 'ErrorService', '$log'];
 
-    constructor(private readonly $rootScope: IRootScopeService,
-                private readonly $q: IQService,
-                private readonly errorService: ErrorService,
-                private readonly $log: ILogService) {
+    public constructor(
+        private readonly $q: IQService,
+        private readonly errorService: ErrorService,
+        private readonly $log: ILogService,
+    ) {
     }
 
     public responseError = (response: any) => {
-        if (response.status === 403) {
+        const http403 = 403;
+        if (response.status === http403) {
             this.errorService.addMesageAsError('ERROR_UNAUTHORIZED');
             return this.$q.reject(response);
         }
-        //here we handle all errorcodes except 401 and 403, 401 is handeld in HttpAuthInterceptor
-        if (response.status !== 401 && !isIgnorableHttpError(response)) {
-            //here we could analyze the http status of the response. But instead we check if the  response has the format
-            // of a known response such as errortypes such as violationReport or ExceptionReport and transform it
-            //as such. If the response matches know expected format we create an unexpected error.
-            const errors: Array<TSExceptionReport> = this.handleErrorResponse(response);
+        // here we handle all errorcodes except 401 and 403, 401 is handeld in HttpAuthInterceptor
+        const http401 = 401;
+        if (response.status !== http401 && !isIgnorableHttpError(response)) {
+            // here we could analyze the http status of the response. But instead we check if the  response has the
+            // format of a known response such as errortypes such as violationReport or ExceptionReport and transform
+            // it as such. If the response matches know expected format we create an unexpected error.
+            const errors = this.handleErrorResponse(response);
             this.errorService.handleErrors(errors);
             return this.$q.reject(errors);
         }
@@ -60,10 +62,8 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
      *
      * The expected types are ViolationReport objects from JAXRS if there was a beanValidation error
      * or EbeguExceptionReports in case there was some other application exception
-     *
-     * @param response
      */
-    private handleErrorResponse(response: any) {
+    private handleErrorResponse(response: any): Array<TSExceptionReport> {
         let errors: Array<TSExceptionReport>;
         // Alle daten loggen um das Debuggen zu vereinfachen
         // noinspection IfStatementWithTooManyBranchesJS
@@ -74,13 +74,19 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
             errors = this.convertEbeguExceptionReport(response.data);
         } else if (this.isFileUploadException(response.data)) {
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, 'ERROR_FILE_TOO_LARGE', response.data));
+            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                TSErrorLevel.SEVERE,
+                'ERROR_FILE_TOO_LARGE',
+                response.data));
         } else {
-            this.$log.error('ErrorStatus: "' + response.status + '" StatusText: "' + response.statusText + '"');
+            this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
             this.$log.error('ResponseData:' + JSON.stringify(response.data));
-            //the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
+            // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, 'ERROR_UNEXPECTED', response.data));
+            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                TSErrorLevel.SEVERE,
+                'ERROR_UNEXPECTED',
+                response.data));
         }
         return errors;
     }
@@ -102,7 +108,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
                 const message: string = violationEntry.message;
                 const path: string = violationEntry.path;
                 const value: string = violationEntry.value;
-                const report: TSExceptionReport = TSExceptionReport.createFromViolation(constraintType, message, path, value);
+                const report = TSExceptionReport.createFromViolation(constraintType, message, path, value);
                 exceptionReports.push(report);
             }
         }
@@ -110,8 +116,8 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     }
 
-    private convertEbeguExceptionReport(data: any) {
-        const exceptionReport: TSExceptionReport = TSExceptionReport.createFromExceptionReport(data);
+    private convertEbeguExceptionReport(data: any): Array<TSExceptionReport> {
+        const exceptionReport = TSExceptionReport.createFromExceptionReport(data);
         const exceptionReports: Array<TSExceptionReport> = [];
         exceptionReports.push(exceptionReport);
         return exceptionReports;
@@ -122,10 +128,11 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
      *
      * checks if response data json-object has the keys required to be a violationReport (from jaxRS)
      * @param data object whose keys are checked
-     * @returns {boolean} true if fields of violationReport are present
+     * @returns true if fields of violationReport are present
      */
     private isDataViolationResponse(data: any): boolean {
-        //hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport() bekommen
+        // hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport()
+        // bekommen
         if (data !== null && data !== undefined) {
             const hasParamViol: boolean = data.hasOwnProperty('parameterViolations');
             const hasClassViol: boolean = data.hasOwnProperty('classViolations');
@@ -154,11 +161,13 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     }
 
-    private isFileUploadException(response: string) {
+    private isFileUploadException(response: string): boolean {
         if (!response) {
             return false;
         }
 
-        return response.indexOf('java.io.IOException: UT000020: Connection terminated as request was larger than ') > -1;
+        const msg = 'java.io.IOException: UT000020: Connection terminated as request was larger than ';
+
+        return response.indexOf(msg) > -1;
     }
 }

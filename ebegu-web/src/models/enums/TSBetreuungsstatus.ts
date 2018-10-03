@@ -22,7 +22,7 @@ export enum TSBetreuungsstatus {
     STORNIERT = 'STORNIERT',
     BESTAETIGT = 'BESTAETIGT',
     VERFUEGT = 'VERFUEGT',
-    GESCHLOSSEN_OHNE_VERFUEGUNG  = 'GESCHLOSSEN_OHNE_VERFUEGUNG',
+    GESCHLOSSEN_OHNE_VERFUEGUNG = 'GESCHLOSSEN_OHNE_VERFUEGUNG',
     SCHULAMT_ANMELDUNG_ERFASST = 'SCHULAMT_ANMELDUNG_ERFASST',
     SCHULAMT_ANMELDUNG_AUSGELOEST = 'SCHULAMT_ANMELDUNG_AUSGELOEST',
     SCHULAMT_ANMELDUNG_UEBERNOMMEN = 'SCHULAMT_ANMELDUNG_UEBERNOMMEN',
@@ -31,6 +31,8 @@ export enum TSBetreuungsstatus {
 }
 
 export function isBetreuungsstatusTSAusgeloest(status: TSBetreuungsstatus): boolean {
-    return status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT ||
-        status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN || status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
+    return status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+        || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT
+        || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+        || status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
 }

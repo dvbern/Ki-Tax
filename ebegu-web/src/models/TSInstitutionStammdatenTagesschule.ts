@@ -20,7 +20,7 @@ export default class TSInstitutionStammdatenTagesschule extends TSAbstractMutabl
 
     private _moduleTagesschule: Array<TSModulTagesschule>;
 
-    constructor(moduleTagesschule?: Array<TSModulTagesschule>) {
+    public constructor(moduleTagesschule?: Array<TSModulTagesschule>) {
         super();
         this._moduleTagesschule = moduleTagesschule;
     }

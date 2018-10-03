@@ -32,67 +32,67 @@ export default class TSAbstractAntragEntity extends TSAbstractMutableEntity {
     private _typ: TSAntragTyp;
     private _eingangsart: TSEingangsart;
 
-    get dossier(): TSDossier {
+    public get dossier(): TSDossier {
         return this._dossier;
     }
 
-    set dossier(value: TSDossier) {
+    public set dossier(value: TSDossier) {
         this._dossier = value;
     }
 
-    get gesuchsperiode(): TSGesuchsperiode {
+    public get gesuchsperiode(): TSGesuchsperiode {
         return this._gesuchsperiode;
     }
 
-    set gesuchsperiode(gesuchsperiode: TSGesuchsperiode) {
+    public set gesuchsperiode(gesuchsperiode: TSGesuchsperiode) {
         this._gesuchsperiode = gesuchsperiode;
     }
 
-    get eingangsdatum(): moment.Moment {
+    public get eingangsdatum(): moment.Moment {
         return this._eingangsdatum;
     }
 
-    set eingangsdatum(value: moment.Moment) {
+    public set eingangsdatum(value: moment.Moment) {
         this._eingangsdatum = value;
     }
 
-    get regelnGueltigAb(): moment.Moment {
+    public get regelnGueltigAb(): moment.Moment {
         return this._regelnGueltigAb;
     }
 
-    set regelnGueltigAb(value: moment.Moment) {
+    public set regelnGueltigAb(value: moment.Moment) {
         this._regelnGueltigAb = value;
     }
 
-    get freigabeDatum(): moment.Moment {
+    public get freigabeDatum(): moment.Moment {
         return this._freigabeDatum;
     }
 
-    set freigabeDatum(value: moment.Moment) {
+    public set freigabeDatum(value: moment.Moment) {
         this._freigabeDatum = value;
     }
 
-    get status(): TSAntragStatus {
+    public get status(): TSAntragStatus {
         return this._status;
     }
 
-    set status(value: TSAntragStatus) {
+    public set status(value: TSAntragStatus) {
         this._status = value;
     }
 
-    get typ(): TSAntragTyp {
+    public get typ(): TSAntragTyp {
         return this._typ;
     }
 
-    set typ(value: TSAntragTyp) {
+    public set typ(value: TSAntragTyp) {
         this._typ = value;
     }
 
-    get eingangsart(): TSEingangsart {
+    public get eingangsart(): TSEingangsart {
         return this._eingangsart;
     }
 
-    set eingangsart(value: TSEingangsart) {
+    public set eingangsart(value: TSEingangsart) {
         this._eingangsart = value;
     }
 }

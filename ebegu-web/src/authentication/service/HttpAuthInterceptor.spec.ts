@@ -13,33 +13,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {EbeguAuthentication} from '../authentication.module';
+import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 import HttpAuthInterceptor from './HttpAuthInterceptor';
 
 describe('HttpAuthInterceptor', () => {
 
     let httpAuthInterceptor: HttpAuthInterceptor;
-    let $window: angular.IWindowService;
     let authLifeCycleService: AuthLifeCycleService;
 
     const authErrorResponse: any = {
         status: 401,
         data: '',
-        statusText: 'Unauthorized'
+        statusText: 'Unauthorized',
     };
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
-    beforeEach(angular.mock.module(EbeguAuthentication.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
+    beforeEach(angular.mock.module(AUTHENTICATION_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
         httpAuthInterceptor = $injector.get('HttpAuthInterceptor');
-        $window = $injector.get('$window');
         authLifeCycleService = $injector.get('AuthLifeCycleService');
         window.onbeforeunload = () => 'Oh no!';
         spyOn(authLifeCycleService, 'changeAuthStatus').and.callFake(() => {
@@ -57,7 +55,9 @@ describe('HttpAuthInterceptor', () => {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
-            expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
+            // tslint:disable-next-line:no-unbound-method
+            expect(authLifeCycleService.changeAuthStatus)
+                .toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
         });
     });
 });

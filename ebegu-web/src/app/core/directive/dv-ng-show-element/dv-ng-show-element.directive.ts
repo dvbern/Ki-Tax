@@ -27,24 +27,32 @@ import {TSRole} from '../../../../models/enums/TSRole';
  * # SYNTAX
  * As a structural directive it should be used with an asterisk. Using it inside an ng-template is allowed though.
  *
- * *dvNgShowElement="true; roles: ['ADMIN_BG']"                  --->  will grant permission if the role of the current user is ADMIN_BG
- * *dvNgShowElement="true; roles: ['ADMIN_BG', 'GESUCHSTELLER']" --->  will grant permission if the role of the current user is ADMIN_BG or GESUCHSTELLER
- * *dvNgShowElement="true; roles: ['']"                       --->  won't grant any permission. DOM element will always be hidden
- * *dvNgShowElement="true;"                                   --->  won't grant any permission. DOM element will always be hidden
- * *dvNgShowElement="false; roles: ['ADMIN_BG']"                 --->  won't grant any permission. DOM element will always be hidden
- * *dvNgShowElement="getBooleanValue(); roles: ['ADMIN_BG']"     --->  will show the DOM element for users of role ADMIN_BG when getBooleanValue() evaluates to true
+ * *dvNgShowElement="true; roles: ['ADMIN_BG']"                  --->  will grant permission if the role of the current
+ * user is ADMIN_BG
+ * *dvNgShowElement="true; roles: ['ADMIN_BG', 'GESUCHSTELLER']" --->  will grant permission if the role of the current
+ * user is ADMIN_BG or GESUCHSTELLER
+ * *dvNgShowElement="true; roles: ['']"                       --->  won't grant any permission. DOM element will always
+ * be hidden
+ * *dvNgShowElement="true;"                                   --->  won't grant any permission. DOM element will always
+ * be hidden
+ * *dvNgShowElement="false; roles: ['ADMIN_BG']"                 --->  won't grant any permission. DOM element will
+ * always be hidden
+ * *dvNgShowElement="getBooleanValue(); roles: ['ADMIN_BG']"     --->  will show the DOM element for users of role
+ * ADMIN_BG when getBooleanValue() evaluates to true
  *
  */
-@Directive({ selector: '[dvNgShowElement]' })
+@Directive({selector: '[dvNgShowElement]'})
 export class DvNgShowElementDirective implements OnInit {
 
     private hasView = false;
     private _roles: TSRole[];
     private _condition: boolean;
 
-    constructor(private readonly templateRef: TemplateRef<any>,
-                private readonly viewContainer: ViewContainerRef,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly templateRef: TemplateRef<any>,
+        private readonly viewContainer: ViewContainerRef,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     public ngOnInit(): void {
@@ -54,7 +62,8 @@ export class DvNgShowElementDirective implements OnInit {
     /**
      * Using a setter to respond to dynamic changes of input value
      */
-    @Input('dvNgShowElementRoles') set roles(roles: TSRole[]) {
+    @Input('dvNgShowElementRoles')
+    public set roles(roles: TSRole[]) {
         this._roles = roles;
         this.handleElement();
     }
@@ -62,13 +71,14 @@ export class DvNgShowElementDirective implements OnInit {
     /**
      * Using a setter to respond to dynamic changes of input value
      */
-    @Input('dvNgShowElement') set condition(condition: boolean) {
+    @Input('dvNgShowElement')
+    public set condition(condition: boolean) {
         this._condition = condition;
         this.handleElement();
     }
 
-    private handleElement() {
-        const result: boolean = this.evaluateCondition();
+    private handleElement(): void {
+        const result = this.evaluateCondition();
 
         if (result && !this.hasView) {
             this.viewContainer.createEmbeddedView(this.templateRef);
@@ -84,10 +94,8 @@ export class DvNgShowElementDirective implements OnInit {
      * Condition must be true.
      * Roles must be defined, for an empty Roles array no permission is granted.
      * The current user must have one of the passed roles.
-     *
-     * @returns {boolean} evaluated condition
      */
-    private evaluateCondition() {
+    private evaluateCondition(): boolean {
         return this._condition && this._roles && this.authServiceRS.isOneOfRoles(this._roles);
     }
 }
