@@ -24,74 +24,77 @@ import TSGemeinde from '../../../../models/TSGemeinde';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import TSUserSearchresultDTO from '../../../../models/TSUserSearchresultDTO';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('DVBenutzerListController');
 
 export class DVBenutzerListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         onEdit: '&',
         onFilterChange: '&',
         totalResultCount: '<',
         tableId: '@',
         tableTitle: '@',
     };
-    template = require('./dv-benutzer-list.html');
-    controller = DVBenutzerListController;
-    controllerAs = 'vm';
+    public template = require('./dv-benutzer-list.html');
+    public controller = DVBenutzerListController;
+    public controllerAs = 'vm';
 }
 
 export class DVBenutzerListController implements IOnInit {
 
-    static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS', '$window',
-        '$translate', 'GemeindeRS'];
+    public static $inject: ReadonlyArray<string> = [
+        '$log',
+        'InstitutionRS',
+        'TraegerschaftRS',
+        'AuthServiceRS',
+        '$window',
+        'GemeindeRS',
+    ];
 
-    totalResultCount: number;
-    displayedCollection: Array<TSBenutzer> = []; //Liste die im Gui angezeigt wird
-    pagination: any;
+    public totalResultCount: number;
+    public displayedCollection: Array<TSBenutzer> = []; // Liste die im Gui angezeigt wird
+    public pagination: any;
 
-    institutionenList: Array<TSInstitution>;
-    traegerschaftenList: Array<TSTraegerschaft>;
-    gemeindeList: Array<TSGemeinde>;
+    public institutionenList: Array<TSInstitution>;
+    public traegerschaftenList: Array<TSTraegerschaft>;
+    public gemeindeList: Array<TSGemeinde>;
 
-    selectedUsername: string;
-    selectedVorname: string;
-    selectedNachname: string;
-    selectedEmail: string;
-    selectedRole: TSRole;
-    selectedGemeinde: TSGemeinde;
-    selectedInstitution: TSInstitution;
-    selectedTraegerschaft: TSTraegerschaft;
-    selectedBenutzerStatus: TSBenutzerStatus;
+    public selectedUsername: string;
+    public selectedVorname: string;
+    public selectedNachname: string;
+    public selectedEmail: string;
+    public selectedRole: TSRole;
+    public selectedGemeinde: TSGemeinde;
+    public selectedInstitution: TSInstitution;
+    public selectedTraegerschaft: TSTraegerschaft;
+    public selectedBenutzerStatus: TSBenutzerStatus;
 
-    tableId: string;
-    tableTitle: string;
+    public tableId: string;
+    public tableTitle: string;
 
-    onFilterChange: (changedTableState: any) => IPromise<any>;
-    onEdit: (user: any) => void;
-    TSRoleUtil: TSRoleUtil;
+    public onFilterChange: (changedTableState: any) => IPromise<any>;
+    public onEdit: (user: any) => void;
+    public readonly TSRoleUtil = TSRoleUtil;
     public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
 
-    constructor(private readonly $log: ILogService,
-                private readonly institutionRS: InstitutionRS,
-                private readonly traegerschaftenRS: TraegerschaftRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $window: IWindowService,
-                private readonly $translate: ITranslateService,
-                private readonly gemeindeRS: GemeindeRS) {
-
-        this.TSRoleUtil = TSRoleUtil;
+    public constructor(
+        private readonly $log: ILogService,
+        private readonly institutionRS: InstitutionRS,
+        private readonly traegerschaftenRS: TraegerschaftRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $window: IWindowService,
+        private readonly gemeindeRS: GemeindeRS,
+    ) {
     }
 
-    $onInit() {
-        //statt diese Listen zu laden koenne man sie auch von aussen setzen
+    public $onInit(): void {
+        // statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
         this.updateGemeindeList();
@@ -120,29 +123,31 @@ export class DVBenutzerListController implements IOnInit {
                 gemeinden => {
                     this.gemeindeList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
-    editClicked(user: any, event: any) {
-        this.onEdit({user: user, event: event});
+    public editClicked(user: any, event: any): void {
+        this.onEdit({user, event});
     }
 
     public readonly callServer = (tableFilterState: any) => {
         const pagination = tableFilterState.pagination;
         this.pagination = pagination;
 
-        if (this.onFilterChange && angular.isFunction(this.onFilterChange)) {
-            this.onFilterChange({tableState: tableFilterState}).then((result: TSUserSearchresultDTO) => {
-                if (result) {
-                    pagination.totalItemCount = result.totalResultSize;
-                    pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
-                    this.displayedCollection = [].concat(result.userDTOs);
-                }
-            });
-        } else {
+        if (!this.onFilterChange || !angular.isFunction(this.onFilterChange)) {
             this.$log.info('no callback function spcified for filtering');
+            return;
         }
+        this.onFilterChange({tableState: tableFilterState}).then((result: TSUserSearchresultDTO) => {
+            if (!result) {
+                return;
+            }
+
+            pagination.totalItemCount = result.totalResultSize;
+            pagination.numberOfPages = Math.ceil(result.totalResultSize / pagination.number);
+            this.displayedCollection = [].concat(result.userDTOs);
+        });
     };
 
     public getRollen(): TSRole[] {
@@ -159,6 +164,3 @@ export class DVBenutzerListController implements IOnInit {
         return element.childElementCount;
     }
 }
-
-
-

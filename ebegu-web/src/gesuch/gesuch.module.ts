@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
 import {downgradeComponent} from '@angular/upgrade/static';
-import {EbeguWebCore} from '../app/core/core.angularjs.module';
+import * as angular from 'angular';
+import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
@@ -23,6 +23,10 @@ import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitte
 import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
 import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungView';
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
+import {
+    DossierToolbarComponentConfig,
+    DossierToolbarGesuchstellerComponentConfig,
+} from './component/dossierToolbar/dossierToolbar';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
 import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
@@ -37,7 +41,6 @@ import {FinanzielleSituationResultateViewComponentConfig} from './component/fina
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituationView/finanzielleSituationView';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
-import {DossierToolbarComponentConfig, DossierToolbarGesuchstellerComponentConfig} from './component/dossierToolbar/dossierToolbar';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
@@ -47,11 +50,11 @@ import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/ve
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
 import {gesuchRun} from './gesuch.route';
 
-export const EbeguWebGesuch =
-    angular.module('ebeguWeb.gesuch', [EbeguWebCore.name])
+export const GESUCH_JS_MODULE =
+    angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .component('familiensituationView', new FamiliensituationViewComponentConfig())
-        .component('stammdatenView', new StammdatenViewComponentConfig)
+        .component('stammdatenView', new StammdatenViewComponentConfig())
         .component('umzugView', new UmzugViewComponentConfig())
         .component('kinderListView', new KinderListViewComponentConfig())
         .component('finanzielleSituationView', new FinanzielleSituationViewComponentConfig())
@@ -73,7 +76,8 @@ export const EbeguWebGesuch =
         .component('einkommensverschlechterungInfoView', new EinkommensverschlechterungInfoViewComponentConfig())
         .component('einkommensverschlechterungSteuernView', new EinkommensverschlechterungSteuernViewComponentConfig())
         .component('einkommensverschlechterungView', new EinkommensverschlechterungViewComponentConfig())
-        .component('einkommensverschlechterungResultateView', new EinkommensverschlechterungResultateViewComponentConfig())
+        .component('einkommensverschlechterungResultateView',
+            new EinkommensverschlechterungResultateViewComponentConfig())
         .component('freigabeView', new FreigabeViewComponentConfig())
         .component('dokumenteView', new DokumenteViewComponentConfig())
         .component('kommentarView', new KommentarViewComponentConfig())
@@ -81,4 +85,3 @@ export const EbeguWebGesuch =
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
 ;
-

@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {IComponentOptions, IFormController} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -23,26 +23,26 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class ParameterViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./parameterView.html');
-    controller = ParameterViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./parameterView.html');
+    public controller = ParameterViewController;
+    public controllerAs = 'vm';
 }
 
 export class ParameterViewController extends AbstractAdminViewController {
-    static $inject = ['GesuchsperiodeRS', '$translate',
-        '$log', '$state', '$timeout', 'AuthServiceRS'];
+    public static $inject = ['GesuchsperiodeRS', '$translate', '$state', '$timeout', 'AuthServiceRS'];
 
-    form: IFormController;
-    gesuchsperiodenList: Array<TSGesuchsperiode> = [];
-    jahr: number;
+    public form: IFormController;
+    public gesuchsperiodenList: Array<TSGesuchsperiode> = [];
+    public jahr: number;
 
-    constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $translate: ITranslateService,
-                private readonly $log: ILogService,
-                private readonly $state: StateService,
-                private readonly $timeout: ITimeoutService,
-                authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $translate: ITranslateService,
+        private readonly $state: StateService,
+        $timeout: ITimeoutService,
+        authServiceRS: AuthServiceRS,
+    ) {
         super(authServiceRS);
         $timeout(() => {
             this.readGesuchsperioden();
@@ -51,33 +51,33 @@ export class ParameterViewController extends AbstractAdminViewController {
 
     private readGesuchsperioden(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: Array<TSGesuchsperiode>) => {
-            this.gesuchsperiodenList = response; //angular.copy(response);
+            this.gesuchsperiodenList = response;
         });
     }
 
-    gesuchsperiodeClicked(gesuchsperiode: any) {
-        if (gesuchsperiode.isSelected) {
-            this.$state.go('admin.gesuchsperiode', {
-                gesuchsperiodeId: gesuchsperiode.id
-            });
+    public gesuchsperiodeClicked(gesuchsperiode: any): void {
+        if (!gesuchsperiode.isSelected) {
+            return;
         }
-    }
 
-    createGesuchsperiode(): void {
         this.$state.go('admin.gesuchsperiode', {
-            gesuchsperiodeId: undefined
+            gesuchsperiodeId: gesuchsperiode.id,
         });
     }
 
-    getStatusTagesschulenFreischaltung(gp: TSGesuchsperiode): string {
+    public createGesuchsperiode(): void {
+        this.$state.go('admin.gesuchsperiode', {
+            gesuchsperiodeId: undefined,
+        });
+    }
+
+    public getStatusTagesschulenFreischaltung(gp: TSGesuchsperiode): string {
         if (gp.hasTagesschulenAnmeldung()) {
-            if (gp.isTagesschulenAnmeldungKonfiguriert()) {
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_KONFIGURIERT');
-            } else {
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NOT_YET');
-            }
-        } else {
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NONE');
+            return gp.isTagesschulenAnmeldungKonfiguriert() ?
+                this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_KONFIGURIERT') :
+                this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NOT_YET');
         }
+
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NONE');
     }
 }

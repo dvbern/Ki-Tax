@@ -37,7 +37,7 @@ const states: Ng2StateDeclaration[] = [
         component: GemeindeListComponent,
         data: {
             roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-        }
+        },
     },
     {
         name: 'gemeinde.add',
@@ -45,8 +45,8 @@ const states: Ng2StateDeclaration[] = [
         component: AddGemeindeComponent,
         data: {
             roles: TSRoleUtil.getMandantRoles(),
-        }
-    }
+        },
+    },
 ];
 
 @NgModule({
@@ -54,7 +54,7 @@ const states: Ng2StateDeclaration[] = [
         UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
 })
 export class GemeindeRoutingModule {

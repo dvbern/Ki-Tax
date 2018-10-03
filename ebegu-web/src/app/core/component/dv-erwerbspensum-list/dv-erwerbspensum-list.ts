@@ -18,9 +18,9 @@ import TSErwerbspensum from '../../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../../models/TSErwerbspensumContainer';
 
 export class DVErwerbspensumListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         onRemove: '&',
         onAdd: '&',
         onEdit: '&',
@@ -30,29 +30,29 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
         addButtonVisible: '<',
         addButtonEnabled: '<',
         addButtonText: '@',
-        inputId: '@'
+        inputId: '@',
     };
-    template = require('./dv-erwerbspensum-list.html');
-    controller = DVErwerbspensumListController;
-    controllerAs = 'vm';
+    public template = require('./dv-erwerbspensum-list.html');
+    public controller = DVErwerbspensumListController;
+    public controllerAs = 'vm';
 }
 
 export class DVErwerbspensumListController implements IOnInit {
 
-    static $inject: ReadonlyArray<string> = [];
+    public static $inject: ReadonlyArray<string> = [];
 
-    erwerbspensen: TSErwerbspensum[];
-    tableId: string;
-    tableTitle: string;
-    inputId: string;
-    addButtonText: string;
-    addButtonVisible: boolean;
-    addButtonEnabled: boolean;
-    onRemove: (pensumToRemove: any) => void;
-    onEdit: (pensumToEdit: any) => void;
-    onAdd: () => void;
+    public erwerbspensen: TSErwerbspensum[];
+    public tableId: string;
+    public tableTitle: string;
+    public inputId: string;
+    public addButtonText: string;
+    public addButtonVisible: boolean;
+    public addButtonEnabled: boolean;
+    public onRemove: (pensumToRemove: any) => void;
+    public onEdit: (pensumToEdit: any) => void;
+    public onAdd: () => void;
 
-    $onInit() {
+    public $onInit(): void {
         if (!this.addButtonText) {
             this.addButtonText = 'add item';
         }
@@ -62,7 +62,7 @@ export class DVErwerbspensumListController implements IOnInit {
         if (this.addButtonEnabled === undefined) {
             this.addButtonEnabled = true;
         }
-        //clear selected
+        // clear selected
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this.erwerbspensen.length; i++) {
             const obj: any = this.erwerbspensen[i];
@@ -72,19 +72,19 @@ export class DVErwerbspensumListController implements IOnInit {
         }
     }
 
-    removeClicked(pensumToRemove: TSErwerbspensumContainer, index: any) {
-        this.onRemove({pensum: pensumToRemove, index: index});
+    public removeClicked(pensumToRemove: TSErwerbspensumContainer, index: any): void {
+        this.onRemove({pensum: pensumToRemove, index});
     }
 
-    editClicked(pensumToEdit: any) {
+    public editClicked(pensumToEdit: any): void {
         this.onEdit({pensum: pensumToEdit});
     }
 
-    addClicked() {
+    public addClicked(): void {
         this.onAdd();
     }
 
-    isRemoveAllowed(pensumToEdit: any) {
+    public isRemoveAllowed(_pensumToEdit: any): boolean {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
         // erfasste Taetigkeiten bei nicht-zustandekommen des Jobs nicht mehr geloescht werden koennen
         // Siehe auch EBEGU-1146 und EBEGU-580
@@ -96,6 +96,3 @@ export class DVErwerbspensumListController implements IOnInit {
         return false;
     }
 }
-
-
-

@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService} from 'angular';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export interface IEntityRS {
     serviceURL: string;

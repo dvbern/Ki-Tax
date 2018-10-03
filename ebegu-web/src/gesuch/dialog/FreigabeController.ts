@@ -30,43 +30,52 @@ import ITranslateService = angular.translate.ITranslateService;
  */
 export class FreigabeController {
 
-    static $inject: string[] = ['docID', '$mdDialog', 'GesuchRS', 'BenutzerRS', 'AuthServiceRS',
-        'EbeguUtil', 'CONSTANTS', '$translate', 'ApplicationPropertyRS'];
+    public static $inject: string[] = [
+        'docID',
+        '$mdDialog',
+        'GesuchRS',
+        'BenutzerRS',
+        'AuthServiceRS',
+        '$translate',
+        'ApplicationPropertyRS',
+    ];
 
-    private gesuch: TSAntragDTO;
-    private selectedUserBG: string;
-    private selectedUserTS: string;
-    private userBGList: Array<TSBenutzer>;
-    private userTSList: Array<TSBenutzer>;
-    private fallNummer: string;
-    private familie: string;
-    private errorMessage: string;
-    TSRoleUtil = TSRoleUtil;
+    public gesuch: TSAntragDTO;
+    public selectedUserBG: string;
+    public selectedUserTS: string;
+    public userBGList: Array<TSBenutzer>;
+    public userTSList: Array<TSBenutzer>;
+    public fallNummer: string;
+    public familie: string;
+    public errorMessage: string;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly docID: string,
-                private readonly $mdDialog: IDialogService,
-                private readonly gesuchRS: GesuchRS,
-                private readonly benutzerRS: BenutzerRS,
-                private readonly authService: AuthServiceRS,
-                private readonly ebeguUtil: EbeguUtil,
-                CONSTANTS: any,
-                private readonly $translate: ITranslateService,
-                private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    public constructor(
+        private readonly docID: string,
+        private readonly $mdDialog: IDialogService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly authService: AuthServiceRS,
+        private readonly $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value
-            if (response) {
-                if (response.canBeFreigegeben()) {
-                    this.gesuch = response;
-                    this.fallNummer = EbeguUtil.addZerosToFallNummer(response.fallNummer);
-                    this.familie = response.familienName;
-                    this.setVerantwortliche();
-                } else {
-                    this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
-                }
-            } else {
+            if (!response) {
                 this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
+                return;
             }
+
+            if (!response.canBeFreigegeben()) {
+                this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                return;
+            }
+
+            this.gesuch = response;
+            this.fallNummer = EbeguUtil.addZerosToFallNummer(response.fallNummer);
+            this.familie = response.familienName;
+            this.setVerantwortliche();
         }).catch(() => {
             this.cancel(); // close popup
         });
@@ -75,7 +84,7 @@ export class FreigabeController {
 
     }
 
-    private setVerantwortliche() {
+    private setVerantwortliche(): void {
         // Verantwortlicher wird gemaess folgender Prioritaet festgestellt:
         // (1) Verantwortlicher des Vorjahresgesuchs
         // (2) Eingeloggter Benutzer (fuer jeweilige Amt-Verantwortung)
@@ -84,32 +93,29 @@ export class FreigabeController {
         // Jugendamt
         if (this.gesuch.verantwortlicherBG && this.gesuch.verantwortlicherUsernameBG) {
             this.selectedUserBG = this.gesuch.verantwortlicherUsernameBG;
-        } else {
+        } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
-            if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
-                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(username => {
-                    this.selectedUserBG = username.value;
-                });
-            } else {
-                this.selectedUserBG = this.authService.getPrincipal().username;
-            }
+            this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(username => {
+                this.selectedUserBG = username.value;
+            });
+        } else {
+            this.selectedUserBG = this.authService.getPrincipal().username;
         }
+
         // Schulamt
         if (this.gesuch.verantwortlicherTS && this.gesuch.verantwortlicherUsernameTS) {
             this.selectedUserTS = this.gesuch.verantwortlicherUsernameTS;
-        } else {
+        } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
-            if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
-                this.selectedUserTS = this.authService.getPrincipal().username;
-            } else {
-                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(username => {
-                    this.selectedUserTS = username.value;
-                });
-            }
+            this.selectedUserTS = this.authService.getPrincipal().username;
+        } else {
+            this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(username => {
+                this.selectedUserTS = username.value;
+            });
         }
     }
 
-    private updateUserList() {
+    private updateUserList(): void {
         this.benutzerRS.getBenutzerJAorAdmin().then((response: any) => {
             this.userBGList = angular.copy(response);
         });
@@ -127,7 +133,7 @@ export class FreigabeController {
     }
 
     public hasError(): boolean {
-        return this.errorMessage != null;
+        return EbeguUtil.isNotNullOrUndefined(this.errorMessage);
     }
 
     public freigeben(): IPromise<any> {

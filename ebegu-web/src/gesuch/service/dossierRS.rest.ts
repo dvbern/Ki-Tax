@@ -13,83 +13,61 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import TSDossier from '../../models/TSDossier';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class DossierRS implements IEntityRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService, REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
-        this.serviceURL = REST_API + 'dossier';
+    public constructor(public $http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
+        this.serviceURL = `${REST_API}dossier`;
     }
 
     public createDossier(dossier: TSDossier): IPromise<TSDossier> {
         let sentDossier = {};
         sentDossier = this.ebeguRestUtil.dossierToRestObject(sentDossier, dossier);
-        return this.$http.post(this.serviceURL, sentDossier, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING dossier REST object ', response.data);
+        return this.$http.post(this.serviceURL, sentDossier).then((response: any) => {
             return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
         });
     }
 
     public findDossier(dossierId: string): IPromise<TSDossier> {
-        return this.$http.get(this.serviceURL + '/id/' + encodeURIComponent(dossierId))
+        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(dossierId)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING dossier REST object ', response.data);
                 return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
             });
     }
 
     public findDossiersByFall(fallId: string): IPromise<TSDossier[]> {
-        return this.$http.get(this.serviceURL + '/fall/' + encodeURIComponent(fallId))
+        return this.$http.get(`${this.serviceURL}/fall/${encodeURIComponent(fallId)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING dossierList REST object ', response.data);
                 return this.ebeguRestUtil.parseDossierList(response.data);
             });
     }
 
     public findNewestDossierByCurrentBenutzerAsBesitzer(): IPromise<TSDossier> {
-        return this.$http.get(this.serviceURL + '/newestCurrentBesitzer/')
+        return this.$http.get(`${this.serviceURL}/newestCurrentBesitzer/`)
             .then((response: any) => {
-                this.$log.debug('PARSING dossier REST object ', response.data);
                 return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
             });
     }
 
     public getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId: string): IPromise<TSDossier> {
-        return this.$http.put(this.serviceURL + '/createforcurrentbenutzer/' + encodeURIComponent(gemeindeId), {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING dossier REST object ', response.data);
-            return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
-        });
+        return this.$http.put(`${this.serviceURL}/createforcurrentbenutzer/${encodeURIComponent(gemeindeId)}`, {})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDossier(new TSDossier(), response.data);
+            });
     }
 
     public setVerantwortlicherBG(dossierId: string, username: string): IHttpPromise<TSDossier> {
-        return this.$http.put(this.serviceURL + '/verantwortlicherBG/' +  encodeURIComponent(dossierId), username, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        return this.$http.put(`${this.serviceURL}/verantwortlicherBG/${encodeURIComponent(dossierId)}`, username);
     }
 
     public setVerantwortlicherTS(dossierId: string, username: string): IHttpPromise<TSDossier> {
-        return this.$http.put(this.serviceURL + '/verantwortlicherTS/' +  encodeURIComponent(dossierId), username, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        return this.$http.put(`${this.serviceURL}/verantwortlicherTS/${encodeURIComponent(dossierId)}`, username);
     }
 }

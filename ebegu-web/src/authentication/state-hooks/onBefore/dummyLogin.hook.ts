@@ -27,7 +27,7 @@ dummyLoginHookRunBlock.$inject = ['$transitions'];
  *
  * This hook aborts a transition when the the application is not running in dummy mode
  */
-export function dummyLoginHookRunBlock($transitions: TransitionService) {
+export function dummyLoginHookRunBlock($transitions: TransitionService): void {
     // Matches all states the require dummy login
     const requiresDummyLogin: HookMatchCriteria = {
         to: state => state.data && state.data.requiresDummyLogin,

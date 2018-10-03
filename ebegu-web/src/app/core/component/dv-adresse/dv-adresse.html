@@ -43,10 +43,11 @@
                 <dv-input-container class="form-group">
                     <label class="md-no-float" data-translate="ADRESSE_STRASSE" for="{{vm.prefix}}-strasse">
                     </label>
-                    <input aria-describedby="{{vm.prefix}}-strasse-error" id="{{vm.prefix}}-strasse" type="text" name="adresseStrasse"
-                            ng-model="vm.getModel().adresseJA.strasse"
+                    <input aria-describedby="{{vm.prefix}}-strasse-error" id="{{vm.prefix}}-strasse" type="text"
+                           name="adresseStrasse"
+                           ng-model="vm.getModel().adresseJA.strasse"
                            autocomplete="address-line1"
-                           dv-max-length  maxlength="60" class="form-control" required>
+                           dv-max-length maxlength="60" class="form-control" required>
                     <dv-bisher gs="vm.getModel().adresseGS.strasse"
                                ja="vm.getModel().adresseJA.strasse"
                                show-if-bisher-none="vm.showIfBisherNone === true"
@@ -60,7 +61,7 @@
                     <label class="md-no-float" data-translate="ADRESSE_HAUSNUMMER" for="{{vm.prefix}}-hausnummer">
                     </label>
                     <input aria-describedby="{{vm.prefix}}-hausnummer-error" id="{{vm.prefix}}-hausnummer" type="text"
-                           name="adresseHausnummer"   autocomplete="address-line2"
+                           name="adresseHausnummer" autocomplete="address-line2"
                            ng-model="vm.getModel().adresseJA.hausnummer"
                            dv-max-length dv-trim-empty class="form-control">
                     <dv-bisher gs="vm.getModel().adresseGS.hausnummer"
@@ -182,7 +183,7 @@
                                  dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                                  dv-enable-expression="vm.enableNichtInGemeinde()">
                         <span data-translate="NICHT_IN_GEMEINDE_WOHNHAFT"
-                        data-translate-value-gemeinde="{{vm.gemeinde.name}}"></span>
+                              data-translate-value-gemeinde="{{vm.gemeinde.name}}"></span>
                     </md-checkbox>
                     <dv-error-messages for="adresseForm.adresseNichtInGemeinde.$error"
                                        class="error"></dv-error-messages>

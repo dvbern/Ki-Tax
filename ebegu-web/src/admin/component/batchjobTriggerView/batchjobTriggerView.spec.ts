@@ -41,7 +41,7 @@ describe('batchjobTriggerView', () => {
                 {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
                 {provide: DailyBatchRS, useValue: dailyBatchRSSpy},
             ],
-            declarations: [BatchjobTriggerViewComponent]
+            declarations: [BatchjobTriggerViewComponent],
         })
             .compileComponents();
     }));

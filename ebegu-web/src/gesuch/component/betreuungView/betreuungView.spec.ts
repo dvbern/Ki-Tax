@@ -13,8 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -33,9 +34,10 @@ import {IBetreuungStateParams} from '../../gesuch.route';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from './betreuungView';
-import {StateService} from '@uirouter/core';
 
+// tslint:disable:no-big-function no-commented-code max-line-length
 describe('betreuungView', () => {
+    const betreuungenState = 'gesuch.betreuungen';
 
     let betreuungView: BetreuungViewController;
     let gesuchModelManager: GesuchModelManager;
@@ -51,7 +53,7 @@ describe('betreuungView', () => {
     let $stateParams: IBetreuungStateParams;
     let $timeout: angular.ITimeoutService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -88,10 +90,21 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         wizardStepManager = $injector.get('WizardStepManager');
-        betreuungView = new BetreuungViewController($state, gesuchModelManager, ebeguUtil, $injector.get('CONSTANTS'),
-            $rootScope, $injector.get('BerechnungsManager'), $injector.get('ErrorService'), authServiceRS,
-            wizardStepManager, $stateParams, $injector.get('MitteilungRS'), $injector.get('DvDialog'), $injector.get('$log'),
-            $timeout, undefined);
+        betreuungView = new BetreuungViewController($state,
+            gesuchModelManager,
+            ebeguUtil,
+            $injector.get('CONSTANTS'),
+            $rootScope,
+            $injector.get('BerechnungsManager'),
+            $injector.get('ErrorService'),
+            authServiceRS,
+            wizardStepManager,
+            $stateParams,
+            $injector.get('MitteilungRS'),
+            $injector.get('DvDialog'),
+            $injector.get('$log'),
+            $timeout,
+            undefined);
         betreuungView.$onInit();
         $rootScope.$apply();
         betreuungView.model = betreuung;
@@ -99,18 +112,25 @@ describe('betreuungView', () => {
         betreuungView.form = TestDataUtil.createDummyForm();
     }));
 
-    describe('Public API', () => {
-        it('should include a cancel() function', () => {
-            expect(betreuungView.cancel).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
+
         describe('Object creation', () => {
             it('create an empty list of Betreuungspensen for a role different than Institution', () => {
-                const myBetreuungView: BetreuungViewController = new BetreuungViewController($state, gesuchModelManager, ebeguUtil, null,
-                    $rootScope, null, null, authServiceRS, wizardStepManager, $stateParams, undefined, undefined, undefined,
-                    $timeout, undefined);
+                const myBetreuungView = new BetreuungViewController($state,
+                    gesuchModelManager,
+                    ebeguUtil,
+                    null,
+                    $rootScope,
+                    null,
+                    null,
+                    authServiceRS,
+                    wizardStepManager,
+                    $stateParams,
+                    undefined,
+                    undefined,
+                    undefined,
+                    $timeout,
+                    undefined);
                 myBetreuungView.model = betreuung;
                 expect(myBetreuungView.getBetreuungspensen()).toBeDefined();
                 expect(myBetreuungView.getBetreuungspensen().length).toEqual(0);
@@ -121,8 +141,10 @@ describe('betreuungView', () => {
                 spyOn($state, 'go');
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.removeBetreuungFromKind).not.toHaveBeenCalled();
-                expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: ''});
+                // tslint:disable-next-line:no-unbound-method
+                expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
             });
         });
         describe('cancel non-existing object', () => {
@@ -132,25 +154,31 @@ describe('betreuungView', () => {
                 betreuungView.model.timestampErstellt = undefined;
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.removeBetreuungFromKind).toHaveBeenCalled();
-                expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: ''});
+                // tslint:disable-next-line:no-unbound-method
+                expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
             });
         });
         describe('getInstitutionenSDList', () => {
             beforeEach(() => {
-                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('1', TSBetreuungsangebotTyp.KITA));
-                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('2', TSBetreuungsangebotTyp.KITA));
-                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('3', TSBetreuungsangebotTyp.TAGESFAMILIEN));
-                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('4', TSBetreuungsangebotTyp.TAGESSCHULE));
+                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('1',
+                    TSBetreuungsangebotTyp.KITA));
+                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('2',
+                    TSBetreuungsangebotTyp.KITA));
+                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('3',
+                    TSBetreuungsangebotTyp.TAGESFAMILIEN));
+                gesuchModelManager.getActiveInstitutionenList().push(createInstitutionStammdaten('4',
+                    TSBetreuungsangebotTyp.TAGESSCHULE));
             });
             it('should return an empty list if betreuungsangebot is not yet defined', () => {
-                const list: Array<TSInstitutionStammdaten> = betreuungView.getInstitutionenSDList();
+                const list = betreuungView.getInstitutionenSDList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(0);
             });
             it('should return a list with 2 Institutions of type TSBetreuungsangebotTyp.KITA', () => {
                 betreuungView.betreuungsangebot = {key: 'KITA', value: 'kita'};
-                const list: Array<TSInstitutionStammdaten> = betreuungView.getInstitutionenSDList();
+                const list = betreuungView.getInstitutionenSDList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(2);
                 expect(list[0].iban).toBe('1');
@@ -171,10 +199,11 @@ describe('betreuungView', () => {
                 expect(betreuungView.getBetreuungspensen().length).toBe(1);
                 expect(betreuungView.getBetreuungspensen()).toBeDefined();
                 expect(betreuungView.getBetreuungspensen()[0].betreuungspensumGS).toBeUndefined();
-                expect(betreuungView.getBetreuungspensen()[0].betreuungspensumJA).toBeDefined();
-                expect(betreuungView.getBetreuungspensen()[0].betreuungspensumJA.pensum).toBeUndefined();
-                expect(betreuungView.getBetreuungspensen()[0].betreuungspensumJA.gueltigkeit.gueltigAb).toBeUndefined();
-                expect(betreuungView.getBetreuungspensen()[0].betreuungspensumJA.gueltigkeit.gueltigBis).toBeUndefined();
+                const betreuungspensumJA = betreuungView.getBetreuungspensen()[0].betreuungspensumJA;
+                expect(betreuungspensumJA).toBeDefined();
+                expect(betreuungspensumJA.pensum).toBeUndefined();
+                expect(betreuungspensumJA.gueltigkeit.gueltigAb).toBeUndefined();
+                expect(betreuungspensumJA.gueltigkeit.gueltigBis).toBeUndefined();
             });
         });
         describe('submit', () => {
@@ -191,15 +220,19 @@ describe('betreuungView', () => {
                 spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.stub();
                 betreuungView.model.erweiterteBeduerfnisse = true;
                 betreuungView.model.grundAblehnung = 'mein Grund';
-                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND);
+                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                    .toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 expect(betreuungView.model.datumAblehnung).toBeUndefined();
 
                 betreuungView.platzAbweisen();
 
-                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND); // Status wird serverseitig gesetzt
+                // Status wird serverseitig gesetzt
+                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                    .toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 expect(gesuchModelManager.getBetreuungToWorkWith().grundAblehnung).toEqual('mein Grund');
                 expect(gesuchModelManager.getBetreuungToWorkWith().datumAblehnung).toEqual(DateUtil.today());
                 expect(gesuchModelManager.getBetreuungToWorkWith().erweiterteBeduerfnisse).toBe(true);
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -209,9 +242,13 @@ describe('betreuungView', () => {
                 betreuungView.model.vertrag = true;
                 // betreuung.timestampErstellt = undefined;
                 betreuungView.model.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
-                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND);
+                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                    .toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 betreuungView.platzAnfordern();
-                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND); // Status wird serverseitig gesetzt
+                // Status wird serverseitig gesetzt
+                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                    .toEqual(TSBetreuungsstatus.AUSSTEHEND);
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -229,59 +266,69 @@ describe('betreuungView', () => {
             });
         });
         describe('isMutationsmeldungAllowed', () => {
+            const vorgaengerId = '111-222-333-444-555';
+
             it('should be false if the Gesuch is not a Mutation and is not verfuegt', () => {
                 betreuungView.model.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
+                initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
                 expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
             });
             it('should be true if the Gesuch is not a Mutation but the betreuung is in Status Verfuegt', () => {
                 betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.VERFUEGT, false);
+                initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.VERFUEGT, false);
                 expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
             });
-            it('should be false if the Gesuch is not a Mutation and is in Status VERFUEGT but the betreuung is not in Status VERFUEGT', () => {
-                // this case is actually not possible
-                betreuungView.model.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.VERFUEGT, false);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
-            });
-            it('should be false if the Gesuch is not a Mutation and is not in Status VERFUEGT but the betreuung is in Status VERFUEGT', () => {
-                betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.VERFUEGEN, false);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
-            });
-            it('should be true if the Gesuch is not gesperrtWegenBeschwerde though STV status and the betreuung is in Status VERFUEGT', () => {
-                betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.PRUEFUNG_STV, false);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
-            });
+            it('should be false if the Gesuch is not a Mutation and is in Status VERFUEGT but the betreuung is not in Status VERFUEGT',
+                () => {
+                    // this case is actually not possible
+                    betreuungView.model.betreuungsstatus = TSBetreuungsstatus.BESTAETIGT;
+                    initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.VERFUEGT, false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
+                });
+            it('should be false if the Gesuch is not a Mutation and is not in Status VERFUEGT but the betreuung is in Status VERFUEGT',
+                () => {
+                    betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
+                    initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.VERFUEGEN, false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
+                });
+            it('should be true if the Gesuch is not gesperrtWegenBeschwerde though STV status and the betreuung is in Status VERFUEGT',
+                () => {
+                    betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
+                    initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.PRUEFUNG_STV, false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
+                });
             it('should be true if the Gesuch is a Mutation and the betreuung has a vorgaengerID', () => {
-                betreuungView.model.vorgaengerId = '111-222-333-444-555';
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, false);
+
+                betreuungView.model.vorgaengerId = vorgaengerId;
+                initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, false);
                 expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
             });
-            it('should be false if the Gesuch is a Mutation and the betreuung has no vorgaengerID, i.e. it is a new Betreuung', () => {
-                betreuungView.model.vorgaengerId = undefined;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
-            });
-            it('should be false if the Mutation is gesperrtWegenBeschwerde although the Betreuung has a vorgaengerId', () => {
-                betreuungView.model.vorgaengerId = '111-222-333-444-555';
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, true);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
-            });
-            it('should be true if the Gesuch is a Mutation and is in Status VERFUEGEN but the betreuung is in Status VERFUEGT and has a vorgaengerId', () => {
-                betreuungView.model.vorgaengerId = '111-222-333-444-555';
-                betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.VERFUEGEN, false);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
-            });
-            it('should be true if the Gesuch is a Mutation and is in Status VERFUEGT and the betreuung is in Status VERFUEGT but has no vorgaengerId', () => {
-                betreuungView.model.vorgaengerId = undefined;
-                betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
-                const gesuch: TSGesuch = initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.VERFUEGT, false);
-                expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
-            });
+            it('should be false if the Gesuch is a Mutation and the betreuung has no vorgaengerID, i.e. it is a new Betreuung',
+                () => {
+                    betreuungView.model.vorgaengerId = undefined;
+                    initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
+                });
+            it('should be false if the Mutation is gesperrtWegenBeschwerde although the Betreuung has a vorgaengerId',
+                () => {
+                    betreuungView.model.vorgaengerId = vorgaengerId;
+                    initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.IN_BEARBEITUNG_JA, true);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(false);
+                });
+            it('should be true if the Gesuch is a Mutation and is in Status VERFUEGEN but the betreuung is in Status VERFUEGT and has a vorgaengerId',
+                () => {
+                    betreuungView.model.vorgaengerId = vorgaengerId;
+                    betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
+                    initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.VERFUEGEN, false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
+                });
+            it('should be true if the Gesuch is a Mutation and is in Status VERFUEGT and the betreuung is in Status VERFUEGT but has no vorgaengerId',
+                () => {
+                    betreuungView.model.vorgaengerId = undefined;
+                    betreuungView.model.betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
+                    initGesuch(TSAntragTyp.MUTATION, TSAntragStatus.VERFUEGT, false);
+                    expect(betreuungView.isMutationsmeldungAllowed()).toBe(true);
+                });
         });
         describe('showInstitutionenList', () => {
             it('should showInstitutionenList and not showInstitutionenAsText for FALSCHE INSTITUTION', () => {
@@ -294,41 +341,44 @@ describe('betreuungView', () => {
                 expect(betreuungView.showInstitutionenList()).toBe(true);
                 expect(betreuungView.showInstitutionenAsText()).toBe(false);
             });
-            it('should not showInstitutionenList and not showInstitutionenAsText for TAGESSCHULE alte Gesuchsperiode', () => {
-                // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(false);
-                spyOn(betreuungView, 'isEnabled').and.returnValue(true);
-                spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
-                spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
+            it('should not showInstitutionenList and not showInstitutionenAsText for TAGESSCHULE alte Gesuchsperiode',
+                () => {
+                    // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
+                    spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(false);
+                    spyOn(betreuungView, 'isEnabled').and.returnValue(true);
+                    spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
+                    spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
 
-                expect(betreuungView.showInstitutionenList()).toBe(false);
-                expect(betreuungView.showInstitutionenAsText()).toBe(false);
-            });
-            it('should showInstitutionenList and not showInstitutionenAsText for enabled TAGESSCHULE neue Gesuchsperiode', () => {
-                // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(true);
-                spyOn(betreuungView, 'isEnabled').and.returnValue(true);
-                spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
-                spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
+                    expect(betreuungView.showInstitutionenList()).toBe(false);
+                    expect(betreuungView.showInstitutionenAsText()).toBe(false);
+                });
+            it('should showInstitutionenList and not showInstitutionenAsText for enabled TAGESSCHULE neue Gesuchsperiode',
+                () => {
+                    // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
+                    spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(true);
+                    spyOn(betreuungView, 'isEnabled').and.returnValue(true);
+                    spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
+                    spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
 
-                expect(betreuungView.showInstitutionenList()).toBe(true);
-                expect(betreuungView.showInstitutionenAsText()).toBe(false);
-            });
-            it('should not showInstitutionenList and showInstitutionenAsText for disabled TAGESSCHULE neue Gesuchsperiode', () => {
-                // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(true);
-                spyOn(betreuungView, 'isEnabled').and.returnValue(false);
-                spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
-                spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
+                    expect(betreuungView.showInstitutionenList()).toBe(true);
+                    expect(betreuungView.showInstitutionenAsText()).toBe(false);
+                });
+            it('should not showInstitutionenList and showInstitutionenAsText for disabled TAGESSCHULE neue Gesuchsperiode',
+                () => {
+                    // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
+                    spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(true);
+                    spyOn(betreuungView, 'isEnabled').and.returnValue(false);
+                    spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
+                    spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
 
-                expect(betreuungView.showInstitutionenList()).toBe(false);
-                expect(betreuungView.showInstitutionenAsText()).toBe(true);
-            });
+                    expect(betreuungView.showInstitutionenList()).toBe(false);
+                    expect(betreuungView.showInstitutionenAsText()).toBe(true);
+                });
         });
     });
 
     function initGesuch(typ: TSAntragTyp, status: TSAntragStatus, gesperrtWegenBeschwerde: boolean): TSGesuch {
-        const gesuch: TSGesuch = new TSGesuch();
+        const gesuch = new TSGesuch();
         gesuch.typ = typ;
         gesuch.status = status;
         gesuch.gesperrtWegenBeschwerde = gesperrtWegenBeschwerde;
@@ -338,8 +388,8 @@ describe('betreuungView', () => {
         return gesuch;
     }
 
-    function createInstitutionStammdaten(iban: string, betAngTyp: TSBetreuungsangebotTyp) {
-        const instStam1: TSInstitutionStammdaten = new TSInstitutionStammdaten();
+    function createInstitutionStammdaten(iban: string, betAngTyp: TSBetreuungsangebotTyp): TSInstitutionStammdaten {
+        const instStam1 = new TSInstitutionStammdaten();
         instStam1.iban = iban;
         instStam1.betreuungsangebotTyp = betAngTyp;
         return instStam1;
@@ -349,19 +399,20 @@ describe('betreuungView', () => {
      * Das Parameter promiseResponse ist das Object das die Methode gesuchModelManager.saveBetreuung() zurueckgeben
      * muss. Wenn dieses eine Exception (reject) ist, muss der $state nicht geaendert werden und daher wird die Methode
      * $state.go()  nicht aufgerufen. Ansonsten wird sie mit  dem naechsten state 'gesuch.betreuungen' aufgerufen
-     * @param promiseResponse
-     * @param moveToNextStep
      */
-    function testSubmit(promiseResponse: any, moveToNextStep: boolean) {
+    function testSubmit(promiseResponse: any, moveToNextStep: boolean): void {
         betreuungView.model.vertrag = true;
         spyOn($state, 'go');
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
         betreuungView.platzAnfordern();
         $rootScope.$apply();
+        // tslint:disable-next-line:no-unbound-method
         expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
         if (moveToNextStep) {
-            expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: ''});
+            // tslint:disable-next-line:no-unbound-method
+            expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
         } else {
+            // tslint:disable-next-line:no-unbound-method
             expect($state.go).not.toHaveBeenCalled();
         }
     }

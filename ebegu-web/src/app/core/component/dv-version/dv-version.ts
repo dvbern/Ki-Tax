@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, IQService} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
@@ -21,33 +21,33 @@ import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
 
-
 export class DVVersionComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-version.html');
-    controller = DVVersionController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-version.html');
+    public controller = DVVersionController;
+    public controllerAs = 'vm';
 }
 
 export class DVVersionController implements IController {
 
-    static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
+    public static $inject = ['$rootScope', 'HttpVersionInterceptor', '$window'];
 
-    private backendVersion: string;
-    private readonly frontendVersion: string = VERSION;
-    private readonly buildTime: string = BUILDTSTAMP;
-    private showSingleVersion: boolean = true;
-    private currentYear: number;
+    public backendVersion: string;
+    public readonly buildTime: string = BUILDTSTAMP;
+    public readonly frontendVersion: string = VERSION;
+    public showSingleVersion: boolean = true;
+    public currentYear: number;
 
-    constructor(private readonly $rootScope: IRootScopeService,
-                private readonly httpVersionInterceptor: HttpVersionInterceptor,
-                private readonly $q: IQService,
-                private readonly $window: IWindowService) {
+    public constructor(
+        private readonly $rootScope: IRootScopeService,
+        private readonly httpVersionInterceptor: HttpVersionInterceptor,
+        private readonly $window: IWindowService,
+    ) {
 
     }
 
-    $onInit() {
+    public $onInit(): void {
 
         this.backendVersion = this.httpVersionInterceptor.backendVersion;
         this.currentYear = DateUtil.currentYear();
@@ -55,15 +55,14 @@ export class DVVersionController implements IController {
         this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
             this.backendVersion = this.httpVersionInterceptor.backendVersion;
             this.updateDisplayVersion();
-            const msg = 'Der Client (' + this.frontendVersion + ') hat eine andere Version als der Server('
-                + this.backendVersion + '). Bitte laden sie die Seite komplett neu (F5)';
+            const msg = `Der Client (${this.frontendVersion}) hat eine andere Version als der Server(${this.backendVersion}). Bitte laden sie die Seite komplett neu (F5)`;
             this.$window.alert(msg);
 
         });
 
     }
 
-    private updateDisplayVersion() {
+    private updateDisplayVersion(): void {
         this.showSingleVersion = this.frontendVersion === this.backendVersion || this.backendVersion === null;
     }
 

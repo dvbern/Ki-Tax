@@ -264,7 +264,8 @@
         <div ui-view="kommentarViewPort" flex="100"></div>
     </div>
     <md-sidenav dv-show-element
-                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()" class="md-sidenav-right" md-component-id="ewk" id="ewk"
+                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()" class="md-sidenav-right"
+                md-component-id="ewk" id="ewk"
                 md-disable-backdrop md-whiteframe="4" md-is-open="vm.openEwkSidenav">
         <button ng-click="vm.closeSidenav('ewk')" class="dv-btn dv-btn-operation" style="width:2rem; margin-left:auto;">
             <i class="fa fa-times"></i>
@@ -281,7 +282,7 @@
 
                 <h3 ng-bind="vm.getGesuchstellerTitle(n)"></h3>
                 <dv-loading-button type="button" button-class="dv-btn-operation"
-                        button-click="vm.searchGesuchsteller(n)">
+                                   button-click="vm.searchGesuchsteller(n)">
                     <i class="fa fa-search"></i>
                     <span data-translate="EWK_ABFRAGE_BUTTON"
                           data-translate-value-name="{{vm.ewkRS.getGesuchsteller(n).gesuchstellerJA.getFullName()}}"></span>
@@ -503,7 +504,7 @@
                             </dv-accordion>
                             <div class="ewk-button" layout="row" layout-align="center center">
                                 <dv-loading-button ng-if="!vm.checkEWKPerson(person,n)"
-                                        button-click="vm.selectPerson(person,n)">
+                                                   button-click="vm.selectPerson(person,n)">
                                     <span data-translate="EWK_LINK"></span>
                                 </dv-loading-button>
                             </div>

@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import {TSAntragTyp} from './enums/TSAntragTyp';
-import {TSAntragStatus} from './enums/TSAntragStatus';
-import {TSEingangsart} from './enums/TSEingangsart';
 import * as moment from 'moment';
+import {TSAntragStatus} from './enums/TSAntragStatus';
+import {TSAntragTyp} from './enums/TSAntragTyp';
+import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSEingangsart} from './enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import TSAbstractAntragDTO from './TSAbstractAntragDTO';
 
@@ -49,32 +49,34 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     private _dokumenteHochgeladen: boolean;
     private _gemeinde: string;
 
-    constructor(antragId?: string,
-                fallNummer?: number,
-                familienName?: string,
-                antragTyp?: TSAntragTyp,
-                eingangsdatum?: moment.Moment,
-                eingangsdatumSTV?: moment.Moment,
-                aenderungsdatum?: moment.Moment,
-                angebote?: Array<TSBetreuungsangebotTyp>,
-                institutionen?: Array<string>,
-                verantwortlicherBG?: string,
-                verantwortlicherTS?: string,
-                status?: TSAntragStatus,
-                gesuchsperiodeGueltigAb?: moment.Moment,
-                gesuchsperiodeGueltigBis?: moment.Moment,
-                verfuegt?: boolean,
-                laufnummer?: number,
-                besitzerUsername?: string,
-                eingangsart?: TSEingangsart,
-                beschwerdeHaengig?: boolean,
-                kinder?: Array<string>,
-                gesuchBetreuungenStatus?: TSGesuchBetreuungenStatus,
-                dokumenteHochgeladen?: boolean,
-                verantwortlicherUsernameBG?: string,
-                verantwortlicherUsernameTS?: string,
-                dossierId?: string,
-                gemeinde?: string) {
+    public constructor(
+        antragId?: string,
+        fallNummer?: number,
+        familienName?: string,
+        antragTyp?: TSAntragTyp,
+        eingangsdatum?: moment.Moment,
+        eingangsdatumSTV?: moment.Moment,
+        aenderungsdatum?: moment.Moment,
+        angebote?: Array<TSBetreuungsangebotTyp>,
+        institutionen?: Array<string>,
+        verantwortlicherBG?: string,
+        verantwortlicherTS?: string,
+        status?: TSAntragStatus,
+        gesuchsperiodeGueltigAb?: moment.Moment,
+        gesuchsperiodeGueltigBis?: moment.Moment,
+        verfuegt?: boolean,
+        laufnummer?: number,
+        besitzerUsername?: string,
+        eingangsart?: TSEingangsart,
+        beschwerdeHaengig?: boolean,
+        kinder?: Array<string>,
+        gesuchBetreuungenStatus?: TSGesuchBetreuungenStatus,
+        dokumenteHochgeladen?: boolean,
+        verantwortlicherUsernameBG?: string,
+        verantwortlicherUsernameTS?: string,
+        dossierId?: string,
+        gemeinde?: string,
+    ) {
 
         super(fallNummer, dossierId, familienName);
         this._antragId = antragId;
@@ -103,75 +105,75 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         this._regelnGueltigAb = undefined;
     }
 
-    get antragId(): string {
+    public get antragId(): string {
         return this._antragId;
     }
 
-    set antragId(value: string) {
+    public set antragId(value: string) {
         this._antragId = value;
     }
 
-    get antragTyp(): TSAntragTyp {
+    public get antragTyp(): TSAntragTyp {
         return this._antragTyp;
     }
 
-    set antragTyp(value: TSAntragTyp) {
+    public set antragTyp(value: TSAntragTyp) {
         this._antragTyp = value;
     }
 
-    get eingangsdatum(): moment.Moment {
+    public get eingangsdatum(): moment.Moment {
         return this._eingangsdatum;
     }
 
-    set eingangsdatum(value: moment.Moment) {
+    public set eingangsdatum(value: moment.Moment) {
         this._eingangsdatum = value;
     }
 
-    get regelnGueltigAb(): moment.Moment {
+    public get regelnGueltigAb(): moment.Moment {
         return this._regelnGueltigAb;
     }
 
-    set regelnGueltigAb(value: moment.Moment) {
+    public set regelnGueltigAb(value: moment.Moment) {
         this._regelnGueltigAb = value;
     }
 
-    get eingangsdatumSTV(): moment.Moment {
+    public get eingangsdatumSTV(): moment.Moment {
         return this._eingangsdatumSTV;
     }
 
-    set eingangsdatumSTV(value: moment.Moment) {
+    public set eingangsdatumSTV(value: moment.Moment) {
         this._eingangsdatumSTV = value;
     }
 
-    get aenderungsdatum(): moment.Moment {
+    public get aenderungsdatum(): moment.Moment {
         return this._aenderungsdatum;
     }
 
-    set aenderungsdatum(value: moment.Moment) {
+    public set aenderungsdatum(value: moment.Moment) {
         this._aenderungsdatum = value;
     }
 
-    get angebote(): Array<TSBetreuungsangebotTyp> {
+    public get angebote(): Array<TSBetreuungsangebotTyp> {
         return this._angebote;
     }
 
-    set angebote(value: Array<TSBetreuungsangebotTyp>) {
+    public set angebote(value: Array<TSBetreuungsangebotTyp>) {
         this._angebote = value;
     }
 
-    get institutionen(): Array<string> {
+    public get institutionen(): Array<string> {
         return this._institutionen;
     }
 
-    set institutionen(value: Array<string>) {
+    public set institutionen(value: Array<string>) {
         this._institutionen = value;
     }
 
-    get verantwortlicherBG(): string {
+    public get verantwortlicherBG(): string {
         return this._verantwortlicherBG;
     }
 
-    set verantwortlicherBG(value: string) {
+    public set verantwortlicherBG(value: string) {
         this._verantwortlicherBG = value;
     }
 
@@ -199,67 +201,65 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         this._verantwortlicherUsernameTS = value;
     }
 
-    get status(): TSAntragStatus {
+    public get status(): TSAntragStatus {
         return this._status;
     }
 
-    set status(value: TSAntragStatus) {
+    public set status(value: TSAntragStatus) {
         this._status = value;
     }
 
-    get gesuchsperiodeGueltigAb(): moment.Moment {
+    public get gesuchsperiodeGueltigAb(): moment.Moment {
         return this._gesuchsperiodeGueltigAb;
     }
 
-    set gesuchsperiodeGueltigAb(value: moment.Moment) {
+    public set gesuchsperiodeGueltigAb(value: moment.Moment) {
         this._gesuchsperiodeGueltigAb = value;
     }
 
-    get gesuchsperiodeGueltigBis(): moment.Moment {
+    public get gesuchsperiodeGueltigBis(): moment.Moment {
         return this._gesuchsperiodeGueltigBis;
     }
 
-    set gesuchsperiodeGueltigBis(value: moment.Moment) {
+    public set gesuchsperiodeGueltigBis(value: moment.Moment) {
         this._gesuchsperiodeGueltigBis = value;
     }
 
-    get verfuegt(): boolean {
+    public get verfuegt(): boolean {
         return this._verfuegt;
     }
 
-    set verfuegt(value: boolean) {
+    public set verfuegt(value: boolean) {
         this._verfuegt = value;
     }
 
-    get laufnummer(): number {
+    public get laufnummer(): number {
         return this._laufnummer;
     }
 
-    set laufnummer(value: number) {
+    public set laufnummer(value: number) {
         this._laufnummer = value;
     }
 
-    get gesuchsperiodeString(): string {
-        if (this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis) {
-            return this._gesuchsperiodeGueltigAb.year() + '/'
-                + (this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000);
-        }
-        return undefined;
+    public get gesuchsperiodeString(): string {
+        return this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis ?
+            `${this._gesuchsperiodeGueltigAb.year()}/${this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000}` :
+            undefined;
     }
 
-    get eingangsart(): TSEingangsart {
+    public get eingangsart(): TSEingangsart {
         return this._eingangsart;
     }
 
-    set eingangsart(value: TSEingangsart) {
+    public set eingangsart(value: TSEingangsart) {
         this._eingangsart = value;
     }
 
-    get besitzerUsername(): string {
+    public get besitzerUsername(): string {
         return this._besitzerUsername;
     }
 
-    set besitzerUsername(value: string) {
+    public set besitzerUsername(value: string) {
         this._besitzerUsername = value;
     }
 
@@ -267,35 +267,35 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
         return this._besitzerUsername !== undefined && this.besitzerUsername !== null;
     }
 
-    get beschwerdeHaengig(): boolean {
+    public get beschwerdeHaengig(): boolean {
         return this._beschwerdeHaengig;
     }
 
-    set beschwerdeHaengig(value: boolean) {
+    public set beschwerdeHaengig(value: boolean) {
         this._beschwerdeHaengig = value;
     }
 
-    get kinder(): Array<string> {
+    public get kinder(): Array<string> {
         return this._kinder;
     }
 
-    set kinder(value: Array<string>) {
+    public set kinder(value: Array<string>) {
         this._kinder = value;
     }
 
-    get dokumenteHochgeladen(): boolean {
+    public get dokumenteHochgeladen(): boolean {
         return this._dokumenteHochgeladen;
     }
 
-    set dokumenteHochgeladen(value: boolean) {
+    public set dokumenteHochgeladen(value: boolean) {
         this._dokumenteHochgeladen = value;
     }
 
-    get gemeinde(): string {
+    public get gemeinde(): string {
         return this._gemeinde;
     }
 
-    set gemeinde(value: string) {
+    public set gemeinde(value: string) {
         this._gemeinde = value;
     }
 

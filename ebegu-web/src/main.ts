@@ -17,7 +17,7 @@ import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {UIRouter, UrlService} from '@uirouter/core';
 import * as angular from 'angular';
-import {appModuleAngularJS} from './app/app.angularjs.module';
+import {APP_JS_MODULE} from './app/app.angularjs.module';
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
 
@@ -29,13 +29,13 @@ if (environment.production) {
 
 // Using AngularJS config block, call `deferIntercept()`.
 // This tells UI-Router to delay the initial URL sync (until all bootstrapping is complete)
-appModuleAngularJS.config(['$urlServiceProvider', ($urlService: UrlService) => $urlService.deferIntercept()]);
+APP_JS_MODULE.config(['$urlServiceProvider', ($urlService: UrlService) => $urlService.deferIntercept()]);
 
 // Manually bootstrap the Angular app
 platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     // Intialize the Angular Module
     // get() the UIRouter instance from DI to initialize the router
-    const urlService: UrlService = platformRef.injector.get(UIRouter).urlService;
+    const urlService = platformRef.injector.get(UIRouter).urlService;
 
     // Instruct UIRouter to listen to URL changes
     urlService.listen();

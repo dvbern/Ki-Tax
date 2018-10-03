@@ -35,20 +35,22 @@ export default class TSPendenzBetreuung {
     private _institution: TSInstitution;
     private _gemeinde: string;
 
-    constructor(betreuungsNummer?: string,
-                betreuungsId?: string,
-                gesuchId?: string,
-                kindId?: string,
-                name?: string,
-                vorname?: string,
-                geburtsdatum?: moment.Moment,
-                typ?: string,
-                gesuchsperiode?: TSGesuchsperiode,
-                eingangsdatum?: moment.Moment,
-                eingangsdatumSTV?: moment.Moment,
-                betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-                institution?: TSInstitution,
-                gemeinde?: string) {
+    public constructor(
+        betreuungsNummer?: string,
+        betreuungsId?: string,
+        gesuchId?: string,
+        kindId?: string,
+        name?: string,
+        vorname?: string,
+        geburtsdatum?: moment.Moment,
+        typ?: string,
+        gesuchsperiode?: TSGesuchsperiode,
+        eingangsdatum?: moment.Moment,
+        eingangsdatumSTV?: moment.Moment,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        institution?: TSInstitution,
+        gemeinde?: string,
+    ) {
         this._betreuungsNummer = betreuungsNummer;
         this._betreuungsId = betreuungsId;
         this._gesuchId = gesuchId;
@@ -65,115 +67,115 @@ export default class TSPendenzBetreuung {
         this._gemeinde = gemeinde;
     }
 
-    get betreuungsNummer(): string {
+    public get betreuungsNummer(): string {
         return this._betreuungsNummer;
     }
 
-    set betreuungsNummer(value: string) {
+    public set betreuungsNummer(value: string) {
         this._betreuungsNummer = value;
     }
 
-    get betreuungsId(): string {
+    public get betreuungsId(): string {
         return this._betreuungsId;
     }
 
-    set betreuungsId(value: string) {
+    public set betreuungsId(value: string) {
         this._betreuungsId = value;
     }
 
-    get gesuchId(): string {
+    public get gesuchId(): string {
         return this._gesuchId;
     }
 
-    set gesuchId(value: string) {
+    public set gesuchId(value: string) {
         this._gesuchId = value;
     }
 
-    get kindId(): string {
+    public get kindId(): string {
         return this._kindId;
     }
 
-    set kindId(value: string) {
+    public set kindId(value: string) {
         this._kindId = value;
     }
 
-    get name(): string {
+    public get name(): string {
         return this._name;
     }
 
-    set name(value: string) {
+    public set name(value: string) {
         this._name = value;
     }
 
-    get vorname(): string {
+    public get vorname(): string {
         return this._vorname;
     }
 
-    set vorname(value: string) {
+    public set vorname(value: string) {
         this._vorname = value;
     }
 
-    get geburtsdatum(): moment.Moment {
+    public get geburtsdatum(): moment.Moment {
         return this._geburtsdatum;
     }
 
-    set geburtsdatum(value: moment.Moment) {
+    public set geburtsdatum(value: moment.Moment) {
         this._geburtsdatum = value;
     }
 
-    get typ(): string {
+    public get typ(): string {
         return this._typ;
     }
 
-    set typ(value: string) {
+    public set typ(value: string) {
         this._typ = value;
     }
 
-    get gesuchsperiode(): TSGesuchsperiode {
+    public get gesuchsperiode(): TSGesuchsperiode {
         return this._gesuchsperiode;
     }
 
-    set gesuchsperiode(value: TSGesuchsperiode) {
+    public set gesuchsperiode(value: TSGesuchsperiode) {
         this._gesuchsperiode = value;
     }
 
-    get eingangsdatum(): moment.Moment {
+    public get eingangsdatum(): moment.Moment {
         return this._eingangsdatum;
     }
 
-    set eingangsdatum(value: moment.Moment) {
+    public set eingangsdatum(value: moment.Moment) {
         this._eingangsdatum = value;
     }
 
-    get eingangsdatumSTV(): moment.Moment {
+    public get eingangsdatumSTV(): moment.Moment {
         return this._eingangsdatumSTV;
     }
 
-    set eingangsdatumSTV(value: moment.Moment) {
+    public set eingangsdatumSTV(value: moment.Moment) {
         this._eingangsdatumSTV = value;
     }
 
-    get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
+    public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
         return this._betreuungsangebotTyp;
     }
 
-    set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
+    public set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
         this._betreuungsangebotTyp = value;
     }
 
-    get institution(): TSInstitution {
+    public get institution(): TSInstitution {
         return this._institution;
     }
 
-    set institution(value: TSInstitution) {
+    public set institution(value: TSInstitution) {
         this._institution = value;
     }
 
-    get gemeinde(): string {
+    public get gemeinde(): string {
         return this._gemeinde;
     }
 
-    set gemeinde(value: string) {
+    public set gemeinde(value: string) {
         this._gemeinde = value;
     }
 }

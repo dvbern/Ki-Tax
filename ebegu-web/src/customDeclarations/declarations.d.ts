@@ -13,8 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// declare function require(string: string): any;
-
 interface WebpackModule {
     hot: {
         data?: any,

@@ -22,13 +22,15 @@ import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 @Component({
     selector: 'dv-batchjob-trigger-view',
     templateUrl: './batchjobTriggerView.html',
-    styleUrls: ['./batchjobTrigger.less']
+    styleUrls: ['./batchjobTrigger.less'],
 })
 export class BatchjobTriggerViewComponent {
 
-    constructor(private readonly dialog: MatDialog,
-                private readonly databaseMigrationRS: DatabaseMigrationRS,
-                private readonly dailyBatchRS: DailyBatchRS) {
+    public constructor(
+        private readonly dialog: MatDialog,
+        private readonly databaseMigrationRS: DatabaseMigrationRS,
+        private readonly dailyBatchRS: DailyBatchRS,
+    ) {
     }
 
     public processScript(script: string): void {
@@ -36,14 +38,14 @@ export class BatchjobTriggerViewComponent {
     }
 
     public runBatchCleanDownloadFiles(): void {
-        this.dailyBatchRS.runBatchCleanDownloadFiles().then((response) => {
+        this.dailyBatchRS.runBatchCleanDownloadFiles().then(response => {
             const title = response ? 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK' : 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
             this.createAndOpenDialog(title);
         });
     }
 
     public runBatchMahnungFristablauf(): void {
-        this.dailyBatchRS.runBatchMahnungFristablauf().then((response) => {
+        this.dailyBatchRS.runBatchMahnungFristablauf().then(response => {
             const title = response ? 'MAHNUNG_BATCH_EXECUTED_OK' : 'MAHNUNG_BATCH_EXECUTED_ERROR';
             this.createAndOpenDialog(title);
         });

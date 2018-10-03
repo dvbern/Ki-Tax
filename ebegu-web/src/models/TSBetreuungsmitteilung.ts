@@ -13,33 +13,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSMitteilung from './TSMitteilung';
 import TSBetreuungsmitteilungPensum from './TSBetreuungsmitteilungPensum';
+import TSMitteilung from './TSMitteilung';
 
 export default class TSBetreuungsmitteilung extends TSMitteilung {
 
     private _betreuungspensen: Array<TSBetreuungsmitteilungPensum>;
     private _applied: boolean;
 
-    constructor(betreuungspensen?: Array<TSBetreuungsmitteilungPensum>, applied?: boolean) {
+    public constructor(betreuungspensen?: Array<TSBetreuungsmitteilungPensum>, applied?: boolean) {
         super();
         this._betreuungspensen = betreuungspensen;
         this._applied = applied;
     }
 
-    get betreuungspensen(): Array<TSBetreuungsmitteilungPensum> {
+    public get betreuungspensen(): Array<TSBetreuungsmitteilungPensum> {
         return this._betreuungspensen;
     }
 
-    set betreuungspensen(value: Array<TSBetreuungsmitteilungPensum>) {
+    public set betreuungspensen(value: Array<TSBetreuungsmitteilungPensum>) {
         this._betreuungspensen = value;
     }
 
-    get applied(): boolean {
+    public get applied(): boolean {
         return this._applied;
     }
 
-    set applied(value: boolean) {
+    public set applied(value: boolean) {
         this._applied = value;
     }
 }
