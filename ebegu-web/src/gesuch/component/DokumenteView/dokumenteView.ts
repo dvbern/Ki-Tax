@@ -44,8 +44,17 @@ export class DokumenteViewComponentConfig implements IComponentOptions {
  */
 export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
-        'DokumenteRS', '$log', 'WizardStepManager', 'EbeguUtil', 'GlobalCacheService', '$scope', '$timeout'];
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'DokumenteRS',
+        '$log',
+        'WizardStepManager',
+        'GlobalCacheService',
+        '$scope',
+        '$timeout',
+    ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
     public dokumenteFinSit: TSDokumentGrund[] = [];
@@ -56,16 +65,17 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
 
-    public constructor($stateParams: IStammdatenStateParams,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly dokumenteRS: DokumenteRS,
-                       private readonly $log: ILogService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly globalCacheService: GlobalCacheService,
-                       $scope: IScope,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $stateParams: IStammdatenStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly dokumenteRS: DokumenteRS,
+        private readonly $log: ILogService,
+        wizardStepManager: WizardStepManager,
+        private readonly globalCacheService: GlobalCacheService,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
@@ -97,9 +107,11 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             });
     }
 
-    private searchDokumente(alleDokumente: TSDokumenteDTO,
-                            dokumenteForType: TSDokumentGrund[],
-                            dokumentGrundTyp: TSDokumentGrundTyp): void {
+    private searchDokumente(
+        alleDokumente: TSDokumenteDTO,
+        dokumenteForType: TSDokumentGrund[],
+        dokumentGrundTyp: TSDokumentGrundTyp,
+    ): void {
 
         const dokumentGruende = alleDokumente.dokumentGruende;
         const found = dokumentGruende.find(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp);

@@ -13,8 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
-import {IComponentOptions, IController, IIntervalService, IPromise} from 'angular';
+import {IComponentOptions, IController, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../../models/enums/TSStatistikParameterType';
@@ -51,9 +50,16 @@ export class StatistikViewController implements IController {
         return this._gesuchsperioden;
     }
 
-    public static $inject: string[] = ['$state', 'GesuchsperiodeRS', '$log', 'ReportAsyncRS', 'DownloadRS',
+    public static $inject: string[] = [
+        'GesuchsperiodeRS',
+        '$log',
+        'ReportAsyncRS',
+        'DownloadRS',
         'BatchJobRS',
-        'ErrorService', '$translate', '$interval'];
+        'ErrorService',
+        '$translate',
+        '$interval',
+    ];
 
     public readonly TSStatistikParameterType = TSStatistikParameterType;
 
@@ -64,20 +70,21 @@ export class StatistikViewController implements IController {
     public readonly TSRoleUtil = TSRoleUtil;
     private readonly DATE_PARAM_FORMAT: string = 'YYYY-MM-DD';
     // Statistiken sind nur moeglich ab Beginn der fruehesten Periode bis Ende der letzten Periode
-    private maxDate: moment.Moment;
-    private minDate: moment.Moment;
-    private userjobs: Array<TSWorkJob>;
-    private allJobs: Array<TSBatchJobInformation>;
+    public maxDate: moment.Moment;
+    public minDate: moment.Moment;
+    public userjobs: Array<TSWorkJob>;
+    public allJobs: Array<TSBatchJobInformation>;
 
-    public constructor(private readonly $state: StateService,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly $log: ILogService,
-                       private readonly reportAsyncRS: ReportAsyncRS,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly bachJobRS: BatchJobRS,
-                       private readonly errorService: ErrorService,
-                       private readonly $translate: ITranslateService,
-                       private readonly $interval: IIntervalService) {
+    public constructor(
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $log: ILogService,
+        private readonly reportAsyncRS: ReportAsyncRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly bachJobRS: BatchJobRS,
+        private readonly errorService: ErrorService,
+        private readonly $translate: ITranslateService,
+        private readonly $interval: angular.IIntervalService,
+    ) {
     }
 
     public $onInit(): void {
@@ -207,7 +214,7 @@ export class StatistikViewController implements IController {
                 }
                 return;
             default:
-                throw new Error('unknown TSStatistikParameterType: ' + type);
+                throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
     }
 

@@ -17,7 +17,7 @@
 
 import {Injectable} from '@angular/core';
 import {IPromise} from 'angular';
-import {Log, LogFactory} from '../../app/core/logging/LogFactory';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
@@ -35,17 +35,17 @@ import GemeindeRS from './gemeindeRS.rest';
 import GesuchRS from './gesuchRS.rest';
 import WizardStepManager from './wizardStepManager';
 
+const LOG = LogFactory.createLog('GesuchGenerator');
+
 /**
  * This class presents methods to init and create new Fall/Dossier/Gesuch objects.
  * All init-methods will create a clientside copy of the required object. This copy will be returned by the method but
  * it won't be saved in the DB The create-methods will take the given object and save it in the DB.
  */
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class GesuchGenerator {
-
-    private readonly LOG: Log = LogFactory.createLog(GesuchGenerator.name);
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -55,7 +55,7 @@ export class GesuchGenerator {
         private readonly dossierRS: DossierRS,
         private readonly wizardStepManager: WizardStepManager,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly fallRS: FallRS
+        private readonly fallRS: FallRS,
     ) {
     }
 
@@ -64,8 +64,10 @@ export class GesuchGenerator {
      * routing gemacht werden kann, wird das ganze als promise gehandhabt
      * @return a void promise that is resolved once all subpromises are done
      */
-    public initFall(eingangsart: TSEingangsart,
-                    gemeindeId: string): IPromise<TSGesuch> {
+    public initFall(
+        eingangsart: TSEingangsart,
+        gemeindeId: string,
+    ): IPromise<TSGesuch> {
 
         return this.initDossier(eingangsart, gemeindeId, TSCreationAction.CREATE_NEW_FALL, undefined, undefined);
     }
@@ -73,9 +75,11 @@ export class GesuchGenerator {
     /**
      * Creates a new Dossier for the current Fall. Also a new Gesuch will be created.
      */
-    public initDossierForCurrentFall(eingangsart: TSEingangsart,
-                                     gemeindeId: string,
-                                     currentFall: TSFall): IPromise<TSGesuch> {
+    public initDossierForCurrentFall(
+        eingangsart: TSEingangsart,
+        gemeindeId: string,
+        currentFall: TSFall,
+    ): IPromise<TSGesuch> {
 
         return this.initDossier(eingangsart, gemeindeId, TSCreationAction.CREATE_NEW_DOSSIER, currentFall, null);
     }
@@ -84,17 +88,20 @@ export class GesuchGenerator {
      * Creates a complete new Dossier. Depending on the value of creationAction the new dossier will be added to the
      * existing Fall or a complete new Fall will be created instead.
      */
-    private initDossier(eingangsart: TSEingangsart,
-                        gemeindeId: string,
-                        creationAction: TSCreationAction,
-                        currentFall: TSFall,
-                        currentDossier: TSDossier): IPromise<TSGesuch> {
+    private initDossier(
+        eingangsart: TSEingangsart,
+        gemeindeId: string,
+        creationAction: TSCreationAction,
+        currentFall: TSFall,
+        currentDossier: TSDossier,
+    ): IPromise<TSGesuch> {
 
         return this.initGesuch(eingangsart, creationAction, undefined, currentFall, currentDossier)
             .then(gesuch => {
                 return this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
                     gesuch.dossier.gemeinde = foundGemeinde;
-                    this.LOG.debug('initialized new dossier for Current fall', gesuch);
+                    LOG.debug('initialized new dossier for Current fall', gesuch);
+
                     return gesuch;
                 });
             });
@@ -104,11 +111,13 @@ export class GesuchGenerator {
      * Erstellt ein neues Gesuch und einen neuen Fall. Wenn !forced sie werden nur erstellt wenn das Gesuch noch nicht
      * erstellt wurde i.e. es null/undefined ist Wenn force werden Gesuch und Fall immer erstellt.
      */
-    public initGesuch(eingangsart: TSEingangsart,
-                      creationAction: TSCreationAction,
-                      gesuchsperiodeId: string,
-                      currentFall: TSFall,
-                      currentDossier: TSDossier): IPromise<TSGesuch> {
+    public initGesuch(
+        eingangsart: TSEingangsart,
+        creationAction: TSCreationAction,
+        gesuchsperiodeId: string,
+        currentFall: TSFall,
+        currentDossier: TSDossier,
+    ): IPromise<TSGesuch> {
 
         const gesuch = this.initAntrag(TSAntragTyp.ERSTGESUCH,
             eingangsart,
@@ -137,12 +146,14 @@ export class GesuchGenerator {
      * "antragMutieren" mit dem ID des alten Gesuchs aufgerufen. Das Objekt das man zurueckbekommt, wird dann diese
      * Fake-Mutation mit den richtigen Daten ueberschreiben
      */
-    public initMutation(gesuchID: string,
-                        eingangsart: TSEingangsart,
-                        gesuchsperiodeId: string,
-                        dossierId: string,
-                        currentFall: TSFall,
-                        currentDossier: TSDossier): IPromise<TSGesuch> {
+    public initMutation(
+        gesuchID: string,
+        eingangsart: TSEingangsart,
+        gesuchsperiodeId: string,
+        dossierId: string,
+        currentFall: TSFall,
+        currentDossier: TSDossier,
+    ): IPromise<TSGesuch> {
 
         return this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId,
             TSAntragTyp.MUTATION, TSCreationAction.CREATE_NEW_MUTATION,
@@ -153,26 +164,30 @@ export class GesuchGenerator {
      * Diese Methode erstellt ein Fake-Erneuerungsgesuch als gesuch fuer das GesuchModelManager. Das Gesuch ist noch
      * leer und hat das ID des Gesuchs aus dem es erstellt wurde.
      */
-    public initErneuerungsgesuch(gesuchID: string,
-                                 eingangsart: TSEingangsart,
-                                 gesuchsperiodeId: string,
-                                 dossierId: string,
-                                 currentFall: TSFall,
-                                 currentDossier: TSDossier): IPromise<TSGesuch> {
+    public initErneuerungsgesuch(
+        gesuchID: string,
+        eingangsart: TSEingangsart,
+        gesuchsperiodeId: string,
+        dossierId: string,
+        currentFall: TSFall,
+        currentDossier: TSDossier,
+    ): IPromise<TSGesuch> {
 
         return this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId,
             TSAntragTyp.ERNEUERUNGSGESUCH, TSCreationAction.CREATE_NEW_FOLGEGESUCH,
             currentFall, currentDossier);
     }
 
-    private initCopyOfGesuch(gesuchID: string,
-                             eingangsart: TSEingangsart,
-                             gesuchsperiodeId: string,
-                             dossierId: string,
-                             antragTyp: TSAntragTyp,
-                             creationAction: TSCreationAction,
-                             currentFall: TSFall,
-                             currentDossier: TSDossier): IPromise<TSGesuch> {
+    private initCopyOfGesuch(
+        gesuchID: string,
+        eingangsart: TSEingangsart,
+        gesuchsperiodeId: string,
+        dossierId: string,
+        antragTyp: TSAntragTyp,
+        creationAction: TSCreationAction,
+        currentFall: TSFall,
+        currentDossier: TSDossier,
+    ): IPromise<TSGesuch> {
 
         const gesuch = this.initAntrag(antragTyp, eingangsart, creationAction, currentFall, currentDossier);
 
@@ -189,11 +204,13 @@ export class GesuchGenerator {
         });
     }
 
-    private initAntrag(antragTyp: TSAntragTyp,
-                       eingangsart: TSEingangsart,
-                       creationAction: TSCreationAction,
-                       currentFall: TSFall,
-                       currentDossier: TSDossier): TSGesuch {
+    private initAntrag(
+        antragTyp: TSAntragTyp,
+        eingangsart: TSEingangsart,
+        creationAction: TSCreationAction,
+        currentFall: TSFall,
+        currentDossier: TSDossier,
+    ): TSGesuch {
 
         const gesuch = new TSGesuch();
         gesuch.dossier = isNewDossierNeeded(creationAction) ? new TSDossier() : currentDossier;
@@ -245,6 +262,6 @@ export class GesuchGenerator {
             } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtOnlyRoles())) {
                 gesuch.dossier.verantwortlicherTS = currentUser;
             }
-        });
+        }, err => LOG.error(err));
     }
 }

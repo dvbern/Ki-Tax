@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService} from 'angular';
+import {IHttpBackendService, IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -23,7 +23,7 @@ import {FachstelleRS} from './fachstelleRS.rest';
 describe('fachstelleRS', () => {
 
     let fachstelleRS: FachstelleRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockFachstelle: TSFachstelle;
     let mockFachstelleRest: any;
@@ -49,24 +49,6 @@ describe('fachstelleRS', () => {
     describe('Public API', () => {
         it('check URI', () => {
             expect(fachstelleRS.serviceURL).toContain('fachstellen');
-        });
-        it('check Service name', () => {
-            expect(fachstelleRS.getServiceName()).toBe('FachstelleRS');
-        });
-        it('should include a findFachstelle() function', () => {
-            expect(fachstelleRS.findFachstelle).toBeDefined();
-        });
-        it('should include a createFachstelle() function', () => {
-            expect(fachstelleRS.createFachstelle).toBeDefined();
-        });
-        it('should include a updateFachstelle() function', () => {
-            expect(fachstelleRS.updateFachstelle).toBeDefined();
-        });
-        it('should include a removeFachstelle() function', () => {
-            expect(fachstelleRS.removeFachstelle).toBeDefined();
-        });
-        it('should include a getAllFachstellen() function', () => {
-            expect(fachstelleRS.getAllFachstellen).toBeDefined();
         });
     });
 
@@ -138,7 +120,9 @@ describe('fachstelleRS', () => {
 
                 fachstelleRS.getAllFachstellen();
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL);
+                // tslint:disable-next-line:no-unbound-method
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });
         });

@@ -17,7 +17,6 @@ import {SimpleChanges} from '@angular/core';
 import {IComponentOptions, IController} from 'angular';
 import {TSHTTPEvent} from '../../events/TSHTTPEvent';
 import IFormController = angular.IFormController;
-import IHttpService = angular.IHttpService;
 import ITimeoutService = angular.ITimeoutService;
 
 interface IDVLoadingButtonController {
@@ -39,7 +38,7 @@ export class DVLoadingButton implements IComponentOptions {
         buttonDisabled: '<',
         ariaLabel: '@',
         buttonClick: '&',
-        inputId: '@'
+        inputId: '@',
     };
 }
 
@@ -53,7 +52,7 @@ export class DVLoadingButton implements IComponentOptions {
  *         data-translate="SAVE"></span> </dv-loading-button>
  */
 export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
-    public static $inject: string[] = ['$http', '$scope', '$timeout'];
+    public static $inject: string[] = ['$scope', '$timeout'];
 
     public buttonClicked: ($event: any) => void;
     public isDisabled: boolean;
@@ -64,9 +63,9 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
     public buttonDisabled: boolean; // true wenn unser element programmatisch disabled wird
     public buttonClick: () => void;
 
-    public constructor(private readonly $http: IHttpService,
-                       private readonly $scope: any,
-                       private readonly $timeout: ITimeoutService
+    public constructor(
+        private readonly $scope: any,
+        private readonly $timeout: ITimeoutService,
     ) {
     }
 
@@ -127,8 +126,9 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
                 return parsedNum;
             }
         }
-        const defaultDelay = 4000;
-        return defaultDelay;   // default delay = 4000 MS
+
+        // tslint:disable-next-line:no-magic-numbers
+        return 4000;   // default delay = 4000 MS
     }
 
     /**

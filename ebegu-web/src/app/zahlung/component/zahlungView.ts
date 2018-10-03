@@ -39,20 +39,27 @@ export class ZahlungViewComponentConfig implements IComponentOptions {
 
 export class ZahlungViewController implements IController {
 
-    public static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$stateParams', '$state', 'DownloadRS', 'ReportRS',
-        'AuthServiceRS'];
+    public static $inject: string[] = [
+        'ZahlungRS',
+        '$stateParams',
+        '$state',
+        'DownloadRS',
+        'ReportRS',
+        'AuthServiceRS',
+    ];
 
     private zahlungen: TSZahlung[] = [];
 
     public itemsByPage: number = 20;
 
-    public constructor(private readonly zahlungRS: ZahlungRS,
-                       private readonly CONSTANTS: any,
-                       private readonly $stateParams: IZahlungsauftragStateParams,
-                       private readonly $state: StateService,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly reportRS: ReportRS,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly zahlungRS: ZahlungRS,
+        private readonly $stateParams: IZahlungsauftragStateParams,
+        private readonly $state: StateService,
+        private readonly downloadRS: DownloadRS,
+        private readonly reportRS: ReportRS,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     public $onInit(): void {
@@ -70,17 +77,17 @@ export class ZahlungViewController implements IController {
 
                     return of(null);
                 }),
-                map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : [])
+                map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : []),
             )
             .subscribe(
                 zahlungen => {
                     this.zahlungen = zahlungen;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
-    private gotToUebersicht(): void {
+    public gotToUebersicht(): void {
         this.$state.go('zahlungsauftrag.view');
     }
 

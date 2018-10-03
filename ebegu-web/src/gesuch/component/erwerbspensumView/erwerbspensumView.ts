@@ -15,6 +15,7 @@
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
@@ -24,7 +25,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {
     getTSZuschlagsgruendeForGS,
     getTSZuschlagsgrunde,
-    TSZuschlagsgrund
+    TSZuschlagsgrund,
 } from '../../../models/enums/TSZuschlagsgrund';
 import TSEinstellung from '../../../models/TSEinstellung';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
@@ -49,34 +50,46 @@ export class ErwerbspensumViewComponentConfig implements IComponentOptions {
 
 export class ErwerbspensumViewController extends AbstractGesuchViewController<TSErwerbspensumContainer> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
-        'CONSTANTS', '$scope', 'ErrorService', 'AuthServiceRS', 'WizardStepManager', '$q', '$translate',
-        'EinstellungRS', 'GlobalCacheService', '$timeout'];
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        '$scope',
+        'ErrorService',
+        'AuthServiceRS',
+        'WizardStepManager',
+        '$q',
+        '$translate',
+        'EinstellungRS',
+        'GlobalCacheService',
+        '$timeout',
+    ];
 
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
     public maxZuschlagsprozent: number = 100;
 
-    public constructor($stateParams: IErwerbspensumStateParams,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly CONSTANTS: any,
-                       $scope: IScope,
-                       private readonly errorService: ErrorService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService,
-                       private readonly $translate: ITranslateService,
-                       private readonly einstellungRS: EinstellungRS,
-                       private readonly globalCacheService: GlobalCacheService,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $stateParams: IErwerbspensumStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        $scope: IScope,
+        private readonly errorService: ErrorService,
+        private readonly authServiceRS: AuthServiceRS,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        private readonly $translate: ITranslateService,
+        private readonly einstellungRS: EinstellungRS,
+        private readonly globalCacheService: GlobalCacheService,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.ERWERBSPENSUM,
             $timeout);
-        this.patternPercentage = this.CONSTANTS.PATTERN_PERCENTAGE;
+        this.patternPercentage = CONSTANTS.PATTERN_PERCENTAGE;
         this.gesuchModelManager.setGesuchstellerNumber(parseInt($stateParams.gesuchstellerNumber, 10));
         this.gesuchsteller = this.gesuchModelManager.getStammdatenToWorkWith();
         if (this.gesuchsteller) {
@@ -91,7 +104,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
             console.log('kein gesuchsteller gefunden');
         }
-        einstellungRS.getAllEinstellungenBySystemCached(
+        this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
             const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
@@ -180,13 +193,13 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         const grundText = this.$translate.instant(ewp.zuschlagsgrund.toString());
         return this.$translate.instant('JA_KORREKTUR_ZUSCHLAG_ERWERBSPENSUM', {
             zuschlagsgrund: grundText,
-            zuschlagsprozent: ewp.zuschlagsprozent
+            zuschlagsprozent: ewp.zuschlagsprozent,
         });
     }
 
     public getZuschlagHelpText(): string {
         return this.$translate.instant('ZUSCHLAGSGRUND_HELP', {
-            maxzuschlag: this.maxZuschlagsprozent
+            maxzuschlag: this.maxZuschlagsprozent,
         });
     }
 

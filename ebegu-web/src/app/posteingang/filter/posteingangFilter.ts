@@ -24,15 +24,8 @@ posteingangFilter.$inject = ['$filter'];
 // implementiert wird.
 export function posteingangFilter($filter: any): (array: any, expression: any) => any {
     const filterFilter = $filter('filter');
-    const dateFilter = $filter('date');
 
-    const standardComparator = (obj: any, text: any) => {
-        const result = ('' + text).toLowerCase();
-
-        return ('' + obj).toLowerCase().indexOf(result) > -1;
-    };
-
-    return (array: any, expression: any) => {
+    return (array, expression) => {
         function customComparator(actual: any, expected: any): boolean {
             // Von
             if (expression.sender && expression.sender === expected) {
@@ -58,20 +51,16 @@ export function posteingangFilter($filter: any): (array: any, expression: any) =
             }
             // Datum gesendet
             if (expression.sentDatum && expression.sentDatum === expected) {
-                return compareDates(actual, expected);
+                return EbeguUtil.compareDates(actual, expected);
             }
             // Verantwortlicher
             if (expression.empfaenger && expression.empfaenger === expected) {
                 return actual.getFullName().indexOf(expected) >= 0;
             }
-            return standardComparator(actual, expected);
+
+            return EbeguUtil.hasTextCaseInsensitive(actual, expected);
         }
 
         return filterFilter(array, expression, customComparator);
     };
-
-    function compareDates(actual: any, expected: any): boolean {
-        const datum = dateFilter(new Date(actual), 'dd.MM.yyyy');
-        return datum === expected;
-    }
 }

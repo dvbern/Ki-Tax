@@ -14,11 +14,10 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {IComponentOptions, IFormController, ILogService, IPromise} from 'angular';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import GesuchstellerRS from '../../../app/core/service/gesuchstellerRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -37,9 +36,7 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
 import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
-import IPromise = angular.IPromise;
-import IQService = angular.IQService;
-import IRootScopeService = angular.IRootScopeService;
+import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
@@ -57,31 +54,39 @@ export class KommentarViewComponentConfig implements IComponentOptions {
  */
 export class KommentarViewController {
 
-    public static $inject: string[] = ['$log', 'GesuchModelManager', 'GesuchRS', 'DokumenteRS', 'DownloadRS', '$q',
+    public static $inject: string[] = [
+        '$log',
+        'GesuchModelManager',
+        'GesuchRS',
+        'DokumenteRS',
+        'DownloadRS',
         'UploadRS',
-        'WizardStepManager', 'GlobalCacheService', 'DvDialog', '$translate', '$window', 'GesuchstellerRS', '$rootScope',
-        '$state', '$mdSidenav'];
+        'WizardStepManager',
+        'GlobalCacheService',
+        'DvDialog',
+        '$translate',
+        '$state',
+        '$mdSidenav',
+    ];
 
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $log: ILogService,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly dokumenteRS: DokumenteRS,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly $q: IQService,
-                       private readonly uploadRS: UploadRS,
-                       private readonly wizardStepManager: WizardStepManager,
-                       private readonly globalCacheService: GlobalCacheService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly $translate: ITranslateService,
-                       private readonly $window: ng.IWindowService,
-                       private readonly gesuchstellerRS: GesuchstellerRS,
-                       private readonly $rootScope: IRootScopeService,
-                       private readonly $state: StateService,
-                       private readonly $mdSidenav: ng.material.ISidenavService) {
+    public constructor(
+        private readonly $log: ILogService,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly gesuchRS: GesuchRS,
+        private readonly dokumenteRS: DokumenteRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly uploadRS: UploadRS,
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly globalCacheService: GlobalCacheService,
+        private readonly dvDialog: DvDialog,
+        private readonly $translate: ITranslateService,
+        private readonly $state: StateService,
+        private readonly $mdSidenav: ISidenavService,
+    ) {
 
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
@@ -203,7 +208,7 @@ export class KommentarViewController {
                 returnString += '</ul>';
 
                 this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                    title: returnString
+                    title: returnString,
                 });
             }
 
@@ -239,7 +244,7 @@ export class KommentarViewController {
             title: this.getFreigabeTitel(),
             deleteText: this.getFreigabeBeschreibung(),
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             return this.gesuchRS.gesuchBySTVFreigeben(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);

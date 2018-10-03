@@ -43,7 +43,6 @@ describe('DVQuicksearchList', () => {
     let $filter: angular.IFilterService;
     let $httpBackend: angular.IHttpBackendService;
     let $state: StateService;
-    let CONSTANTS: any; // tslint:disable-line:naming-convention
     let wizardStepManager: WizardStepManager;
     let authServiceRS: AuthServiceRS;
     let gemeindeRS: GemeindeRS;
@@ -62,7 +61,6 @@ describe('DVQuicksearchList', () => {
         $filter = $injector.get('$filter');
         $httpBackend = $injector.get('$httpBackend');
         $state = $injector.get('$state');
-        CONSTANTS = $injector.get('CONSTANTS');
         wizardStepManager = $injector.get('WizardStepManager');
         authServiceRS = $injector.get('AuthServiceRS');
         gemeindeRS = $injector.get('GemeindeRS');
@@ -72,16 +70,26 @@ describe('DVQuicksearchList', () => {
 
         describe('translateBetreuungsangebotTypList', () => {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
-                quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
-                const list: Array<TSBetreuungsangebotTyp> = [TSBetreuungsangebotTyp.KITA,
-                    TSBetreuungsangebotTyp.TAGESFAMILIEN];
+                quicksearchListViewController = new DVQuicksearchListController($filter,
+                    institutionRS,
+                    gesuchsperiodeRS,
+                    $state,
+                    authServiceRS,
+                    gemeindeRS);
+                const list: Array<TSBetreuungsangebotTyp> = [
+                    TSBetreuungsangebotTyp.KITA,
+                    TSBetreuungsangebotTyp.TAGESFAMILIEN,
+                ];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
                     .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
-                quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
+                quicksearchListViewController = new DVQuicksearchListController($filter,
+                    institutionRS,
+                    gesuchsperiodeRS,
+                    $state,
+                    authServiceRS,
+                    gemeindeRS);
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
@@ -93,8 +101,12 @@ describe('DVQuicksearchList', () => {
                 mockRestCalls();
                 spyOn($state, 'go');
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
-                quicksearchListViewController = new DVQuicksearchListController(undefined, $filter,
-                    institutionRS, gesuchsperiodeRS, $state, CONSTANTS, authServiceRS, gemeindeRS);
+                quicksearchListViewController = new DVQuicksearchListController($filter,
+                    institutionRS,
+                    gesuchsperiodeRS,
+                    $state,
+                    authServiceRS,
+                    gemeindeRS);
 
                 const tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
@@ -104,7 +116,7 @@ describe('DVQuicksearchList', () => {
 
                 expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {
                     gesuchId: '66345345',
-                    dossierId: mockAntrag.dossierId
+                    dossierId: mockAntrag.dossierId,
                 });
 
             });

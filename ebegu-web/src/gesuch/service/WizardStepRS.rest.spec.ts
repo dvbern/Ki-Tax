@@ -52,15 +52,6 @@ describe('WizardStepRS', () => {
         it('check URI', () => {
             expect(wizardStepRS.serviceURL).toContain('wizard-steps');
         });
-        it('check Service name', () => {
-            expect(wizardStepRS.getServiceName()).toBe('WizardStepRS');
-        });
-        it('should include a updateWizardStep() function', () => {
-            expect(wizardStepRS.updateWizardStep).toBeDefined();
-        });
-        it('should include a findWizardStepsFromGesuch() function', () => {
-            expect(wizardStepRS.findWizardStepsFromGesuch).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {

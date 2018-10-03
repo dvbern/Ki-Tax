@@ -29,7 +29,6 @@ import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
-import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
@@ -46,23 +45,33 @@ export class ErwerbspensumListViewComponentConfig implements IComponentOptions {
 export class ErwerbspensumListViewController
     extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$log', 'DvDialog',
-        'ErrorService', 'WizardStepManager', '$scope', 'AuthServiceRS', '$timeout'];
+    public static $inject: string[] = [
+        '$state',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'DvDialog',
+        'ErrorService',
+        'WizardStepManager',
+        '$scope',
+        'AuthServiceRS',
+        '$timeout',
+    ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
     public erwerbspensenGS2: Array<TSErwerbspensumContainer>;
     public erwerbspensumRequired: boolean;
 
-    public constructor(private readonly $state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly $log: ILogService,
-                       private readonly dvDialog: DvDialog,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       $scope: IScope,
-                       private readonly authServiceRS: AuthServiceRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        private readonly $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly dvDialog: DvDialog,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        $scope: IScope,
+        private readonly authServiceRS: AuthServiceRS,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
@@ -116,10 +125,12 @@ export class ErwerbspensumListViewController
         this.openErwerbspensumView(gesuchstellerNumber, undefined);
     }
 
-    public removePensum(pensum: TSErwerbspensumContainer,
-                        gesuchstellerNumber: number,
-                        elementId: string,
-                        index: any): void {
+    public removePensum(
+        pensum: TSErwerbspensumContainer,
+        gesuchstellerNumber: number,
+        elementId: string,
+        index: any,
+    ): void {
         // Spezielle Meldung, wenn es ein GS ist, der in einer Mutation loescht
         const principalRole = this.authServiceRS.getPrincipalRole();
         const gsInMutation = principalRole === TSRole.GESUCHSTELLER && pensum.vorgaengerId !== undefined;
@@ -129,7 +140,7 @@ export class ErwerbspensumListViewController
             deleteText: (gsInMutation && pensumLaufendOderVergangen) ? 'ERWERBSPENSUM_LOESCHEN_GS_MUTATION' : '',
             title: 'ERWERBSPENSUM_LOESCHEN',
             parentController: this,
-            elementID: elementId + index
+            elementID: elementId + String(index),
         })
             .then(() => {   // User confirmed removal
                 this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
@@ -148,7 +159,7 @@ export class ErwerbspensumListViewController
         this.$state.go('gesuch.erwerbsPensum', {
             gesuchstellerNumber,
             erwerbspensumNum,
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 

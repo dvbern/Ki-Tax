@@ -16,7 +16,6 @@
 import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
 import {from, merge, Observable, of, Subject, timer} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -36,10 +35,11 @@ export class DvPosteingangComponent implements OnDestroy {
     private readonly unsubscribe$ = new Subject<void>();
     public mitteilungenCount$: Observable<number>;
 
-    public constructor(private readonly mitteilungRS: MitteilungRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly authLifeCycleService: AuthLifeCycleService,
-                       private readonly posteingangService: PosteingangService) {
+    public constructor(
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly posteingangService: PosteingangService,
+    ) {
 
         const posteingangeChanged$ = this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
             .pipe(switchMap(() => this.getMitteilungenCount$()));
@@ -69,7 +69,7 @@ export class DvPosteingangComponent implements OnDestroy {
                     }
 
                     return of(0);
-                })
+                }),
             );
     }
 

@@ -164,20 +164,24 @@ describe('mitteilungenView', () => {
             mitteilung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF); // Status ENTWURF wird nicht geaendert
+            // tslint:disable-next-line:no-unbound-method
             expect(mitteilungRS.setMitteilungErledigt).not.toHaveBeenCalled();
 
             mitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.NEU); // Status NEU wird nicht geaendert
+            // tslint:disable-next-line:no-unbound-method
             expect(mitteilungRS.setMitteilungErledigt).not.toHaveBeenCalled();
 
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.ERLEDIGT); // von GELESEN auf ERLEDIGT
+            // tslint:disable-next-line:no-unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
 
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.GELESEN); // von ERLEDIGT auf GELESEN
+            // tslint:disable-next-line:no-unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
         });
     });

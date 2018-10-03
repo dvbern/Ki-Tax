@@ -26,7 +26,6 @@ import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import MitteilungRS from '../../core/service/mitteilungRS.rest';
 import {POSTEINGANG_JS_MODULE} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
@@ -63,13 +62,12 @@ describe('posteingangView', () => {
                 spyOn(gemeindeRS, 'getGemeindenForPrincipal$').and.returnValue(of([]));
                 posteingangViewController = new PosteingangViewController(mitteilungRS,
                     undefined,
-                    CONSTANTS,
-                    undefined,
                     authServiceRS,
                     gemeindeRS);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(() => {
+                    // tslint:disable-next-line:no-unbound-method
                     expect(mitteilungRS.searchMitteilungen).toHaveBeenCalled();
                     const list = posteingangViewController.displayedCollection;
                     expect(list).toBeDefined();

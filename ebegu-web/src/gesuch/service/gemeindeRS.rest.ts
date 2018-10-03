@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -31,18 +31,19 @@ import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', '$q', 'AuthServiceRS'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];
     public serviceURL: string;
 
     private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService,
-                       private readonly globalCacheService: GlobalCacheService,
-                       private readonly $q: IQService,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+        private readonly globalCacheService: GlobalCacheService,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
         this.serviceURL = `${REST_API}gemeinde`;
 
         this.initGemeindenForPrincipal();
@@ -81,7 +82,7 @@ export default class GemeindeRS implements IEntityRS {
                 gemeinden => {
                     this.principalGemeindenSubject$.next(gemeinden);
                 },
-                err => this.$log.error(err)
+                err => this.$log.error(err),
             );
     }
 

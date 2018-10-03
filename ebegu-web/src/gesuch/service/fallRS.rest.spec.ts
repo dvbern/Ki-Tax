@@ -48,18 +48,6 @@ describe('fallRS', () => {
         it('check URI', () => {
             expect(fallRS.serviceURL).toContain('falle');
         });
-        it('check Service name', () => {
-            expect(fallRS.getServiceName()).toBe('FallRS');
-        });
-        it('should include a createFall() function', () => {
-            expect(fallRS.createFall).toBeDefined();
-        });
-        it('should include a findFall() function', () => {
-            expect(fallRS.findFall).toBeDefined();
-        });
-        it('should include a updateFall() function', () => {
-            expect(fallRS.updateFall).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {

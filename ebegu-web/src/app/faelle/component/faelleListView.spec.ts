@@ -16,7 +16,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import * as angular from 'angular';
+import {IHttpBackendService, ILogService, IQService, IScope} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
@@ -39,13 +39,12 @@ describe('faelleListView', () => {
     let gesuchRS: GesuchRS;
     let searchRS: SearchRS;
     let faelleListViewController: FaelleListViewController;
-    let $q: angular.IQService;
-    let $scope: angular.IScope;
-    let $filter: angular.IFilterService;
-    let $httpBackend: angular.IHttpBackendService;
+    let $q: IQService;
+    let $scope: IScope;
+    let $httpBackend: IHttpBackendService;
     let gesuchModelManager: GesuchModelManager;
     let $state: StateService;
-    let $log: angular.ILogService;
+    let $log: ILogService;
     let wizardStepManager: WizardStepManager;
     let mockAntrag: TSAntragDTO;
 
@@ -59,7 +58,6 @@ describe('faelleListView', () => {
         searchRS = $injector.get('SearchRS');
         $q = $injector.get('$q');
         $scope = $injector.get('$rootScope');
-        $filter = $injector.get('$filter');
         $httpBackend = $injector.get('$httpBackend');
         gesuchModelManager = $injector.get('GesuchModelManager');
         $state = $injector.get('$state');
@@ -72,10 +70,14 @@ describe('faelleListView', () => {
         describe('searchFaelle', () => {
             it('should return the list with found Faellen', () => {
                 mockRestCalls();
-                faelleListViewController = new FaelleListViewController($filter,
-                    gesuchModelManager, $state, $log, authServiceRS, searchRS);
+                faelleListViewController = new FaelleListViewController(gesuchModelManager,
+                    $state,
+                    $log,
+                    authServiceRS,
+                    searchRS);
 
                 faelleListViewController.passFilterToServer({});
+                // tslint:disable-next-line:no-unbound-method
                 expect(searchRS.searchAntraege).toHaveBeenCalledTimes(1);
                 $scope.$apply();
 
@@ -144,8 +146,11 @@ describe('faelleListView', () => {
         mockRestCalls();
         spyOn($state, 'go');
         spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
-        faelleListViewController = new FaelleListViewController($filter, gesuchModelManager,
-            $state, $log, authServiceRS, searchRS);
+        faelleListViewController = new FaelleListViewController(gesuchModelManager,
+            $state,
+            $log,
+            authServiceRS,
+            searchRS);
 
         const tsGesuch = new TSGesuch();
         spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, ILogService, IWindowService} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
@@ -26,7 +26,6 @@ import TSApplicationProperty from '../../../../models/TSApplicationProperty';
 import TSDokument from '../../../../models/TSDokument';
 import TSDokumentGrund from '../../../../models/TSDokumentGrund';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {MAX_FILE_SIZE} from '../../constants/CONSTANTS';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
@@ -49,7 +48,7 @@ export class DVDokumenteListConfig implements IComponentOptions {
         titleValue: '<',
         onUploadDone: '&',
         onRemove: '&',
-        sonstige: '<'
+        sonstige: '<',
 
     };
     public template = require('./dv-dokumente-list.html');
@@ -59,9 +58,17 @@ export class DVDokumenteListConfig implements IComponentOptions {
 
 export class DVDokumenteListController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['UploadRS', 'GesuchModelManager', 'EbeguUtil', 'DownloadRS',
-        'DvDialog', 'WizardStepManager',
-        '$log', 'AuthServiceRS', '$translate', '$window', 'ApplicationPropertyRS'];
+    public static $inject: ReadonlyArray<string> = [
+        'UploadRS',
+        'GesuchModelManager',
+        'DownloadRS',
+        'DvDialog',
+        'WizardStepManager',
+        '$log',
+        'AuthServiceRS',
+        '$translate',
+        'ApplicationPropertyRS',
+    ];
 
     public dokumente: TSDokumentGrund[];
     public tableId: string;
@@ -73,17 +80,17 @@ export class DVDokumenteListController implements IController {
     public sonstige: boolean;
     public allowedMimetypes: string = '';
 
-    public constructor(private readonly uploadRS: UploadRS,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly dvDialog: DvDialog,
-                       private readonly wizardStepManager: WizardStepManager,
-                       private readonly $log: ILogService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $translate: ITranslateService,
-                       private readonly $window: IWindowService,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    public constructor(
+        private readonly uploadRS: UploadRS,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly downloadRS: DownloadRS,
+        private readonly dvDialog: DvDialog,
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly $log: angular.ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {
 
     }
 
@@ -127,7 +134,7 @@ export class DVDokumenteListController implements IController {
             returnString += '</ul>';
 
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: returnString
+                title: returnString,
             });
         }
 
@@ -203,7 +210,7 @@ export class DVDokumenteListController implements IController {
             deleteText: '',
             title: 'FILE_LOESCHEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         })
             .then(() => {   // User confirmed removal
                 this.onRemove({dokumentGrund, dokument});

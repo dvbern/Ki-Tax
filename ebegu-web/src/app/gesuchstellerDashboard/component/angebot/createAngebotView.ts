@@ -29,7 +29,6 @@ import DateUtil from '../../../../utils/DateUtil';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
-import ILogService = angular.ILogService;
 
 export class CreateAngebotListViewConfig implements IComponentOptions {
     public transclude = false;
@@ -40,7 +39,7 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
 
 export class CreateAngebotListViewController implements IController {
 
-    public static $inject: string[] = ['$state', '$log', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
+    public static $inject: string[] = ['$state', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
 
     public form: IFormController;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -50,11 +49,12 @@ export class CreateAngebotListViewController implements IController {
     private readonly institution: TSInstitutionStammdaten;
     private anmeldungDTO: TSAnmeldungDTO = new TSAnmeldungDTO();
 
-    public constructor(private readonly $state: StateService,
-                       private readonly $log: ILogService,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $stateParams: IAngebotStateParams,
-                       private readonly betreuungRS: BetreuungRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $stateParams: IAngebotStateParams,
+        private readonly betreuungRS: BetreuungRS,
+    ) {
     }
 
     public $onInit(): void {
@@ -185,7 +185,7 @@ export class CreateAngebotListViewController implements IController {
     public backToHome(infoMessage?: string): void {
         this.form.$setPristine();
         this.$state.go('gesuchsteller.dashboard', {
-            gesuchstellerDashboardStateParams: {infoMessage}
+            gesuchstellerDashboardStateParams: {infoMessage},
         });
     }
 

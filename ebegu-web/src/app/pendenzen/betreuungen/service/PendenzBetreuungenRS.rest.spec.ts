@@ -55,12 +55,6 @@ describe('pendenzBetreuungenRS', () => {
         mockPendenzBetreuungenRest = ebeguRestUtil.pendenzBetreuungenToRestObject({}, mockPendenzBetreuungen);
     });
 
-    describe('Public API', () => {
-        it('should include a getPendenzenBetreuungenList() function', () => {
-            expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('findBetreuung', () => {
             it('should return all pending Betreuungen', () => {

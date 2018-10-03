@@ -22,9 +22,12 @@ import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
+import {LogFactory} from '../../logging/LogFactory';
 import BenutzerRS from '../../service/benutzerRS.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+
+const LOG = LogFactory.createLog('DVSTPersistAntraege');
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
@@ -32,25 +35,30 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
  */
 export default class DVSTPersistAntraege implements IDirective {
 
-    public static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService',
+    public static $inject: string[] = [
+        'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService',
         'GemeindeRS',
-        'AuthLifeCycleService'];
+        'AuthLifeCycleService',
+    ];
 
     public restrict = 'A';
     public require = ['^stTable', '^dvAntragList'];
     public link: IDirectiveLinkFn;
     public obss: Subscription;
 
-    public constructor(private readonly benutzerRS: BenutzerRS,
-                       private readonly institutionRS: InstitutionRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly dVsTPersistService: DVsTPersistService,
-                       private readonly gemeindeRS: GemeindeRS,
-                       private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly benutzerRS: BenutzerRS,
+        private readonly institutionRS: InstitutionRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly dVsTPersistService: DVsTPersistService,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+    ) {
 
         this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             this.obss = this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-                .subscribe(() => this.loadData(attrs, ctrlArray, scope, dVsTPersistService));
+                .subscribe(() => this.loadData(attrs, ctrlArray, scope, this.dVsTPersistService),
+                    err => LOG.error(err));
 
             scope.$on('$destroy', () => {
                 this.destroy();
@@ -59,12 +67,14 @@ export default class DVSTPersistAntraege implements IDirective {
     }
 
     public static factory(): IDirectiveFactory {
-        const directive = (benutzerRS: any,
-                           institutionRS: any,
-                           authServiceRS: any,
-                           dVsTPersistService: any,
-                           gemeindeRS: any,
-                           authLifeCycleService: any) =>
+        const directive = (
+            benutzerRS: any,
+            institutionRS: any,
+            authServiceRS: any,
+            dVsTPersistService: any,
+            gemeindeRS: any,
+            authLifeCycleService: any,
+        ) =>
             new DVSTPersistAntraege(benutzerRS,
                 institutionRS,
                 authServiceRS,
@@ -72,8 +82,10 @@ export default class DVSTPersistAntraege implements IDirective {
                 gemeindeRS,
                 authLifeCycleService);
 
-        directive.$inject = ['BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
-            'AuthLifeCycleService'];
+        directive.$inject = [
+            'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
+            'AuthLifeCycleService',
+        ];
         return directive;
     }
 
@@ -90,10 +102,12 @@ export default class DVSTPersistAntraege implements IDirective {
         this.obss.unsubscribe();
     }
 
-    private loadData(attrs: IAttributes,
-                     ctrlArray: any,
-                     scope: IScope,
-                     dVsTPersistService: DVsTPersistService): void {
+    private loadData(
+        attrs: IAttributes,
+        ctrlArray: any,
+        scope: IScope,
+        dVsTPersistService: DVsTPersistService,
+    ): void {
         // just to be sure that the user has the required role
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) {
             return;
@@ -144,8 +158,10 @@ export default class DVSTPersistAntraege implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherBGFromName(antragListController: DVAntragListController,
-                                          verantwortlicherBGFullname: string): void {
+    private setVerantwortlicherBGFromName(
+        antragListController: DVAntragListController,
+        verantwortlicherBGFullname: string,
+    ): void {
         if (!(verantwortlicherBGFullname && antragListController)) {
             return;
         }
@@ -161,8 +177,10 @@ export default class DVSTPersistAntraege implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherTSFromName(antragListController: DVAntragListController,
-                                          verantwortlicherTSFullname: string): void {
+    private setVerantwortlicherTSFromName(
+        antragListController: DVAntragListController,
+        verantwortlicherTSFullname: string,
+    ): void {
         if (!(verantwortlicherTSFullname && antragListController)) {
             return;
         }

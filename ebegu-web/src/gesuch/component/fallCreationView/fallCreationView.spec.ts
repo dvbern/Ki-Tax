@@ -73,6 +73,7 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
             fallCreationview.save();
             $rootScope.$apply();
+            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).toHaveBeenCalled();
             expect($state.go).not.toHaveBeenCalled();
         });
@@ -82,6 +83,7 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
             fallCreationview.save();
             $rootScope.$apply();
+            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).toHaveBeenCalled();
         });
         it('should not submit the form and not go to the next page because form is invalid', () => {
@@ -89,6 +91,7 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'saveGesuchAndFall');
             form.$valid = false;
             fallCreationview.save();
+            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).not.toHaveBeenCalled();
         });
     });

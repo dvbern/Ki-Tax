@@ -240,7 +240,7 @@ export default class TSEWKPerson extends TSAbstractMutableEntity {
         let description: string;
         description = this.vorname + ' ';
         description += this.nachname + ', ';
-        description += this.geburtsdatum.format('DD.MM.YYYY') + ', ';
+        description += `${this.geburtsdatum.format('DD.MM.YYYY')}, `;
         if (this.getWohnadresse()) {
             description += this.getWohnadresse().getShortDescription();
         }

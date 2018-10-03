@@ -15,6 +15,8 @@
 
 // Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu
 // implementieren.
+import EbeguUtil from '../../../../utils/EbeguUtil';
+
 pendenzBetreuungenFilter.$inject = ['$filter'];
 
 // Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden
@@ -23,29 +25,20 @@ pendenzBetreuungenFilter.$inject = ['$filter'];
 export function pendenzBetreuungenFilter($filter: any): (array: any, expression: any) => any {
 
     const filterFilter = $filter('filter');
-    const dateFilter = $filter('date');
 
-    const standardComparator = (obj: any, text: any) => {
-        const result = ('' + text).toLowerCase();
-
-        return ('' + obj).toLowerCase().indexOf(result) > -1;
-    };
-
-    return (array: any, expression: any) => {
+    return (array, expression) => {
 
         function customComparator(actual: any, expected: any): boolean {
             if (expression.institution && expression.institution === expected && actual) {
                 return actual.name === expected;
             }
             if (expression.eingangsdatum && expression.eingangsdatum === expected) {
-                const actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
-                return actualDate === expected;
+                return EbeguUtil.compareDates(actual, expected);
             }
             if (expression.geburtsdatum && expression.geburtsdatum === expected) {
-                const actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
-                return actualDate === expected;
+                return EbeguUtil.compareDates(actual, expected);
             }
-            return standardComparator(actual, expected);
+            return EbeguUtil.hasTextCaseInsensitive(actual, expected);
         }
 
         return filterFilter(array, expression, customComparator);

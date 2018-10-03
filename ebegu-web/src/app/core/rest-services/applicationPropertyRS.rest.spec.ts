@@ -59,24 +59,6 @@ describe('ApplicationPropertyRS', () => {
 
     });
 
-    describe('Public API', () => {
-        it('should include a getByName() function', () => {
-            expect(applicationPropertyRS.getByName).toBeDefined();
-        });
-        it('should include a create() function', () => {
-            expect(applicationPropertyRS.create).toBeDefined();
-        });
-
-        it('should include a remove() function', () => {
-            expect(applicationPropertyRS.remove).toBeDefined();
-        });
-
-        it('should include a getAllApplicationProperties() function', () => {
-            expect(applicationPropertyRS.getAllApplicationProperties).toBeDefined();
-        });
-
-    });
-
     describe('API Usage', () => {
         describe('getByName', () => {
 

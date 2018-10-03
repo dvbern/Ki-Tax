@@ -14,37 +14,46 @@
  */
 
 import {IPromise} from 'angular';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import TSDokumenteDTO from '../../models/dto/TSDokumenteDTO';
 import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import TSFinanzModel from '../../models/TSFinanzModel';
 import TSGesuch from '../../models/TSGesuch';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import DokumenteRS from './dokumenteRS.rest';
 import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
 import FinanzielleSituationRS from './finanzielleSituationRS.rest';
 
+const LOG = LogFactory.createLog('BerechnungsManager');
+
 export default class BerechnungsManager {
 
-    public static $inject = ['FinanzielleSituationRS', 'EbeguRestUtil', 'EinkommensverschlechterungContainerRS',
-        'DokumenteRS', 'AuthLifeCycleService'];
+    public static $inject = [
+        'FinanzielleSituationRS',
+        'EbeguRestUtil',
+        'EinkommensverschlechterungContainerRS',
+        'DokumenteRS',
+        'AuthLifeCycleService',
+    ];
 
     public finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
     public einkommensverschlechterungResultateBjP1: TSFinanzielleSituationResultateDTO;
     public einkommensverschlechterungResultateBjP2: TSFinanzielleSituationResultateDTO;
     public dokumente: TSDokumenteDTO;
 
-    public constructor(private readonly finanzielleSituationRS: FinanzielleSituationRS,
-                       private readonly ebeguRestUtil: EbeguRestUtil,
-                       private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
-                       private readonly dokumenteRS: DokumenteRS,
-                       private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly finanzielleSituationRS: FinanzielleSituationRS,
+        private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
+        private readonly dokumenteRS: DokumenteRS,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+    ) {
 
         this.initValues();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(() => this.initValues());
+            .subscribe(() => this.initValues(),
+                err => LOG.error(err));
     }
 
     private initValues(): void {
@@ -74,8 +83,10 @@ export default class BerechnungsManager {
             });
     }
 
-    public calculateEinkommensverschlechterung(gesuch: TSGesuch,
-                                               basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateEinkommensverschlechterung(
+        gesuch: TSGesuch,
+        basisJahrPlus: number,
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
         return this.einkommensverschlechterungContainerRS
             .calculateEinkommensverschlechterung(gesuch, basisJahrPlus)
             .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
@@ -93,8 +104,10 @@ export default class BerechnungsManager {
         return finSitContRespo;
     }
 
-    public calculateEinkommensverschlechterungTemp(finanzModel: TSFinanzModel,
-                                                   basisJahrPlus: number)
+    public calculateEinkommensverschlechterungTemp(
+        finanzModel: TSFinanzModel,
+        basisJahrPlus: number,
+    )
         : IPromise<TSFinanzielleSituationResultateDTO> {
 
         return this.einkommensverschlechterungContainerRS

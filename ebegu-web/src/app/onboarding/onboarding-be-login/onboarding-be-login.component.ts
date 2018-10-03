@@ -25,7 +25,7 @@ import {Transition} from '@uirouter/core';
 })
 export class OnboardingBeLoginComponent {
 
-    private readonly gemeindeId: string;
+    public readonly gemeindeId: string;
 
     public constructor(private readonly transition: Transition,
     ) {

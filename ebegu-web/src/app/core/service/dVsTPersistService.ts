@@ -14,8 +14,11 @@
  */
 
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import {TSSTPersistObject} from '../../../models/TSSTPersistObject';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import {TSSTPersistObject} from '../../../models/TSSTPersistObject';
+import {LogFactory} from '../logging/LogFactory';
+
+const LOG = LogFactory.createLog('DVsTPersistService');
 
 /**
  * This service stores an array of TSSTPersistObject.
@@ -32,7 +35,8 @@ export class DVsTPersistService {
         this.clearAll();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(() => this.clearAll());
+            .subscribe(() => this.clearAll(),
+                err => LOG.error(err));
     }
 
     private clearAll(): void {

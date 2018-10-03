@@ -74,6 +74,7 @@ class LogFunctions {
 
 class DefaultLogFunctions extends LogFunctions {
     public constructor() {
+        // tslint:disable-next-line:no-unbound-method
         super(console.error, console.warn, console.info, console.debug);
     }
 }

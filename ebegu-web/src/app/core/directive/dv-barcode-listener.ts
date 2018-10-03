@@ -48,21 +48,30 @@ export class DVBarcodeListener implements IDirective {
  */
 export class DVBarcodeController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS',
-        'ErrorService', '$log', 'AuthLifeCycleService'];
+    public static $inject: ReadonlyArray<string> = [
+        '$document',
+        '$timeout',
+        'DvDialog',
+        'AuthServiceRS',
+        'ErrorService',
+        '$log',
+        'AuthLifeCycleService',
+    ];
 
     private readonly unsubscribe$ = new Subject<void>();
     private barcodeReading: boolean = false;
     private barcodeBuffer: string[] = [];
     private barcodeReadtimeout: any = null;
 
-    public constructor(private readonly $document: IDocumentService,
-                       private readonly $timeout: ITimeoutService,
-                       private readonly dVDialog: DvDialog,
-                       private readonly authService: AuthServiceRS,
-                       private readonly errorService: ErrorService,
-                       private readonly $log: ILogService,
-                       private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly $document: IDocumentService,
+        private readonly $timeout: ITimeoutService,
+        private readonly dVDialog: DvDialog,
+        private readonly authService: AuthServiceRS,
+        private readonly errorService: ErrorService,
+        private readonly $log: ILogService,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+    ) {
     }
 
     public $onInit(): void {
@@ -72,11 +81,15 @@ export class DVBarcodeController implements IController {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.handleLoginSuccessEvent(keypressEvent));
+            .subscribe(
+                () => this.handleLoginSuccessEvent(keypressEvent),
+                err => this.$log.error(err));
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.handleLogoutSuccessEvent(keypressEvent));
+            .subscribe(
+                () => this.handleLogoutSuccessEvent(keypressEvent),
+                err => this.$log.error(err));
 
     }
 
@@ -134,7 +147,7 @@ export class DVBarcodeController implements IController {
                 this.$timeout.cancel(this.barcodeReadtimeout);
 
                 this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                    docID: barcodeDocID
+                    docID: barcodeDocID,
                 });
             } else {
                 this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);

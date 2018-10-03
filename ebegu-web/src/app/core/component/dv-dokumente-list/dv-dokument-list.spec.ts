@@ -37,8 +37,15 @@ describe('dvDokumenteList', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
 
-        controller = new DVDokumenteListController(undefined, gesuchModelManager, undefined, undefined,
-            undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+        controller = new DVDokumenteListController(undefined,
+            gesuchModelManager,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined);
 
     }));
 

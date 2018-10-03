@@ -14,6 +14,7 @@
  */
 
 import {IPromise, IQService} from 'angular';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
@@ -27,6 +28,8 @@ import TSWizardStep from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import WizardStepRS from './WizardStepRS.rest';
 
+const LOG = LogFactory.createLog('WizardStepManager');
+
 export default class WizardStepManager {
 
     public static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
@@ -39,14 +42,19 @@ export default class WizardStepManager {
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
-    public constructor(private readonly authServiceRS: AuthServiceRS,
-                       private readonly wizardStepRS: WizardStepRS,
-                       private readonly $q: IQService,
-                       private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly wizardStepRS: WizardStepRS,
+        private readonly $q: IQService,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+    ) {
 
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(() => this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole()));
+            .subscribe(
+                () => this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole()),
+                err => LOG.error(err),
+            );
     }
 
     public getCurrentStep(): TSWizardStep {
@@ -66,11 +74,13 @@ export default class WizardStepManager {
      * This method must be called only when the Gesuch doesn't exist yet.
      */
     public initWizardSteps(): void {
-        this.wizardSteps = [new TSWizardStep(undefined,
-            TSWizardStepName.GESUCH_ERSTELLEN,
-            TSWizardStepStatus.IN_BEARBEITUNG,
-            undefined,
-            true)];
+        this.wizardSteps = [
+            new TSWizardStep(undefined,
+                TSWizardStepName.GESUCH_ERSTELLEN,
+                TSWizardStepStatus.IN_BEARBEITUNG,
+                undefined,
+                true),
+        ];
         this.wizardSteps.push(new TSWizardStep(undefined,
             TSWizardStepName.FAMILIENSITUATION,
             TSWizardStepStatus.UNBESUCHT,
@@ -89,7 +99,7 @@ export default class WizardStepManager {
 
     public getVisibleSteps(): Array<TSWizardStepName> {
         return this.allowedSteps.filter(element =>
-            !this.isStepHidden(element)
+            !this.isStepHidden(element),
         );
     }
 

@@ -50,7 +50,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public bestaetigungFreigabequittung: boolean = false;
     public isFreigebenClicked: boolean = false;
-    private showGesuchFreigebenSimulationButton: boolean = false;
+    public showGesuchFreigebenSimulationButton: boolean = false;
     public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(gesuchModelManager: GesuchModelManager,

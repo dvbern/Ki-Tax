@@ -35,7 +35,7 @@ export class DVDatepicker implements IDirective {
         noFuture: '<?',
         dvOnBlur: '&?',
         dvMinDate: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
-        dvMaxDate: '<?'  // Kann als String im Format allowedFormats oder als Moment angegeben werden
+        dvMaxDate: '<?',  // Kann als String im Format allowedFormats oder als Moment angegeben werden
     };
     public template = require('./dv-datepicker.html');
 
@@ -60,8 +60,10 @@ export class DatepickerController implements IController {
     public dvMinDate: any;
     public dvMaxDate: any;
 
-    public constructor(private readonly $log: ILogService,
-                       private readonly $attrs: IAttributes) {
+    public constructor(
+        private readonly $log: ILogService,
+        private readonly $attrs: IAttributes,
+    ) {
     }
 
     private static momentToString(mom: moment.Moment): string {
@@ -171,8 +173,8 @@ export class DatepickerController implements IController {
 
     private getInputAsMoment(modelValue: any, viewValue: any): moment.Moment {
         const value = modelValue || DatepickerController.stringToMoment(viewValue);
-        const inputdate = moment(value, DatepickerController.allowedFormats, true);
-        return inputdate;
+
+        return moment(value, DatepickerController.allowedFormats, true);
     }
 
     public onBlur(): void {

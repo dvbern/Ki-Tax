@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
+import {IComponentOptions, IPromise} from 'angular';
 import * as moment from 'moment';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -71,12 +71,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         '$state',
         'GesuchModelManager',
         'BerechnungsManager',
-        'EbeguUtil',
         'WizardStepManager',
         'DvDialog',
         'DownloadRS',
         'MahnungRS',
-        '$log',
         'AuthServiceRS',
         '$scope',
         'GesuchRS',
@@ -93,14 +91,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
         berechnungsManager: BerechnungsManager,
-        private readonly ebeguUtil: EbeguUtil,
         wizardStepManager: WizardStepManager,
         private readonly dvDialog: DvDialog,
         private readonly downloadRS: DownloadRS,
         private readonly mahnungRS: MahnungRS,
-        private readonly $log: ILogService,
         private readonly authServiceRs: AuthServiceRS,
-        $scope: IScope,
+        $scope: angular.IScope,
         private readonly gesuchRS: GesuchRS,
         $timeout: ITimeoutService,
     ) {
@@ -657,7 +653,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
         this.setHasFSDokumentAccordingToFinSitState();
         this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
-                                         this.getGesuch().finSitStatus).then(() => {
+            this.getGesuch().finSitStatus).then(() => {
             this.gesuchModelManager.setGesuch(this.getGesuch());
             this.form.$setPristine();
         });

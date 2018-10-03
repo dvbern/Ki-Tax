@@ -14,8 +14,10 @@
  */
 
 import * as angular from 'angular';
+import {Observable, of} from 'rxjs';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
+import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
 import TSDossier from '../models/TSDossier';
@@ -57,8 +59,18 @@ class GesuchGeneratorMock extends GesuchGenerator {
     }
 }
 
+class AuthLifeCycleServiceMock extends AuthLifeCycleService {
+    public get$(event: TSAuthEvent): Observable<TSAuthEvent> {
+        return of(event);
+    }
+
+    public changeAuthStatus(_status: TSAuthEvent, _message?: string): void {
+        return;
+    }
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
-    $provide.service('AuthLifeCycleService', AuthLifeCycleService);
+    $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
     $provide.service('GesuchGenerator', GesuchGeneratorMock);
     $provide.value('LOCALE_ID', 'de-CH');
 }

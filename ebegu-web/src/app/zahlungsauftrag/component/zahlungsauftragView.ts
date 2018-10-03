@@ -48,9 +48,16 @@ export class ZahlungsauftragViewComponentConfig implements IComponentOptions {
 
 export class ZahlungsauftragViewController implements IController {
 
-    public static $inject: string[] = ['ZahlungRS', 'CONSTANTS', '$state', 'DownloadRS', 'ApplicationPropertyRS',
+    public static $inject: string[] = [
+        'ZahlungRS',
+        '$state',
+        'DownloadRS',
+        'ApplicationPropertyRS',
         'ReportRS',
-        'AuthServiceRS', 'EbeguUtil', 'DvDialog', '$translate'];
+        'AuthServiceRS',
+        'DvDialog',
+        '$translate',
+    ];
 
     public form: IFormController;
     private zahlungsauftragToEdit: TSZahlungsauftrag;
@@ -63,16 +70,16 @@ export class ZahlungsauftragViewController implements IController {
     public testMode: boolean = false;
     public minDateForTestlauf: moment.Moment;
 
-    public constructor(private readonly zahlungRS: ZahlungRS,
-                       private readonly CONSTANTS: any,
-                       private readonly $state: StateService,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly reportRS: ReportRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly dvDialog: DvDialog,
-                       private readonly $translate: ITranslateService) {
+    public constructor(
+        private readonly zahlungRS: ZahlungRS,
+        private readonly $state: StateService,
+        private readonly downloadRS: DownloadRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly reportRS: ReportRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly dvDialog: DvDialog,
+        private readonly $translate: ITranslateService,
+    ) {
     }
 
     public $onInit(): void {
@@ -99,13 +106,13 @@ export class ZahlungsauftragViewController implements IController {
                 zahlungsAuftraege => {
                     this.zahlungsAuftraege = zahlungsAuftraege;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag): void {
         this.$state.go('zahlung.view', {
-            zahlungsauftragId: zahlungsauftrag.id
+            zahlungsauftragId: zahlungsauftrag.id,
         });
     }
 
@@ -118,7 +125,7 @@ export class ZahlungsauftragViewController implements IController {
             title: this.$translate.instant('ZAHLUNG_ERSTELLEN_CONFIRM'),
             deleteText: this.$translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
                 .then((response: TSZahlungsauftrag) => {
@@ -156,7 +163,7 @@ export class ZahlungsauftragViewController implements IController {
             title: this.$translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),
             deleteText: this.$translate.instant('ZAHLUNG_AUSLOESEN_INFO'),
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).then((response: TSZahlungsauftrag) => {
                 const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
@@ -180,7 +187,7 @@ export class ZahlungsauftragViewController implements IController {
         this.zahlungRS.updateZahlungsauftrag(
             this.zahlungsauftragToEdit.beschrieb,
             this.zahlungsauftragToEdit.datumFaellig,
-            this.zahlungsauftragToEdit.id
+            this.zahlungsauftragToEdit.id,
         )
             .then((response: TSZahlungsauftrag) => {
                 const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);

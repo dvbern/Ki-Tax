@@ -73,7 +73,7 @@ export default class ErrorService {
 
     public addDvbError(dvbError: TSExceptionReport): void {
         if (!(dvbError && dvbError.isValid())) {
-            console.log('could not display received TSExceptionReport ' + dvbError);
+            console.log('could not display received TSExceptionReport', dvbError);
             return;
         }
 

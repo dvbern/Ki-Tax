@@ -20,7 +20,7 @@ import {IPromise} from 'angular';
 import {from as fromPromise, from, Observable, of} from 'rxjs';
 import {filter, map, switchMap} from 'rxjs/operators';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
-import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {getTSEingangsartFromRole, TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -44,8 +44,6 @@ const LOG = LogFactory.createLog('FallToolbarComponent');
 })
 export class FallToolbarComponent implements OnChanges {
 
-    private readonly LOG: Log = LogFactory.createLog(FallToolbarComponent.name);
-
     public readonly TSRoleUtil: any = TSRoleUtil;
 
     @Input() public fallId: string;
@@ -61,12 +59,14 @@ export class FallToolbarComponent implements OnChanges {
     public gemeindeText: string;
     public showdropdown: boolean = false;
 
-    public constructor(private readonly dossierRS: DossierRS,
-                       private readonly dialog: MatDialog,
-                       private readonly gemeindeRS: GemeindeRS,
-                       private readonly $state: StateService,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly dossierRS: DossierRS,
+        private readonly dialog: MatDialog,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly $state: StateService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     private loadObjects(): void {
@@ -144,7 +144,7 @@ export class FallToolbarComponent implements OnChanges {
                     newestGesuchID,
                 );
             } else {
-                this.LOG.warn(
+                LOG.warn(
                     `newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
             }
             return this.selectedDossier;
@@ -163,7 +163,8 @@ export class FallToolbarComponent implements OnChanges {
                     }
 
                     this.navigateToFallCreation(chosenGemeindeId);
-                }
+                },
+                err => LOG.error(err),
             );
     }
 
@@ -183,7 +184,7 @@ export class FallToolbarComponent implements OnChanges {
 
     private navigateToDashboard(): void {
         this.$state.go('gesuchsteller.dashboard', {
-            dossierId: this.selectedDossier.id
+            dossierId: this.selectedDossier.id,
         });
     }
 
@@ -219,13 +220,13 @@ export class FallToolbarComponent implements OnChanges {
 
                     return from(this.gemeindeRS.getAktiveGemeinden());
                 }),
-                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden))
+                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden)),
             )
             .subscribe(
                 gemeinden => {
                     this.availableGemeindeList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -243,7 +244,7 @@ export class FallToolbarComponent implements OnChanges {
     private getGemeindeIDFromDialog$(): Observable<string> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            gemeindeList: this.availableGemeindeList
+            gemeindeList: this.availableGemeindeList,
         };
 
         return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();

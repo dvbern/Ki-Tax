@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {ADMIN_JS_MODULE} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
@@ -20,7 +21,7 @@ import {TestFaelleRS} from './testFaelleRS.rest';
 describe('TestFaelleRS', () => {
 
     let testFaelleRS: TestFaelleRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
@@ -34,12 +35,6 @@ describe('TestFaelleRS', () => {
     describe('Public API', () => {
         it('check URI', () => {
             expect(testFaelleRS.serviceURL).toContain('testfaelle');
-        });
-        it('check Service name', () => {
-            expect(testFaelleRS.getServiceName()).toBe('TestFaelleRS');
-        });
-        it('should include a createTestFall() function', () => {
-            expect(testFaelleRS.createTestFall).toBeDefined();
         });
     });
 

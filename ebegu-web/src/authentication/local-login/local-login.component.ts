@@ -91,6 +91,8 @@ export class LocalLoginComponent {
     public revisorBernOstermundigen: TSBenutzer;
     public juristBernOstermundigen: TSBenutzer;
 
+    public devMode: boolean;
+
     private readonly mandant: TSMandant;
     private readonly gemeindeBern: TSGemeinde;
     private readonly gemeindeOstermundigen: TSGemeinde;
@@ -98,12 +100,12 @@ export class LocalLoginComponent {
     private readonly traegerschaftStadtBern: TSTraegerschaft;
     private readonly traegerschaftLeoLea: TSTraegerschaft;
     private readonly traegerschaftSGF: TSTraegerschaft;
-    private readonly traegerschaftFamex: TSTraegerschaft;
-    private devMode: boolean;
 
-    public constructor(private readonly authServiceRS: AuthServiceRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly stateService: StateService) {
+    public constructor(
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly stateService: StateService,
+    ) {
 
         this.mandant = LocalLoginComponent.getMandant();
         this.gemeindeBern = LocalLoginComponent.getGemeindeBern();
@@ -111,7 +113,6 @@ export class LocalLoginComponent {
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern();
         this.traegerschaftLeoLea = LocalLoginComponent.getTraegerschaftLeoLea();
         this.traegerschaftSGF = LocalLoginComponent.getTraegerschaftSGF();
-        this.traegerschaftFamex = LocalLoginComponent.getTraegerschaftFamex();
         this.institution = this.getInsitution();
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
@@ -185,17 +186,6 @@ export class LocalLoginComponent {
         traegerschaft.name = 'SGF';
         traegerschaft.mail = 'sgf@example.com';
         traegerschaft.id = 'bb5d4bd8-84c9-4cb6-8134-a97312dead67';
-        return traegerschaft;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftFamex(): TSTraegerschaft {
-        const traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'FAMEX';
-        traegerschaft.mail = 'famex@example.com';
-        traegerschaft.id = '4a552145-5ccd-4bf8-b827-c77c930daaa8';
         return traegerschaft;
     }
 

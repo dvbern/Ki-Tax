@@ -106,6 +106,7 @@ describe('wizardStepManager', () => {
             wizardStepManager.findStepsFromGesuch('123');
             scope.$apply();
 
+            // tslint:disable-next-line:no-unbound-method
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith('123');
             expect(wizardStepManager.getWizardSteps()).toBeDefined();
             expect(wizardStepManager.getWizardSteps().length).toBe(1);
@@ -118,6 +119,7 @@ describe('wizardStepManager', () => {
             wizardStepManager.findStepsFromGesuch('123');
             scope.$apply();
 
+            // tslint:disable-next-line:no-unbound-method
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith('123');
             expect(wizardStepManager.getWizardSteps()).toBeDefined();
             expect(wizardStepManager.getWizardSteps().length).toBe(2); // erste 2 states sind definiert

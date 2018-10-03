@@ -49,8 +49,6 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     public showSelbstaendigGS: boolean;
     public allowedRoles: Array<TSRole>;
 
-    private readonly initialModel: TSFinanzModel;
-
     public constructor($stateParams: IStammdatenStateParams,
                        gesuchModelManager: GesuchModelManager,
                        berechnungsManager: BerechnungsManager,
@@ -75,7 +73,6 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             this.gesuchModelManager.isGesuchsteller2Required(),
             parsedNum);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.initialModel = angular.copy(this.model);
         this.gesuchModelManager.setGesuchstellerNumber(parsedNum);
         this.initViewModel();
         this.calculate();
@@ -135,7 +132,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         }
     }
 
-    private save(): IPromise<TSFinanzielleSituationContainer> {
+    public save(): IPromise<TSFinanzielleSituationContainer> {
         if (this.isGesuchValid()) {
             this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
             if (!this.form.$dirty) {

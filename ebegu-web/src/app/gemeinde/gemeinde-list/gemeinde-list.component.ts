@@ -22,10 +22,10 @@ import {
     Component,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatSort, MatTableDataSource} from '@angular/material';
+import {MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import {Subject} from 'rxjs';
@@ -35,14 +35,15 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('GemeindeListComponent');
 
 @Component({
     selector: 'dv-gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class GemeindeListComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
 
     public displayedColumns: string[] = ['name', 'status'];
@@ -53,12 +54,12 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
 
-    public constructor(private readonly gemeindeRS: GemeindeRS,
-                       private readonly $state: StateService,
-                       private readonly errorService: ErrorService,
-                       private readonly dialog: MatDialog,
-                       private readonly changeDetectorRef: ChangeDetectorRef,
-                       authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly $state: StateService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        authServiceRS: AuthServiceRS,
+    ) {
 
         super(authServiceRS);
     }
@@ -83,12 +84,13 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
                     const dataSource = new MatTableDataSource(gemeinden);
                     return dataSource;
                 }),
-                takeUntil(this.unsubscribe$)
+                takeUntil(this.unsubscribe$),
             )
             .subscribe(dataSource => {
-                this.dataSource = dataSource;
-                this.changeDetectorRef.markForCheck();
-            });
+                    this.dataSource = dataSource;
+                    this.changeDetectorRef.markForCheck();
+                },
+                err => LOG.error(err));
     }
 
     /**
@@ -99,7 +101,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
                 id: 'name',
                 start: 'asc',
                 disableClear: false,
-            }
+            },
         );
     }
 

@@ -40,7 +40,7 @@ export class ParameterViewController extends AbstractAdminViewController {
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly $translate: ITranslateService,
         private readonly $state: StateService,
-        private readonly $timeout: ITimeoutService,
+        $timeout: ITimeoutService,
         authServiceRS: AuthServiceRS,
     ) {
         super(authServiceRS);

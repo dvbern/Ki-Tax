@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import TSBenutzer from '../../../../models/TSBenutzer';
@@ -28,7 +27,6 @@ describe('dvVerantwortlicherSelect', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
-    let authServiceRS: AuthServiceRS;
     let benutzerRS: BenutzerRS;
     let benutzer: TSBenutzer;
     let $translate: ITranslateService;
@@ -39,13 +37,13 @@ describe('dvVerantwortlicherSelect', () => {
 
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
-        authServiceRS = $injector.get('AuthServiceRS');
         benutzerRS = $injector.get('BenutzerRS');
         benutzer = new TSBenutzer('Emiliano', 'Camacho');
         $translate = $injector.get('$translate');
 
         verantwortlicherselectController = new VerantwortlicherselectController(benutzerRS,
-            authServiceRS, gesuchModelManager, $translate);
+            gesuchModelManager,
+            $translate);
     }));
 
     describe('getVerantwortlicherFullName', () => {

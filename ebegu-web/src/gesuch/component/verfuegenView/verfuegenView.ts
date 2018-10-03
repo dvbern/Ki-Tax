@@ -63,30 +63,32 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$window',
         'ExportRS',
         'ApplicationPropertyRS',
-        '$timeout'
+        '$timeout',
     ];
 
     // this is the model...
     public bemerkungen: string;
 
-    private showSchemas: boolean;
-    private sameVerfuegungsdaten: boolean;
-    private sameVerrechneteVerguenstigung: boolean;
+    public showSchemas: boolean;
+    public sameVerfuegungsdaten: boolean;
+    public sameVerrechneteVerguenstigung: boolean;
 
-    public constructor(private readonly $state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly ebeguUtil: EbeguUtil,
-                       $scope: IScope,
-                       wizardStepManager: WizardStepManager,
-                       private readonly dvDialog: DvDialog,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly $log: ILogService,
-                       $stateParams: IBetreuungStateParams,
-                       private readonly $window: IWindowService,
-                       private readonly exportRS: ExportRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        private readonly $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly ebeguUtil: EbeguUtil,
+        $scope: IScope,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly downloadRS: DownloadRS,
+        private readonly $log: ILogService,
+        $stateParams: IBetreuungStateParams,
+        private readonly $window: IWindowService,
+        private readonly exportRS: ExportRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
 
@@ -214,7 +216,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private goToVerfuegen(): TransitionPromise {
         return this.$state.go('gesuch.verfuegen', {
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
@@ -286,10 +288,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getGesuch()
             && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
             return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(),
-                                                        this.getFall(),
-                                                        this.gesuchModelManager.getDossier().gemeinde,
-                                                        this.gesuchModelManager.getKindToWorkWith().kindNummer,
-                                                        this.getBetreuung().betreuungNummer);
+                this.getFall(),
+                this.gesuchModelManager.getDossier().gemeinde,
+                this.gesuchModelManager.getKindToWorkWith().kindNummer,
+                this.getBetreuung().betreuungNummer);
         }
         return undefined;
     }
@@ -352,7 +354,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             title: 'CONFIRM_SAVE_VERFUEGUNG',
             deleteText: 'BESCHREIBUNG_SAVE_VERFUEGUNG',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             return this.gesuchModelManager.saveVerfuegung(false);
@@ -365,7 +367,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             confirmationText: 'BESCHREIBUNG_SAVE_VERFUEGUNG',
             cancelText: 'LABEL_NEIN',
             firstOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_UEBERNEHMEN',
-            secondOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_IGNORIEREN'
+            secondOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_IGNORIEREN',
         }).then(response => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             return this.gesuchModelManager.saveVerfuegung(response === 2);
@@ -377,7 +379,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             title: 'CONFIRM_CLOSE_VERFUEGUNG_OHNE_VERFUEGEN',
             deleteText: 'BESCHREIBUNG_CLOSE_VERFUEGUNG_OHNE_VERFUEGEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             this.gesuchModelManager.verfuegungSchliessenOhenVerfuegen();
@@ -389,7 +391,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             title: 'CONFIRM_CLOSE_VERFUEGUNG_NICHT_EINTRETEN',
             deleteText: 'BESCHREIBUNG_CLOSE_VERFUEGUNG_NICHT_EINTRETEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             return this.gesuchModelManager.verfuegungSchliessenNichtEintreten();
@@ -427,7 +429,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public openVerfuegungPDF(): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-                                                                  this.getBetreuung().id, false, this.bemerkungen)
+            this.getBetreuung().id, false, this.bemerkungen)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
@@ -477,7 +479,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public exportXmlSchema(): void {
         // ACHTUNG popup blocker muss deaktiviert sein
         this.exportRS.getXmlSchemaString().then(result => {
-            this.$window.open('data:application/octet-streem;charset=utf-8,' + result, '', '');
+            this.$window.open(`data:application/octet-streem;charset=utf-8,${result}`, '', '');
         });
     }
 

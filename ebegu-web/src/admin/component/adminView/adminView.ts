@@ -75,7 +75,7 @@ export class AdminViewController extends AbstractAdminViewController {
         });
     }
 
-    private getIndexOfElementwithID(prop: TSApplicationProperty): number {
+    public getIndexOfElementwithID(prop: TSApplicationProperty): number {
         const idToSearch = prop.id;
         for (let i = 0; i < this.applicationProperties.length; i++) {
             if (this.applicationProperties[i].id === idToSearch) {

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {IAugmentedJQuery, IDirective, IDirectiveLinkFn, IScope} from 'angular';
 import {TSSubmitEvent} from '../../events/TSSubmitEvent';
 
 /**
@@ -31,10 +31,5 @@ export default class DVSubmitevent implements IDirective {
                 scope.$broadcast(TSSubmitEvent[TSSubmitEvent.FORM_SUBMIT]);
             });
         };
-    }
-
-    public static factory(): IDirectiveFactory {
-        const directive = () => new DVSubmitevent();
-        return directive;
     }
 }

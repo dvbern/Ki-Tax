@@ -14,7 +14,6 @@
  */
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import TSGesuch from '../../../../models/TSGesuch';
@@ -44,7 +43,7 @@ export class DvVerantwortlicherselect implements IDirective {
 
 export class VerantwortlicherselectController implements IController {
 
-    public static $inject: string[] = ['BenutzerRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
+    public static $inject: string[] = ['BenutzerRS', 'GesuchModelManager', '$translate'];
 
     public readonly TSRoleUtil = TSRoleUtil;
     public isSchulamt: boolean;
@@ -52,10 +51,11 @@ export class VerantwortlicherselectController implements IController {
 
     public userList: Array<TSBenutzer>;
 
-    public constructor(private readonly benutzerRS: BenutzerRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $translate: ITranslateService) {
+    public constructor(
+        private readonly benutzerRS: BenutzerRS,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService,
+    ) {
     }
 
     public $onChanges(changes: any): void {
@@ -132,9 +132,11 @@ export class VerantwortlicherselectController implements IController {
             return;
         }
 
-        this.isSchulamt
-            ? this.updateSchulamtUserList()
-            : this.updateJugendAmtUserList();
+        if (this.isSchulamt) {
+            this.updateSchulamtUserList();
+        } else {
+            this.updateJugendAmtUserList();
+        }
     }
 
     private updateSchulamtUserList(): void {

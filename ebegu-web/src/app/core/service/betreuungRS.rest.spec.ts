@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -25,14 +26,14 @@ import BetreuungRS from './betreuungRS.rest';
 describe('betreuungRS', () => {
 
     let betreuungRS: BetreuungRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockBetreuung: TSBetreuung;
     let wizardStepManager: WizardStepManager;
     let mockBetreuungRest: any;
     let kindId: string;
     let gesuchId: string;
-    let $q: angular.IQService;
+    let $q: IQService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -62,18 +63,6 @@ describe('betreuungRS', () => {
         it('check URI', () => {
             expect(betreuungRS.serviceURL).toContain('betreuungen');
         });
-        it('check Service name', () => {
-            expect(betreuungRS.getServiceName()).toBe('BetreuungRS');
-        });
-        it('should include a findBetreuung() function', () => {
-            expect(betreuungRS.findBetreuung).toBeDefined();
-        });
-        it('should include a saveBetreuung() function', () => {
-            expect(betreuungRS.saveBetreuung).toBeDefined();
-        });
-        it('should include a removeBetreuung() function', () => {
-            expect(betreuungRS.removeBetreuung).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
@@ -102,6 +91,7 @@ describe('betreuungRS', () => {
                         createdBetreuung = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(createdBetreuung).toBeDefined();
                 expect(createdBetreuung).toEqual(mockBetreuung);
@@ -119,6 +109,7 @@ describe('betreuungRS', () => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
                 expect(deleteResult.status).toEqual(status);

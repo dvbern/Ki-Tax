@@ -14,20 +14,20 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class PosteingangService {
 
     private readonly LOG: Log = LogFactory.createLog(PosteingangService.name);
 
     // use ReplaySubject because we don't have an initial value
-    private readonly _posteingangSubject$: Subject<TSPostEingangEvent> = new ReplaySubject(1);
+    private readonly _posteingangSubject$ = new ReplaySubject<TSPostEingangEvent>(1);
 
     public posteingangChanged(): void {
         this.LOG.info('Thwrowing TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED because the number of '
@@ -38,6 +38,6 @@ export class PosteingangService {
     public get$(event: TSPostEingangEvent): Observable<TSPostEingangEvent> {
         return this._posteingangSubject$
             .asObservable()
-            .pipe(filter(value => value === event)) as Observable<TSPostEingangEvent>;
+            .pipe(filter(value => value === event));
     }
 }

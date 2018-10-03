@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, IQService} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
@@ -31,18 +31,19 @@ export class DVVersionComponentConfig implements IComponentOptions {
 
 export class DVVersionController implements IController {
 
-    public static $inject = ['$rootScope', 'HttpVersionInterceptor', '$q', '$window'];
+    public static $inject = ['$rootScope', 'HttpVersionInterceptor', '$window'];
 
-    private backendVersion: string;
-    private readonly frontendVersion: string = VERSION;
-    private readonly buildTime: string = BUILDTSTAMP;
-    private showSingleVersion: boolean = true;
-    private currentYear: number;
+    public backendVersion: string;
+    public readonly buildTime: string = BUILDTSTAMP;
+    public readonly frontendVersion: string = VERSION;
+    public showSingleVersion: boolean = true;
+    public currentYear: number;
 
-    public constructor(private readonly $rootScope: IRootScopeService,
-                       private readonly httpVersionInterceptor: HttpVersionInterceptor,
-                       private readonly $q: IQService,
-                       private readonly $window: IWindowService) {
+    public constructor(
+        private readonly $rootScope: IRootScopeService,
+        private readonly httpVersionInterceptor: HttpVersionInterceptor,
+        private readonly $window: IWindowService,
+    ) {
 
     }
 

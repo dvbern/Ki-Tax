@@ -36,7 +36,7 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
         switch (response.status) {
             case http401:
                 // exclude requests from the login form
-                if (response.config && response.config.url === this.CONSTANTS.REST_API + 'auth/login') {
+                if (response.config && response.config.url === `${this.CONSTANTS.REST_API}auth/login`) {
                     return this.$q.reject(response);
                 }
                 // if this request was a background polling request we do not want to relogin or show errors

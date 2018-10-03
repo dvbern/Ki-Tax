@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IController, ILogService, IPromise} from 'angular';
+import {IComponentOptions, IController, IPromise} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../../gesuch/service/searchRS.rest';
@@ -38,14 +38,23 @@ export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     public controller = GesuchstellerDashboardViewController;
     public controllerAs = 'vm';
     public bindings = {
-        dossier: '<'
+        dossier: '<',
     };
 }
 
 export class GesuchstellerDashboardViewController implements IController {
 
-    public static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'SearchRS', 'EbeguUtil', 'GesuchsperiodeRS',
-        '$translate', 'MitteilungRS', 'GesuchRS', 'ErrorService'];
+    public static $inject: string[] = [
+        '$state',
+        'AuthServiceRS',
+        'SearchRS',
+        'EbeguUtil',
+        'GesuchsperiodeRS',
+        '$translate',
+        'MitteilungRS',
+        'GesuchRS',
+        'ErrorService',
+    ];
 
     private antragList: Array<TSAntragDTO> = [];
     private _activeGesuchsperiodenList: Array<TSGesuchsperiode>;
@@ -55,16 +64,17 @@ export class GesuchstellerDashboardViewController implements IController {
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
     public mapOfNewestAntraege: { [key: string]: string } = {};
 
-    public constructor(private readonly $state: StateService,
-                       private readonly $log: ILogService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly searchRS: SearchRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly $translate: ITranslateService,
-                       private readonly mitteilungRS: MitteilungRS,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly errorService: ErrorService) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly searchRS: SearchRS,
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $translate: ITranslateService,
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly gesuchRS: GesuchRS,
+        private readonly errorService: ErrorService,
+    ) {
     }
 
     public $onInit(): void {
@@ -152,7 +162,7 @@ export class GesuchstellerDashboardViewController implements IController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
                     gesuchId: antrag.antragId,
-                    dossierId: this.dossier.id
+                    dossierId: this.dossier.id,
                 });
             }
         } else if (this.antragList && this.antragList.length > 0) {
@@ -163,7 +173,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 gesuchsperiodeId: periode.id,
                 eingangsart: TSEingangsart.ONLINE,
                 gesuchId: this.antragList[0].antragId,
-                dossierId: this.dossier.id
+                dossierId: this.dossier.id,
             });
         } else {
             // Dies ist das erste Gesuch
@@ -172,7 +182,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 eingangsart: TSEingangsart.ONLINE,
                 gesuchsperiodeId: periode.id,
                 gemeindeId: this.dossier.gemeinde.id,
-                dossierId: this.dossier.id
+                dossierId: this.dossier.id,
             });
         }
     }

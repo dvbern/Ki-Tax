@@ -207,11 +207,11 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         return !this.isGesuchReadonly() && !betreuung.vorgaengerId && !betreuung.isSchulamtangebotAusgeloest();
     }
 
-    private showMitteilung(): boolean {
+    public showMitteilung(): boolean {
         return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
     }
 
-    private gotoMitteilung(betreuung: TSBetreuung): void {
+    public gotoMitteilung(betreuung: TSBetreuung): void {
         this.$state.go('gesuch.mitteilung', {
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,

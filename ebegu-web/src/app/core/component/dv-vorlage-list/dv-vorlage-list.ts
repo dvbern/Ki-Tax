@@ -33,7 +33,7 @@ export class DVVorlageListConfig implements IComponentOptions {
         ebeguVorlageList: '<',
         isReadonly: '&',
         gesuchsperiode: '<',
-        proGesuchsperiode: '<'
+        proGesuchsperiode: '<',
     };
     public template = require('./dv-vorlage-list.html');
     public controller = DVVorlageListController;
@@ -42,20 +42,20 @@ export class DVVorlageListConfig implements IComponentOptions {
 
 export class DVVorlageListController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog',
-        'EbeguUtil', '$scope'];
+    public static $inject: ReadonlyArray<string> = ['DownloadRS', '$log', 'EbeguVorlageRS', 'DvDialog', '$scope'];
 
     public ebeguVorlageList: TSEbeguVorlage[];
     public isReadonly: () => void;
     public gesuchsperiode: TSGesuchsperiode;
     public proGesuchsperiode: boolean;
 
-    public constructor(private readonly downloadRS: DownloadRS,
-                       private readonly $log: ILogService,
-                       private readonly ebeguVorlageRS: EbeguVorlageRS,
-                       private readonly dvDialog: DvDialog,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly $scope: IScope) {
+    public constructor(
+        private readonly downloadRS: DownloadRS,
+        private readonly $log: ILogService,
+        private readonly ebeguVorlageRS: EbeguVorlageRS,
+        private readonly dvDialog: DvDialog,
+        private readonly $scope: IScope,
+    ) {
     }
 
     public $onInit(): void {
@@ -148,7 +148,7 @@ export class DVVorlageListController implements IController {
             deleteText: '',
             title: 'FILE_LOESCHEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         })
             .then(() => {   // User confirmed removal
 

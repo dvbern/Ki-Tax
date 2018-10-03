@@ -24,17 +24,19 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
  * The information will be stored in an angular-service, whi
  */
-export default class DVSTPersistQuicksearch implements IDirective {
+export default class DVSTPersistPendenzen implements IDirective {
     public static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
 
     public restrict = 'A';
     public require = ['^stTable', '^dvQuicksearchList'];
     public link: IDirectiveLinkFn;
 
-    public constructor(private readonly benutzerRS: BenutzerRS,
-                       private readonly institutionRS: InstitutionRS,
-                       private readonly dVsTPersistService: DVsTPersistService,
-                       private readonly gemeindeRS: GemeindeRS) {
+    public constructor(
+        private readonly benutzerRS: BenutzerRS,
+        private readonly institutionRS: InstitutionRS,
+        private readonly dVsTPersistService: DVsTPersistService,
+        private readonly gemeindeRS: GemeindeRS,
+    ) {
         this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             const nameSpace: string = attrs.dvStPersistQuicksearch;
             const stTableCtrl = ctrlArray[0];
@@ -43,12 +45,12 @@ export default class DVSTPersistQuicksearch implements IDirective {
             // save the table state every time it changes
             scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
                 if (newValue !== oldValue) {
-                    dVsTPersistService.saveData(nameSpace, newValue);
+                    this.dVsTPersistService.saveData(nameSpace, newValue);
                 }
             }, true);
 
             // fetch the table state when the directive is loaded
-            const savedState = dVsTPersistService.loadData(nameSpace);
+            const savedState = this.dVsTPersistService.loadData(nameSpace);
             if (!savedState) {
                 return;
             }
@@ -80,10 +82,12 @@ export default class DVSTPersistQuicksearch implements IDirective {
     }
 
     public static factory(): IDirectiveFactory {
-        const directive = (benutzerRS: any,
-                           institutionRS: any,
-                           dVsTPersistService: any,
-                           gemeindeRS: any) => new DVSTPersistQuicksearch(benutzerRS,
+        const directive = (
+            benutzerRS: any,
+            institutionRS: any,
+            dVsTPersistService: any,
+            gemeindeRS: any,
+        ) => new DVSTPersistPendenzen(benutzerRS,
             institutionRS,
             dVsTPersistService,
             gemeindeRS);
@@ -96,8 +100,10 @@ export default class DVSTPersistQuicksearch implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherBGFromName(quicksearchListController: DVQuicksearchListController,
-                                          verantwortlicherBGFullname: string): void {
+    private setVerantwortlicherBGFromName(
+        quicksearchListController: DVQuicksearchListController,
+        verantwortlicherBGFullname: string,
+    ): void {
         if (!(verantwortlicherBGFullname && quicksearchListController)) {
             return;
         }
@@ -114,8 +120,10 @@ export default class DVSTPersistQuicksearch implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherTSFromName(quicksearchListController: DVQuicksearchListController,
-                                          verantwortlicherTSFullname: string): void {
+    private setVerantwortlicherTSFromName(
+        quicksearchListController: DVQuicksearchListController,
+        verantwortlicherTSFullname: string,
+    ): void {
         if (!(verantwortlicherTSFullname && quicksearchListController)) {
             return;
         }

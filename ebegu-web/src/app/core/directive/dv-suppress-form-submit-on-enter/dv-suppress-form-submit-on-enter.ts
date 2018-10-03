@@ -47,8 +47,7 @@ export default class DVSuppressFormSubmitOnEnter implements IDirective {
     }
 
     public static factory(): IDirectiveFactory {
-        const directive = () => new DVSuppressFormSubmitOnEnter();
-        return directive;
+        return () => new DVSuppressFormSubmitOnEnter();
     }
 }
 

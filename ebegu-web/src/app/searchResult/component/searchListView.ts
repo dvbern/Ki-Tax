@@ -34,8 +34,6 @@ export class SearchListViewController {
 
     private antragList: Array<TSAbstractAntragDTO>;
     public totalResultCount: string = '-';
-    // we want to ignore the first filter request because the default sort triggers always a second one
-    private readonly ignoreRequest: boolean = true;
     public searchString: string;
 
     public constructor(private readonly $log: ILogService,

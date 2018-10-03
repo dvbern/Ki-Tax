@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
@@ -24,12 +25,12 @@ import GesuchstellerRS from './gesuchstellerRS.rest';
 describe('GesuchstellerRS', () => {
 
     let gesuchstellerRS: GesuchstellerRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockGesuchsteller: TSGesuchstellerContainer;
     let mockGesuchstellerRest: any;
     const dummyGesuchID = '123';
-    let $q: angular.IQService;
+    let $q: IQService;
     let wizardStepManager: WizardStepManager;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
@@ -56,18 +57,6 @@ describe('GesuchstellerRS', () => {
         $httpBackend.whenGET(url).respond(mockGesuchstellerRest);
     });
 
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(gesuchstellerRS.getServiceName()).toBe('GesuchstellerRS');
-        });
-        it('should include a findGesuchsteller() function', () => {
-            expect(gesuchstellerRS.findGesuchsteller).toBeDefined();
-        });
-        it('should include a updateGesuchsteller() function', () => {
-            expect(gesuchstellerRS.saveGesuchsteller).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('updateGesuchsteller', () => {
             it('should updateGesuchsteller a gesuchsteller and her adresses', () => {
@@ -81,13 +70,14 @@ describe('GesuchstellerRS', () => {
                         updatedGesuchsteller = result;
                     });
                     $httpBackend.flush();
+                    // tslint:disable-next-line:no-unbound-method
                     expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(dummyGesuchID);
                     expect(updatedGesuchsteller).toBeDefined();
                     expect(updatedGesuchsteller.gesuchstellerJA).toBeDefined();
                     expect(updatedGesuchsteller.gesuchstellerJA.nachname)
                         .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
                     expect(updatedGesuchsteller.id).toEqual(mockGesuchsteller.id);
-                }
+                },
             );
         });
 
@@ -104,7 +94,7 @@ describe('GesuchstellerRS', () => {
                     expect(foundGesuchsteller).toBeDefined();
                     expect(foundGesuchsteller.gesuchstellerJA.nachname)
                         .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
-                }
+                },
             );
         });
     });

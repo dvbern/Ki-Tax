@@ -247,7 +247,7 @@ export class DVMitteilungListController implements IOnInit {
     /**
      * Gibt true zurueck wenn der aktuelle BenutzerTyp, der Sender der uebergenenen Mitteilung ist.
      */
-    private isCurrentUserTypTheSenderTyp(mitteilung: TSMitteilung): boolean {
+    public isCurrentUserTypTheSenderTyp(mitteilung: TSMitteilung): boolean {
         const principal = this.authServiceRS.getPrincipal();
         return mitteilung && mitteilung.sender && principal
             && mitteilung.senderTyp === this.getMitteilungTeilnehmerTypForUserRole(principal.getCurrentRole());

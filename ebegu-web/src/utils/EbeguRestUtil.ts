@@ -2284,18 +2284,19 @@ export default class EbeguRestUtil {
 
     private parseBatchJobInformation(testBatchJobInfo: TSBatchJobInformation,
                                      batchJobInfoFromServer: any): TSBatchJobInformation {
-        if (batchJobInfoFromServer) {
-            testBatchJobInfo.batchStatus = batchJobInfoFromServer.batchStatus;
-            testBatchJobInfo.createTime = batchJobInfoFromServer.createTime;
-            testBatchJobInfo.endTime = batchJobInfoFromServer.endTime;
-            testBatchJobInfo.executionId = batchJobInfoFromServer.executionId;
-            testBatchJobInfo.executionId = batchJobInfoFromServer.executionId;
-            testBatchJobInfo.jobName = batchJobInfoFromServer.jobName;
-            testBatchJobInfo.lastUpdatedTime = batchJobInfoFromServer.lastUpdatedTime;
-            testBatchJobInfo.startTime = batchJobInfoFromServer.startTime;
-            return testBatchJobInfo;
+        if (!batchJobInfoFromServer) {
+            return undefined;
         }
-        return undefined;
+
+        testBatchJobInfo.batchStatus = batchJobInfoFromServer.batchStatus;
+        testBatchJobInfo.createTime = batchJobInfoFromServer.createTime;
+        testBatchJobInfo.endTime = batchJobInfoFromServer.endTime;
+        testBatchJobInfo.executionId = batchJobInfoFromServer.executionId;
+        testBatchJobInfo.jobName = batchJobInfoFromServer.jobName;
+        testBatchJobInfo.lastUpdatedTime = batchJobInfoFromServer.lastUpdatedTime;
+        testBatchJobInfo.startTime = batchJobInfoFromServer.startTime;
+
+        return testBatchJobInfo;
     }
 
     public parseMitteilung(tsMitteilung: TSMitteilung, mitteilungFromServer: any): TSMitteilung {

@@ -23,7 +23,6 @@ import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
-import ITimeoutService = angular.ITimeoutService;
 
 export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
     transclude: false,
@@ -33,7 +32,7 @@ export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
 
 export class SchulungViewController implements IController {
 
-    public static $inject: string[] = ['$state', 'AuthServiceRS', '$timeout', 'TestFaelleRS'];
+    public static $inject: string[] = ['$state', 'AuthServiceRS', 'TestFaelleRS'];
 
     public usersList: Array<TSBenutzer> = Array<TSBenutzer>();
     private gesuchstellerList: string[];
@@ -43,9 +42,11 @@ export class SchulungViewController implements IController {
     private readonly institutionForelle: TSInstitution;
     private readonly traegerschaftFisch: TSTraegerschaft;
 
-    public constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
-                       private readonly $timeout: ITimeoutService,
-                       private readonly testFaelleRS: TestFaelleRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly testFaelleRS: TestFaelleRS,
+    ) {
 
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();

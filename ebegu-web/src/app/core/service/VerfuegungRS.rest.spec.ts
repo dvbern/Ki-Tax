@@ -57,12 +57,6 @@ describe('VerfuegungRS', () => {
         it('check URI', () => {
             expect(verfuegungRS.serviceURL).toContain('verfuegung');
         });
-        it('check Service name', () => {
-            expect(verfuegungRS.getServiceName()).toBe('VerfuegungRS');
-        });
-        it('should include a findKind() function', () => {
-            expect(verfuegungRS.calculateVerfuegung).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {

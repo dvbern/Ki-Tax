@@ -42,8 +42,6 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
         'WizardStepManager', '$scope', '$timeout'];
 
-    private readonly initialModel: TSFinanzModel;
-
     public constructor(gesuchModelManager: GesuchModelManager,
                        berechnungsManager: BerechnungsManager,
                        private readonly errorService: ErrorService,
@@ -61,7 +59,6 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
             this.gesuchModelManager.isGesuchsteller2Required(),
             null);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.initialModel = angular.copy(this.model);
 
         this.calculate();
     }
@@ -70,7 +67,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         return this.model.isGesuchsteller2Required();
     }
 
-    private save(): IPromise<void> {
+    public save(): IPromise<void> {
         if (this.isGesuchValid()) {
             this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
             if (!this.form.$dirty) {

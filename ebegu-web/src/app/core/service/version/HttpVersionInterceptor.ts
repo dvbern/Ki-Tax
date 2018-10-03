@@ -13,8 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpInterceptor, ILogService, IQService, IRootScopeService} from 'angular';
+import {IHttpInterceptor, ILogService, IRootScopeService} from 'angular';
 import {VERSION} from '../../../../environments/version';
+import {CONSTANTS} from '../../constants/CONSTANTS';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
 
 /**
@@ -22,14 +23,14 @@ import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
  */
 export default class HttpVersionInterceptor implements IHttpInterceptor {
 
-    public static $inject = ['$rootScope', '$q', 'CONSTANTS', '$log'];
+    public static $inject = ['$rootScope', '$log'];
 
     public backendVersion: string;
 
-    public constructor(private readonly $rootScope: IRootScopeService,
-                       private readonly $q: IQService,
-                       private readonly CONSTANTS: any,
-                       private readonly $log: ILogService) {
+    public constructor(
+        private readonly $rootScope: IRootScopeService,
+        private readonly $log: ILogService,
+    ) {
     }
 
     private static hasVersionCompatibility(frontendVersion: string, backendVersion: string): boolean {
@@ -41,7 +42,7 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
     public response = (response: any) => {
         if (response.headers
             && response.config
-            && response.config.url.indexOf(this.CONSTANTS.REST_API) === 0
+            && response.config.url.indexOf(CONSTANTS.REST_API) === 0
             && !response.config.cache) {
             this.updateBackendVersion(response.headers('x-ebegu-version'));
         }

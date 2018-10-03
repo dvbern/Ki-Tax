@@ -25,10 +25,12 @@ export default class MahnungRS implements IEntityRS {
 
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+    ) {
         this.serviceURL = `${REST_API}mahnung`;
     }
 
@@ -51,21 +53,18 @@ export default class MahnungRS implements IEntityRS {
     }
 
     public mahnlaufBeenden(gesuch: TSGesuch): IPromise<TSGesuch> {
-        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: IHttpResponse<TSGesuch>) => {
-            this.$log.debug('PARSING gesuch REST object ', response.data);
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`, {})
+            .then((response: IHttpResponse<TSGesuch>) => {
+                this.$log.debug('PARSING gesuch REST object ', response.data);
+                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+            });
     }
 
     public getInitialeBemerkungen(gesuch: TSGesuch): IHttpPromise<string> {
         return this.$http.get(`${this.serviceURL}/bemerkungen/${encodeURIComponent(gesuch.id)}`, {
             headers: {
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         });
     }
 }

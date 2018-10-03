@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKind from '../../../models/TSKind';
@@ -25,12 +26,12 @@ import KindRS from './kindRS.rest';
 describe('KindRS', () => {
 
     let kindRS: KindRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockKind: TSKindContainer;
     let mockKindRest: any;
     let gesuchId: string;
-    let $q: angular.IQService;
+    let $q: IQService;
     let wizardStepManager: WizardStepManager;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
@@ -61,18 +62,6 @@ describe('KindRS', () => {
     describe('Public API', () => {
         it('check URI', () => {
             expect(kindRS.serviceURL).toContain('kinder');
-        });
-        it('check Service name', () => {
-            expect(kindRS.getServiceName()).toBe('KindRS');
-        });
-        it('should include a findKind() function', () => {
-            expect(kindRS.findKind).toBeDefined();
-        });
-        it('should include a saveKind() function', () => {
-            expect(kindRS.saveKind).toBeDefined();
-        });
-        it('should include a removeKind() function', () => {
-            expect(kindRS.removeKind).toBeDefined();
         });
     });
     describe('API Usage', () => {
@@ -115,6 +104,7 @@ describe('KindRS', () => {
                         updatedKindContainer = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 checkFieldValues(updatedKindContainer);
             });
@@ -131,6 +121,7 @@ describe('KindRS', () => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
                 expect(deleteResult.status).toEqual(httpOk);

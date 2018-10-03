@@ -34,10 +34,10 @@ export class LoginComponentController implements IController {
 
     public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location'];
 
-    private redirectionHref: string;
-    private logoutHref: string;
-    private redirecting: boolean;
-    private countdown: number = 0;
+    public redirectionHref: string;
+    public logoutHref: string;
+    public redirecting: boolean;
+    public countdown: number = 0;
 
     public returnTo: TargetState;
 

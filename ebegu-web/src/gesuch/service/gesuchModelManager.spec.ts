@@ -118,10 +118,12 @@ describe('gesuchModelManager', () => {
                         false);
                     scope.$apply();
 
+                    // tslint:disable-next-line:no-unbound-method
                     expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(),
                         '2afc9d9a-957e-4550-9a22-97624a000feb',
                         undefined,
                         false);
+                    // tslint:disable-next-line:no-unbound-method
                     expect(kindRS.findKind).toHaveBeenCalledWith('2afc9d9a-957e-4550-9a22-97624a000feb');
                     expect(gesuchModelManager.getKindToWorkWith().nextNumberBetreuung).toEqual(5);
                     expect(gesuchModelManager.getGesuch().gesuchBetreuungenStatus)
@@ -153,6 +155,7 @@ describe('gesuchModelManager', () => {
                     gesuchModelManager.saveGesuchAndFall();
 
                     scope.$apply();
+                    // tslint:disable-next-line:no-unbound-method
                     expect(gesuchRS.updateGesuch).toHaveBeenCalled();
                 });
             }));
@@ -253,7 +256,8 @@ describe('gesuchModelManager', () => {
                     scope.$apply();
 
                     expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
-                    expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus).toEqual(TSBetreuungsstatus.VERFUEGT);
+                    expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                        .toEqual(TSBetreuungsstatus.VERFUEGT);
                 });
             }));
         });
@@ -378,6 +382,7 @@ describe('gesuchModelManager', () => {
                 });
 
                 scope.$apply();
+                // tslint:disable-next-line:no-unbound-method
                 expect(betreuungRS.saveBetreuungen).toHaveBeenCalledWith(betreuungen, myGesuch.id, true);
                 expect(promiseExecuted.length).toBe(1);
                 expect(promiseExecuted[0]).toEqual(betreuung);
@@ -397,6 +402,7 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchRS.findGesuchForInstitution).toHaveBeenCalledWith(gesuch.id);
                 expect(gesuchModelManager.getGesuch()).toEqual(gesuch);
             });
@@ -413,6 +419,7 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchRS.findGesuch).toHaveBeenCalledWith(gesuch.id);
                 expect(gesuchModelManager.getGesuch()).toEqual(gesuch);
             });

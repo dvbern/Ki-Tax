@@ -61,15 +61,6 @@ describe('searchRS', () => {
         ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
     });
 
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(searchRS.getServiceName()).toBe('SearchRS');
-        });
-        it('should include a getPendenzenBetreuungenList() function', () => {
-            expect(searchRS.getPendenzenList).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('getPendenzenList', () => {
             it('should return all pending Antraege', () => {
@@ -77,7 +68,7 @@ describe('searchRS', () => {
                 tsAntragDTO.fallNummer = 1234;
                 const searchResult: any = {
                     antragDTOs: [tsAntragDTO],
-                    paginationDTO: {totalItemCount: 1}
+                    paginationDTO: {totalItemCount: 1},
                 };
 
                 const filter: any = {};

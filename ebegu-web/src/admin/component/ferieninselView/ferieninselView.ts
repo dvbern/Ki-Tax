@@ -48,7 +48,8 @@ export class FerieninselViewController extends AbstractAdminViewController {
 
     public constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
                        private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
-                       private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS) {
+                       private readonly $timeout: ITimeoutService, authServiceRS: AuthServiceRS,
+    ) {
         super(authServiceRS);
         this.$timeout(() => {
             this.readGesuchsperioden();
@@ -118,18 +119,18 @@ export class FerieninselViewController extends AbstractAdminViewController {
         ferieninselStammdaten.zeitraumList.push(new TSFerieninselZeitraum());
     }
 
-    public removeFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten,
-                                     ferieninselZeitraum: TSFerieninselZeitraum): void {
+    public removeFerieninselZeitraum(
+        ferieninselStammdaten: TSFerieninselStammdaten,
+        ferieninselZeitraum: TSFerieninselZeitraum,
+    ): void {
         const index = ferieninselStammdaten.zeitraumList.indexOf(ferieninselZeitraum, 0);
         ferieninselStammdaten.zeitraumList.splice(index, 1);
     }
 
     public isFerieninselStammdatenValid(ferieninselStammdaten: TSFerieninselStammdaten): boolean {
-        const fiValid = !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
+        return !(EbeguUtil.isNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigAb)
             || EbeguUtil.isNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigBis));
-
-        return fiValid;
     }
 
     public isSaveButtonDisabled(ferieninselStammdaten: TSFerieninselStammdaten): boolean {
@@ -145,16 +146,20 @@ export class FerieninselViewController extends AbstractAdminViewController {
             || EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.zeitraum.gueltigkeit.gueltigBis);
     }
 
-    public isDatumAbRequired(ferieninselZeitraum: TSFerieninselZeitraum,
-                             ferieninselStammdaten: TSFerieninselStammdaten): boolean {
+    public isDatumAbRequired(
+        ferieninselZeitraum: TSFerieninselZeitraum,
+        ferieninselStammdaten: TSFerieninselStammdaten,
+    ): boolean {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum bis
         return EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || (EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit)
                 && EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit.gueltigBis));
     }
 
-    public isDatumBisRequired(ferieninselZeitraum: TSFerieninselZeitraum,
-                              ferieninselStammdaten: TSFerieninselStammdaten): boolean {
+    public isDatumBisRequired(
+        ferieninselZeitraum: TSFerieninselZeitraum,
+        ferieninselStammdaten: TSFerieninselStammdaten,
+    ): boolean {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum ab
         return EbeguUtil.isNotNullOrUndefined(ferieninselStammdaten.anmeldeschluss)
             || (EbeguUtil.isNotNullOrUndefined(ferieninselZeitraum.gueltigkeit)

@@ -21,7 +21,6 @@ import ErrorService from './ErrorService';
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
 import IQService = angular.IQService;
-import IRootScopeService = angular.IRootScopeService;
 
 export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
     return response.config && response.config.url.includes('notokenrefresh');
@@ -29,12 +28,13 @@ export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
 
 export default class HttpErrorInterceptor implements IHttpInterceptor {
 
-    public static $inject = ['$rootScope', '$q', 'ErrorService', '$log'];
+    public static $inject = ['$q', 'ErrorService', '$log'];
 
-    public constructor(private readonly $rootScope: IRootScopeService,
-                       private readonly $q: IQService,
-                       private readonly errorService: ErrorService,
-                       private readonly $log: ILogService) {
+    public constructor(
+        private readonly $q: IQService,
+        private readonly errorService: ErrorService,
+        private readonly $log: ILogService,
+    ) {
     }
 
     public responseError = (response: any) => {

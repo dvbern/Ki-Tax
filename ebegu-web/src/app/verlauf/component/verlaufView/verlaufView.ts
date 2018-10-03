@@ -17,7 +17,6 @@ import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import TSAntragStatusHistory from '../../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../../models/TSDossier';
@@ -36,8 +35,10 @@ export class VerlaufViewComponentConfig implements IComponentOptions {
 
 export class VerlaufViewController implements IController {
 
-    public static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', 'GesuchRS', 'AntragStatusHistoryRS',
-        'EbeguUtil'];
+    public static $inject: string[] = [
+        '$state', '$stateParams', 'GesuchRS', 'AntragStatusHistoryRS',
+        'EbeguUtil',
+    ];
 
     public form: IFormController;
     public dossier: TSDossier;
@@ -46,12 +47,13 @@ export class VerlaufViewController implements IController {
     public readonly TSRoleUtil = TSRoleUtil;
     public verlauf: Array<TSAntragStatusHistory>;
 
-    public constructor(private readonly $state: StateService,
-                       private readonly $stateParams: IVerlaufStateParams,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
-                       private readonly ebeguUtil: EbeguUtil) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly $stateParams: IVerlaufStateParams,
+        private readonly gesuchRS: GesuchRS,
+        private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+        private readonly ebeguUtil: EbeguUtil,
+    ) {
     }
 
     public $onInit(): void {
@@ -75,7 +77,7 @@ export class VerlaufViewController implements IController {
                     this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
                         item.antragTyp,
                         item.eingangsdatum,
-                        item.laufnummer
+                        item.laufnummer,
                     );
                 });
             });

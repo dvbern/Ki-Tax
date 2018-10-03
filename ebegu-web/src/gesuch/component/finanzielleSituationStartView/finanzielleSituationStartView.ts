@@ -101,7 +101,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             });
     }
 
-    private confirmAndSave(): IPromise<TSGesuch> {
+    public confirmAndSave(): IPromise<TSGesuch> {
         if (this.isGesuchValid()) {
             this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
             if (!this.form.$dirty) {
@@ -148,7 +148,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         return this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
     }
 
-    private getFinanzielleSituationGS2(): TSFinanzielleSituation {
+    public getFinanzielleSituationGS2(): TSFinanzielleSituation {
         return this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
     }
 
@@ -156,7 +156,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         return this.finanzielleSituationRequired;
     }
 
-    private hasTagesschulenAnmeldung(): boolean {
+    public hasTagesschulenAnmeldung(): boolean {
         return this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung();
     }
 

@@ -65,12 +65,6 @@ describe('betreuungListViewTest', () => {
             $timeout);
     }));
 
-    describe('Public API', () => {
-        it('should include a createBetreuung() function', () => {
-            expect(betreuungListView.createBetreuung).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('createBetreuung', () => {
             it('should create a Betreuung', () => {
@@ -87,7 +81,7 @@ describe('betreuungListViewTest', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.betreuung', {
                     betreuungNumber: undefined,
                     kindNumber: 1,
-                    gesuchId: ''
+                    gesuchId: '',
                 });
             });
         });

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMandant} from '../../../models/TSMandant';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -22,7 +23,7 @@ import {MandantRS} from './mandantRS.rest';
 describe('mandantRS', () => {
 
     let mandantRS: MandantRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockMandant: TSMandant;
     let mockMandantRest: any;
@@ -41,16 +42,6 @@ describe('mandantRS', () => {
         mockMandant = new TSMandant('MandantTest');
         mockMandant.id = '2afc9d9a-957e-4550-9a22-97624a1d8fa1';
         mockMandantRest = ebeguRestUtil.mandantToRestObject({}, mockMandant);
-    });
-
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(mandantRS.getServiceName()).toBe('MandantRS');
-
-        });
-        it('should include a findMandant() function', () => {
-            expect(mandantRS.findMandant).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {

@@ -55,23 +55,6 @@ describe('ErwerbspensumRS', () => {
         mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
     });
 
-    describe('Public API', () => {
-        it('check URI', () => {
-            expect(erwerbspensumRS.serviceURL).toContain('erwerbspensen');
-        });
-        it('check Service name', () => {
-            expect(erwerbspensumRS.getServiceName()).toBe('ErwerbspensumRS');
-        });
-        it('should include a findErwerbspensum() function', () => {
-            expect(erwerbspensumRS.findErwerbspensum).toBeDefined();
-        });
-        it('should include a saveErwerbspensum() function', () => {
-            expect(erwerbspensumRS.saveErwerbspensum).toBeDefined();
-        });
-        it('should include a removeErwerbspensum() function', () => {
-            expect(erwerbspensumRS.removeErwerbspensum).toBeDefined();
-        });
-    });
     describe('API Usage', () => {
         describe('findErwerbspensumContainer', () => {
             it('should return the Erwerbspensumcontainer by id', () => {
@@ -99,6 +82,7 @@ describe('ErwerbspensumRS', () => {
                     createdEWPContainer = result;
                 });
             $httpBackend.flush();
+            // tslint:disable-next-line:no-unbound-method
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             checkFieldValues(createdEWPContainer);
         });
@@ -121,6 +105,7 @@ describe('ErwerbspensumRS', () => {
                     updatedErwerbspensumContainerContainer = result;
                 });
             $httpBackend.flush();
+            // tslint:disable-next-line:no-unbound-method
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             checkFieldValues(updatedErwerbspensumContainerContainer);
         });
@@ -139,6 +124,7 @@ describe('ErwerbspensumRS', () => {
                     deleteResult = result;
                 });
             $httpBackend.flush();
+            // tslint:disable-next-line:no-unbound-method
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             expect(deleteResult).toBeDefined();
             expect(deleteResult.status).toEqual(httpOk);

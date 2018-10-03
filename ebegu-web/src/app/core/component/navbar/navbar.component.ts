@@ -50,10 +50,10 @@ export class NavbarComponent implements OnDestroy {
                        private readonly gemeindeRS: GemeindeRS) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
-        authServiceRS.principal$
+        this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-                () => changeDetectorRef.markForCheck(),
+                () => this.changeDetectorRef.markForCheck(),
                 err => LOG.error(err)
             );
     }

@@ -84,9 +84,9 @@ describe('freigabeView', () => {
             spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(false);
 
             expect(controller.canBeFreigegeben()).toBe(false);
-
-            expect(wizardStepManager.hasStepGivenStatus).toHaveBeenCalledWith(TSWizardStepName.BETREUUNG,
-                TSWizardStepStatus.OK);
+            // tslint:disable-next-line:no-unbound-method
+            expect(wizardStepManager.hasStepGivenStatus)
+                .toHaveBeenCalledWith(TSWizardStepName.BETREUUNG, TSWizardStepStatus.OK);
         });
         it('should return false when all steps are true and all Betreuungen are accepted and the Gesuch is ReadOnly',
             () => {
@@ -129,7 +129,7 @@ describe('freigabeView', () => {
 
             const returned = controller.gesuchEinreichen();
             $scope.$apply();
-
+            // tslint:disable-next-line:no-unbound-method
             expect(dialog.showDialog).toHaveBeenCalled();
             expect(returned).toBeDefined();
         });
@@ -155,7 +155,9 @@ describe('freigabeView', () => {
             controller.confirmationCallback();
             $scope.$apply();
 
+            // tslint:disable-next-line:no-unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, true);
+            // tslint:disable-next-line:no-unbound-method
             expect(downloadRS.startDownload).toHaveBeenCalledWith(downloadFile.accessToken,
                 downloadFile.filename,
                 false,
@@ -180,6 +182,7 @@ describe('freigabeView', () => {
             controller.openFreigabequittungPDF(false);
             $scope.$apply();
 
+            // tslint:disable-next-line:no-unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, false);
         });
     });

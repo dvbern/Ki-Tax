@@ -59,10 +59,10 @@ describe('stammdatenView', () => {
             undefined,
             undefined,
             wizardStepManager,
-            $injector.get('CONSTANTS'),
             $q,
             $scope,
-            $injector.get('$translate'),
+            $injector.get(
+                '$translate'),
             undefined,
             $rootScope,
             ewkRS,

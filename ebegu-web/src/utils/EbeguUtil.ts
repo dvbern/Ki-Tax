@@ -14,7 +14,7 @@
  */
 
 import {IFilterService, ILogService} from 'angular';
-import {Moment} from 'moment';
+import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import {Displayable} from '../app/shared/interfaces/displayable';
@@ -33,6 +33,8 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('EbeguUtil');
 
+const defaultDateFormat = 'DD.MM.YYYY';
+
 /**
  * Klasse die allgemeine utils Methoden implementiert
  */
@@ -40,9 +42,21 @@ export default class EbeguUtil {
 
     public static $inject = ['$filter', '$translate', '$log'];
 
-    public constructor(private readonly $filter: IFilterService,
-                       private readonly $translate: ITranslateService,
-                       private readonly $log: ILogService) {
+    public constructor(
+        private readonly $filter: IFilterService,
+        private readonly $translate: ITranslateService,
+        private readonly $log: ILogService,
+    ) {
+    }
+
+    public static hasTextCaseInsensitive(obj: any, text: any): boolean {
+        const result = String(text).toLowerCase();
+
+        return String(obj).toLowerCase().indexOf(result) > -1;
+    }
+
+    public static compareDates(actual: any, expected: any): boolean {
+        return moment(actual).format(defaultDateFormat) === expected;
     }
 
     public static handleDownloadError(win: Window, error: any): void {
@@ -183,11 +197,13 @@ export default class EbeguUtil {
         return gueltigkeit.gueltigAb.year().toString().substring(2);
     }
 
-    private static toBetreuungsId(gueltigkeit: TSDateRange,
-                                  fall: TSFall,
-                                  gemeinde: TSGemeinde,
-                                  kindNr: number,
-                                  betreuungNumber: number): string {
+    private static toBetreuungsId(
+        gueltigkeit: TSDateRange,
+        fall: TSFall,
+        gemeinde: TSGemeinde,
+        kindNr: number,
+        betreuungNumber: number,
+    ): string {
         const year = EbeguUtil.getYear(gueltigkeit);
         const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
         const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
@@ -200,17 +216,21 @@ export default class EbeguUtil {
      */
     public getFirstDayGesuchsperiodeAsString(gesuchsperiode: TSGesuchsperiode): string {
         if (gesuchsperiode && gesuchsperiode.gueltigkeit && gesuchsperiode.gueltigkeit.gueltigAb) {
-            return DateUtil.momentToLocalDateFormat(gesuchsperiode.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+            return DateUtil.momentToLocalDateFormat(gesuchsperiode.gueltigkeit.gueltigAb, defaultDateFormat);
         }
         return '';
     }
 
-    public getAntragTextDateAsString(tsAntragTyp: TSAntragTyp, eingangsdatum: Moment, laufnummer: number): string {
+    public getAntragTextDateAsString(
+        tsAntragTyp: TSAntragTyp,
+        eingangsdatum: moment.Moment,
+        laufnummer: number,
+    ): string {
         if (tsAntragTyp) {
             if (tsAntragTyp === TSAntragTyp.MUTATION && eingangsdatum) {
                 return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}`, {
                     nummer: laufnummer,
-                    date: eingangsdatum.format('DD.MM.YYYY')
+                    date: eingangsdatum.format(defaultDateFormat),
                 });
             }
             return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}_NO_DATE`);
@@ -223,7 +243,7 @@ export default class EbeguUtil {
      */
     public getBasisJahrPlusAsString(gesuchsperiode: TSGesuchsperiode, plusJahr: number): string {
         if (gesuchsperiode && gesuchsperiode.gueltigkeit) {
-            return String(gesuchsperiode.gueltigkeit.gueltigAb.year() + plusJahr);
+            return String(gesuchsperiode.gueltigkeit.gueltigAb.year()) + String(plusJahr);
         }
         return undefined;
     }
@@ -257,11 +277,13 @@ export default class EbeguUtil {
     }
 
     // betreuung from server)
-    public calculateBetreuungsId(gesuchsperiode: TSGesuchsperiode,
-                                 fall: TSFall,
-                                 gemeinde: TSGemeinde,
-                                 kindContainerNumber: number,
-                                 betreuungNumber: number): string {
+    public calculateBetreuungsId(
+        gesuchsperiode: TSGesuchsperiode,
+        fall: TSFall,
+        gemeinde: TSGemeinde,
+        kindContainerNumber: number,
+        betreuungNumber: number,
+    ): string {
         return gesuchsperiode && fall ?
             EbeguUtil.toBetreuungsId(gesuchsperiode.gueltigkeit, fall, gemeinde, kindContainerNumber, betreuungNumber) :
             '';

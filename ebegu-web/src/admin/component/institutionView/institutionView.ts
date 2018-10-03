@@ -129,7 +129,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
         }
     }
 
-    private goBack(): void {
+    public goBack(): void {
         this.$state.go('admin.institutionen');
     }
 

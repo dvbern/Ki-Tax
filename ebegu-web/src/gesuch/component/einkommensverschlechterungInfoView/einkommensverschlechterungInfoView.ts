@@ -310,13 +310,13 @@ export class EinkommensverschlechterungInfoViewController
             });
     }
 
-    private removeEkvBasisJahrPlus1(gesuchsteller: TSGesuchstellerContainer): void {
+    public removeEkvBasisJahrPlus1(gesuchsteller: TSGesuchstellerContainer): void {
         if (gesuchsteller && gesuchsteller.einkommensverschlechterungContainer) {
             gesuchsteller.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 = undefined;
         }
     }
 
-    private removeEkvBasisJahrPlus2(gesuchsteller: TSGesuchstellerContainer): void {
+    public removeEkvBasisJahrPlus2(gesuchsteller: TSGesuchstellerContainer): void {
         if (gesuchsteller && gesuchsteller.einkommensverschlechterungContainer) {
             gesuchsteller.einkommensverschlechterungContainer.ekvJABasisJahrPlus2 = undefined;
         }

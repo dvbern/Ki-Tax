@@ -112,12 +112,6 @@ describe('betreuungView', () => {
         betreuungView.form = TestDataUtil.createDummyForm();
     }));
 
-    describe('Public API', () => {
-        it('should include a cancel() function', () => {
-            expect(betreuungView.cancel).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
 
         describe('Object creation', () => {
@@ -147,8 +141,9 @@ describe('betreuungView', () => {
                 spyOn($state, 'go');
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.removeBetreuungFromKind).not.toHaveBeenCalled();
-
+                // tslint:disable-next-line:no-unbound-method
                 expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
             });
         });
@@ -159,7 +154,9 @@ describe('betreuungView', () => {
                 betreuungView.model.timestampErstellt = undefined;
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.removeBetreuungFromKind).toHaveBeenCalled();
+                // tslint:disable-next-line:no-unbound-method
                 expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
             });
         });
@@ -235,6 +232,7 @@ describe('betreuungView', () => {
                 expect(gesuchModelManager.getBetreuungToWorkWith().grundAblehnung).toEqual('mein Grund');
                 expect(gesuchModelManager.getBetreuungToWorkWith().datumAblehnung).toEqual(DateUtil.today());
                 expect(gesuchModelManager.getBetreuungToWorkWith().erweiterteBeduerfnisse).toBe(true);
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -250,6 +248,7 @@ describe('betreuungView', () => {
                 // Status wird serverseitig gesetzt
                 expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -407,10 +406,13 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
         betreuungView.platzAnfordern();
         $rootScope.$apply();
+        // tslint:disable-next-line:no-unbound-method
         expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
         if (moveToNextStep) {
+            // tslint:disable-next-line:no-unbound-method
             expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
         } else {
+            // tslint:disable-next-line:no-unbound-method
             expect($state.go).not.toHaveBeenCalled();
         }
     }

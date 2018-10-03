@@ -30,27 +30,35 @@ import ITranslateService = angular.translate.ITranslateService;
  */
 export class FreigabeController {
 
-    public static $inject: string[] = ['docID', '$mdDialog', 'GesuchRS', 'BenutzerRS', 'AuthServiceRS',
-        'EbeguUtil', '$translate', 'ApplicationPropertyRS'];
+    public static $inject: string[] = [
+        'docID',
+        '$mdDialog',
+        'GesuchRS',
+        'BenutzerRS',
+        'AuthServiceRS',
+        '$translate',
+        'ApplicationPropertyRS',
+    ];
 
-    private gesuch: TSAntragDTO;
-    private selectedUserBG: string;
-    private selectedUserTS: string;
-    private userBGList: Array<TSBenutzer>;
-    private userTSList: Array<TSBenutzer>;
-    private fallNummer: string;
-    private familie: string;
-    private errorMessage: string;
+    public gesuch: TSAntragDTO;
+    public selectedUserBG: string;
+    public selectedUserTS: string;
+    public userBGList: Array<TSBenutzer>;
+    public userTSList: Array<TSBenutzer>;
+    public fallNummer: string;
+    public familie: string;
+    public errorMessage: string;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly docID: string,
-                       private readonly $mdDialog: IDialogService,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly benutzerRS: BenutzerRS,
-                       private readonly authService: AuthServiceRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly $translate: ITranslateService,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    public constructor(
+        private readonly docID: string,
+        private readonly $mdDialog: IDialogService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly authService: AuthServiceRS,
+        private readonly $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value

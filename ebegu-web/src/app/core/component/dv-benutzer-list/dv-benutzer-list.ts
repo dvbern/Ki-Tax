@@ -28,7 +28,6 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('DVBenutzerListController');
 
@@ -49,9 +48,14 @@ export class DVBenutzerListConfig implements IComponentOptions {
 
 export class DVBenutzerListController implements IOnInit {
 
-    public static $inject: ReadonlyArray<string> = ['$log', 'InstitutionRS', 'TraegerschaftRS', 'AuthServiceRS',
+    public static $inject: ReadonlyArray<string> = [
+        '$log',
+        'InstitutionRS',
+        'TraegerschaftRS',
+        'AuthServiceRS',
         '$window',
-        '$translate', 'GemeindeRS'];
+        'GemeindeRS',
+    ];
 
     public totalResultCount: number;
     public displayedCollection: Array<TSBenutzer> = []; // Liste die im Gui angezeigt wird
@@ -79,13 +83,14 @@ export class DVBenutzerListController implements IOnInit {
     public readonly TSRoleUtil = TSRoleUtil;
     public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
 
-    public constructor(private readonly $log: ILogService,
-                       private readonly institutionRS: InstitutionRS,
-                       private readonly traegerschaftenRS: TraegerschaftRS,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $window: IWindowService,
-                       private readonly $translate: ITranslateService,
-                       private readonly gemeindeRS: GemeindeRS) {
+    public constructor(
+        private readonly $log: ILogService,
+        private readonly institutionRS: InstitutionRS,
+        private readonly traegerschaftenRS: TraegerschaftRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $window: IWindowService,
+        private readonly gemeindeRS: GemeindeRS,
+    ) {
     }
 
     public $onInit(): void {
@@ -118,7 +123,7 @@ export class DVBenutzerListController implements IOnInit {
                 gemeinden => {
                     this.gemeindeList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 

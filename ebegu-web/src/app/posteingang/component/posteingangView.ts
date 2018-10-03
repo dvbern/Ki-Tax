@@ -40,7 +40,7 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 
 export class PosteingangViewController implements IController {
 
-    public static $inject: string[] = ['MitteilungRS', 'EbeguUtil', 'CONSTANTS', '$state', 'AuthServiceRS', 'GemeindeRS'];
+    public static $inject: string[] = ['MitteilungRS', '$state', 'AuthServiceRS', 'GemeindeRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -58,12 +58,12 @@ export class PosteingangViewController implements IController {
     public includeClosed: boolean = false;
     public gemeindenList: Array<TSGemeinde> = [];
 
-    public constructor(private readonly mitteilungRS: MitteilungRS,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly CONSTANTS: any,
-                       private readonly $state: StateService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly gemeindeRS: GemeindeRS) {
+    public constructor(
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly gemeindeRS: GemeindeRS,
+    ) {
 
         this.updateGemeindenList();
     }
@@ -77,7 +77,7 @@ export class PosteingangViewController implements IController {
         return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
-    private gotoMitteilung(mitteilung: TSMitteilung): void {
+    public gotoMitteilung(mitteilung: TSMitteilung): void {
         this.$state.go('mitteilungen.view', {
             dossierId: mitteilung.dossier.id,
             fallId: mitteilung.dossier.fall.id,
@@ -95,7 +95,7 @@ export class PosteingangViewController implements IController {
                 gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 

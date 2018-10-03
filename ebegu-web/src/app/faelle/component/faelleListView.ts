@@ -16,7 +16,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFilterService} from 'angular';
+import {IComponentOptions} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
 import SearchRS from '../../../gesuch/service/searchRS.rest';
@@ -36,17 +36,18 @@ export class FaelleListViewComponentConfig implements IComponentOptions {
 
 export class FaelleListViewController {
 
-    public static $inject: string[] = ['$filter', 'GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
+    public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
 
     private antragList: Array<TSAntragDTO>;
     public totalResultCount: string = '0';
 
-    public constructor(private readonly $filter: IFilterService,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly $state: StateService,
-                       private readonly $log: ILogService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly searchRS: SearchRS) {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $state: StateService,
+        private readonly $log: ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly searchRS: SearchRS,
+    ) {
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {

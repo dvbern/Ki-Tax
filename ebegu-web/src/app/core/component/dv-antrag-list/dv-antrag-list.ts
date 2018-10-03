@@ -21,7 +21,7 @@ import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {
     getTSAntragStatusPendenzValues,
     getTSAntragStatusValuesByRole,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
@@ -53,7 +53,7 @@ export class DVAntragListConfig implements IComponentOptions {
         actionVisible: '@',
         addButtonVisible: '@',
         addButtonText: '@',
-        pendenz: '='
+        pendenz: '=',
     };
     public template = require('./dv-antrag-list.html');
     public controller = DVAntragListController;
@@ -62,8 +62,15 @@ export class DVAntragListConfig implements IComponentOptions {
 
 export class DVAntragListController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        'CONSTANTS', 'AuthServiceRS', '$window', 'GemeindeRS', 'AuthLifeCycleService'];
+    public static $inject: ReadonlyArray<string> = [
+        '$filter',
+        'InstitutionRS',
+        'GesuchsperiodeRS',
+        'AuthServiceRS',
+        '$window',
+        'GemeindeRS',
+        'AuthLifeCycleService',
+    ];
 
     public totalResultCount: number;
     public displayedCollection: Array<TSAntragDTO> = []; // Liste die im Gui angezeigt wird
@@ -103,14 +110,13 @@ export class DVAntragListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    public constructor(private readonly ebeguUtil: EbeguUtil,
-                       private readonly $filter: IFilterService,
-                       private readonly institutionRS: InstitutionRS,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly CONSTANTS: any,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $window: IWindowService,
-                       private readonly gemeindeRS: GemeindeRS,
+    public constructor(
+        private readonly $filter: IFilterService,
+        private readonly institutionRS: InstitutionRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $window: IWindowService,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -157,7 +163,7 @@ export class DVAntragListController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -224,7 +230,7 @@ export class DVAntragListController implements IController {
 
     public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
         let result = '';
-        if (betreuungsangebotTypList) {
+        if (Array.isArray(betreuungsangebotTypList)) {
             let prefix = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
                 // tslint:disable-next-line:prefer-for-of

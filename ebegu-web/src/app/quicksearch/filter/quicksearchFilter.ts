@@ -24,39 +24,26 @@ quicksearchFilter.$inject = ['$filter'];
 // implementiert wird.
 export function quicksearchFilter($filter: any): (array: any, expression: any) => any {
     const filterFilter = $filter('filter');
-    const dateFilter = $filter('date');
 
-    const standardComparator = (obj: any, text: any) => {
-        const result = ('' + text).toLowerCase();
-
-        return ('' + obj).toLowerCase().indexOf(result) > -1;
-    };
-
-    return (array: any, expression: any) => {
+    return (array, expression) => {
         function customComparator(actual: any, expected: any): boolean {
             if (expression.eingangsdatum && expression.eingangsdatum === expected) {
-                const actualDate = dateFilter(new Date(actual), 'dd.MM.yyyy');
-                return actualDate === expected;
+                return EbeguUtil.compareDates(actual, expected);
             }
             if (expression.fallNummer && expression.fallNummer === expected) {
                 const actualString = EbeguUtil.addZerosToFallNummer(actual);
                 return actualString.indexOf(expected) >= 0;
             }
             if (expression.gesuchsperiodeGueltigAb && expression.gesuchsperiodeGueltigAb === expected) {
-                return compareDates(actual, expected);
+                return EbeguUtil.compareDates(actual, expected);
             }
             if (expression.gesuchsperiodeGueltigBis && expression.gesuchsperiodeGueltigBis === expected) {
-                return compareDates(actual, expected);
+                return EbeguUtil.compareDates(actual, expected);
             }
 
-            return standardComparator(actual, expected);
+            return EbeguUtil.hasTextCaseInsensitive(actual, expected);
         }
 
         return filterFilter(array, expression, customComparator);
     };
-
-    function compareDates(actual: any, expected: any): boolean {
-        const gesuchsperiodeGueltigAb = dateFilter(new Date(actual), 'dd.MM.yyyy');
-        return gesuchsperiodeGueltigAb === expected;
-    }
 }

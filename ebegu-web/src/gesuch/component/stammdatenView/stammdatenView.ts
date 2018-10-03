@@ -55,9 +55,19 @@ export class StammdatenViewComponentConfig implements IComponentOptions {
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
 
     public static $inject = [
-        '$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager',
-        'ErrorService', 'WizardStepManager', 'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope',
-        'EwkRS', '$timeout',
+        '$stateParams',
+        'EbeguRestUtil',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        '$translate',
+        'AuthServiceRS',
+        '$rootScope',
+        'EwkRS',
+        '$timeout',
     ];
 
     public geschlechter: Array<string>;
@@ -67,22 +77,22 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public showRechnungsadrGS: boolean;
     public allowedRoles: Array<TSRole>;
     public gesuchstellerNumber: number;
-    private initialModel: TSGesuchstellerContainer;
     private isLastVerfuegtesGesuch: boolean = false;
 
-    public constructor($stateParams: IStammdatenStateParams,
-                       public readonly ebeguRestUtil: EbeguRestUtil,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly CONSTANTS: any,
-                       private readonly $q: IQService,
-                       $scope: IScope,
-                       private readonly $translate: ITranslateService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $rootScope: IRootScopeService,
-                       private readonly ewkRS: EwkRS, $timeout: ITimeoutService,
+    public constructor(
+        $stateParams: IStammdatenStateParams,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly $translate: ITranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $rootScope: IRootScopeService,
+        private readonly ewkRS: EwkRS,
+        $timeout: ITimeoutService,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -101,7 +111,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     private initViewmodel(): void {
         this.gesuchModelManager.initStammdaten();
         this.model = angular.copy(this.gesuchModelManager.getStammdatenToWorkWith());
-        this.initialModel = angular.copy(this.model);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.showKorrespondadr = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA);
@@ -152,7 +161,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.isLastVerfuegtesGesuch = this.gesuchModelManager.isNeuestesGesuch();
     }
 
-    private save(): IPromise<TSGesuchstellerContainer> {
+    public save(): IPromise<TSGesuchstellerContainer> {
         if (!this.isGesuchValid()) {
             return undefined;
         }

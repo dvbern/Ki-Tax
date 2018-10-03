@@ -47,7 +47,7 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         totalResultCount: '<',
         onUserChanged: '&',
         tableId: '@',
-        tableTitle: '<'
+        tableTitle: '<',
     };
 
     public template = require('./dv-quicksearch-list.html');
@@ -57,8 +57,10 @@ export class DVQuicksearchListConfig implements IComponentOptions {
 
 export class DVQuicksearchListController implements IController {
 
-    public static $inject: string[] = ['EbeguUtil', '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'CONSTANTS', 'AuthServiceRS', 'GemeindeRS'];
+    public static $inject: string[] = [
+        '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
+        '$state', 'AuthServiceRS', 'GemeindeRS',
+    ];
 
     public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
 
@@ -89,14 +91,13 @@ export class DVQuicksearchListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    public constructor(private readonly ebeguUtil: EbeguUtil,
-                       private readonly $filter: IFilterService,
-                       private readonly institutionRS: InstitutionRS,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly $state: StateService,
-                       private readonly CONSTANTS: any,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly gemeindeRS: GemeindeRS,
+    public constructor(
+        private readonly $filter: IFilterService,
+        private readonly institutionRS: InstitutionRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -148,7 +149,7 @@ export class DVQuicksearchListController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -168,7 +169,7 @@ export class DVQuicksearchListController implements IController {
         let result = '';
         if (betreuungsangebotTypList) {
             let prefix = '';
-            if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
+            if (Array.isArray(betreuungsangebotTypList)) {
                 // tslint:disable-next-line:prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
                     const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
@@ -211,7 +212,7 @@ export class DVQuicksearchListController implements IController {
         }
         const navObj: any = {
             gesuchId: antragDTO.antragId,
-            dossierId: antragDTO.dossierId
+            dossierId: antragDTO.dossierId,
         };
         if (isCtrlKeyPressed) {
             const url = this.$state.href('gesuch.fallcreation', navObj);
@@ -221,11 +222,11 @@ export class DVQuicksearchListController implements IController {
         }
     }
 
-    private showOnlineGesuchIcon(row: TSAbstractAntragDTO): boolean {
+    public showOnlineGesuchIcon(row: TSAbstractAntragDTO): boolean {
         return row instanceof TSAntragDTO && row.hasBesitzer();
     }
 
-    private showPapierGesuchIcon(row: TSAbstractAntragDTO): boolean {
+    public showPapierGesuchIcon(row: TSAbstractAntragDTO): boolean {
         return row instanceof TSAntragDTO && !row.hasBesitzer();
     }
 }

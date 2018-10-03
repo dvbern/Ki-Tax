@@ -39,15 +39,18 @@ export class EinkommensverschlechterungSteuernViewComponentConfig implements ICo
 
 export class EinkommensverschlechterungSteuernViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    public static $inject: string[] = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', '$timeout'];
+    public static $inject: string[] = [
+        'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
+        'WizardStepManager', '$q', '$scope', '$timeout',
+    ];
 
     public allowedRoles: Array<TSRole>;
     public initialModel: TSFinanzModel;
 
     public constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
                        private readonly errorService: ErrorService, wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService) {
+                       private readonly $q: IQService, $scope: IScope, $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
@@ -97,7 +100,7 @@ export class EinkommensverschlechterungSteuernViewController extends AbstractGes
         return this.getEkv_GS1_Bjp1() ? this.getEkv_GS1_Bjp1().steuerveranlagungErhalten : false;
     }
 
-    private save(): IPromise<TSGesuch> {
+    public save(): IPromise<TSGesuch> {
         if (this.isGesuchValid()) {
             if (!this.form.$dirty) {
                 // If there are no changes in form we don't need anything to update on Server and we could return the
@@ -132,7 +135,7 @@ export class EinkommensverschlechterungSteuernViewController extends AbstractGes
     }
 
     // tslint:disable-next-line:naming-convention
-    private gemeinsameStekClicked_BjP1(): void {
+    public gemeinsameStekClicked_BjP1(): void {
         // Wenn neu NEIN -> Fragen loeschen
 
         const container = this.model.einkommensverschlechterungContainerGS1;
@@ -192,7 +195,7 @@ export class EinkommensverschlechterungSteuernViewController extends AbstractGes
     }
 
     // tslint:disable-next-line:naming-convention
-    private steuerveranlagungClicked_BjP1(): void {
+    public steuerveranlagungClicked_BjP1(): void {
         // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
@@ -213,7 +216,7 @@ export class EinkommensverschlechterungSteuernViewController extends AbstractGes
     }
 
     // tslint:disable-next-line:naming-convention
-    private steuererklaerungClicked_BjP1(): void {
+    public steuererklaerungClicked_BjP1(): void {
         if (this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP1) {
             this.getEkv_GS2_Bjp1().steuererklaerungAusgefuellt = this.getEkv_GS1_Bjp1().steuererklaerungAusgefuellt;
         }

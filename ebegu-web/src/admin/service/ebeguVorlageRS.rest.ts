@@ -25,11 +25,13 @@ export class EbeguVorlageRS {
 
     public serviceURL: string;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly upload: any,
-                       private readonly $q: IQService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly upload: any,
+        private readonly $q: IQService,
+    ) {
         this.serviceURL = `${REST_API}ebeguVorlage`;
     }
 
@@ -40,10 +42,12 @@ export class EbeguVorlageRS {
             });
     }
 
-    public uploadVorlage(file: any,
-                         ebeguVorlage: TSEbeguVorlage,
-                         gesuchsperiodeID: string,
-                         proGesuchsperiode: boolean): IPromise<TSEbeguVorlage> {
+    public uploadVorlage(
+        file: any,
+        ebeguVorlage: TSEbeguVorlage,
+        gesuchsperiodeID: string,
+        proGesuchsperiode: boolean,
+    ): IPromise<TSEbeguVorlage> {
 
         let restEbeguVorlage = {};
         restEbeguVorlage = this.ebeguRestUtil.ebeguVorlageToRestObject(restEbeguVorlage, ebeguVorlage);
@@ -60,7 +64,7 @@ export class EbeguVorlageRS {
             },
             data: {
                 file,
-            }
+            },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseEbeguVorlage(new TSEbeguVorlage(), response.data);
         }, (response: any) => {
@@ -71,7 +75,8 @@ export class EbeguVorlageRS {
             const total: number = evt.total;
             const progressPercentage = 100 * loaded / total;
             console.log(`progress: ${progressPercentage}% `);
-            return this.$q.defer().notify();
+
+            this.$q.defer().notify();
         });
     }
 

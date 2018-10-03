@@ -14,6 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
+import {IHttpBackendService, IQService, IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -36,9 +37,9 @@ describe('verfuegenListViewTest', () => {
     let $state: StateService;
     let tsKindContainer: TSKindContainer;
     let berechnungsManager: BerechnungsManager;
-    let $q: angular.IQService;
-    let $rootScope: angular.IScope;
-    let $httpBackend: angular.IHttpBackendService;
+    let $q: IQService;
+    let $rootScope: IScope;
+    let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
@@ -65,20 +66,20 @@ describe('verfuegenListViewTest', () => {
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung').and.returnValue({});
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-        verfuegenListView = new VerfuegenListViewController($state, gesuchModelManager, berechnungsManager, undefined,
-            wizardStepManager, null, $injector.get('DownloadRS'), $injector.get('MahnungRS'), $injector.get('$log'),
-            $injector.get('AuthServiceRS'), $rootScope, $injector.get('GesuchRS'), $injector.get('$timeout'));
+        verfuegenListView = new VerfuegenListViewController($state,
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            null,
+            $injector.get('DownloadRS'),
+            $injector.get(
+                'MahnungRS'),
+            $injector.get('AuthServiceRS'),
+            $rootScope,
+            $injector.get('GesuchRS'),
+            $injector.get('$timeout'));
         $rootScope.$apply();
     }));
-
-    describe('Public API', () => {
-        it('should include a getKinderWithBetreuungList() function', () => {
-            expect(verfuegenListView.getKinderWithBetreuungList).toBeDefined();
-        });
-        it('should include a openVerfuegung() function', () => {
-            expect(verfuegenListView.openVerfuegung).toBeDefined();
-        });
-    });
 
     describe('Usage API', () => {
         it('should call gesuchModelManager.getBetreuungenList() and return it back', () => {
@@ -95,6 +96,7 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.findKind).not.toHaveBeenCalled();
             });
             it('does not find the Kind, so it stops loading and does not move to the next page', () => {
@@ -106,10 +108,13 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
+                // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.convertKindNumberToKindIndex)
                     .toHaveBeenCalledWith(tsKindContainer.kindNummer);
+                    // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
 
+                // tslint:disable-next-line:no-unbound-method
                 expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
             });
             it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
@@ -124,10 +129,14 @@ describe('verfuegenListViewTest', () => {
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
+                    // tslint:disable-next-line:no-unbound-method
                     expect(gesuchModelManager.convertKindNumberToKindIndex)
                         .toHaveBeenCalledWith(tsKindContainer.kindNummer);
+                    // tslint:disable-next-line:no-unbound-method
                     expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
+                    // tslint:disable-next-line:no-unbound-method
                     expect(gesuchModelManager.setBetreuungIndex).not.toHaveBeenCalled();
+                    // tslint:disable-next-line:no-unbound-method
                     expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
                 });
             it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
@@ -143,13 +152,16 @@ describe('verfuegenListViewTest', () => {
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
+                    // tslint:disable-next-line:no-unbound-method
                     expect(gesuchModelManager.convertKindNumberToKindIndex)
                         .toHaveBeenCalledWith(tsKindContainer.kindNummer);
+                    // tslint:disable-next-line:no-unbound-method
                     expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
+                    // tslint:disable-next-line:no-unbound-method
                     expect($state.go).toHaveBeenCalledWith(verfuegenView, {
                         betreuungNumber: 2,
                         kindNumber: 1,
-                        gesuchId: undefined
+                        gesuchId: undefined,
                     });
                 });
         });

@@ -21,7 +21,6 @@ import TSQuickSearchResult from '../../../../../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
 import {isAnyStatusOfVerfuegt} from '../../../../../models/enums/TSAntragStatus';
 import TSAntragDTO from '../../../../../models/TSAntragDTO';
-import EbeguUtil from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
@@ -36,9 +35,16 @@ export class DvQuicksearchboxComponentConfig implements IComponentOptions {
 
 export class DvQuicksearchboxController {
 
-    public static $inject: ReadonlyArray<string> = ['EbeguUtil', '$timeout', '$log', '$q', 'SearchIndexRS', 'CONSTANTS',
-        '$filter', '$translate',
-        '$state', 'AuthServiceRS', '$injector'];
+    public static $inject: ReadonlyArray<string> = [
+        '$log',
+        '$q',
+        'SearchIndexRS',
+        '$filter',
+        '$translate',
+        '$state',
+        'AuthServiceRS',
+        '$injector',
+    ];
 
     public noCache: boolean = true;
     public delay: number = 250;
@@ -49,17 +55,16 @@ export class DvQuicksearchboxController {
     public readonly TSRoleUtil = TSRoleUtil;
     public gesuchModelManager: GesuchModelManager;
 
-    public constructor(private readonly ebeguUtil: EbeguUtil,
-                       private readonly $timeout: IFilterService,
-                       private readonly $log: ILogService,
-                       private readonly $q: IQService,
-                       private readonly searchIndexRS: SearchIndexRS,
-                       private readonly CONSTANTS: any,
-                       private readonly $filter: IFilterService,
-                       private readonly $translate: ITranslateService,
-                       private readonly $state: StateService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $injector: IInjectorService) {
+    public constructor(
+        private readonly $log: ILogService,
+        private readonly $q: IQService,
+        private readonly searchIndexRS: SearchIndexRS,
+        private readonly $filter: IFilterService,
+        private readonly $translate: ITranslateService,
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $injector: IInjectorService,
+    ) {
     }
 
     // wird von angular aufgerufen
@@ -89,8 +94,10 @@ export class DvQuicksearchboxController {
         this.addFakeTotalResultEntry(quickSearchResult, limitedResults);
     }
 
-    private addFakeTotalResultEntry(quickSearchResult: TSQuickSearchResult,
-                                    limitedResults: TSSearchResultEntry[]): void {
+    private addFakeTotalResultEntry(
+        quickSearchResult: TSQuickSearchResult,
+        limitedResults: TSSearchResultEntry[],
+    ): void {
         if (angular.isArray(limitedResults) && limitedResults.length > 0) {
             const totalResEntry = new TSSearchResultEntry();
             const alleFaelleEntry = new TSAntragDTO();
@@ -103,7 +110,7 @@ export class DvQuicksearchboxController {
         quickSearchResult.resultEntities = limitedResults;
     }
 
-    private selectItemChanged(): void {
+    public selectItemChanged(): void {
         this.navigateToFall();
         this.selectedItem = undefined;
 

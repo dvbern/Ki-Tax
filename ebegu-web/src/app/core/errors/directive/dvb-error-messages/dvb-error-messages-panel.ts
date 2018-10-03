@@ -64,7 +64,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         this.show();
     };
 
-    private executeAction(error: TSExceptionReport): void {
+    public executeAction(error: TSExceptionReport): void {
         if (error.action) {
             if (error.action === TSErrorAction.REMOVE_ONLINE_MUTATION && error.argumentList.length > 0) {
                 this.removeOnlineMutation(error.objectId, error.argumentList[0]);
@@ -99,7 +99,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         });
     }
 
-    private isActionDefined(error: TSExceptionReport): boolean {
+    public isActionDefined(error: TSExceptionReport): boolean {
         return error.action !== undefined && error.action !== null;
     }
 

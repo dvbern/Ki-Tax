@@ -21,6 +21,7 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../logging/LogFactory';
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -29,6 +30,8 @@ export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     public controller = DvPulldownUserMenuController;
     public controllerAs = 'vm';
 }
+
+const LOG = LogFactory.createLog('DvPulldownUserMenuController');
 
 export class DvPulldownUserMenuController implements IController {
 
@@ -41,16 +44,19 @@ export class DvPulldownUserMenuController implements IController {
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
 
-    public constructor(private readonly $state: StateService,
-                       private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
     public $onInit(): void {
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(principal => {
-                this.principal = principal;
-            });
+                    this.principal = principal;
+                },
+                err => LOG.error(err));
     }
 
     public $onDestroy(): void {

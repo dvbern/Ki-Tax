@@ -93,7 +93,7 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
         return ekvFuerBasisJahrPlus && ekvFuerBasisJahrPlus === true;
     }
 
-    private save(): IPromise<void> {
+    public save(): IPromise<void> {
         if (this.isGesuchValid()) {
             if (!this.form.$dirty) {
                 // If there are no changes in form we don't need anything to update on Server and we could return the

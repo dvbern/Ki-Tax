@@ -163,7 +163,11 @@
                 "modifiers": [
                     "const"
                 ],
-                "format": ["camelCase","UPPER_CASE", "PascalCase"]
+                "format": [
+                    "camelCase",
+                    "UPPER_CASE",
+                    "PascalCase"
+                ]
             },
             // enforce PascalCase for classes, interfaces, enums, etc. Remember, there are still no underscores allowed.
             {
@@ -179,7 +183,7 @@
             }
         ],
         "new-parens": true,
-//        "newline-before-return": true,
+        //        "newline-before-return": true,
         "no-angle-bracket-type-assertion": true,
         "no-arg": true,
         "no-attribute-parameter-decorator": true,
@@ -294,7 +298,7 @@
         "no-unnecessary-type-annotation": true,
         "no-unused-expression": true,
         "no-unused-variable": true,
-        "no-use-before-declare": true,
+        //        "no-use-before-declare": true,
         "no-var-keyword": true,
         "no-void-expression": [
             true,
@@ -319,10 +323,12 @@
             "allow-declarations",
             "allow-named-functions"
         ],
+        "parameters-max-number": false,
         "prefer-conditional-expression": [
             true,
             "check-else-if"
         ],
+        "prefer-immediate-return": false,
         "prefer-switch": [
             true,
             {
@@ -422,9 +428,9 @@
         "rxjs-no-unbound-methods": {
             "severity": "error"
         },
-//        "rxjs-no-unsafe-scope": {
-//            "severity": "error"
-//        },
+        //        "rxjs-no-unsafe-scope": {
+        //            "severity": "error"
+        //        },
         "rxjs-no-subject-unsubscribe": {
             "severity": "error"
         },

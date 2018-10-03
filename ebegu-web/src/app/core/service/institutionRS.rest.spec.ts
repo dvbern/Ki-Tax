@@ -54,24 +54,6 @@ describe('institutionRS', () => {
         it('check URI', () => {
             expect(institutionRS.serviceURL).toContain('institutionen');
         });
-        it('check Service name', () => {
-            expect(institutionRS.getServiceName()).toBe('InstitutionRS');
-        });
-        it('should include a findInstitution() function', () => {
-            expect(institutionRS.findInstitution).toBeDefined();
-        });
-        it('should include a createInstitution() function', () => {
-            expect(institutionRS.createInstitution).toBeDefined();
-        });
-        it('should include a updateInstitution() function', () => {
-            expect(institutionRS.updateInstitution).toBeDefined();
-        });
-        it('should include a removeInstitution() function', () => {
-            expect(institutionRS.removeInstitution).toBeDefined();
-        });
-        it('should include a getAllInstitutionen() function', () => {
-            expect(institutionRS.getAllInstitutionen).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {

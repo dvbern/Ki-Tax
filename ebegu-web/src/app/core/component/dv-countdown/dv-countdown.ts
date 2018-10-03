@@ -74,7 +74,7 @@ export class DvCountdownController implements IController {
 
     public getTimeLeft(): string {
         if (this.timer && this.timer.asMinutes() < 5) {
-            const seconds = this.timer.seconds() < 10 ? '0' + this.timer.seconds() : this.timer.seconds();
+            const seconds = this.timer.seconds() < 10 ? '0' + String(this.timer.seconds()) : this.timer.seconds();
             return `${this.timer.minutes()} : ${seconds}`;
         }
         return '';

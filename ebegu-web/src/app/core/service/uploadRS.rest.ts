@@ -66,7 +66,7 @@ export class UploadRS {
             const total: number = evt.total;
             const progressPercentage = 100 * loaded / total;
             console.log(`progress: ${progressPercentage}% `);
-            return this.q.defer().notify();
+            this.q.defer().notify();
         });
     }
 

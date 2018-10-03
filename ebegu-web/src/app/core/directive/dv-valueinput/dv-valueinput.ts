@@ -183,9 +183,8 @@ export class ValueinputController implements IController {
             if (this.float && !isNaN(this.fixedDecimals)) {
                 this.valueinput = parseFloat(this.valueinput).toFixed(this.fixedDecimals);
             }
-            this.valueinput =
-                ValueinputController.formatToNumberString(ValueinputController.formatFromNumberString(this.valueinput));
-
+            const valueString = ValueinputController.formatFromNumberString(this.valueinput);
+            this.valueinput = ValueinputController.formatToNumberString(valueString);
         }
         this.ngModelCtrl.$setViewValue(this.valueinput);
         if (this.dvOnBlur) { // userdefined onBlur event
@@ -215,7 +214,7 @@ export class ValueinputController implements IController {
             if (this.allowNegative && this.valueinput && this.valueinput.indexOf('-') === 0) {
                 // if negative allowed, get sign
                 sign = '-';
-                transformedInput.substr(1); // get just the number part
+                transformedInput = transformedInput.substr(1); // get just the number part
             }
 
             transformedInput = this.float ?

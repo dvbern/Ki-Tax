@@ -43,27 +43,6 @@ describe('institutionStammdatenRS', () => {
         mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
     });
 
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(traegerschaftRS.getServiceName()).toBe('TraegerschaftRS');
-        });
-        it('should include a findTraegerschaft() function', () => {
-            expect(traegerschaftRS.findTraegerschaft).toBeDefined();
-        });
-        it('should include a createTraegerschaft() function', () => {
-            expect(traegerschaftRS.createTraegerschaft).toBeDefined();
-        });
-        it('should include a updateTraegerschaft() function', () => {
-            expect(traegerschaftRS.updateTraegerschaft).toBeDefined();
-        });
-        it('should include a removeTraegerschaft() function', () => {
-            expect(traegerschaftRS.removeTraegerschaft).toBeDefined();
-        });
-        it('should include a getAllTraegerschaften() function', () => {
-            expect(traegerschaftRS.getAllTraegerschaften).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('findTraegerschaft', () => {
             it('should return the Traegerschaft by id', () => {

@@ -57,24 +57,6 @@ describe('gesuchsperiodeRS', () => {
         it('check URI', () => {
             expect(gesuchsperiodeRS.serviceURL).toContain('gesuchsperioden');
         });
-        it('check Service name', () => {
-            expect(gesuchsperiodeRS.getServiceName()).toBe('GesuchsperiodeRS');
-        });
-        it('should include a findGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.findGesuchsperiode).toBeDefined();
-        });
-        it('should include a createGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.createGesuchsperiode).toBeDefined();
-        });
-        it('should include a updateGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.updateGesuchsperiode).toBeDefined();
-        });
-        it('should include a removeGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.removeGesuchsperiode).toBeDefined();
-        });
-        it('should include a getAllActiveGesuchsperioden() function', () => {
-            expect(gesuchsperiodeRS.getAllActiveGesuchsperioden).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
@@ -99,6 +81,7 @@ describe('gesuchsperiodeRS', () => {
 
                 gesuchsperiodeRS.getAllActiveGesuchsperioden();
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect($http.get).toHaveBeenCalledWith(`${gesuchsperiodeRS.serviceURL}/active`);
             });
         });

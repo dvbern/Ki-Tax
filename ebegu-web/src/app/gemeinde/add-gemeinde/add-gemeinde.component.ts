@@ -20,19 +20,17 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import ErrorService from '../../core/errors/service/ErrorService';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
 @Component({
     selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddGemeindeComponent implements OnInit {
 
@@ -44,14 +42,14 @@ export class AddGemeindeComponent implements OnInit {
     public beguStartDatumMin: moment.Moment;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
 
-    public constructor(private readonly $transition$: Transition,
-                       private readonly $state: StateService,
-                       private readonly errorService: ErrorService,
-                       private readonly gemeindeRS: GemeindeRS,
-                       private readonly benutzerRS: BenutzerRS,
-                       private readonly einstellungRS: EinstellungRS,
-                       private readonly translate: TranslateService,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS) {
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly $state: StateService,
+        private readonly errorService: ErrorService,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly translate: TranslateService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+    ) {
     }
 
     public ngOnInit(): void {

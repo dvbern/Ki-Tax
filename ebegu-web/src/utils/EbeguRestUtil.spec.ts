@@ -76,51 +76,6 @@ describe('EbeguRestUtil', () => {
         today = DateUtil.today();
     }));
 
-    describe('publicAPI', () => {
-        it('should include a parseAdresse() function', () => {
-            expect(ebeguRestUtil.parseAdresse).toBeDefined();
-        });
-        it('should include a parseGesuchsteller() function', () => {
-            expect(ebeguRestUtil.parseGesuchsteller).toBeDefined();
-        });
-        it('should include a fachstelleToRestObject() function', () => {
-            expect(ebeguRestUtil.fachstelleToRestObject).toBeDefined();
-        });
-        it('should include a parseFachstelle() function', () => {
-            expect(ebeguRestUtil.parseFachstelle).toBeDefined();
-        });
-        it('should include a mandantToRestObject() function', () => {
-            expect(ebeguRestUtil.mandantToRestObject).toBeDefined();
-        });
-        it('should include a parseMandant() function', () => {
-            expect(ebeguRestUtil.parseMandant).toBeDefined();
-        });
-        it('should include a traegerschaftToRestObject() function', () => {
-            expect(ebeguRestUtil.traegerschaftToRestObject).toBeDefined();
-        });
-        it('should include a parseTraegerschaft() function', () => {
-            expect(ebeguRestUtil.parseTraegerschaft).toBeDefined();
-        });
-        it('should include a institutionToRestObject() function', () => {
-            expect(ebeguRestUtil.institutionToRestObject).toBeDefined();
-        });
-        it('should include a parseInstitution() function', () => {
-            expect(ebeguRestUtil.parseInstitution).toBeDefined();
-        });
-        it('should include a institutionStammdatenToRestObject() function', () => {
-            expect(ebeguRestUtil.institutionStammdatenToRestObject).toBeDefined();
-        });
-        it('should include a parseInstitutionStammdaten() function', () => {
-            expect(ebeguRestUtil.parseInstitutionStammdaten).toBeDefined();
-        });
-        it('should include a parseGesuch() function', () => {
-            expect(ebeguRestUtil.parseGesuch).toBeDefined();
-        });
-        it('should include a gesuchToRestObject() function', () => {
-            expect(ebeguRestUtil.gesuchToRestObject).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('parseAdresse()', () => {
             it('should transfrom Adresse Rest Objects', () => {

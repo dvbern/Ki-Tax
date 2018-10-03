@@ -27,6 +27,7 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {Displayable} from '../../shared/interfaces/displayable';
 
 let nextId = 0;
 
@@ -63,9 +64,15 @@ export class BerechtigungComponent {
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
 
         this.institutionen$ = from(this.institutionRS.getInstitutionenForCurrentBenutzer())
-            .pipe(map(arr => arr.sort(EbeguUtil.compareByName)));
+            .pipe(map(BerechtigungComponent.sortByName));
 
         this.traegerschaften$ = this.traegerschaftenForPrincipal$();
+    }
+
+    private static sortByName<T extends Displayable>(arr: T[]): T[] {
+        arr.sort(EbeguUtil.compareByName);
+
+        return arr;
     }
 
     private traegerschaftenForPrincipal$(): Observable<TSTraegerschaft[]> {
@@ -86,7 +93,7 @@ export class BerechtigungComponent {
 
                     return of([]);
                 }),
-                map(arr => arr.sort(EbeguUtil.compareByName))
+                map(BerechtigungComponent.sortByName),
             );
     }
 }

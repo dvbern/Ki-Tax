@@ -15,13 +15,11 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
-import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
 import TSDossier from '../../../models/TSDossier';
 import TSMitteilung from '../../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresultDTO';
@@ -31,17 +29,17 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export default class MitteilungRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager',
-        'AuthServiceRS', '$translate'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS', '$translate'];
     public serviceURL: string;
 
-    public constructor(public $http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService,
-                       private readonly wizardStepManager: WizardStepManager,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $translate: ITranslateService) {
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $translate: ITranslateService,
+    ) {
         this.serviceURL = `${REST_API}mitteilungen`;
     }
 
@@ -198,40 +196,40 @@ export default class MitteilungRS {
     private createNachrichtForMutationsmeldung(betreuung: TSBetreuung): string {
         let message = '';
         let i = 1;
-        const betreuungspensumContainers = angular.copy(betreuung.betreuungspensumContainers); // to avoid changing
-                                                                                               // something
-        betreuungspensumContainers
-            .sort((a: TSBetreuungspensumContainer, b: TSBetreuungspensumContainer) =>
-                DateUtil.compareDateTime(
-                    a.betreuungspensumJA.gueltigkeit.gueltigAb,
-                    b.betreuungspensumJA.gueltigkeit.gueltigAb
-                )
-            )
-            .forEach(betpenContainer => {
-                const pensumJA = betpenContainer.betreuungspensumJA;
-                if (pensumJA) {
-                    // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
-                    if (i > 1) {
-                        message += '\n';
-                    }
-                    const defaultDateFormat = 'DD.MM.YYYY';
-                    const datumAb = DateUtil.momentToLocalDateFormat(pensumJA.gueltigkeit.gueltigAb, defaultDateFormat);
-                    let datumBis = DateUtil.momentToLocalDateFormat(pensumJA.gueltigkeit.gueltigBis, defaultDateFormat);
-                    // by default Ende der Periode
-                    const maxDate = betreuung.gesuchsperiode.gueltigkeit.gueltigBis;
-                    datumBis = datumBis ?
-                        datumBis :
-                        DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
+        // to avoid changing something
+        const betreuungspensumContainers = angular.copy(betreuung.betreuungspensumContainers);
+        betreuungspensumContainers.sort((a, b) =>
+            DateUtil.compareDateTime(
+                a.betreuungspensumJA.gueltigkeit.gueltigAb,
+                b.betreuungspensumJA.gueltigkeit.gueltigAb,
+            ),
+        );
 
-                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                        num: i,
-                        von: datumAb,
-                        bis: datumBis,
-                        pensum: pensumJA.pensum,
-                    });
+        betreuungspensumContainers.forEach(betpenContainer => {
+            const pensumJA = betpenContainer.betreuungspensumJA;
+            if (pensumJA) {
+                // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
+                if (i > 1) {
+                    message += '\n';
                 }
-                i++;
-            });
+                const defaultDateFormat = 'DD.MM.YYYY';
+                const datumAb = DateUtil.momentToLocalDateFormat(pensumJA.gueltigkeit.gueltigAb, defaultDateFormat);
+                let datumBis = DateUtil.momentToLocalDateFormat(pensumJA.gueltigkeit.gueltigBis, defaultDateFormat);
+                // by default Ende der Periode
+                const maxDate = betreuung.gesuchsperiode.gueltigkeit.gueltigBis;
+                datumBis = datumBis ?
+                    datumBis :
+                    DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
+
+                message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
+                    num: i,
+                    von: datumAb,
+                    bis: datumBis,
+                    pensum: pensumJA.pensum,
+                });
+            }
+            i++;
+        });
         return message;
     }
 

@@ -18,7 +18,6 @@ import ErrorService from '../app/core/errors/service/ErrorService';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
 import EwkRS from '../app/core/service/ewkRS.rest';
-import GesuchstellerRS from '../app/core/service/gesuchstellerRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, TSAntragStatus} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
@@ -45,10 +44,18 @@ const LOG = LogFactory.createLog('GesuchRouteController');
 
 export class GesuchRouteController implements IController {
 
-    public static $inject: string[] = ['GesuchModelManager', 'WizardStepManager', 'EbeguUtil',
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        'WizardStepManager',
+        'EbeguUtil',
         'ErrorService',
-        'AntragStatusHistoryRS', '$translate', 'AuthServiceRS', '$mdSidenav', 'CONSTANTS', 'GesuchstellerRS', 'EwkRS',
-        '$rootScope'];
+        'AntragStatusHistoryRS',
+        '$translate',
+        'AuthServiceRS',
+        '$mdSidenav',
+        'EwkRS',
+        '$rootScope',
+    ];
 
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
@@ -56,18 +63,18 @@ export class GesuchRouteController implements IController {
 
     public userFullName = '';
 
-    public constructor(private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly wizardStepManager: WizardStepManager,
-                       private readonly ebeguUtil: EbeguUtil,
-                       private readonly errorService: ErrorService,
-                       private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
-                       private readonly $translate: ITranslateService,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $mdSidenav: ISidenavService,
-                       private readonly CONSTANTS: any,
-                       private readonly gesuchstellerRS: GesuchstellerRS,
-                       private readonly ewkRS: EwkRS,
-                       private readonly $rootScope: IRootScopeService) {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly errorService: ErrorService,
+        private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
+        private readonly $translate: ITranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $mdSidenav: ISidenavService,
+        private readonly ewkRS: EwkRS,
+        private readonly $rootScope: IRootScopeService,
+    ) {
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
 
         this.userFullName = this.antragStatusHistoryRS.getUserFullname();
@@ -233,7 +240,7 @@ export class GesuchRouteController implements IController {
                     'MENU_ERNEUERUNGSGESUCH_VOM' :
                     'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(k, {
-                    date: dateFromGesuch
+                    date: dateFromGesuch,
                 });
             }
             const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?

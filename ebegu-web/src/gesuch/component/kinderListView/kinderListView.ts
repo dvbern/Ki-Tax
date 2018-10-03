@@ -36,7 +36,7 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 export class KinderListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        kinderDubletten: '<'
+        kinderDubletten: '<',
     };
     public template = require('./kinderListView.html');
     public controller = KinderListViewController;
@@ -45,20 +45,29 @@ export class KinderListViewComponentConfig implements IComponentOptions {
 
 export class KinderListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', '$translate', 'DvDialog',
-        'WizardStepManager', '$scope', 'CONSTANTS', '$timeout'];
+    public static $inject: string[] = [
+        '$state',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        '$translate',
+        'DvDialog',
+        'WizardStepManager',
+        '$scope',
+        '$timeout',
+    ];
 
     public kinderDubletten: TSKindDublette[] = [];
 
-    public constructor(private readonly $state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly $translate: ITranslateService,
-                       private readonly dvDialog: DvDialog,
-                       wizardStepManager: WizardStepManager,
-                       $scope: IScope,
-                       private readonly CONSTANTS: any,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        private readonly $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly $translate: ITranslateService,
+        private readonly dvDialog: DvDialog,
+        wizardStepManager: WizardStepManager,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         this.initViewModel();
     }
@@ -115,7 +124,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
             title: remTitleText,
             deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
             parentController: this,
-            elementID: 'removeKindButton_' + index
+            elementID: `removeKindButton_${index}`,
         })
             .then(() => {   // User confirmed removal
                 const kindIndex = this.gesuchModelManager.findKind(kind);

@@ -35,20 +35,17 @@ describe('gesuch', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        gesuchRouteController = new GesuchRouteController(
-            gesuchModelManager,
+        gesuchRouteController = new GesuchRouteController(gesuchModelManager,
             $injector.get('WizardStepManager'),
             $injector.get('EbeguUtil'),
             $injector.get('ErrorService'),
-            $injector.get('AntragStatusHistoryRS'),
+            $injector.get(
+                'AntragStatusHistoryRS'),
             $injector.get('$translate'),
             $injector.get('AuthServiceRS'),
             $injector.get('$mdSidenav'),
-            $injector.get('CONSTANTS'),
             undefined,
-            undefined,
-            undefined,
-        );
+            undefined);
         gesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
     }));

@@ -47,9 +47,17 @@ export class KindViewComponentConfig implements IComponentOptions {
 
 export class KindViewController extends AbstractGesuchViewController<TSKindContainer> {
 
-    public static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'CONSTANTS',
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
         '$scope',
-        'ErrorService', 'WizardStepManager', '$q', '$translate', '$timeout'];
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$translate',
+        '$timeout',
+    ];
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -59,16 +67,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public fachstelleId: string;
     public allowedRoles: Array<TSRole>;
 
-    public constructor($stateParams: IKindStateParams,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly CONSTANTS: any,
-                       $scope: IScope,
-                       private readonly errorService: ErrorService,
-                       wizardStepManager: WizardStepManager,
-                       private readonly $q: IQService,
-                       private readonly $translate: ITranslateService,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        $stateParams: IKindStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        $scope: IScope,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        private readonly $translate: ITranslateService,
+        $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
             const kindNumber = parseInt($stateParams.kindNumber, 10);
@@ -94,8 +103,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.kinderabzugValues = getTSKinderabzugValues();
         this.einschulungTypValues = getTSEinschulungTypValues();
 
-        this.showFachstelle = (this.model.kindJA.pensumFachstelle) ? true : false;
-        this.showFachstelleGS = (this.model.kindGS && this.model.kindGS.pensumFachstelle) ? true : false;
+        this.showFachstelle = !!(this.model.kindJA.pensumFachstelle);
+        this.showFachstelleGS = !!(this.model.kindGS && this.model.kindGS.pensumFachstelle);
         if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {
             this.fachstelleId = this.getPensumFachstelle().fachstelle.id;
         }
@@ -206,7 +215,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 name: fachstelle.fachstelle.name,
                 pensum: fachstelle.pensum,
                 von: vonText,
-                bis: bisText
+                bis: bisText,
             });
         }
 

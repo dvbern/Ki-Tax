@@ -22,6 +22,7 @@ import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-di
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -33,10 +34,12 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 
+const LOG = LogFactory.createLog('TestdatenViewComponent');
+
 @Component({
     selector: 'dv-testdaten-view',
     templateUrl: './testdatenView.html',
-    styleUrls: ['./testdatenView.less']
+    styleUrls: ['./testdatenView.less'],
 })
 export class TestdatenViewComponent implements OnInit {
 
@@ -57,15 +60,17 @@ export class TestdatenViewComponent implements OnInit {
 
     public devMode: boolean;
 
-    public constructor(public readonly testFaelleRS: TestFaelleRS,
-                       private readonly benutzerRS: BenutzerRS,
-                       private readonly errorService: ErrorService,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly zahlungRS: ZahlungRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly gemeindeRS: GemeindeRS,
-                       private readonly dialog: MatDialog) {
+    public constructor(
+        public readonly testFaelleRS: TestFaelleRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly errorService: ErrorService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly zahlungRS: ZahlungRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly gesuchRS: GesuchRS,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly dialog: MatDialog,
+    ) {
     }
 
     public ngOnInit(): void {
@@ -118,23 +123,27 @@ export class TestdatenViewComponent implements OnInit {
         }
     }
 
-    private createTestFall(testFall: string,
-                           gesuchsperiodeId: string,
-                           gemeindeId: string,
-                           bestaetigt: boolean,
-                           verfuegen: boolean): void {
+    private createTestFall(
+        testFall: string,
+        gesuchsperiodeId: string,
+        gemeindeId: string,
+        bestaetigt: boolean,
+        verfuegen: boolean,
+    ): void {
         this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then(
             response => {
                 this.createLinkDialog(response);
             });
     }
 
-    private createTestFallGS(testFall: string,
-                             gesuchsperiodeId: string,
-                             gemeindeId: string,
-                             bestaetigt: boolean,
-                             verfuegen: boolean,
-                             username: string): void {
+    private createTestFallGS(
+        testFall: string,
+        gesuchsperiodeId: string,
+        gemeindeId: string,
+        bestaetigt: boolean,
+        verfuegen: boolean,
+        username: string,
+    ): void {
         this.testFaelleRS.createTestFallGS(testFall,
             gesuchsperiodeId,
             gemeindeId,
@@ -197,20 +206,24 @@ export class TestdatenViewComponent implements OnInit {
 
     public deleteAllZahlungsauftraege(): void {
         this.createAndOpenRemoveDialog$('ZAHLUNG_LOESCHEN_DIALOG_TITLE', 'ZAHLUNG_LOESCHEN_DIALOG_TEXT')
-            .subscribe(acceptedByUser => {
-                if (acceptedByUser) {
-                    this.zahlungRS.deleteAllZahlungsauftraege();
-                }
-            });
+            .subscribe(
+                acceptedByUser => {
+                    if (acceptedByUser) {
+                        this.zahlungRS.deleteAllZahlungsauftraege();
+                    }
+                },
+                err => LOG.error(err));
     }
 
     public gesuchVerfuegen(): void {
         this.createAndOpenRemoveDialog$('GESUCH_VERFUEGEN_DIALOG_TITLE', 'GESUCH_VERFUEGEN_DIALOG_TEXT')
-            .subscribe(acceptedByUser => {
-                if (acceptedByUser) {
-                    this.gesuchRS.gesuchVerfuegen(this.verfuegenGesuchid);
-                }
-            });
+            .subscribe(
+                acceptedByUser => {
+                    if (acceptedByUser) {
+                        this.gesuchRS.gesuchVerfuegen(this.verfuegenGesuchid);
+                    }
+                },
+                err => LOG.error(err));
     }
 
     private createAndOpenOkDialog(title: string): void {

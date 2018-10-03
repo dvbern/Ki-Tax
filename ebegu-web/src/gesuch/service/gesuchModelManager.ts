@@ -132,6 +132,7 @@ export default class GesuchModelManager {
                     this.setGesuch(undefined);
                     this.log.debug('Cleared gesuch on logout');
                 },
+                err => this.log.error(err)
             );
     }
 
@@ -299,7 +300,7 @@ export default class GesuchModelManager {
             default:
                 // for no action we return the current Gesuch and log an error
                 this.log.error(
-                    'No action or an invalid action have been passed. This method must always been called with a valide action: ' + creationAction);
+                    'No action or an invalid action have been passed. This method must always been called with a valide action', creationAction);
 
                 return Promise.resolve(this.getGesuch());
         }
@@ -774,7 +775,7 @@ export default class GesuchModelManager {
             if (this.gesuch.kindContainers && this.gesuch.kindContainers.length > this.kindIndex) {
                 return this.gesuch.kindContainers[this.kindIndex];
             }
-            this.log.error('kindContainers is not set or kindIndex is out of bounds ' + this.kindIndex);
+            this.log.error('kindContainers is not set or kindIndex is out of bounds', this.kindIndex);
         }
 
         return undefined;
@@ -789,7 +790,7 @@ export default class GesuchModelManager {
             if (this.getKindToWorkWith().betreuungen.length > this.betreuungIndex) {
                 return this.getKindToWorkWith().betreuungen[this.betreuungIndex];
             }
-            this.log.error('kindToWorkWith is not set or index of betreuung is out of bounds ' + this.betreuungIndex);
+            this.log.error('kindToWorkWith is not set or index of betreuung is out of bounds', this.betreuungIndex);
         }
 
         return undefined;

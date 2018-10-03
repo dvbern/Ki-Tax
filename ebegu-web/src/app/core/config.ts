@@ -23,18 +23,27 @@ import IQProvider = angular.IQProvider;
 import IThemingProvider = angular.material.IThemingProvider;
 import ITranslateProvider = angular.translate.ITranslateProvider;
 
-configure.$inject =
-    ['$translateProvider', '$injector', '$httpProvider', '$mdThemingProvider', 'hotkeysProvider', '$logProvider',
-        '$locationProvider', '$qProvider'];
+configure.$inject = [
+    '$translateProvider',
+    '$injector',
+    '$httpProvider',
+    '$mdThemingProvider',
+    'hotkeysProvider',
+    '$logProvider',
+    '$locationProvider',
+    '$qProvider',
+];
 
-export function configure($translateProvider: ITranslateProvider,
-                          $injector: IInjectorService,
-                          $httpProvider: IHttpProvider,
-                          $mdThemingProvider: IThemingProvider,
-                          hotkeysProvider: any,
-                          $logProvider: ILogProvider,
-                          $locationProvider: ILocationProvider,
-                          $qProvider: IQProvider): void {
+export function configure(
+    $translateProvider: ITranslateProvider,
+    $injector: IInjectorService,
+    $httpProvider: IHttpProvider,
+    $mdThemingProvider: IThemingProvider,
+    hotkeysProvider: any,
+    $logProvider: ILogProvider,
+    $locationProvider: ILocationProvider,
+    $qProvider: IQProvider,
+): void {
     // Translation Provider configuration
     const translProp = require('../../assets/translations/translations_de.json');
 
@@ -49,7 +58,7 @@ export function configure($translateProvider: ITranslateProvider,
 
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
-        const unsavedWarningsConfigProvider: any = $injector.get('unsavedWarningsConfigProvider');
+        const unsavedWarningsConfigProvider = $injector.get<any>('unsavedWarningsConfigProvider');
         unsavedWarningsConfigProvider.useTranslateService = true;
         unsavedWarningsConfigProvider.logEnabled = false;
         unsavedWarningsConfigProvider.navigateMessage = 'UNSAVED_WARNING';

@@ -55,8 +55,9 @@ describe('HttpAuthInterceptor', () => {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
-            expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED,
-                authErrorResponse);
+            // tslint:disable-next-line:no-unbound-method
+            expect(authLifeCycleService.changeAuthStatus)
+                .toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
         });
     });
 });
