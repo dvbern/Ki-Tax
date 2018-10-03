@@ -342,6 +342,7 @@ public final class TestDataUtil {
 			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
+			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
@@ -377,6 +378,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setBfsNummer(351L);
 		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 		return gemeinde;
 	}
 
@@ -389,6 +391,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setBfsNummer(363L);
 		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 		return gemeinde;
 	}
 
