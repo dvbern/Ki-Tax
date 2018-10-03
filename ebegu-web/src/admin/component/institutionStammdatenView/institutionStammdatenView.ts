@@ -112,34 +112,38 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     }
 
     public differentZahlungsadresseClicked(): void {
-        this.selectedInstitutionStammdaten.adresseKontoinhaber = this.hasDifferentZahlungsadresse ? new TSAdresse() : undefined;
+        this.selectedInstitutionStammdaten.adresseKontoinhaber =
+            this.hasDifferentZahlungsadresse ? new TSAdresse() : undefined;
     }
 
     public saveInstitutionStammdaten(form: IFormController): void {
-        if (form.$valid) {
-            this.selectedInstitutionStammdaten.betreuungsangebotTyp = this.selectedInstitutionStammdatenBetreuungsangebot.key;
-            this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
-            this.purgeInstitutionstammdaten();
+        if (!form.$valid) {
+            return;
+        }
 
-            if (this.isCreateStammdatenModel()) {
-                this.institutionStammdatenRS.createInstitutionStammdaten(this.selectedInstitutionStammdaten).then((institutionStammdaten: TSInstitutionStammdaten) => {
-                    this.goBack();
-                });
-            } else {
-                this.institutionStammdatenRS.updateInstitutionStammdaten(this.selectedInstitutionStammdaten).then((institutionStammdaten: TSInstitutionStammdaten) => {
-                    this.goBack();
-                });
-            }
+        this.selectedInstitutionStammdaten.betreuungsangebotTyp =
+            this.selectedInstitutionStammdatenBetreuungsangebot.key;
+        this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
+        this.purgeInstitutionstammdaten();
+
+        if (this.isCreateStammdatenModel()) {
+            this.institutionStammdatenRS.createInstitutionStammdaten(this.selectedInstitutionStammdaten).then(() => {
+                this.goBack();
+            });
+        } else {
+            this.institutionStammdatenRS.updateInstitutionStammdaten(this.selectedInstitutionStammdaten).then(() => {
+                this.goBack();
+            });
         }
     }
 
-    private goBack() {
+    private goBack(): void {
         this.$state.go('admin.institution', {
             institutionId: this.selectedInstitution.id
         });
     }
 
-    public getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp) {
+    public getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp): any {
         return $.grep(this.betreuungsangebotValues, (value: any) => {
             return value.key === betreuungsangebotTyp;
         })[0];
@@ -182,42 +186,47 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     private loadModuleTagesschule(): void {
         this.modulTageschuleMap = {};
         if (this.selectedInstitutionStammdaten && this.selectedInstitutionStammdaten.id) {
-            if (this.selectedInstitutionStammdaten.institutionStammdatenTagesschule && this.selectedInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule) {
-                this.fillModulTagesschuleMap(this.selectedInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule);
+            const stammdaten = this.selectedInstitutionStammdaten.institutionStammdatenTagesschule;
+            if (stammdaten && stammdaten.moduleTagesschule) {
+                this.fillModulTagesschuleMap(stammdaten.moduleTagesschule);
             }
-        } else {
-            this.fillModulTagesschuleMap([]);
+            return;
         }
+        this.fillModulTagesschuleMap([]);
     }
 
-    private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]) {
-        getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
-            const foundmodul = modulListFromServer.filter(
-                modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
-            if (foundmodul) {
-                this.modulTageschuleMap[modulname] = foundmodul;
-            } else {
-                this.modulTageschuleMap[modulname] = this.getModulTagesschule(modulname);
-            }
+    private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]): void {
+        getTSModulTagesschuleNameValues().forEach(modulname => {
+            const foundmodul = modulListFromServer
+                .find(modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY));
+
+            this.modulTageschuleMap[modulname] = foundmodul ? foundmodul : this.getModulTagesschule(modulname);
         });
     }
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
-        if (this.isTagesschule()) {
-            const definedModulTagesschule = [];
-            for (const modulname in this.modulTageschuleMap) {
-                const tempModul = this.modulTageschuleMap[modulname];
-                if (tempModul.zeitVon && tempModul.zeitBis) {
-                    definedModulTagesschule.push(tempModul);
-                }
-            }
-            if (definedModulTagesschule.length > 0) {
-                if (!this.selectedInstitutionStammdaten.institutionStammdatenTagesschule) {
-                    this.selectedInstitutionStammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
-                }
-                this.selectedInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule = definedModulTagesschule;
+        if (!this.isTagesschule()) {
+            return;
+        }
+
+        const definedModulTagesschule = [];
+        // tslint:disable-next-line:forin
+        for (const modulname in this.modulTageschuleMap) {
+            const tempModul = this.modulTageschuleMap[modulname];
+            if (tempModul.zeitVon && tempModul.zeitBis) {
+                definedModulTagesschule.push(tempModul);
             }
         }
+        if (definedModulTagesschule.length <= 0) {
+            return;
+        }
+
+        if (!this.selectedInstitutionStammdaten.institutionStammdatenTagesschule) {
+            this.selectedInstitutionStammdaten.institutionStammdatenTagesschule =
+                new TSInstitutionStammdatenTagesschule();
+        }
+        this.selectedInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule =
+            definedModulTagesschule;
     }
 
     public getStammdatenFerieninsel(): TSInstitutionStammdatenFerieninsel {
@@ -231,9 +240,10 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
         return this.getStammdatenFerieninsel() && this.isFerieninsel();
     }
 
-    private initStammdatenFerieninsel() {
+    private initStammdatenFerieninsel(): void {
         if (this.isFerieninsel() && !this.selectedInstitutionStammdaten.institutionStammdatenFerieninsel) {
-            this.selectedInstitutionStammdaten.institutionStammdatenFerieninsel = new TSInstitutionStammdatenFerieninsel();
+            this.selectedInstitutionStammdaten.institutionStammdatenFerieninsel =
+                new TSInstitutionStammdatenFerieninsel();
         }
     }
 
@@ -246,7 +256,7 @@ export class InstitutionStammdatenViewController extends AbstractAdminViewContro
     /**
      * Removes all unused Stammdaten for the selected Betreuungsangebotstyp
      */
-    private purgeInstitutionstammdaten() {
+    private purgeInstitutionstammdaten(): void {
         if (!this.isFerieninsel()) {
             this.selectedInstitutionStammdaten.institutionStammdatenFerieninsel = undefined;
         }

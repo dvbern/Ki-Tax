@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {IComponentOptions, IFormController} from 'angular';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -30,19 +30,19 @@ export class ParameterViewComponentConfig implements IComponentOptions {
 }
 
 export class ParameterViewController extends AbstractAdminViewController {
-    public static $inject = ['GesuchsperiodeRS', '$translate',
-        '$log', '$state', '$timeout', 'AuthServiceRS'];
+    public static $inject = ['GesuchsperiodeRS', '$translate', '$state', '$timeout', 'AuthServiceRS'];
 
     public form: IFormController;
     public gesuchsperiodenList: Array<TSGesuchsperiode> = [];
     public jahr: number;
 
-    public constructor(private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly $translate: ITranslateService,
-                       private readonly $log: ILogService,
-                       private readonly $state: StateService,
-                       private readonly $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $translate: ITranslateService,
+        private readonly $state: StateService,
+        private readonly $timeout: ITimeoutService,
+        authServiceRS: AuthServiceRS,
+    ) {
         super(authServiceRS);
         $timeout(() => {
             this.readGesuchsperioden();
@@ -61,13 +61,13 @@ export class ParameterViewController extends AbstractAdminViewController {
         }
 
         this.$state.go('admin.gesuchsperiode', {
-            gesuchsperiodeId: gesuchsperiode.id
+            gesuchsperiodeId: gesuchsperiode.id,
         });
     }
 
     public createGesuchsperiode(): void {
         this.$state.go('admin.gesuchsperiode', {
-            gesuchsperiodeId: undefined
+            gesuchsperiodeId: undefined,
         });
     }
 

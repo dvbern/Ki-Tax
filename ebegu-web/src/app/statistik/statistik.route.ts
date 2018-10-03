@@ -19,7 +19,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 statistikRun.$inject = ['RouterHelper'];
 
-export function statistikRun(routerHelper: RouterHelper) {
+export function statistikRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

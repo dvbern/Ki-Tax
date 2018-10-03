@@ -21,7 +21,7 @@ import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSMitteilung from '../../../models/TSMitteilung';
-import {EbeguWebPosteingang} from '../posteingang.module';
+import {POSTEINGANG_JS_MODULE} from '../posteingang.module';
 
 // tslint:disable:no-magic-numbers no-duplicate-string
 describe('posteingangFilter', () => {
@@ -34,7 +34,7 @@ describe('posteingangFilter', () => {
     let mitteilung4: TSMitteilung;
     let mitteilung5: TSMitteilung;
 
-    beforeEach(angular.mock.module(EbeguWebPosteingang.name));
+    beforeEach(angular.mock.module(POSTEINGANG_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

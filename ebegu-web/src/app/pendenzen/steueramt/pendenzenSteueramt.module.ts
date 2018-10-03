@@ -17,7 +17,7 @@ import {CORE_JS_MODULE} from '../../core/core.angularjs.module';
 import {PendenzenSteueramtListViewComponentConfig} from './component/pendenzenSteueramtListView/pendenzenSteueramtListView';
 import {pendenzRun} from './pendenzenSteueramt.route';
 
-export const EbeguWebPendenzenSteueramt =
+export const PENDENZEN_STEUERAMT_JS_MODULE =
     angular.module('ebeguWeb.pendenzenSteueramt', [CORE_JS_MODULE.name])
         .run(pendenzRun)
         .component('pendenzenSteueramtListView', new PendenzenSteueramtListViewComponentConfig());

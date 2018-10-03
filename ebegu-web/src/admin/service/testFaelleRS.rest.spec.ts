@@ -46,7 +46,8 @@ describe('TestFaelleRS', () => {
     describe('API Usage', () => {
         describe('createTestFall', () => {
             it('should call createTestFall', () => {
-                $httpBackend.expectGET(testFaelleRS.serviceURL + '/testfall/' + encodeURIComponent('1') + '/null/null/false/false').respond({});
+                const url = `${testFaelleRS.serviceURL}/testfall/${encodeURIComponent('1')}/null/null/false/false`;
+                $httpBackend.expectGET(url).respond({});
                 testFaelleRS.createTestFall('1', null, null, false, false);
                 $httpBackend.flush();
             });

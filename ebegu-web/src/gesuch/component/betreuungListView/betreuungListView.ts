@@ -62,7 +62,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     public constructor(private readonly $state: StateService,
                        gesuchModelManager: GesuchModelManager,
                        private readonly $translate: ITranslateService,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly ebeguUtil: EbeguUtil,
                        berechnungsManager: BerechnungsManager,
                        private readonly errorService: ErrorService,
@@ -149,7 +149,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             kindname: this.gesuchModelManager.getKindToWorkWith().kindJA.getFullName(),
             betreuungsangebottyp: this.ebeguUtil.translateString(typ)
         });
-        this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'BETREUUNG_LOESCHEN_BESCHREIBUNG',
             parentController: this,

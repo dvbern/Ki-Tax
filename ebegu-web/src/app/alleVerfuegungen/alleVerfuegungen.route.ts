@@ -18,12 +18,6 @@ import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
-alleVerfuegungenRun.$inject = ['RouterHelper'];
-
-export function alleVerfuegungenRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, ng2States);
-}
-
 // STATES
 
 const ng1States: Ng1StateDeclaration[] = [
@@ -39,7 +33,7 @@ const ng1States: Ng1StateDeclaration[] = [
         name: 'alleVerfuegungen.view',
         template: '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/alleVerfuegungen/:dossierId',
-    }
+    },
 ];
 
 const ng2States: Ng2StateDeclaration[] = [];
@@ -48,4 +42,10 @@ const ng2States: Ng2StateDeclaration[] = [];
 
 export class IAlleVerfuegungenStateParams {
     public dossierId: string;
+}
+
+alleVerfuegungenRun.$inject = ['RouterHelper'];
+
+export function alleVerfuegungenRun(routerHelper: RouterHelper): void {
+    routerHelper.configureStates(ng1States, ng2States);
 }

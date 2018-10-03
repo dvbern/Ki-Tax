@@ -21,7 +21,7 @@ import {getTSRoleValues} from '../models/enums/TSRole';
 import {returnTo} from './authentication.route';
 import {LocalLoginComponent} from './local-login/local-login.component';
 
-export const localLoginState: Ng2StateDeclaration = {
+export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     name: 'authentication.locallogin',
     url: '/locallogin',
     component: LocalLoginComponent,
@@ -40,7 +40,7 @@ export const localLoginState: Ng2StateDeclaration = {
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [localLoginState]})
+        UIRouterUpgradeModule.forChild({states: [LOCALLOGIN_STATE]})
     ],
     exports: [],
 })

@@ -14,7 +14,7 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {IComponentOptions, ILogService, IPromise, IScope} from 'angular';
+import {IComponentOptions, ILogService, IPromise, IScope, IWindowService} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -49,9 +49,22 @@ export class VerfuegenViewComponentConfig implements IComponentOptions {
 
 export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil', '$scope',
+    public static $inject: string[] = [
+        '$state',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'EbeguUtil',
+        '$scope',
         'WizardStepManager',
-        'DvDialog', 'DownloadRS', '$log', '$stateParams', '$window', 'ExportRS', 'ApplicationPropertyRS', '$timeout'];
+        'DvDialog',
+        'DownloadRS',
+        '$log',
+        '$stateParams',
+        '$window',
+        'ExportRS',
+        'ApplicationPropertyRS',
+        '$timeout'
+    ];
 
     // this is the model...
     public bemerkungen: string;
@@ -66,11 +79,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                        private readonly ebeguUtil: EbeguUtil,
                        $scope: IScope,
                        wizardStepManager: WizardStepManager,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly downloadRS: DownloadRS,
                        private readonly $log: ILogService,
                        $stateParams: IBetreuungStateParams,
-                       private readonly $window: ng.IWindowService,
+                       private readonly $window: IWindowService,
                        private readonly exportRS: ExportRS,
                        private readonly applicationPropertyRS: ApplicationPropertyRS,
                        $timeout: ITimeoutService) {
@@ -273,10 +286,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getGesuch()
             && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
             return this.ebeguUtil.calculateBetreuungsId(this.getGesuchsperiode(),
-                this.getFall(),
-                this.gesuchModelManager.getDossier().gemeinde,
-                this.gesuchModelManager.getKindToWorkWith().kindNummer,
-                this.getBetreuung().betreuungNummer);
+                                                        this.getFall(),
+                                                        this.gesuchModelManager.getDossier().gemeinde,
+                                                        this.gesuchModelManager.getKindToWorkWith().kindNummer,
+                                                        this.getBetreuung().betreuungNummer);
         }
         return undefined;
     }
@@ -335,7 +348,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public saveVerfuegung(): IPromise<TSVerfuegung> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_SAVE_VERFUEGUNG',
             deleteText: 'BESCHREIBUNG_SAVE_VERFUEGUNG',
             parentController: undefined,
@@ -347,7 +360,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public saveMutierteVerfuegung(): IPromise<TSVerfuegung> {
-        return this.DvDialog.showDialog(threeButtonsDialogTempl, ThreeButtonsDialogController, {
+        return this.dvDialog.showDialog(threeButtonsDialogTempl, ThreeButtonsDialogController, {
             title: 'CONFIRM_SAVE_MUTIERTE_VERFUEGUNG',
             confirmationText: 'BESCHREIBUNG_SAVE_VERFUEGUNG',
             cancelText: 'LABEL_NEIN',
@@ -360,7 +373,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public verfuegungSchliessenOhenVerfuegen(): IPromise<void> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_CLOSE_VERFUEGUNG_OHNE_VERFUEGEN',
             deleteText: 'BESCHREIBUNG_CLOSE_VERFUEGUNG_OHNE_VERFUEGEN',
             parentController: undefined,
@@ -372,7 +385,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public verfuegungNichtEintreten(): IPromise<TSVerfuegung> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_CLOSE_VERFUEGUNG_NICHT_EINTRETEN',
             deleteText: 'BESCHREIBUNG_CLOSE_VERFUEGUNG_NICHT_EINTRETEN',
             parentController: undefined,
@@ -414,7 +427,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public openVerfuegungPDF(): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-            this.getBetreuung().id, false, this.bemerkungen)
+                                                                  this.getBetreuung().id, false, this.bemerkungen)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);

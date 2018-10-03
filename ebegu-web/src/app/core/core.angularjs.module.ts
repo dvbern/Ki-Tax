@@ -130,7 +130,6 @@ import KindRS from './service/kindRS.rest';
 import ListResourceRS from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
-import {NavigationLogger} from './service/NavigationLogger';
 import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
@@ -233,7 +232,6 @@ export const CORE_JS_MODULE = angular
     .service('HttpResponseInterceptor', HttpResponseInterceptor)
     .service('HttpVersionInterceptor', HttpVersionInterceptor)
     .service('WizardStepManager', WizardStepManager)
-    .service('NavigationLogger', NavigationLogger)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .controller('DVElementController', DVRoleElementController)

@@ -227,7 +227,7 @@ export class ValueinputController implements IController {
 
     private sanitizeFloatString(transformedInput: string, sign: string): string {
         // removes all chars that are not a digit or a point
-        let result = transformedInput.replace(/([^0-9|\.])+/g, '');
+        let result = transformedInput.replace(/([^0-9|.])+/g, '');
         if (result) {
             const pointIndex = result.indexOf('.');
             // only parse if there is either no floating point or the floating point is not at the end. Also dont parse

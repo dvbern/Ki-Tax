@@ -110,11 +110,9 @@ export default class TSFinanzModel {
     }
 
     public copyEkvDataFromGesuch(gesuch: TSGesuch): void {
-        if (gesuch.einkommensverschlechterungInfoContainer) {
-            this.einkommensverschlechterungInfoContainer = angular.copy(gesuch.einkommensverschlechterungInfoContainer);
-        } else {
-            this.einkommensverschlechterungInfoContainer = new TSEinkommensverschlechterungInfoContainer;
-        }
+        this.einkommensverschlechterungInfoContainer = gesuch.einkommensverschlechterungInfoContainer ?
+            angular.copy(gesuch.einkommensverschlechterungInfoContainer) :
+            new TSEinkommensverschlechterungInfoContainer();
         // geesuchstelelr1 nullsave?
         this.einkommensverschlechterungContainerGS1 =
             angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
@@ -199,19 +197,24 @@ export default class TSFinanzModel {
             this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
     }
 
-    private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer): TSEinkommensverschlechterung {
+    // tslint:disable-next-line:naming-convention
+    private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
+    ): TSEinkommensverschlechterung {
         return this.basisjahrPlus === 2 ?
             einkommensverschlechterungContainer.ekvJABasisJahrPlus2 :
             einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
     }
 
+    // tslint:disable-next-line:naming-convention
     public getEkvToWorkWith_GS(): TSEinkommensverschlechterung {
         return this.gesuchstellerNumber === 2 ?
             this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2) :
             this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS1);
     }
 
-    private getEkvOfBsj_GS(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer): TSEinkommensverschlechterung {
+    // tslint:disable-next-line:naming-convention
+    private getEkvOfBsj_GS(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
+    ): TSEinkommensverschlechterung {
         return this.basisjahrPlus === 2 ?
             einkommensverschlechterungContainer.ekvGSBasisJahrPlus2 :
             einkommensverschlechterungContainer.ekvGSBasisJahrPlus1;

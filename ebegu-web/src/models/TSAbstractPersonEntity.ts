@@ -65,6 +65,6 @@ export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
     }
 
     public getFullName(): string {
-        return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
+        return `${this.vorname ? this.vorname : ''} ${this.nachname ? this.nachname : ''}`;
     }
 }

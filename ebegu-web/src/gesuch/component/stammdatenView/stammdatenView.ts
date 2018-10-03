@@ -54,9 +54,11 @@ export class StammdatenViewComponentConfig implements IComponentOptions {
 
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
 
-    public static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager',
+    public static $inject = [
+        '$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager',
         'ErrorService', 'WizardStepManager', 'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope',
-        'EwkRS', '$timeout'];
+        'EwkRS', '$timeout',
+    ];
 
     public geschlechter: Array<string>;
     public showKorrespondadr: boolean;
@@ -80,7 +82,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                        private readonly $translate: ITranslateService,
                        private readonly authServiceRS: AuthServiceRS,
                        private readonly $rootScope: IRootScopeService,
-                       private readonly ewkRS: EwkRS, $timeout: ITimeoutService) {
+                       private readonly ewkRS: EwkRS, $timeout: ITimeoutService,
+    ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
@@ -101,12 +104,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.initialModel = angular.copy(this.model);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
-        this.showKorrespondadr =
-            (this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA) ? true : false;
-        this.showKorrespondadrGS =
-            (this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS) ? true : false;
-        this.showRechnungsadr = (this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseJA) ? true : false;
-        this.showRechnungsadrGS = (this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseGS) ? true : false;
+        this.showKorrespondadr = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA);
+        this.showKorrespondadrGS = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS);
+        this.showRechnungsadr = !!(this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseJA);
+        this.showRechnungsadrGS = !!(this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseGS);
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.getModel().showUmzug = this.getModel().showUmzug || this.getModel().isThereAnyUmzug();
         this.setLastVerfuegtesGesuch();

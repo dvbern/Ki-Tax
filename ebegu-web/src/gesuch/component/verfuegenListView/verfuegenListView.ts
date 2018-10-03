@@ -23,7 +23,7 @@ import {
     isAnyStatusOfMahnung,
     isAnyStatusOfVerfuegt,
     isAtLeastFreigegeben,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -58,7 +58,7 @@ export class VerfuegenListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
         // Bereits vorhandene Mahnungen
-        mahnungList: '<'
+        mahnungList: '<',
     };
     public template = require('./verfuegenListView.html');
     public controller = VerfuegenListViewController;
@@ -67,9 +67,21 @@ export class VerfuegenListViewComponentConfig implements IComponentOptions {
 
 export class VerfuegenListViewController extends AbstractGesuchViewController<any> {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', 'BerechnungsManager', 'EbeguUtil',
+    public static $inject: string[] = [
+        '$state',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'EbeguUtil',
         'WizardStepManager',
-        'DvDialog', 'DownloadRS', 'MahnungRS', '$log', 'AuthServiceRS', '$scope', 'GesuchRS', '$timeout'];
+        'DvDialog',
+        'DownloadRS',
+        'MahnungRS',
+        '$log',
+        'AuthServiceRS',
+        '$scope',
+        'GesuchRS',
+        '$timeout',
+    ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
     public mahnungList: TSMahnung[];
@@ -77,19 +89,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private tempAntragStatus: TSAntragStatus;
     public finSitStatus: Array<string>;
 
-    public constructor(private readonly $state: StateService,
-                       gesuchModelManager: GesuchModelManager,
-                       berechnungsManager: BerechnungsManager,
-                       private readonly ebeguUtil: EbeguUtil,
-                       wizardStepManager: WizardStepManager,
-                       private readonly DvDialog: DvDialog,
-                       private readonly downloadRS: DownloadRS,
-                       private readonly mahnungRS: MahnungRS,
-                       private readonly $log: ILogService,
-                       private readonly authServiceRs: AuthServiceRS,
-                       $scope: IScope,
-                       private readonly gesuchRS: GesuchRS,
-                       $timeout: ITimeoutService) {
+    public constructor(
+        private readonly $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly ebeguUtil: EbeguUtil,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly downloadRS: DownloadRS,
+        private readonly mahnungRS: MahnungRS,
+        private readonly $log: ILogService,
+        private readonly authServiceRs: AuthServiceRS,
+        $scope: IScope,
+        private readonly gesuchRS: GesuchRS,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
         this.initViewModel();
@@ -171,7 +185,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.$state.go('gesuch.verfuegenView', {
             betreuungNumber: betreuung.betreuungNummer,
             kindNumber: kind.kindNummer,
-            gesuchId: this.getGesuchId()
+            gesuchId: this.getGesuchId(),
         });
     }
 
@@ -188,8 +202,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
         const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        const allowedBetstatus: Array<TSBetreuungsstatus> = [TSBetreuungsstatus.VERFUEGT,
-            TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT];
+        const allowedBetstatus: Array<TSBetreuungsstatus> = [
+            TSBetreuungsstatus.VERFUEGT,
+            TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT,
+        ];
         // Annahme: alle ausser Gesuchsteller duerfen bestaetigte betreuungen sehen wenn sie uberhaupt auf die Seite
         // kommen
         if (!isGesuchsteller) {
@@ -267,22 +283,22 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setGesuchStatusGeprueft(): IPromise<TSAntragStatus> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_GESUCH_STATUS_GEPRUEFT',
             deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             return this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
         });
     }
 
     public closeWithoutAngebot(): IPromise<TSGesuch> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT',
             deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
 
         }).then(() => {
             return this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {
@@ -298,11 +314,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public setGesuchStatusVerfuegen(): IPromise<TSGesuch> {
         const deleteTextValue = 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN';
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
             deleteText: deleteTextValue,
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
 
             return this.gesuchRS.verfuegenStarten(
@@ -340,9 +356,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public sendToSteuerverwaltung(): void {
-        this.DvDialog.showDialog(bemerkungDialogTempl, BemerkungenDialogController, {
+        this.dvDialog.showDialog(bemerkungDialogTempl, BemerkungenDialogController, {
             title: 'SEND_TO_STV_CONFIRMATION',
-            bemerkungen: this.gesuchModelManager.getGesuch().bemerkungenSTV
+            bemerkungen: this.gesuchModelManager.getGesuch().bemerkungenSTV,
         }).then((bemerkung: string) => {
             this.gesuchRS.sendGesuchToSTV(this.getGesuch().id, bemerkung).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -359,11 +375,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public stvPruefungAbschliessen(): void {
-        this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'STV_PRUEFUNG_ABSCHLIESSEN_CONFIRMATION',
             deleteText: '',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             this.gesuchRS.stvPruefungAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -535,7 +551,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -545,7 +560,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -555,7 +569,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -565,7 +578,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenMahnungGeneratedDokument(mahnung || this.mahnung)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -596,11 +608,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setAbschliessen(): IPromise<TSGesuch> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'ABSCHLIESSEN',
             deleteText: 'BESCHREIBUNG_GESUCH_ABSCHLIESSEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -611,11 +623,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setGesuchStatusBeschwerdeHaengig(): IPromise<TSGesuch> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'BESCHWERDE_HAENGIG',
             deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_HAENGIG',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             return this.gesuchRS.setBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -625,11 +637,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setGesuchStatusBeschwerdeAbschliessen(): IPromise<TSGesuch> {
-        return this.DvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'BESCHWERDE_ABSCHLIESSEN',
             deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_ABSCHLIESSEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         }).then(() => {
             return this.gesuchRS.removeBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -645,7 +657,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
         this.setHasFSDokumentAccordingToFinSitState();
         this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
-            this.getGesuch().finSitStatus).then(() => {
+                                         this.getGesuch().finSitStatus).then(() => {
             this.gesuchModelManager.setGesuch(this.getGesuch());
             this.form.$setPristine();
         });

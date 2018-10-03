@@ -154,9 +154,8 @@ export default class TSMitteilung extends TSAbstractMutableEntity {
         }
         if (senderAsString) {
             return senderAsString + this.sender.getFullName();
-        } else {
-            return this.sender.getFullName();
         }
+        return this.sender.getFullName();
     }
 
     public isErledigt(): boolean {

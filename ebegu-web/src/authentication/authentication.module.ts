@@ -16,7 +16,7 @@
 import * as angular from 'angular';
 import {authenticationRoutes} from './authentication.route';
 import {LoginComponentConfig} from './login/login.component';
-import {SchulungComponentConfig} from './schulung/schulung.component';
+import {SCHULUNG_COMPONENT_CONFIG} from './schulung/schulung.component';
 import AuthServiceRS from './service/AuthServiceRS.rest';
 import HttpAuthInterceptor from './service/HttpAuthInterceptor';
 import HttpBuffer from './service/HttpBuffer';
@@ -45,5 +45,5 @@ export const AUTHENTICATION_JS_MODULE =
         .service('HttpAuthInterceptor', HttpAuthInterceptor)
         .service('AuthServiceRS', AuthServiceRS)
         .service('httpBuffer', HttpBuffer)
-        .component('dvSchulung', SchulungComponentConfig)
+        .component('dvSchulung', SCHULUNG_COMPONENT_CONFIG)
         .component('dvLogin', LoginComponentConfig);

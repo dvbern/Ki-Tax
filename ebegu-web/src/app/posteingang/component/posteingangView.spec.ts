@@ -28,7 +28,7 @@ import TSMitteilung from '../../../models/TSMitteilung';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import MitteilungRS from '../../core/service/mitteilungRS.rest';
-import {EbeguWebPosteingang} from '../posteingang.module';
+import {POSTEINGANG_JS_MODULE} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
 
 describe('posteingangView', () => {
@@ -42,7 +42,7 @@ describe('posteingangView', () => {
     let mockMitteilung: TSMitteilung;
     let gemeindeRS: GemeindeRS;
 
-    beforeEach(angular.mock.module(EbeguWebPosteingang.name));
+    beforeEach(angular.mock.module(POSTEINGANG_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

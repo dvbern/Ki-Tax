@@ -13,9 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {DvRadioContainerComponentConfig} from './dv-radio-container';
-import {IScope, IComponentControllerService, IRootScopeService} from 'angular';
+import IInjectorService = angular.auto.IInjectorService;
 
 describe('dvRadioContainer', () => {
 
@@ -27,10 +28,9 @@ describe('dvRadioContainer', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject((_$componentController_: IComponentControllerService,
-                                    $rootScope: IRootScopeService) => {
-        $componentController = _$componentController_;
-        scope = $rootScope.$new();
+    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
+        $componentController = $injector.get('$componentController');
+        scope = $injector.get('$rootScope').$new();
     }));
 
     it('should be defined', () => {

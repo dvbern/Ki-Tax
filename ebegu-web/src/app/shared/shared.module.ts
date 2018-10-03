@@ -39,7 +39,7 @@ import {MaterialModule} from './material.module';
 import {UIRouterModule} from '@uirouter/angular';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
-export function createTranslateLoader(http: HttpClient) {
+export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
 }
 
@@ -119,7 +119,7 @@ export class SharedModule {
         SharedModule.initTranslateService(translate);
     }
 
-    private static initTranslateService(translate: TranslateService) {
+    private static initTranslateService(translate: TranslateService): void {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('de');
         // the lang to use, if the lang isn't available, it will use the current loader to get them

@@ -95,15 +95,17 @@ export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
         this._geloescht = value;
     }
 
-    public getDescription(): string {
+    public getDescription(): string | null {
         if (this.institution) {
             return this.institution.name;
-        } else if (this.traegerschaft) {
-            return this.traegerschaft.name;
-        } else if (!EbeguUtil.isEmptyStringNullOrUndefined(this.gemeinden)) {
-            return this.gemeinden;
-        } else {
-            return null;
         }
+        if (this.traegerschaft) {
+            return this.traegerschaft.name;
+        }
+        if (!EbeguUtil.isEmptyStringNullOrUndefined(this.gemeinden)) {
+            return this.gemeinden;
+        }
+
+        return null;
     }
 }

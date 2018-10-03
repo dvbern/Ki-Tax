@@ -20,7 +20,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {SharedModuleOverrides} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -50,7 +50,7 @@ describe('OnboardingComponent', () => {
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ]
         })
-            .overrideModule(SharedModule, SharedModuleOverrides)
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 

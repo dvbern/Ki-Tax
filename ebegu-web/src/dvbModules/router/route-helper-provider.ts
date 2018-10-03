@@ -40,7 +40,9 @@ export default class RouterHelperProvider implements IServiceProvider {
 
     private readonly routerHelper: RouterHelper;
 
-    public constructor($locationProvider: ILocationProvider, $stateProvider: StateProvider, $uiRouterProvider: UIRouter) {
+    public constructor($locationProvider: ILocationProvider,
+                       $stateProvider: StateProvider,
+                       $uiRouterProvider: UIRouter) {
         $locationProvider.html5Mode(false);
         this.routerHelper = new RouterHelper($stateProvider, $uiRouterProvider);
     }

@@ -13,22 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpResponse, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
+import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TSAntragDTO from '../../models/TSAntragDTO';
 
 export default class SearchRS implements IEntityRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     public serviceURL: string;
 
     public constructor(public $http: IHttpService,
                        REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       private readonly $log: ILogService) {
-        this.serviceURL = REST_API + 'search';
+                       public ebeguRestUtil: EbeguRestUtil) {
+        this.serviceURL = `${REST_API}search`;
     }
 
     public getServiceName(): string {
@@ -36,39 +35,31 @@ export default class SearchRS implements IEntityRS {
     }
 
     public searchAntraege(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
-        return this.$http.post(this.serviceURL + '/search/', antragSearch, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING antraege REST array object', response.data);
-            return new TSAntragSearchresultDTO(this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs), response.data.paginationDTO.totalItemCount);
-        });
+        return this.$http.post(`${this.serviceURL}/search/`, antragSearch)
+            .then(response => this.toAntragSearchresult(response));
     }
 
     public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
-        return this.$http.post(this.serviceURL + '/jugendamt/', antragSearch, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING antraege REST array object', response.data);
-            return new TSAntragSearchresultDTO(this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs), response.data.paginationDTO.totalItemCount);
-        });
+        return this.$http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
+            .then(response => this.toAntragSearchresult(response));
+    }
+
+    private toAntragSearchresult(response: IHttpResponse<any>): TSAntragSearchresultDTO {
+        const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs);
+
+        return new TSAntragSearchresultDTO(tsAntragDTOS, response.data.paginationDTO.totalItemCount);
     }
 
     public getPendenzenListForUser(userId: string): IPromise<Array<TSAntragDTO>> {
-        return this.$http.get(this.serviceURL + '/jugendamt/user/' + encodeURIComponent(userId))
+        return this.$http.get(`${this.serviceURL}/jugendamt/user/${encodeURIComponent(userId)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING pendenz REST object ', response.data);
                 return this.ebeguRestUtil.parseAntragDTOs(response.data);
             });
     }
 
     public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {
-        return this.$http.get(this.serviceURL + '/gesuchsteller/' + encodeURIComponent(dossierId))
+        return this.$http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
             .then((response: any) => {
-                this.$log.debug('PARSING pendenz REST object ', response.data);
                 return this.ebeguRestUtil.parseAntragDTOs(response.data);
             });
     }

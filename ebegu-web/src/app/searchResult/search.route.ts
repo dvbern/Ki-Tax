@@ -19,7 +19,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 searchRun.$inject = ['RouterHelper'];
 
-export function searchRun(routerHelper: RouterHelper) {
+export function searchRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

@@ -20,13 +20,6 @@ import {MandantRS} from '../app/core/service/mandantRS.rest';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-
-adminRun.$inject = ['RouterHelper'];
-
-export function adminRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States);
-}
-
 export class IGesuchsperiodeStateParams {
     public gesuchsperiodeId: string;
 }
@@ -158,3 +151,9 @@ const ng1States: Ng1StateDeclaration[] = [
         },
     },
 ];
+
+adminRun.$inject = ['RouterHelper'];
+
+export function adminRun(routerHelper: RouterHelper): void {
+    routerHelper.configureStates(ng1States);
+}

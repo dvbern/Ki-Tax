@@ -66,7 +66,7 @@ export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
         this._adressen = adr;
     }
 
-    public addAdresse(value: TSAdresseContainer) {
+    public addAdresse(value: TSAdresseContainer): void {
         if (this._adressen) {
             this._adressen.push(value);
         }

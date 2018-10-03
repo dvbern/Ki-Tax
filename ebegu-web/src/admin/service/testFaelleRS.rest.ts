@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService} from 'angular';
-import DateUtil from '../../utils/DateUtil';
 import * as moment from 'moment';
+import DateUtil from '../../utils/DateUtil';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import IPromise = angular.IPromise;
 
 export class TestFaelleRS {
@@ -28,31 +28,47 @@ export class TestFaelleRS {
     public constructor(public http: IHttpService,
                        REST_API: string,
                        public readonly ebeguRestUtil: EbeguRestUtil) {
-        this.serviceURL = REST_API + 'testfaelle';
+        this.serviceURL = `${REST_API}testfaelle`;
     }
 
     public getServiceName(): string {
         return 'TestFaelleRS';
     }
 
-    public createTestFallGS(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean,
+    public createTestFallGS(testFall: string,
+                            gesuchsperiodeId: string,
+                            gemeindeId: string,
+                            bestaetigt: boolean,
+                            verfuegen: boolean,
                             username: string): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/testfallgs/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + gemeindeId
-            + '/' + bestaetigt + '/' + verfuegen + '/' + encodeURIComponent(username));
+        // TODO that is a strange API path. Configuration does not belong in a hierarchy. Use POST and move the
+        // parameter to the method body
+        // tslint:disable-next-line:max-line-length
+        const url = `${this.serviceURL}/testfallgs/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}/${encodeURIComponent(
+            username)}`;
+        return this.http.get(url);
     }
 
-    public removeFaelleOfGS(username: string): IHttpPromise<String> {
-        return this.http.delete(this.serviceURL + '/testfallgs/' + encodeURIComponent(username));
+    public removeFaelleOfGS(username: string): IHttpPromise<string> {
+        return this.http.delete(`${this.serviceURL}/testfallgs/${encodeURIComponent(username)}`);
     }
 
-    public createTestFall(testFall: string, gesuchsperiodeId: string, gemeindeId: string, bestaetigt: boolean, verfuegen: boolean): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/testfall/' + encodeURIComponent(testFall) + '/' + gesuchsperiodeId + '/' + gemeindeId
-            + '/' + bestaetigt + '/' + verfuegen);
+    public createTestFall(testFall: string,
+                          gesuchsperiodeId: string,
+                          gemeindeId: string,
+                          bestaetigt: boolean,
+                          verfuegen: boolean): IHttpPromise<string> {
+        // tslint:disable-next-line:max-line-length
+        const url = `${this.serviceURL}/testfall/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}`;
+
+        return this.http.get(url);
     }
 
-    public mutiereFallHeirat(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/mutationHeirat/' + dossierid + '/' +
-            encodeURIComponent(gesuchsperiodeid), {
+    public mutiereFallHeirat(dossierid: string,
+                             gesuchsperiodeid: string,
+                             mutationsdatum: moment.Moment,
+                             aenderungper: moment.Moment): IHttpPromise<string> {
+        return this.http.get(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
                 aenderungper: DateUtil.momentToLocalDate(aenderungper)
@@ -60,35 +76,39 @@ export class TestFaelleRS {
         });
     }
 
-    public mutiereFallScheidung(dossierid: string, gesuchsperiodeid: string, mutationsdatum: moment.Moment, aenderungper: moment.Moment): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/mutationScheidung/' + dossierid + '/' +
-            encodeURIComponent(gesuchsperiodeid), {
-            params: {
-                mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                aenderungper: DateUtil.momentToLocalDate(aenderungper)
-            }
-        });
+    public mutiereFallScheidung(dossierid: string,
+                                gesuchsperiodeid: string,
+                                mutationsdatum: moment.Moment,
+                                aenderungper: moment.Moment): IHttpPromise<string> {
+        const url = `${this.serviceURL}/mutationScheidung/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`;
+        return this.http.get(url,
+            {
+                params: {
+                    mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
+                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
+                }
+            });
     }
 
     public resetSchulungsdaten(): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/schulung/reset');
+        return this.http.get(`${this.serviceURL}/schulung/reset`);
     }
 
     public createSchulungsdaten(): IHttpPromise<string> {
-        return this.http.get(this.serviceURL + '/schulung/create');
+        return this.http.get(`${this.serviceURL}/schulung/create`);
     }
 
     public deleteSchulungsdaten(): IHttpPromise<string> {
-        return this.http.delete(this.serviceURL + '/schulung/delete');
+        return this.http.delete(`${this.serviceURL}/schulung/delete`);
     }
 
     public getSchulungBenutzer(): IPromise<string[]> {
-        return this.http.get(this.serviceURL + '/schulung/public/user').then((response: any) => {
+        return this.http.get(`${this.serviceURL}/schulung/public/user`).then((response: any) => {
             return response.data;
         });
     }
 
     public processScript(scriptNr: string): IHttpPromise<any> {
-        return this.http.get(this.serviceURL + '/processscript/' + scriptNr);
+        return this.http.get(`${this.serviceURL}/processscript/${scriptNr}`);
     }
 }

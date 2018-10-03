@@ -14,20 +14,21 @@
  */
 
 import {IHttpParamSerializer, IHttpService, ILogService, IPromise} from 'angular';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 /**
  * spricht die reportAsync resourec an welce die reports async generiert
  */
 export class ReportAsyncRS {
 
-    public static $inject = ['$httpParamSerializer', 'REST_API', '$log', '$window', 'EbeguRestUtil', '$http'];
+    public static $inject = ['$httpParamSerializer', 'REST_API', '$log', '$http'];
     public serviceURL: string;
     public reportingTimeout: number = 240000;
 
-    public constructor(public httpParamSerializer: IHttpParamSerializer, REST_API: string, public log: ILogService, private readonly $window: ng.IWindowService, public ebeguRestUtil: EbeguRestUtil,
+    public constructor(public httpParamSerializer: IHttpParamSerializer,
+                       REST_API: string,
+                       public log: ILogService,
                        public http: IHttpService) {
-        this.serviceURL = REST_API + 'reporting/async';
+        this.serviceURL = `${REST_API}reporting/async`;
     }
 
     public getGesuchStichtagReportExcel(dateTimeStichtag: string, gesuchPeriodeID: string): IPromise<string> {
@@ -37,7 +38,8 @@ export class ReportAsyncRS {
             gesuchPeriodeID
         });
 
-        return this.http.get(this.serviceURL + '/excel/gesuchStichtag?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/gesuchStichtag?${reportParams}`,
+            {timeout: this.reportingTimeout})
             .then((response: any) => {
                 this.log.debug('Queued Job returned ', response.data);
                 return response.data;
@@ -45,7 +47,9 @@ export class ReportAsyncRS {
 
     }
 
-    public getGesuchZeitraumReportExcel(dateTimeFrom: string, dateTimeTo: string, gesuchPeriodeID: string): IPromise<string> {
+    public getGesuchZeitraumReportExcel(dateTimeFrom: string,
+                                        dateTimeTo: string,
+                                        gesuchPeriodeID: string): IPromise<string> {
 
         const reportParams = this.httpParamSerializer({
             dateTimeFrom,
@@ -53,7 +57,8 @@ export class ReportAsyncRS {
             gesuchPeriodeID
         });
 
-        return this.http.get(this.serviceURL + '/excel/gesuchZeitraum?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/gesuchZeitraum?${reportParams}`,
+            {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
@@ -66,7 +71,7 @@ export class ReportAsyncRS {
             auswertungBis
         });
 
-        return this.http.get(this.serviceURL + '/excel/kanton?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/kanton?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
@@ -77,7 +82,8 @@ export class ReportAsyncRS {
             auswertungVon,
             auswertungBis
         });
-        return this.http.get(this.serviceURL + '/excel/mitarbeiterinnen?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/mitarbeiterinnen?${reportParams}`,
+            {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
@@ -89,7 +95,8 @@ export class ReportAsyncRS {
             zahlungsauftragID
         });
 
-        return this.http.get(this.serviceURL + '/excel/zahlungsauftrag?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/zahlungsauftrag?${reportParams}`,
+            {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
@@ -101,7 +108,7 @@ export class ReportAsyncRS {
             zahlungID
         });
 
-        return this.http.get(this.serviceURL + '/excel/zahlung?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/zahlung?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
@@ -112,39 +119,45 @@ export class ReportAsyncRS {
             gesuchsperiodeID: gesuchsperiode
         });
 
-        return this.http.get(this.serviceURL + '/excel/zahlungperiode?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/zahlungperiode?${reportParams}`,
+            {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
 
     }
 
-    public getGesuchstellerKinderBetreuungReportExcel(auswertungVon: string, auswertungBis: string, gesuchPeriodeID: string): IPromise<string> {
+    public getGesuchstellerKinderBetreuungReportExcel(auswertungVon: string,
+                                                      auswertungBis: string,
+                                                      gesuchPeriodeID: string): IPromise<string> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
             gesuchPeriodeID
         });
-        return this.http.get(this.serviceURL + '/excel/gesuchstellerkinderbetreuung?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/gesuchstellerkinderbetreuung?${reportParams}`,
+            {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
     }
 
     public getBenutzerReportExcel(): IPromise<string> {
-        return this.http.get(this.serviceURL + '/excel/benutzer')
+        return this.http.get(`${this.serviceURL}/excel/benutzer`)
             .then((response: any) => {
                 return response.data;
             });
     }
 
-    public getKinderReportExcel(auswertungVon: string, auswertungBis: string, gesuchPeriodeID: string): IPromise<string> {
+    public getKinderReportExcel(auswertungVon: string,
+                                auswertungBis: string,
+                                gesuchPeriodeID: string): IPromise<string> {
         const reportParams = this.httpParamSerializer({
             auswertungVon,
             auswertungBis,
             gesuchPeriodeID
         });
-        return this.http.get(this.serviceURL + '/excel/kinder?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/kinder?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });
@@ -154,7 +167,7 @@ export class ReportAsyncRS {
         const reportParams = this.httpParamSerializer({
             stichtag
         });
-        return this.http.get(this.serviceURL + '/excel/gesuchsteller?' + reportParams, {timeout: this.reportingTimeout})
+        return this.http.get(`${this.serviceURL}/excel/gesuchsteller?${reportParams}`, {timeout: this.reportingTimeout})
             .then((response: any) => {
                 return response.data;
             });

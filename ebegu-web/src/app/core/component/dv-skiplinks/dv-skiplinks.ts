@@ -40,7 +40,7 @@ export class DvSkiplinksController implements IDVFocusableController {
     public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(private readonly $state: StateService,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly ebeguUtil: EbeguUtil) {
     }
 
@@ -72,7 +72,7 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        this.DvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
+        this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
             text: this.ebeguUtil.getKontaktJugendamt(),
             parentController: this

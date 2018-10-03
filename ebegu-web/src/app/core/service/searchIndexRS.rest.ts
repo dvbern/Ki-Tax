@@ -23,27 +23,27 @@ export class SearchIndexRS {
     public serviceURL: string;
 
     public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
-        this.serviceURL = REST_API + 'search/';
+        this.serviceURL = `${REST_API}search/`;
     }
 
     /**
      * performs a global search that will only return a certain ammount of results
      * @param query searchstring
-     * @returns {IPromise<TSQuickSearchResult>}
      */
     public quickSearch(query: string): IPromise<TSQuickSearchResult> {
-        return this.http.get(this.serviceURL + 'quicksearch' + '/' + query).then((response: IHttpResponse<TSQuickSearchResult>) => {
-            return this.ebeguRestUtil.parseQuickSearchResult(response.data);
-        });
+        return this.search(`${this.serviceURL}quicksearch/${query}`);
     }
 
     /**
      * performs a global search that will return the full number of matched results
      * @param query searchstring
-     * @returns {IPromise<TSQuickSearchResult>}
      */
     public globalSearch(query: string): IPromise<TSQuickSearchResult> {
-        return this.http.get(this.serviceURL + 'globalsearch' + '/' + query).then((response: IHttpResponse<TSQuickSearchResult>) => {
+        return this.search(`${this.serviceURL}globalsearch/${query}`);
+    }
+
+    private search(url: string): IPromise<TSQuickSearchResult> {
+        return this.http.get(url).then((response: IHttpResponse<TSQuickSearchResult>) => {
             return this.ebeguRestUtil.parseQuickSearchResult(response.data);
         });
     }

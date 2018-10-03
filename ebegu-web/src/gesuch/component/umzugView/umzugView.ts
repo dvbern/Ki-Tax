@@ -47,9 +47,17 @@ export class UmzugViewComponentConfig implements IComponentOptions {
 
 export class UmzugViewController extends AbstractGesuchViewController<Array<TSUmzugAdresse>> {
 
-    public static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'ErrorService',
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'WizardStepManager',
+        'ErrorService',
         '$translate',
-        'DvDialog', '$q', '$scope', '$timeout'];
+        'DvDialog',
+        '$q',
+        '$scope',
+        '$timeout'
+    ];
 
     public dirty = false;
 
@@ -58,7 +66,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
                        wizardStepManager: WizardStepManager,
                        private readonly errorService: ErrorService,
                        private readonly $translate: ITranslateService,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly $q: IQService,
                        $scope: IScope,
                        $timeout: ITimeoutService) {
@@ -184,7 +192,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
 
     public removeUmzugAdresse(adresse: TSUmzugAdresse): void {
         const remTitleText = this.$translate.instant('UMZUG_LOESCHEN');
-        this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: '',
             parentController: undefined,

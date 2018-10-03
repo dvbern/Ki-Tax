@@ -68,7 +68,8 @@ export class DvBisher implements IController {
     }
 
     public $onInit(): void {
-        if (this.showIfBisherNone === undefined) {// wenn nicht von aussen gesetzt auf true
+        if (this.showIfBisherNone === undefined) {
+            // wenn nicht von aussen gesetzt auf true
             this.showIfBisherNone = true;
         }
     }
@@ -116,9 +117,9 @@ export class DvBisher implements IController {
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
             return this.equals(DateUtil.momentToLocalDateFormat(gs, defaultDateFormat),
-                DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
+                               DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
         }
-        if (gs instanceof Array) {
+        if (Array.isArray(gs)) {
             return JSON.stringify(gs) === JSON.stringify(ja);
         }
         return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); // either they are equal or both are a form of empty

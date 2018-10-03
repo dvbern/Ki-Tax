@@ -25,7 +25,7 @@ import TestDataUtil from '../../../../../utils/TestDataUtil.spec';
 import GesuchsperiodeRS from '../../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../../core/service/institutionStammdatenRS.rest';
-import {EbeguWebPendenzenBetreuungen} from '../../pendenzenBetreuungen.module';
+import {PENDENZEN_BETREUUNGEN_JS_MODULE} from '../../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
 import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenListView';
 
@@ -44,7 +44,7 @@ describe('pendenzenBetreuungenListView', () => {
     let $state: StateService;
     let gemeindeRS: GemeindeRS;
 
-    beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
+    beforeEach(angular.mock.module(PENDENZEN_BETREUUNGEN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

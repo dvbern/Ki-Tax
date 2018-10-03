@@ -17,33 +17,40 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 
 // Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu
 // implementieren.
-PosteingangFilter.$inject = ['$filter'];
+posteingangFilter.$inject = ['$filter'];
 
 // Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden
 // Comparator aufgerufen. Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach
 // implementiert wird.
-export function PosteingangFilter($filter: any) {
+export function posteingangFilter($filter: any): (array: any, expression: any) => any {
     const filterFilter = $filter('filter');
     const dateFilter = $filter('date');
 
     const standardComparator = (obj: any, text: any) => {
-        text = ('' + text).toLowerCase();
-        return ('' + obj).toLowerCase().indexOf(text) > -1;
+        const result = ('' + text).toLowerCase();
+
+        return ('' + obj).toLowerCase().indexOf(result) > -1;
     };
 
     return (array: any, expression: any) => {
-        function customComparator(actual: any, expected: any) {
+        function customComparator(actual: any, expected: any): boolean {
             // Von
             if (expression.sender && expression.sender === expected) {
                 return actual.getFullName().toUpperCase().indexOf(expected.toUpperCase()) >= 0;
             }
             // Fall-Nummer
-            if (expression.dossier && expression.dossier.fall && expression.dossier.fall.fallNummer && expression.dossier.fall.fallNummer === expected) {
+            if (expression.dossier
+                && expression.dossier.fall
+                && expression.dossier.fall.fallNummer
+                && expression.dossier.fall.fallNummer === expected) {
                 const actualString = EbeguUtil.addZerosToFallNummer(actual);
                 return actualString.indexOf(expected) >= 0;
             }
             // Familie
-            if (expression.dossier && expression.dossier.fall && expression.dossier.fall.besitzer && expression.dossier.fall.besitzer === expected) {
+            if (expression.dossier
+                && expression.dossier.fall
+                && expression.dossier.fall.besitzer
+                && expression.dossier.fall.besitzer === expected) {
                 if (actual) {
                     return actual.getFullName().toUpperCase().indexOf(expected.toUpperCase()) >= 0;
                 }

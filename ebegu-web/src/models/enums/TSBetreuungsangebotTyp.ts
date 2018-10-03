@@ -31,12 +31,12 @@ export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp>
             TSBetreuungsangebotTyp.TAGESSCHULE,
             TSBetreuungsangebotTyp.FERIENINSEL
         ];
-    } else {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-        ];
     }
+
+    return [
+        TSBetreuungsangebotTyp.KITA,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
+    ];
 }
 
 /**
@@ -49,12 +49,12 @@ export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array
             TSBetreuungsangebotTyp.TAGESFAMILIEN,
             TSBetreuungsangebotTyp.TAGESSCHULE
         ];
-    } else {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN
-        ];
     }
+
+    return [
+        TSBetreuungsangebotTyp.KITA,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN
+    ];
 }
 
 export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {

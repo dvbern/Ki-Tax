@@ -14,8 +14,8 @@
  */
 
 import * as angular from 'angular';
-import {of} from 'rxjs';
-import {TSAuthEvent} from '../models/enums/TSAuthEvent';
+import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
+import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
 import TSDossier from '../models/TSDossier';
@@ -24,24 +24,41 @@ import TSGesuch from '../models/TSGesuch';
 
 ngServicesMock.$inject = ['$provide'];
 
-export function ngServicesMock($provide: angular.auto.IProvideService) {
-    $provide.service('AuthLifeCycleService', function () {
-        this.get$ = of;
-        this.changeAuthStatus = (status: TSAuthEvent, message?: string) => {
-        };
-    });
-    $provide.service('GesuchGenerator', function () {
-        this.initGesuch = (eingangsart: TSEingangsart,
-                           creationAction: TSCreationAction,
-                           gesuchsperiodeId: string) => {
-            const gesuch = new TSGesuch();
-            gesuch.dossier = new TSDossier();
-            gesuch.eingangsart = eingangsart;
-            return Promise.resolve(gesuch);
-        };
-        this.createNewFall = (fall: TSFall) => Promise.resolve(fall);
-        this.createNewDossier = (dossier: TSDossier) => Promise.resolve(dossier);
-        this.createNewGesuch = (gesuch: TSGesuch) => Promise.resolve(gesuch);
-    });
+class GesuchGeneratorMock extends GesuchGenerator {
+
+    public constructor() {
+        super(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+    }
+
+    public initGesuch(
+        eingangsart: TSEingangsart,
+        _creationAction: TSCreationAction,
+        _gesuchsperiodeId: string,
+        _currentFall: TSFall,
+        _currentDossier: TSDossier,
+    ): angular.IPromise<TSGesuch> {
+
+        const gesuch = new TSGesuch();
+        gesuch.dossier = new TSDossier();
+        gesuch.eingangsart = eingangsart;
+        return Promise.resolve(gesuch);
+    }
+
+    public createNewGesuch(gesuch: TSGesuch): angular.IPromise<TSGesuch> {
+        return Promise.resolve(gesuch);
+    }
+
+    public createNewDossier(dossier: TSDossier): angular.IPromise<TSDossier> {
+        return Promise.resolve(dossier);
+    }
+
+    public createNewFall(fall: TSFall): angular.IPromise<TSFall> {
+        return Promise.resolve(fall);
+    }
+}
+
+export function ngServicesMock($provide: angular.auto.IProvideService): void {
+    $provide.service('AuthLifeCycleService', AuthLifeCycleService);
+    $provide.service('GesuchGenerator', GesuchGeneratorMock);
     $provide.value('LOCALE_ID', 'de-CH');
 }

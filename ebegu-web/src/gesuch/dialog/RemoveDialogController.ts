@@ -15,32 +15,37 @@
 
 import {IPromise} from 'angular';
 import {IDVFocusableController} from '../../app/core/component/IDVFocusableController';
+import EbeguUtil from '../../utils/EbeguUtil';
+import ILogService = angular.ILogService;
+import IQService = angular.IQService;
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
-import IQService = angular.IQService;
-import ILogService = angular.ILogService;
 
 export class RemoveDialogController {
 
-    public static $inject = ['$mdDialog', '$translate', '$q', '$log', 'title', 'deleteText', 'parentController', 'elementID', 'form'];
+    public static $inject = ['$mdDialog', '$translate', '$q', '$log', 'title', 'deleteText', 'parentController',
+        'elementID', 'form'];
 
     public deleteText: string;
     public title: string;
 
-    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, private readonly $q: IQService, private readonly $log: ILogService, title: string,
+    public constructor(private readonly $mdDialog: IDialogService,
+                       $translate: ITranslateService,
+                       private readonly $q: IQService,
+                       private readonly $log: ILogService,
+                       title: string,
                        deleteText: string,
-                       private readonly parentController: IDVFocusableController, private readonly elementID: string, private readonly form: any) {
-        if (deleteText !== undefined && deleteText !== null) {
-            this.deleteText = $translate.instant(deleteText);
-        } else {
-            this.deleteText = $translate.instant('LOESCHEN_DIALOG_TEXT');
-        }
+                       private readonly parentController: IDVFocusableController,
+                       private readonly elementID: string,
+                       private readonly form: any) {
 
-        if (title !== undefined && title !== null) {
-            this.title = $translate.instant(title);
-        } else {
-            this.title = $translate.instant('LOESCHEN_DIALOG_TITLE');
-        }
+        this.deleteText = EbeguUtil.isNotNullOrUndefined(deleteText) ?
+            $translate.instant(deleteText) :
+            $translate.instant('LOESCHEN_DIALOG_TEXT');
+
+        this.title = EbeguUtil.isNotNullOrUndefined(title) ?
+            $translate.instant(title) :
+            $translate.instant('LOESCHEN_DIALOG_TITLE');
     }
 
     public hide(): IPromise<any> {

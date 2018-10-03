@@ -35,10 +35,10 @@ export class MockDvLoadingButton {
     @Input() public ariaLabel: string;
     @Input() public inputId: string;
 
-    @Output() public buttonClick: EventEmitter<void>;
+    @Output() public readonly buttonClick: EventEmitter<void>;
 }
 
-export const SharedModuleOverrides = {
+export const SHARED_MODULE_OVERRIDES = {
     remove: {
         declarations: [LoadingButtonDirective],
         exports: [LoadingButtonDirective],

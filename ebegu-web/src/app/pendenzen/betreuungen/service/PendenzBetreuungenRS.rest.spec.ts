@@ -17,7 +17,7 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSPendenzBetreuung from '../../../../models/TSPendenzBetreuung';
 import EbeguRestUtil from '../../../../utils/EbeguRestUtil';
-import {EbeguWebPendenzenBetreuungen} from '../pendenzenBetreuungen.module';
+import {PENDENZEN_BETREUUNGEN_JS_MODULE} from '../pendenzenBetreuungen.module';
 import PendenzBetreuungenRS from './PendenzBetreuungenRS.rest';
 
 describe('pendenzBetreuungenRS', () => {
@@ -28,7 +28,7 @@ describe('pendenzBetreuungenRS', () => {
     let mockPendenzBetreuungen: TSPendenzBetreuung;
     let mockPendenzBetreuungenRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebPendenzenBetreuungen.name));
+    beforeEach(angular.mock.module(PENDENZEN_BETREUUNGEN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

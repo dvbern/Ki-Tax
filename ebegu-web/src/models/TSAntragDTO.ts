@@ -240,11 +240,9 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     }
 
     public get gesuchsperiodeString(): string {
-        if (this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis) {
-            return this._gesuchsperiodeGueltigAb.year() + '/'
-                + (this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000);
-        }
-        return undefined;
+        return this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis ?
+            `${this._gesuchsperiodeGueltigAb.year()}/${this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000}` :
+            undefined;
     }
 
     public get eingangsart(): TSEingangsart {

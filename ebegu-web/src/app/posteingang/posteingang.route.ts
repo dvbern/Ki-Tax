@@ -19,7 +19,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 posteingangRun.$inject = ['RouterHelper'];
 
-export function posteingangRun(routerHelper: RouterHelper) {
+export function posteingangRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

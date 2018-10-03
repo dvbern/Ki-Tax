@@ -70,7 +70,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     public constructor(gesuchModelManager: GesuchModelManager,
                        berechnungsManager: BerechnungsManager,
                        wizardStepManager: WizardStepManager,
-                       private readonly DvDialog: DvDialog,
+                       private readonly dvDialog: DvDialog,
                        private readonly $translate: ITranslateService,
                        private readonly $q: IQService,
                        private readonly errorService: ErrorService,
@@ -190,7 +190,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         }
 
         const remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
-        this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: '',
             parentController: undefined,

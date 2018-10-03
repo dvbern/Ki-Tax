@@ -17,7 +17,7 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {StatistikViewComponentConfig} from './component/statistikView/statistikView';
 import {statistikRun} from './statistik.route';
 
-export const EbeguWebStatistik =
+export const STATISTIK_JS_MODULE =
     angular.module('ebeguWeb.statistik', [CORE_JS_MODULE.name])
         .run(statistikRun)
         .component('statistikView', new StatistikViewComponentConfig());

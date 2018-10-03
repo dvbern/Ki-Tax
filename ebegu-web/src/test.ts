@@ -27,6 +27,7 @@ require('angular-mocks');
 
 import {getTestBed} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
+// tslint:disable:no-import-side-effect
 import '@uirouter/angular-hybrid';
 import 'angular-animate';
 import 'angular-aria';
@@ -43,6 +44,7 @@ import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'ng-file-upload';
+// tslint:enable:no-import-side-effect
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(

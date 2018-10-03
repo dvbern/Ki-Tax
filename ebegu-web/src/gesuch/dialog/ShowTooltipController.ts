@@ -25,13 +25,13 @@ export class ShowTooltipController {
     public title: string;
     public text: string;
 
-    public constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, text: string,
+    public constructor(private readonly $mdDialog: IDialogService,
+                       $translate: ITranslateService,
+                       _title: string,
+                       text: string,
                        private readonly parentController: IDVFocusableController) {
-        if (text !== undefined && text !== null) {
-            this.text = $translate.instant(text);
-        } else {
-            this.text = 'test';
-        }
+
+        this.text = text !== undefined && text !== null ? $translate.instant(text) : 'test';
     }
 
     public hide(): IPromise<any> {

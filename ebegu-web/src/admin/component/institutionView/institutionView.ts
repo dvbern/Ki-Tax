@@ -48,7 +48,8 @@ export class InstitutionViewComponentConfig implements IComponentOptions {
 
 export class InstitutionViewController extends AbstractAdminViewController {
 
-    public static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil', 'AuthServiceRS', '$stateParams', '$state'];
+    public static $inject = ['InstitutionRS', 'InstitutionStammdatenRS', 'ErrorService', 'DvDialog', 'EbeguUtil',
+        'AuthServiceRS', '$stateParams', '$state'];
 
     public form: IFormController;
 
@@ -71,15 +72,17 @@ export class InstitutionViewController extends AbstractAdminViewController {
         super(authServiceRS);
     }
 
-    public $onInit() {
+    public $onInit(): void {
         this.setBetreuungsangebotTypValues();
+
         if (this.$stateParams.institutionId) {
             this.institutionRS.findInstitution(this.$stateParams.institutionId).then((found: TSInstitution) => {
                 this.setSelectedInstitution(found);
             });
-        } else {
-            this.createInstitution();
+            return;
         }
+
+        this.createInstitution();
     }
 
     public getTreagerschaftList(): Array<TSTraegerschaft> {
@@ -96,9 +99,10 @@ export class InstitutionViewController extends AbstractAdminViewController {
         this.selectedInstitution = institution;
         this.selectedInstitutionStammdaten = undefined;
         if (!this.isCreateInstitutionsMode()) {
-            this.institutionStammdatenRS.getAllInstitutionStammdatenByInstitution(this.selectedInstitution.id).then(loadedInstStammdaten => {
-                this.instStammdatenList = loadedInstStammdaten;
-            });
+            this.institutionStammdatenRS.getAllInstitutionStammdatenByInstitution(this.selectedInstitution.id).then(
+                loadedInstStammdaten => {
+                    this.instStammdatenList = loadedInstStammdaten;
+                });
         }
         this.errormessage = undefined;
     }
@@ -112,20 +116,20 @@ export class InstitutionViewController extends AbstractAdminViewController {
     }
 
     public saveInstitution(form: IFormController): void {
-        if (form.$valid) {
-            this.errorService.clearAll();
-            if (this.isCreateInstitutionsMode()) {
-                this.institutionRS.createInstitution(this.selectedInstitution).then((institution: TSInstitution) => {
-                    this.setSelectedInstitution(institution);
-                });
-            } else {
-                this.institutionRS.updateInstitution(this.selectedInstitution).then((institution: TSInstitution) => {
-                });
-            }
+        if (!form.$valid) {
+            return;
+        }
+
+        this.errorService.clearAll();
+        if (this.isCreateInstitutionsMode()) {
+            this.institutionRS.createInstitution(this.selectedInstitution)
+                .then(institution => this.setSelectedInstitution(institution));
+        } else {
+            this.institutionRS.updateInstitution(this.selectedInstitution);
         }
     }
 
-    private goBack() {
+    private goBack(): void {
         this.$state.go('admin.institutionen');
     }
 
@@ -140,12 +144,12 @@ export class InstitutionViewController extends AbstractAdminViewController {
             parentController: undefined,
             elementID: undefined,
         }).then(() => {   // User confirmed removal
-            this.institutionStammdatenRS.removeInstitutionStammdaten(institutionStammdaten.id).then(result => {
+            this.institutionStammdatenRS.removeInstitutionStammdaten(institutionStammdaten.id).then(() => {
                 const index = EbeguUtil.getIndexOfElementwithID(institutionStammdaten, this.instStammdatenList);
                 if (index > -1) {
                     this.instStammdatenList.splice(index, 1);
                 }
-            }).catch(ex => {
+            }).catch(() => {
                 this.errormessage = 'INSTITUTION_STAMMDATEN_DELETE_FAILED';
             });
         });
@@ -153,16 +157,14 @@ export class InstitutionViewController extends AbstractAdminViewController {
 
     public getDateString(dateRange: TSDateRange, format: string): string {
         if (dateRange.gueltigAb) {
-            if (!dateRange.gueltigBis) {
-                return dateRange.gueltigAb.format(format);
-            } else {
-                return dateRange.gueltigAb.format(format) + ' - ' + dateRange.gueltigBis.format(format);
-            }
+            return dateRange.gueltigBis ?
+                `${dateRange.gueltigAb.format(format)} - ${dateRange.gueltigBis.format(format)}` :
+                dateRange.gueltigAb.format(format);
         }
         return '';
     }
 
-    public getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp) {
+    public getBetreuungsangebotFromInstitutionList(betreuungsangebotTyp: TSBetreuungsangebotTyp): any {
         return $.grep(this.betreuungsangebotValues, (value: any) => {
             return value.key === betreuungsangebotTyp;
         })[0];
@@ -172,7 +174,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(getTSBetreuungsangebotTypValues());
     }
 
-    public editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten) {
+    public editInstitutionStammdaten(institutionstammdaten: TSInstitutionStammdaten): void {
         this.$state.go('admin.institutionstammdaten', {
             institutionId: this.selectedInstitution.id,
             institutionStammdatenId: institutionstammdaten.id

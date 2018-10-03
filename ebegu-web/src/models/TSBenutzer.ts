@@ -202,18 +202,18 @@ export default class TSBenutzer {
     }
 
     public getFullName(): string {
-        return (this.vorname ? this.vorname : '') + ' ' + (this.nachname ? this.nachname : '');
+        return `${this.vorname ? this.vorname : ''} ${this.nachname ? this.nachname : ''}`;
     }
 
     public getRoleKey(): string {
         return rolePrefix() + this.currentBerechtigung.role;
     }
 
-    public getCurrentRole() {
+    public getCurrentRole(): TSRole {
         return this.currentBerechtigung.role;
     }
 
-    public hasJustOneGemeinde() {
+    public hasJustOneGemeinde(): boolean {
         return this.extractCurrentAktiveGemeinden().length === 1;
     }
 

@@ -21,7 +21,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 pendenzRun.$inject = ['RouterHelper'];
 
-export function pendenzRun(routerHelper: RouterHelper) {
+export function pendenzRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 

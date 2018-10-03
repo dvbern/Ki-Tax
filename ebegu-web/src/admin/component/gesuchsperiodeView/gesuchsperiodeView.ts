@@ -42,8 +42,10 @@ export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
 
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
-    public static $inject = ['EinstellungRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log',
-        '$stateParams', '$state', 'AuthServiceRS'];
+    public static $inject = [
+        'EinstellungRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log',
+        '$stateParams', '$state', 'AuthServiceRS'
+    ];
 
     public form: IFormController;
     public gesuchsperiode: TSGesuchsperiode;
@@ -53,14 +55,15 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public datumFreischaltungTagesschule: moment.Moment;
     public datumFreischaltungMax: moment.Moment;
 
-    public constructor(private readonly einstellungenRS: EinstellungRS,
-                       private readonly dvDialog: DvDialog,
-                       private readonly globalCacheService: GlobalCacheService,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly $log: ILogService,
-                       private readonly $stateParams: IGesuchsperiodeStateParams,
-                       private readonly $state: StateService,
-                       authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly einstellungenRS: EinstellungRS,
+        private readonly dvDialog: DvDialog,
+        private readonly globalCacheService: GlobalCacheService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $log: ILogService,
+        private readonly $stateParams: IGesuchsperiodeStateParams,
+        private readonly $state: StateService,
+        authServiceRS: AuthServiceRS) {
         super(authServiceRS);
     }
 

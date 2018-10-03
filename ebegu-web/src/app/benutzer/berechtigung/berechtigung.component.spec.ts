@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {of} from 'rxjs';
@@ -78,11 +78,12 @@ describe('EditBerechtigungComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load institutionen and traegerschaften', () => {
+    it('should load institutionen and traegerschaften', fakeAsync(() => {
         fixture.detectChanges();
+        tick();
         expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
         expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
-    });
+    }));
 
     it('should display gemeinde when gemeinde dependent role', () => {
         component.berechtigung.role = TSRole.ADMIN_GEMEINDE;

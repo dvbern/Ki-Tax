@@ -49,7 +49,7 @@ export function configure($translateProvider: ITranslateProvider,
 
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
-        const unsavedWarningsConfigProvider = $injector.get('unsavedWarningsConfigProvider');
+        const unsavedWarningsConfigProvider: any = $injector.get('unsavedWarningsConfigProvider');
         unsavedWarningsConfigProvider.useTranslateService = true;
         unsavedWarningsConfigProvider.logEnabled = false;
         unsavedWarningsConfigProvider.navigateMessage = 'UNSAVED_WARNING';

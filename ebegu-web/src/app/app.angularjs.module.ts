@@ -18,8 +18,6 @@ import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
 import ADMIN_JS_MODULE from '../admin/admin.module';
 import {GESUCH_JS_MODULE} from '../gesuch/gesuch.module';
-import {ZAHLUNG_JS_MODULE} from './zahlung/zahlung.module';
-import {EbeguWebZahlungsauftrag} from './zahlungsauftrag/zahlungsauftrag.module';
 import {ALLE_VERFUEGUNGEN_JS_MODULE} from './alleVerfuegungen/alleVerfuegungen.module';
 import {APP_ANGULARJS_COMPONENT} from './app.angularjs.component';
 import {CORE_JS_MODULE} from './core/core.angularjs.module';
@@ -27,35 +25,37 @@ import {DOSSIER_JS_MODULE} from './dossier/dossier.angularjs.module';
 import {FAELLE_JS_MODULE} from './faelle/faelle.module';
 import {GESUCHSTELLER_DASHBOARD_JS_MODULE} from './gesuchstellerDashboard/gesuchstellerDashboard.module';
 import {MITTEILUNGEN_JS_MODULE} from './mitteilungen/mitteilungen.module';
-import {EbeguWebPendenzenBetreuungen} from './pendenzen/betreuungen/pendenzenBetreuungen.module';
-import {EbeguWebPendenzen} from './pendenzen/default/pendenzen.module';
-import {EbeguWebPendenzenSteueramt} from './pendenzen/steueramt/pendenzenSteueramt.module';
-import {EbeguWebPosteingang} from './posteingang/posteingang.module';
-import {EbeguWebQuicksearch} from './quicksearch/quicksearch.module';
-import {EbeguWebSearch} from './searchResult/search.module';
-import {EbeguWebStatistik} from './statistik/statistik.module';
+import {PENDENZEN_BETREUUNGEN_JS_MODULE} from './pendenzen/betreuungen/pendenzenBetreuungen.module';
+import {PENDENZEN_JS_MODULE} from './pendenzen/default/pendenzen.module';
+import {PENDENZEN_STEUERAMT_JS_MODULE} from './pendenzen/steueramt/pendenzenSteueramt.module';
+import {POSTEINGANG_JS_MODULE} from './posteingang/posteingang.module';
+import {QUICKSEARCH_JS_MODULE} from './quicksearch/quicksearch.module';
+import {SEARCH_JS_MODULE} from './searchResult/search.module';
+import {STATISTIK_JS_MODULE} from './statistik/statistik.module';
 import {VERLAUF_JS_MODULE} from './verlauf/verlauf.module';
+import {ZAHLUNG_JS_MODULE} from './zahlung/zahlung.module';
+import {ZAHLUNGSAUFTRAG_VIEW_JS_MODULE} from './zahlungsauftrag/zahlungsauftrag.module';
 
 export const APP_JS_MODULE = angular.module('ebeguWeb', [
         upgradeModule.name,
         CORE_JS_MODULE.name,
         ADMIN_JS_MODULE.name,
         GESUCH_JS_MODULE.name,
-        EbeguWebPendenzen.name,
+        PENDENZEN_JS_MODULE.name,
         DOSSIER_JS_MODULE.name,
-        EbeguWebPendenzenBetreuungen.name,
-        EbeguWebPendenzenSteueramt.name,
+        PENDENZEN_BETREUUNGEN_JS_MODULE.name,
+        PENDENZEN_STEUERAMT_JS_MODULE.name,
         FAELLE_JS_MODULE.name,
         GESUCHSTELLER_DASHBOARD_JS_MODULE.name,
         MITTEILUNGEN_JS_MODULE.name,
-        EbeguWebPosteingang.name,
-        EbeguWebSearch.name,
-        EbeguWebStatistik.name,
+        POSTEINGANG_JS_MODULE.name,
+        SEARCH_JS_MODULE.name,
+        STATISTIK_JS_MODULE.name,
         ZAHLUNG_JS_MODULE.name,
-        EbeguWebZahlungsauftrag.name,
+        ZAHLUNGSAUFTRAG_VIEW_JS_MODULE.name,
         ALLE_VERFUEGUNGEN_JS_MODULE.name,
         VERLAUF_JS_MODULE.name,
-        EbeguWebQuicksearch.name,
+        QUICKSEARCH_JS_MODULE.name,
     ])
         .component('appRoot', APP_ANGULARJS_COMPONENT)
         .config(conf)
@@ -72,6 +72,6 @@ function conf($stateProvider: StateProvider): void {
         abstract: true,
     };
     $stateProvider.state(
-        definition
+        definition,
     );
 }

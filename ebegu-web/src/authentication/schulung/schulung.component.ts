@@ -17,15 +17,15 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
+import TSBenutzer from '../../models/TSBenutzer';
 import TSInstitution from '../../models/TSInstitution';
 import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
-import TSBenutzer from '../../models/TSBenutzer';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 
-export const SchulungComponentConfig: IComponentOptions = {
+export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
     transclude: false,
     template: require('./schulung.component.html'),
     controllerAs: 'vm',
@@ -55,7 +55,14 @@ export class SchulungViewController implements IController {
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];
                 const username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
-                this.usersList.push(new TSBenutzer('Sandra', name, username, 'password1', 'sandra.' + name.toLocaleLowerCase() + '@example.com', this.mandant, TSRole.GESUCHSTELLER));
+                const benutzer = new TSBenutzer('Sandra',
+                    name,
+                    username,
+                    'password1',
+                    `sandra.${name.toLocaleLowerCase()}@example.com`,
+                    this.mandant,
+                    TSRole.GESUCHSTELLER);
+                this.usersList.push(benutzer);
             }
 
             this.setInstitutionUsers();
@@ -63,14 +70,21 @@ export class SchulungViewController implements IController {
         });
     }
 
-    private setInstitutionUsers() {
+    private setInstitutionUsers(): void {
         this.institutionsuserList.push(new TSBenutzer('Fritz', 'Fisch', 'sch20', 'password1', 'fritz.fisch@example.com',
             this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftFisch, undefined));
-        this.institutionsuserList.push(new TSBenutzer('Franz', 'Forelle', 'sch21', 'password1', 'franz.forelle@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_INSTITUTION, undefined, this.institutionForelle));
+        this.institutionsuserList.push(new TSBenutzer('Franz',
+            'Forelle',
+            'sch21',
+            'password1',
+            'franz.forelle@example.com',
+            this.mandant,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            undefined,
+            this.institutionForelle));
     }
 
-    private setAmtUsers() {
+    private setAmtUsers(): void {
         this.amtUserList.push(new TSBenutzer('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
             this.mandant, TSRole.SACHBEARBEITER_TS));
         this.amtUserList.push(new TSBenutzer('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
@@ -79,7 +93,6 @@ export class SchulungViewController implements IController {
 
     /**
      * Der Mandant wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     * @returns {TSMandant}
      */
     private getMandant(): TSMandant {
         const mandant = new TSMandant();
@@ -118,4 +131,4 @@ export class SchulungViewController implements IController {
     }
 }
 
-SchulungComponentConfig.controller = SchulungViewController;
+SCHULUNG_COMPONENT_CONFIG.controller = SchulungViewController;

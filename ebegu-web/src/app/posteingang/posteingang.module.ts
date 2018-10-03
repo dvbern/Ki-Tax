@@ -16,10 +16,10 @@
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {posteingangRun} from './posteingang.route';
 import {PosteingangViewComponentConfig} from './component/posteingangView';
-import {PosteingangFilter} from './filter/posteingangFilter';
+import {posteingangFilter} from './filter/posteingangFilter';
 
-export const EbeguWebPosteingang =
+export const POSTEINGANG_JS_MODULE =
     angular.module('ebeguWeb.posteingang', [CORE_JS_MODULE.name])
         .run(posteingangRun)
-        .filter('posteingangFilter', PosteingangFilter)
+        .filter('posteingangFilter', posteingangFilter)
         .component('posteingangView', new PosteingangViewComponentConfig());

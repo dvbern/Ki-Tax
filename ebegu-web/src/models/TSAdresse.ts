@@ -56,7 +56,6 @@ export default class TSAdresse extends TSAbstractDateRangedEntity {
 
     /**
      * Diese Methode sollte nur benutzt werden, um Wohnadressen zu vergleichen
-     * @param other
      */
     public isSameWohnAdresse(other: TSAdresse): boolean {
         return (

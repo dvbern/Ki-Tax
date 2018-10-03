@@ -53,9 +53,20 @@ describe('stammdatenView', () => {
         ewkRS = $injector.get('EwkRS');
         $scope = $rootScope.$new();
         $timeout = $injector.get('$timeout');
-        stammdatenViewController = new StammdatenViewController($stateParams, undefined, gesuchModelManager,
-            undefined, undefined, wizardStepManager, $injector.get('CONSTANTS'), $q, $scope, $injector.get('$translate'),
-            undefined, $rootScope, ewkRS, $timeout);
+        stammdatenViewController = new StammdatenViewController($stateParams,
+            undefined,
+            gesuchModelManager,
+            undefined,
+            undefined,
+            wizardStepManager,
+            $injector.get('CONSTANTS'),
+            $q,
+            $scope,
+            $injector.get('$translate'),
+            undefined,
+            $rootScope,
+            ewkRS,
+            $timeout);
     })));
 
     describe('disableWohnadresseFor2GS', () => {
