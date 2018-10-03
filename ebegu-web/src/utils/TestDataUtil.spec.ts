@@ -13,34 +13,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
+import * as moment from 'moment';
 import {TSGemeindeStatus} from '../models/enums/TSGemeindeStatus';
+import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../models/enums/TSRole';
+import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
+import {TSWizardStepName} from '../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
+import {TSZuschlagsgrund} from '../models/enums/TSZuschlagsgrund';
+import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
+import TSAbstractEntity from '../models/TSAbstractEntity';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
+import TSAdresse from '../models/TSAdresse';
+import TSAdresseContainer from '../models/TSAdresseContainer';
 import TSBenutzer from '../models/TSBenutzer';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSDossier from '../models/TSDossier';
-import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
-import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
+import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
-import DateUtil from './DateUtil';
-import {IHttpBackendService} from 'angular';
-import {TSDateRange} from '../models/types/TSDateRange';
-import {TSZuschlagsgrund} from '../models/enums/TSZuschlagsgrund';
-import TSAbstractEntity from '../models/TSAbstractEntity';
-import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
-import TSWizardStep from '../models/TSWizardStep';
-import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
-import {TSWizardStepName} from '../models/enums/TSWizardStepName';
-import TSVerfuegung from '../models/TSVerfuegung';
-import * as moment from 'moment';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
-import TSAdresse from '../models/TSAdresse';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
-import TSAdresseContainer from '../models/TSAdresseContainer';
-import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
+import TSVerfuegung from '../models/TSVerfuegung';
+import TSWizardStep from '../models/TSWizardStep';
+import {TSDateRange} from '../models/types/TSDateRange';
+import DateUtil from './DateUtil';
 
 export default class TestDataUtil {
 
@@ -195,6 +195,7 @@ export default class TestDataUtil {
         gemeinde.gemeindeNummer = 2;
         gemeinde.bfsNummer = 363;
         gemeinde.status = TSGemeindeStatus.AKTIV;
+        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         return gemeinde;
     }
 
@@ -206,6 +207,7 @@ export default class TestDataUtil {
         gemeinde.gemeindeNummer = 1;
         gemeinde.bfsNummer = 351;
         gemeinde.status = TSGemeindeStatus.AKTIV;
+        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         return gemeinde;
     }
 
@@ -216,6 +218,7 @@ export default class TestDataUtil {
         gemeinde.name = 'Thun';
         gemeinde.gemeindeNummer = 3;
         gemeinde.status = TSGemeindeStatus.AKTIV;
+        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         return gemeinde;
     }
 
