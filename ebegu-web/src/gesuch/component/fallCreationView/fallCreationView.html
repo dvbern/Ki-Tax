@@ -139,6 +139,16 @@
                             </dv-input-container>
                         </div>
                     </div>
+                    <!-- Hinweis, dass für die Gemeinde keine gültigen Perioden vorhanden sind -->
+                    <div class="marginTop30" ng-if="vm.nichtAbgeschlosseneGesuchsperiodenList.length == 0">
+                        <div class="well well-status-warten">
+                            <i class="fa fa-exclamation " aria-hidden="true"></i>
+                            <span data-translate="GSDASHBOARD_KEINE_PERIODEN"
+                                  data-translate-value-gemeinde="{{vm.getGemeinde().name}}"
+                                  data-translate-value-periodenjahre="{{vm.getPeriodString()}}">
+                            </span>
+                        </div>
+                    </div>
 
                 </fieldset>
 

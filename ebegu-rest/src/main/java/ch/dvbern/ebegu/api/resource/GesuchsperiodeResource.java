@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -45,10 +47,12 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
@@ -212,15 +216,16 @@ public class GesuchsperiodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
 		@Nonnull @MatrixParam("gemeindeId") String gemeindeId,
-		@Nonnull @MatrixParam("dossierId") String dossierId) {
+		@Nullable @MatrixParam("dossierId") String dossierId) {
 
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getAllPeriodenForGemeinde",
-				String.format("Keine Gemeinde für ID %s", gemeindeId)));
+				String.format("Keine Gemeinde für ID %s", gemeindeId)))
+			.getBetreuungsgutscheineStartdatum();
 
 		return gesuchsperiodeService
-			.getGesuchsperiodenAfterDate(gemeinde.getBetreuungsgutscheineStartdatum(), dossierId).stream()
+			.getGesuchsperiodenAfterDate(startdatum, dossierId).stream()
 			.map(periode -> converter.gesuchsperiodeToJAX(periode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())

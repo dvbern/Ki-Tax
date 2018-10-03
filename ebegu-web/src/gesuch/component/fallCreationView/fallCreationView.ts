@@ -20,8 +20,10 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import DateUtil from '../../../utils/DateUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -47,6 +49,8 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     showError: boolean = false;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
+
+    public gemeindeId: string;
 
     constructor(gesuchModelManager: GesuchModelManager,
                 berechnungsManager: BerechnungsManager,
@@ -76,6 +80,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
             this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
         }
+        this.gemeindeId = this.$stateParams.gemeindeId;
     }
 
     public setShowError(showError: boolean): void {
@@ -89,7 +94,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
             }
         }
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then(
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gemeindeId).then(
             (response: TSGesuchsperiode[]) => {
                 this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
             });
@@ -185,5 +190,13 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         return this.gesuchModelManager.getGesuch()
             && this.gesuchModelManager.isGesuch()
             && this.isGesuchsperiodeActive() && this.gesuchModelManager.getGesuch().isNew();
+    }
+
+    public getGemeinde(): TSGemeinde {
+        return this.gesuchModelManager.getDossier().gemeinde;
+    }
+
+    public getPeriodString(): string {
+        return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
     }
 }

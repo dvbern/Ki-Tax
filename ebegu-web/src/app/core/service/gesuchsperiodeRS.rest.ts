@@ -16,6 +16,7 @@
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {dossier} from '../../dossier/dossier.angularjs.module';
 
 export default class GesuchsperiodeRS {
 
@@ -87,8 +88,9 @@ export default class GesuchsperiodeRS {
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
     }
 
-    public getAllPeriodenForGemeinde(gemeindeId: string, dossierId: string): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/gemeinde;gemeindeId=${gemeindeId};dossierId=${dossierId}`)
+    public getAllPeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
+        return this.http
+            .get(`${this.serviceURL}/gemeinde;gemeindeId=${gemeindeId}${dossierId ? ';dossierId=' + dossierId : ''}`)
             .then(response => {
                 return this.ebeguRestUtil.parseGesuchsperioden(response.data);
             });

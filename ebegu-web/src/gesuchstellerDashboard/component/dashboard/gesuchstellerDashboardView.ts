@@ -28,6 +28,7 @@ import {TSGesuchBetreuungenStatus} from '../../../models/enums/TSGesuchBetreuung
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSDossier from '../../../models/TSDossier';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
@@ -75,8 +76,8 @@ export class GesuchstellerDashboardViewController {
             this.errorService.addMesageAsInfo(this.$translate.instant(params.infoMessage));
         }
 
-        const year = this.dossier.gemeinde.betreuungsgutscheineStartdatum.year();
-        this.periodYear = `${year} / ${year + 1}`;
+        this.periodYear = DateUtil
+            .calculatePeriodenStartdatumString(this.dossier.gemeinde.betreuungsgutscheineStartdatum);
 
         this.initViewModel();
     }
@@ -98,7 +99,7 @@ export class GesuchstellerDashboardViewController {
     }
 
     private updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.dossier.gemeinde.id, this.dossier.id)
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.dossier.gemeinde.id)
             .then((response: TSGesuchsperiode[]) => {
                 this.activeGesuchsperiodenList = response;
                 // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen.

@@ -79,11 +79,13 @@
             <!--{{'MUTATION_NOETIG_DB' | translate}}-->
             <!--</div>-->
         </div>
-        <div class="ebeguH2 dashboardHeader"
+        <div class="dashboard-error"
              ng-if="vm.activeGesuchsperiodenList.length == 0">
-            <span data-translate="GSDASHBOARD_KEINE_PERIODEN"
-                  data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
-                  data-translate-value-periodenjahre="{{vm.periodYear}}">
+            <span>
+                <b data-translate="GSDASHBOARD_KEINE_PERIODEN"
+                   data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
+                   data-translate-value-periodenjahre="{{vm.periodYear}}">
+                </b>
             </span>
 
         </div>
