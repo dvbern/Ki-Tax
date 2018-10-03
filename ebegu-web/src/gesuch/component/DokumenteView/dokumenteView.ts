@@ -113,8 +113,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         dokumentGrundTyp: TSDokumentGrundTyp,
     ): void {
 
-        const dokumentGruende: TSDokumentGrund[] = alleDokumente.dokumentGruende;
-        dokumentGruende
+        alleDokumente.dokumentGruende
             .filter(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp)
             .forEach(tsDokument => dokumenteForType.push(tsDokument));
 
