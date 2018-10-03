@@ -250,8 +250,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(@Nonnull LocalDate date) {
-		return getGesuchsperiodenImStatus(GesuchsperiodeStatus.AKTIV).stream()
+	public Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(@Nonnull LocalDate date, @Nonnull String dossierId) {
+		return getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId).stream()
 			.filter(periode -> periode.getGueltigkeit().startsSameDayOrAfter(date))
 			.collect(Collectors.toList());
 	}

@@ -31,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.MatrixParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -206,16 +207,20 @@ public class GesuchsperiodeResource {
 	response = JaxGesuchsperiode.class)
 	@Nonnull
 	@GET
-	@Path("/gemeinde/{gemeindeId}")
+	@Path("/gemeinde")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(@Nonnull @PathParam("gemeindeId") String gemeindeId) {
+	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
+		@Nonnull @MatrixParam("gemeindeId") String gemeindeId,
+		@Nonnull @MatrixParam("dossierId") String dossierId) {
+
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getAllPeriodenForGemeinde",
 				String.format("Keine Gemeinde für ID %s", gemeindeId)));
 
-		return gesuchsperiodeService.getGesuchsperiodenAfterDate(gemeinde.getBetreuungsgutscheineStartdatum()).stream()
+		return gesuchsperiodeService
+			.getGesuchsperiodenAfterDate(gemeinde.getBetreuungsgutscheineStartdatum(), dossierId).stream()
 			.map(periode -> converter.gesuchsperiodeToJAX(periode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -78,14 +79,14 @@ public interface GesuchsperiodeService {
 	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden();
 
 	@Nonnull
-	Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(@Nonnull LocalDate date);
+	Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(@Nonnull LocalDate date, @Nonnull String dossierId);
 
 	/**
 	 * Gibt alle Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist, und für die das angegebene
 	 * Dossier noch kein Gesuch freigegeben hat.
 	 */
 	@Nonnull
-	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(String dossierId);
+	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nullable String dossierId);
 
 	/**
 	 * Gibt die Gesuchsperiode zurueck, welche am uebergebenen Stichtag aktuell war/ist

@@ -25,7 +25,11 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService, private readonly $q: IQService) {
+    constructor(public http: IHttpService,
+                REST_API: string,
+                public ebeguRestUtil: EbeguRestUtil,
+                public log: ILogService,
+                private readonly $q: IQService) {
         this.serviceURL = REST_API + 'gesuchsperioden';
     }
 
@@ -83,10 +87,11 @@ export default class GesuchsperiodeRS {
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
     }
 
-    public getAllPeriodenForGemeinde(gemeindeId: string): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/gemeinde/${gemeindeId}`).then(response => {
-           return this.ebeguRestUtil.parseGesuchsperioden(response.data);
-        });
+    public getAllPeriodenForGemeinde(gemeindeId: string, dossierId: string): IPromise<TSGesuchsperiode[]> {
+        return this.http.get(`${this.serviceURL}/gemeinde;gemeindeId=${gemeindeId};dossierId=${dossierId}`)
+            .then(response => {
+                return this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            });
     }
 
     public getAllGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
