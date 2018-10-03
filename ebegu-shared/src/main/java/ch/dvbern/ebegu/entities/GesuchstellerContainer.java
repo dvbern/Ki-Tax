@@ -174,7 +174,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		final ErwerbspensumContainer erwerbspensum = new ErwerbspensumContainer();
 		Erwerbspensum pensumJA = new Erwerbspensum();
 		pensumJA.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-		pensumJA.setPensum(0l);
+		pensumJA.setPensum(0);
 		erwerbspensum.setErwerbspensumJA(pensumJA);
 		erwerbspensen.add(erwerbspensum);
 		return erwerbspensen;

@@ -15,7 +15,7 @@
 
 import {Component, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
-import {animate, state, style, transition, trigger,} from '@angular/animations';
+import {state, style, trigger} from '@angular/animations';
 
 const LOG = LogFactory.createLog('DvSwitchComponent');
 
@@ -43,34 +43,39 @@ export class DvSwitchComponent implements OnInit, OnChanges {
 
     @Input() switchValue: boolean = false;
     @Input() switchOptions: Array<string> = [];
+    @HostBinding('class.disabled')
+    @Input() disabled: boolean = false;
 
     @Output()
     switchChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @HostBinding('attr.tabindex')
-    tabindex: number = 0;
+    tabindex: number;
 
     constructor() {
     }
 
-
     @HostListener('keydown.ArrowRight', ['$event'])
     @HostListener('keydown.ArrowLeft', ['$event'])
     public handleKeyboardEvent(event: KeyboardEvent): void {
-        if (this.switchValue !== (event.key === 'ArrowRight')) {
+        if (this.switchValue !== (event.key === 'ArrowRight') && !this.disabled) {
             this.switchValue = event.key === 'ArrowRight';
             this.ngOnChanges();
         }
     }
+
     @HostListener('keydown.space', ['$event'])
     @HostListener('click', ['$event'])
     public toggle(): void {
-        this.switchValue = !this.switchValue;
-        this.ngOnChanges();
+        if (!this.disabled) {
+            this.switchValue = !this.switchValue;
+            this.ngOnChanges();
+        }
     }
 
     ngOnInit(): void {
         this.switchChange.emit(this.switchValue);
+        this.tabindex = this.disabled ? -1 : 0;
     }
 
     ngOnChanges(): void {

@@ -40,17 +40,17 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 	@Min(0)
 	@NotNull
 	@Column(nullable = false)
-	private Long pensum;
+	private Integer pensum;
 
 	public AbstractPensumEntity() {
 	}
 
 	@Nonnull
-	public Long getPensum() {
+	public Integer getPensum() {
 		return pensum;
 	}
 
-	public void setPensum(@Nonnull Long pensum) {
+	public void setPensum(@Nonnull Integer pensum) {
 		this.pensum = pensum;
 	}
 

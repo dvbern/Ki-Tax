@@ -36,9 +36,25 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
         box-shadow: none;
     }
 
+    &.disabled {
+        .dv-switch-animation, .dv-switch-background {
+            background: pink;
+        }
+
+        &:hover {
+            cursor: not-allowed;
+        }
+        &:focus {
+            outline: 1px solid @contrast-darkest !important;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+    }
+
+
 }
 
-.dv-switch-container, .dv-switch-background-container  {
+.dv-switch-container, .dv-switch-background-container {
     display: flex;
     position: relative !important;
     height: 100%;
@@ -62,6 +78,7 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
 .dv-switch-animation {
     background: #4a4a4a;
 }
+
 .dv-switch-animation, .dv-switch-background {
     width: 50%;
     height: 100%;
@@ -69,6 +86,7 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
     align-items: center;
     justify-content: center;
 }
+
 .dv-switch-animation-label {
     color: @contrast-lightest;
     font-weight: bold;
@@ -77,7 +95,6 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
 .dv-switch-background-label {
     color: @contrast-darkest;
 }
-
 
 .dv-switch-background-label,
 .dv-switch-animation-label {

@@ -156,7 +156,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			Set<ErwerbspensumContainer> erwerbspensenContainersNotEmpty = mutation.getGesuchsteller1().getErwerbspensenContainersNotEmpty();
 			for (ErwerbspensumContainer erwerbspensumContainer : erwerbspensenContainersNotEmpty) {
 				Objects.requireNonNull(erwerbspensumContainer.getErwerbspensumJA());
-				erwerbspensumContainer.getErwerbspensumJA().setPensum(config.getErwerbspensum().longValue());
+				erwerbspensumContainer.getErwerbspensumJA().setPensum(config.getErwerbspensum());
 			}
 		}
 		mutation = gesuchService.createGesuch(mutation);

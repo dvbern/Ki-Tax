@@ -33,6 +33,9 @@ export class BetreuungInputComponent implements OnInit, OnChanges {
     pensum: TSBetreuungspensumContainer;
 
     @Input()
+    disabled: boolean = false;
+
+    @Input()
     id: string;
 
     @Input()

@@ -45,9 +45,10 @@
            [required]="true"
            [attr.aria-describedby]="id + '-error'"
            step="0.25" class="dv-betreuung-input"
-           (input)="updateLabel()">
+           (input)="updateLabel()"
+    [disabled]="disabled">
     <dv-switch (switchChange)="toggle($event)" [switchOptions]="switchOptions"
-               class="betreuung-input-switch" [switchValue]="doNotUsePercentage"></dv-switch>
+               class="betreuung-input-switch" [switchValue]="doNotUsePercentage" [disabled]="disabled"></dv-switch>
     <div class="dv-betreuung-input-info-label">
         {{label}}
     </div>
