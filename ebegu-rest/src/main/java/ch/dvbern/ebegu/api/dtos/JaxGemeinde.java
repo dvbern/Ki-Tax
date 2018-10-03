@@ -50,7 +50,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@Nonnull
 	private GemeindeStatus status;
 
-	@Nonnull
+	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate betreuungsgutscheineStartdatum;
 
@@ -90,7 +90,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 		this.bfsNummer = bfsNummer;
 	}
 
-	@Nonnull
+	@Nullable
 	public LocalDate getBetreuungsgutscheineStartdatum() {
 		return betreuungsgutscheineStartdatum;
 	}

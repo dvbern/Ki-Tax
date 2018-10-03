@@ -50,7 +50,9 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		gemeinde.setStatus(jaxGemeinde.getStatus());
 		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
 		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
-		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		if (jaxGemeinde.getBetreuungsgutscheineStartdatum() != null) {
+			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		}
 
 		return gemeinde;
 	}
