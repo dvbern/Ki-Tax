@@ -20,7 +20,8 @@ import {SharedModule} from './shared.module';
 
 describe('SharedModule', () => {
     let sharedModule: SharedModule;
-    const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['setDefaultLang', 'use']);
+    const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
+        ['setDefaultLang', 'use']);
 
     beforeEach(() => {
         sharedModule = new SharedModule(translateServiceSpy);

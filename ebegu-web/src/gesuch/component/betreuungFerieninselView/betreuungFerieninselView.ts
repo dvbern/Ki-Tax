@@ -44,88 +44,141 @@ import ITranslateService = angular.translate.ITranslateService;
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class BetreuungFerieninselViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         betreuung: '=',
         onSave: '&',
         anmeldungSchulamtUebernehmen: '&',
         anmeldungSchulamtAblehnen: '&',
         anmeldungSchulamtFalscheInstitution: '&',
         cancel: '&',
-        form: '='
+        form: '=',
     };
-    template = require('./betreuungFerieninselView.html');
-    controller = BetreuungFerieninselViewController;
-    controllerAs = 'vm';
+    public template = require('./betreuungFerieninselView.html');
+    public controller = BetreuungFerieninselViewController;
+    public controllerAs = 'vm';
 }
 
 export class BetreuungFerieninselViewController extends BetreuungViewController {
 
-    static $inject = ['$state', 'GesuchModelManager', 'EbeguUtil', 'CONSTANTS', '$scope', 'BerechnungsManager', 'ErrorService',
-        'AuthServiceRS', 'WizardStepManager', '$stateParams', 'MitteilungRS', 'DvDialog', '$log', '$timeout', '$translate', 'FerieninselStammdatenRS'];
+    public static $inject = [
+        '$state',
+        'GesuchModelManager',
+        'EbeguUtil',
+        'CONSTANTS',
+        '$scope',
+        'BerechnungsManager',
+        'ErrorService',
+        'AuthServiceRS',
+        'WizardStepManager',
+        '$stateParams',
+        'MitteilungRS',
+        'DvDialog',
+        '$log',
+        '$timeout',
+        '$translate',
+        'FerieninselStammdatenRS',
+    ];
 
-    betreuung: TSBetreuung;
-    onSave: () => void;
-    form: IFormController;
-    showErrorMessage: boolean;
+    public betreuung: TSBetreuung;
+    public onSave: () => void;
+    public form: IFormController;
+    public showErrorMessage: boolean;
 
-    ferieninselStammdaten: TSFerieninselStammdaten;
-    showNochNichtFreigegeben: boolean = false;
-    showMutiert: boolean = false;
-    aktuellGueltig: boolean = true;
+    public ferieninselStammdaten: TSFerieninselStammdaten;
+    public showNochNichtFreigegeben: boolean = false;
+    public showMutiert: boolean = false;
+    public aktuellGueltig: boolean = true;
 
-    constructor($state: StateService, gesuchModelManager: GesuchModelManager, ebeguUtil: EbeguUtil, CONSTANTS: any,
-                $scope: IScope, berechnungsManager: BerechnungsManager, errorService: ErrorService,
-                authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, $stateParams: IBetreuungStateParams,
-                mitteilungRS: MitteilungRS, dvDialog: DvDialog, $log: ILogService,
-                $timeout: ITimeoutService, $translate: ITranslateService, private readonly ferieninselStammdatenRS: FerieninselStammdatenRS) {
-        super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS, wizardStepManager, $stateParams,
-            mitteilungRS, dvDialog, $log, $timeout, $translate);
+    public constructor(
+        $state: StateService,
+        gesuchModelManager: GesuchModelManager,
+        ebeguUtil: EbeguUtil,
+        CONSTANTS: any,
+        $scope: IScope,
+        berechnungsManager: BerechnungsManager,
+        errorService: ErrorService,
+        authServiceRS: AuthServiceRS,
+        wizardStepManager: WizardStepManager,
+        $stateParams: IBetreuungStateParams,
+        mitteilungRS: MitteilungRS,
+        dvDialog: DvDialog,
+        $log: ILogService,
+        $timeout: ITimeoutService,
+        $translate: ITranslateService,
+        private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
+    ) {
+        super($state,
+            gesuchModelManager,
+            ebeguUtil,
+            CONSTANTS,
+            $scope,
+            berechnungsManager,
+            errorService,
+            authServiceRS,
+            wizardStepManager,
+            $stateParams,
+            mitteilungRS,
+            dvDialog,
+            $log,
+            $timeout,
+            $translate);
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.initFerieninselViewModel();
-        if (this.getBetreuungModel().anmeldungMutationZustand) {
-            if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
-                this.showMutiert = true;
-                this.aktuellGueltig = false;
-            } else if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-                this.showNochNichtFreigegeben = true;
-                this.aktuellGueltig = false;
-            }
+
+        if (!this.getBetreuungModel().anmeldungMutationZustand) {
+            return;
+
+        }
+
+        if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
+            this.showMutiert = true;
+            this.aktuellGueltig = false;
+            return;
+        }
+
+        if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+            this.showNochNichtFreigegeben = true;
+            this.aktuellGueltig = false;
         }
     }
 
-    getFeriennamen(): Array<TSFerienname> {
+    public getFeriennamen(): Array<TSFerienname> {
         return getTSFeriennameValues();
     }
 
-    private initFerieninselViewModel() {
-        if (EbeguUtil.isNullOrUndefined(this.betreuung.belegungFerieninsel)) {
-            this.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
-            this.betreuung.belegungFerieninsel = new TSBelegungFerieninsel();
-            this.betreuung.belegungFerieninsel.tage = [];
-        } else {
+    private initFerieninselViewModel(): void {
+        if (!EbeguUtil.isNullOrUndefined(this.betreuung.belegungFerieninsel)) {
             this.changedFerien();
+
+            return;
         }
+
+        this.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
+        this.betreuung.belegungFerieninsel = new TSBelegungFerieninsel();
+        this.betreuung.belegungFerieninsel.tage = [];
     }
 
-    public changedFerien() {
-        if (this.betreuung.belegungFerieninsel && this.betreuung.belegungFerieninsel.ferienname) {
-            // Die Stammdaten und potentiellen Ferientage der gewaehlten Ferieninsel lesen
-            this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiodeAndFerien(
-                this.gesuchModelManager.getGesuchsperiode().id, this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
-                this.ferieninselStammdaten = response;
-                // Bereits gespeicherte Daten wieder ankreuzen
-                for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
-                    for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
-                        if (tagAngemeldet.tag.isSame(obj.tag)) {
-                            obj.angemeldet = true;
-                        }
+    public changedFerien(): void {
+        if (!this.betreuung.belegungFerieninsel || !this.betreuung.belegungFerieninsel.ferienname) {
+            return;
+        }
+
+        this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiodeAndFerien(
+            this.gesuchModelManager.getGesuchsperiode().id,
+            this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
+            this.ferieninselStammdaten = response;
+            // Bereits gespeicherte Daten wieder ankreuzen
+            for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
+                for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
+                    if (tagAngemeldet.tag.isSame(obj.tag)) {
+                        obj.angemeldet = true;
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     public isAnmeldungNichtFreigegeben(): boolean {
@@ -166,13 +219,12 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
                     title: 'CONFIRM_SAVE_FERIENINSEL',
                     deleteText: 'BESCHREIBUNG_SAVE_FERIENINSEL',
                     parentController: undefined,
-                    elementID: undefined
+                    elementID: undefined,
                 }).then(() => {
                     this.onSave();
                 });
-            } else {
-                this.onSave();
             }
+            this.onSave();
         }
         return undefined;
     }
@@ -187,7 +239,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public showButtonsInstitution(): boolean {
-        return this.betreuung.betreuungsstatus === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST && !this.gesuchModelManager.isGesuchReadonlyForRole();
+        return this.betreuung.betreuungsstatus === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+            && !this.gesuchModelManager.isGesuchReadonlyForRole();
     }
 
     /**
@@ -197,33 +250,34 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         return this.betreuung;
     }
 
-    public getMomentWeekdays() {
+    public getMomentWeekdays(): string[] {
         const weekdays = moment.weekdays();
         weekdays.splice(0, 1);
         weekdays.splice(5, 1);
         return weekdays;
     }
 
-    public displayBreak(tag: TSBelegungFerieninselTag, index: number, dayArray: Array<TSBelegungFerieninselTag>): boolean {
-        if (dayArray[index + 1]) {
-            return tag.tag.week() !== dayArray[index + 1].tag.week();
-        } else {
-            return false;
-        }
+    public displayBreak(
+        tag: TSBelegungFerieninselTag,
+        index: number,
+        dayArray: Array<TSBelegungFerieninselTag>,
+    ): boolean {
+        return dayArray[index + 1] ? tag.tag.week() !== dayArray[index + 1].tag.week() : false;
     }
 
-    public displayWeekRow(tag: TSBelegungFerieninselTag, index: number, dayArray: Array<TSBelegungFerieninselTag>): boolean {
-        if (dayArray[index + 1]) {
-            return dayArray[index + 1].tag.diff(tag.tag, 'days') > 7;
-        } else {
-            return false;
-        }
+    public displayWeekRow(
+        tag: TSBelegungFerieninselTag,
+        index: number,
+        dayArray: Array<TSBelegungFerieninselTag>,
+    ): boolean {
+        return dayArray[index + 1] ? dayArray[index + 1].tag.diff(tag.tag, 'days') > 7 : false;
     }
 
     public hasAusweichstandort(): boolean {
         return this.betreuung.institutionStammdaten
             && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-            && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel.isAusweichstandortDefined(this.betreuung.belegungFerieninsel.ferienname);
+            && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
+                .isAusweichstandortDefined(this.betreuung.belegungFerieninsel.ferienname);
     }
 
     public getAusgewaehltFeriensequenz(): string {

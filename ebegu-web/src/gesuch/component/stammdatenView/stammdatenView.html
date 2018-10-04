@@ -58,9 +58,16 @@
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="VORNAME" for="vorname_ID"></label>
-                                <input id="vorname_ID" type="text" name="vorname" ng-model="vm.getModelJA().vorname"
-                                       dv-max-length class="form-control input-dv" required ng-blur="vm.checkAllEwkRelevantDataPresent()"
-                                       aria-describedby="vorname_ID-error" autocomplete="given-name">
+                                <input id="vorname_ID"
+                                       type="text"
+                                       name="vorname"
+                                       ng-model="vm.getModelJA().vorname"
+                                       dv-max-length
+                                       class="form-control input-dv"
+                                       required
+                                       ng-blur="vm.checkAllEwkRelevantDataPresent()"
+                                       aria-describedby="vorname_ID-error"
+                                       autocomplete="given-name">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.vorname"
                                            ja="vm.getModel().gesuchstellerJA.vorname"></dv-bisher>
                                 <dv-error-messages for="vm.form.vorname.$error"
@@ -71,8 +78,15 @@
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group secondColumn">
                                 <label class="md-no-float" data-translate="NAME" for="name_ID"></label>
-                                <input aria-describedby="name_ID-error" id="name_ID" type="text" name="name" ng-model="vm.getModelJA().nachname"
-                                       dv-max-length class="form-control" required ng-blur="vm.checkAllEwkRelevantDataPresent()"
+                                <input aria-describedby="name_ID-error"
+                                       id="name_ID"
+                                       type="text"
+                                       name="name"
+                                       ng-model="vm.getModelJA().nachname"
+                                       dv-max-length
+                                       class="form-control"
+                                       required
+                                       ng-blur="vm.checkAllEwkRelevantDataPresent()"
                                        autocomplete="family-name">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.nachname"
                                            ja="vm.getModel().gesuchstellerJA.nachname"></dv-bisher>
@@ -100,9 +114,12 @@
                             </dv-input-container>
                         </div>
                         <!-- Korrespondenz-Sprache -->
-                        <div class="col-sm-12 dv-input-container-medium" ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
                             <div class="form-group">
-                                <label class="md-no-float required" data-translate="KORRESPONDENZSPRACHE" for="korrespondenzSprache">
+                                <label class="md-no-float required"
+                                       data-translate="KORRESPONDENZSPRACHE"
+                                       for="korrespondenzSprache">
                                 </label>
                                 <div class="dv-select-style dv-input-container-medium-select">
                                     <select name="korrespondenzSprache" id="korrespondenzSprache" class="form-control"
@@ -138,16 +155,18 @@
                         </div>
                         <!-- Datum letzte EWK-Abfrage -->
                         <div class="col-sm-12 dv-input-container-small">
-                        <dv-input-container class="form-group">
-                            <label class="md-no-float" data-translate="EWK_ABFRAGE_DATUM" for="abfrageDatum">
-                            </label>
-                            <dv-datepicker input-id="abfrageDatum" name="abfrageDatum"
-                                           ng-model="vm.getModelJA().ewkAbfrageDatum"
-                                           class="input-element" ng-disabled="true" placeholder="">
-                            </dv-datepicker>
-                            <dv-error-messages input-id="abfrageDatum" for="vm.form.ewkAbfrageDatum.$error"
-                                               class="error"></dv-error-messages>
-                        </dv-input-container>
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="EWK_ABFRAGE_DATUM" for="abfrageDatum">
+                                </label>
+                                <dv-datepicker input-id="abfrageDatum"
+                                               name="abfrageDatum"
+                                               ng-model="vm.getModelJA().ewkAbfrageDatum"
+                                               class="input-element"
+                                               ng-disabled="true"
+                                               placeholder=""></dv-datepicker>
+                                <dv-error-messages input-id="abfrageDatum" for="vm.form.ewkAbfrageDatum.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
                         </div>
                     </div>
 
@@ -183,7 +202,9 @@
                     <div class="row" ng-if="!vm.isMutation()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.getModel().showUmzug" name="umzug" aria-label="{{'UMZUG'|translate}}"
+                                <md-checkbox ng-model="vm.getModel().showUmzug"
+                                             name="umzug"
+                                             aria-label="{{'UMZUG'|translate}}"
                                              dv-enable-element
                                              dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                                              dv-enable-expression="!vm.isGesuchReadonly() && !vm.isThereAnyUmzug() && !vm.isKorrekturModusJugendamt()">
@@ -199,8 +220,11 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class=" checkbox">
-                                <md-checkbox ng-model="vm.showKorrespondadr" name="korrespondenzAdr" id="korrespondenzAdr"
-                                             aria-label="{{'KORRESPONDENZADR'|translate}}" ng-change="vm.korrespondenzAdrClicked()"
+                                <md-checkbox ng-model="vm.showKorrespondadr"
+                                             name="korrespondenzAdr"
+                                             id="korrespondenzAdr"
+                                             aria-label="{{'KORRESPONDENZADR'|translate}}"
+                                             ng-change="vm.korrespondenzAdrClicked()"
                                              dv-enable-element
                                              dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                                              dv-enable-expression="!vm.isGesuchReadonly()">
@@ -225,8 +249,11 @@
                     <div class="row" ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class=" checkbox">
-                                <md-checkbox ng-model="vm.showRechnungsadr" name="rechnungsAdr" id="rechnungsAdr"
-                                             aria-label="{{'RECHNUNGSADR'|translate}}" ng-change="vm.rechnungsAdrClicked()"
+                                <md-checkbox ng-model="vm.showRechnungsadr"
+                                             name="rechnungsAdr"
+                                             id="rechnungsAdr"
+                                             aria-label="{{'RECHNUNGSADR'|translate}}"
+                                             ng-change="vm.rechnungsAdrClicked()"
                                              dv-enable-element
                                              dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                                              dv-enable-expression="!vm.isGesuchReadonly()">
@@ -255,9 +282,17 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="EMAIL" for="email_ID">
                                 </label>
-                                <input aria-describedby="email_ID-error" id="email_ID" type="email" name="email" ng-model="vm.getModelJA().mail"
-                                       dv-max-length class="form-control" required placeholder="hans.muster@example.com"
-                                       ng-pattern="vm.CONSTANTS.PATTERN_EMAIL" autocomplete="email">
+                                <input aria-describedby="email_ID-error"
+                                       id="email_ID"
+                                       type="email"
+                                       name="email"
+                                       ng-model="vm.getModelJA().mail"
+                                       dv-max-length
+                                       class="form-control"
+                                       required
+                                       placeholder="hans.muster@example.com"
+                                       ng-pattern="vm.CONSTANTS.PATTERN_EMAIL"
+                                       autocomplete="email">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.mail"
                                            ja="vm.getModel().gesuchstellerJA.mail"></dv-bisher>
                                 <dv-error-messages input-id="email_ID" for="vm.form.email.$error"
@@ -272,9 +307,16 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="MOBILE" for="mobile_ID">
                                 </label>
-                                <input aria-describedby="mobile_ID-error" id="mobile_ID" type="text" name="mobile" ng-model="vm.getModelJA().mobile"
-                                       dv-max-length class="form-control" placeholder="e.g: +41 79 123 44 55"
-                                       ng-pattern="vm.CONSTANTS.PATTERN_MOBILE" autocomplete="mobile">
+                                <input aria-describedby="mobile_ID-error"
+                                       id="mobile_ID"
+                                       type="text"
+                                       name="mobile"
+                                       ng-model="vm.getModelJA().mobile"
+                                       dv-max-length
+                                       class="form-control"
+                                       placeholder="e.g: +41 79 123 44 55"
+                                       ng-pattern="vm.CONSTANTS.PATTERN_MOBILE"
+                                       autocomplete="mobile">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.mobile"
                                            ja="vm.getModel().gesuchstellerJA.mobile"></dv-bisher>
                                 <dv-error-messages input-id="mobile_ID" for="vm.form.mobile.$error"
@@ -285,9 +327,16 @@
                             <dv-input-container class="form-group secondColumn">
                                 <label class="md-no-float" data-translate="TELEFON" for="tel_ID">
                                 </label>
-                                <input aria-describedby="tel_ID-error" id="tel_ID" type="text" name="telefon" ng-model="vm.getModelJA().telefon"
-                                       dv-max-length class="form-control" placeholder="e.g: +41 33 123 45 67"
-                                       ng-pattern="vm.CONSTANTS.PATTERN_PHONE" autocomplete="home tel">
+                                <input aria-describedby="tel_ID-error"
+                                       id="tel_ID"
+                                       type="text"
+                                       name="telefon"
+                                       ng-model="vm.getModelJA().telefon"
+                                       dv-max-length
+                                       class="form-control"
+                                       placeholder="e.g: +41 33 123 45 67"
+                                       ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
+                                       autocomplete="home tel">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.telefon"
                                            ja="vm.getModel().gesuchstellerJA.telefon"></dv-bisher>
                                 <dv-error-messages input-id="tel_ID" for="vm.form.telefon.$error"
@@ -318,11 +367,15 @@
                     <div class="col-md-12">
                         <dv-navigation dv-show-element
                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                       dv-previous="true" dv-next="true" dv-saving-possible="vm.areEmailTelefonEditable()" dv-save="vm.save()">
+                                       dv-previous="true"
+                                       dv-next="true"
+                                       dv-saving-possible="vm.areEmailTelefonEditable()"
+                                       dv-save="vm.save()">
                         </dv-navigation>
                         <dv-navigation dv-show-element
                                        dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
-                                       dv-previous="true" dv-next="true">
+                                       dv-previous="true"
+                                       dv-next="true">
                         </dv-navigation>
                     </div>
                 </div>

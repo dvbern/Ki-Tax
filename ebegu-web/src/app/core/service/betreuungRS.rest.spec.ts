@@ -13,28 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import TSBetreuung from '../../../models/TSBetreuung';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import BetreuungRS from './betreuungRS.rest';
 
 describe('betreuungRS', () => {
 
     let betreuungRS: BetreuungRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockBetreuung: TSBetreuung;
     let wizardStepManager: WizardStepManager;
     let mockBetreuungRest: any;
     let kindId: string;
     let gesuchId: string;
-    let $q: angular.IQService;
+    let $q: IQService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -54,34 +55,23 @@ describe('betreuungRS', () => {
         TestDataUtil.setAbstractMutableFieldsUndefined(mockBetreuung);
         mockBetreuungRest = ebeguRestUtil.betreuungToRestObject({}, mockBetreuung);
 
-        $httpBackend.whenGET(betreuungRS.serviceURL + '/' + encodeURIComponent(mockBetreuung.id)).respond(mockBetreuungRest);
+        $httpBackend.whenGET(`${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`)
+            .respond(mockBetreuungRest);
     });
 
     describe('Public API', () => {
         it('check URI', () => {
             expect(betreuungRS.serviceURL).toContain('betreuungen');
         });
-        it('check Service name', () => {
-            expect(betreuungRS.getServiceName()).toBe('BetreuungRS');
-        });
-        it('should include a findBetreuung() function', () => {
-            expect(betreuungRS.findBetreuung).toBeDefined();
-        });
-        it('should include a saveBetreuung() function', () => {
-            expect(betreuungRS.saveBetreuung).toBeDefined();
-        });
-        it('should include a removeBetreuung() function', () => {
-            expect(betreuungRS.removeBetreuung).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('findBetreuung', () => {
             it('should return the Betreuung by id', () => {
-                $httpBackend.expectGET(betreuungRS.serviceURL + '/' + mockBetreuung.id).respond(mockBetreuungRest);
+                $httpBackend.expectGET(`${betreuungRS.serviceURL}/${mockBetreuung.id}`).respond(mockBetreuungRest);
 
                 let foundBetreuung: TSBetreuung;
-                betreuungRS.findBetreuung(mockBetreuung.id).then((result) => {
+                betreuungRS.findBetreuung(mockBetreuung.id).then(result => {
                     foundBetreuung = result;
                 });
                 $httpBackend.flush();
@@ -93,13 +83,15 @@ describe('betreuungRS', () => {
         describe('createBetreuung', () => {
             it('should create a Betreuung', () => {
                 let createdBetreuung: TSBetreuung;
-                $httpBackend.expectPUT(betreuungRS.serviceURL + '/betreuung/' + kindId + '/false', mockBetreuungRest).respond(mockBetreuungRest);
+                $httpBackend.expectPUT(`${betreuungRS.serviceURL}/betreuung/${kindId}/false`,
+                    mockBetreuungRest).respond(mockBetreuungRest);
 
                 betreuungRS.saveBetreuung(mockBetreuung, kindId, gesuchId, false)
-                    .then((result) => {
+                    .then(result => {
                         createdBetreuung = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(createdBetreuung).toBeDefined();
                 expect(createdBetreuung).toEqual(mockBetreuung);
@@ -107,18 +99,20 @@ describe('betreuungRS', () => {
         });
         describe('removeBetreuung', () => {
             it('should remove a Betreuung', () => {
-                $httpBackend.expectDELETE(betreuungRS.serviceURL + '/' + encodeURIComponent(mockBetreuung.id))
-                    .respond(200);
+                const status = 200;
+                $httpBackend.expectDELETE(`${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`)
+                    .respond(status);
 
                 let deleteResult: any;
                 betreuungRS.removeBetreuung(mockBetreuung.id, gesuchId)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(status);
             });
         });
     });

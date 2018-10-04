@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSBenutzer from './TSBenutzer';
-import {TSAntragStatus} from './enums/TSAntragStatus';
-import * as moment from 'moment';
 
 export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
 
@@ -26,7 +26,13 @@ export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
     private _timestampBis: moment.Moment;
     private _status: TSAntragStatus;
 
-    constructor(gesuchId?: string, benutzer?: TSBenutzer, timestampVon?: moment.Moment, timestampBis?: moment.Moment, status?: TSAntragStatus) {
+    public constructor(
+        gesuchId?: string,
+        benutzer?: TSBenutzer,
+        timestampVon?: moment.Moment,
+        timestampBis?: moment.Moment,
+        status?: TSAntragStatus,
+    ) {
         super();
         this._gesuchId = gesuchId;
         this._benutzer = benutzer;
@@ -35,43 +41,43 @@ export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
         this._status = status;
     }
 
-    get gesuchId(): string {
+    public get gesuchId(): string {
         return this._gesuchId;
     }
 
-    set gesuchId(value: string) {
+    public set gesuchId(value: string) {
         this._gesuchId = value;
     }
 
-    get benutzer(): TSBenutzer {
+    public get benutzer(): TSBenutzer {
         return this._benutzer;
     }
 
-    set benutzer(value: TSBenutzer) {
+    public set benutzer(value: TSBenutzer) {
         this._benutzer = value;
     }
 
-    get timestampVon(): moment.Moment {
+    public get timestampVon(): moment.Moment {
         return this._timestampVon;
     }
 
-    set timestampVon(value: moment.Moment) {
+    public set timestampVon(value: moment.Moment) {
         this._timestampVon = value;
     }
 
-    get timestampBis(): moment.Moment {
+    public get timestampBis(): moment.Moment {
         return this._timestampBis;
     }
 
-    set timestampBis(value: moment.Moment) {
+    public set timestampBis(value: moment.Moment) {
         this._timestampBis = value;
     }
 
-    get status(): TSAntragStatus {
+    public get status(): TSAntragStatus {
         return this._status;
     }
 
-    set status(value: TSAntragStatus) {
+    public set status(value: TSAntragStatus) {
         this._status = value;
     }
 }

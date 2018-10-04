@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSZahlungsstatus} from './enums/TSZahlungsstatus';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSZahlung extends TSAbstractMutableEntity {
 
@@ -24,36 +24,34 @@ export default class TSZahlung extends TSAbstractMutableEntity {
 
     private _betragTotalZahlung: number;
 
-    constructor(institutionsName?: string, status?: TSZahlungsstatus, betragTotalZahlung?: number) {
+    public constructor(institutionsName?: string, status?: TSZahlungsstatus, betragTotalZahlung?: number) {
         super();
         this._institutionsName = institutionsName;
         this._status = status;
         this._betragTotalZahlung = betragTotalZahlung;
     }
 
-    get institutionsName(): string {
+    public get institutionsName(): string {
         return this._institutionsName;
     }
 
-    set institutionsName(value: string) {
+    public set institutionsName(value: string) {
         this._institutionsName = value;
     }
 
-    get status(): TSZahlungsstatus {
+    public get status(): TSZahlungsstatus {
         return this._status;
     }
 
-    set status(value: TSZahlungsstatus) {
+    public set status(value: TSZahlungsstatus) {
         this._status = value;
     }
 
-    get betragTotalZahlung(): number {
+    public get betragTotalZahlung(): number {
         return this._betragTotalZahlung;
     }
 
-    set betragTotalZahlung(value: number) {
+    public set betragTotalZahlung(value: number) {
         this._betragTotalZahlung = value;
     }
 }
-
-

@@ -21,7 +21,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
     selector: 'dv-full-height-container',
     templateUrl: './full-height-container.component.html',
     styleUrls: ['./full-height-container.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullHeightContainerComponent {
 

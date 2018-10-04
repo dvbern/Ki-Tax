@@ -20,24 +20,24 @@ export default class TSMtteilungSearchresultDTO {
     private _mitteilungen: Array<TSMitteilung>;
     private _totalResultSize: number;
 
-    constructor(mitteilungen?: Array<TSMitteilung>, totalResultSize?: number) {
+    public constructor(mitteilungen?: Array<TSMitteilung>, totalResultSize?: number) {
         this._mitteilungen = mitteilungen;
         this._totalResultSize = totalResultSize;
     }
 
-    get mitteilungen(): Array<TSMitteilung> {
+    public get mitteilungen(): Array<TSMitteilung> {
         return this._mitteilungen;
     }
 
-    set mitteilungen(value: Array<TSMitteilung>) {
+    public set mitteilungen(value: Array<TSMitteilung>) {
         this._mitteilungen = value;
     }
 
-    get totalResultSize(): number {
+    public get totalResultSize(): number {
         return this._totalResultSize;
     }
 
-    set totalResultSize(value: number) {
+    public set totalResultSize(value: number) {
         this._totalResultSize = value;
     }
 }

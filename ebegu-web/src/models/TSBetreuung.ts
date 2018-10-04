@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
@@ -24,7 +25,6 @@ import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
 import TSGesuchsperiode from './TSGesuchsperiode';
 import TSInstitutionStammdaten from './TSInstitutionStammdaten';
 import TSVerfuegung from './TSVerfuegung';
-import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
 
 export default class TSBetreuung extends TSAbstractMutableEntity {
 
@@ -52,14 +52,31 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _bgNummer: string;
     private _keineDetailinformationen: boolean = false;
 
-    constructor(institutionStammdaten?: TSInstitutionStammdaten, betreuungsstatus?: TSBetreuungsstatus,
-                betreuungspensumContainers?: Array<TSBetreuungspensumContainer>, abwesenheitContainers?: Array<TSAbwesenheitContainer>,
-                betreuungNummer?: number, verfuegung?: TSVerfuegung, vertrag?: boolean, erweiterteBeduerfnisse?: boolean,
-                grundAblehnung?: string, datumAblehnung?: moment.Moment, datumBestaetigung?: moment.Moment, kindFullname?: string,
-                kindNummer?: number, gesuchId?: string, gesuchsperiode?: TSGesuchsperiode,
-                betreuungMutiert?: boolean, abwesenheitMutiert?: boolean, gueltig?: boolean, belegungTagesschule?: TSBelegungTagesschule,
-                belegungFerieninsel?: TSBelegungFerieninsel, anmeldungMutationZustand?: TSAnmeldungMutationZustand,
-                bgNummer?: string, keineDetailinformationen?: boolean) {
+    public constructor(
+        institutionStammdaten?: TSInstitutionStammdaten,
+        betreuungsstatus?: TSBetreuungsstatus,
+        betreuungspensumContainers?: Array<TSBetreuungspensumContainer>,
+        abwesenheitContainers?: Array<TSAbwesenheitContainer>,
+        betreuungNummer?: number,
+        verfuegung?: TSVerfuegung,
+        vertrag?: boolean,
+        erweiterteBeduerfnisse?: boolean,
+        grundAblehnung?: string,
+        datumAblehnung?: moment.Moment,
+        datumBestaetigung?: moment.Moment,
+        kindFullname?: string,
+        kindNummer?: number,
+        gesuchId?: string,
+        gesuchsperiode?: TSGesuchsperiode,
+        betreuungMutiert?: boolean,
+        abwesenheitMutiert?: boolean,
+        gueltig?: boolean,
+        belegungTagesschule?: TSBelegungTagesschule,
+        belegungFerieninsel?: TSBelegungFerieninsel,
+        anmeldungMutationZustand?: TSAnmeldungMutationZustand,
+        bgNummer?: string,
+        keineDetailinformationen?: boolean,
+    ) {
         super();
         this._institutionStammdaten = institutionStammdaten;
         this._betreuungsstatus = betreuungsstatus ? betreuungsstatus : TSBetreuungsstatus.AUSSTEHEND;
@@ -68,8 +85,8 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         this._grundAblehnung = grundAblehnung;
         this._betreuungNummer = betreuungNummer;
         this._verfuegung = verfuegung;
-        this._vertrag = vertrag ? true : false;
-        this._erweiterteBeduerfnisse = erweiterteBeduerfnisse ? true : false;
+        this._vertrag = !!vertrag;
+        this._erweiterteBeduerfnisse = !!erweiterteBeduerfnisse;
         this._datumAblehnung = datumAblehnung;
         this._datumBestaetigung = datumBestaetigung;
         this._kindFullname = kindFullname;
@@ -86,147 +103,147 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         this._keineDetailinformationen = keineDetailinformationen;
     }
 
-    get institutionStammdaten(): TSInstitutionStammdaten {
+    public get institutionStammdaten(): TSInstitutionStammdaten {
         return this._institutionStammdaten;
     }
 
-    set institutionStammdaten(value: TSInstitutionStammdaten) {
+    public set institutionStammdaten(value: TSInstitutionStammdaten) {
         this._institutionStammdaten = value;
     }
 
-    get betreuungsstatus(): TSBetreuungsstatus {
+    public get betreuungsstatus(): TSBetreuungsstatus {
         return this._betreuungsstatus;
     }
 
-    set betreuungsstatus(value: TSBetreuungsstatus) {
+    public set betreuungsstatus(value: TSBetreuungsstatus) {
         this._betreuungsstatus = value;
     }
 
-    get betreuungspensumContainers(): Array<TSBetreuungspensumContainer> {
+    public get betreuungspensumContainers(): Array<TSBetreuungspensumContainer> {
         return this._betreuungspensumContainers;
     }
 
-    set betreuungspensumContainers(value: Array<TSBetreuungspensumContainer>) {
+    public set betreuungspensumContainers(value: Array<TSBetreuungspensumContainer>) {
         this._betreuungspensumContainers = value;
     }
 
-    get abwesenheitContainers(): Array<TSAbwesenheitContainer> {
+    public get abwesenheitContainers(): Array<TSAbwesenheitContainer> {
         return this._abwesenheitContainers;
     }
 
-    set abwesenheitContainers(value: Array<TSAbwesenheitContainer>) {
+    public set abwesenheitContainers(value: Array<TSAbwesenheitContainer>) {
         this._abwesenheitContainers = value;
     }
 
-    get grundAblehnung(): string {
+    public get grundAblehnung(): string {
         return this._grundAblehnung;
     }
 
-    set grundAblehnung(value: string) {
+    public set grundAblehnung(value: string) {
         this._grundAblehnung = value;
     }
 
-    get betreuungNummer(): number {
+    public get betreuungNummer(): number {
         return this._betreuungNummer;
     }
 
-    set betreuungNummer(value: number) {
+    public set betreuungNummer(value: number) {
         this._betreuungNummer = value;
     }
 
-    get verfuegung(): TSVerfuegung {
+    public get verfuegung(): TSVerfuegung {
         return this._verfuegung;
     }
 
-    set verfuegung(value: TSVerfuegung) {
+    public set verfuegung(value: TSVerfuegung) {
         this._verfuegung = value;
     }
 
-    get vertrag(): boolean {
+    public get vertrag(): boolean {
         return this._vertrag;
     }
 
-    set vertrag(value: boolean) {
+    public set vertrag(value: boolean) {
         this._vertrag = value;
     }
 
-    get erweiterteBeduerfnisse(): boolean {
+    public get erweiterteBeduerfnisse(): boolean {
         return this._erweiterteBeduerfnisse;
     }
 
-    set erweiterteBeduerfnisse(value: boolean) {
+    public set erweiterteBeduerfnisse(value: boolean) {
         this._erweiterteBeduerfnisse = value;
     }
 
-    get datumAblehnung(): moment.Moment {
+    public get datumAblehnung(): moment.Moment {
         return this._datumAblehnung;
     }
 
-    set datumAblehnung(value: moment.Moment) {
+    public set datumAblehnung(value: moment.Moment) {
         this._datumAblehnung = value;
     }
 
-    get datumBestaetigung(): moment.Moment {
+    public get datumBestaetigung(): moment.Moment {
         return this._datumBestaetigung;
     }
 
-    set datumBestaetigung(value: moment.Moment) {
+    public set datumBestaetigung(value: moment.Moment) {
         this._datumBestaetigung = value;
     }
 
-    get kindFullname(): string {
+    public get kindFullname(): string {
         return this._kindFullname;
     }
 
-    set kindFullname(value: string) {
+    public set kindFullname(value: string) {
         this._kindFullname = value;
     }
 
-    get kindNummer(): number {
+    public get kindNummer(): number {
         return this._kindNummer;
     }
 
-    set kindNummer(value: number) {
+    public set kindNummer(value: number) {
         this._kindNummer = value;
     }
 
-    get gesuchId(): string {
+    public get gesuchId(): string {
         return this._gesuchId;
     }
 
-    set gesuchId(value: string) {
+    public set gesuchId(value: string) {
         this._gesuchId = value;
     }
 
-    get gesuchsperiode(): TSGesuchsperiode {
+    public get gesuchsperiode(): TSGesuchsperiode {
         return this._gesuchsperiode;
     }
 
-    set gesuchsperiode(value: TSGesuchsperiode) {
+    public set gesuchsperiode(value: TSGesuchsperiode) {
         this._gesuchsperiode = value;
     }
 
-    get betreuungMutiert(): boolean {
+    public get betreuungMutiert(): boolean {
         return this._betreuungMutiert;
     }
 
-    set betreuungMutiert(value: boolean) {
+    public set betreuungMutiert(value: boolean) {
         this._betreuungMutiert = value;
     }
 
-    get abwesenheitMutiert(): boolean {
+    public get abwesenheitMutiert(): boolean {
         return this._abwesenheitMutiert;
     }
 
-    set abwesenheitMutiert(value: boolean) {
+    public set abwesenheitMutiert(value: boolean) {
         this._abwesenheitMutiert = value;
     }
 
-    get gueltig(): boolean {
+    public get gueltig(): boolean {
         return this._gueltig;
     }
 
-    set gueltig(value: boolean) {
+    public set gueltig(value: boolean) {
         this._gueltig = value;
     }
 
@@ -278,10 +295,11 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         }
     }
 
-    private isAngebot(typ: TSBetreuungsangebotTyp) {
+    private isAngebot(typ: TSBetreuungsangebotTyp): boolean {
         if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
             return this.institutionStammdaten.betreuungsangebotTyp === typ;
         }
+
         return false;
     }
 

@@ -18,24 +18,24 @@ export class TSSTPersistObject {
     private _namespace: string;
     private _data: string;
 
-    constructor(namespace?: string, data?: string) {
+    public constructor(namespace?: string, data?: string) {
         this._namespace = namespace;
         this._data = data;
     }
 
-    get namespace(): string {
+    public get namespace(): string {
         return this._namespace;
     }
 
-    set namespace(value: string) {
+    public set namespace(value: string) {
         this._namespace = value;
     }
 
-    get data(): string {
+    public get data(): string {
         return this._data;
     }
 
-    set data(value: string) {
+    public set data(value: string) {
         this._data = value;
     }
 }

@@ -102,18 +102,21 @@
                                 </div>
                                 <div class="row" ng-show="vm.gesuchsperiode.hasTagesschulenAnmeldung()">
                                     <div class="col-md-4">
-                                        <label data-translate="FREISCHALTUNG_TAGESSCHULE" for="datumFreischaltungTagesschule_ID"/>
+                                        <label data-translate="FREISCHALTUNG_TAGESSCHULE"
+                                               for="datumFreischaltungTagesschule_ID"/>
                                     </div>
                                     <div class="col-md-8 ">
                                         <div ng-if="!vm.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert()">
-                                            <dv-datepicker input-id="datumFreischaltungTagesschule_ID" name="datumFreischaltungTagesschule"
+                                            <dv-datepicker input-id="datumFreischaltungTagesschule_ID"
+                                                           name="datumFreischaltungTagesschule"
                                                            ng-model="vm.datumFreischaltungTagesschule"
                                                            dv-max-date="vm.datumFreischaltungMax"
                                                            class="input-element contrast">
                                             </dv-datepicker>
                                         </div>
                                         <div ng-if="vm.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert()">
-                                            <dv-datepicker input-id="datumFreischaltungTagesschule_ID" name="datumFreischaltungTagesschule"
+                                            <dv-datepicker input-id="datumFreischaltungTagesschule_ID"
+                                                           name="datumFreischaltungTagesschule"
                                                            ng-model="vm.gesuchsperiode.datumFreischaltungTagesschule"
                                                            dv-max-date="vm.datumFreischaltungMax"
                                                            class="input-element contrast"
@@ -124,7 +127,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-8 col-md-offset-4">
-                                        <dv-error-messages for="vm.form.datumFreischaltungTagesschule.$error"></dv-error-messages>
+                                        <dv-error-messages
+                                            for="vm.form.datumFreischaltungTagesschule.$error"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +137,8 @@
                                 </div>
                                 <div class="row" ng-show="vm.gesuchsperiode.hasTagesschulenAnmeldung()">
                                     <div class="col-md-4">
-                                        <label data-translate="ERSTER_SCHULTAG_TAGESSCHULE" for="datumErsterSchultag_ID"/>
+                                        <label data-translate="ERSTER_SCHULTAG_TAGESSCHULE"
+                                               for="datumErsterSchultag_ID"/>
                                     </div>
                                     <div class="col-md-8 ">
                                         <div>
@@ -160,7 +165,8 @@
                         <div class="col-md-2" ng-if="vm.gesuchsperiode">
                             <dv-loading-button type="button" button-click="vm.saveGesuchsperiode()"
                                                button-class="color-success">
-                                <span ng-bind="vm.gesuchsperiode.isNew() ? ('SAVE' | translate) : ('UPDATE' | translate)"></span>
+                                <span
+                                    ng-bind="vm.gesuchsperiode.isNew() ? ('SAVE' | translate) : ('UPDATE' | translate)"></span>
                             </dv-loading-button>
                         </div>
                         <div class="col-md-2" ng-if="vm.gesuchsperiode">
@@ -196,7 +202,7 @@
                                         <div class="col-md-6">
                                             <label data-translate="{{paramgp.key}}" class="md-no-float"
                                                    for="propertyValue_{{paramgp.key}}"
-                                            title="{{paramgp.description}}"></label>
+                                                   title="{{paramgp.description}}"></label>
                                         </div>
                                         <div class="col-md-3">
                                             <input id="propertyValue_{{paramgp.key}}" type="text"

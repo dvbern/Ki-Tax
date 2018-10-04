@@ -13,61 +13,58 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
+import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import TSGesuch from '../../models/TSGesuch';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TSMahnung from '../../models/TSMahnung';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class MahnungRS implements IEntityRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly $log: ILogService) {
-        this.serviceURL = REST_API + 'mahnung';
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly $log: ILogService,
+    ) {
+        this.serviceURL = `${REST_API}mahnung`;
     }
 
     public saveMahnung(mahnung: TSMahnung): IPromise<TSMahnung> {
         let sentMahnung = {};
         sentMahnung = this.ebeguRestUtil.mahnungToRestObject(sentMahnung, mahnung);
-        return this.$http.post(this.serviceURL, sentMahnung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
+
+        return this.$http.post(this.serviceURL, sentMahnung).then((response: any) => {
             this.$log.debug('PARSING gesuch REST object ', response.data);
+
             return this.ebeguRestUtil.parseMahnung(new TSMahnung(), response.data);
         });
     }
 
     public findMahnungen(gesuchId: string): IPromise<TSMahnung[]> {
-        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(gesuchId))
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseMahnungen(response.data);
             });
     }
 
     public mahnlaufBeenden(gesuch: TSGesuch): IPromise<TSGesuch> {
-        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuch.id), {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: IHttpResponse<TSGesuch>) => {
-            this.$log.debug('PARSING gesuch REST object ', response.data);
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`, {})
+            .then((response: IHttpResponse<TSGesuch>) => {
+                this.$log.debug('PARSING gesuch REST object ', response.data);
+                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+            });
     }
 
     public getInitialeBemerkungen(gesuch: TSGesuch): IHttpPromise<string> {
-        return this.$http.get(this.serviceURL + '/bemerkungen/' + encodeURIComponent(gesuch.id), {
+        return this.$http.get(`${this.serviceURL}/bemerkungen/${encodeURIComponent(gesuch.id)}`, {
             headers: {
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         });
     }
 }

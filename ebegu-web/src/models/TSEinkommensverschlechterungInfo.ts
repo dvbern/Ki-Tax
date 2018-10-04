@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
+// tslint:disable:naming-convention variable-name
 export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableEntity {
 
     private _einkommensverschlechterung: boolean = false;
@@ -35,91 +36,91 @@ export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableE
     private _ekvBasisJahrPlus1Annulliert: boolean = false;
     private _ekvBasisJahrPlus2Annulliert: boolean = false;
 
-    get einkommensverschlechterung(): boolean {
+    public get einkommensverschlechterung(): boolean {
         return this._einkommensverschlechterung;
     }
 
-    set einkommensverschlechterung(value: boolean) {
+    public set einkommensverschlechterung(value: boolean) {
         this._einkommensverschlechterung = value;
     }
 
-    get ekvFuerBasisJahrPlus1(): boolean {
+    public get ekvFuerBasisJahrPlus1(): boolean {
         return this._ekvFuerBasisJahrPlus1;
     }
 
-    set ekvFuerBasisJahrPlus1(value: boolean) {
+    public set ekvFuerBasisJahrPlus1(value: boolean) {
         this._ekvFuerBasisJahrPlus1 = value;
     }
 
-    get ekvFuerBasisJahrPlus2(): boolean {
+    public get ekvFuerBasisJahrPlus2(): boolean {
         return this._ekvFuerBasisJahrPlus2;
     }
 
-    set ekvFuerBasisJahrPlus2(value: boolean) {
+    public set ekvFuerBasisJahrPlus2(value: boolean) {
         this._ekvFuerBasisJahrPlus2 = value;
     }
 
-    get grundFuerBasisJahrPlus1(): string {
+    public get grundFuerBasisJahrPlus1(): string {
         return this._grundFuerBasisJahrPlus1;
     }
 
-    set grundFuerBasisJahrPlus1(value: string) {
+    public set grundFuerBasisJahrPlus1(value: string) {
         this._grundFuerBasisJahrPlus1 = value;
     }
 
-    get grundFuerBasisJahrPlus2(): string {
+    public get grundFuerBasisJahrPlus2(): string {
         return this._grundFuerBasisJahrPlus2;
     }
 
-    set grundFuerBasisJahrPlus2(value: string) {
+    public set grundFuerBasisJahrPlus2(value: string) {
         this._grundFuerBasisJahrPlus2 = value;
     }
 
-    get stichtagFuerBasisJahrPlus1(): moment.Moment {
+    public get stichtagFuerBasisJahrPlus1(): moment.Moment {
         return this._stichtagFuerBasisJahrPlus1;
     }
 
-    set stichtagFuerBasisJahrPlus1(value: moment.Moment) {
+    public set stichtagFuerBasisJahrPlus1(value: moment.Moment) {
         this._stichtagFuerBasisJahrPlus1 = value;
     }
 
-    get stichtagFuerBasisJahrPlus2(): moment.Moment {
+    public get stichtagFuerBasisJahrPlus2(): moment.Moment {
         return this._stichtagFuerBasisJahrPlus2;
     }
 
-    set stichtagFuerBasisJahrPlus2(value: moment.Moment) {
+    public set stichtagFuerBasisJahrPlus2(value: moment.Moment) {
         this._stichtagFuerBasisJahrPlus2 = value;
     }
 
-    get gemeinsameSteuererklaerung_BjP1(): boolean {
+    public get gemeinsameSteuererklaerung_BjP1(): boolean {
         return this._gemeinsameSteuererklaerung_BjP1;
     }
 
-    set gemeinsameSteuererklaerung_BjP1(value: boolean) {
+    public set gemeinsameSteuererklaerung_BjP1(value: boolean) {
         this._gemeinsameSteuererklaerung_BjP1 = value;
     }
 
-    get gemeinsameSteuererklaerung_BjP2(): boolean {
+    public get gemeinsameSteuererklaerung_BjP2(): boolean {
         return this._gemeinsameSteuererklaerung_BjP2;
     }
 
-    set gemeinsameSteuererklaerung_BjP2(value: boolean) {
+    public set gemeinsameSteuererklaerung_BjP2(value: boolean) {
         this._gemeinsameSteuererklaerung_BjP2 = value;
     }
 
-    get ekvBasisJahrPlus1Annulliert(): boolean {
+    public get ekvBasisJahrPlus1Annulliert(): boolean {
         return this._ekvBasisJahrPlus1Annulliert;
     }
 
-    set ekvBasisJahrPlus1Annulliert(value: boolean) {
+    public set ekvBasisJahrPlus1Annulliert(value: boolean) {
         this._ekvBasisJahrPlus1Annulliert = value;
     }
 
-    get ekvBasisJahrPlus2Annulliert(): boolean {
+    public get ekvBasisJahrPlus2Annulliert(): boolean {
         return this._ekvBasisJahrPlus2Annulliert;
     }
 
-    set ekvBasisJahrPlus2Annulliert(value: boolean) {
+    public set ekvBasisJahrPlus2Annulliert(value: boolean) {
         this._ekvBasisJahrPlus2Annulliert = value;
     }
 }

@@ -21,19 +21,15 @@ export class TSAbstractMutableEntity extends TSAbstractEntity {
 
     private _vorgaengerId: string;
 
-
-    get vorgaengerId(): string {
+    public get vorgaengerId(): string {
         return this._vorgaengerId;
     }
 
-    set vorgaengerId(value: string) {
+    public set vorgaengerId(value: string) {
         this._vorgaengerId = value;
     }
 
     public hasVorgaenger(): boolean {
-        if (this.vorgaengerId !== null && this.vorgaengerId !== undefined) {
-            return true;
-        }
-        return false;
+        return this.vorgaengerId !== null && this.vorgaengerId !== undefined;
     }
 }

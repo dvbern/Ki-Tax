@@ -19,8 +19,10 @@
  https://angular-translate.github.io/docs/#/guide/22_unit-testing-with-angular-translate
  */
 
+// tslint:disable:no-commented-code
 /*
-beforeEach(angular.mock.module('ebeguWeb.core', function ($provide: IProvideService, $translateProvider: ITranslateProvider) {
+beforeEach(angular.mock.module('ebeguWeb.core',
+function ($provide: IProvideService, $translateProvider: ITranslateProvider) {
 
     $provide.factory('customLoader', function ($q: IQService) {
         return function () {

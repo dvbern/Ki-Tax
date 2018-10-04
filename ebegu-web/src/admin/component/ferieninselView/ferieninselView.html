@@ -69,22 +69,26 @@
                                         </div>
                                         <div class="col-md-2" dv-show-element
                                              dv-show-allowed-roles="vm.TSRoleUtil.getSchulamtAdministratorRoles()">
-                                            <dv-loading-button type="button" button-click="vm.addFerieninselZeitraum(vm.getFerieninselStammdaten(ferien));"
+                                            <dv-loading-button type="button"
+                                                               button-click="vm.addFerieninselZeitraum(vm.getFerieninselStammdaten(ferien));"
                                                                button-class="dv-btn-operation"
                                                                title="{{'FERIENINSELZEITRAUM_ADD' | translate}}"
                                                                aria-label="{{'FERIENINSELZEITRAUM_ADD'|translate}}">
-                                                <i class="fa fa-lg fa-plus-circle" aria-label="{{'FERIENINSELZEITRAUM_ADD' | translate}}"></i>
+                                                <i class="fa fa-lg fa-plus-circle"
+                                                   aria-label="{{'FERIENINSELZEITRAUM_ADD' | translate}}"></i>
                                                 <span data-translate="FERIENINSELZEITRAUM_ADD"></span>
                                             </dv-loading-button>
                                         </div>
                                         <div class="col-md-2" dv-show-element
                                              dv-show-allowed-roles="vm.TSRoleUtil.getSchulamtAdministratorRoles()">
-                                            <dv-loading-button type="button" button-click="vm.saveFerieninselStammdaten(vm.getFerieninselStammdaten(ferien));"
+                                            <dv-loading-button type="button"
+                                                               button-click="vm.saveFerieninselStammdaten(vm.getFerieninselStammdaten(ferien));"
                                                                button-class="dv-btn-operation"
                                                                title="{{'FERIENINSELSTAMMDATEN_SAVE' | translate}}"
                                                                aria-label="{{'FERIENINSELSTAMMDATEN_SAVE'|translate}}"
                                                                button-disabled="vm.isSaveButtonDisabled(vm.getFerieninselStammdaten(ferien))">
-                                                <i class="fa fa-lg fa-floppy-o" aria-label="{{'FERIENINSELSTAMMDATEN_SAVE' | translate}}"></i>
+                                                <i class="fa fa-lg fa-floppy-o"
+                                                   aria-label="{{'FERIENINSELSTAMMDATEN_SAVE' | translate}}"></i>
                                                 <span data-translate="FERIENINSELSTAMMDATEN_SAVE"></span>
                                             </dv-loading-button>
                                         </div>
@@ -108,7 +112,8 @@
 
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <dv-datepicker input-id="{{ferien}}_anmeldeschluss" name="{{ferien}}_anmeldeschluss"
+                                            <dv-datepicker input-id="{{ferien}}_anmeldeschluss"
+                                                           name="{{ferien}}_anmeldeschluss"
                                                            ng-model="vm.getFerieninselStammdaten(ferien).anmeldeschluss"
                                                            ng-required="vm.isAnmeldeschlussRequired(vm.getFerieninselStammdaten(ferien))"
                                                            class="input-element">
@@ -136,10 +141,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="row" ng-repeat="zeitraum in vm.getFerieninselStammdaten(ferien).zeitraumList">
+                                    <div class="row"
+                                         ng-repeat="zeitraum in vm.getFerieninselStammdaten(ferien).zeitraumList">
                                         <div class="col-md-2"></div>
                                         <div class="col-md-2">
-                                            <dv-datepicker input-id="{{zeitraum}}_gueltigAb" name="{{zeitraum}}_gueltigAb"
+                                            <dv-datepicker input-id="{{zeitraum}}_gueltigAb"
+                                                           name="{{zeitraum}}_gueltigAb"
                                                            ng-model="zeitraum.gueltigkeit.gueltigAb"
                                                            ng-required="vm.isDatumAbRequired(zeitraum, vm.getFerieninselStammdaten(ferien))"
                                                            class="input-element">
@@ -148,7 +155,8 @@
                                                                for="vm.form[zeitraum + '_gueltigAb'].$error"></dv-error-messages>
                                         </div>
                                         <div class="col-md-2">
-                                            <dv-datepicker input-id="{{zeitraum}}_gueltigBis" name="{{zeitraum}}_gueltigBis"
+                                            <dv-datepicker input-id="{{zeitraum}}_gueltigBis"
+                                                           name="{{zeitraum}}_gueltigBis"
                                                            ng-model="zeitraum.gueltigkeit.gueltigBis"
                                                            ng-required="vm.isDatumBisRequired(zeitraum, vm.getFerieninselStammdaten(ferien))"
                                                            class="input-element">
@@ -157,11 +165,13 @@
                                                                for="vm.form[zeitraum + '_gueltigBis'].$error"></dv-error-messages>
                                         </div>
                                         <div class="col-md-1">
-                                            <dv-loading-button type="button" button-click="vm.removeFerieninselZeitraum(vm.getFerieninselStammdaten(ferien), zeitraum);"
+                                            <dv-loading-button type="button"
+                                                               button-click="vm.removeFerieninselZeitraum(vm.getFerieninselStammdaten(ferien), zeitraum);"
                                                                button-class="dv-btn-operation"
                                                                title="{{'FERIENINSELSTAMMDATEN_SAVE' | translate}}"
                                                                aria-label="{{'FERIENINSELSTAMMDATEN_SAVE'|translate}}">
-                                                <i class="fa fa-lg fa-trash-o" aria-label="{{'FERIENINSELSTAMMDATEN_SAVE' | translate}}"></i>
+                                                <i class="fa fa-lg fa-trash-o"
+                                                   aria-label="{{'FERIENINSELSTAMMDATEN_SAVE' | translate}}"></i>
                                             </dv-loading-button>
                                         </div>
 

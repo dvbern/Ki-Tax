@@ -16,18 +16,18 @@
 import {IComponentOptions} from 'angular';
 
 export class DvMobileNavigationToggleComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-mobile-navigation-toggle.html');
-    controller = DvMobileNavigationToggleController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-mobile-navigation-toggle.html');
+    public controller = DvMobileNavigationToggleController;
+    public controllerAs = 'vm';
 }
 
 export class DvMobileNavigationToggleController {
 
-    static $inject: ReadonlyArray<string> = ['$mdSidenav'];
+    public static $inject: ReadonlyArray<string> = ['$mdSidenav'];
 
-    constructor(private readonly $mdSidenav: ng.material.ISidenavService) {
+    public constructor(private readonly $mdSidenav: ng.material.ISidenavService) {
     }
 
     public toggleSidenav(componentId: string): void {

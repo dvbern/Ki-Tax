@@ -13,27 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import KindRS from './kindRS.rest';
 
 describe('KindRS', () => {
 
     let kindRS: KindRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockKind: TSKindContainer;
     let mockKindRest: any;
     let gesuchId: string;
-    let $q: angular.IQService;
+    let $q: IQService;
     let wizardStepManager: WizardStepManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -48,9 +49,9 @@ describe('KindRS', () => {
 
     beforeEach(() => {
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000feb';
-        const kindGS: TSKind = new TSKind('Pedro', 'Bern');
+        const kindGS = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
-        const kindJA: TSKind = new TSKind('Johan', 'Basel');
+        const kindJA = new TSKind('Johan', 'Basel');
         TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
@@ -62,26 +63,14 @@ describe('KindRS', () => {
         it('check URI', () => {
             expect(kindRS.serviceURL).toContain('kinder');
         });
-        it('check Service name', () => {
-            expect(kindRS.getServiceName()).toBe('KindRS');
-        });
-        it('should include a findKind() function', () => {
-            expect(kindRS.findKind).toBeDefined();
-        });
-        it('should include a saveKind() function', () => {
-            expect(kindRS.saveKind).toBeDefined();
-        });
-        it('should include a removeKind() function', () => {
-            expect(kindRS.removeKind).toBeDefined();
-        });
     });
     describe('API Usage', () => {
         describe('findKind', () => {
             it('should return the Kind by id', () => {
-                $httpBackend.expectGET(kindRS.serviceURL + '/find/' + mockKind.id).respond(mockKindRest);
+                $httpBackend.expectGET(`${kindRS.serviceURL}/find/${mockKind.id}`).respond(mockKindRest);
 
                 let foundKind: TSKindContainer;
-                kindRS.findKind(mockKind.id).then((result) => {
+                kindRS.findKind(mockKind.id).then(result => {
                     foundKind = result;
                 });
                 $httpBackend.flush();
@@ -91,10 +80,10 @@ describe('KindRS', () => {
         describe('createKind', () => {
             it('should create a Kind', () => {
                 let createdKind: TSKindContainer;
-                $httpBackend.expectPUT(kindRS.serviceURL + '/' + gesuchId, mockKindRest).respond(mockKindRest);
+                $httpBackend.expectPUT(`${kindRS.serviceURL}/${gesuchId}`, mockKindRest).respond(mockKindRest);
 
                 kindRS.saveKind(mockKind, gesuchId)
-                    .then((result) => {
+                    .then(result => {
                         createdKind = result;
                     });
                 $httpBackend.flush();
@@ -103,41 +92,44 @@ describe('KindRS', () => {
         });
         describe('updateKind', () => {
             it('should update a Kind', () => {
-                const kindJA2: TSKind = new TSKind('Johan', 'Basel');
+                const kindJA2 = new TSKind('Johan', 'Basel');
                 TestDataUtil.setAbstractMutableFieldsUndefined(kindJA2);
                 mockKind.kindJA = kindJA2;
                 mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
                 let updatedKindContainer: TSKindContainer;
-                $httpBackend.expectPUT(kindRS.serviceURL + '/' + gesuchId, mockKindRest).respond(mockKindRest);
+                $httpBackend.expectPUT(`${kindRS.serviceURL}/${gesuchId}`, mockKindRest).respond(mockKindRest);
 
                 kindRS.saveKind(mockKind, gesuchId)
-                    .then((result) => {
+                    .then(result => {
                         updatedKindContainer = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 checkFieldValues(updatedKindContainer);
             });
         });
         describe('removeKind', () => {
             it('should remove a Kind', () => {
-                $httpBackend.expectDELETE(kindRS.serviceURL + '/' + encodeURIComponent(mockKind.id))
-                    .respond(200);
+                const httpOk = 200;
+                $httpBackend.expectDELETE(`${kindRS.serviceURL}/${encodeURIComponent(mockKind.id)}`)
+                    .respond(httpOk);
 
                 let deleteResult: any;
                 kindRS.removeKind(mockKind.id, gesuchId)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
     });
 
-    function checkFieldValues(foundKind: TSKindContainer) {
+    function checkFieldValues(foundKind: TSKindContainer): void {
         expect(foundKind).toBeDefined();
         expect(foundKind).toEqual(mockKind);
         expect(foundKind.kindGS).toBeDefined();

@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSSprache} from './enums/TSSprache';
 import TSAbstractPersonEntity from './TSAbstractPersonEntity';
-import {TSGeschlecht} from './enums/TSGeschlecht';
-import * as moment from 'moment';
 
 export default class TSGesuchsteller extends TSAbstractPersonEntity {
 
@@ -29,9 +29,20 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     private _ewkAbfrageDatum: moment.Moment;
     private _korrespondenzSprache: TSSprache;
 
-    constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht,
-                email?: string, mobile?: string, telefon?: string, telefonAusland?: string,
-                diplomatenstatus?: boolean, ewkPersonId?: string, ewkAbfrageDatum?: moment.Moment, korrespondenzSprache?: TSSprache) {
+    public constructor(
+        vorname?: string,
+        nachname?: string,
+        geburtsdatum?: moment.Moment,
+        geschlecht?: TSGeschlecht,
+        email?: string,
+        mobile?: string,
+        telefon?: string,
+        telefonAusland?: string,
+        diplomatenstatus?: boolean,
+        ewkPersonId?: string,
+        ewkAbfrageDatum?: moment.Moment,
+        korrespondenzSprache?: TSSprache,
+    ) {
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._mail = email;
         this._mobile = mobile;
@@ -75,46 +86,45 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
         this._telefonAusland = value;
     }
 
-    get diplomatenstatus(): boolean {
+    public get diplomatenstatus(): boolean {
         return this._diplomatenstatus;
     }
 
-    set diplomatenstatus(value: boolean) {
+    public set diplomatenstatus(value: boolean) {
         this._diplomatenstatus = value;
     }
 
-    get ewkPersonId(): string {
+    public get ewkPersonId(): string {
         return this._ewkPersonId;
     }
 
-    set ewkPersonId(value: string) {
+    public set ewkPersonId(value: string) {
         this._ewkPersonId = value;
     }
 
-    get ewkAbfrageDatum(): moment.Moment {
+    public get ewkAbfrageDatum(): moment.Moment {
         return this._ewkAbfrageDatum;
     }
 
-    set ewkAbfrageDatum(value: moment.Moment) {
+    public set ewkAbfrageDatum(value: moment.Moment) {
         this._ewkAbfrageDatum = value;
     }
 
-    get korrespondenzSprache(): TSSprache {
+    public get korrespondenzSprache(): TSSprache {
         return this._korrespondenzSprache;
     }
 
-    set korrespondenzSprache(value: TSSprache) {
+    public set korrespondenzSprache(value: TSSprache) {
         this._korrespondenzSprache = value;
     }
 
     public getPhone(): string {
         if (this.mobile) {
             return this.mobile;
-        } else if (this.telefon) {
-            return this.telefon;
-        } else {
-            return '';
         }
+        if (this.telefon) {
+            return this.telefon;
+        }
+        return '';
     }
 }
-

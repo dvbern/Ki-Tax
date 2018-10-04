@@ -37,8 +37,10 @@ describe('BenutzerComponent', () => {
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name,
-            ['getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
-                'inactivateBenutzer', 'reactivateBenutzer']);
+            [
+                'getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
+                'inactivateBenutzer', 'reactivateBenutzer',
+            ]);
 
         const applicationPropertySpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getByName']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
@@ -50,24 +52,24 @@ describe('BenutzerComponent', () => {
             providers: [
                 {
                     provide: InstitutionRS,
-                    useValue: insitutionSpy
+                    useValue: insitutionSpy,
                 },
                 {
                     provide: TraegerschaftRS,
-                    useValue: traegerschaftSpy
+                    useValue: traegerschaftSpy,
                 },
                 {
                     provide: BenutzerRS,
-                    useValue: benutzerSpy
+                    useValue: benutzerSpy,
                 },
                 {
                     provide: ApplicationPropertyRS,
-                    useValue: applicationPropertySpy
+                    useValue: applicationPropertySpy,
                 },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: Transition, useValue: transitionSpy},
-            ]
+            ],
         })
             .compileComponents();
 

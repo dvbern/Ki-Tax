@@ -13,113 +13,113 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSErrorType} from './enums/TSErrorType';
-import {TSErrorLevel} from './enums/TSErrorLevel';
 import {TSErrorAction} from './enums/TSErrorAction';
+import {TSErrorLevel} from './enums/TSErrorLevel';
+import {TSErrorType} from './enums/TSErrorType';
 
 export default class TSExceptionReport {
 
-    get type(): TSErrorType {
+    public get type(): TSErrorType {
         return this._type;
     }
 
-    set type(value: TSErrorType) {
+    public set type(value: TSErrorType) {
         this._type = value;
     }
 
-    get severity(): TSErrorLevel {
+    public get severity(): TSErrorLevel {
         return this._severity;
     }
 
-    set severity(value: TSErrorLevel) {
+    public set severity(value: TSErrorLevel) {
         this._severity = value;
     }
 
-    get msgKey(): string {
+    public get msgKey(): string {
         return this._msgKey;
     }
 
-    set msgKey(value: string) {
+    public set msgKey(value: string) {
         this._msgKey = value;
     }
 
-    get exceptionName(): string {
+    public get exceptionName(): string {
         return this._exceptionName;
     }
 
-    set exceptionName(value: string) {
+    public set exceptionName(value: string) {
         this._exceptionName = value;
     }
 
-    get methodName(): string {
+    public get methodName(): string {
         return this._methodName;
     }
 
-    set methodName(value: string) {
+    public set methodName(value: string) {
         this._methodName = value;
     }
 
-    get translatedMessage(): string {
+    public get translatedMessage(): string {
         return this._translatedMessage;
     }
 
-    set translatedMessage(value: string) {
+    public set translatedMessage(value: string) {
         this._translatedMessage = value;
     }
 
-    get customMessage(): string {
+    public get customMessage(): string {
         return this._customMessage;
     }
 
-    set customMessage(value: string) {
+    public set customMessage(value: string) {
         this._customMessage = value;
     }
 
-    get errorCodeEnum(): string {
+    public get errorCodeEnum(): string {
         return this._errorCodeEnum;
     }
 
-    set errorCodeEnum(value: string) {
+    public set errorCodeEnum(value: string) {
         this._errorCodeEnum = value;
     }
 
-    get stackTrace(): string {
+    public get stackTrace(): string {
         return this._stackTrace;
     }
 
-    set stackTrace(value: string) {
+    public set stackTrace(value: string) {
         this._stackTrace = value;
     }
 
-    get objectId(): string {
+    public get objectId(): string {
         return this._objectId;
     }
 
-    set objectId(value: string) {
+    public set objectId(value: string) {
         this._objectId = value;
     }
 
-    get argumentList(): any {
+    public get argumentList(): any {
         return this._argumentList;
     }
 
-    set argumentList(value: any) {
+    public set argumentList(value: any) {
         this._argumentList = value;
     }
 
-    get path(): string {
+    public get path(): string {
         return this._path;
     }
 
-    set path(value: string) {
+    public set path(value: string) {
         this._path = value;
     }
 
-    get action(): TSErrorAction {
+    public get action(): TSErrorAction {
         return this._action;
     }
 
-    set action(value: TSErrorAction) {
+    public set action(value: TSErrorAction) {
         this._action = value;
     }
 
@@ -127,7 +127,7 @@ export default class TSExceptionReport {
     private _severity: TSErrorLevel;
     private _msgKey: string;
 
-    //fields for ExceptionReport entity
+    // fields for ExceptionReport entity
     private _exceptionName: string;
     private _methodName: string;
     private _translatedMessage: string;
@@ -147,9 +147,9 @@ export default class TSExceptionReport {
      * @param type Type of the Error
      * @param severity Severity of the Error
      * @param msgKey This is the message key of the error. can also be the message itself
-     * @param args
+     * @param args anything
      */
-    constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any) {
+    public constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any) {
         this._type = type || null;
         this._severity = severity || null;
         this._msgKey = msgKey || null;
@@ -157,10 +157,15 @@ export default class TSExceptionReport {
         this._action = undefined;
     }
 
-    public static createFromViolation(constraintType: string, message: string, path: string, value: string): TSExceptionReport {
-        const report: TSExceptionReport = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
+    public static createFromViolation(
+        _constraintType: string,
+        message: string,
+        path: string,
+        value: string,
+    ): TSExceptionReport {
+        const report = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
         report.path = path;
-        //hint: here we could also pass along the path to the Exception Report
+        // hint: here we could also pass along the path to the Exception Report
         return report;
     }
 
@@ -170,12 +175,13 @@ export default class TSExceptionReport {
 
     /**
      * takes a data Object that matches the fields of a EbeguExceptionReport and transforms them to a TSExceptionReport.
-     * @param data
-     * @returns {TSExceptionReport}
      */
-    public static createFromExceptionReport(data: any) {
+    public static createFromExceptionReport(data: any): TSExceptionReport {
         const msgToDisp = data.translatedMessage || data.customMessage || 'ERROR_UNEXPECTED_EBEGU_RUNTIME';
-        const exceptionReport: TSExceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST, TSErrorLevel.SEVERE, msgToDisp, data.argumentList);
+        const exceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST,
+            TSErrorLevel.SEVERE,
+            msgToDisp,
+            data.argumentList);
         exceptionReport.errorCodeEnum = data.errorCodeEnum;
         exceptionReport.exceptionName = data.exceptionName;
         exceptionReport.methodName = data.methodName;
@@ -189,7 +195,7 @@ export default class TSExceptionReport {
 
     }
 
-    isConstantValue(constant: any, value: any) {
+    public isConstantValue(constant: any, value: any): boolean {
         const keys = Object.keys(constant);
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < keys.length; i++) {
@@ -201,7 +207,7 @@ export default class TSExceptionReport {
         return false;
     }
 
-    isValid() {
+    public isValid(): boolean {
         const validType = this.isConstantValue(TSErrorType, this.type);
         const validSeverity = this.isConstantValue(TSErrorLevel, this.severity);
         const validMsgKey = typeof this.msgKey === 'string' && this.msgKey.length > 0;
@@ -209,7 +215,7 @@ export default class TSExceptionReport {
         return validType && validSeverity && validMsgKey;
     }
 
-    isInternal() {
+    public isInternal(): boolean {
         return this.type === TSErrorType.INTERNAL;
     }
 

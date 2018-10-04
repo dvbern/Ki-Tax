@@ -13,18 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpPromise, IHttpService} from 'angular';
-
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export class DatabaseMigrationRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+    ) {
         this.serviceURL = REST_API + 'dbmigration';
     }
 
@@ -33,6 +34,6 @@ export class DatabaseMigrationRS {
     }
 
     public processScript(scriptNr: string): IHttpPromise<any> {
-        return this.http.get(this.serviceURL + '/' + scriptNr);
+        return this.http.get(`${this.serviceURL}/${scriptNr}`);
     }
 }

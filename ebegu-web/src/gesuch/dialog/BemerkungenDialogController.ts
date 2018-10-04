@@ -19,12 +19,17 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class BemerkungenDialogController {
 
-    static $inject = ['$mdDialog', '$translate', 'title', 'bemerkungen'];
+    public static $inject = ['$mdDialog', '$translate', 'title', 'bemerkungen'];
 
-    title: string;
-    bemerkungen: string;
+    public title: string;
+    public bemerkungen: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, bemerkungen: string) {
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+        $translate: ITranslateService,
+        title: string,
+        bemerkungen: string,
+    ) {
         this.title = $translate.instant(title);
         this.bemerkungen = bemerkungen;
     }

@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSKind from './TSKind';
 import TSBetreuung from './TSBetreuung';
 import {TSFachstelle} from './TSFachstelle';
+import TSKind from './TSKind';
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export default class TSKindContainer extends TSAbstractMutableEntity {
@@ -28,8 +28,9 @@ export default class TSKindContainer extends TSAbstractMutableEntity {
     private _nextNumberBetreuung: number;
     private _kindMutiert: boolean;
 
-    constructor(kindGS?: TSKind, kindJA?: TSKind, betreuungen?: Array<TSBetreuung>, kindNummer?: number,
-                nextNumberBetreuung?: number, kindMutiert?: boolean) {
+    public constructor(kindGS?: TSKind, kindJA?: TSKind, betreuungen?: Array<TSBetreuung>, kindNummer?: number,
+                       nextNumberBetreuung?: number, kindMutiert?: boolean,
+    ) {
         super();
         this._kindGS = kindGS;
         this._kindJA = kindJA;
@@ -39,51 +40,51 @@ export default class TSKindContainer extends TSAbstractMutableEntity {
         this._kindMutiert = kindMutiert;
     }
 
-    get kindGS(): TSKind {
+    public get kindGS(): TSKind {
         return this._kindGS;
     }
 
-    set kindGS(value: TSKind) {
+    public set kindGS(value: TSKind) {
         this._kindGS = value;
     }
 
-    get kindJA(): TSKind {
+    public get kindJA(): TSKind {
         return this._kindJA;
     }
 
-    set kindJA(value: TSKind) {
+    public set kindJA(value: TSKind) {
         this._kindJA = value;
     }
 
-    get betreuungen(): Array<TSBetreuung> {
+    public get betreuungen(): Array<TSBetreuung> {
         return this._betreuungen;
     }
 
-    set betreuungen(value: Array<TSBetreuung>) {
+    public set betreuungen(value: Array<TSBetreuung>) {
         this._betreuungen = value;
     }
 
-    get kindNummer(): number {
+    public get kindNummer(): number {
         return this._kindNummer;
     }
 
-    set kindNummer(value: number) {
+    public set kindNummer(value: number) {
         this._kindNummer = value;
     }
 
-    get nextNumberBetreuung(): number {
+    public get nextNumberBetreuung(): number {
         return this._nextNumberBetreuung;
     }
 
-    set nextNumberBetreuung(value: number) {
+    public set nextNumberBetreuung(value: number) {
         this._nextNumberBetreuung = value;
     }
 
-    get kindMutiert(): boolean {
+    public get kindMutiert(): boolean {
         return this._kindMutiert;
     }
 
-    set kindMutiert(value: boolean) {
+    public set kindMutiert(value: boolean) {
         this._kindMutiert = value;
     }
 

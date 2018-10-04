@@ -30,12 +30,12 @@ describe('DebuggingComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot()
+                UIRouterModule.forRoot(),
             ],
             declarations: [DebuggingComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
-            ]
+            ],
         })
             .compileComponents();
     }));

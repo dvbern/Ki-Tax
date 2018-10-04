@@ -14,7 +14,7 @@
  */
 
 import * as angular from 'angular';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
@@ -22,7 +22,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSBerechtigung from '../../models/TSBerechtigung';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
-import {EbeguAuthentication} from '../authentication.module';
+import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
 import AuthServiceRS from './AuthServiceRS.rest';
 
 describe('AuthServiceRS', () => {
@@ -37,8 +37,8 @@ describe('AuthServiceRS', () => {
     let gesuchModelManager: GesuchModelManager;
     let benutzerRS: BenutzerRS;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
-    beforeEach(angular.mock.module(EbeguAuthentication.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
+    beforeEach(angular.mock.module(AUTHENTICATION_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -61,12 +61,13 @@ describe('AuthServiceRS', () => {
         });
         it('does not nothing for an undefined user', () => {
             expect(authServiceRS.loginRequest(undefined)).toBeUndefined();
+            // tslint:disable-next-line:no-unbound-method
             expect($http.post).not.toHaveBeenCalled();
         });
         it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSBenutzer sein. Deswegen machen wir hier ein Objekt mit
             // dem Inhalt, den die Cookie braucht
-            const benutzer: TSBenutzer = new TSBenutzer('Emma',
+            const benutzer = new TSBenutzer('Emma',
                 'Gerber',
                 'geem',
                 'password5',
@@ -79,14 +80,14 @@ describe('AuthServiceRS', () => {
                 nachname: 'Gerber',
                 username: 'geem',
                 email: 'emma.gerber@example.com',
-                role: 'GESUCHSTELLER'
+                role: 'GESUCHSTELLER',
             };
             const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
             spyOn($cookies, 'get').and.returnValue(encodedUser);
             spyOn(benutzerRS, 'findBenutzer').and.returnValue($q.when(benutzer));
 
             let cookieUser: TSBenutzer;
-            //if we can decode the cookie the client application assumes the user is logged in for ui purposes
+            // if we can decode the cookie the client application assumes the user is logged in for ui purposes
             TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
             authServiceRS.loginRequest(benutzer).then(response => {
                 cookieUser = response;
@@ -95,6 +96,7 @@ describe('AuthServiceRS', () => {
             $timeout.flush();
             $httpBackend.flush();
 
+            // tslint:disable-next-line:no-unbound-method
             expect($http.post).toHaveBeenCalled();
             expect(cookieUser.vorname).toEqual(benutzer.vorname);
             expect(cookieUser.nachname).toEqual(benutzer.nachname);
@@ -105,6 +107,7 @@ describe('AuthServiceRS', () => {
         it('sends a logrequest to server', () => {
             authServiceRS.logoutRequest();
             $rootScope.$apply();
+            // tslint:disable-next-line:no-unbound-method
             expect($http.post).toHaveBeenCalledWith('/ebegu/api/v1/auth/logout', null);
             expect(authServiceRS.getPrincipal()).toBeUndefined();
         });

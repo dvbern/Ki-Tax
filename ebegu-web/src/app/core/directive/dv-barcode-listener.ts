@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IDirective, IDirectiveFactory} from 'angular';
+import {IController, IDirective, IDirectiveFactory, IDocumentService, ILogService, ITimeoutService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
@@ -23,18 +23,15 @@ import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../errors/service/ErrorService';
 import {DvDialog} from './dv-dialog/dv-dialog';
-import IDocumentService = angular.IDocumentService;
-import ILogService = angular.ILogService;
-import ITimeoutService = angular.ITimeoutService;
 
 const FREIGEBEN_DIALOG_TEMPLATE = require('../../../gesuch/dialog/freigabe.html');
 
 export class DVBarcodeListener implements IDirective {
-    restrict = 'A';
-    controller = DVBarcodeController;
-    controllerAs = 'vm';
+    public restrict = 'A';
+    public controller = DVBarcodeController;
+    public controllerAs = 'vm';
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DVBarcodeListener();
         directive.$inject = [];
         return directive;
@@ -48,38 +45,52 @@ export class DVBarcodeListener implements IDirective {
  */
 export class DVBarcodeController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['$document', '$timeout', 'DvDialog', 'AuthServiceRS', 'ErrorService', '$log', 'AuthLifeCycleService'];
+    public static $inject: ReadonlyArray<string> = [
+        '$document',
+        '$timeout',
+        'DvDialog',
+        'AuthServiceRS',
+        'ErrorService',
+        '$log',
+        'AuthLifeCycleService',
+    ];
 
     private readonly unsubscribe$ = new Subject<void>();
     private barcodeReading: boolean = false;
     private barcodeBuffer: string[] = [];
     private barcodeReadtimeout: any = null;
 
-    constructor(private readonly $document: IDocumentService,
-                private readonly $timeout: ITimeoutService,
-                private readonly dVDialog: DvDialog,
-                private readonly authService: AuthServiceRS,
-                private readonly errorService: ErrorService,
-                private readonly $log: ILogService,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly $document: IDocumentService,
+        private readonly $timeout: ITimeoutService,
+        private readonly dVDialog: DvDialog,
+        private readonly authService: AuthServiceRS,
+        private readonly errorService: ErrorService,
+        private readonly $log: ILogService,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+    ) {
     }
 
-    $onInit() {
+    public $onInit(): void {
         const keypressEvent = (e: any) => {
             this.barcodeOnKeyPressed(e);
         };
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.handleLoginSuccessEvent(keypressEvent));
+            .subscribe(
+                () => this.handleLoginSuccessEvent(keypressEvent),
+                err => this.$log.error(err));
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => this.handleLogoutSuccessEvent(keypressEvent));
+            .subscribe(
+                () => this.handleLogoutSuccessEvent(keypressEvent),
+                err => this.$log.error(err));
 
     }
 
-    $onDestroy() {
+    public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
@@ -107,48 +118,47 @@ export class DVBarcodeController implements IController {
             }
         }
 
-        if (keyPressChar === '§') {
-            e.preventDefault();
-            if (this.barcodeReading) {
-                this.$log.debug('End Barcode read');
-
-                let barcodeRead: string = this.barcodeBuffer.join('');
-                this.$log.debug('Barcode read:' + barcodeRead);
-                barcodeRead = barcodeRead.replace('§', '');
-
-                const barcodeParts: string[] = barcodeRead.split('|');
-
-                if (barcodeParts.length === 3) {
-                    const barcodeDocType: string = barcodeParts[0];
-                    const barcodeDocFunction: string = barcodeParts[1];
-                    const barcodeDocID: string = barcodeParts[2];
-
-                    this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
-                    this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
-                    this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
-
-                    this.barcodeBuffer = [];
-                    this.$timeout.cancel(this.barcodeReadtimeout);
-
-                    this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                        docID: barcodeDocID
-                    });
-                } else {
-                    this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);
-                }
-            } else {
-                this.$log.debug('Begin Barcode read');
-
-                this.barcodeReadtimeout = this.$timeout(() => {
-                    this.barcodeReading = false;
-                    this.$log.debug('End Barcode read');
-                    this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
-                    this.barcodeBuffer = [];
-                }, 1000);
-            }
-
-            this.barcodeReading = !this.barcodeReading;
-
+        if (keyPressChar !== '§') {
+            return;
         }
+        e.preventDefault();
+        if (this.barcodeReading) {
+            this.$log.debug('End Barcode read');
+
+            let barcodeRead = this.barcodeBuffer.join('');
+            this.$log.debug('Barcode read:' + barcodeRead);
+            barcodeRead = barcodeRead.replace('§', '');
+
+            const barcodeParts = barcodeRead.split('|');
+
+            if (barcodeParts.length === 3) {
+                const barcodeDocType = barcodeParts[0];
+                const barcodeDocFunction = barcodeParts[1];
+                const barcodeDocID = barcodeParts[2];
+
+                this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
+                this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
+                this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
+
+                this.barcodeBuffer = [];
+                this.$timeout.cancel(this.barcodeReadtimeout);
+
+                this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
+                    docID: barcodeDocID,
+                });
+            } else {
+                this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);
+            }
+        } else {
+            this.$log.debug('Begin Barcode read');
+
+            this.barcodeReadtimeout = this.$timeout(() => {
+                this.barcodeReading = false;
+                this.$log.debug('End Barcode read');
+                this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
+                this.barcodeBuffer = [];
+            }, 1000);
+        }
+        this.barcodeReading = !this.barcodeReading;
     }
 }

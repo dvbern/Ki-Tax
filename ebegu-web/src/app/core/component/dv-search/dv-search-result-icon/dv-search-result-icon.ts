@@ -16,30 +16,20 @@
 import {IComponentOptions, IController} from 'angular';
 import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
 
-
 export class DvSearchResultIconComponentConfig implements IComponentOptions {
 
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         entry: '<',
     };
-    template = require('./dv-search-result-icon.html');
-    controller = DvSearchResultController;
-    controllerAs = 'vm';
+    public template = require('./dv-search-result-icon.html');
+    public controller = DvSearchResultController;
+    public controllerAs = 'vm';
 }
 
 export class DvSearchResultController implements IController {
 
-    static $inject: ReadonlyArray<string> = [];
+    public static $inject: ReadonlyArray<string> = [];
 
-    entry: TSSearchResultEntry;
-
-    constructor() {
-
-    }
-
-    //wird von angular aufgerufen
-    $onInit() {
-        //initial nach aktuell eingeloggtem filtern
-    }
+    public entry: TSSearchResultEntry;
 }

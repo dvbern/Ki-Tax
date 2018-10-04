@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
-import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
-import * as moment from 'moment';
 
 export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
 
@@ -24,65 +24,72 @@ export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
     private _datumFreischaltungTagesschule: moment.Moment;
     private _datumErsterSchultag: moment.Moment;
 
-    constructor(status?: TSGesuchsperiodeStatus, gueltigkeit?: TSDateRange, datumFreischaltungTagesschule?: moment.Moment, datumErsterSchultag?: moment.Moment) {
+    public constructor(
+        status?: TSGesuchsperiodeStatus,
+        gueltigkeit?: TSDateRange,
+        datumFreischaltungTagesschule?: moment.Moment,
+        datumErsterSchultag?: moment.Moment,
+    ) {
         super(gueltigkeit);
         this._status = status;
         this._datumFreischaltungTagesschule = datumFreischaltungTagesschule;
         this._datumErsterSchultag = datumErsterSchultag;
     }
 
-    get status(): TSGesuchsperiodeStatus {
+    public get status(): TSGesuchsperiodeStatus {
         return this._status;
     }
 
-    set status(value: TSGesuchsperiodeStatus) {
+    public set status(value: TSGesuchsperiodeStatus) {
         this._status = value;
     }
 
-    get datumFreischaltungTagesschule(): moment.Moment {
+    public get datumFreischaltungTagesschule(): moment.Moment {
         return this._datumFreischaltungTagesschule;
     }
 
-    set datumFreischaltungTagesschule(value: moment.Moment) {
+    public set datumFreischaltungTagesschule(value: moment.Moment) {
         this._datumFreischaltungTagesschule = value;
     }
 
-    get datumErsterSchultag(): moment.Moment {
+    public get datumErsterSchultag(): moment.Moment {
         return this._datumErsterSchultag;
     }
 
-    set datumErsterSchultag(value: moment.Moment) {
+    public set datumErsterSchultag(value: moment.Moment) {
         this._datumErsterSchultag = value;
     }
 
-    get gesuchsperiodeString(): string {
+    public get gesuchsperiodeString(): string {
         if (this.gueltigkeit && this.gueltigkeit.gueltigAb && this.gueltigkeit.gueltigBis) {
-            return this.gueltigkeit.gueltigAb.year() + '/'
-                + (this.gueltigkeit.gueltigBis.year() - 2000);
+            const currentMillenia = 2000;
+
+            return `${this.gueltigkeit.gueltigAb.year()}/${this.gueltigkeit.gueltigBis.year() - currentMillenia}`;
         }
+
         return undefined;
     }
 
     /**
-     * Ein datumFreischaltungTagesschule, das nicht vor dem Gesuchsperiodeanfang liegt, wird als "nicht konfiguriert" betrachtet.
-     * Dies ist so, weil ein datumFreischaltungTagesschule immer vor dem Gesuchsperiodeanfang liegen muss, damit die Kinder sich
-     * rechtzeitig anmelden koennen.
+     * Ein datumFreischaltungTagesschule, das nicht vor dem Gesuchsperiodeanfang liegt, wird als "nicht konfiguriert"
+     * betrachtet. Dies ist so, weil ein datumFreischaltungTagesschule immer vor dem Gesuchsperiodeanfang liegen muss,
+     * damit die Kinder sich rechtzeitig anmelden koennen.
      */
-    isTagesschulenAnmeldungKonfiguriert(): boolean {
+    public isTagesschulenAnmeldungKonfiguriert(): boolean {
         return this.hasTagesschulenAnmeldung()
             && (this.datumFreischaltungTagesschule.isBefore(this.gueltigkeit.gueltigAb)
-            || this.datumFreischaltungTagesschule.isSame(moment([])));
+                || this.datumFreischaltungTagesschule.isSame(moment([])));
     }
 
-    isTageschulenAnmeldungAktiv(): boolean {
+    public isTageschulenAnmeldungAktiv(): boolean {
         return this.isTagesschulenAnmeldungKonfiguriert() && this.datumFreischaltungTagesschule.isBefore(moment());
     }
 
-    hasTagesschulenAnmeldung(): boolean {
+    public hasTagesschulenAnmeldung(): boolean {
         return this._datumFreischaltungTagesschule !== null && this.datumFreischaltungTagesschule !== undefined;
     }
 
-    isEntwurf(): boolean {
+    public isEntwurf(): boolean {
         return this.status === TSGesuchsperiodeStatus.ENTWURF;
     }
 }

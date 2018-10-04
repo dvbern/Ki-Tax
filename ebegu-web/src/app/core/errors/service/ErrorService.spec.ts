@@ -13,22 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IRootScopeService} from 'angular';
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import TSExceptionReport from '../../../../models/TSExceptionReport';
 import ErrorService from './ErrorService';
-import HttpErrorInterceptor from './HttpErrorInterceptor';
 
 describe('errorService', () => {
 
-    let httpErrorInterceptor: HttpErrorInterceptor, errorService: ErrorService;
-    let $rootScope: angular.IRootScopeService;
+    let errorService: ErrorService;
+    let $rootScope: IRootScopeService;
 
     beforeEach(angular.mock.module('dvbAngular.errors'));
 
     beforeEach(angular.mock.inject($injector => {
-        httpErrorInterceptor = $injector.get('HttpErrorInterceptor');
         $rootScope = $injector.get('$rootScope');
         errorService = $injector.get('ErrorService');
     }));
@@ -37,34 +36,13 @@ describe('errorService', () => {
         spyOn($rootScope, '$broadcast').and.callThrough();
     }));
 
-    describe('Public API', () => {
-        it('should include a getErrors() function', () => {
-            expect(errorService.getErrors).toBeDefined();
-        });
-        it('should include a addValidationError() function', () => {
-            expect(errorService.addValidationError).toBeDefined();
-        });
-        it('should include a clearAll() function', () => {
-            expect(errorService.clearAll).toBeDefined();
-        });
-        it('should include a clearError() function', () => {
-            expect(errorService.clearError).toBeDefined();
-        });
-        it('should include a handleError() function', () => {
-            expect(errorService.handleError).toBeDefined();
-        });
-        it('should include a handleValidationError() function', () => {
-            expect(errorService.handleValidationError).toBeDefined();
-        });
-    });
-
     describe('Public API usage', () => {
         describe('getErrors()', () => {
             it('should return an array', () => {
                 expect(errorService.getErrors()).toEqual([]);
             });
             it('the internal error array should be immutable', () => {
-                const errors: Array<TSExceptionReport> = errorService.getErrors();
+                const errors = errorService.getErrors();
                 const length = errors.length;
 
                 errors.push(TSExceptionReport.createClientSideError(TSErrorLevel.INFO, 'custom test', null));
@@ -77,14 +55,14 @@ describe('errorService', () => {
                 const msgKey = 'TEST';
                 const args = {
                     fieldName: 'field',
-                    minlenght: '10'
+                    minlenght: '10',
                 };
                 expect(args).toBeTruthy();
                 errorService.addValidationError(msgKey, args);
 
-                const errors: Array<TSExceptionReport> = errorService.getErrors();
+                const errors = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
-                const error: TSExceptionReport = errors[0];
+                const error = errors[0];
                 expect(error.severity === TSErrorLevel.SEVERE);
                 expect(error.msgKey).toBe(msgKey);
                 expect(error.argumentList).toEqual(args);
@@ -100,7 +78,9 @@ describe('errorService', () => {
 
             it('should broadcast an UPDATE event', () => {
                 errorService.addValidationError('TEST');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                // tslint:disable-next-line:no-unbound-method
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
             });
         });
 
@@ -111,13 +91,17 @@ describe('errorService', () => {
 
             it('should add a validation error on FALSE', () => {
                 expect(errorService.getErrors()[0].msgKey).toBe('TEST');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                // tslint:disable-next-line:no-unbound-method
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
             });
 
             it('should remove a validation error on TRUE', () => {
                 errorService.handleValidationError(false, 'TEST');
                 expect(errorService.getErrors().length === 0);
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                // tslint:disable-next-line:no-unbound-method
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
             });
         });
 
@@ -125,10 +109,12 @@ describe('errorService', () => {
             it('should clear all errors', () => {
                 errorService.addValidationError('foo');
                 expect(errorService.getErrors().length === 1).toBeTruthy();
+                // tslint:disable-next-line:no-unbound-method
                 expect($rootScope.$broadcast).not.toHaveBeenCalledWith(TSMessageEvent.CLEAR);
 
                 errorService.clearAll();
                 expect(errorService.getErrors().length === 0).toBeTruthy();
+                // tslint:disable-next-line:no-unbound-method
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.CLEAR);
             });
         });
@@ -136,34 +122,21 @@ describe('errorService', () => {
         describe('clearError()', () => {
             it('should remove the specified error', () => {
                 errorService.addValidationError('KEEP');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                // tslint:disable-next-line:no-unbound-method
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
                 errorService.addValidationError('REMOVE');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                // tslint:disable-next-line:no-unbound-method
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
                 errorService.clearError('REMOVE');
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE, errorService.getErrors());
+                // tslint:disable-next-line:no-unbound-method
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors());
                 const errors = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
                 expect(errors[0].msgKey).toBe('KEEP');
             });
         });
-
-        /*        describe('handleError', function () {
-         var length;
-         beforeEach(function () {
-         length = errorService.getErrors().length;
-         });
-
-         it('should add a DvbError to the errors', function () {
-         errorService.handleError(new DvbError(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, 'ERR_INTERNAL'));
-         expect(errorService.getErrors().length).toBe(length + 1);
-         expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.UPDATE, errorService.getErrors());
-         });
-
-         it('should ignore invalid DvbErrors', function () {
-         errorService.handleError(new DvbError());
-         expect(errorService.getErrors().length).toBe(length);
-         expect($rootScope.$broadcast).not.toHaveBeenCalledWith(TSMessageEvent.UPDATE, errorService.getErrors());
-         });
-         });*/
     });
 });

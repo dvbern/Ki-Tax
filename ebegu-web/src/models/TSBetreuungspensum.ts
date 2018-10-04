@@ -22,11 +22,16 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
 
     private _doNotUsePercentage: boolean;
 
-    get nichtEingetreten(): boolean {
+    public constructor(nichtEingetreten?: boolean, pensum?: number, gueltigkeit?: TSDateRange) {
+        super(pensum, gueltigkeit);
+        this.nichtEingetreten = nichtEingetreten;
+    }
+
+    public get nichtEingetreten(): boolean {
         return this._nichtEingetreten;
     }
 
-    set nichtEingetreten(value: boolean) {
+    public set nichtEingetreten(value: boolean) {
         this._nichtEingetreten = value;
     }
 
@@ -36,10 +41,5 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
 
     set doNotUsePercentage(value: boolean) {
         this._doNotUsePercentage = value;
-    }
-
-    constructor(nichtEingetreten?: boolean, pensum?: number, gueltigkeit?: TSDateRange) {
-        super(pensum, gueltigkeit);
-        this.nichtEingetreten = nichtEingetreten;
     }
 }

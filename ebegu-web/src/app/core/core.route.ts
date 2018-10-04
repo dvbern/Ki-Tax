@@ -13,13 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService, TransitionService} from '@uirouter/core';
+import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
-import {IWindowService} from 'angular';
 import * as moment from 'moment';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
 import {environment} from '../../environments/environment';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
@@ -41,7 +39,6 @@ const LOG = LogFactory.createLog('appRun');
 
 appRun.$inject = [
     'angularMomentConfig',
-    'RouterHelper',
     'ListResourceRS',
     'MandantRS',
     '$injector',
@@ -51,40 +48,36 @@ appRun.$inject = [
     'AuthServiceRS',
     '$state',
     '$location',
-    '$window',
     'GesuchModelManager',
     'GesuchsperiodeRS',
     'InstitutionStammdatenRS',
     'GlobalCacheService',
-    '$transitions',
     'GemeindeRS',
     'LOCALE_ID',
 ];
 
-export function appRun(angularMomentConfig: any,
-                       routerHelper: RouterHelper,
-                       listResourceRS: ListResourceRS,
-                       mandantRS: MandantRS,
-                       $injector: IInjectorService,
-                       authLifeCycleService: AuthLifeCycleService,
-                       hotkeys: any,
-                       $timeout: ITimeoutService,
-                       authServiceRS: AuthServiceRS,
-                       $state: StateService,
-                       $location: ILocationService,
-                       $window: IWindowService,
-                       gesuchModelManager: GesuchModelManager,
-                       gesuchsperiodeRS: GesuchsperiodeRS,
-                       institutionsStammdatenRS: InstitutionStammdatenRS,
-                       globalCacheService: GlobalCacheService,
-                       $transitions: TransitionService,
-                       gemeindeRS: GemeindeRS,
-                       LOCALE_ID: string,
-) {
+export function appRun(
+    angularMomentConfig: any,
+    listResourceRS: ListResourceRS,
+    mandantRS: MandantRS,
+    $injector: IInjectorService,
+    authLifeCycleService: AuthLifeCycleService,
+    hotkeys: any,
+    $timeout: ITimeoutService,
+    authServiceRS: AuthServiceRS,
+    $state: StateService,
+    $location: ILocationService,
+    gesuchModelManager: GesuchModelManager,
+    gesuchsperiodeRS: GesuchsperiodeRS,
+    institutionsStammdatenRS: InstitutionStammdatenRS,
+    globalCacheService: GlobalCacheService,
+    gemeindeRS: GemeindeRS,
+    LOCALE_ID: string,
+): void {
 
-    function onNotAuthenticated() {
+    function onNotAuthenticated(): void {
         authServiceRS.clearPrincipal();
-        const currentPath: string = angular.copy($location.absUrl());
+        const currentPath = angular.copy($location.absUrl());
 
         const loginConnectorPaths = [
             'fedletSSOInit',
@@ -99,14 +92,14 @@ export function appRun(angularMomentConfig: any,
         }
     }
 
-    function onLoginSuccess() {
+    function onLoginSuccess(): void {
         if (!environment.test) {
-            listResourceRS.getLaenderList();  //initial aufruefen damit cache populiert wird
+            listResourceRS.getLaenderList();  // initial aufruefen damit cache populiert wird
             mandantRS.getFirst();
         }
         globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
-        //since we will need these lists anyway we already load on login
-        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then((gesuchsperioden) => {
+        // since we will need these lists anyway we already load on login
+        gesuchsperiodeRS.updateActiveGesuchsperiodenList().then(gesuchsperioden => {
             if (gesuchsperioden.length > 0) {
                 const newestGP = gesuchsperioden[0];
                 institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
@@ -121,14 +114,14 @@ export function appRun(angularMomentConfig: any,
 
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
-            () => onLoginSuccess(),
-            err => LOG.error(err)
+            onLoginSuccess,
+            err => LOG.error(err),
         );
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
         .subscribe(
-            () => onNotAuthenticated(),
-            err => LOG.error(err)
+            onNotAuthenticated,
+            err => LOG.error(err),
         );
 
     angularMomentConfig.format = 'DD.MM.YYYY';
@@ -139,7 +132,7 @@ export function appRun(angularMomentConfig: any,
     });
 
     if (!environment.test) {
-        //Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
+        // Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
         const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
         applicationPropertyRS.getBackgroundColor().then((prop: TSApplicationProperty) => {
             if (prop && prop.value !== '#FFFFFF') {
@@ -154,7 +147,7 @@ export function appRun(angularMomentConfig: any,
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: () => $timeout(() => angular.element('.next').last().trigger('click'))
+        callback: () => $timeout(() => angular.element('.next').last().trigger('click')),
     });
 
 }

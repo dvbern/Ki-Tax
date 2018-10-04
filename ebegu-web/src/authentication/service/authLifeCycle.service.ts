@@ -42,13 +42,9 @@ export class AuthLifeCycleService {
         }
     }
 
-    public getAll$(): Observable<TSAuthEvent> {
-        return this._authLifeCycleSubject$.asObservable();
-    }
-
     public get$(event: TSAuthEvent): Observable<TSAuthEvent> {
         return this._authLifeCycleSubject$
             .asObservable()
-            .pipe(filter(value => value === event)) as Observable<TSAuthEvent>;
+            .pipe(filter(value => value === event));
     }
 }

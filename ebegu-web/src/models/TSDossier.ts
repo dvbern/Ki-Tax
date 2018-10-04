@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSBenutzer from './TSBenutzer';
 import TSFall from './TSFall';
 import TSGemeinde from './TSGemeinde';
-import TSBenutzer from './TSBenutzer';
 
 export default class TSDossier extends TSAbstractMutableEntity {
 
@@ -24,7 +24,6 @@ export default class TSDossier extends TSAbstractMutableEntity {
     private _gemeinde: TSGemeinde;
     private _verantwortlicherBG: TSBenutzer;
     private _verantwortlicherTS: TSBenutzer;
-
 
     public get fall(): TSFall {
         return this._fall;
