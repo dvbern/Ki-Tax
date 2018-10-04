@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -52,7 +51,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
 	}
 )
-public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemeinde> {
+public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
@@ -115,12 +114,12 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 		this.status = status;
 	}
 
-	@Nullable
+	@Nonnull
 	public Long getBfsNummer() {
 		return bfsNummer;
 	}
 
-	public void setBfsNummer(@Nullable Long bfsNummer) {
+	public void setBfsNummer(@Nonnull Long bfsNummer) {
 		this.bfsNummer = bfsNummer;
 	}
 
