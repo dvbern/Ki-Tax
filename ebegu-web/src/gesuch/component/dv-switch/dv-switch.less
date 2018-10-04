@@ -37,8 +37,12 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
     }
 
     &.disabled {
-        .dv-switch-animation, .dv-switch-background {
-            background: pink;
+        .dv-switch-background {
+            background: @contrast;
+        }
+
+        .dv-switch-animation-label {
+            color: @contrast;
         }
 
         &:hover {

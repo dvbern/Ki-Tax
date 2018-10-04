@@ -50,6 +50,6 @@
     <dv-switch (switchChange)="toggle($event)" [switchOptions]="switchOptions"
                class="betreuung-input-switch" [switchValue]="doNotUsePercentage" [disabled]="disabled"></dv-switch>
     <div class="dv-betreuung-input-info-label">
-        {{label}}
+        <span *ngIf="!disabled">{{label}}</span>
     </div>
 </div>
