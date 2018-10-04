@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,20 +39,23 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Audited
 @Entity
 @Table
-public class GemeindeStammdaten extends AbstractMutableEntity {
+public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
 
+	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerbg_id"), nullable = true)
 	private Benutzer defaultBenutzerBG;
 
+	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerts_id"), nullable = true)
 	private Benutzer defaultBenutzerTS;
 
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_gemeinde_id"), nullable = true)
+	@NotNull
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
 
 	@NotNull
@@ -59,16 +63,18 @@ public class GemeindeStammdaten extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_adresse_id"), nullable = false)
 	private Adresse adresse;
 
+	@NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	@NotNull
 	@Column(nullable = false)
 	private String mail;
 
+	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
 	private String telefon;
 
+	@Nullable
 	@Pattern(regexp = Constants.REGEX_URL, message = "{validator.constraints.url.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	private String webseite;
@@ -89,19 +95,21 @@ public class GemeindeStammdaten extends AbstractMutableEntity {
 		return Objects.equals(this.getGemeinde(), gemeindeStammdaten.getGemeinde());
 	}
 
+	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
 		return defaultBenutzerBG;
 	}
 
-	public void setDefaultBenutzerBG(Benutzer defaultBenutzerBG) {
+	public void setDefaultBenutzerBG(@Nullable Benutzer defaultBenutzerBG) {
 		this.defaultBenutzerBG = defaultBenutzerBG;
 	}
 
+	@Nullable
 	public Benutzer getDefaultBenutzerTS() {
 		return defaultBenutzerTS;
 	}
 
-	public void setDefaultBenutzerTS(Benutzer defaultBenutzerTS) {
+	public void setDefaultBenutzerTS(@Nullable Benutzer defaultBenutzerTS) {
 		this.defaultBenutzerTS = defaultBenutzerTS;
 	}
 
@@ -129,19 +137,21 @@ public class GemeindeStammdaten extends AbstractMutableEntity {
 		this.mail = mail;
 	}
 
+	@Nullable
 	public String getTelefon() {
 		return telefon;
 	}
 
-	public void setTelefon(String telefon) {
+	public void setTelefon(@Nullable String telefon) {
 		this.telefon = telefon;
 	}
 
+	@Nullable
 	public String getWebseite() {
 		return webseite;
 	}
 
-	public void setWebseite(String webseite) {
+	public void setWebseite(@Nullable String webseite) {
 		this.webseite = webseite;
 	}
 

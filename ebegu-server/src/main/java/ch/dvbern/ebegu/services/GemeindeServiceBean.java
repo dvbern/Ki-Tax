@@ -29,25 +29,17 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
@@ -205,7 +197,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
-		Predicate predicate = cb.equal(root.get(GemeindeStammdaten_.gemeinde).get(Gemeinde_.id), gemeindeId);
+		Predicate predicate = cb.equal(root.get(GemeindeStammdaten_.gemeinde).get(AbstractEntity_.id), gemeindeId);
 		query.where(predicate);
 		return persistence.getCriteriaSingleResult(query);
 	}
