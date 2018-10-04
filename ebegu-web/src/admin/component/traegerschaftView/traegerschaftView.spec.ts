@@ -18,7 +18,7 @@ import {MatDialog} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
-import {SharedModuleOverrides} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {SharedModule} from '../../../app/shared/shared.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 
@@ -49,7 +49,7 @@ describe('traegerschaftView', () => {
             ],
             declarations: [TraegerschaftViewComponent],
         })
-            .overrideModule(SharedModule, SharedModuleOverrides)
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 
