@@ -13,23 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService} from 'angular';
+import {IHttpBackendService, IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {FachstelleRS} from './fachstelleRS.rest';
 
 describe('fachstelleRS', () => {
 
     let fachstelleRS: FachstelleRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockFachstelle: TSFachstelle;
     let mockFachstelleRest: any;
     let $http: IHttpService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -50,33 +50,16 @@ describe('fachstelleRS', () => {
         it('check URI', () => {
             expect(fachstelleRS.serviceURL).toContain('fachstellen');
         });
-        it('check Service name', () => {
-            expect(fachstelleRS.getServiceName()).toBe('FachstelleRS');
-        });
-        it('should include a findFachstelle() function', () => {
-            expect(fachstelleRS.findFachstelle).toBeDefined();
-        });
-        it('should include a createFachstelle() function', () => {
-            expect(fachstelleRS.createFachstelle).toBeDefined();
-        });
-        it('should include a updateFachstelle() function', () => {
-            expect(fachstelleRS.updateFachstelle).toBeDefined();
-        });
-        it('should include a removeFachstelle() function', () => {
-            expect(fachstelleRS.removeFachstelle).toBeDefined();
-        });
-        it('should include a getAllFachstellen() function', () => {
-            expect(fachstelleRS.getAllFachstellen).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('findFachstelle', () => {
             it('should return the Fachstelle by id', () => {
-                $httpBackend.expectGET(fachstelleRS.serviceURL + '/' + mockFachstelle.id).respond(mockFachstelleRest);
+                const url = `${fachstelleRS.serviceURL}/${mockFachstelle.id}`;
+                $httpBackend.expectGET(url).respond(mockFachstelleRest);
 
                 let foundFachstelle: TSFachstelle;
-                fachstelleRS.findFachstelle(mockFachstelle.id).then((result) => {
+                fachstelleRS.findFachstelle(mockFachstelle.id).then(result => {
                     foundFachstelle = result;
                 });
                 $httpBackend.flush();
@@ -89,7 +72,7 @@ describe('fachstelleRS', () => {
             it('should create an fachstelle', () => {
                 let savedFachstelle: TSFachstelle;
                 $httpBackend.expectPUT(fachstelleRS.serviceURL, mockFachstelleRest).respond(mockFachstelleRest);
-                fachstelleRS.createFachstelle(mockFachstelle).then((result) => {
+                fachstelleRS.createFachstelle(mockFachstelle).then(result => {
                     savedFachstelle = result;
                 });
                 $httpBackend.flush();
@@ -103,7 +86,7 @@ describe('fachstelleRS', () => {
                 mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
                 let updatedFachstelle: TSFachstelle;
                 $httpBackend.expectPUT(fachstelleRS.serviceURL, mockFachstelleRest).respond(mockFachstelleRest);
-                fachstelleRS.updateFachstelle(mockFachstelle).then((result) => {
+                fachstelleRS.updateFachstelle(mockFachstelle).then(result => {
                     updatedFachstelle = result;
                 });
                 $httpBackend.flush();
@@ -113,37 +96,40 @@ describe('fachstelleRS', () => {
 
         describe('removeFachstelle', () => {
             it('should remove an fachstelle', () => {
-                $httpBackend.expectDELETE(fachstelleRS.serviceURL + '/' + encodeURIComponent(mockFachstelle.id))
-                    .respond(200);
+                const httpOk = 200;
+                $httpBackend.expectDELETE(`${fachstelleRS.serviceURL}/${encodeURIComponent(mockFachstelle.id)}`)
+                    .respond(httpOk);
 
                 let deleteResult: any;
                 fachstelleRS.removeFachstelle(mockFachstelle.id)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
 
         describe('getAllFachstellen', () => {
             it('should return all Fachstellen', () => {
-                const fachstellenRestArray: Array<any> = [mockFachstelleRest, mockFachstelleRest];
+                const fachstellenRestArray = [mockFachstelleRest, mockFachstelleRest];
                 $httpBackend.expectGET(fachstelleRS.serviceURL).respond(fachstellenRestArray);
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
 
                 fachstelleRS.getAllFachstellen();
                 $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
                 expect($http.get).toHaveBeenCalledWith(fachstelleRS.serviceURL);
+                // tslint:disable-next-line:no-unbound-method
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });
         });
 
     });
 
-    function checkFieldValues(fachstelle1: TSFachstelle, fachstelle2: TSFachstelle) {
+    function checkFieldValues(fachstelle1: TSFachstelle, fachstelle2: TSFachstelle): void {
         expect(fachstelle1).toBeDefined();
         expect(fachstelle1.name).toEqual(fachstelle2.name);
         expect(fachstelle1.id).toEqual(fachstelle2.id);

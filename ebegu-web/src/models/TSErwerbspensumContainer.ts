@@ -21,19 +21,19 @@ export default class TSErwerbspensumContainer extends TSAbstractMutableEntity {
     private _erwerbspensumGS: TSErwerbspensum;
     private _erwerbspensumJA: TSErwerbspensum;
 
-    get erwerbspensumGS(): TSErwerbspensum {
+    public get erwerbspensumGS(): TSErwerbspensum {
         return this._erwerbspensumGS;
     }
 
-    set erwerbspensumGS(value: TSErwerbspensum) {
+    public set erwerbspensumGS(value: TSErwerbspensum) {
         this._erwerbspensumGS = value;
     }
 
-    get erwerbspensumJA(): TSErwerbspensum {
+    public get erwerbspensumJA(): TSErwerbspensum {
         return this._erwerbspensumJA;
     }
 
-    set erwerbspensumJA(value: TSErwerbspensum) {
+    public set erwerbspensumJA(value: TSErwerbspensum) {
         this._erwerbspensumJA = value;
     }
 }

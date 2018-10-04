@@ -33,10 +33,19 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
     private _institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
     private _institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
 
-    constructor(iban?: string, oeffnungstage?: number, oeffnungsstunden?: number, betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-                institution?: TSInstitution, adresse?: TSAdresse, gueltigkeit?: TSDateRange, kontoinhaber?: string,
-                adresseKontoinhaber?: TSAdresse, institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
-                institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel) {
+    public constructor(
+        iban?: string,
+        oeffnungstage?: number,
+        oeffnungsstunden?: number,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        institution?: TSInstitution,
+        adresse?: TSAdresse,
+        gueltigkeit?: TSDateRange,
+        kontoinhaber?: string,
+        adresseKontoinhaber?: TSAdresse,
+        institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
+        institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
+    ) {
         super(gueltigkeit);
         this._iban = iban;
         this._oeffnungstage = oeffnungstage;
@@ -122,11 +131,11 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
         this._institutionStammdatenTagesschule = value;
     }
 
-    get institutionStammdatenFerieninsel(): TSInstitutionStammdatenFerieninsel {
+    public get institutionStammdatenFerieninsel(): TSInstitutionStammdatenFerieninsel {
         return this._institutionStammdatenFerieninsel;
     }
 
-    set institutionStammdatenFerieninsel(value: TSInstitutionStammdatenFerieninsel) {
+    public set institutionStammdatenFerieninsel(value: TSInstitutionStammdatenFerieninsel) {
         this._institutionStammdatenFerieninsel = value;
     }
 }

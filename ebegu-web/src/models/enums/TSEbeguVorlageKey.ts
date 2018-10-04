@@ -37,6 +37,6 @@ export function getTSEbeguVorlageKeyValues(): Array<TSEbeguVorlageKey> {
         TSEbeguVorlageKey.VORLAGE_FINANZIELLE_SITUATION,
         TSEbeguVorlageKey.VORLAGE_BEGLEITSCHREIBEN,
         TSEbeguVorlageKey.VORLAGE_VERFUEGUNG_KITA,
-        TSEbeguVorlageKey.VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER
+        TSEbeguVorlageKey.VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER,
     ];
 }

@@ -17,11 +17,11 @@ import {IHttpService, IPromise} from 'angular';
 
 export class DailyBatchRS {
 
-    static $inject = ['$http', 'REST_API'];
+    public static $inject = ['$http', 'REST_API'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string) {
+    public constructor(public http: IHttpService, REST_API: string) {
         this.serviceURL = REST_API + 'dailybatch';
     }
 
@@ -29,17 +29,18 @@ export class DailyBatchRS {
         return 'DailyBatchRS';
     }
 
-    public runBatchCleanDownloadFiles(): IPromise<Boolean> {
-        return this.http.get(this.serviceURL + '/cleanDownloadFiles')
-            .then((response: any) => {
-                return response;
-            });
+    public runBatchCleanDownloadFiles(): IPromise<boolean> {
+        return this.callServer(this.serviceURL + '/cleanDownloadFiles');
     }
 
-    public runBatchMahnungFristablauf(): IPromise<Boolean> {
-        return this.http.get(this.serviceURL + '/mahnungFristAblauf')
+    public runBatchMahnungFristablauf(): IPromise<boolean> {
+        return this.callServer(this.serviceURL + '/mahnungFristAblauf');
+    }
+
+    private callServer(url: string): IPromise<boolean> {
+        return this.http.get(url)
             .then((response: any) => {
-                return response;
+                return response; // FIXME müsste es nicht response.data sein?
             });
     }
 }

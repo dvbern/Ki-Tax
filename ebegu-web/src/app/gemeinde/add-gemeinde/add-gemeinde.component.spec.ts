@@ -19,12 +19,11 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {Transition} from '@uirouter/angular';
-import {StateService} from '@uirouter/core';
+import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {SharedModuleOverrides} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
@@ -67,7 +66,7 @@ describe('AddGemeindeComponent', () => {
                 AddGemeindeComponent,
             ]
         })
-            .overrideModule(SharedModule, SharedModuleOverrides)
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(

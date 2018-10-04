@@ -35,13 +35,13 @@ export class BenutzerRolleComponent implements OnInit {
     @Input() public readonly disabled: boolean = false;
     @Input() public readonly excludedRoles: TSRole[] = [];
 
-    @Output() public benutzerRolleChange = new EventEmitter<TSRole>();
+    @Output() public readonly benutzerRolleChange = new EventEmitter<TSRole>();
 
     public roles: Map<TSRole, string>;
 
     private _benutzerRolle: TSRole;
 
-    constructor(
+    public constructor(
         private readonly authServiceRS: AuthServiceRS,
         public readonly form: NgForm,
     ) {
@@ -53,7 +53,7 @@ export class BenutzerRolleComponent implements OnInit {
             .reduce((rollenMap, rolle) => {
                     return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
                 },
-                new Map<TSRole, string>()
+                new Map<TSRole, string>(),
             );
     }
 
@@ -69,7 +69,7 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    public trackByRole(index: number, item: { key: TSRole, value: string }): string {
+    public trackByRole(_index: number, item: { key: TSRole, value: string }): string {
         return item.key;
     }
 }

@@ -34,7 +34,9 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="md-no-float required" for="geschlecht" data-translate="GESCHLECHT"></label>
+                                <label class="md-no-float required"
+                                       for="geschlecht"
+                                       data-translate="GESCHLECHT"></label>
                                 <dv-radio-container name="geschlecht" class="input-element"
                                                     id="geschlecht"
                                                     dv-enable-element
@@ -68,8 +70,14 @@
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group secondColumn">
                                 <label class="md-no-float" data-translate="NAME" for="name_ID"></label>
-                                <input aria-describedby="name_ID-error" id="name_ID" type="text" name="name" ng-model="vm.getModel().nachname"
-                                       dv-max-length class="form-control" required>
+                                <input aria-describedby="name_ID-error"
+                                       id="name_ID"
+                                       type="text"
+                                       name="name"
+                                       ng-model="vm.getModel().nachname"
+                                       dv-max-length
+                                       class="form-control"
+                                       required>
                                 <dv-bisher gs="vm.getContainer().kindGS.nachname"
                                            ja="vm.getContainer().kindJA.nachname"></dv-bisher>
                                 <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
@@ -131,12 +139,14 @@
                             <div class="form-group">
                                 <span class="ebeguH1 required">
                                     <span data-translate="FAM_ERGAENZENDE_BETREUUNG"></span>
-                                    <dv-tooltip input-id="familienErgaenzendeBetreuung" text="'FAM_ERGAENZENDE_BETREUUNG_HELP' | translate">
+                                    <dv-tooltip input-id="familienErgaenzendeBetreuung"
+                                                text="'FAM_ERGAENZENDE_BETREUUNG_HELP' | translate">
                                     </dv-tooltip>
                                 </span>
-                                <span ng-if="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && vm.hasKindBetreuungen()"
-                                      class="inlineHint"
-                                      data-translate="FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE"></span>
+                                <span
+                                    ng-if="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && vm.hasKindBetreuungen()"
+                                    class="inlineHint"
+                                    data-translate="FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE"></span>
 
                                 <dv-radio-container name="familienErgaenzendeBetreuung" class="input-element"
                                                     dv-enable-element
@@ -150,7 +160,8 @@
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.familienErgaenzendeBetreuung"
                                            ja="vm.getContainer().kindJA.familienErgaenzendeBetreuung"></dv-bisher>
-                                <dv-error-messages input-id="familienErgaenzendeBetreuung" for="vm.form.familienErgaenzendeBetreuung.$error"
+                                <dv-error-messages input-id="familienErgaenzendeBetreuung"
+                                                   for="vm.form.familienErgaenzendeBetreuung.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
@@ -177,7 +188,8 @@
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.mutterspracheDeutsch"
                                            ja="vm.getContainer().kindJA.mutterspracheDeutsch"></dv-bisher>
-                                <dv-error-messages input-id="mutterspracheDeutsch" for="vm.form.mutterspracheDeutsch.$error"
+                                <dv-error-messages input-id="mutterspracheDeutsch"
+                                                   for="vm.form.mutterspracheDeutsch.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
@@ -239,7 +251,10 @@
                                 <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
                                 </label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="fachstelle-error" name="fachstelle" id="fachstelle" ng-model="vm.fachstelleId"
+                                    <select aria-describedby="fachstelle-error"
+                                            name="fachstelle"
+                                            id="fachstelle"
+                                            ng-model="vm.fachstelleId"
                                             class="form-control"
                                             ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
                                             ng-required="vm.isFachstelleRequired()"
@@ -262,10 +277,14 @@
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"
                                            for="betreuungspensumFachstelle"></label>
-                                    <input aria-describedby="betreuungspensumFachstelle-error" id="betreuungspensumFachstelle" type="number"
+                                    <input aria-describedby="betreuungspensumFachstelle-error"
+                                           id="betreuungspensumFachstelle"
+                                           type="number"
                                            name="betreuungspensumFachstelle"
-                                           ng-model="vm.getPensumFachstelle().pensum" max="100"
-                                           dv-max-length class="form-control"
+                                           ng-model="vm.getPensumFachstelle().pensum"
+                                           max="100"
+                                           dv-max-length
+                                           class="form-control"
                                            ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
                                            ng-required="vm.isFachstelleRequired()"
                                            ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
@@ -273,7 +292,8 @@
                                                ja="vm.getContainer().kindJA.pensumFachstelle.pensum"
                                                show-if-bisher-none="false"
                                                block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="betreuungspensumFachstelle" for="vm.form.betreuungspensumFachstelle.$error"
+                                    <dv-error-messages input-id="betreuungspensumFachstelle"
+                                                       for="vm.form.betreuungspensumFachstelle.$error"
                                                        class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>

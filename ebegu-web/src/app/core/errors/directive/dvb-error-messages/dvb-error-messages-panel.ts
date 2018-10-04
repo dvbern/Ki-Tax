@@ -29,10 +29,10 @@ import ErrorService from '../../service/ErrorService';
 const removeDialogTemplate = require('../../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
-    scope = {};
-    template = require('./dvb-error-messages-panel.html');
-    controller = DvErrorMessagesPanelComponent;
-    controllerAs = 'vm';
+    public scope = {};
+    public template = require('./dvb-error-messages-panel.html');
+    public controller = DvErrorMessagesPanelComponent;
+    public controllerAs = 'vm';
 }
 
 /**
@@ -40,18 +40,20 @@ export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
  */
 export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
-    static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
+    public static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
 
-    errors: Array<TSExceptionReport> = [];
-    TSRoleUtil = TSRoleUtil;
+    public errors: Array<TSExceptionReport> = [];
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $scope: IScope,
-                private readonly errorService: ErrorService,
-                private readonly dvDialog: DvDialog,
-                private readonly gesuchRS: GesuchRS) {
+    public constructor(
+        private readonly $scope: IScope,
+        private readonly errorService: ErrorService,
+        private readonly dvDialog: DvDialog,
+        private readonly gesuchRS: GesuchRS,
+    ) {
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.INFO_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.CLEAR], () => {
@@ -59,17 +61,18 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         });
     }
 
-    displayMessages = (event: any, errors: Array<TSExceptionReport>) => {
+    public displayMessages = (_event: any, errors: Array<TSExceptionReport>) => {
         this.errors = errors;
         this.show();
     };
 
-    private executeAction(error: TSExceptionReport): void {
+    public executeAction(error: TSExceptionReport): void {
         if (error.action) {
             if (error.action === TSErrorAction.REMOVE_ONLINE_MUTATION && error.argumentList.length > 0) {
                 this.removeOnlineMutation(error.objectId, error.argumentList[0]);
 
-            } else if (error.action === TSErrorAction.REMOVE_ONLINE_ERNEUERUNGSGESUCH && error.argumentList.length > 0) {
+            } else if (error.action === TSErrorAction.REMOVE_ONLINE_ERNEUERUNGSGESUCH
+                && error.argumentList.length > 0) {
                 this.removeOnlineErneuerungsgesuch(error.objectId, error.argumentList[0]);
             }
         }
@@ -81,8 +84,8 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             title: 'REMOVE_ONLINE_MUTATION_CONFIRMATION',
             deleteText: 'REMOVE_ONLINE_MUTATION_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined
-        }).then(() => {   //User confirmed removal
+            elementID: undefined,
+        }).then(() => {   // User confirmed removal
             this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId);
         });
     }
@@ -92,25 +95,25 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             title: 'REMOVE_ONLINE_ERNEUERUNGSGESUCH_CONFIRMATION',
             deleteText: 'REMOVE_ONLINE_ERNEUERUNGSGESUCH_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined
-        }).then(() => {   //User confirmed removal
+            elementID: undefined,
+        }).then(() => {   // User confirmed removal
             this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId);
         });
     }
 
-    private isActionDefined(error: TSExceptionReport): boolean {
+    public isActionDefined(error: TSExceptionReport): boolean {
         return error.action !== undefined && error.action !== null;
     }
 
-    show() {
-        angular.element('dvb-error-messages-panel').show();     //besser als $element injection fuer tests
+    public show(): void {
+        angular.element('dvb-error-messages-panel').show();     // besser als $element injection fuer tests
     }
 
-    clear() {
+    public clear(): void {
         this.errorService.clearAll();
     }
 
-    messageStyle(): string {
+    public messageStyle(): string {
         for (const error of this.errors) {
             if (error.severity !== TSErrorLevel.INFO) {
                 return '';
@@ -120,5 +123,3 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     }
 
 }
-
-

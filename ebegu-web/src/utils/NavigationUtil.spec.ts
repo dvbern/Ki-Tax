@@ -18,7 +18,7 @@ import {NavigationUtil} from './NavigationUtil';
 
 describe('NavigationUtil', () => {
 
-    const gesuchId: string = '1111-1111';
+    const gesuchId = '1111-1111';
 
     describe('navigateToStartsiteOfGesuchForRole', () => {
         it('should navigate to Betreuungen for Institution', () => {
@@ -28,7 +28,7 @@ describe('NavigationUtil', () => {
                 stateServiceSpy,
                 gesuchId);
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId});
         });
         it('should navigate to Betreuungen for Traegerschaft', () => {
             const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
@@ -37,7 +37,7 @@ describe('NavigationUtil', () => {
                 stateServiceSpy,
                 gesuchId);
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId});
         });
         it('should navigate to familiensituation for Steueramt', () => {
             const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
@@ -46,7 +46,7 @@ describe('NavigationUtil', () => {
                 stateServiceSpy,
                 gesuchId);
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.familiensituation', {gesuchId: gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.familiensituation', {gesuchId});
         });
         it('should navigate to fallcreation for other roles', () => {
             const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
@@ -55,7 +55,7 @@ describe('NavigationUtil', () => {
                 stateServiceSpy,
                 gesuchId);
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.fallcreation', {gesuchId: gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.fallcreation', {gesuchId});
         });
     });
 });

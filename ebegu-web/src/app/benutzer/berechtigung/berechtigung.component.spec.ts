@@ -31,15 +31,18 @@ import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component
 
 import {BerechtigungComponent} from './berechtigung.component';
 
-describe('EditBerechtigungComponent', () => {
+describe('BerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForCurrentBenutzer']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getVisibleRolesForPrincipal']);
+        ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+
+    const inputSelector = '.dv-input-container-medium';
 
     beforeEach(async(() => {
         const superadmin = TestDataUtil.createSuperadmin();
@@ -93,7 +96,7 @@ describe('EditBerechtigungComponent', () => {
         expect(component.berechtigung.hasGemeindeRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css('.dv-input-container-medium'));
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
         expect(debugElements.length).toBe(2);
 
         expect(fixture.debugElement.query(By.css('dv-gemeinde-multiselect'))).toBeTruthy();
@@ -104,7 +107,7 @@ describe('EditBerechtigungComponent', () => {
         expect(component.berechtigung.hasInstitutionRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css('.dv-input-container-medium'));
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
         expect(debugElements.length).toBe(2);
 
         expect(fixture.debugElement.query(By.css('[id^=institution-]'))).toBeTruthy();
@@ -115,7 +118,7 @@ describe('EditBerechtigungComponent', () => {
         expect(component.berechtigung.hasTraegerschaftRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css('.dv-input-container-medium'));
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
         expect(debugElements.length).toBe(2);
 
         expect(fixture.debugElement.query(By.css('[id^=treagerschaft-]'))).toBeTruthy();

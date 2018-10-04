@@ -21,6 +21,6 @@ export enum TSGesuchstellerKardinalitaet {
 export function getTSGesuchstellerKardinalitaetValues(): Array<TSGesuchstellerKardinalitaet> {
     return [
         TSGesuchstellerKardinalitaet.ALLEINE,
-        TSGesuchstellerKardinalitaet.ZU_ZWEIT
+        TSGesuchstellerKardinalitaet.ZU_ZWEIT,
     ];
 }

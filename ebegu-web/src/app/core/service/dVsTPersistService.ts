@@ -14,8 +14,11 @@
  */
 
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import {TSSTPersistObject} from '../../../models/TSSTPersistObject';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import {TSSTPersistObject} from '../../../models/TSSTPersistObject';
+import {LogFactory} from '../logging/LogFactory';
+
+const LOG = LogFactory.createLog('DVsTPersistService');
 
 /**
  * This service stores an array of TSSTPersistObject.
@@ -24,23 +27,24 @@ import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
  */
 export class DVsTPersistService {
 
-    static $inject: any = ['AuthLifeCycleService'];
+    public static $inject: any = ['AuthLifeCycleService'];
 
-    persistedData: TSSTPersistObject[];
+    public persistedData: TSSTPersistObject[];
 
-    constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
         this.clearAll();
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(() => this.clearAll());
+            .subscribe(() => this.clearAll(),
+                err => LOG.error(err));
     }
 
-    private clearAll() {
+    private clearAll(): void {
         this.persistedData = [];
     }
 
     public saveData(namespace: string, data: any): void {
-        const existingData: TSSTPersistObject = this.findNamespace(namespace);
+        const existingData = this.findNamespace(namespace);
         if (existingData) {
             existingData.data = JSON.stringify(data);
         } else {
@@ -49,7 +53,7 @@ export class DVsTPersistService {
     }
 
     public loadData(namespace: string): any {
-        const existingData: TSSTPersistObject = this.findNamespace(namespace);
+        const existingData = this.findNamespace(namespace);
         if (existingData) {
             return JSON.parse(existingData.data);
         }

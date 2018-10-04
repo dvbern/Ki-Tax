@@ -13,42 +13,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {IHttpService, ILogService, IPromise} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class GesuchstellerRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil, public log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'gesuchsteller';
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
+        this.serviceURL = `${REST_API}gesuchsteller`;
 
     }
 
-    public saveGesuchsteller(gesuchsteller: TSGesuchstellerContainer, gesuchId: string, gsNumber: number, umzug: boolean): IPromise<TSGesuchstellerContainer> {
+    public saveGesuchsteller(
+        gesuchsteller: TSGesuchstellerContainer,
+        gesuchId: string,
+        gsNumber: number,
+        umzug: boolean,
+    ): IPromise<TSGesuchstellerContainer> {
         const gessteller = this.ebeguRestUtil.gesuchstellerContainerToRestObject({}, gesuchsteller);
-        return this.http.put(this.serviceURL + '/' + encodeURIComponent(gesuchId) + '/gsNumber/' + gsNumber + '/' + umzug, gessteller, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING gesuchsteller REST object ', response.data);
-                return this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data);
-            });
-        });
+        const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}/gsNumber/${gsNumber}/${umzug}`;
+
+        return this.http.put(url, gessteller)
+            .then(response => this.wizardStepManager.findStepsFromGesuch(gesuchId)
+                .then(() =>
+                    this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data)));
     }
 
     public findGesuchsteller(gesuchstellerID: string): IPromise<TSGesuchstellerContainer> {
-        return this.http.get(this.serviceURL + '/id/' + encodeURIComponent(gesuchstellerID))
-            .then((response: any) => {
-                this.log.debug('PARSING gesuchsteller REST object ', response.data);
-                return this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data);
-            });
+        return this.http.get(`${this.serviceURL}/id/${encodeURIComponent(gesuchstellerID)}`)
+            .then(response =>
+                this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data));
     }
 
     public getServiceName(): string {
@@ -56,4 +60,3 @@ export default class GesuchstellerRS {
     }
 
 }
-

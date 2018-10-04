@@ -21,44 +21,47 @@ export default class TSAbstractAntragDTO {
     private _dossierId: string;
     private _familienName: string;
 
-    constructor(fallNummer?: number, dossierId?: string, familienName?: string) {
+    public constructor(fallNummer?: number, dossierId?: string, familienName?: string) {
         this._fallNummer = fallNummer;
         this._dossierId = dossierId;
         this._familienName = familienName;
     }
 
-    get fallNummer(): number {
+    public get fallNummer(): number {
         return this._fallNummer;
     }
 
-    set fallNummer(value: number) {
+    public set fallNummer(value: number) {
         this._fallNummer = value;
     }
 
-    get dossierId(): string {
+    public get dossierId(): string {
         return this._dossierId;
     }
 
-    set dossierId(value: string) {
+    public set dossierId(value: string) {
         this._dossierId = value;
     }
 
-    get familienName(): string {
+    public get familienName(): string {
         return this._familienName;
     }
 
-    set familienName(value: string) {
+    public set familienName(value: string) {
         this._familienName = value;
     }
 
     public getQuicksearchString(): string {
         let text = '';
+
         if (this.fallNummer) {
             text = EbeguUtil.addZerosToNumber(this.fallNummer, 6);
         }
+
         if (this.familienName) {
-            text = text + ' ' + this.familienName;
+            text = `${text} ${this.familienName}`;
         }
+
         return text;
     }
 

@@ -13,7 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {IHttpBackendService} from 'angular';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSFall from '../../models/TSFall';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -22,13 +23,12 @@ import FallRS from './fallRS.rest';
 describe('fallRS', () => {
 
     let fallRS: FallRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
-    let REST_API: string;
     let mockFall: TSFall;
     let mockFallRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -36,7 +36,6 @@ describe('fallRS', () => {
         fallRS = $injector.get('FallRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
-        REST_API = $injector.get('REST_API');
     }));
 
     beforeEach(() => {
@@ -49,27 +48,15 @@ describe('fallRS', () => {
         it('check URI', () => {
             expect(fallRS.serviceURL).toContain('falle');
         });
-        it('check Service name', () => {
-            expect(fallRS.getServiceName()).toBe('FallRS');
-        });
-        it('should include a createFall() function', () => {
-            expect(fallRS.createFall).toBeDefined();
-        });
-        it('should include a findFall() function', () => {
-            expect(fallRS.findFall).toBeDefined();
-        });
-        it('should include a updateFall() function', () => {
-            expect(fallRS.updateFall).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('findFall', () => {
             it('should return the Fall by id', () => {
-                $httpBackend.expectGET(fallRS.serviceURL + '/id/' + mockFall.id).respond(mockFallRest);
+                $httpBackend.expectGET(`${fallRS.serviceURL}/id/${mockFall.id}`).respond(mockFallRest);
 
                 let foundFall: TSFall;
-                fallRS.findFall(mockFall.id).then((result) => {
+                fallRS.findFall(mockFall.id).then(result => {
                     foundFall = result;
                 });
                 $httpBackend.flush();
@@ -82,7 +69,7 @@ describe('fallRS', () => {
                 let createdFall: TSFall;
                 $httpBackend.expectPUT(fallRS.serviceURL, mockFallRest).respond(mockFallRest);
 
-                fallRS.createFall(mockFall).then((result) => {
+                fallRS.createFall(mockFall).then(result => {
                     createdFall = result;
                 });
                 $httpBackend.flush();

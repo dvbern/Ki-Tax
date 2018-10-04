@@ -1,36 +1,82 @@
 {
     "rulesDirectory": [
+        "node_modules/codelyzer",
         "node_modules/rxjs-tslint"
     ],
     "extends": [
         "tslint-eslint-rules",
-        "rxjs-tslint-rules"
+        "rxjs-tslint-rules",
+        "tslint-consistent-codestyle",
+        "tslint-sonarts"
     ],
     "rules": {
-        "attribute-parameter-decorator": false,
+        "align": [
+            true,
+            "parameters",
+            "members",
+            "statements"
+        ],
+        "arrow-parens": [
+            true,
+            "ban-single-arg-parens"
+        ],
+        "arrow-return-shorthand": true,
+        "ban": [
+            true,
+            "eval",
+            {
+                "name": "fdescribe",
+                "message": "Don't forget to un-focus tests on commit/push!"
+            },
+            {
+                "name": "fit",
+                "message": "Don't forget to un-focus tests on commit/push!"
+            },
+            {
+                "name": [
+                    "LogFactory",
+                    "setModuleLevel",
+                    "debugModule"
+                ],
+                "message": "Nur zu Debug-Zwecken!"
+            }
+        ],
+        "callable-types": true,
         "class-name": true,
-        "curly": false,
-        "no-var-keyword": true,
+        "comment-format": [
+            true,
+            "check-space"
+        ],
+        "curly": true,
+        "early-exit": true,
+        "encoding": true,
         "eofline": true,
+        "forin": true,
+        "import-destructuring-spacing": false,
+        "import-spacing": true,
         "indent": [
             true,
-            "spaces"
+            "spaces",
+            4
         ],
-        "only-arrow-functions": [
+        "interface-over-type-literal": true,
+        "jsdoc-format": [
             true,
-            "allow-declarations",
-            "allow-named-functions"
+            "check-multiline-start"
         ],
-        "prefer-const": true,
-        "prefer-for-of": true,
-        "prefer-method-signature": true,
-        "prefer-object-spread": true,
-        "prefer-readonly": [
-            true
-        ],
+        "label-position": true,
+        "match-default-export-name": true,
         "max-line-length": [
             true,
-            200
+            {
+                "limit": 120,
+                "ignore-pattern": "^require|^import |^export {(.*?)}|it(.*?)"
+            }
+        ],
+        "member-access": [
+            true,
+            "check-accessor",
+            "check-constructor"
         ],
         "member-ordering": [
             true,
@@ -44,15 +90,184 @@
                 ]
             }
         ],
+        "naming-convention": [
+            true,
+            // forbid leading and trailing underscores and enforce camelCase on EVERY name. will be overridden by subtypes if needed
+            {
+                "type": "default",
+                "format": "camelCase",
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
+            },
+            // require all global constants to be camelCase or UPPER_CASE
+            // all other variables and functions still need to be camelCase
+            {
+                "type": "variable",
+                "modifiers": [
+                    "global",
+                    "const"
+                ],
+                "format": [
+                    "camelCase",
+                    "UPPER_CASE"
+                ]
+            },
+            // override the above format option for exported constants to allow only UPPER_CASE
+            {
+                "type": "variable",
+                "modifiers": [
+                    "export",
+                    "const"
+                ],
+                "format": "UPPER_CASE"
+            },
+            // allow leading underscores for parameters, because `tsc --noUnusedParameters` will not flag underscore
+            // prefixed parameters all other rules (trailingUnderscore: forbid, format: camelCase) still apply
+            {
+                "type": "parameter",
+                "leadingUnderscore": "allow",
+                "format": [
+                    "camelCase",
+                    "PascalCase",
+                    "UPPER_CASE"
+                ]
+            },
+            // forbid leading underscores for methods
+            {
+                "type": "method",
+                "leadingUnderscore": "forbid"
+            },
+            // allow leading underscores for private properties and methods, all other rules still apply
+            {
+                "type": "member",
+                "modifiers": "private",
+                "leadingUnderscore": "allow"
+            },
+            // same for protected
+            {
+                "type": "member",
+                "modifiers": "protected",
+                "leadingUnderscore": "allow"
+            },
+            // enforce UPPER_CASE for all static readonly(!) properties
+            {
+                "type": "property",
+                "modifiers": [
+                    "static",
+                    "const"
+                ],
+                "format": "UPPER_CASE"
+            },
+            {
+                "type": "property",
+                "modifiers": [
+                    "const"
+                ],
+                "format": [
+                    "camelCase",
+                    "UPPER_CASE",
+                    "PascalCase"
+                ]
+            },
+            // enforce PascalCase for classes, interfaces, enums, etc. Remember, there are still no underscores allowed.
+            {
+                "type": "type",
+                "format": "PascalCase"
+            },
+            // generic type parameters must start with "T"
+            // most of the time it will only be T, which is totally valid, because an empty string conforms to the PascalCase check
+            // By convention T, U and V are used for generics. You could enforce that with "regex": "^[TUV]$" and if you are care that much for performance, you could disable every other check by setting a falsy value
+            {
+                "type": "genericTypeParameter",
+                "prefix": "T"
+            }
+        ],
+        "new-parens": true,
+        //        "newline-before-return": true,
+        "no-angle-bracket-type-assertion": true,
         "no-arg": true,
+        "no-attribute-parameter-decorator": true,
+        "no-bitwise": true,
+        "no-boolean-literal-compare": true,
+        "no-collapsible-if": true,
+        "no-conditional-assignment": true,
+        "no-consecutive-blank-lines": [
+            true,
+            1
+        ],
         "no-construct": true,
+        "no-debugger": true,
+        "no-duplicate-imports": true,
+        "no-duplicate-super": true,
+        "no-duplicate-switch-case": true,
         "no-duplicate-variable": true,
+        "no-else-after-return": true,
+        "no-dynamic-delete": true,
         "no-empty": false,
+        "no-empty-interface": true,
         "no-eval": true,
+        "no-implicit-dependencies": [
+            true,
+            "dev"
+        ],
+        "no-import-side-effect": [
+            true,
+            {
+                "ignore-module": "(core-js)"
+            }
+        ],
+        "no-inferrable-types": [
+            true,
+            "ignore-params",
+            "ignore-properties"
+        ],
+        "no-inferred-empty-object-type": true,
+        "no-input-rename": true,
         "no-internal-module": true,
-        "trailing-comma": true,
+        "no-invalid-template-strings": true,
+        "no-invalid-this": true,
+        "no-irregular-whitespace": true,
+        "no-for-in-array": true,
+        "no-forward-ref": true,
+        "no-magic-numbers": [
+            true,
+            -1,
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            31,
+            100,
+            1000,
+            1024,
+            4096
+        ],
+        "no-misused-new": true,
+        "no-namespace": true,
+        "no-object-literal-type-assertion": true,
+        "no-output-named-after-standard-event": true,
+        "no-output-on-prefix": true,
+        "no-output-rename": true,
+        "no-parameter-reassignment": true,
+        "no-redundant-jsdoc": true,
+        "no-reference": true,
+        "no-return-await": true,
+        "no-shadowed-variable": true,
+        "no-sparse-arrays": true,
+        "no-string-literal": true,
+        "no-string-throw": true,
         "no-submodule-imports": [
             true,
+            "@uirouter/core",
             "@angular/core/testing",
             "@angular/cdk",
             "@angular/common/http",
@@ -63,33 +278,102 @@
             "@angular/upgrade/static",
             "angular-i18n/angular-locale_de-ch",
             "core-js",
-            "js2xmlparser/lib/main",
             "rxjs/operators",
             "webpack/lib",
             "zone.js"
         ],
+        "no-switch-case-fall-through": true,
+        "no-this-assignment": true,
         "no-trailing-whitespace": true,
+        "no-unbound-method": [
+            true,
+            "ignore-static"
+        ],
+        "no-unnecessary-callback-wrapper": true,
+        "no-unnecessary-else": true,
+        "no-unnecessary-initializer": true,
+        "no-unnecessary-qualifier": true,
+        "no-unsafe-finally": true,
+        "no-unused": true,
+        "no-unnecessary-type-annotation": true,
         "no-unused-expression": true,
-        "no-unused-variable": false,
-        "no-use-before-declare": false,
+        "no-unused-variable": true,
+        //        "no-use-before-declare": true,
+        "no-var-keyword": true,
+        "no-void-expression": [
+            true,
+            "ignore-arrow-function-shorthand"
+        ],
+        "number-literal-format": true,
+        "object-literal-shorthand": true,
+        "object-literal-key-quotes": [
+            true,
+            "as-needed"
+        ],
         "one-line": [
             true,
             "check-open-brace",
             "check-catch",
+            "check-finally",
             "check-else",
             "check-whitespace"
         ],
+        "only-arrow-functions": [
+            true,
+            "allow-declarations",
+            "allow-named-functions"
+        ],
+        "parameters-max-number": false,
+        "prefer-conditional-expression": [
+            true,
+            "check-else-if"
+        ],
+        "prefer-immediate-return": false,
+        "prefer-switch": [
+            true,
+            {
+                "min-cases": 3
+            }
+        ],
+        "prefer-template": [
+            true,
+            "allow-single-concat"
+        ],
+        "prefer-const": true,
+        "prefer-for-of": true,
+        "prefer-method-signature": true,
+        "prefer-object-spread": true,
+        "prefer-output-readonly": true,
+        "prefer-readonly": [
+            true
+        ],
         "quotemark": [
             true,
-            "single",
-            "avoid-escape"
+            "single"
         ],
-        "semicolon": [true, "always", "ignore-bound-class-methods"],
-        "triple-equals": [
+        "radix": true,
+        "restrict-plus-operands": true,
+        "semicolon": [
             true,
-            "allow-null-check"
+            "always",
+            "ignore-bound-class-methods"
         ],
-        "variable-name": false,
+        "space-before-function-paren": [
+            true,
+            {
+                "anonymous": "always",
+                "named": "never"
+            }
+        ],
+        "strict-type-predicates": true,
+        "switch-default": true,
+        "trailing-comma": true,
+        "triple-equals": true,
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter"
+        ],
         "typedef-whitespace": [
             true,
             {
@@ -99,6 +383,15 @@
                 "property-declaration": "nospace",
                 "variable-declaration": "nospace"
             }
+        ],
+        "unified-signatures": true,
+        "use-default-type-parameter": true,
+        "use-isnan": true,
+        "variable-name": [
+            true,
+            "check-format",
+            "ban-keywords",
+            "allow-leading-underscore"
         ],
         "whitespace": [
             true,
@@ -117,9 +410,27 @@
         "rxjs-no-do": {
             "severity": "error"
         },
-//        "rxjs-no-ignored-error": {
-//            "severity": "error"
-//        },
+        "rxjs-no-ignored-error": {
+            "severity": "error"
+        },
+        "rxjs-no-ignored-subscribe": {
+            "severity": "error"
+        },
+        "rxjs-no-internal": {
+            "severity": "error"
+        },
+        "rxjs-no-operator": {
+            "severity": "error"
+        },
+        "rxjs-no-patched": {
+            "severity": "error"
+        },
+        "rxjs-no-unbound-methods": {
+            "severity": "error"
+        },
+        //        "rxjs-no-unsafe-scope": {
+        //            "severity": "error"
+        //        },
         "rxjs-no-subject-unsubscribe": {
             "severity": "error"
         },
@@ -132,7 +443,6 @@
         "rxjs-collapse-imports": true,
         "rxjs-pipeable-operators-only": true,
         "rxjs-no-static-observable-methods": true,
-        "rxjs-proper-imports": true,
-        "rxjs-no-internal": true
+        "rxjs-proper-imports": true
     }
 }

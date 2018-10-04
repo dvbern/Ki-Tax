@@ -16,13 +16,13 @@
 import {IComponentOptions} from 'angular';
 
 export class DvInputContainerComponentConfig implements IComponentOptions {
-    transclude = true;
-    template = require('./dv-input-container.html');
-    controller = DvInputContainerController;
-    controllerAs = 'vm';
+    public transclude = true;
+    public template = require('./dv-input-container.html');
+    public controller = DvInputContainerController;
+    public controllerAs = 'vm';
 }
 
 export class DvInputContainerController {
 
-    static $inject: ReadonlyArray<string> = [];
+    public static $inject: ReadonlyArray<string> = [];
 }

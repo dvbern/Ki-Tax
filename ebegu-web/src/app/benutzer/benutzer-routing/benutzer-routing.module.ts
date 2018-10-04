@@ -45,9 +45,9 @@ const states: Ng2StateDeclaration[] = [
         UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
-    declarations: []
+    declarations: [],
 })
 export class BenutzerRoutingModule {
 }

@@ -21,6 +21,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSFinanzielleSituationContainer from '../../../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../../../models/TSFinanzModel';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -33,92 +34,116 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./finanzielleSituationView.html');
-    controller = FinanzielleSituationViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./finanzielleSituationView.html');
+    public controller = FinanzielleSituationViewController;
+    public controllerAs = 'vm';
 }
 
 export class FinanzielleSituationViewController extends AbstractGesuchViewController<TSFinanzModel> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', '$q', '$scope', '$translate', '$timeout'];
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        '$translate',
+        '$timeout',
+    ];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
-    allowedRoles: Array<TSRole>;
+    public allowedRoles: Array<TSRole>;
 
-    private readonly initialModel: TSFinanzModel;
-
-    constructor($stateParams: IStammdatenStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager, private readonly $q: IQService, $scope: IScope, private readonly $translate: ITranslateService, $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FINANZIELLE_SITUATION, $timeout);
-        let parsedNum: number = parseInt($stateParams.gesuchstellerNumber, 10);
+    public constructor(
+        $stateParams: IStammdatenStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly $translate: ITranslateService,
+        $timeout: ITimeoutService,
+    ) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.FINANZIELLE_SITUATION,
+            $timeout);
+        let parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         if (!parsedNum) {
             parsedNum = 1;
         }
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), parsedNum);
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            parsedNum);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.initialModel = angular.copy(this.model);
         this.gesuchModelManager.setGesuchstellerNumber(parsedNum);
         this.initViewModel();
         this.calculate();
     }
 
-    private initViewModel() {
+    private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
         this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
             ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
     }
 
-    public showSelbstaendigClicked() {
+    public showSelbstaendigClicked(): void {
         if (!this.showSelbstaendig) {
             this.resetSelbstaendigFields();
         }
     }
 
-    private resetSelbstaendigFields() {
-        if (this.model.getFiSiConToWorkWith()) {
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahr = undefined;
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 = undefined;
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 = undefined;
-            this.calculate();
+    private resetSelbstaendigFields(): void {
+        if (!this.model.getFiSiConToWorkWith()) {
+            return;
         }
+
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahr = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 = undefined;
+        this.calculate();
     }
 
-    showSteuerveranlagung(): boolean {
+    public showSteuerveranlagung(): boolean {
         return !this.model.gemeinsameSteuererklaerung;
     }
 
-    showSteuererklaerung(): boolean {
-        return this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten === false;
+    public showSteuererklaerung(): boolean {
+        return !this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten;
     }
 
-    //hier neu init
+    // hier neu init
     public steuerveranlagungClicked(): void {
         // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
-        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten === true) {
+        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
-            if (this.model.gemeinsameSteuererklaerung === true) {
+            if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
             }
-        } else if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten === false) {
+        } else if (!this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
             // Steuerveranlagung neu NEIN -> Fragen loeschen
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
-            if (this.model.gemeinsameSteuererklaerung === true) {
+            if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
+                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
+                    undefined;
             }
         }
     }
 
-    private save(): IPromise<TSFinanzielleSituationContainer> {
+    public save(): IPromise<TSFinanzielleSituationContainer> {
         if (this.isGesuchValid()) {
             this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
             if (!this.form.$dirty) {
@@ -132,11 +157,11 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return undefined;
     }
 
-    calculate() {
+    public calculate(): void {
         this.berechnungsManager.calculateFinanzielleSituationTemp(this.model);
     }
 
-    resetForm() {
+    public resetForm(): void {
         this.initViewModel();
     }
 
@@ -148,35 +173,29 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.berechnungsManager.finanzielleSituationResultate;
     }
 
-    public getTextSelbstaendigKorrektur() {
+    public getTextSelbstaendigKorrektur(): any {
         const finSitGS = this.getModel().finanzielleSituationGS;
-        if (finSitGS && finSitGS.isSelbstaendig()) {
-
-            const gew1 = finSitGS.geschaeftsgewinnBasisjahr;
-            const gew2 = finSitGS.geschaeftsgewinnBasisjahrMinus1;
-            const gew3 = finSitGS.geschaeftsgewinnBasisjahrMinus2;
-            const basisjahr = this.gesuchModelManager.getBasisjahr();
-            return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG',
-                {basisjahr: basisjahr, gewinn1: gew1, gewinn2: gew2, gewinn3: gew3});
-
-            // return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
-            //     name: fachstelle.fachstelle.name,
-            //     pensum: fachstelle.pensum,
-            //     von: vonText,
-            //     bis: bisText});
-        } else {
+        if (!finSitGS || !finSitGS.isSelbstaendig()) {
             return this.$translate.instant('LABEL_KEINE_ANGABE');
         }
 
+        const gew1 = finSitGS.geschaeftsgewinnBasisjahr;
+        const gew2 = finSitGS.geschaeftsgewinnBasisjahrMinus1;
+        const gew3 = finSitGS.geschaeftsgewinnBasisjahrMinus2;
+        const basisjahr = this.gesuchModelManager.getBasisjahr();
+        const params = {basisjahr, gewinn1: gew1, gewinn2: gew2, gewinn3: gew3};
+
+        return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG', params);
     }
 
     /**
      * Mindestens einer aller Felder von Geschaftsgewinn muss ausgefuellt sein. Mit dieser Methode kann man es pruefen.
-     * @returns {boolean}
      */
     public isGeschaeftsgewinnRequired(): boolean {
-        return (this.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr === null || this.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr === undefined)
-            && (this.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 === null || this.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 === undefined)
-            && (this.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 === null || this.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 === undefined);
+        const finSit = this.getModel().finanzielleSituationJA;
+
+        return EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)
+            && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)
+            && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
     }
 }

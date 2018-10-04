@@ -40,4 +40,3 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
 })
 export class GemeindeModule {
 }
-
